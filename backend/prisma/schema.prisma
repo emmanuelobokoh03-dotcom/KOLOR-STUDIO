@@ -1,0 +1,246 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =====================
+// USER & AUTHENTICATION
+// =====================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  firstName     String
+  lastName      String
+  studioName    String?
+  role          UserRole  @default(OWNER)
+  isActive      Boolean   @default(true)
+  emailVerified Boolean   @default(false)
+  
+  // Profile
+  phone         String?
+  website       String?
+  logo          String?   // URL to logo image
+  timezone      String    @default("UTC")
+  
+  // Preferences
+  preferences   Json?     // Store user preferences as JSON
+  
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+  
+  // Relations
+  leads         Lead[]
+  activities    Activity[]
+  messages      Message[]
+  
+  @@map("users")
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+// =====================
+// LEAD MANAGEMENT
+// =====================
+
+model Lead {
+  id              String      @id @default(uuid())
+  
+  // Client Information
+  clientName      String
+  clientEmail     String
+  clientPhone     String?
+  clientCompany   String?
+  
+  // Project Details
+  serviceType     ServiceType
+  projectTitle    String
+  description     String      @db.Text
+  budget          String?     // e.g., "$5,000-$10,000"
+  timeline        String?     // e.g., "Needed by March 2026"
+  eventDate       DateTime?   // For events like weddings
+  
+  // Lead Management
+  status          LeadStatus  @default(NEW)
+  priority        Priority    @default(MEDIUM)
+  source          LeadSource  @default(WEBSITE)
+  score           Int         @default(0)  // AI-powered lead score (0-100)
+  
+  // Value Tracking
+  estimatedValue  Float?      // Estimated project value
+  actualValue     Float?      // Actual booked value
+  
+  // Assignment
+  assignedTo      User?       @relation(fields: [assignedToId], references: [id])
+  assignedToId    String?
+  
+  // Portal Access
+  portalToken     String      @unique @default(uuid())
+  portalViews     Int         @default(0)
+  lastPortalView  DateTime?
+  
+  // Metadata
+  tags            String[]    // For custom categorization
+  customFields    Json?       // Flexible custom fields
+  
+  // Timestamps
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  convertedAt     DateTime?   // When status changed to BOOKED
+  lostAt          DateTime?   // When status changed to LOST
+  
+  // Relations
+  activities      Activity[]
+  messages        Message[]
+  files           File[]
+  
+  @@map("leads")
+  @@index([status])
+  @@index([createdAt])
+  @@index([assignedToId])
+}
+
+enum ServiceType {
+  PHOTOGRAPHY
+  VIDEOGRAPHY
+  GRAPHIC_DESIGN
+  WEB_DESIGN
+  BRANDING
+  CONTENT_CREATION
+  CONSULTING
+  OTHER
+}
+
+enum LeadStatus {
+  NEW           // Just submitted
+  REVIEWING     // Studio is reviewing
+  CONTACTED     // Initial contact made
+  QUALIFIED     // Qualified as good fit
+  QUOTED        // Proposal/quote sent
+  NEGOTIATING   // In discussion
+  BOOKED        // Won! Project confirmed
+  LOST          // Lost opportunity
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum LeadSource {
+  WEBSITE
+  INSTAGRAM
+  FACEBOOK
+  REFERRAL
+  GOOGLE
+  LINKEDIN
+  TIKTOK
+  EMAIL
+  OTHER
+}
+
+// =====================
+// ACTIVITY LOG
+// =====================
+
+model Activity {
+  id          String        @id @default(uuid())
+  
+  type        ActivityType
+  description String        @db.Text
+  metadata    Json?         // Additional data about the activity
+  
+  // Relations
+  lead        Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  leadId      String
+  
+  user        User?         @relation(fields: [userId], references: [id])
+  userId      String?
+  
+  createdAt   DateTime      @default(now())
+  
+  @@map("activities")
+  @@index([leadId])
+  @@index([createdAt])
+}
+
+enum ActivityType {
+  STATUS_CHANGED
+  NOTE_ADDED
+  EMAIL_SENT
+  EMAIL_RECEIVED
+  PHONE_CALL
+  MEETING_SCHEDULED
+  FILE_UPLOADED
+  PROPOSAL_SENT
+  CONTRACT_SIGNED
+  PAYMENT_RECEIVED
+  MESSAGE_SENT
+  PORTAL_VIEWED
+}
+
+// =====================
+// MESSAGING
+// =====================
+
+model Message {
+  id          String    @id @default(uuid())
+  
+  content     String    @db.Text
+  isFromClient Boolean  @default(false)
+  isRead      Boolean   @default(false)
+  
+  // Relations
+  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  leadId      String
+  
+  sender      User?     @relation(fields: [senderId], references: [id])
+  senderId    String?
+  
+  createdAt   DateTime  @default(now())
+  
+  @@map("messages")
+  @@index([leadId])
+  @@index([createdAt])
+}
+
+// =====================
+// FILE MANAGEMENT
+// =====================
+
+model File {
+  id          String    @id @default(uuid())
+  
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int       // in bytes
+  url         String
+  
+  uploadedBy  String?   // "client" or user ID
+  
+  // Relations
+  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  leadId      String
+  
+  createdAt   DateTime  @default(now())
+  
+  @@map("files")
+  @@index([leadId])
+}
