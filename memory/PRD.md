@@ -277,6 +277,27 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 |--------|----------|-------------|------|
 | GET | /api/portal/:token | Get lead portal data | Token |
 
+### Settings
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | /api/settings | Get user settings + currencies | Yes |
+| PATCH | /api/settings | Update currency & preferences | Yes |
+| GET | /api/settings/currencies | List available currencies | No |
+
+### Quotes
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | /api/leads/:id/quotes | Create quote | Yes |
+| GET | /api/leads/:id/quotes | Get lead's quotes | Yes |
+| GET | /api/quotes/:id | Get single quote | Yes |
+| PATCH | /api/quotes/:id | Update draft quote | Yes |
+| DELETE | /api/quotes/:id | Delete draft quote | Yes |
+| POST | /api/quotes/:id/send | Send quote email | Yes |
+| POST | /api/quotes/:id/duplicate | Duplicate quote | Yes |
+| GET | /api/quotes/public/:token | Public quote view | Token |
+| POST | /api/quotes/public/:token/accept | Accept quote | Token |
+| POST | /api/quotes/public/:token/decline | Decline quote | Token |
+
 ## Activity Types
 - NOTE_ADDED - Manual notes by users
 - STATUS_CHANGED - Status changes via Kanban or edit
