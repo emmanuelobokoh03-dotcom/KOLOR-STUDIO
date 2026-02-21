@@ -314,6 +314,11 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 | POST | /api/quotes/public/:token/accept | Accept quote | Token |
 | POST | /api/quotes/public/:token/decline | Decline quote | Token |
 
+### Calendar
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | /api/leads/calendar/events | Get calendar events | Yes |
+
 ## Activity Types
 - NOTE_ADDED - Manual notes by users
 - STATUS_CHANGED - Status changes via Kanban or edit
