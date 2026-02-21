@@ -103,6 +103,15 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Works from both Kanban drag-and-drop and edit form
 - [x] Note: Requires Resend domain verification for production emails
 
+### Phase 9: Client Portal Management in Dashboard ✅ (Feb 21, 2026)
+- [x] Client Portal section in Lead Details tab
+- [x] Portal URL displayed with Copy and Open buttons
+- [x] Portal Views counter showing client engagement
+- [x] Last Viewed timestamp (or "Never" if not viewed)
+- [x] Copy Link button for easy sharing
+- [x] Email Portal Link button - opens mailto with pre-filled message
+- [x] portalViews and lastPortalView fields added to Lead API response
+
 ## Email Templates
 1. **New Lead Notification** (to owner)
    - Lead name, email, phone, company
