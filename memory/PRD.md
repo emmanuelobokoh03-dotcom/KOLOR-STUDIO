@@ -116,6 +116,24 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Graceful handling when Resend domain not verified (shows warning)
 - [x] portalViews and lastPortalView fields added to Lead API response
 
+### Phase 10: Password Reset Feature ✅ (Feb 21, 2026)
+- [x] POST /api/auth/forgot-password - Request password reset email
+- [x] POST /api/auth/reset-password - Reset password with token
+- [x] Secure crypto.randomBytes(32) token generation
+- [x] SHA256 hashed tokens stored in database
+- [x] 1-hour token expiry
+- [x] Single-use tokens (cleared after successful reset)
+- [x] Rate limiting: Max 3 requests per email per hour (in-memory)
+- [x] Email enumeration attack prevention (same response for all emails)
+- [x] /forgot-password page with email input
+- [x] /reset-password/:token page with password inputs
+- [x] Password strength indicator (Weak/Medium/Strong with colors)
+- [x] Password match validation with visual feedback
+- [x] "Forgot password?" link on login page
+- [x] Branded KOLOR STUDIO email template with 1-hour expiry notice
+- [x] Resend integration for sending reset emails
+- [x] Auto-redirect to login after successful password reset
+
 ## Email Templates
 1. **New Lead Notification** (to owner)
    - Lead name, email, phone, company
@@ -138,6 +156,8 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 | POST | /api/auth/signup | Create account | No |
 | POST | /api/auth/login | Login, get JWT | No |
 | GET | /api/auth/me | Get current user | Yes |
+| POST | /api/auth/forgot-password | Request password reset | No |
+| POST | /api/auth/reset-password | Reset password with token | No |
 
 ### Leads
 | Method | Endpoint | Description | Auth |
@@ -184,13 +204,15 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - Dashboard: https://kolor-portal.preview.emergentagent.com/dashboard
 - Public Inquiry: https://kolor-portal.preview.emergentagent.com/inquiry
 - Client Portal: https://kolor-portal.preview.emergentagent.com/portal/:token
+- Forgot Password: https://kolor-portal.preview.emergentagent.com/forgot-password
+- Reset Password: https://kolor-portal.preview.emergentagent.com/reset-password/:token
 - API: https://kolor-portal.preview.emergentagent.com/api
 
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
-- [ ] Password reset functionality
 - [ ] Send custom emails to clients from dashboard
+- [ ] Email templates management
 
 ### P2 - Medium Priority
 - [ ] Calendar integration
