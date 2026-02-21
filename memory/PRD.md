@@ -339,17 +339,58 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - Reset Password: https://crm-timeline-1.preview.emergentagent.com/reset-password/:token
 - API: https://crm-timeline-1.preview.emergentagent.com/api
 
+### Phase 14: Revenue Analytics Dashboard ✅ (Feb 21, 2026)
+- [x] GET /api/analytics/dashboard - Main analytics overview
+- [x] GET /api/analytics/monthly-trend - Revenue by month (12 months)
+- [x] GET /api/analytics/lead-sources - Lead source performance
+- [x] GET /api/analytics/pipeline-by-status - Pipeline breakdown
+- [x] AnalyticsDashboard component with Recharts integration
+- [x] Stats cards: Pipeline Value, Revenue (month/year/total), Conversion Rate
+- [x] Monthly Revenue bar chart
+- [x] Lead Source pie chart with conversion rates
+- [x] Pipeline Status breakdown bar chart
+- [x] Performance table: Average Deal Size, Days to Close, Active Leads, Win Rate
+- [x] Currency formatting using user settings
+- [x] Dark theme styling with proper chart colors
+
+### Phase 15: Calendar View ✅ (Feb 21, 2026)
+- [x] GET /api/leads/calendar/events - Calendar events endpoint
+- [x] CalendarView component with 4 views: Month, Week, Day, Agenda
+- [x] Month view with 6-row grid calendar
+- [x] Week view with 7-day columns
+- [x] Day view with detailed event cards
+- [x] Agenda view showing next 30 days events
+- [x] Shows only BOOKED leads with eventDate
+- [x] Color coding by service type:
+  - Photography: Purple
+  - Videography: Blue
+  - Branding: Orange
+  - Graphic Design: Pink
+  - Web Design: Cyan
+  - Content Creation: Green
+  - Consulting: Yellow
+  - Other: Gray
+- [x] Service type filter dropdown
+- [x] Upcoming only toggle
+- [x] Navigation: prev/next/today buttons
+- [x] Service type legend with color dots
+- [x] Click event opens LeadDetailModal
+- [x] Stats summary: Total Bookings, Upcoming, Total Value
+- [x] Empty state when no booked events
+- [x] Mobile responsive design
+- [x] Calendar button in Dashboard toolbar
+
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
-- [ ] Calendar View (visualize lead timelines and deadlines)
 - [ ] Send custom emails to clients from dashboard
+- [ ] Quote Templates (save and reuse quote templates)
 
 ### P2 - Medium Priority
-- [ ] Quote Templates (save and reuse quote templates)
 - [ ] Duplicate Quote feature for easy revisions
 - [ ] Email verification for new signups
 - [ ] Logo Upload in Settings
+- [ ] Configurable owner email for lead submission (currently hardcoded)
 
 ### P3 - Lower Priority
 - [ ] Invoice generation from accepted quotes
