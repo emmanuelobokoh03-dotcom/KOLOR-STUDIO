@@ -385,14 +385,39 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Mobile responsive design
 - [x] Calendar button in Dashboard toolbar
 
+### Phase 16: Quote Templates ✅ (Feb 21, 2026)
+- [x] QuoteTemplate model in Prisma schema
+- [x] CRUD API endpoints: POST/GET/PATCH/DELETE /api/quote-templates
+- [x] "Load Template" dropdown in Quote Builder
+- [x] "Save as Template" button and modal
+- [x] Template pre-fills line items, payment terms, T&C
+- [x] Template success messages
+- [x] Templates sorted alphabetically in dropdown
+
+### Phase 17: Custom Email Composer ✅ (Feb 21, 2026)
+- [x] POST /api/leads/:id/send-email endpoint
+- [x] Email button in Lead Detail Modal header
+- [x] EmailComposerModal with react-quill rich text editor
+- [x] Subject line input
+- [x] Quick insert buttons: Client Name, Project Title, Portal Link
+- [x] CC/BCC toggle and inputs
+- [x] Dark theme styled Quill editor
+- [x] Send via Resend API
+- [x] EMAIL_SENT activity logging
+- [x] Success confirmation screen
+
+### Phase 18: Duplicate Quote ✅ (Previously Implemented)
+- [x] POST /api/quotes/:id/duplicate endpoint
+- [x] Duplicate option in quote card menu
+- [x] Creates new DRAFT quote with incremented number
+- [x] Activity log records duplication
+
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
-- [ ] Send custom emails to clients from dashboard
-- [ ] Quote Templates (save and reuse quote templates)
+- [ ] Recurring Events for Calendar (weekly/monthly bookings)
 
 ### P2 - Medium Priority
-- [ ] Duplicate Quote feature for easy revisions
 - [ ] Email verification for new signups
 - [ ] Logo Upload in Settings
 - [ ] Configurable owner email for lead submission (currently hardcoded)
