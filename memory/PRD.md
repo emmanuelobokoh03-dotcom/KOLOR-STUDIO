@@ -167,6 +167,61 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Enhanced empty state with share actions (Copy, Email Link, More Options)
 - [x] Dark theme styling consistent with rest of app
 
+### Phase 13: Quote/Proposal System with International Currency Settings ✅ (Feb 21, 2026)
+
+#### Currency Settings (User Profile)
+- [x] Currency field in User model (default: USD)
+- [x] Currency symbol and position (BEFORE/AFTER amount)
+- [x] Number format options: US (1,000.00), European (1.000,00), Space separator (1 000,00)
+- [x] Default tax rate percentage (pre-fills new quotes)
+- [x] GET /api/settings - Returns user currency settings + available currencies list
+- [x] PATCH /api/settings - Updates currency preferences
+- [x] Settings Modal accessible via gear icon in dashboard header
+- [x] 10 supported currencies: USD, EUR, GBP, CAD, AUD, NGN, JPY, INR, ZAR, BRL
+
+#### Quote Builder
+- [x] "Quotes" tab in Lead Detail Modal with quote list
+- [x] Quote Builder Modal with line items (description, qty, price, total)
+- [x] Dynamic totals calculation (subtotal, tax amount, total)
+- [x] formatCurrency() utility for consistent currency formatting
+- [x] Currency override per-quote (for international clients)
+- [x] Payment terms dropdown (Full Upfront, 50% Deposit, Net 30, etc.)
+- [x] Valid Until date picker
+- [x] Terms & Conditions text area
+- [x] Save Draft, Preview, and Send to Client buttons
+
+#### Quote Management
+- [x] POST /api/leads/:leadId/quotes - Create quote (draft)
+- [x] GET /api/leads/:leadId/quotes - Get all quotes for a lead
+- [x] PATCH /api/quotes/:quoteId - Update draft quote
+- [x] DELETE /api/quotes/:quoteId - Delete draft quote
+- [x] POST /api/quotes/:quoteId/send - Send quote email to client
+- [x] POST /api/quotes/:quoteId/duplicate - Duplicate quote as draft
+- [x] Quote statuses: DRAFT, SENT, VIEWED, ACCEPTED, DECLINED, EXPIRED
+- [x] Auto-generated quote numbers: Q-YYYY-NNN
+- [x] Quote token for public access (UUID)
+
+#### Public Quote Page
+- [x] GET /api/quotes/public/:quoteToken - Public view with merged currency settings
+- [x] Public Quote page at /quote/:quoteToken
+- [x] Displays studio info, client info, line items, totals
+- [x] Accept Quote button (status -> ACCEPTED, lead -> BOOKED)
+- [x] Decline Quote button with optional reason
+- [x] Expired quote notice
+- [x] Currency formatting based on quote/user settings
+
+#### Email Notifications
+- [x] Quote sent email to client with view link
+- [x] Quote accepted notification to studio owner
+- [x] Quote declined notification to studio owner with reason
+
+#### Activity Logging
+- [x] QUOTE_CREATED - Quote created with total
+- [x] QUOTE_SENT - Quote sent to client
+- [x] QUOTE_VIEWED - Client viewed quote
+- [x] QUOTE_ACCEPTED - Client accepted quote
+- [x] QUOTE_DECLINED - Client declined quote
+
 ## Email Templates
 1. **New Lead Notification** (to owner)
    - Lead name, email, phone, company
