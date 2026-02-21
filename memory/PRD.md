@@ -134,6 +134,25 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Resend integration for sending reset emails
 - [x] Auto-redirect to login after successful password reset
 
+### Phase 11: Dark Theme Implementation ✅ (Feb 21, 2026)
+- [x] Complete dark theme across entire application
+- [x] Color palette: Background #0f0f0f, Cards #1f1f1f, Borders #333333
+- [x] Secondary background #1a1a1a for inputs and hover states
+- [x] White/off-white text (#ffffff, #f5f5f5) with gray accents (#a3a3a3)
+- [x] Preserved purple/violet brand colors for buttons, CTAs, links
+- [x] Landing page with dark hero section and feature cards
+- [x] Login/Signup pages with dark form styling
+- [x] Forgot Password/Reset Password pages with dark theme
+- [x] Dashboard with dark stats cards and toolbar
+- [x] Kanban board with colorful column headers on dark background
+- [x] Lead cards with dark styling and proper contrast
+- [x] Lead Detail Modal with dark tabs and sections
+- [x] Add Lead Modal with dark form styling
+- [x] Submit Inquiry page with dark theme
+- [x] Client Portal intentionally kept light (client-facing)
+- [x] Custom Tailwind colors defined in tailwind.config.js
+- [x] Global dark base styles in index.css
+
 ## Email Templates
 1. **New Lead Notification** (to owner)
    - Lead name, email, phone, company
