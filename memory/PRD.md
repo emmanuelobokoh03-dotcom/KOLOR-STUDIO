@@ -56,6 +56,9 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Auto-logging for email sends (owner notification & client confirmation)
 - [x] User attribution for activities
 - [x] Time-ago formatting (Just now, X min ago, etc.)
+- [x] Backfilled "Lead created" activities for existing leads
+- [x] Error handling with console logging for debugging
+- [x] Alert notifications for failed note additions
 
 ## Email Templates
 1. **New Lead Notification** (to owner)
