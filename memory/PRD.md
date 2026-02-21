@@ -141,6 +141,11 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 | GET | /api/files/:id/download | Get download URL | Yes |
 | DELETE | /api/files/:id | Delete file | Yes |
 
+### Portal (Public)
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | /api/portal/:token | Get lead portal data | Token |
+
 ## Activity Types
 - NOTE_ADDED - Manual notes by users
 - STATUS_CHANGED - Status changes via Kanban or edit
