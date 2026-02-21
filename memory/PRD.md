@@ -109,7 +109,11 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Portal Views counter showing client engagement
 - [x] Last Viewed timestamp (or "Never" if not viewed)
 - [x] Copy Link button for easy sharing
-- [x] Email Portal Link button - opens mailto with pre-filled message
+- [x] Email via App button - opens mailto with pre-filled message
+- [x] **Send Portal Link to Client** button - sends email directly through Resend
+- [x] POST /api/leads/:id/send-portal-link - API endpoint to send portal link email
+- [x] Email attempt logged as activity regardless of success
+- [x] Graceful handling when Resend domain not verified (shows warning)
 - [x] portalViews and lastPortalView fields added to Lead API response
 
 ## Email Templates
