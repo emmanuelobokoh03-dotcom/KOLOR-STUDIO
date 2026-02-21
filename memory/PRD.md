@@ -292,6 +292,7 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - Dashboard: https://kolor-crm-2.preview.emergentagent.com/dashboard
 - Public Inquiry: https://kolor-crm-2.preview.emergentagent.com/inquiry
 - Client Portal: https://kolor-crm-2.preview.emergentagent.com/portal/:token
+- Public Quote: https://kolor-crm-2.preview.emergentagent.com/quote/:quoteToken
 - Forgot Password: https://kolor-crm-2.preview.emergentagent.com/forgot-password
 - Reset Password: https://kolor-crm-2.preview.emergentagent.com/reset-password/:token
 - API: https://kolor-crm-2.preview.emergentagent.com/api
@@ -299,15 +300,16 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
+- [ ] Revenue Analytics Dashboard (track financial metrics from quotes)
+- [ ] Calendar View (visualize lead timelines and deadlines)
 - [ ] Send custom emails to clients from dashboard
-- [ ] Email templates management
 
 ### P2 - Medium Priority
-- [ ] Calendar integration
-- [ ] Quote generation
-- [ ] Analytics dashboard
+- [ ] Quote Templates (save and reuse quote templates)
+- [ ] Duplicate Quote feature for easy revisions
+- [ ] Email verification for new signups
 
 ### P3 - Lower Priority
-- [ ] Messaging system
+- [ ] Invoice generation from accepted quotes
 - [ ] Multi-user team support
-- [ ] Invoice generation
+- [ ] Messaging/chat system
