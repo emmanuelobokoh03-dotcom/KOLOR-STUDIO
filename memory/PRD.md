@@ -60,6 +60,23 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Error handling with console logging for debugging
 - [x] Alert notifications for failed note additions
 
+### Phase 6: File Attachments ✅ (Feb 21, 2026)
+- [x] Supabase Storage integration for cloud file storage
+- [x] POST /api/leads/:leadId/files - Upload files (up to 10 at once)
+- [x] GET /api/leads/:leadId/files - List files with signed URLs
+- [x] DELETE /api/files/:fileId - Delete files
+- [x] GET /api/files/:fileId/download - Get fresh download URL
+- [x] Files tab in LeadDetailModal with file count badge
+- [x] Drag-and-drop file upload area
+- [x] Multiple file upload support
+- [x] File type icons (image, PDF, document, spreadsheet, text)
+- [x] File size formatting (KB, MB)
+- [x] Download button with signed URL
+- [x] Delete button with confirmation dialog
+- [x] FILE_UPLOADED activity auto-logged
+- [x] FILE_DELETED activity auto-logged
+- [x] Supported: PDF, DOCX, XLSX, JPG, PNG, GIF, WEBP, TXT, CSV (50MB max)
+
 ## Email Templates
 1. **New Lead Notification** (to owner)
    - Lead name, email, phone, company
