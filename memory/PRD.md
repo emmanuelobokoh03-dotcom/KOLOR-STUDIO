@@ -153,6 +153,20 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Custom Tailwind colors defined in tailwind.config.js
 - [x] Global dark base styles in index.css
 
+### Phase 12: Share Inquiry Form Feature ✅ (Feb 21, 2026)
+- [x] "Share Form" button in Dashboard toolbar (next to "Add Lead")
+- [x] Share Form Modal with purple gradient header
+- [x] Copyable inquiry form URL input field
+- [x] "Copy Link" button with success feedback ("Copied!")
+- [x] "Email Link" button (opens mailto with pre-filled message)
+- [x] "Open Form" button (opens inquiry form in new tab)
+- [x] QR Code generation using qrcode.react library
+- [x] "Download QR Code" button (exports as PNG at 512x512)
+- [x] Pro Tips section with helpful suggestions
+- [x] Modal closes on X button or click outside
+- [x] Enhanced empty state with share actions (Copy, Email Link, More Options)
+- [x] Dark theme styling consistent with rest of app
+
 ## Email Templates
 1. **New Lead Notification** (to owner)
    - Lead name, email, phone, company
