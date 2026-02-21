@@ -145,7 +145,6 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 
 ### P1 - High Priority (Next)
 - [ ] Client portal (branded view for clients)
-- [ ] File attachments for leads
 - [ ] Password reset functionality
 
 ### P2 - Medium Priority
