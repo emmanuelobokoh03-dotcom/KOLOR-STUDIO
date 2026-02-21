@@ -77,6 +77,22 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] FILE_DELETED activity auto-logged
 - [x] Supported: PDF, DOCX, XLSX, JPG, PNG, GIF, WEBP, TXT, CSV (50MB max)
 
+### Phase 7: Client Portal ✅ (Feb 21, 2026)
+- [x] GET /api/portal/:token - Token-based portal access (no login required)
+- [x] Portal view tracking (portalViews count, lastPortalView timestamp)
+- [x] Client-safe activity filtering (hides internal notes)
+- [x] Sanitized activity descriptions for client view
+- [x] Frontend /portal/:token page with beautiful design
+- [x] KOLOR STUDIO branded header with status badge
+- [x] Visual progress bar: Received → In Contact → Quoted → Finalizing → Confirmed
+- [x] Status message with description
+- [x] Project details: service type, description, budget, timeline, submitted date
+- [x] Activity timeline with client-friendly updates
+- [x] Contact section with team member name and "Contact Us" button
+- [x] Mobile responsive design (vertical progress bar on mobile)
+- [x] Error state for invalid tokens
+- [x] Email template updated with portal link
+
 ## Email Templates
 1. **New Lead Notification** (to owner)
    - Lead name, email, phone, company
