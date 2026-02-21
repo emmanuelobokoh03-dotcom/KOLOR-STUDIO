@@ -308,7 +308,9 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 | DELETE | /api/quotes/:id | Delete draft quote | Yes |
 | POST | /api/quotes/:id/send | Send quote email | Yes |
 | POST | /api/quotes/:id/duplicate | Duplicate quote | Yes |
+| GET | /api/quotes/:id/pdf | Download PDF | Yes |
 | GET | /api/quotes/public/:token | Public quote view | Token |
+| GET | /api/quotes/public/:token/pdf | Download PDF | Token |
 | POST | /api/quotes/public/:token/accept | Accept quote | Token |
 | POST | /api/quotes/public/:token/decline | Decline quote | Token |
 
