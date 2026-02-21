@@ -160,13 +160,14 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - Frontend: https://kolor-crm-1.preview.emergentagent.com
 - Dashboard: https://kolor-crm-1.preview.emergentagent.com/dashboard
 - Public Inquiry: https://kolor-crm-1.preview.emergentagent.com/inquiry
+- Client Portal: https://kolor-crm-1.preview.emergentagent.com/portal/:token
 - API: https://kolor-crm-1.preview.emergentagent.com/api
 
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
-- [ ] Client portal (branded view for clients)
 - [ ] Password reset functionality
+- [ ] Send custom emails to clients from dashboard
 
 ### P2 - Medium Priority
 - [ ] Calendar integration
