@@ -82,10 +82,10 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - test@example.com / test123456
 
 ## URLs
-- Frontend: https://palette-editor-2.preview.emergentagent.com
-- Dashboard: https://palette-editor-2.preview.emergentagent.com/dashboard
-- Public Inquiry: https://palette-editor-2.preview.emergentagent.com/inquiry
-- API: https://palette-editor-2.preview.emergentagent.com/api
+- Frontend: https://kolor-crm-1.preview.emergentagent.com
+- Dashboard: https://kolor-crm-1.preview.emergentagent.com/dashboard
+- Public Inquiry: https://kolor-crm-1.preview.emergentagent.com/inquiry
+- API: https://kolor-crm-1.preview.emergentagent.com/api
 
 ## Prioritized Backlog
 
