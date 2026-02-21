@@ -1,7 +1,7 @@
 # KOLOR STUDIO v2 - Product Requirements Document
 
 ## Original Problem Statement
-Build a CRM platform for creative professionals with JWT authentication, Lead Pipeline management, and email notifications.
+Build a CRM platform for creative professionals with JWT authentication, Lead Pipeline management, email notifications, and activity tracking.
 
 ## Project Overview
 A CRM platform built for photographers, designers, and videographers. "The CRM that doesn't feel like a CRM."
@@ -44,6 +44,19 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Professional KOLOR STUDIO branded templates
 - [x] Non-blocking async email sending
 
+### Phase 5: Activity Logging System ✅ (Feb 21, 2026)
+- [x] Activity model in database schema
+- [x] GET /api/leads/:leadId/activities - Fetch activity timeline
+- [x] POST /api/leads/:leadId/notes - Add notes to leads
+- [x] LeadDetailModal with tabs: Activity Timeline & Lead Details
+- [x] Activity Timeline UI with icons and timestamps
+- [x] Add Note form with real-time timeline update
+- [x] Auto-logging for lead creation (manual & public)
+- [x] Auto-logging for status changes (Kanban drag)
+- [x] Auto-logging for email sends (owner notification & client confirmation)
+- [x] User attribution for activities
+- [x] Time-ago formatting (Just now, X min ago, etc.)
+
 ## Email Templates
 1. **New Lead Notification** (to owner)
    - Lead name, email, phone, company
@@ -78,8 +91,19 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 | PATCH | /api/leads/:id/status | Update status | Yes |
 | DELETE | /api/leads/:id | Delete lead | Yes |
 
+### Activities
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | /api/leads/:id/activities | Get activity timeline | Yes |
+| POST | /api/leads/:id/notes | Add note to lead | Yes |
+
+## Activity Types
+- NOTE_ADDED - Manual notes by users
+- STATUS_CHANGED - Status changes via Kanban or edit
+- EMAIL_SENT - Client confirmation and owner notification emails
+
 ## Test Credentials
-- test@example.com / test123456
+- emmanuelobokoh03@gmail.com / successful26#
 
 ## URLs
 - Frontend: https://kolor-crm-1.preview.emergentagent.com
@@ -90,16 +114,16 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
-- [ ] Activity logging (track status changes, notes)
 - [ ] Client portal (branded view for clients)
-- [ ] Lead notes and comments
+- [ ] File attachments for leads
+- [ ] Password reset functionality
 
 ### P2 - Medium Priority
-- [ ] File attachments
 - [ ] Calendar integration
 - [ ] Quote generation
+- [ ] Analytics dashboard
 
 ### P3 - Lower Priority
 - [ ] Messaging system
-- [ ] Analytics dashboard
 - [ ] Multi-user team support
+- [ ] Invoice generation
