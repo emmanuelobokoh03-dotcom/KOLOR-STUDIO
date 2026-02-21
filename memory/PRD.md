@@ -215,6 +215,20 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Quote accepted notification to studio owner
 - [x] Quote declined notification to studio owner with reason
 
+#### PDF Export
+- [x] GET /api/quotes/:quoteId/pdf - Download PDF (authenticated)
+- [x] GET /api/quotes/public/:quoteToken/pdf - Download PDF (public)
+- [x] Professional PDF with PDFKit library
+- [x] Studio branding: name, email, phone, website
+- [x] Logo support (if uploaded in settings)
+- [x] Client info and project details
+- [x] Line items table with currency formatting
+- [x] Totals section (subtotal, tax, total)
+- [x] Payment terms and validity date
+- [x] Terms & conditions
+- [x] "Download PDF" button on Public Quote page
+- [x] "Download PDF" option in Quote actions menu
+
 #### Activity Logging
 - [x] QUOTE_CREATED - Quote created with total
 - [x] QUOTE_SENT - Quote sent to client
