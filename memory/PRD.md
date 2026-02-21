@@ -342,7 +342,6 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
-- [ ] Revenue Analytics Dashboard (track financial metrics from quotes)
 - [ ] Calendar View (visualize lead timelines and deadlines)
 - [ ] Send custom emails to clients from dashboard
 
@@ -350,6 +349,7 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [ ] Quote Templates (save and reuse quote templates)
 - [ ] Duplicate Quote feature for easy revisions
 - [ ] Email verification for new signups
+- [ ] Logo Upload in Settings
 
 ### P3 - Lower Priority
 - [ ] Invoice generation from accepted quotes
