@@ -304,6 +304,11 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - EMAIL_SENT - Client confirmation and owner notification emails
 - FILE_UPLOADED - File uploaded to lead
 - FILE_DELETED - File deleted from lead
+- QUOTE_CREATED - Quote created with total
+- QUOTE_SENT - Quote sent to client
+- QUOTE_VIEWED - Client viewed quote
+- QUOTE_ACCEPTED - Client accepted quote
+- QUOTE_DECLINED - Client declined quote
 
 ## Test Credentials
 - emmanuelobokoh03@gmail.com / successful26#
