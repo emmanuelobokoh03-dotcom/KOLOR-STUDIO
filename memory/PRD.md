@@ -117,10 +117,20 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 | GET | /api/leads/:id/activities | Get activity timeline | Yes |
 | POST | /api/leads/:id/notes | Add note to lead | Yes |
 
+### Files
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | /api/leads/:id/files | List files for lead | Yes |
+| POST | /api/leads/:id/files | Upload files (multipart) | Yes |
+| GET | /api/files/:id/download | Get download URL | Yes |
+| DELETE | /api/files/:id | Delete file | Yes |
+
 ## Activity Types
 - NOTE_ADDED - Manual notes by users
 - STATUS_CHANGED - Status changes via Kanban or edit
 - EMAIL_SENT - Client confirmation and owner notification emails
+- FILE_UPLOADED - File uploaded to lead
+- FILE_DELETED - File deleted from lead
 
 ## Test Credentials
 - emmanuelobokoh03@gmail.com / successful26#
