@@ -412,6 +412,33 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Creates new DRAFT quote with incremented number
 - [x] Activity log records duplication
 
+### Phase 19: Legal Pages ✅ (Feb 21, 2026)
+- [x] Privacy Policy page at /privacy
+  - Data collection details (Account, Lead, Files, Usage, Cookies)
+  - How we use data (Services, Improvements, Communications)
+  - Third-party services (Supabase, Resend, Vercel)
+  - Data security measures
+  - User rights (view, export, delete, opt-out)
+  - Data retention policies
+  - Contact information
+- [x] Terms of Service page at /terms
+  - 15 sections covering all legal requirements
+  - Subscription plans (Free tier, Pro $29/month)
+  - Payment terms, cancellation, refunds
+  - Your content & data ownership
+  - Prohibited uses
+  - Limitation of liability
+  - Dispute resolution
+- [x] Cookie Consent Banner
+  - Shows on first visit
+  - "Essential Only" and "Accept All" buttons
+  - Stores preference in localStorage
+  - Linked to Privacy Policy
+- [x] Updated Landing Page Footer
+  - Product, Legal, Contact columns
+  - Privacy Policy and Terms links
+  - Copyright and "Made with ♥ for creatives"
+
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
