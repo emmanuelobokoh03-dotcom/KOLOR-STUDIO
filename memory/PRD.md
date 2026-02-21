@@ -180,11 +180,11 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - emmanuelobokoh03@gmail.com / successful26#
 
 ## URLs
-- Frontend: https://kolor-crm-1.preview.emergentagent.com
-- Dashboard: https://kolor-crm-1.preview.emergentagent.com/dashboard
-- Public Inquiry: https://kolor-crm-1.preview.emergentagent.com/inquiry
-- Client Portal: https://kolor-crm-1.preview.emergentagent.com/portal/:token
-- API: https://kolor-crm-1.preview.emergentagent.com/api
+- Frontend: https://kolor-portal.preview.emergentagent.com
+- Dashboard: https://kolor-portal.preview.emergentagent.com/dashboard
+- Public Inquiry: https://kolor-portal.preview.emergentagent.com/inquiry
+- Client Portal: https://kolor-portal.preview.emergentagent.com/portal/:token
+- API: https://kolor-portal.preview.emergentagent.com/api
 
 ## Prioritized Backlog
 
