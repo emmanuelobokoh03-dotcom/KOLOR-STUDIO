@@ -93,6 +93,16 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Error state for invalid tokens
 - [x] Email template updated with portal link
 
+### Phase 8: Status Change Notifications ✅ (Feb 21, 2026)
+- [x] Automatic email notification when lead status changes
+- [x] Custom email templates for each status (REVIEWING, CONTACTED, QUALIFIED, QUOTED, NEGOTIATING, BOOKED)
+- [x] Personalized messages with project title and client name
+- [x] Portal link included in every status notification
+- [x] Activity logged when notification is sent
+- [x] Non-blocking async email sending
+- [x] Works from both Kanban drag-and-drop and edit form
+- [x] Note: Requires Resend domain verification for production emails
+
 ## Email Templates
 1. **New Lead Notification** (to owner)
    - Lead name, email, phone, company
