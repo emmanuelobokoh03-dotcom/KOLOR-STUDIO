@@ -330,14 +330,14 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - emmanuelobokoh03@gmail.com / successful26#
 
 ## URLs
-- Frontend: https://kolor-crm-2.preview.emergentagent.com
-- Dashboard: https://kolor-crm-2.preview.emergentagent.com/dashboard
-- Public Inquiry: https://kolor-crm-2.preview.emergentagent.com/inquiry
-- Client Portal: https://kolor-crm-2.preview.emergentagent.com/portal/:token
-- Public Quote: https://kolor-crm-2.preview.emergentagent.com/quote/:quoteToken
-- Forgot Password: https://kolor-crm-2.preview.emergentagent.com/forgot-password
-- Reset Password: https://kolor-crm-2.preview.emergentagent.com/reset-password/:token
-- API: https://kolor-crm-2.preview.emergentagent.com/api
+- Frontend: https://crm-timeline-1.preview.emergentagent.com
+- Dashboard: https://crm-timeline-1.preview.emergentagent.com/dashboard
+- Public Inquiry: https://crm-timeline-1.preview.emergentagent.com/inquiry
+- Client Portal: https://crm-timeline-1.preview.emergentagent.com/portal/:token
+- Public Quote: https://crm-timeline-1.preview.emergentagent.com/quote/:quoteToken
+- Forgot Password: https://crm-timeline-1.preview.emergentagent.com/forgot-password
+- Reset Password: https://crm-timeline-1.preview.emergentagent.com/reset-password/:token
+- API: https://crm-timeline-1.preview.emergentagent.com/api
 
 ## Prioritized Backlog
 
