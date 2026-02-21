@@ -439,10 +439,74 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
   - Privacy Policy and Terms links
   - Copyright and "Made with ♥ for creatives"
 
+### Phase 20: Vercel Analytics Integration ✅ (Feb 21, 2026)
+- [x] @vercel/analytics installed and configured
+- [x] Analytics utility wrapper at /utils/analytics.ts
+- [x] Cookie consent integration (respects user choice)
+- [x] Custom event tracking for:
+  - Lead Events: Lead Created, Lead Status Changed, Lead Deleted
+  - Quote Events: Quote Created, Quote Sent, Quote Viewed, Quote Accepted, Quote Declined
+  - Portal Events: Portal Link Shared, Portal Viewed, Portal Link Email Sent
+  - File Events: File Uploaded, File Downloaded, File Deleted
+  - Template Events: Template Created, Template Applied
+  - User Events: Signup Completed, Login Success, Email Sent
+- [x] Event properties include: source, serviceType, status changes, values
+
+### Phase 21: Support Infrastructure ✅ (Feb 21, 2026)
+- [x] Help Menu in dashboard header
+  - Report a Bug option
+  - Request Feature option
+  - Documentation link
+  - Contact Support (mailto link)
+  - Version info (v1.0.0)
+- [x] Feedback Modal
+  - 3 feedback types: Bug Report, Feature Request, General Feedback
+  - Title and description fields
+  - Optional contact email
+  - Tips for bug reports
+  - Opens mailto with pre-filled content
+  - Success confirmation screen
+- [x] Announcement Banner
+  - Dismissible banner at top of dashboard
+  - Multiple types: info, success, warning, celebration
+  - Persists dismissed state in localStorage
+  - Support for links and custom messages
+- [x] Status Indicator in Footer
+  - Real-time status from /api/health
+  - Green dot with pulse for operational
+  - Yellow for degraded, red for outage
+  - Polls every 60 seconds
+
+### Phase 22: Landing Page Enhancements ✅ (Feb 21, 2026)
+- [x] Testimonials Section
+  - "What our users say" heading
+  - 3 testimonial cards with 5-star ratings
+  - Quotes from Sarah Chen (Photographer), Marcus Williams (Videographer), Emma Rodriguez (Designer)
+  - Author photos placeholder
+- [x] Comparison Table
+  - "KOLOR STUDIO vs. The Old Way" heading
+  - 6 comparison rows
+  - X icons for spreadsheet drawbacks
+  - Checkmarks for KOLOR advantages
+- [x] Trust & Security Section
+  - "Your data is safe with us" heading
+  - 3 trust cards: 256-bit Encryption, GDPR Compliant, Daily Backups
+  - Green accent color for security theme
+- [x] FAQ Section
+  - 5 expandable questions
+  - Accordion-style expand/collapse
+  - Topics: pricing, setup time, import, client access, support
+- [x] Email Capture Section
+  - "Stay in the loop" newsletter signup
+  - Email input with Subscribe button
+  - Success state with confirmation message
+- [x] Footer with StatusIndicator
+  - System status at bottom of page
+
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
-- [ ] Recurring Events for Calendar (weekly/monthly bookings)
+- [ ] Recurring Events for Calendar (weekly/monthly bookings) - DEPRIORITIZED for launch
 
 ### P2 - Medium Priority
 - [ ] Email verification for new signups
