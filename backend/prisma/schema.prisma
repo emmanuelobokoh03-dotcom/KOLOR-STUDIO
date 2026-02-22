@@ -31,8 +31,19 @@ model User {
   logo          String?   // URL to logo image
   timezone      String    @default("UTC")
   
+  // Currency Settings
+  currency        String    @default("USD")       // Currency code (USD, EUR, GBP, etc.)
+  currencySymbol  String    @default("$")         // Symbol ($, €, £, etc.)
+  currencyPosition String   @default("BEFORE")    // BEFORE or AFTER amount
+  numberFormat    String    @default("1,000.00")  // Number format pattern
+  defaultTaxRate  Float     @default(0)           // Default tax rate for quotes (%)
+  
   // Preferences
   preferences   Json?     // Store user preferences as JSON
+  
+  // Password Reset
+  passwordResetToken   String?   @unique
+  passwordResetExpires DateTime?
   
   // Timestamps
   createdAt     DateTime  @default(now())
@@ -43,6 +54,8 @@ model User {
   leads         Lead[]
   activities    Activity[]
   messages      Message[]
+  quotes        Quote[]
+  quoteTemplates QuoteTemplate[]
   
   @@map("users")
 }
@@ -107,6 +120,7 @@ model Lead {
   activities      Activity[]
   messages        Message[]
   files           File[]
+  quotes          Quote[]
   
   @@map("leads")
   @@index([status])
@@ -188,11 +202,18 @@ enum ActivityType {
   PHONE_CALL
   MEETING_SCHEDULED
   FILE_UPLOADED
+  FILE_DELETED
   PROPOSAL_SENT
   CONTRACT_SIGNED
   PAYMENT_RECEIVED
   MESSAGE_SENT
   PORTAL_VIEWED
+  QUOTE_CREATED
+  QUOTE_SENT
+  QUOTE_VIEWED
+  QUOTE_ACCEPTED
+  QUOTE_DECLINED
+  QUOTE_EXPIRED
 }
 
 // =====================
@@ -243,4 +264,95 @@ model File {
   
   @@map("files")
   @@index([leadId])
+}
+
+// =====================
+// QUOTES / PROPOSALS
+// =====================
+
+model Quote {
+  id            String      @id @default(uuid())
+  quoteNumber   String      @unique // Auto-generated: Q-2026-001
+  
+  // Line items stored as JSON
+  lineItems     Json        // [{description: string, quantity: number, price: number, total: number}]
+  
+  // Pricing
+  subtotal      Float
+  tax           Float       @default(0) // Percentage (e.g., 10 for 10%)
+  taxAmount     Float       @default(0) // Calculated tax amount
+  total         Float
+  
+  // Currency Override (optional - uses user default if not set)
+  currency        String?     // Override currency code for this quote
+  currencySymbol  String?     // Override currency symbol
+  currencyPosition String?    // Override position (BEFORE/AFTER)
+  numberFormat    String?     // Override number format
+  
+  // Terms
+  paymentTerms  String      // FULL_UPFRONT, DEPOSIT_50, NET_30, NET_60, CUSTOM
+  validUntil    DateTime
+  terms         String?     @db.Text // Terms and conditions
+  
+  // Status tracking
+  status        QuoteStatus @default(DRAFT)
+  quoteToken    String      @unique @default(uuid()) // For client access
+  
+  // Timestamps
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  sentAt        DateTime?
+  viewedAt      DateTime?
+  acceptedAt    DateTime?
+  declinedAt    DateTime?
+  declineReason String?
+  
+  // Relations
+  lead          Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  leadId        String
+  
+  createdBy     User        @relation(fields: [createdById], references: [id])
+  createdById   String
+  
+  @@map("quotes")
+  @@index([leadId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+// =====================
+// QUOTE TEMPLATES
+// =====================
+
+model QuoteTemplate {
+  id            String   @id @default(uuid())
+  name          String   // Template name (e.g., "Wedding Photography Package")
+  description   String?  // Optional description
+  
+  // Line items stored as JSON (same format as Quote)
+  lineItems     Json     // [{description: string, quantity: number, price: number}]
+  
+  // Default values
+  paymentTerms  String   @default("DEPOSIT_50") // Default payment terms
+  terms         String?  @db.Text              // Default T&C
+  
+  // Ownership
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@map("quote_templates")
+  @@index([userId])
 }

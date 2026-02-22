@@ -7,6 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Dark theme colors
+        dark: {
+          bg: '#0f0f0f',
+          'bg-secondary': '#1a1a1a',
+          card: '#1f1f1f',
+          'card-hover': '#262626',
+          border: '#333333',
+          'border-light': '#404040',
+        },
         // Brand colors - sophisticated palette for creatives
         primary: {
           50: '#f5f3ff',
