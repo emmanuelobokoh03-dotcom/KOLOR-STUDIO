@@ -503,6 +503,25 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [x] Footer with StatusIndicator
   - System status at bottom of page
 
+### Phase 23: Analytics Interactivity ✅ (Feb 22, 2026)
+- [x] Clickable Stats Cards in Dashboard
+  - Total Leads: Clears all filters
+  - New Leads: Filters to NEW status
+  - Quoted: Filters to QUOTED status
+  - Booked: Filters to BOOKED status
+  - Active filter card gets highlighted border
+- [x] Status Filter Indicator
+  - "Filtering: [Status]" badge in toolbar
+  - X button to clear filter
+  - Filter persists when switching views
+- [x] Pipeline Stage Click in Analytics
+  - "Click to filter" hint in Pipeline section header
+  - Clicking any stage filters and switches to Kanban view
+  - All pipeline stages are clickable (NEW, CONTACTED, BOOKED, etc.)
+- [x] Auto-view switching
+  - Clicking filter automatically switches to Kanban view
+  - User can clear filter to see all leads again
+
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
