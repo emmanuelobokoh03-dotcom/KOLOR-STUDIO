@@ -1,0 +1,13 @@
+{
+  "name": "kolor-studio",
+  "version": "1.0.0",
+  "description": "KOLOR STUDIO - CRM for Creative Professionals",
+  "scripts": {
+    "build": "cd backend && npm install && npx prisma generate && npm run build",
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
