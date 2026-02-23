@@ -537,3 +537,18 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - [ ] Invoice generation from accepted quotes
 - [ ] Multi-user team support
 - [ ] Messaging/chat system
+
+## Deployment Configuration ✅ (Dec 2025)
+- [x] Root-level package.json for Railway deployment
+- [x] Build script: `cd backend && npm install && npx prisma generate && npm run build`
+- [x] Start script: `cd backend && npm start`
+- [x] Node.js engine requirement: >=18
+- [x] Removed railway.json (using package.json scripts instead)
+- [x] DEPLOYMENT_GUIDE.md created with comprehensive instructions
+
+## Deployment Architecture
+- **Frontend**: Vercel (free tier, auto-deploys from GitHub)
+- **Backend**: Railway (Node.js friendly, $5/month free credit)
+- **Database**: Supabase PostgreSQL
+- **Email**: Resend transactional emails
+- **Custom Domain**: kolorstudio.app (optional)
