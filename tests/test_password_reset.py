@@ -8,7 +8,7 @@ import os
 import time
 import hashlib
 
-BASE_URL = "https://crm-studio-1.preview.emergentagent.com"
+BASE_URL = "https://crm-ready-go.preview.emergentagent.com"
 
 # Test user credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

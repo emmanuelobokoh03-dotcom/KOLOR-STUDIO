@@ -107,7 +107,7 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
     return false;
   }
 
-  const dashboardUrl = process.env.FRONTEND_URL || 'https://crm-studio-1.preview.emergentagent.com';
+  const dashboardUrl = process.env.FRONTEND_URL || 'https://crm-ready-go.preview.emergentagent.com';
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
 
   const content = `
@@ -256,7 +256,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   }
 
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-studio-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://crm-ready-go.preview.emergentagent.com';
   const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null;
 
   const content = `
@@ -439,7 +439,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-studio-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://crm-ready-go.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -535,7 +535,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-studio-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://crm-ready-go.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -630,7 +630,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-studio-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://crm-ready-go.preview.emergentagent.com';
   const resetUrl = `${baseUrl}/reset-password/${data.resetToken}`;
 
   const content = `
@@ -729,7 +729,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-studio-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://crm-ready-go.preview.emergentagent.com';
   const quoteUrl = `${baseUrl}/quotes/${data.quoteToken}`;
   const firstName = data.clientName.split(' ')[0];
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -843,7 +843,7 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-studio-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://crm-ready-go.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -943,7 +943,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-studio-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://crm-ready-go.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 

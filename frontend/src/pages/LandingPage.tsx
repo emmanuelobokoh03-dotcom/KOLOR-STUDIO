@@ -220,19 +220,19 @@ const LandingPage = () => {
           />
           <TestimonialCard
             quote="Finally, a CRM that doesn't feel overwhelming. I set it up in 10 minutes and sent my first quote the same day."
-            author="Marcus Rodriguez"
+            author="Marcus Williams"
             role="Videographer & Content Creator"
             location="Miami, FL"
-            initials="MR"
+            initials="MW"
             rating={5}
             delay={0.2}
           />
           <TestimonialCard
             quote="My clients love the professional portal. It makes me look like a much bigger studio than I am!"
-            author="Emma Williams"
+            author="Emma Rodriguez"
             role="Brand Designer"
             location="London, UK"
-            initials="EW"
+            initials="ER"
             rating={5}
             delay={0.3}
           />
@@ -346,26 +346,21 @@ const LandingPage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <TrustCard
               icon={<Lock className="w-6 h-6" />}
-              title="Bank-Level Encryption"
-              description="Your data is secured with SSL/TLS encryption and encrypted at rest"
+              title="256-bit Encryption"
+              description="Your data is secured with bank-level 256-bit SSL/TLS encryption"
+            />
+            <TrustCard
+              icon={<Globe className="w-6 h-6" />}
+              title="GDPR Compliant"
+              description="We follow strict data protection standards and privacy regulations"
             />
             <TrustCard
               icon={<Cloud className="w-6 h-6" />}
               title="Daily Backups"
-              description="Automated backups ensure you never lose your client data"
-            />
-            <TrustCard
-              icon={<Globe className="w-6 h-6" />}
-              title="10 Currencies Supported"
-              description="Work with clients globally - from USD to NGN to EUR"
-            />
-            <TrustCard
-              icon={<Zap className="w-6 h-6" />}
-              title="99.9% Uptime"
-              description="Reliable infrastructure that's there when you need it"
+              description="Automated daily backups ensure you never lose your client data"
             />
           </div>
         </motion.div>
