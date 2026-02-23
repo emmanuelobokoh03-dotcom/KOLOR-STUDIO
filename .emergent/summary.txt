@@ -1,182 +1,172 @@
 <analysis>**original_problem_statement:**
-The user's goal is to build a full-stack CRM application, KOLOR STUDIO, for creative professionals. The application started with basic authentication and lead management and has since evolved to include a comprehensive quote/proposal system with PDF exports and a detailed revenue analytics dashboard.
+The user's goal is to build a full-stack CRM application, KOLOR STUDIO, for creative professionals. The initial version included authentication and lead management. The project has since expanded to include a comprehensive quote/proposal system, a revenue analytics dashboard, a calendar view, quote templates, a custom email composer, legal pages, analytics integration, support infrastructure, and landing page enhancements. The application is now considered feature-complete for its initial launch.
 
 **PRODUCT REQUIREMENTS (From User):**
 1.  **Quote/Proposal System**: A complete system to create, send, and manage client quotes. **(DONE)**
-    -   **Flexible Currency & Formatting**: Add user-specific settings for currency (symbol, position) and number formatting. All financial data should respect these settings. **(DONE)**
-    -   **Default Tax Rates**: Allow users to set a default tax rate in settings, which can be overridden per quote. **(DONE)**
-    -   **PDF Export**: Allow users and clients to download a professional PDF version of the quote. **(DONE)**
-2.  **Revenue Analytics Dashboard**: A dashboard to track financial metrics like pipeline value, monthly revenue, conversion rates, and lead source performance. **(DONE)**
-3.  **Calendar View**: A calendar to visualize lead timelines and deadlines. **(IN PROGRESS)**
+2.  **Revenue Analytics Dashboard**: A dashboard to track key financial metrics. **(DONE)**
+3.  **Calendar View**: A calendar to visualize lead timelines and deadlines. **(DONE)**
+4.  **Quote Templates**: Allow users to save and reuse common quote structures. **(DONE)**
+5.  **Custom Email Composer**: Allow users to send custom emails to clients directly from the dashboard. **(DONE)**
+6.  **Legal Pages & Cookie Consent**: Create Privacy Policy, Terms of Service pages, and a cookie consent banner. **(DONE)**
+7.  **Analytics Integration**: Integrate analytics (Vercel) to track page views and custom user events. **(DONE)**
+8.  **Support Infrastructure**: Help menu, feedback modal, announcement banner, and status indicator. **(DONE)**
+9.  **Landing Page Enhancements**: Add social proof, improved CTAs, trust signals, comparison table, FAQ, and email capture. **(DONE)**
+10. **Analytics Interactivity**: Allow clicking on dashboard stats to filter the lead pipeline. **(DONE)**
+11. **Recurring Events**: Support for recurring events on the calendar. **(DEFERRED POST-LAUNCH)**
 
 **User's preferred language**: English
 
 **what currently exists?**
-A functional full-stack CRM application, KOLOR STUDIO, with a dark theme UI. Core features include JWT-based authentication, a lead pipeline (Kanban board), a public inquiry form, a client portal, file attachments, and password reset.
+A feature-complete, full-stack CRM application KOLOR STUDIO ready for its first production launch. The application has a React/Vite/TypeScript frontend and a Node.js/Express/TypeScript backend, using a Supabase PostgreSQL database with Prisma ORM.
 
-Recently completed features include:
-1.  A comprehensive **Quote/Proposal system** with flexible, user-defined currency settings and PDF export functionality.
-2.  A detailed **Revenue Analytics Dashboard** with various financial metrics, charts, and performance tables.
-
-The tech stack is Node.js/Express/TypeScript (backend), React/Vite/TypeScript (frontend), Prisma ORM, and a Supabase PostgreSQL database.
+Core functionalities include JWT authentication, a lead management pipeline, a public inquiry form, a client portal, a calendar, a quote/proposal system with templates, a custom email composer, and comprehensive analytics. The latest additions include a full support infrastructure (help menu, feedback modal), enhanced landing page for conversion, and interactive analytics on the dashboard.
 
 **Last working item**:
--   **Last item agent was working**: The agent began implementing the **Calendar View**. It created a new backend endpoint  to fetch lead data formatted for a calendar, added a corresponding  function in the frontend API service, and created the placeholder component file .
--   **Status**: IN PROGRESS
--   **Agent Testing Done**: N
--   **Which testing method agent to use?**: both
--   **User Testing Done**: N
+The user has declared the application ready for launch and has requested the final steps for deployment preparation.
+-   **Last item agent was working**: The user requested the creation of a deployment guide after confirming satisfaction with the landing page enhancements. The agent was instructed to stop taking screenshots and focus solely on deployment preparation.
+-   **Status**: NOT STARTED
+-   **Agent Testing Done**: N/A
+-   **Which testing method agent to use?**: N/A (This is a documentation task).
+-   **User Testing Done**: N/A
 
 **All Pending/In progress Issue list**:
-There are no outstanding bugs or issues. The focus is on completing the in-progress feature.
+The user has explicitly deferred all non-critical bug fixes until after the initial launch.
+
+-   **Issue 1: Permissive email validation.** (Priority: P2 - DEFERRED)
+-   **Issue 2: Configurable owner email.** (Priority: P2 - DEFERRED)
+
+Issues Detail:
+-   **Issue 1: Permissive email validation.**
+    -   **Attempted fixes**: None.
+    -   **Next debug checklist**: Test the signup endpoint with edge-case emails (e.g., ). If validation is weak, replace  in  with a stricter regex.
+    -   **Why fix this issue and what will be achieved with the fix?**: Ensures higher data quality for user signups.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Backend
+-   **Issue 2: Configurable owner email.**
+    -   **Attempted fixes**: None.
+    -   **Next debug checklist**: In , replace the hardcoded owner email with a value fetched from user settings.
+    -   **Why fix this issue and what will be achieved with the fix?**: Allows the application to be used by multiple different users/studios without code changes.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Backend
 
 **In progress Task List**:
--   **Task 1: (P0) Complete the Calendar View**
-    -   **Where to resume**: The  component needs to be fully implemented.
-        1.  Fetch data using the  API function.
-        2.  Use a calendar library (e.g., , which needs to be added as a dependency) to render the events.
-        3.  Integrate  into , adding a Calendar toggle button to the view switcher, similar to the Analytics view.
-    -   **What will be achieved with this?**: Users will get a calendar to visualize project timelines, deadlines, and other important dates associated with their leads.
-    -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: Both
-    -   **Blocked on something**: No
+-   **Task 1: Prepare for Deployment (P0)**
+    -   **Where to resume**: Create a new file named  in the project root ().
+    -   **What will be achieved with this?**: The file will contain a comprehensive, step-by-step guide for deploying the application, including environment variables, frontend/backend deployment steps, database migration commands, and a post-deployment checklist as requested by the user.
+    -   **Status**: NOT STARTED
+    -   **Should Test frontend/backend/both after fix?**: N/A
+    -   **Blocked on something**: No.
 
 **Upcoming and Future Tasks**
-**Upcoming Tasks**:
--   There are no immediate upcoming tasks after the Calendar View is completed. The next steps will likely involve user feedback, polishing the new features, or addressing items from the future backlog.
+**Upcoming Tasks (Post-Launch):**
+-   **(P1) Recurring Events**: Enhance the  model and calendar logic to support recurring events (e.g., weekly, monthly). This was the next planned feature before the user prioritized launching.
+    -   **Files**: , , .
 
-**Future Tasks**:
--   **(P1) Analytics Interactivity**: Make the analytics dashboard interactive (e.g., clicking a stat card filters the Kanban board).
--   **(P1) Quote Templates**: Allow users to save and reuse quote templates.
--   **(P2) Duplicate Quote**: Add a feature to easily duplicate an existing quote.
--   **(P2) Custom Emails**: Allow users to send custom emails to clients directly from the dashboard.
--   **(P2) Configurable Owner Email**: Make the hardcoded owner email in the lead submission logic configurable in user settings.
--   **(Backlog)** Implement email verification for new user signups.
--   **(Backlog)** Add distinct icons for different activity types in the timeline view.
--   **(Backlog)** Allow clients to upload files on the public inquiry form.
--   **(Backlog)** Add a Your Links section to the user settings page for social/portfolio links.
+**Future Tasks (Backlog):**
+-   **(P2)** Implement email verification for new user signups.
+-   **(P2)** Add distinct icons for different activity types in the timeline view.
+-   **(P2)** Allow clients to upload files on the public inquiry form.
+-   **(P3)** Add a Your Links section to the user settings page for social/portfolio links.
+-   **(P3)** Implement a Keyboard Shortcuts modal ().
 
 **Completed work in this session**
--   **Revenue Analytics Dashboard (DONE)**: Implemented a full analytics suite with backend endpoints () and a new frontend dashboard component () using Recharts for visualization. Integrated it into the main dashboard with a view toggle.
--   **PDF Export for Quotes (DONE)**: Added backend endpoints () using  to generate PDFs. Added Download PDF buttons to the public quote page and the internal quote list.
--   **Quote/Proposal System with Currency Settings (DONE)**: Built the entire quote creation and management flow. This included:
-    -   Updating the  model in  to include preferences for currency, number format, and default tax.
-    -   Creating a  for users to configure these preferences.
-    -   Creating a  utility to format all monetary values according to user settings.
-    -   Integrating these settings across the , , and the new  page.
-    -   Successfully tested the entire feature set with the .
+-   **Vercel Analytics Integration (DONE)**: Fully instrumented the application with  calls for all key user actions (Lead, Quote, Portal, File, Auth events).
+-   **Support Infrastructure (DONE)**: Implemented a help menu, feedback modal, announcement banner, and a real-time system status indicator in the footer. All components were cross-checked and fixed to match detailed user requirements.
+-   **Landing Page Enhancements (DONE)**: Completely overhauled the landing page with new sections for testimonials, trust & security, a comparison table, a detailed FAQ, and an email capture form. The hero section and footer were also enhanced.
+-   **Analytics Interactivity (DONE)**: Made dashboard statistics and charts interactive, allowing users to click on them to filter the main Kanban board by lead status.
+-   **Requirement Cross-Checking & Fixes (DONE)**: Thoroughly reviewed and corrected the implementation of Legal Pages, Support Infrastructure, and the Landing Page against highly detailed user prompts to ensure full compliance.
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1: Permissive email validation.**
-    -   **Debug checklist**: The  validation in  should be tested with edge cases (e.g., ). It may need a stricter regex to prevent invalid email formats from being accepted during signup.
-    -   **Why to solve this issue and what will be achieved with this?**: Ensures higher data quality and prevents potential issues with email delivery.
-    -   **Should Test frontend/backend/both after fix**: Backend
-    -   **Is recurring issue?**: N
+-   See **All Pending/In progress Issue list**. The user explicitly deferred these.
 
 **Known issue recurrence from previous fork**
 -   N/A
 
 **Code Architecture**
+The project is a monolithic full-stack application located in .
 
 
 **Key Technical Concepts**
--   **Frontend**: React, Vite, TypeScript, Tailwind CSS, Axios, **Recharts**
--   **Backend**: Node.js, Express, TypeScript, **pdf-lib**
+-   **Frontend**: React, Vite, TypeScript, Tailwind CSS, Axios, Recharts, React Big Calendar, React Quill, **@vercel/analytics/react**
+-   **Backend**: Node.js, Express, TypeScript, pdf-lib, Resend
 -   **Database**: PostgreSQL (on Supabase)
 -   **ORM**: Prisma
 -   **Authentication**: JSON Web Tokens (JWT)
 
 **key DB schema**
--   : { id, email, password, ..., **currency, currencySymbol, currencyPosition, numberFormat, defaultTaxRate, logoUrl** }
--   : { id, name, status, ..., **estimatedValue, actualValue, convertedAt, eventDate** }
--   : { id, quoteNumber, status, ..., **currency, currencySymbol, currencyPosition, numberFormat** }
--    (Enum): { DRAFT, SENT, VIEWED, ACCEPTED, DECLINED, EXPIRED }
+-   : { id, email, password, ..., quoteTemplates[] }
+-   : { id, name, description, lineItems, paymentTerms, terms, userId }
+-   (No schema changes in this session)
 
 **changes in tech stack**
--   Added  () and  for charting.
--   Added  () for PDF generation on the backend.
+-   No new dependencies were added.  was already installed and has now been fully implemented.
 
 **All files of reference**
--   **Backend (New/Modified)**:
-    -   
-    -   
-    -    (New)
-    -    (New)
-    -   
-    -   
-    -    (New)
--   **Frontend (New/Modified)**:
-    -   
-    -   
-    -   
-    -    (New)
-    -   
-    -    (New)
-    -    (New)
-    -    (New, Placeholder)
-    -    (New)
-    -   
-    -   
-    -   
-    -    (for new dependencies)
+-   : Modified for analytics interactivity, support infrastructure.
+-   : Heavily modified with new sections.
+-   : Modified for interactivity.
+-   : New component for support.
+-   : New component for support.
+-   : New component for support.
+-   : Modified to add status indicator and new links.
+-   : Modified to add new tracking functions.
+-   : Final test report showing 100% pass rate.
+-   : Updated with completed features.
 
 **Areas that need refactoring**:
--   The new lead submission logic in  still hardcodes the owner's email () and should be made configurable.
+-   The hardcoded owner email in  should be made configurable from user settings (deferred post-launch).
 
 **key api endpoints**
--   **Settings**: 
--   **Quotes**: , 
--   **Analytics**: , , , 
--   **Leads**: 
+-   : Used by the new footer status indicator.
 
 **Critical Info for New Agent**
--   The immediate priority is to build the **Calendar View**. The backend endpoint () and frontend component shell () are already in place. You will need to add a calendar library like  and its types via yarn install v1.22.22
-[1/4] Resolving packages...
-[2/4] Fetching packages...
-[3/4] Linking dependencies...
-[4/4] Building fresh packages...
-success Saved lockfile.
-Done in 0.21s..
--   The agent has successfully debugged several TypeScript inference issues from Prisma queries by using type assertions (e.g., ). This pattern may be useful if similar type errors occur.
--   The user has approved all work done so far and is ready for the next feature.
+-   **STOP ALL FEATURE WORK.** The user has declared the app ready to launch. Your *only* priority is preparing for deployment.
+-   **DO NOT use the screenshot tool.** The user has explicitly forbidden it due to platform limitations and is satisfied with the last testing agent report.
+-   Your immediate task is to create the  file in the project root () as per the user's final instructions.
+-   The guide should cover environment variables, frontend/backend deployment steps (Vercel/Railway/Render), DB migrations, and a post-deployment checklist.
+-   All other tasks, including bug fixes and the Recurring Events feature, are deferred until after the launch.
 
 **documents and test reports created in this job**
--    (updated with Quote System and Analytics Dashboard)
--    (from testing the Quote System)
+-   
+-   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Requested to build the **Calendar View** after the Analytics Dashboard is complete. (IN PROGRESS)
-2.  **User**: Confirmed the Revenue Analytics Dashboard is complete and approved moving on. (DONE)
-3.  **User**: Requested to build the **Revenue Analytics Dashboard** with detailed specifications for metrics, charts, and layout. (DONE)
-4.  **User**: Approved the PDF export feature and confirmed the studio logo should be included if available. (DONE)
-5.  **Agent**: Asked for clarification on including a studio logo in the PDF export. (RESOLVED)
-6.  **User**: Requested an enhancement to **export quotes to PDF**. (DONE)
-7.  **Agent**: Finished the Quote/Proposal system and suggested PDF export as a potential enhancement. (RESOLVED)
-8.  **User**: Provided detailed requirements for flexible **currency and formatting** settings to be included in the Quote/Proposal system. (DONE)
-9.  **Agent**: Proposed the plan to build the Quote/Proposal system and asked for confirmation. (RESOLVED)
-10. **Agent**: Acknowledged the project structure and began planning. (RESOLVED)
+1.  **User**: STOPPED the agent from taking screenshots, confirmed satisfaction with the landing page, and requested the final task of creating a  file. (PENDING)
+2.  **User**: Cross-checked the enhanced Landing Page against a very detailed list of requirements. (DONE)
+3.  **User**: Cross-checked the Support Infrastructure against a very detailed list of requirements. (DONE)
+4.  **Agent**: Completed all fixes for the Support Infrastructure. (DONE)
+5.  **User**: Cross-checked the Legal Pages against a very detailed list of requirements. (DONE)
+6.  **Agent**: Completed the implementation of the Analytics Interactivity feature. (DONE)
+7.  **User**: Requested the Analytics Interactivity feature. (DONE)
+8.  **Agent**: Finished the PRD update and was about to finish the session. (INTERRUPTED)
+9.  **Agent**: Ran the testing agent, which passed with a 100% success rate, verifying all new UI features. (DONE)
+10. **Agent**: Completed the landing page enhancements. (DONE)
 
 **Project Health Check:**
 -   **Broken**: None
 -   **Mocked**: N/A
 
 **3rd Party Integrations**
--   **Supabase (PostgreSQL)** — requires User-provided key.
--   **Supabase (Storage)** — requires User-provided key.
+-   **Supabase (PostgreSQL & Storage)** — requires User-provided key.
 -   **Resend** — requires User API Key.
--   **qrcode.react** () - frontend library.
--   **recharts** () - frontend charting library.
--   **pdf-lib** () - backend PDF generation library.
+-   **Vercel Analytics** () — No key required.
+-   **qrcode.react** ()
+-   **recharts** ()
+-   **pdf-lib** ()
+-   **react-big-calendar** ()
+-   **react-quill** ()
 
 **Testing status**
--   **Testing agent used after significant changes**: YES (for the Quote/Proposal system)
+-   **Testing agent used after significant changes**: YES. A final, comprehensive test run was completed.
 -   **Troubleshoot agent used after agent stuck in loop**: NO
--   **Test files created**: None
--   **Known regressions**: None
+-   **Test files created**: 
+-   **Known regressions**: None. The testing agent confirmed all new features are working as expected.
 
 **Credentials to test flow:**
 -   **Email**: 
 -   **Password**: 
 
 **What agent forgot to execute**
--   The agent has correctly followed the user's prioritized requests. All other pending items are correctly categorized as future tasks in the backlog.</analysis>
+-   Nothing. The agent was strictly following user instructions and was pivoted to a new, final task (deployment guide creation) before it could finish its previous action.</analysis>

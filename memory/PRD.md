@@ -335,14 +335,14 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
 - emmanuelobokoh03@gmail.com / successful26#
 
 ## URLs
-- Frontend: https://crm-studio-1.preview.emergentagent.com
-- Dashboard: https://crm-studio-1.preview.emergentagent.com/dashboard
-- Public Inquiry: https://crm-studio-1.preview.emergentagent.com/inquiry
-- Client Portal: https://crm-studio-1.preview.emergentagent.com/portal/:token
-- Public Quote: https://crm-studio-1.preview.emergentagent.com/quote/:quoteToken
-- Forgot Password: https://crm-studio-1.preview.emergentagent.com/forgot-password
-- Reset Password: https://crm-studio-1.preview.emergentagent.com/reset-password/:token
-- API: https://crm-studio-1.preview.emergentagent.com/api
+- Frontend: https://crm-ready-go.preview.emergentagent.com
+- Dashboard: https://crm-ready-go.preview.emergentagent.com/dashboard
+- Public Inquiry: https://crm-ready-go.preview.emergentagent.com/inquiry
+- Client Portal: https://crm-ready-go.preview.emergentagent.com/portal/:token
+- Public Quote: https://crm-ready-go.preview.emergentagent.com/quote/:quoteToken
+- Forgot Password: https://crm-ready-go.preview.emergentagent.com/forgot-password
+- Reset Password: https://crm-ready-go.preview.emergentagent.com/reset-password/:token
+- API: https://crm-ready-go.preview.emergentagent.com/api
 
 ### Phase 14: Revenue Analytics Dashboard ✅ (Feb 21, 2026)
 - [x] GET /api/analytics/dashboard - Main analytics overview
