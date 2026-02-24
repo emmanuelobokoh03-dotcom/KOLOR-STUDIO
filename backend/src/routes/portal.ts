@@ -222,3 +222,89 @@ function sanitizeActivityDescription(type: string, description: string): string 
 }
 
 export default router;
+
+// POST /portal/submit - Public inquiry form submission
+router.post('/submit', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const {
+      clientName,
+      clientEmail,
+      clientPhone,
+      projectTitle,
+      serviceType,
+      description,
+      budget,
+      timeline,
+      eventDate,
+      hearAboutUs
+    } = req.body;
+
+    // Validation
+    if (!clientName || !clientEmail || !projectTitle || !serviceType) {
+      res.status(400).json({ 
+        error: 'Missing required fields',
+        message: 'Please fill in all required fields'
+      });
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(clientEmail)) {
+      res.status(400).json({ 
+        error: 'Invalid email',
+        message: 'Please provide a valid email address'
+      });
+      return;
+    }
+
+    // Generate portal token
+    const portalToken = Math.random().toString(36).substring(2, 15) + 
+                       Math.random().toString(36).substring(2, 15);
+
+    // Create the lead
+    const lead = await prisma.lead.create({
+      data: {
+        clientName,
+        clientEmail,
+        clientPhone: clientPhone || null,
+        projectTitle,
+        serviceType,
+        description: description || null,
+        budget: budget ? parseFloat(budget) : null,
+        timeline: timeline || null,
+        eventDate: eventDate ? new Date(eventDate) : null,
+        hearAboutUs: hearAboutUs || null,
+        status: 'NEW',
+        source: 'INQUIRY_FORM',
+        portalToken,
+        portalShared: true,
+      },
+    });
+
+    // Create initial activity
+    await prisma.activity.create({
+      data: {
+        leadId: lead.id,
+        type: 'NOTE',
+        description: 'Lead submitted via public inquiry form',
+      },
+    });
+
+    // Send confirmation email to client (optional)
+    // TODO: Integrate with Resend
+
+    res.status(201).json({
+      success: true,
+      message: 'Thank you for your inquiry! We\'ll be in touch soon.',
+      leadId: lead.id,
+    });
+
+  } catch (error) {
+    console.error('Form submission error:', error);
+    res.status(500).json({ 
+      error: 'Submission failed',
+      message: 'Unable to submit form. Please try again or contact us directly.'
+    });
+  }
+});
