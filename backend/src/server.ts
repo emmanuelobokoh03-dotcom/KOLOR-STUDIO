@@ -77,17 +77,17 @@ app.get('/health', (_req: Request, res: Response) => {
 });
 
 // API Routes (to be implemented)
-app.use('/api/auth', authRoutes);
-app.use('/api/leads', leadsRoutes);
-app.use('/api/leads', activitiesRoutes); // Activities are under /api/leads/:id/activities
-app.use('/api/leads', filesRoutes); // Files are under /api/leads/:id/files
+app.use('/auth', authRoutes);
+app.use('/leads', leadsRoutes);
+app.use('/leads', activitiesRoutes); // Activities are under /api/leads/:id/activities
+app.use('/leads', filesRoutes); // Files are under /api/leads/:id/files
 app.use('/api', filesRoutes); // Also handle /api/files/:id routes
-app.use('/api/portal', portalRoutes); // Public portal access
+app.use('/portal', portalRoutes); // Public portal access
 app.use('/api', quotesRoutes); // Quotes routes - handles /api/leads/:leadId/quotes and /api/quotes/*
-app.use('/api/settings', settingsRoutes); // User settings routes
-app.use('/api/analytics', analyticsRoutes); // Analytics routes
-app.use('/api/quote-templates', quoteTemplatesRoutes); // Quote templates routes
-// app.use('/api/messages', messagesRoutes);
+app.use('/settings', settingsRoutes); // User settings routes
+app.use('/analytics', analyticsRoutes); // Analytics routes
+app.use('/quote-templates', quoteTemplatesRoutes); // Quote templates routes
+// app.use('/messages', messagesRoutes);
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {
