@@ -276,7 +276,6 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         status: 'NEW',
         source: 'REFERRAL',
         portalToken,
-        portalShared: true,
       },
     });
 
