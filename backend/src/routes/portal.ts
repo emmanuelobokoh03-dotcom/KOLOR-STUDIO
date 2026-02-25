@@ -276,7 +276,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         eventDate: eventDate ? new Date(eventDate) : null,
         hearAboutUs: hearAboutUs || null,
         status: 'NEW',
-        source: 'INQUIRY_FORM',
+        source: 'REFERRAL',
         portalToken,
         portalShared: true,
       },
@@ -286,7 +286,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
     await prisma.activity.create({
       data: {
         leadId: lead.id,
-        type: 'NOTE',
+        type: 'STATUS_CHANGED',
         description: 'Lead submitted via public inquiry form',
       },
     });
