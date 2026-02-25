@@ -271,7 +271,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         projectTitle,
         serviceType,
         description: description || null,
-        budget: budget ? parseFloat(budget) : null,
+        budget: budget || null,
         timeline: timeline || null,
         eventDate: eventDate ? new Date(eventDate) : null,
         hearAboutUs: hearAboutUs || null,
