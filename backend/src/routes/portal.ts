@@ -236,7 +236,6 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       budget,
       timeline,
       eventDate,
-      hearAboutUs
     } = req.body;
 
     // Validation
@@ -274,7 +273,6 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         budget: budget || null,
         timeline: timeline || null,
         eventDate: eventDate ? new Date(eventDate) : null,
-        hearAboutUs: hearAboutUs || null,
         status: 'NEW',
         source: 'REFERRAL',
         portalToken,
