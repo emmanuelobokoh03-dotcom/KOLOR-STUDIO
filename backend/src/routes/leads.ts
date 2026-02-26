@@ -38,6 +38,8 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
       };
     }
     
+    console.log("📊 Leads Query WHERE:", JSON.stringify(where, null, 2));
+    console.log("👤 User ID:", userId);
     const leads = await prisma.lead.findMany({
       where,
       orderBy: { createdAt: sort === 'asc' ? 'asc' : 'desc' },
@@ -125,6 +127,8 @@ router.get('/calendar/events', authMiddleware, async (req: AuthRequest, res: Res
     const startDate = start ? new Date(start as string) : new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
     const endDate = end ? new Date(end as string) : new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0);
 
+    console.log("📊 Leads Query WHERE:", JSON.stringify(where, null, 2));
+    console.log("👤 User ID:", userId);
     const leads = await prisma.lead.findMany({
       where: { 
         assignedToId: userId,
