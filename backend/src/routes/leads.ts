@@ -776,7 +776,7 @@ router.post('/:id/send-email', authMiddleware, async (req: AuthRequest, res: Res
 export default router;
 
 // DEBUG ENDPOINT - Remove after testing
-router.get('/debug-all', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.get("/debug-all", authMiddleware, async (_req: AuthRequest, res: Response): Promise<void> => {
   try {
     const allLeads = await prisma.lead.findMany({
       select: {
