@@ -14,23 +14,34 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
     const status = req.query.status as string | undefined;
     const search = req.query.search as string | undefined;
     const sort = req.query.sort as string | undefined;
-
-    const where: any = { assignedToId: userId };
+    
+    // Show leads assigned to user OR unassigned (inquiry forms)
+    const where: any = { 
+      OR: [
+        { assignedToId: userId },
+        { assignedToId: null }
+      ]
+    };
     
     if (status && status !== 'ALL') {
       where.status = status;
     }
-
+    
     if (search) {
-      where.OR = [
-        { clientName: { contains: search, mode: 'insensitive' } },
-        { clientEmail: { contains: search, mode: 'insensitive' } },
-        { projectTitle: { contains: search, mode: 'insensitive' } },
-      ];
+      // Combine with existing OR condition using AND
+      where.AND = {
+        OR: [
+          { clientName: { contains: search, mode: 'insensitive' } },
+          { clientEmail: { contains: search, mode: 'insensitive' } },
+          { projectTitle: { contains: search, mode: 'insensitive' } },
+        ]
+      };
     }
-
+    
     const leads = await prisma.lead.findMany({
       where,
+      orderBy: { createdAt: sort === 'asc' ? 'asc' : 'desc' },
+      select: {
       orderBy: { createdAt: sort === 'asc' ? 'asc' : 'desc' },
       select: {
         id: true,
