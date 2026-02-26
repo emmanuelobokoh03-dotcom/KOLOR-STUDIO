@@ -38,10 +38,10 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
       };
     }
     
-    console.log("📊 Leads Query WHERE:", JSON.stringify(where, null, 2));
-    console.log("👤 User ID:", userId);
     const leads = await prisma.lead.findMany({
       where,
+      orderBy: { createdAt: sort === 'asc' ? 'asc' : 'desc' },
+      select: {
       orderBy: { createdAt: sort === 'asc' ? 'asc' : 'desc' },
       select: {
         id: true,
@@ -124,8 +124,9 @@ router.get('/calendar/events', authMiddleware, async (req: AuthRequest, res: Res
     const { start, end } = req.query;
 
     // Parse date range if provided
+    const startDate = start ? new Date(start as string) : new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
     const endDate = end ? new Date(end as string) : new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0);
-    console.log("👤 User ID:", userId);
+
     const leads = await prisma.lead.findMany({
       where: { 
         assignedToId: userId,
@@ -775,23 +776,3 @@ router.post('/:id/send-email', authMiddleware, async (req: AuthRequest, res: Res
 });
 
 export default router;
-
-// DEBUG ENDPOINT - Remove after testing
-router.get("/debug-all", authMiddleware, async (_req: AuthRequest, res: Response): Promise<void> => {
-  try {
-    const allLeads = await prisma.lead.findMany({
-      select: {
-        id: true,
-        clientName: true,
-        clientEmail: true,
-        assignedToId: true,
-        source: true,
-        createdAt: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-    res.json({ allLeads, count: allLeads.length });
-  } catch (error) {
-    res.status(500).json({ error: 'Server Error' });
-  }
-});
