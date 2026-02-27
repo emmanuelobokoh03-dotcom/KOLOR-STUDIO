@@ -90,7 +90,7 @@ export const leadsApi = {
   },
 
   submit: async (leadData: SubmitLeadData) => {
-    return request<{ message: string; leadId: string }>('/leads/submit', {
+    return request<{ message: string; leadId: string }>('/portal/submit', {
       method: 'POST',
       body: JSON.stringify(leadData),
     });
