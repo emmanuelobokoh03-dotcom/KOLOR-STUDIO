@@ -42,8 +42,6 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
       where,
       orderBy: { createdAt: sort === 'asc' ? 'asc' : 'desc' },
       select: {
-      orderBy: { createdAt: sort === 'asc' ? 'asc' : 'desc' },
-      select: {
         id: true,
         clientName: true,
         clientEmail: true,
