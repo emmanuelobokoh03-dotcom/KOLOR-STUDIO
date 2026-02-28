@@ -42,7 +42,7 @@ function calculateTotals(lineItems: any[], taxPercentage: number) {
 }
 
 // POST /api/leads/:leadId/quotes - Create quote
-router.post('/leads/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const leadId = req.params.leadId as string;
     const userId = req.userId!;
@@ -160,7 +160,7 @@ router.post('/leads/:leadId/quotes', authMiddleware, async (req: AuthRequest, re
 });
 
 // GET /api/leads/:leadId/quotes - Get all quotes for a lead
-router.get('/leads/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.get('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const leadId = req.params.leadId as string;
     const userId = req.userId!;
