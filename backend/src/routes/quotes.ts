@@ -469,7 +469,7 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
 
     // Send email to client
     try {
-    console.log("📧 Quote currency data:", { currency: quote.currency, symbol: quote.currencySymbol, position: quote.currencyPosition, total: quote.total });
+    console.log("📧 Full quote object:", JSON.stringify({ id: quote.id, currency: quote.currency, currencySymbol: quote.currencySymbol, currencyPosition: quote.currencyPosition, total: quote.total }, null, 2));
       await sendQuoteEmail({
         clientName: (quote as any).lead.clientName,
         clientEmail: (quote as any).lead.clientEmail,
