@@ -555,10 +555,15 @@ router.patch('/:id/status', authMiddleware, async (req: AuthRequest, res: Respon
       res.status(400).json({ error: 'Validation Error', message: 'Invalid status' });
       return;
     }
-
-    // Check ownership
+    // Check ownership - allow assigned to user OR unassigned (inquiry forms)
     const existingLead = await prisma.lead.findFirst({
-      where: { id, assignedToId: userId }
+      where: {
+        id,
+        OR: [
+          { assignedToId: userId },
+          { assignedToId: null }
+        ]
+      }
     });
 
     if (!existingLead) {
