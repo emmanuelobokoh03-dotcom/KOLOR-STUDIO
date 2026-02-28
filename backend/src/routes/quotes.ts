@@ -205,7 +205,7 @@ router.get('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Resp
 });
 
 // GET /api/quotes/:quoteId - Get single quote
-router.get('/quotes/:quoteId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.get('/:quoteId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const quoteId = req.params.quoteId as string;
     const userId = req.userId!;
@@ -249,7 +249,7 @@ router.get('/quotes/:quoteId', authMiddleware, async (req: AuthRequest, res: Res
 });
 
 // GET /api/quotes/:quoteId/pdf - Download quote as PDF (Authenticated)
-router.get('/quotes/:quoteId/pdf', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.get('/:quoteId/pdf', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const quoteId = req.params.quoteId as string;
     const userId = req.userId!;
@@ -304,7 +304,7 @@ router.get('/quotes/:quoteId/pdf', authMiddleware, async (req: AuthRequest, res:
 });
 
 // PATCH /api/quotes/:quoteId - Update quote
-router.patch('/quotes/:quoteId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.patch('/:quoteId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const quoteId = req.params.quoteId as string;
     const userId = req.userId!;
@@ -422,7 +422,7 @@ router.delete('/quotes/:quoteId', authMiddleware, async (req: AuthRequest, res: 
 });
 
 // POST /api/quotes/:quoteId/send - Send quote to client
-router.post('/quotes/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const quoteId = req.params.quoteId as string;
     const userId = req.userId!;
@@ -831,7 +831,7 @@ router.post('/quotes/public/:quoteToken/decline', async (req: Request, res: Resp
 });
 
 // POST /api/quotes/:quoteId/duplicate - Duplicate a quote
-router.post('/quotes/:quoteId/duplicate', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/:quoteId/duplicate', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const quoteId = req.params.quoteId as string;
     const userId = req.userId!;
