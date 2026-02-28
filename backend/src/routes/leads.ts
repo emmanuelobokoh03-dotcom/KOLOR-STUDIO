@@ -113,11 +113,6 @@ router.get('/stats', authMiddleware, async (req: AuthRequest, res: Response): Pr
         }
       })
     ]);
-          status: true,
-          createdAt: true,
-        }
-      })
-    ]);
 
     const statusCounts = byStatus.reduce((acc, item) => {
       acc[item.status] = item._count.status;
