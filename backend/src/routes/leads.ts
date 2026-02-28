@@ -726,8 +726,15 @@ router.post('/:id/send-email', authMiddleware, async (req: AuthRequest, res: Res
     }
 
     // Check ownership and get lead details
+    // Check ownership - allow assigned to user OR unassigned (inquiry forms)
     const lead = await prisma.lead.findFirst({
-      where: { id: leadId, assignedToId: userId }
+      where: {
+        id: leadId,
+        OR: [
+          { assignedToId: userId },
+          { assignedToId: null }
+        ]
+      }
     });
 
     if (!lead) {
