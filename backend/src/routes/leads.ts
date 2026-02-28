@@ -15,6 +15,8 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
     const search = req.query.search as string | undefined;
     const sort = req.query.sort as string | undefined;
     
+    console.log('[GET /leads] userId:', userId);
+    
     // Show leads assigned to user OR unassigned (inquiry forms)
     const where: any = { 
       OR: [
@@ -37,6 +39,8 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
         ]
       };
     }
+    
+    console.log('[GET /leads] where clause:', JSON.stringify(where, null, 2));
     
     const leads = await prisma.lead.findMany({
       where,
@@ -63,8 +67,12 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
         lastPortalView: true,
         createdAt: true,
         updatedAt: true,
+        assignedToId: true,
       }
     });
+
+    console.log('[GET /leads] Found', leads.length, 'leads');
+    console.log('[GET /leads] assignedToId breakdown:', leads.map(l => ({ id: l.id.slice(0,8), assignedToId: l.assignedToId, clientName: l.clientName })));
 
     res.json({ leads, count: leads.length });
   } catch (error) {
@@ -77,22 +85,34 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
 router.get('/stats', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId as string;
-
+    // Include leads assigned to user OR unassigned (inquiry forms)
+    const statsWhere = {
+      OR: [
+        { assignedToId: userId },
+        { assignedToId: null }
+      ]
+    };
+    
     const [total, byStatus, recentLeads] = await Promise.all([
-      prisma.lead.count({ where: { assignedToId: userId } }),
+      prisma.lead.count({ where: statsWhere }),
       prisma.lead.groupBy({
         by: ['status'],
-        where: { assignedToId: userId },
+        where: statsWhere,
         _count: { status: true }
       }),
       prisma.lead.findMany({
-        where: { assignedToId: userId },
+        where: statsWhere,
         orderBy: { createdAt: 'desc' },
         take: 5,
         select: {
           id: true,
           clientName: true,
           projectTitle: true,
+          status: true,
+          createdAt: true,
+        }
+      })
+    ]);
           status: true,
           createdAt: true,
         }
