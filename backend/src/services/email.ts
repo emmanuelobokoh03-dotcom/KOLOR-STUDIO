@@ -736,7 +736,6 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
   const quoteUrl = `${baseUrl}/quotes/${data.quoteToken}`;
   const firstName = data.clientName.split(' ')[0];
   // Format currency based on quote settings
-  const currency = data.currency || 'USD';
   const currencySymbol = data.currencySymbol || '$';
   const currencyPosition = data.currencyPosition || 'BEFORE';
   const formattedAmount = data.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
