@@ -84,6 +84,7 @@ app.use('/leads', filesRoutes); // Files are under /api/leads/:id/files
 app.use('/api', filesRoutes); // Also handle /api/files/:id routes
 app.use('/portal', portalRoutes); // Public portal access
 app.use('/leads', quotesRoutes); // Quotes routes - handles /api/leads/:leadId/quotes and /api/quotes/*
+app.use('/quotes', quotesRoutes); // For /quotes/:quoteId/* routes
 app.use('/settings', settingsRoutes); // User settings routes
 app.use('/analytics', analyticsRoutes); // Analytics routes
 app.use('/quote-templates', quoteTemplatesRoutes); // Quote templates routes
