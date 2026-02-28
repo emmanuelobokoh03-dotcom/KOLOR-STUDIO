@@ -720,6 +720,9 @@ interface QuoteEmailData {
   total: number;
   validUntil: Date;
   quoteToken: string;
+  currency?: string;
+  currencySymbol?: string;
+  currencyPosition?: string;
   studioName: string;
 }
 
@@ -732,7 +735,12 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
   const baseUrl = process.env.FRONTEND_URL || 'https://crm-ready-go.preview.emergentagent.com';
   const quoteUrl = `${baseUrl}/quotes/${data.quoteToken}`;
   const firstName = data.clientName.split(' ')[0];
-  const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  // Format currency based on quote settings
+  const currency = data.currency || 'USD';
+  const currencySymbol = data.currencySymbol || '$';
+  const currencyPosition = data.currencyPosition || 'BEFORE';
+  const formattedAmount = data.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const formattedTotal = currencyPosition === 'BEFORE' ? `${currencySymbol}${formattedAmount}` : `${formattedAmount}${currencySymbol}`;
   const formattedDate = data.validUntil.toLocaleDateString('en-US', { 
     weekday: 'long', 
     year: 'numeric', 

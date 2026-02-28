@@ -477,6 +477,9 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
         total: quote.total,
         validUntil: quote.validUntil,
         quoteToken: quote.quoteToken,
+        currency: quote.currency || undefined,
+        currencySymbol: quote.currencySymbol || undefined,
+        currencyPosition: quote.currencyPosition || undefined,
         studioName: (quote as any).createdBy.studioName || `${(quote as any).createdBy.firstName}'s Studio`
       });
       console.log(`Quote email sent to ${(quote as any).lead.clientEmail}`);
