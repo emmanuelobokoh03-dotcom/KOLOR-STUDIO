@@ -620,12 +620,13 @@ export default function QuoteBuilderModal({
                         onChange={(e) => {
                           const selected = AVAILABLE_CURRENCIES.find(c => c.code === e.target.value);
                           setCurrencyOverride({
+                          const selected = AVAILABLE_CURRENCIES.find(c => c.code === e.target.value);
+                          setCurrencyOverride({
                             ...currencyOverride,
                             currency: e.target.value,
-                            currencySymbol: selected?.symbol || e.target.value
+                            currencySymbol: selected?.symbol || e.target.value,
+                            currencyPosition: currencyOverride.currencyPosition || 'BEFORE'  // Set default if not set
                           });
-                        }}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500"
                         data-testid="currency-override-select"
                       >
                         <option value="">Select currency...</option>
