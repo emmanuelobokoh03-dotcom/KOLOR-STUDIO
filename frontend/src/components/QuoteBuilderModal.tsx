@@ -625,6 +625,7 @@ export default function QuoteBuilderModal({
                             ...currencyOverride,
                             currency: e.target.value,
                             currencySymbol: selected?.symbol || e.target.value,
+                            currencyPosition: currencyOverride.currencyPosition || 'BEFORE', // Set default
                             currencyPosition: currencyOverride.currencyPosition || 'BEFORE'  // Set default if not set
                           });
                         data-testid="currency-override-select"
