@@ -48,6 +48,7 @@ router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Res
     const userId = req.userId!;
     const { lineItems, tax, paymentTerms, validUntil, terms, currency, currencySymbol, currencyPosition, numberFormat } = req.body;
 
+    console.log("📝 Quote creation data received:", { currency, currencySymbol, currencyPosition, numberFormat });
     // Validate lead exists and belongs to user
     const lead = await prisma.lead.findFirst({
       where: { id: leadId, OR: [{ assignedToId: userId }, { assignedToId: null }] }
