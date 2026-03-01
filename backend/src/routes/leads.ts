@@ -173,6 +173,9 @@ router.get('/calendar/events', authMiddleware, async (req: AuthRequest, res: Res
           ]
         }
       },
+      select: {
+        id: true,
+        clientName: true,
         projectTitle: true,
         serviceType: true,
         status: true,
