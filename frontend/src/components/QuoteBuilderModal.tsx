@@ -99,7 +99,7 @@ export default function QuoteBuilderModal({
   const [currencyOverride, setCurrencyOverride] = useState<Partial<CurrencySettings>>({
     currency: existingQuote?.currency || undefined,
     currencySymbol: existingQuote?.currencySymbol || undefined,
-    currencyPosition: (existingQuote?.currencyPosition as 'BEFORE' | 'AFTER') || undefined,
+    currencyPosition: (existingQuote?.currencyPosition as 'BEFORE' | 'AFTER') || 'BEFORE',
     numberFormat: existingQuote?.numberFormat as any || undefined,
   });
 
