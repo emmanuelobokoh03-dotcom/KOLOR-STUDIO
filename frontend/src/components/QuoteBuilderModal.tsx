@@ -238,6 +238,11 @@ export default function QuoteBuilderModal({
       setError('Valid until date must be in the future');
       return false;
     }
+    // Validate currency selection if override is enabled
+    if (useCurrencyOverride && !currencyOverride.currency) {
+      setError('Please select a currency or disable the currency override');
+      return false;
+    }
     return true;
   };
 
@@ -258,14 +263,22 @@ export default function QuoteBuilderModal({
       paymentTerms,
       validUntil,
       terms,
-      // Include currency override if enabled
-      ...(useCurrencyOverride && {
+      // Include currency override if enabled AND currency is selected
+      ...(useCurrencyOverride && currencyOverride.currency && {
         currency: currencyOverride.currency,
         currencySymbol: currencyOverride.currencySymbol,
-        currencyPosition: currencyOverride.currencyPosition,
+        currencyPosition: currencyOverride.currencyPosition || 'BEFORE',
         numberFormat: currencyOverride.numberFormat,
       })
     };
+
+    // Debug: log currency data being sent
+    console.log('[QuoteBuilder] Saving quote with currency:', {
+      useCurrencyOverride,
+      currencyOverride,
+      dataCurrency: data.currency,
+      dataCurrencySymbol: data.currencySymbol
+    });
 
     const result = existingQuote
       ? await quotesApi.update(existingQuote.id, data)
@@ -300,7 +313,14 @@ export default function QuoteBuilderModal({
       tax,
       paymentTerms,
       validUntil,
-      terms
+      terms,
+      // Include currency override if enabled
+      ...(useCurrencyOverride && currencyOverride.currency && {
+        currency: currencyOverride.currency,
+        currencySymbol: currencyOverride.currencySymbol,
+        currencyPosition: currencyOverride.currencyPosition || 'BEFORE',
+        numberFormat: currencyOverride.numberFormat,
+      })
     };
 
     let quoteId = existingQuote?.id;
