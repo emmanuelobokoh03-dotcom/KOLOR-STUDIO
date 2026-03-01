@@ -142,34 +142,37 @@ router.get('/calendar/events', authMiddleware, async (req: AuthRequest, res: Res
 
     const leads = await prisma.lead.findMany({
       where: { 
-        assignedToId: userId,
+      where: { 
         OR: [
-          // Leads with event dates in range
-          {
-            eventDate: {
-              gte: startDate,
-              lte: endDate,
-            }
-          },
-          // Leads created in range (for reference)
-          {
-            createdAt: {
-              gte: startDate,
-              lte: endDate,
-            }
-          },
-          // Leads with convertedAt in range
-          {
-            convertedAt: {
-              gte: startDate,
-              lte: endDate,
-            }
-          },
-        ]
+          { assignedToId: userId },
+          { assignedToId: null }
+        ],
+        AND: {
+          OR: [
+            // Leads with event dates in range
+            {
+              eventDate: {
+                gte: startDate,
+                lte: endDate,
+              }
+            },
+            // Leads created in range (for reference)
+            {
+              createdAt: {
+                gte: startDate,
+                lte: endDate,
+              }
+            },
+            // Leads with convertedAt in range
+            {
+              convertedAt: {
+                gte: startDate,
+                lte: endDate,
+              }
+            },
+          ]
+        }
       },
-      select: {
-        id: true,
-        clientName: true,
         projectTitle: true,
         serviceType: true,
         status: true,
