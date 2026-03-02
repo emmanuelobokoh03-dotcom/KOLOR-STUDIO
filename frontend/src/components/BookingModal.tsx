@@ -10,9 +10,10 @@ import {
   Check,
   Trash2,
   CheckCircle,
-  XCircle
+  XCircle,
+  Users
 } from 'lucide-react'
-import { Lead, Booking, CreateBookingData, bookingsApi, ServiceType } from '../services/api'
+import { Lead, Booking, CreateBookingData, bookingsApi, leadsApi, ServiceType } from '../services/api'
 
 interface BookingModalProps {
   lead?: Lead | null;
@@ -47,6 +48,11 @@ export default function BookingModal({
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
+  // Lead selector state (for when no lead is passed)
+  const [availableLeads, setAvailableLeads] = useState<Lead[]>([])
+  const [selectedLeadId, setSelectedLeadId] = useState<string>('')
+  const [loadingLeads, setLoadingLeads] = useState(false)
+
   // Form state
   const [title, setTitle] = useState('')
   const [date, setDate] = useState('')
@@ -56,6 +62,32 @@ export default function BookingModal({
   const [location, setLocation] = useState('')
   const [notes, setNotes] = useState('')
   const [color, setColor] = useState('')
+
+  // Fetch available leads if no lead is passed
+  useEffect(() => {
+    if (!lead && !existingBooking) {
+      const fetchLeads = async () => {
+        setLoadingLeads(true)
+        const result = await leadsApi.getAll()
+        if (result.data?.leads) {
+          // Filter to leads that make sense for booking (QUALIFIED, QUOTED, BOOKED, NEGOTIATING)
+          const bookableLeads = result.data.leads.filter(l => 
+            ['QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED'].includes(l.status)
+          )
+          setAvailableLeads(bookableLeads)
+        }
+        setLoadingLeads(false)
+      }
+      fetchLeads()
+    }
+  }, [lead, existingBooking])
+
+  // Get the selected lead object
+  const getSelectedLead = (): Lead | undefined => {
+    if (lead) return lead
+    if (selectedLeadId) return availableLeads.find(l => l.id === selectedLeadId)
+    return undefined
+  }
 
   // Initialize form
   useEffect(() => {
@@ -87,10 +119,21 @@ export default function BookingModal({
         setDate(tomorrow.toISOString().split('T')[0])
       }
     } else if (selectedDate) {
-      // Creating new booking from calendar click
+      // Creating new booking from calendar click (no lead yet)
       setDate(selectedDate.toISOString().split('T')[0])
     }
   }, [existingBooking, lead, selectedDate])
+
+  // Update title and color when lead is selected from dropdown
+  useEffect(() => {
+    if (selectedLeadId && !lead && !existingBooking) {
+      const selectedLead = availableLeads.find(l => l.id === selectedLeadId)
+      if (selectedLead) {
+        setTitle(selectedLead.projectTitle || `Booking - ${selectedLead.clientName}`)
+        setColor(SERVICE_COLORS[selectedLead.serviceType] || '')
+      }
+    }
+  }, [selectedLeadId, availableLeads, lead, existingBooking])
 
   // Calculate duration
   const getDuration = (): number => {
@@ -102,8 +145,10 @@ export default function BookingModal({
 
   // Validate form
   const validate = (): boolean => {
-    if (!lead && !existingBooking) {
-      setError('No lead selected for this booking')
+    // Check if we have a lead (either passed or selected)
+    const effectiveLeadId = existingBooking?.leadId || lead?.id || selectedLeadId
+    if (!effectiveLeadId) {
+      setError('Please select a lead for this booking')
       return false
     }
     if (!title.trim()) {
@@ -136,8 +181,11 @@ export default function BookingModal({
       ? `${date}T23:59:59` 
       : `${date}T${endTime}:00`
 
+    // Get the lead ID from existing booking, passed lead, or selected lead
+    const effectiveLeadId = existingBooking?.leadId || lead?.id || selectedLeadId
+
     const data: CreateBookingData = {
-      leadId: existingBooking?.leadId || lead!.id,
+      leadId: effectiveLeadId,
       startTime: new Date(startDateTime).toISOString(),
       endTime: new Date(endDateTime).toISOString(),
       duration: getDuration(),
@@ -227,7 +275,7 @@ export default function BookingModal({
     }
   }
 
-  const leadInfo = existingBooking?.lead || lead
+  const leadInfo = existingBooking?.lead || lead || getSelectedLead()
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
@@ -270,6 +318,47 @@ export default function BookingModal({
             <div className="flex items-center gap-2 p-3 bg-green-900/30 border border-green-700/50 rounded-lg text-green-300 text-sm">
               <Check className="w-4 h-4 flex-shrink-0" />
               {success}
+            </div>
+          )}
+
+          {/* Lead Selector (only show if no lead was passed and not editing) */}
+          {!lead && !existingBooking && (
+            <div>
+              <label className="text-xs text-gray-500 mb-1 block">
+                Select Lead <span className="text-red-400">*</span>
+              </label>
+              <div className="relative">
+                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                {loadingLeads ? (
+                  <div className="w-full pl-9 pr-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-400 text-sm flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Loading leads...
+                  </div>
+                ) : availableLeads.length === 0 ? (
+                  <div className="w-full pl-9 pr-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-400 text-sm">
+                    No leads available. Create a lead first, then book it.
+                  </div>
+                ) : (
+                  <select
+                    value={selectedLeadId}
+                    onChange={(e) => setSelectedLeadId(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent appearance-none cursor-pointer"
+                    data-testid="booking-lead-select"
+                  >
+                    <option value="">Choose a lead...</option>
+                    {availableLeads.map(l => (
+                      <option key={l.id} value={l.id}>
+                        {l.clientName} - {l.projectTitle || l.serviceType}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+              {availableLeads.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Showing leads in Qualified, Quoted, Negotiating, or Booked status
+                </p>
+              )}
             </div>
           )}
 
