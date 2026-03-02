@@ -185,19 +185,19 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       <div className="flex items-center gap-2">
         <button
           onClick={() => onNavigate('TODAY')}
-          className="px-3 py-1.5 text-sm bg-dark-bg-secondary border border-dark-border rounded-lg hover:bg-dark-card transition text-gray-300"
+          className="px-3 py-1.5 text-sm bg-slate-800 border border-slate-600 rounded-lg hover:bg-dark-card transition text-gray-300"
         >
           Today
         </button>
         <button
           onClick={() => onNavigate('PREV')}
-          className="p-1.5 bg-dark-bg-secondary border border-dark-border rounded-lg hover:bg-dark-card transition text-gray-300"
+          className="p-1.5 bg-slate-800 border border-slate-600 rounded-lg hover:bg-dark-card transition text-gray-300"
         >
           ←
         </button>
         <button
           onClick={() => onNavigate('NEXT')}
-          className="p-1.5 bg-dark-bg-secondary border border-dark-border rounded-lg hover:bg-dark-card transition text-gray-300"
+          className="p-1.5 bg-slate-800 border border-slate-600 rounded-lg hover:bg-dark-card transition text-gray-300"
         >
           →
         </button>
@@ -211,7 +211,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
           <select
             value={serviceFilter}
             onChange={(e) => setServiceFilter(e.target.value as ServiceType | 'all')}
-            className="pl-8 pr-3 py-1.5 text-sm bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 focus:ring-2 focus:ring-violet-500"
+            className="pl-8 pr-3 py-1.5 text-sm bg-slate-800 border border-slate-600 rounded-lg text-gray-300 focus:ring-2 focus:ring-violet-500"
           >
             <option value="all">All Services</option>
             {Object.entries(SERVICE_TYPE_LABELS).map(([value, label]) => (
@@ -221,7 +221,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
         
         {/* View buttons */}
-        <div className="flex bg-dark-bg-secondary border border-dark-border rounded-lg overflow-hidden">
+        <div className="flex bg-slate-800 border border-slate-600 rounded-lg overflow-hidden">
           {['month', 'week', 'day', 'agenda'].map((v) => (
             <button
               key={v}
@@ -241,7 +241,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         <button
           onClick={() => fetchEvents()}
           disabled={loading}
-          className="p-1.5 bg-dark-bg-secondary border border-dark-border rounded-lg hover:bg-dark-card transition text-gray-300 disabled:opacity-50"
+          className="p-1.5 bg-slate-800 border border-slate-600 rounded-lg hover:bg-dark-card transition text-gray-300 disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>

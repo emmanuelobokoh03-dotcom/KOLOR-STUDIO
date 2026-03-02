@@ -1165,13 +1165,13 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
     </p>
     
     <!-- Booking Details Card -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border-radius: 12px; margin-bottom: 24px; border: 1px solid #e9d5ff;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; margin-bottom: 24px; border: 2px solid #7c3aed;">
       <tr>
         <td style="padding: 24px;">
           <table width="100%" cellpadding="0" cellspacing="0">
             <!-- Project Title -->
             <tr>
-              <td style="padding-bottom: 16px; border-bottom: 1px solid #ddd6fe;">
+              <td style="padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
                 <span style="font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
                   PROJECT
                 </span>
@@ -1249,7 +1249,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
             ${data.notes ? `
             <!-- Notes -->
             <tr>
-              <td style="padding-top: 16px; border-top: 1px solid #ddd6fe;">
+              <td style="padding-top: 16px; border-top: 1px solid #e5e7eb;">
                 <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Notes</span>
                 <p style="margin: 8px 0 0 0; font-size: 14px; color: #4b5563; line-height: 1.5;">
                   ${data.notes}
