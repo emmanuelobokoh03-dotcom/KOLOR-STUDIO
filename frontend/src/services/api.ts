@@ -159,7 +159,7 @@ export const leadsApi = {
   },
 
   deleteFile: async (fileId: string) => {
-    return request<{ message: string }>(`/files/${fileId}`, {
+    return request<{ message: string }>(`/api/files/${fileId}`, {
       method: 'DELETE',
     });
   },
