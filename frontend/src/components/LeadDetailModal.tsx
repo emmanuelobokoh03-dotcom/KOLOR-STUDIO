@@ -43,6 +43,7 @@ import {
 } from 'lucide-react'
 import QuotesTab from './QuotesTab'
 import EmailComposerModal from './EmailComposerModal'
+import BookingModal from './BookingModal'
 import { 
   trackFileUploaded, 
   trackFileDownloaded, 
@@ -128,6 +129,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
   const [addingNote, setAddingNote] = useState(false);
   const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details'>('activity');
   const [showEmailComposer, setShowEmailComposer] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
   const [formData, setFormData] = useState({
     status: lead.status,
     priority: lead.priority,
@@ -409,6 +411,15 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
               <p className="text-violet-100 mt-1">Submitted {formatDate(lead.createdAt)}</p>
             </div>
             <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setShowBookingModal(true)}
+                className="flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition text-sm font-medium"
+                data-testid="create-booking-btn"
+                title="Create Booking"
+              >
+                <Calendar className="w-4 h-4" />
+                Book
+              </button>
               <button 
                 onClick={() => setShowEmailComposer(true)}
                 className="flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition text-sm font-medium"
@@ -1048,6 +1059,18 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
           onClose={() => setShowEmailComposer(false)}
           onSent={() => {
             fetchActivities();
+          }}
+        />
+      )}
+
+      {/* Booking Modal */}
+      {showBookingModal && (
+        <BookingModal
+          lead={lead}
+          onClose={() => setShowBookingModal(false)}
+          onSaved={() => {
+            setShowBookingModal(false);
+            fetchActivities(); // Refresh activities to show booking created
           }}
         />
       )}
