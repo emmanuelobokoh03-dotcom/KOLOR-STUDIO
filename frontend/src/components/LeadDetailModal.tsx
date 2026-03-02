@@ -394,13 +394,14 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div 
-        className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col border border-dark-border"
-        onClick={(e) => e.stopPropagation()}
-        data-testid="lead-detail-modal"
-      >
-        {/* Header */}
+    <>
+      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
+        <div 
+          className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col border border-dark-border"
+          onClick={(e) => e.stopPropagation()}
+          data-testid="lead-detail-modal"
+        >
+          {/* Header */}
         <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6 flex-shrink-0">
           <div className="flex items-start justify-between">
             <div>
@@ -1050,9 +1051,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
             </div>
           )}
         </div>
+        </div>
       </div>
 
-      {/* Email Composer Modal */}
+      {/* Email Composer Modal - rendered outside main container to prevent event bubbling */}
       {showEmailComposer && (
         <EmailComposerModal
           lead={lead}
@@ -1063,7 +1065,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
         />
       )}
 
-      {/* Booking Modal */}
+      {/* Booking Modal - rendered outside main container to prevent event bubbling */}
       {showBookingModal && (
         <BookingModal
           lead={lead}
@@ -1074,6 +1076,6 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
           }}
         />
       )}
-    </div>
+    </>
   );
 }
