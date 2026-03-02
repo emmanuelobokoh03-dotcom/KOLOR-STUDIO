@@ -414,3 +414,4 @@ enum BookingStatus {
   CANCELLED     // Booking was cancelled
   RESCHEDULED   // Booking was rescheduled (creates new booking)
 }
+// Force rebuild
