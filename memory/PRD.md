@@ -7,7 +7,7 @@ Build a CRM platform for creative professionals with JWT authentication, Lead Pi
 A CRM platform built for photographers, designers, and videographers. "The CRM that doesn't feel like a CRM."
 
 ## Tech Stack
-- **Frontend**: React 18 + TypeScript + Vite + TailwindCSS
+- **Frontend**: React 18 + TypeScript + Vite + TailwindCSS + react-big-calendar
 - **Backend**: Node.js + Express + TypeScript
 - **Database**: PostgreSQL (Supabase) + Prisma ORM
 - **Authentication**: JWT with bcrypt password hashing
