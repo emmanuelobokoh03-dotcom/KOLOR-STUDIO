@@ -146,7 +146,7 @@ router.get('/calendar', authMiddleware, async (req: AuthRequest, res: Response):
 // GET /api/bookings/:id - Get single booking
 router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const booking = await prisma.booking.findUnique({
       where: { id },
@@ -260,9 +260,9 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
     // Log activity
     await logActivity(
       leadId,
+      userId,
       'BOOKING_CREATED',
       `Booking created: ${booking.title} on ${start.toLocaleDateString()}`,
-      userId,
       { bookingId: booking.id, startTime: start, location }
     );
 
@@ -277,7 +277,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
 router.patch('/:id', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId as string;
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { startTime, endTime, duration, allDay, title, location, notes, color, status } = req.body;
 
     // Get existing booking
@@ -353,9 +353,9 @@ router.patch('/:id', authMiddleware, async (req: AuthRequest, res: Response): Pr
 
     await logActivity(
       existingBooking.leadId,
+      userId,
       activityType,
       description,
-      userId,
       { bookingId: booking.id, changes: updateData }
     );
 
@@ -370,7 +370,7 @@ router.patch('/:id', authMiddleware, async (req: AuthRequest, res: Response): Pr
 router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId as string;
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const booking = await prisma.booking.findUnique({
       where: { id },
@@ -389,9 +389,9 @@ router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response): P
     // Log activity
     await logActivity(
       booking.leadId,
+      userId,
       'BOOKING_CANCELLED',
       `Booking deleted: ${booking.title}`,
-      userId,
       { bookingId: id }
     );
 
@@ -406,7 +406,7 @@ router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response): P
 router.post('/:id/complete', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId as string;
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const booking = await prisma.booking.update({
       where: { id },
@@ -428,9 +428,9 @@ router.post('/:id/complete', authMiddleware, async (req: AuthRequest, res: Respo
 
     await logActivity(
       booking.leadId,
+      userId,
       'BOOKING_COMPLETED',
       `Booking completed: ${booking.title}`,
-      userId,
       { bookingId: booking.id }
     );
 
@@ -445,15 +445,26 @@ router.post('/:id/complete', authMiddleware, async (req: AuthRequest, res: Respo
 router.post('/:id/cancel', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId as string;
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { reason } = req.body;
+
+    // First get the existing booking to access its notes
+    const existingBooking = await prisma.booking.findUnique({
+      where: { id },
+      select: { notes: true }
+    });
+
+    if (!existingBooking) {
+      res.status(404).json({ error: 'Not Found', message: 'Booking not found' });
+      return;
+    }
 
     const booking = await prisma.booking.update({
       where: { id },
       data: {
         status: 'CANCELLED',
         cancelledAt: new Date(),
-        notes: reason ? `${booking?.notes || ''}\n\nCancellation reason: ${reason}`.trim() : undefined,
+        notes: reason ? `${existingBooking.notes || ''}\n\nCancellation reason: ${reason}`.trim() : undefined,
       },
       include: {
         lead: {
@@ -469,9 +480,9 @@ router.post('/:id/cancel', authMiddleware, async (req: AuthRequest, res: Respons
 
     await logActivity(
       booking.leadId,
+      userId,
       'BOOKING_CANCELLED',
       `Booking cancelled: ${booking.title}${reason ? ` - Reason: ${reason}` : ''}`,
-      userId,
       { bookingId: booking.id, reason }
     );
 
