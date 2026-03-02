@@ -77,7 +77,7 @@ export async function uploadFile(
   // Create a unique path: lead-files/leadId/timestamp-filename
   const timestamp = Date.now();
   const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, '_');
-  const filePath = `${leadId}/${timestamp}-${sanitizedFilename}`;
+  const filePath = `private/${leadId}/${timestamp}-${sanitizedFilename}`;
 
   try {
     const { error } = await client.storage
