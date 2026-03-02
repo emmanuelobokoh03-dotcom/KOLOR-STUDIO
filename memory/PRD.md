@@ -522,6 +522,77 @@ A CRM platform built for photographers, designers, and videographers. "The CRM t
   - Clicking filter automatically switches to Kanban view
   - User can clear filter to see all leads again
 
+### Phase 24: Professional Booking System ✅ (Feb 27, 2026)
+
+#### Database Schema
+- [x] Booking model with full calendar support
+  - id, leadId, startTime, endTime, duration
+  - allDay flag for full-day events
+  - title, location, notes fields
+  - status: CONFIRMED, COMPLETED, CANCELLED, RESCHEDULED
+  - color for calendar display
+  - reminders JSON field
+  - timestamps: createdAt, updatedAt, completedAt, cancelledAt
+- [x] Lead → Booking relation (one-to-many)
+- [x] User → Booking relation (createdBy)
+- [x] New ActivityTypes: BOOKING_CREATED, BOOKING_UPDATED, BOOKING_CANCELLED, BOOKING_COMPLETED
+
+#### Backend API
+- [x] GET /api/bookings - Get all bookings with filters (date range, status, leadId)
+- [x] GET /api/bookings/calendar - Get events formatted for react-big-calendar
+- [x] GET /api/bookings/:id - Get single booking with lead & creator info
+- [x] POST /api/bookings - Create new booking (validates lead ownership)
+- [x] PATCH /api/bookings/:id - Update booking (time, title, location, status)
+- [x] DELETE /api/bookings/:id - Delete booking
+- [x] POST /api/bookings/:id/complete - Mark booking as completed
+- [x] POST /api/bookings/:id/cancel - Cancel booking with optional reason
+- [x] Activity logging for all booking actions
+
+#### Frontend Components
+- [x] CalendarViewNew - react-big-calendar integration
+  - Month/Week/Day/Agenda views
+  - Custom dark theme styling
+  - Service type color coding
+  - Filter by service type
+  - Click on empty slot → Create booking
+  - Click on event → Edit booking
+  - Stats bar (total, upcoming, completed, value)
+  - Service type legend
+- [x] BookingModal component
+  - Date/time picker
+  - Duration calculation
+  - All-day event toggle
+  - Location and notes fields
+  - Color picker (by service type)
+  - Status actions: Complete, Cancel, Delete
+  - Form validation
+- [x] Auto-trigger on status change to BOOKED
+  - When lead moved to BOOKED status
+  - Booking modal opens automatically
+  - Pre-fills lead info and project title
+
+#### Calendar Features
+- [x] Interactive event creation (click on date/time)
+- [x] Event editing (click on existing event)
+- [x] Service type color coding
+- [x] Month/Week/Day/Agenda views
+- [x] Filter events by service type
+- [x] Stats summary (upcoming, completed, total value)
+- [x] Dark theme styling for react-big-calendar
+- [x] Responsive design
+
+### Bookings API Endpoints
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | /api/bookings | Get all bookings | Yes |
+| GET | /api/bookings/calendar | Calendar events | Yes |
+| GET | /api/bookings/:id | Get single booking | Yes |
+| POST | /api/bookings | Create booking | Yes |
+| PATCH | /api/bookings/:id | Update booking | Yes |
+| DELETE | /api/bookings/:id | Delete booking | Yes |
+| POST | /api/bookings/:id/complete | Complete booking | Yes |
+| POST | /api/bookings/:id/cancel | Cancel booking | Yes |
+
 ## Prioritized Backlog
 
 ### P1 - High Priority (Next)
