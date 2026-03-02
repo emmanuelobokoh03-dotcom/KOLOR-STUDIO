@@ -142,7 +142,6 @@ router.get('/calendar/events', authMiddleware, async (req: AuthRequest, res: Res
 
     const leads = await prisma.lead.findMany({
       where: { 
-      where: { 
         OR: [
           { assignedToId: userId },
           { assignedToId: null }
