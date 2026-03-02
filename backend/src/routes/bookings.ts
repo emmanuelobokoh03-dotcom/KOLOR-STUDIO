@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { logActivity } from './activities';
+import { sendBookingConfirmationEmail } from '../services/email';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -265,6 +266,22 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
       `Booking created: ${booking.title} on ${start.toLocaleDateString()}`,
       { bookingId: booking.id, startTime: start, location }
     );
+
+    // Send booking confirmation email to client
+    try {
+      await sendBookingConfirmationEmail({
+        clientName: booking.lead.clientName,
+        clientEmail: booking.lead.clientEmail,
+        projectTitle: booking.lead.projectTitle,
+        bookingDate: start,
+        duration: calculatedDuration,
+        location: location || undefined,
+        notes: notes || undefined,
+      });
+    } catch (emailError) {
+      console.error('Failed to send booking confirmation email:', emailError);
+      // Don't fail the booking creation if email fails
+    }
 
     res.status(201).json({ message: 'Booking created successfully', booking });
   } catch (error) {

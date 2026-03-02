@@ -1100,3 +1100,209 @@ export async function sendCustomEmail(data: CustomEmailData): Promise<boolean> {
     throw error;
   }
 }
+
+// =============================================
+// BOOKING CONFIRMATION EMAIL
+// =============================================
+
+export interface BookingEmailData {
+  clientName: string;
+  clientEmail: string;
+  projectTitle: string;
+  bookingDate: Date;
+  duration: number; // in minutes
+  location?: string;
+  notes?: string;
+  studioName?: string;
+}
+
+// Format duration from minutes to readable string
+function formatDuration(minutes: number): string {
+  if (minutes < 60) {
+    return `${minutes} minutes`;
+  }
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (mins === 0) {
+    return hours === 1 ? '1 hour' : `${hours} hours`;
+  }
+  return `${hours}h ${mins}m`;
+}
+
+// Format date for display
+function formatBookingDate(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  };
+  return date.toLocaleDateString('en-US', options);
+}
+
+// Send booking confirmation email to client
+export async function sendBookingConfirmationEmail(data: BookingEmailData): Promise<boolean> {
+  if (!resend) {
+    console.log('Resend not configured, skipping booking confirmation email');
+    return false;
+  }
+
+  const studioName = data.studioName || 'KOLOR STUDIO';
+  const formattedDate = formatBookingDate(data.bookingDate);
+  const formattedDuration = formatDuration(data.duration);
+
+  const content = `
+    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
+      Booking Confirmed!
+    </h1>
+    
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.6;">
+      Hi ${data.clientName},<br><br>
+      Great news! Your booking has been confirmed. We're excited to work with you on your project.
+    </p>
+    
+    <!-- Booking Details Card -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border-radius: 12px; margin-bottom: 24px; border: 1px solid #e9d5ff;">
+      <tr>
+        <td style="padding: 24px;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <!-- Project Title -->
+            <tr>
+              <td style="padding-bottom: 16px; border-bottom: 1px solid #ddd6fe;">
+                <span style="font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                  PROJECT
+                </span>
+                <h2 style="margin: 8px 0 0 0; font-size: 20px; font-weight: 700; color: #1f2937;">
+                  ${data.projectTitle}
+                </h2>
+              </td>
+            </tr>
+            
+            <!-- Date & Time -->
+            <tr>
+              <td style="padding: 16px 0;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="40" valign="top">
+                      <div style="width: 36px; height: 36px; background-color: #7c3aed; border-radius: 8px; text-align: center; line-height: 36px;">
+                        <span style="font-size: 18px;">&#128197;</span>
+                      </div>
+                    </td>
+                    <td style="padding-left: 12px;">
+                      <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Date & Time</span>
+                      <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: #1f2937;">
+                        ${formattedDate}
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            
+            <!-- Duration -->
+            <tr>
+              <td style="padding-bottom: 16px;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="40" valign="top">
+                      <div style="width: 36px; height: 36px; background-color: #a855f7; border-radius: 8px; text-align: center; line-height: 36px;">
+                        <span style="font-size: 18px;">&#9200;</span>
+                      </div>
+                    </td>
+                    <td style="padding-left: 12px;">
+                      <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Duration</span>
+                      <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: #1f2937;">
+                        ${formattedDuration}
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            
+            ${data.location ? `
+            <!-- Location -->
+            <tr>
+              <td style="padding-bottom: 16px;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="40" valign="top">
+                      <div style="width: 36px; height: 36px; background-color: #c084fc; border-radius: 8px; text-align: center; line-height: 36px;">
+                        <span style="font-size: 18px;">&#128205;</span>
+                      </div>
+                    </td>
+                    <td style="padding-left: 12px;">
+                      <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Location</span>
+                      <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: #1f2937;">
+                        ${data.location}
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            ` : ''}
+            
+            ${data.notes ? `
+            <!-- Notes -->
+            <tr>
+              <td style="padding-top: 16px; border-top: 1px solid #ddd6fe;">
+                <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Notes</span>
+                <p style="margin: 8px 0 0 0; font-size: 14px; color: #4b5563; line-height: 1.5;">
+                  ${data.notes}
+                </p>
+              </td>
+            </tr>
+            ` : ''}
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <!-- What's Next -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin-bottom: 24px;">
+      <tr>
+        <td style="padding: 20px;">
+          <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #1f2937;">
+            What's Next?
+          </h3>
+          <ul style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 14px; line-height: 1.8;">
+            <li>Mark this date on your calendar</li>
+            <li>We'll send you a reminder before the session</li>
+            <li>If you need to reschedule, please contact us as soon as possible</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 0; font-size: 16px; color: #4b5563; line-height: 1.6;">
+      We're looking forward to creating something amazing together!<br><br>
+      Best regards,<br>
+      <strong style="color: #7c3aed;">${studioName}</strong>
+    </p>
+  `;
+
+  try {
+    const { data: emailData, error } = await resend.emails.send({
+      from: SENDER_EMAIL,
+      to: data.clientEmail,
+      subject: `Booking Confirmed - ${data.projectTitle}`,
+      html: getEmailTemplate(content, `Booking Confirmed - ${data.projectTitle}`),
+    });
+
+    if (error) {
+      console.error('Failed to send booking confirmation email:', error);
+      return false;
+    }
+
+    console.log('Booking confirmation email sent to:', data.clientEmail, 'ID:', emailData?.id);
+    return true;
+  } catch (error) {
+    console.error('Error sending booking confirmation email:', error);
+    return false;
+  }
+}
+
