@@ -21,17 +21,18 @@ import {
   CalendarDays,
   X
 } from 'lucide-react'
-import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS } from '../services/api'
+import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking } from '../services/api'
 import KanbanBoard from '../components/KanbanBoard'
 import LeadDetailModal from '../components/LeadDetailModal'
 import AddLeadModal from '../components/AddLeadModal'
 import ShareFormModal from '../components/ShareFormModal'
 import SettingsModal from '../components/SettingsModal'
 import AnalyticsDashboard from '../components/AnalyticsDashboard'
-import CalendarView from '../components/CalendarView'
+import CalendarViewNew from '../components/CalendarViewNew'
 import HelpMenu from '../components/HelpMenu'
 import FeedbackModal from '../components/FeedbackModal'
 import AnnouncementBanner from '../components/AnnouncementBanner'
+import BookingModal from '../components/BookingModal'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar';
@@ -63,6 +64,8 @@ const Dashboard = () => {
   const [showFeedback, setShowFeedback] = useState(false)
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
   const [stats, setStats] = useState<{ total: number; statusCounts: Record<string, number> } | null>(null)
+  const [showBookingModal, setShowBookingModal] = useState(false)
+  const [bookingLead, setBookingLead] = useState<Lead | null>(null)
 
   useEffect(() => {
     const init = async () => {
@@ -132,7 +135,23 @@ const Dashboard = () => {
     if (result.data?.lead) {
       setLeads(leads.map(l => l.id === leadId ? result.data!.lead : l))
       fetchStats()
+      
+      // If status changed to BOOKED, prompt to create a booking
+      if (newStatus === 'BOOKED') {
+        const lead = leads.find(l => l.id === leadId)
+        if (lead) {
+          setBookingLead({ ...lead, status: 'BOOKED' })
+          setShowBookingModal(true)
+        }
+      }
     }
+  }
+
+  const handleBookingSaved = (booking: Booking) => {
+    setShowBookingModal(false)
+    setBookingLead(null)
+    // Refresh to update any calendar or data
+    fetchLeads()
   }
 
   const handleLeadUpdate = (updatedLead: Lead) => {
@@ -386,7 +405,7 @@ const Dashboard = () => {
         {viewMode === 'analytics' ? (
           <AnalyticsDashboard user={user} onFilterByStatus={handleFilterByStatus} />
         ) : viewMode === 'calendar' ? (
-          <CalendarView 
+          <CalendarViewNew 
             user={user} 
             onLeadClick={(leadId) => {
               const lead = leads.find(l => l.id === leadId)
@@ -566,6 +585,17 @@ const Dashboard = () => {
 
       {showFeedback && (
         <FeedbackModal onClose={() => setShowFeedback(false)} />
+      )}
+
+      {showBookingModal && bookingLead && (
+        <BookingModal
+          lead={bookingLead}
+          onClose={() => {
+            setShowBookingModal(false)
+            setBookingLead(null)
+          }}
+          onSaved={handleBookingSaved}
+        />
       )}
     </div>
   )

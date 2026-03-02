@@ -56,6 +56,7 @@ model User {
   messages      Message[]
   quotes        Quote[]
   quoteTemplates QuoteTemplate[]
+  bookings      Booking[]
   
   @@map("users")
 }
@@ -121,6 +122,7 @@ model Lead {
   messages        Message[]
   files           File[]
   quotes          Quote[]
+  bookings        Booking[]
   
   @@map("leads")
   @@index([status])
@@ -214,6 +216,10 @@ enum ActivityType {
   QUOTE_ACCEPTED
   QUOTE_DECLINED
   QUOTE_EXPIRED
+  BOOKING_CREATED
+  BOOKING_UPDATED
+  BOOKING_CANCELLED
+  BOOKING_COMPLETED
 }
 
 // =====================
@@ -355,4 +361,56 @@ model QuoteTemplate {
   
   @@map("quote_templates")
   @@index([userId])
+}
+
+
+// =====================
+// BOOKINGS
+// =====================
+
+model Booking {
+  id            String        @id @default(uuid())
+  
+  // Timing
+  startTime     DateTime      // Event start date & time
+  endTime       DateTime      // Event end date & time
+  duration      Int           // Duration in minutes
+  allDay        Boolean       @default(false)
+  
+  // Details
+  title         String        // Booking title (defaults to project title)
+  location      String?       // Event location
+  notes         String?       @db.Text
+  
+  // Status
+  status        BookingStatus @default(CONFIRMED)
+  color         String?       // Custom color for calendar display
+  
+  // Reminders (stored as JSON array)
+  reminders     Json?         // [{type: 'email', before: 24}, {type: 'sms', before: 2}]
+  
+  // Relations
+  lead          Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  leadId        String
+  
+  createdBy     User          @relation(fields: [createdById], references: [id])
+  createdById   String
+  
+  // Timestamps
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  completedAt   DateTime?
+  cancelledAt   DateTime?
+  
+  @@map("bookings")
+  @@index([leadId])
+  @@index([startTime])
+  @@index([status])
+}
+
+enum BookingStatus {
+  CONFIRMED     // Booking is confirmed
+  COMPLETED     // Event has been completed
+  CANCELLED     // Booking was cancelled
+  RESCHEDULED   // Booking was rescheduled (creates new booking)
 }

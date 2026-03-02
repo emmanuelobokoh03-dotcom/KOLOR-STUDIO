@@ -259,7 +259,80 @@ export type ActivityType =
   | 'FILE_UPLOADED'
   | 'QUOTE_SENT'
   | 'PAYMENT_RECEIVED'
-  | 'CONTRACT_SIGNED';
+  | 'CONTRACT_SIGNED'
+  | 'BOOKING_CREATED'
+  | 'BOOKING_UPDATED'
+  | 'BOOKING_CANCELLED'
+  | 'BOOKING_COMPLETED';
+
+export type BookingStatus = 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'RESCHEDULED';
+
+export interface Booking {
+  id: string;
+  leadId: string;
+  startTime: string;
+  endTime: string;
+  duration: number;
+  allDay: boolean;
+  title: string;
+  location?: string;
+  notes?: string;
+  status: BookingStatus;
+  color?: string;
+  reminders?: Array<{ type: string; before: number }>;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string;
+  cancelledAt?: string;
+  lead?: {
+    id: string;
+    clientName: string;
+    clientEmail: string;
+    clientPhone?: string;
+    projectTitle: string;
+    serviceType: ServiceType;
+    status: LeadStatus;
+    estimatedValue?: number;
+    actualValue?: number;
+  };
+  createdBy?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+}
+
+export interface CalendarBookingEvent {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  allDay?: boolean;
+  resource: {
+    bookingId: string;
+    leadId: string;
+    clientName: string;
+    serviceType: ServiceType;
+    location?: string;
+    notes?: string;
+    status: BookingStatus;
+    value?: number;
+    color?: string;
+  };
+}
+
+export interface CreateBookingData {
+  leadId: string;
+  startTime: string;
+  endTime: string;
+  duration?: number;
+  allDay?: boolean;
+  title?: string;
+  location?: string;
+  notes?: string;
+  color?: string;
+}
 
 export interface Activity {
   id: string;
@@ -797,4 +870,65 @@ export const quoteTemplatesApi = {
   },
 };
 
-export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi };
+// Bookings API
+export const bookingsApi = {
+  // Get all bookings
+  getAll: async (params?: { start?: string; end?: string; status?: string; leadId?: string }) => {
+    const query = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
+    return request<{ bookings: Booking[]; count: number }>(`/bookings${query}`);
+  },
+
+  // Get calendar events (formatted for react-big-calendar)
+  getCalendarEvents: async (start?: string, end?: string) => {
+    const params = new URLSearchParams();
+    if (start) params.set('start', start);
+    if (end) params.set('end', end);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return request<{ events: CalendarBookingEvent[] }>(`/bookings/calendar${query}`);
+  },
+
+  // Get single booking
+  getOne: async (bookingId: string) => {
+    return request<{ booking: Booking }>(`/bookings/${bookingId}`);
+  },
+
+  // Create booking
+  create: async (data: CreateBookingData) => {
+    return request<{ message: string; booking: Booking }>('/bookings', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Update booking
+  update: async (bookingId: string, data: Partial<CreateBookingData> & { status?: BookingStatus }) => {
+    return request<{ message: string; booking: Booking }>(`/bookings/${bookingId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Delete booking
+  delete: async (bookingId: string) => {
+    return request<{ message: string }>(`/bookings/${bookingId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Complete booking
+  complete: async (bookingId: string) => {
+    return request<{ message: string; booking: Booking }>(`/bookings/${bookingId}/complete`, {
+      method: 'POST',
+    });
+  },
+
+  // Cancel booking
+  cancel: async (bookingId: string, reason?: string) => {
+    return request<{ message: string; booking: Booking }>(`/bookings/${bookingId}/cancel`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    });
+  },
+};
+
+export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi };
