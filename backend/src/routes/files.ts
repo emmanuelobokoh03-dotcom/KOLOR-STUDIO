@@ -46,7 +46,7 @@ router.get('/:leadId/files', authMiddleware, async (req: AuthRequest, res: Respo
 
     // Verify lead ownership
     const lead = await prisma.lead.findFirst({
-      where: { id: leadId, assignedToId: userId }
+      where: { id: leadId, OR: [{ assignedToId: userId }, { assignedToId: null }] }
     });
 
     if (!lead) {
@@ -109,7 +109,7 @@ router.post(
 
       // Verify lead ownership
       const lead = await prisma.lead.findFirst({
-        where: { id: leadId, assignedToId: userId }
+        where: { id: leadId, OR: [{ assignedToId: userId }, { assignedToId: null }] }
       });
 
       if (!lead) {

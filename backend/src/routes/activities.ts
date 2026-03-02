@@ -13,7 +13,7 @@ router.get('/:leadId/activities', authMiddleware, async (req: AuthRequest, res: 
 
     // Verify lead ownership
     const lead = await prisma.lead.findFirst({
-      where: { id: leadId, assignedToId: userId }
+      where: { id: leadId, OR: [{ assignedToId: userId }, { assignedToId: null }] }
     });
 
     if (!lead) {
@@ -58,7 +58,7 @@ router.post('/:leadId/notes', authMiddleware, async (req: AuthRequest, res: Resp
 
     // Verify lead ownership
     const lead = await prisma.lead.findFirst({
-      where: { id: leadId, assignedToId: userId }
+      where: { id: leadId, OR: [{ assignedToId: userId }, { assignedToId: null }] }
     });
 
     if (!lead) {
