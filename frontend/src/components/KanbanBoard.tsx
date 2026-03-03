@@ -3,7 +3,9 @@ import {
   Lead, 
   LeadStatus, 
   LEAD_STATUS_LABELS, 
-  SERVICE_TYPE_LABELS
+  SERVICE_TYPE_LABELS,
+  PROJECT_TYPE_LABELS,
+  ProjectType,
 } from '../services/api'
 import { 
   GripVertical, 
@@ -129,11 +131,16 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
                 >
                   {/* Card Header */}
                   <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <GripVertical className="w-4 h-4 text-gray-500" />
                       <span className="text-xs px-2 py-0.5 bg-violet-900/50 text-violet-300 rounded-full border border-violet-700/50">
                         {SERVICE_TYPE_LABELS[lead.serviceType]}
                       </span>
+                      {lead.projectType && lead.projectType !== 'SERVICE' && (
+                        <span className="text-xs px-2 py-0.5 bg-blue-900/50 text-blue-300 rounded-full border border-blue-700/50">
+                          {PROJECT_TYPE_LABELS[lead.projectType as ProjectType] || lead.projectType}
+                        </span>
+                      )}
                     </div>
                     <div className="relative">
                       <button

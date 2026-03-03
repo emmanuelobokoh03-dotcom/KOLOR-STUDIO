@@ -69,8 +69,10 @@ export const authApi = {
 
 // Leads API
 export const leadsApi = {
-  getAll: async (params?: { status?: string; search?: string; sort?: string }) => {
-    const query = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
+  getAll: async (params?: { status?: string; search?: string; sort?: string; projectType?: string; industry?: string }) => {
+    const query = params ? '?' + new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== ''))
+    ).toString() : '';
     return request<{ leads: Lead[]; count: number }>(`/leads${query}`);
   },
 
@@ -276,6 +278,76 @@ export type PortfolioCategory =
   | 'CONTENT_CREATION'
   | 'OTHER';
 
+// Project & Workflow Types
+export type ProjectType = 'SERVICE' | 'COMMISSION' | 'PROJECT' | 'PRODUCT_SALE';
+export type IndustryType = 'PHOTOGRAPHY' | 'VIDEOGRAPHY' | 'GRAPHIC_DESIGN' | 'WEB_DESIGN' | 'ILLUSTRATION' | 'FINE_ART' | 'SCULPTURE' | 'BRANDING' | 'CONTENT_CREATION' | 'OTHER';
+export type DeliverableType = 'DIGITAL_FILES' | 'PHYSICAL_ART' | 'PRINTS' | 'SERVICE' | 'WEBSITE' | 'MIXED';
+export type DeliverableStatus = 'PENDING' | 'IN_PROGRESS' | 'READY' | 'DELIVERED' | 'SHIPPED';
+
+export const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
+  SERVICE: 'Service',
+  COMMISSION: 'Commission',
+  PROJECT: 'Project',
+  PRODUCT_SALE: 'Product Sale',
+};
+
+export const INDUSTRY_TYPE_LABELS: Record<IndustryType, string> = {
+  PHOTOGRAPHY: 'Photography',
+  VIDEOGRAPHY: 'Videography',
+  GRAPHIC_DESIGN: 'Graphic Design',
+  WEB_DESIGN: 'Web Design',
+  ILLUSTRATION: 'Illustration',
+  FINE_ART: 'Fine Art',
+  SCULPTURE: 'Sculpture',
+  BRANDING: 'Branding',
+  CONTENT_CREATION: 'Content Creation',
+  OTHER: 'Other',
+};
+
+export const DELIVERABLE_TYPE_LABELS: Record<DeliverableType, string> = {
+  DIGITAL_FILES: 'Digital Files',
+  PHYSICAL_ART: 'Physical Art',
+  PRINTS: 'Prints',
+  SERVICE: 'Service',
+  WEBSITE: 'Website',
+  MIXED: 'Mixed',
+};
+
+export const DELIVERABLE_STATUS_LABELS: Record<DeliverableStatus, string> = {
+  PENDING: 'Pending',
+  IN_PROGRESS: 'In Progress',
+  READY: 'Ready',
+  DELIVERED: 'Delivered',
+  SHIPPED: 'Shipped',
+};
+
+export interface Deliverable {
+  id: string;
+  name: string;
+  type: DeliverableType;
+  status: DeliverableStatus;
+  description?: string;
+  fileUrls: string[];
+  dimensions?: string;
+  material?: string;
+  weight?: string;
+  shippingAddress?: string;
+  shippingMethod?: string;
+  trackingNumber?: string;
+  shippedAt?: string;
+  sessionDate?: string;
+  sessionLocation?: string;
+  sessionDuration?: number;
+  sessionNotes?: string;
+  dueDate?: string;
+  completedAt?: string;
+  notes?: string;
+  metadata?: any;
+  leadId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const PORTFOLIO_CATEGORY_LABELS: Record<PortfolioCategory, string> = {
   PHOTOGRAPHY: 'Photography',
   VIDEOGRAPHY: 'Videography',
@@ -415,6 +487,10 @@ export interface Lead {
   portalToken?: string;
   portalViews?: number;
   lastPortalView?: string | null;
+  projectType?: ProjectType;
+  industry?: IndustryType | null;
+  deliverableType?: DeliverableType;
+  workflowData?: any;
   createdAt: string;
   updatedAt: string;
 }
@@ -434,6 +510,9 @@ export interface CreateLeadData {
   source?: LeadSource;
   estimatedValue?: number;
   tags?: string[];
+  projectType?: ProjectType;
+  industry?: IndustryType;
+  deliverableType?: DeliverableType;
 }
 
 export interface SubmitLeadData {
@@ -1041,4 +1120,37 @@ export const portfolioApi = {
   },
 };
 
-export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi };
+// Deliverables API
+export const deliverablesApi = {
+  getForLead: async (leadId: string) => {
+    return request<{ deliverables: Deliverable[]; count: number }>(`/leads/${leadId}/deliverables`);
+  },
+  create: async (leadId: string, data: Partial<Deliverable>) => {
+    return request<{ message: string; deliverable: Deliverable }>(`/leads/${leadId}/deliverables`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  getOne: async (id: string) => {
+    return request<{ deliverable: Deliverable }>(`/deliverables/${id}`);
+  },
+  update: async (id: string, data: Partial<Deliverable>) => {
+    return request<{ message: string; deliverable: Deliverable }>(`/deliverables/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+  updateStatus: async (id: string, status: DeliverableStatus) => {
+    return request<{ message: string; deliverable: Deliverable }>(`/deliverables/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
+  },
+  delete: async (id: string) => {
+    return request<{ message: string }>(`/deliverables/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi };

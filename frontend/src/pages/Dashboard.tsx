@@ -22,7 +22,7 @@ import {
   X,
   Briefcase
 } from 'lucide-react'
-import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking } from '../services/api'
+import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS } from '../services/api'
 import KanbanBoard from '../components/KanbanBoard'
 import LeadDetailModal from '../components/LeadDetailModal'
 import AddLeadModal from '../components/AddLeadModal'
@@ -68,6 +68,8 @@ const Dashboard = () => {
   const [stats, setStats] = useState<{ total: number; statusCounts: Record<string, number> } | null>(null)
   const [showBookingModal, setShowBookingModal] = useState(false)
   const [bookingLead, setBookingLead] = useState<Lead | null>(null)
+  const [projectTypeFilter, setProjectTypeFilter] = useState<string>('')
+  const [industryFilter, setIndustryFilter] = useState<string>('')
 
   useEffect(() => {
     const init = async () => {
@@ -100,7 +102,10 @@ const Dashboard = () => {
   }, [navigate])
 
   const fetchLeads = async () => {
-    const result = await leadsApi.getAll()
+    const params: any = {};
+    if (projectTypeFilter) params.projectType = projectTypeFilter;
+    if (industryFilter) params.industry = industryFilter;
+    const result = await leadsApi.getAll(params)
     if (result.data?.leads) {
       setLeads(result.data.leads)
     }
@@ -131,6 +136,11 @@ const Dashboard = () => {
     setViewMode(view)
     trackViewChanged(view)
   }
+
+  // Re-fetch when filters change
+  useEffect(() => {
+    if (!loading) fetchLeads();
+  }, [projectTypeFilter, industryFilter]);
 
   const handleStatusChange = async (leadId: string, newStatus: LeadStatus) => {
     const result = await leadsApi.updateStatus(leadId, newStatus)
@@ -326,18 +336,32 @@ const Dashboard = () => {
                 />
               </div>
               {/* Active Filter Indicator */}
-              {statusFilter && (
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-violet-900/30 border border-violet-700/50 rounded-lg">
-                  <span className="text-sm text-violet-300">
-                    Filtering: <span className="font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
-                  </span>
-                  <button
-                    onClick={clearStatusFilter}
-                    className="p-0.5 hover:bg-violet-800/50 rounded transition"
-                    data-testid="clear-filter"
-                  >
-                    <X className="w-4 h-4 text-violet-400" />
-                  </button>
+              {(statusFilter || projectTypeFilter || industryFilter) && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  {statusFilter && (
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-900/30 border border-violet-700/50 rounded-lg">
+                      <span className="text-xs text-violet-300 font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
+                      <button onClick={clearStatusFilter} className="p-0.5 hover:bg-violet-800/50 rounded transition" data-testid="clear-filter">
+                        <X className="w-3.5 h-3.5 text-violet-400" />
+                      </button>
+                    </div>
+                  )}
+                  {projectTypeFilter && (
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-900/30 border border-blue-700/50 rounded-lg">
+                      <span className="text-xs text-blue-300 font-medium">{PROJECT_TYPE_LABELS[projectTypeFilter as ProjectType]}</span>
+                      <button onClick={() => setProjectTypeFilter('')} className="p-0.5 hover:bg-blue-800/50 rounded transition" data-testid="clear-project-type-filter">
+                        <X className="w-3.5 h-3.5 text-blue-400" />
+                      </button>
+                    </div>
+                  )}
+                  {industryFilter && (
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-900/30 border border-amber-700/50 rounded-lg">
+                      <span className="text-xs text-amber-300 font-medium">{INDUSTRY_TYPE_LABELS[industryFilter as IndustryType]}</span>
+                      <button onClick={() => setIndustryFilter('')} className="p-0.5 hover:bg-amber-800/50 rounded transition" data-testid="clear-industry-filter">
+                        <X className="w-3.5 h-3.5 text-amber-400" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
               <button
@@ -391,6 +415,29 @@ const Dashboard = () => {
                   <Briefcase className="w-4 h-4" />
                 </button>
               </div>
+              {/* Filter Dropdowns */}
+              <select
+                value={projectTypeFilter}
+                onChange={(e) => setProjectTypeFilter(e.target.value)}
+                className="px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-sm text-gray-300 focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                data-testid="filter-project-type"
+              >
+                <option value="">All Types</option>
+                {(Object.entries(PROJECT_TYPE_LABELS) as [ProjectType, string][]).map(([k, v]) => (
+                  <option key={k} value={k}>{v}</option>
+                ))}
+              </select>
+              <select
+                value={industryFilter}
+                onChange={(e) => setIndustryFilter(e.target.value)}
+                className="px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-sm text-gray-300 focus:ring-2 focus:ring-violet-500 focus:border-transparent hidden md:block"
+                data-testid="filter-industry"
+              >
+                <option value="">All Industries</option>
+                {(Object.entries(INDUSTRY_TYPE_LABELS) as [IndustryType, string][]).map(([k, v]) => (
+                  <option key={k} value={k}>{v}</option>
+                ))}
+              </select>
               <button
                 onClick={() => setShowShareModal(true)}
                 className="flex items-center gap-2 px-4 py-2 border border-violet-600 text-violet-400 rounded-lg hover:bg-violet-900/30 transition font-medium"

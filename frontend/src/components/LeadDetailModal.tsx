@@ -39,11 +39,13 @@ import {
   Eye,
   BarChart3,
   Receipt,
-  MailPlus
+  MailPlus,
+  Package
 } from 'lucide-react'
 import QuotesTab from './QuotesTab'
 import EmailComposerModal from './EmailComposerModal'
 import BookingModal from './BookingModal'
+import DeliverablesTab from './DeliverablesTab'
 import { 
   trackFileUploaded, 
   trackFileDownloaded, 
@@ -127,7 +129,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [newNote, setNewNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
-  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details'>('activity');
+  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables'>('activity');
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -504,6 +506,20 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
               Details
             </div>
           </button>
+          <button
+            onClick={() => setActiveTab('deliverables')}
+            className={`flex-1 px-4 py-3 text-sm font-medium transition ${
+              activeTab === 'deliverables' 
+                ? 'text-violet-400 border-b-2 border-violet-500 bg-violet-900/20' 
+                : 'text-gray-400 hover:text-gray-300'
+            }`}
+            data-testid="tab-deliverables"
+          >
+            <div className="flex items-center justify-center gap-2">
+              <Package className="w-4 h-4" />
+              Deliverables
+            </div>
+          </button>
         </div>
 
         {/* Content */}
@@ -739,6 +755,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                 fetchActivities();
               }} 
             />
+          ) : activeTab === 'deliverables' ? (
+            <div className="p-6">
+              <DeliverablesTab leadId={lead.id} />
+            </div>
           ) : (
             <div className="p-6">
               {/* Status & Actions */}
