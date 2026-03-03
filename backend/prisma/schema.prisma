@@ -57,6 +57,7 @@ model User {
   quotes        Quote[]
   quoteTemplates QuoteTemplate[]
   bookings      Booking[]
+  portfolio     Portfolio[]
   
   @@map("users")
 }
@@ -414,4 +415,40 @@ enum BookingStatus {
   CANCELLED     // Booking was cancelled
   RESCHEDULED   // Booking was rescheduled (creates new booking)
 }
-// Force rebuild
+
+// =====================
+// PORTFOLIO
+// =====================
+
+model Portfolio {
+  id          String            @id @default(cuid())
+  userId      String
+  title       String
+  description String?           @db.Text
+  imageUrl    String            // Supabase Storage URL
+  imagePath   String?           // Storage path for deletion
+  category    PortfolioCategory
+  tags        String[]          @default([])
+  featured    Boolean           @default(false)
+  order       Int               @default(0)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  
+  // Relations
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("portfolios")
+  @@index([userId])
+  @@index([category])
+  @@index([featured])
+}
+
+enum PortfolioCategory {
+  PHOTOGRAPHY
+  VIDEOGRAPHY
+  GRAPHIC_DESIGN
+  WEB_DESIGN
+  BRANDING
+  CONTENT_CREATION
+  OTHER
+}

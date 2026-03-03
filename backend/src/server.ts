@@ -12,6 +12,7 @@ import settingsRoutes from './routes/settings';
 import analyticsRoutes from './routes/analytics';
 import quoteTemplatesRoutes from './routes/quote-templates';
 import bookingsRoutes from './routes/bookings';
+import portfolioRoutes from './routes/portfolio';
 import { ensureBucketExists } from './services/storage';
 
 // Load environment variables
@@ -90,6 +91,7 @@ app.use('/settings', settingsRoutes); // User settings routes
 app.use('/analytics', analyticsRoutes); // Analytics routes
 app.use('/quote-templates', quoteTemplatesRoutes); // Quote templates routes
 app.use('/bookings', bookingsRoutes); // Bookings routes
+app.use('/portfolio', portfolioRoutes); // Portfolio routes
 // app.use('/messages', messagesRoutes);
 
 // Welcome route - with /api prefix
