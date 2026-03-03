@@ -59,7 +59,7 @@ const Signup = () => {
     trackSignup('email')
     
     // Auto-login after signup
-    const loginResult = await authApi.login(formData.email, formData.password)
+    const loginResult = await authApi.login({ email: formData.email, password: formData.password })
     if (loginResult.data?.token) {
       localStorage.setItem('token', loginResult.data.token)
       setSuccess('Account created! Setting up your workspace...')
