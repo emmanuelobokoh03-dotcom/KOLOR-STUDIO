@@ -65,6 +65,12 @@ export const authApi = {
   getMe: async () => {
     return request<{ user: User }>('/auth/me');
   },
+  onboarding: async (primaryIndustry: string) => {
+    return request<{ message: string; user: any; templates: any[] }>('/auth/onboarding', {
+      method: 'POST',
+      body: JSON.stringify({ primaryIndustry }),
+    });
+  },
 };
 
 // Leads API

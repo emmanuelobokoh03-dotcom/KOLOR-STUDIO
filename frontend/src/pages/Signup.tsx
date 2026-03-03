@@ -57,10 +57,17 @@ const Signup = () => {
     }
 
     trackSignup('email')
-    setSuccess('Account created successfully! Redirecting to login...')
-    setTimeout(() => {
-      navigate('/login')
-    }, 2000)
+    
+    // Auto-login after signup
+    const loginResult = await authApi.login(formData.email, formData.password)
+    if (loginResult.data?.token) {
+      localStorage.setItem('token', loginResult.data.token)
+      setSuccess('Account created! Setting up your workspace...')
+      setTimeout(() => navigate('/onboarding'), 1000)
+    } else {
+      setSuccess('Account created! Please log in.')
+      setTimeout(() => navigate('/login'), 2000)
+    }
   }
 
   return (

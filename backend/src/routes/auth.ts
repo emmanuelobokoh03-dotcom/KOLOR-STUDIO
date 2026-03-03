@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendPasswordResetEmail } from '../services/email';
+import { seedTemplatesForUser } from '../seeds/systemTemplates';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -88,6 +89,40 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+// POST /api/auth/onboarding - Set industry and seed workflow templates
+router.post('/onboarding', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const { primaryIndustry } = req.body;
+
+    const validIndustries = ['PHOTOGRAPHY', 'VIDEOGRAPHY', 'GRAPHIC_DESIGN', 'WEB_DESIGN', 'ILLUSTRATION', 'FINE_ART', 'SCULPTURE', 'BRANDING', 'CONTENT_CREATION', 'OTHER'];
+
+    if (!primaryIndustry || !validIndustries.includes(primaryIndustry)) {
+      res.status(400).json({ error: 'Validation Error', message: 'Valid primaryIndustry is required' });
+      return;
+    }
+
+    // Update user's primary industry
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { primaryIndustry: primaryIndustry as any },
+      select: { id: true, firstName: true, studioName: true, primaryIndustry: true }
+    });
+
+    // Seed workflow templates for this industry
+    const templates = await seedTemplatesForUser(userId, primaryIndustry);
+
+    res.json({
+      message: 'Onboarding complete',
+      user,
+      templates: templates.map(t => ({ id: t.id, name: t.name, stageCount: t.stages?.length || 0 })),
+    });
+  } catch (error) {
+    console.error('Onboarding error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to complete onboarding' });
+  }
+});
+
 // POST /api/auth/login - Authenticate user
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
   try {
@@ -158,6 +193,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
         lastName: user.lastName,
         studioName: user.studioName,
         role: user.role,
+        primaryIndustry: user.primaryIndustry,
       }
     });
   } catch (error) {
@@ -192,6 +228,7 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response): Promi
         currencyPosition: true,
         numberFormat: true,
         defaultTaxRate: true,
+        primaryIndustry: true,
         createdAt: true,
         lastLoginAt: true,
       }
