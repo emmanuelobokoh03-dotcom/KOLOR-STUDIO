@@ -1,40 +1,31 @@
 # KOLOR STUDIO v2 - Product Requirements Document
 
 ## Original Problem Statement
-Build a CRM platform for creative professionals with JWT authentication, Lead Pipeline management, email notifications, and activity tracking. Evolving into a universal CRM for all creative professionals (photographers, designers, illustrators, fine artists, sculptors, etc.).
+Build a CRM platform for creative professionals with JWT authentication, Lead Pipeline management, email notifications, and activity tracking. Evolving into a universal CRM for all creative professionals.
 
 ## Tech Stack
 - **Frontend**: React 18 + TypeScript + Vite + TailwindCSS + react-big-calendar
-- **Backend**: Node.js + Express + TypeScript
-- **Database**: PostgreSQL (Supabase) + Prisma ORM
-- **Authentication**: JWT with bcrypt password hashing
-- **Email**: Resend for transactional emails
-- **Storage**: Supabase Storage for file/image uploads
+- **Backend**: Node.js + Express + TypeScript + Prisma + Supabase PostgreSQL
+- **Auth**: JWT + bcrypt | **Email**: Resend | **Storage**: Supabase Storage
 
 ## What's Been Implemented
 
 ### Core Features (Phases 1-24) — All DONE
-- JWT Authentication (signup, login, password reset)
-- Lead Pipeline (CRUD, Kanban board, List view, public inquiry form)
-- Email Notifications (Resend, branded templates)
-- Activity Logging, File Attachments, Client Portal
-- Quote/Proposal System (PDF export, international currency)
-- Dark Theme, Share Inquiry Form (QR), Legal Pages
-- Revenue Analytics Dashboard (Recharts)
-- Calendar + Booking System (react-big-calendar)
-- Quote Templates, Custom Email Composer
-- Landing Page, Support Infrastructure
+- JWT Auth, Lead Pipeline (Kanban + List), Email Notifications, Activity Logging
+- File Attachments, Client Portal, Quote/Proposal System, Dark Theme
+- Revenue Analytics, Calendar + Booking System, Quote Templates
+- Landing Page, Legal Pages, Support Infrastructure
 
-### Phase 25: Portfolio System — DONE (Mar 3, 2026)
-- Full CRUD API, public showcase, image upload, lightbox, sharing
+### Phase 25: Portfolio System — DONE
+### Phase 26: Schema Refactor (DB) — DONE
+### Phase 27: Backend API Refactor — DONE (Mar 3, 2026)
 
-### Phase 26: Creative Professionals Schema Refactor — DONE (Mar 3, 2026)
-- 5 new enums: ProjectType, IndustryType, DeliverableType, StageType, DeliverableStatus
-- 3 new tables: workflow_templates, workflow_stages, deliverables
-- New Lead fields: projectType, industry, deliverableType, workflowData
-- New User field: primaryIndustry
-- 100% backwards compatible, all existing data intact
-- Migration SQL: /app/kolor-studio-v2/migrations/phase1_creative_professionals_refactor.sql
+New API endpoints:
+- **Workflow Templates** (6 endpoints): GET/POST/PATCH/DELETE /api/workflow-templates, GET /api/workflow-templates/:id, GET /api/workflow-templates/industry/:industry
+- **Deliverables** (7 endpoints): GET/POST /api/leads/:leadId/deliverables, GET/PATCH/DELETE /api/deliverables/:id, PATCH /api/deliverables/:id/status
+- **Updated Leads**: GET with ?projectType & ?industry filters, POST/PATCH accept projectType/industry/deliverableType
+- **Fixed**: Lead GET/:id and PATCH/:id now include unassigned leads (OR assignedToId)
+- **Fixed**: Backend route prefixes (/api), files/quotes double-path bugs
 
 ## Test Credentials
 - emmanuelobokoh03@gmail.com / successful26#
@@ -43,21 +34,18 @@ Build a CRM platform for creative professionals with JWT authentication, Lead Pi
 ## Prioritized Backlog
 
 ### P0 — Big Refactor (In Progress)
-- [x] Phase 1: Database Schema (enums, tables, fields) — DONE
-- [ ] Phase 2: Backend API (workflow CRUD, deliverable CRUD, lead updates)
+- [x] Phase 1: Database Schema — DONE
+- [x] Phase 2: Backend API — DONE
 - [ ] Phase 3: Frontend UI (project type selectors, workflow views, deliverable tracker)
 - [ ] Phase 4: System workflow templates (pre-built per industry)
 
 ### P1 — Next Up
-- [ ] Mobile responsiveness improvements
-- [ ] UI/UX polish across all views
+- [ ] Mobile responsiveness
+- [ ] UI/UX polish
 
 ### P2 — Medium Priority
-- [ ] Portfolio sharing integration (link in quote emails, client portal)
-- [ ] Recurring calendar events
-- [ ] Email verification for signups
+- [ ] Portfolio sharing (link in emails/portal)
+- [ ] Recurring events
 
-### P3 — Lower Priority
-- [ ] Invoice generation from accepted quotes
-- [ ] Multi-user team support
-- [ ] Messaging/chat system
+### P3 — Backlog
+- [ ] Invoice generation, Multi-user teams, Messaging
