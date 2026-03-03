@@ -7,17 +7,22 @@ import {
   Save,
   Check,
   Globe,
-  Percent
+  Percent,
+  Image as ImageIcon
 } from 'lucide-react'
 import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 import { formatCurrency, NUMBER_FORMAT_OPTIONS } from '../utils/currency'
+import PortfolioSettings from './PortfolioSettings'
 
 interface SettingsModalProps {
   onClose: () => void;
   onSettingsUpdate?: (settings: UserSettings) => void;
 }
 
+type SettingsTab = 'currency' | 'portfolio';
+
 export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsModalProps) {
+  const [activeTab, setActiveTab] = useState<SettingsTab>('currency')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -122,7 +127,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div 
-        className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col border border-dark-border"
+        className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-dark-border"
         onClick={e => e.stopPropagation()}
         data-testid="settings-modal"
       >
@@ -133,7 +138,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               <Settings className="w-6 h-6" />
               <div>
                 <h2 className="text-xl font-bold">Settings</h2>
-                <p className="text-violet-100 text-sm">Currency & formatting preferences</p>
+                <p className="text-violet-100 text-sm">Manage your preferences</p>
               </div>
             </div>
             <button 
@@ -143,15 +148,45 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               <X className="w-5 h-5" />
             </button>
           </div>
+          
+          {/* Tabs */}
+          <div className="flex gap-1 mt-4 -mb-6 px-1">
+            <button
+              onClick={() => setActiveTab('currency')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-t-lg text-sm font-medium transition ${
+                activeTab === 'currency'
+                  ? 'bg-dark-card text-white'
+                  : 'bg-white/10 text-violet-100 hover:bg-white/20'
+              }`}
+            >
+              <DollarSign className="w-4 h-4" />
+              Currency
+            </button>
+            <button
+              onClick={() => setActiveTab('portfolio')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-t-lg text-sm font-medium transition ${
+                activeTab === 'portfolio'
+                  ? 'bg-dark-card text-white'
+                  : 'bg-white/10 text-violet-100 hover:bg-white/20'
+              }`}
+            >
+              <ImageIcon className="w-4 h-4" />
+              Portfolio
+            </button>
+          </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {error && (
-            <div className="p-4 bg-red-900/30 border border-red-700/50 rounded-lg text-red-400 text-sm">
-              {error}
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto p-6">
+          {activeTab === 'portfolio' ? (
+            <PortfolioSettings />
+          ) : (
+            <div className="space-y-6">
+              {error && (
+                <div className="p-4 bg-red-900/30 border border-red-700/50 rounded-lg text-red-400 text-sm">
+                  {error}
+                </div>
+              )}
 
           {/* Currency Selection */}
           <div>
@@ -302,9 +337,12 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               This is how amounts will appear in quotes and the dashboard
             </p>
           </div>
+            </div>
+          )}
         </div>
 
-        {/* Footer */}
+        {/* Footer - only show for currency tab */}
+        {activeTab === 'currency' && (
         <div className="p-6 border-t border-dark-border flex items-center justify-between flex-shrink-0">
           <button
             onClick={onClose}
@@ -332,6 +370,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
             {saved ? 'Saved!' : 'Save Settings'}
           </button>
         </div>
+        )}
       </div>
     </div>
   )

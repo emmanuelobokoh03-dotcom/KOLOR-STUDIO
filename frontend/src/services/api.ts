@@ -267,6 +267,40 @@ export type ActivityType =
 
 export type BookingStatus = 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'RESCHEDULED';
 
+export type PortfolioCategory = 
+  | 'PHOTOGRAPHY'
+  | 'VIDEOGRAPHY'
+  | 'GRAPHIC_DESIGN'
+  | 'WEB_DESIGN'
+  | 'BRANDING'
+  | 'CONTENT_CREATION'
+  | 'OTHER';
+
+export const PORTFOLIO_CATEGORY_LABELS: Record<PortfolioCategory, string> = {
+  PHOTOGRAPHY: 'Photography',
+  VIDEOGRAPHY: 'Videography',
+  GRAPHIC_DESIGN: 'Graphic Design',
+  WEB_DESIGN: 'Web Design',
+  BRANDING: 'Branding',
+  CONTENT_CREATION: 'Content Creation',
+  OTHER: 'Other',
+};
+
+export interface PortfolioItem {
+  id: string;
+  userId: string;
+  title: string;
+  description?: string;
+  imageUrl: string;
+  imagePath?: string;
+  category: PortfolioCategory;
+  tags: string[];
+  featured: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Booking {
   id: string;
   leadId: string;
@@ -931,4 +965,80 @@ export const bookingsApi = {
   },
 };
 
-export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi };
+// Portfolio API
+export const portfolioApi = {
+  // Get all portfolio items
+  getAll: async (params?: { category?: string; featured?: string }) => {
+    const query = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
+    return request<{ portfolio: PortfolioItem[]; count: number }>(`/portfolio${query}`);
+  },
+
+  // Get public portfolio
+  getPublic: async (userId: string, params?: { category?: string; featured?: string }) => {
+    const query = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
+    return request<{ user: { id: string; name: string; studioName?: string }; portfolio: PortfolioItem[]; count: number }>(`/portfolio/public/${userId}${query}`);
+  },
+
+  // Get single item
+  getOne: async (id: string) => {
+    return request<{ item: PortfolioItem }>(`/portfolio/${id}`);
+  },
+
+  // Create portfolio item with image
+  create: async (formData: FormData) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/portfolio`, {
+      method: 'POST',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: formData,
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: true, message: data.message || 'Failed to create portfolio item', data: null };
+    }
+    return { error: false, message: data.message, data };
+  },
+
+  // Update portfolio item
+  update: async (id: string, formData: FormData) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/portfolio/${id}`, {
+      method: 'PATCH',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: formData,
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: true, message: data.message || 'Failed to update portfolio item', data: null };
+    }
+    return { error: false, message: data.message, data };
+  },
+
+  // Delete portfolio item
+  delete: async (id: string) => {
+    return request<{ message: string }>(`/portfolio/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Toggle featured status
+  toggleFeatured: async (id: string) => {
+    return request<{ message: string; item: PortfolioItem }>(`/portfolio/${id}/featured`, {
+      method: 'PATCH',
+    });
+  },
+
+  // Reorder items
+  reorder: async (items: Array<{ id: string; order: number }>) => {
+    return request<{ message: string }>('/portfolio/reorder', {
+      method: 'PATCH',
+      body: JSON.stringify({ items }),
+    });
+  },
+};
+
+export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi };
