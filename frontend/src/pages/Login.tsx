@@ -52,22 +52,22 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg flex items-center justify-center px-6">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-[#0F0F0F] flex items-center justify-center px-6">
+      <div className="max-w-md w-full animate-fade-in">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Sparkles className="w-8 h-8 text-violet-500" />
+          <Link to="/" className="inline-flex items-center gap-3 mb-6 group">
+            <Sparkles className="w-8 h-8 text-violet-500 group-hover:text-violet-400 transition-colors duration-200" />
             <span className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
           </Link>
-          <h1 className="text-3xl font-bold mb-2 text-white">Welcome back</h1>
-          <p className="text-gray-400">Sign in to manage your creative business</p>
+          <h1 className="text-3xl font-bold mb-2 text-[#FAFAFA]">Welcome back</h1>
+          <p className="text-[#A3A3A3]">Sign in to manage your creative business</p>
         </div>
 
-        <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
+        <div className="bg-[#1A1A1A] rounded-2xl shadow-2xl p-8 border border-[#333]">
           {error && (
-            <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400" data-testid="login-error">
+            <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-xl flex items-center gap-3 text-red-400 animate-fade-in" data-testid="login-error">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -75,7 +75,7 @@ const Login = () => {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-[#A3A3A3] mb-2">
                 Email
               </label>
               <input
@@ -83,14 +83,14 @@ const Login = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all duration-200 text-white placeholder-gray-500"
                 placeholder="you@example.com"
                 data-testid="login-email"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-[#A3A3A3] mb-2">
                 Password
               </label>
               <input
@@ -98,7 +98,7 @@ const Login = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all duration-200 text-white placeholder-gray-500"
                 placeholder="••••••••"
                 data-testid="login-password"
               />
@@ -107,7 +107,7 @@ const Login = () => {
             <div className="flex items-center justify-end">
               <Link
                 to="/forgot-password"
-                className="text-sm text-violet-400 hover:text-violet-300 font-medium"
+                className="text-sm text-violet-400 hover:text-violet-300 font-medium transition-colors duration-200"
                 data-testid="forgot-password-link"
               >
                 Forgot password?
@@ -117,7 +117,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-violet-600 text-white py-3 rounded-lg hover:bg-violet-500 transition-all shadow-lg shadow-violet-900/30 hover:shadow-xl hover:shadow-violet-900/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-violet-600 text-white py-3 rounded-xl hover:bg-violet-500 transition-all duration-200 shadow-lg shadow-violet-900/30 hover:shadow-xl hover:shadow-violet-900/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               data-testid="login-submit"
             >
               {loading ? (
@@ -132,9 +132,9 @@ const Login = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-[#A3A3A3]">
               Don't have an account?{' '}
-              <Link to="/signup" className="text-violet-400 hover:text-violet-300 font-semibold">
+              <Link to="/signup" className="text-violet-400 hover:text-violet-300 font-semibold transition-colors duration-200">
                 Sign up
               </Link>
             </p>

@@ -3,9 +3,40 @@ import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotification, sendPortalLinkEmail } from '../services/email';
 import { logActivity } from './activities';
+import { uploadFile, ensureBucketExists } from '../services/storage';
+import multer from 'multer';
 
 const router = Router();
 const prisma = new PrismaClient();
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB
+
+// POST /api/leads/upload-cover - Upload cover image for a lead
+router.post('/upload-cover', authMiddleware, upload.single('coverImage'), async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.file) {
+      res.status(400).json({ error: 'No file provided' });
+      return;
+    }
+
+    await ensureBucketExists();
+    const result = await uploadFile(
+      req.file.buffer,
+      req.file.originalname,
+      req.file.mimetype,
+      'cover-images'
+    );
+
+    if (!result) {
+      res.status(500).json({ error: 'Failed to upload image' });
+      return;
+    }
+
+    res.json({ url: result.url, path: result.path });
+  } catch (error) {
+    console.error('Cover image upload error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to upload cover image' });
+  }
+});
 
 // GET /api/leads - Get all leads for authenticated user
 router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
@@ -81,6 +112,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
         projectType: true,
         industry: true,
         deliverableType: true,
+        coverImage: true,
       }
     });
 
@@ -308,6 +340,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
       projectType,
       industry,
       deliverableType,
+      coverImage,
     } = req.body;
 
     // Validation
@@ -340,6 +373,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
         projectType: projectType || 'SERVICE',
         industry: industry || null,
         deliverableType: deliverableType || 'DIGITAL_FILES',
+        coverImage: coverImage || null,
       },
     });
 

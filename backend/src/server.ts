@@ -42,7 +42,7 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5173',
     'http://localhost:3000',
-    'https://booking-system-166.preview.emergentagent.com'
+    'https://polish-studio-4.preview.emergentagent.com'
   ],
   credentials: true,
 }));

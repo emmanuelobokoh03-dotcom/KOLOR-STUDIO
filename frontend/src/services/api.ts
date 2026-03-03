@@ -198,6 +198,31 @@ export const leadsApi = {
       method: 'POST',
     });
   },
+
+  uploadCoverImage: async (file: File) => {
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
+    formData.append('coverImage', file);
+
+    try {
+      const response = await fetch(`${API_URL}/leads/upload-cover`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        return { error: data.error || 'Upload failed', message: data.message };
+      }
+      return { data };
+    } catch (error) {
+      console.error('Cover image upload error:', error);
+      return { error: 'Network error', message: 'Failed to upload cover image' };
+    }
+  },
 };
 
 // Types
@@ -497,6 +522,7 @@ export interface Lead {
   industry?: IndustryType | null;
   deliverableType?: DeliverableType;
   workflowData?: any;
+  coverImage?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -519,6 +545,7 @@ export interface CreateLeadData {
   projectType?: ProjectType;
   industry?: IndustryType;
   deliverableType?: DeliverableType;
+  coverImage?: string;
 }
 
 export interface SubmitLeadData {

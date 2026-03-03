@@ -8,7 +8,7 @@ import os
 import time
 import hashlib
 
-BASE_URL = "https://booking-system-166.preview.emergentagent.com"
+BASE_URL = "https://polish-studio-4.preview.emergentagent.com"
 
 # Test user credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

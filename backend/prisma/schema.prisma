@@ -151,6 +151,7 @@ model Lead {
   industry        IndustryType?
   deliverableType DeliverableType @default(DIGITAL_FILES)
   workflowData    Json?           // Stores workflow stage progress & custom data
+  coverImage      String?         // URL to cover image for visual project cards
   
   // Lead Management
   status          LeadStatus  @default(NEW)

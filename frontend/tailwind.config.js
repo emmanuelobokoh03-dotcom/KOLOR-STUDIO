@@ -7,7 +7,6 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Dark theme colors
         dark: {
           bg: '#0f0f0f',
           'bg-secondary': '#1a1a1a',
@@ -16,7 +15,6 @@ export default {
           border: '#333333',
           'border-light': '#404040',
         },
-        // Brand colors - sophisticated palette for creatives
         primary: {
           50: '#f5f3ff',
           100: '#ede9fe',
@@ -48,8 +46,10 @@ export default {
       },
       animation: {
         'slide-in': 'slideIn 0.3s ease-out',
-        'fade-in': 'fadeIn 0.2s ease-out',
+        'fade-in': 'fadeIn 0.3s ease-out',
+        'slide-up': 'slideUp 0.4s ease-out',
         'bounce-subtle': 'bounceSubtle 2s infinite',
+        'scale-in': 'scaleIn 0.2s ease-out',
       },
       keyframes: {
         slideIn: {
@@ -60,9 +60,17 @@ export default {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        slideUp: {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
         bounceSubtle: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-5px)' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
         },
       },
     },

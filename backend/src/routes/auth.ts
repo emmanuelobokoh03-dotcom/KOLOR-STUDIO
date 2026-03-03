@@ -177,6 +177,9 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       { expiresIn: '7d' }
     );
 
+    // Track first login (lastLoginAt is null on first ever login)
+    const isFirstLogin = !user.lastLoginAt;
+
     // Update last login
     await prisma.user.update({
       where: { id: user.id },
@@ -194,6 +197,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
         studioName: user.studioName,
         role: user.role,
         primaryIndustry: user.primaryIndustry,
+        isFirstLogin,
       }
     });
   } catch (error) {

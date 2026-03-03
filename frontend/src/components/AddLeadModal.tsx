@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { 
   ServiceType, 
   LeadSource,
@@ -15,7 +15,8 @@ import {
 import { 
   X, Loader2, AlertCircle, CheckCircle,
   Camera, Briefcase, Palette, ShoppingBag,
-  Monitor, PenTool, Brush, Megaphone, Scissors, Globe, Package, FileImage, Printer, Wrench, Layout, Layers
+  Monitor, PenTool, Brush, Megaphone, Scissors, Globe, Package, FileImage, Printer, Wrench, Layout, Layers,
+  Upload, ImageIcon, Trash2
 } from 'lucide-react'
 import { trackLeadCreated } from '../utils/analytics'
 
@@ -67,6 +68,10 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<CreateLeadData>({
     clientName: '',
     clientEmail: '',
@@ -87,6 +92,28 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
     setError('');
   };
 
+  const handleCoverImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Please select an image file');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Image must be smaller than 10MB');
+      return;
+    }
+    setCoverImageFile(file);
+    setCoverImagePreview(URL.createObjectURL(file));
+    setError('');
+  };
+
+  const removeCoverImage = () => {
+    setCoverImageFile(null);
+    setCoverImagePreview(null);
+    if (coverInputRef.current) coverInputRef.current.value = '';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -98,7 +125,24 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
       return;
     }
 
-    const result = await leadsApi.create(formData);
+    let coverImageUrl: string | undefined;
+
+    // Upload cover image first if selected
+    if (coverImageFile) {
+      setUploadingCover(true);
+      const uploadResult = await leadsApi.uploadCoverImage(coverImageFile);
+      setUploadingCover(false);
+      if (uploadResult.error) {
+        setError('Failed to upload cover image. Creating lead without it.');
+      } else if (uploadResult.data?.url) {
+        coverImageUrl = uploadResult.data.url;
+      }
+    }
+
+    const result = await leadsApi.create({
+      ...formData,
+      coverImage: coverImageUrl,
+    });
     setLoading(false);
 
     if (result.error) {
@@ -114,13 +158,13 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
     }, 1000);
   };
 
-  const inputClass = "w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-gray-500";
-  const labelClass = "block text-sm font-medium text-gray-300 mb-1";
+  const inputClass = "w-full px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-gray-500 transition-all duration-200";
+  const labelClass = "block text-sm font-medium text-[#A3A3A3] mb-1.5";
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div 
-        className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-dark-border"
+        className="bg-[#1A1A1A] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-[#333] animate-fade-in"
         onClick={(e) => e.stopPropagation()}
         data-testid="add-lead-modal"
       >
@@ -129,9 +173,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold">Add New Lead</h2>
-              <p className="text-violet-100 mt-1">Manually add a potential client</p>
+              <p className="text-violet-100 mt-1 text-sm">Manually add a potential client</p>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition" data-testid="add-lead-close">
+            <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-xl transition-all duration-200" data-testid="add-lead-close">
               <X className="w-6 h-6" />
             </button>
           </div>
@@ -140,23 +184,74 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
         {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[70vh]">
           {error && (
-            <div className="mb-4 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400">
+            <div className="mb-5 p-4 bg-red-900/30 border border-red-700/50 rounded-xl flex items-center gap-3 text-red-400 animate-fade-in">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
           {success && (
-            <div className="mb-4 p-4 bg-green-900/30 border border-green-700/50 rounded-lg flex items-center gap-3 text-green-400">
+            <div className="mb-5 p-4 bg-green-900/30 border border-green-700/50 rounded-xl flex items-center gap-3 text-green-400 animate-fade-in">
               <CheckCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">Lead created successfully!</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Cover Image Upload */}
+            <div>
+              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Cover Image</h3>
+              <input
+                type="file"
+                ref={coverInputRef}
+                accept="image/*"
+                onChange={handleCoverImageSelect}
+                className="hidden"
+                data-testid="cover-image-input"
+              />
+              {coverImagePreview ? (
+                <div className="relative group rounded-xl overflow-hidden border border-[#333]">
+                  <img 
+                    src={coverImagePreview} 
+                    alt="Cover preview" 
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => coverInputRef.current?.click()}
+                      className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-xl text-sm font-medium hover:bg-white/30 transition-all duration-200"
+                    >
+                      Change
+                    </button>
+                    <button
+                      type="button"
+                      onClick={removeCoverImage}
+                      className="px-4 py-2 bg-red-600/80 backdrop-blur-sm text-white rounded-xl text-sm font-medium hover:bg-red-500 transition-all duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => coverInputRef.current?.click()}
+                  className="w-full h-36 border-2 border-dashed border-[#333] rounded-xl flex flex-col items-center justify-center gap-2 hover:border-violet-500/50 hover:bg-violet-900/10 transition-all duration-200"
+                  data-testid="cover-image-upload-btn"
+                >
+                  <div className="p-3 bg-[#262626] rounded-xl">
+                    <ImageIcon className="w-6 h-6 text-[#A3A3A3]" />
+                  </div>
+                  <span className="text-sm text-[#A3A3A3]">Click to upload a cover image</span>
+                  <span className="text-xs text-gray-600">JPG, PNG, WebP up to 10MB</span>
+                </button>
+              )}
+            </div>
+
             {/* Project Type Selector */}
             <div>
-              <h3 className="text-lg font-semibold mb-3 text-white">Project Type</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2" data-testid="project-type-selector">
+              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Project Type</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3" data-testid="project-type-selector">
                 {PROJECT_TYPE_CONFIG.map(({ type, icon: Icon, desc, color }) => {
                   const selected = formData.projectType === type;
                   return (
@@ -165,17 +260,17 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       type="button"
                       onClick={() => setFormData({ ...formData, projectType: type })}
                       data-testid={`project-type-${type.toLowerCase()}`}
-                      className={`p-3 rounded-xl border-2 text-left transition-all ${
+                      className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                         selected
                           ? `border-${color}-500 bg-${color}-500/10`
-                          : 'border-dark-border bg-dark-bg-secondary hover:border-gray-600'
+                          : 'border-[#333] bg-[#0F0F0F] hover:border-gray-600'
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mb-1 ${selected ? `text-${color}-400` : 'text-gray-400'}`} />
-                      <div className={`text-sm font-medium ${selected ? 'text-white' : 'text-gray-300'}`}>
+                      <Icon className={`w-5 h-5 mb-1.5 ${selected ? `text-${color}-400` : 'text-[#A3A3A3]'}`} />
+                      <div className={`text-sm font-medium ${selected ? 'text-[#FAFAFA]' : 'text-[#A3A3A3]'}`}>
                         {PROJECT_TYPE_LABELS[type]}
                       </div>
-                      <div className="text-xs text-gray-500">{desc}</div>
+                      <div className="text-xs text-gray-600 mt-0.5">{desc}</div>
                     </button>
                   );
                 })}
@@ -184,7 +279,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Client Info */}
             <div>
-              <h3 className="text-lg font-semibold mb-3 text-white">Client Information</h3>
+              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Client Information</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className={labelClass}>Client Name *</label>
@@ -207,7 +302,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Project Details */}
             <div>
-              <h3 className="text-lg font-semibold mb-3 text-white">Project Details</h3>
+              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Project Details</h3>
               <div className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
@@ -228,10 +323,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       data-testid="add-lead-industry"
                     >
                       <option value="">Select industry...</option>
-                      {(Object.keys(INDUSTRY_TYPE_LABELS) as IndustryType[]).map((ind) => {
-                        const Icon = INDUSTRY_ICONS[ind];
-                        return <option key={ind} value={ind}>{INDUSTRY_TYPE_LABELS[ind]}</option>;
-                      })}
+                      {(Object.keys(INDUSTRY_TYPE_LABELS) as IndustryType[]).map((ind) => (
+                        <option key={ind} value={ind}>{INDUSTRY_TYPE_LABELS[ind]}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -266,8 +360,8 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Deliverable Type */}
             <div>
-              <h3 className="text-lg font-semibold mb-3 text-white">Deliverable Type</h3>
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-2" data-testid="deliverable-type-selector">
+              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Deliverable Type</h3>
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-3" data-testid="deliverable-type-selector">
                 {DELIVERABLE_CONFIG.map(({ type, icon: Icon, color }) => {
                   const selected = formData.deliverableType === type;
                   return (
@@ -276,14 +370,14 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       type="button"
                       onClick={() => setFormData({ ...formData, deliverableType: type })}
                       data-testid={`deliverable-type-${type.toLowerCase().replace('_', '-')}`}
-                      className={`p-2.5 rounded-xl border-2 text-center transition-all ${
+                      className={`p-3 rounded-xl border-2 text-center transition-all duration-200 ${
                         selected
                           ? `border-${color}-500 bg-${color}-500/10`
-                          : 'border-dark-border bg-dark-bg-secondary hover:border-gray-600'
+                          : 'border-[#333] bg-[#0F0F0F] hover:border-gray-600'
                       }`}
                     >
-                      <Icon className={`w-4 h-4 mx-auto mb-1 ${selected ? `text-${color}-400` : 'text-gray-400'}`} />
-                      <div className={`text-xs font-medium ${selected ? 'text-white' : 'text-gray-400'}`}>
+                      <Icon className={`w-4 h-4 mx-auto mb-1 ${selected ? `text-${color}-400` : 'text-[#A3A3A3]'}`} />
+                      <div className={`text-xs font-medium ${selected ? 'text-[#FAFAFA]' : 'text-[#A3A3A3]'}`}>
                         {DELIVERABLE_TYPE_LABELS[type]}
                       </div>
                     </button>
@@ -294,9 +388,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Conditional Fields */}
             {formData.projectType === 'COMMISSION' && (
-              <div className="p-4 bg-amber-900/10 border border-amber-800/30 rounded-xl space-y-3">
+              <div className="p-5 bg-amber-900/10 border border-amber-800/30 rounded-xl space-y-4">
                 <h4 className="text-sm font-medium text-amber-400">Commission Details</h4>
-                <div className="grid md:grid-cols-2 gap-3">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Dimensions</label>
                     <input type="text" name="dimensions" onChange={handleChange} className={inputClass} placeholder="24x36 inches" />
@@ -310,9 +404,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
             )}
 
             {(formData.deliverableType === 'PHYSICAL_ART' || formData.deliverableType === 'PRINTS') && formData.projectType !== 'COMMISSION' && (
-              <div className="p-4 bg-emerald-900/10 border border-emerald-800/30 rounded-xl space-y-3">
+              <div className="p-5 bg-emerald-900/10 border border-emerald-800/30 rounded-xl space-y-4">
                 <h4 className="text-sm font-medium text-emerald-400">Physical Deliverable Details</h4>
-                <div className="grid md:grid-cols-2 gap-3">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Dimensions</label>
                     <input type="text" onChange={handleChange} name="dimensions" className={inputClass} placeholder="12x16 inches" />
@@ -326,10 +420,20 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
             )}
 
             {/* Submit */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-dark-border">
-              <button type="button" onClick={onClose} className="px-6 py-2 text-gray-400 hover:bg-dark-card-hover rounded-lg font-medium">Cancel</button>
-              <button type="submit" disabled={loading} className="px-6 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-500 disabled:opacity-50 flex items-center gap-2" data-testid="add-lead-submit">
-                {loading ? (<><Loader2 className="w-4 h-4 animate-spin" />Creating...</>) : 'Create Lead'}
+            <div className="flex justify-end gap-3 pt-4 border-t border-[#333]">
+              <button type="button" onClick={onClose} className="px-6 py-2.5 text-[#A3A3A3] hover:bg-[#262626] rounded-xl font-medium transition-all duration-200">Cancel</button>
+              <button 
+                type="submit" 
+                disabled={loading} 
+                className="px-6 py-2.5 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-500 disabled:opacity-50 flex items-center gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-violet-500/20" 
+                data-testid="add-lead-submit"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    {uploadingCover ? 'Uploading image...' : 'Creating...'}
+                  </>
+                ) : 'Create Lead'}
               </button>
             </div>
           </form>

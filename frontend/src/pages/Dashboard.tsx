@@ -39,7 +39,6 @@ import { trackLogout, trackViewChanged } from '../utils/analytics'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
 
-// Dark theme status colors
 const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
   NEW: 'bg-blue-900/50 text-blue-300 border border-blue-700/50',
   REVIEWING: 'bg-yellow-900/50 text-yellow-300 border border-yellow-700/50',
@@ -49,6 +48,54 @@ const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
   NEGOTIATING: 'bg-pink-900/50 text-pink-300 border border-pink-700/50',
   BOOKED: 'bg-green-900/50 text-green-300 border border-green-700/50',
   LOST: 'bg-gray-800/50 text-gray-400 border border-gray-700/50',
+};
+
+// Skeleton components for loading states
+const StatCardSkeleton = () => (
+  <div className="bg-[#1A1A1A] rounded-xl p-6 border border-[#333] animate-pulse">
+    <div className="flex items-center gap-4">
+      <div className="w-12 h-12 bg-[#333] rounded-xl" />
+      <div className="space-y-2">
+        <div className="h-7 w-16 bg-[#333] rounded-md" />
+        <div className="h-4 w-24 bg-[#2a2a2a] rounded-md" />
+      </div>
+    </div>
+  </div>
+);
+
+const KanbanSkeleton = () => (
+  <div className="flex gap-5 overflow-x-auto pb-4">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div key={i} className="flex-shrink-0 w-72 rounded-xl border-2 border-[#333] bg-[#1A1A1A] animate-pulse">
+        <div className="h-12 bg-[#333] rounded-t-lg" />
+        <div className="p-4 space-y-4">
+          {[1, 2].map((j) => (
+            <div key={j} className="bg-[#1f1f1f] rounded-lg p-4 space-y-3 border border-[#333]">
+              <div className="h-32 bg-[#2a2a2a] rounded-lg" />
+              <div className="h-4 w-3/4 bg-[#333] rounded" />
+              <div className="h-3 w-1/2 bg-[#2a2a2a] rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 17) return 'Good afternoon';
+  return 'Good evening';
+};
+
+const formatCurrentDate = () => {
+  return new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 };
 
 const Dashboard = () => {
@@ -70,6 +117,7 @@ const Dashboard = () => {
   const [bookingLead, setBookingLead] = useState<Lead | null>(null)
   const [projectTypeFilter, setProjectTypeFilter] = useState<string>('')
   const [industryFilter, setIndustryFilter] = useState<string>('')
+  const [isFirstLogin, setIsFirstLogin] = useState(false)
 
   useEffect(() => {
     const init = async () => {
@@ -91,6 +139,12 @@ const Dashboard = () => {
 
       if (userResult.data?.user) {
         setUser(userResult.data.user)
+        // Check first login from localStorage
+        const hasLoggedInBefore = localStorage.getItem('kolor_has_logged_in')
+        if (!hasLoggedInBefore) {
+          setIsFirstLogin(true)
+          localStorage.setItem('kolor_has_logged_in', 'true')
+        }
       }
 
       await fetchLeads()
@@ -137,7 +191,6 @@ const Dashboard = () => {
     trackViewChanged(view)
   }
 
-  // Re-fetch when filters change
   useEffect(() => {
     if (!loading) fetchLeads();
   }, [projectTypeFilter, industryFilter]);
@@ -148,7 +201,6 @@ const Dashboard = () => {
       setLeads(leads.map(l => l.id === leadId ? result.data!.lead : l))
       fetchStats()
       
-      // If status changed to BOOKED, prompt to create a booking
       if (newStatus === 'BOOKED') {
         const lead = leads.find(l => l.id === leadId)
         if (lead) {
@@ -162,7 +214,6 @@ const Dashboard = () => {
   const handleBookingSaved = (booking: Booking) => {
     setShowBookingModal(false)
     setBookingLead(null)
-    // Refresh to update any calendar or data
     fetchLeads()
   }
 
@@ -181,10 +232,7 @@ const Dashboard = () => {
   }
 
   const filteredLeads = leads.filter(lead => {
-    // Status filter
     if (statusFilter && lead.status !== statusFilter) return false
-    
-    // Search filter
     if (!searchQuery) return true
     const query = searchQuery.toLowerCase()
     return (
@@ -194,7 +242,6 @@ const Dashboard = () => {
     )
   })
 
-  // Handler to filter by status and switch to kanban view
   const handleFilterByStatus = (status: string | null) => {
     setStatusFilter(status)
     if (status) {
@@ -202,41 +249,60 @@ const Dashboard = () => {
     }
   }
 
-  // Clear filter handler
   const clearStatusFilter = () => {
     setStatusFilter(null)
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500"></div>
+      <div className="min-h-screen bg-[#0F0F0F]">
+        <header className="bg-[#1A1A1A] border-b border-[#333] sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-[#333] rounded-lg animate-pulse" />
+              <div className="w-32 h-6 bg-[#333] rounded-lg animate-pulse" />
+            </div>
+          </div>
+        </header>
+        <main className="max-w-7xl mx-auto px-8 py-8 space-y-8">
+          <div className="space-y-2 animate-pulse">
+            <div className="h-8 w-64 bg-[#333] rounded-lg" />
+            <div className="h-5 w-48 bg-[#2a2a2a] rounded-lg" />
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {[1, 2, 3, 4].map(i => <StatCardSkeleton key={i} />)}
+          </div>
+          <KanbanSkeleton />
+        </main>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg">
-      {/* Announcement Banner */}
+    <div className="min-h-screen bg-[#0F0F0F]">
       <AnnouncementBanner />
 
       {/* Header */}
-      <header className="bg-dark-card border-b border-dark-border sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Sparkles className="w-8 h-8 text-violet-500" />
+      <header className="bg-[#1A1A1A] border-b border-[#333] sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+          <button
+            onClick={() => { setViewMode('kanban'); setStatusFilter(null); }}
+            className="flex items-center gap-3 group transition-all duration-200 hover:opacity-80"
+            data-testid="header-logo-link"
+          >
+            <Sparkles className="w-8 h-8 text-violet-500 group-hover:text-violet-400 transition-colors duration-200" />
             <span className="text-xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-400 hidden sm:inline" data-testid="user-greeting">
+          </button>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-[#A3A3A3] hidden sm:inline" data-testid="user-greeting">
               {user?.studioName || `${user?.firstName}'s Studio`}
             </span>
             <HelpMenu onOpenFeedback={() => setShowFeedback(true)} />
             <button
               onClick={() => setShowSettings(true)}
-              className="p-2 text-gray-400 hover:text-white hover:bg-dark-card-hover rounded-lg transition"
+              className="p-2.5 text-[#A3A3A3] hover:text-white hover:bg-[#262626] rounded-xl transition-all duration-200"
               data-testid="settings-button"
               title="Settings"
             >
@@ -244,104 +310,124 @@ const Dashboard = () => {
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white hover:bg-dark-card-hover rounded-lg transition"
+              className="flex items-center gap-2 px-4 py-2.5 text-[#A3A3A3] hover:text-white hover:bg-[#262626] rounded-xl transition-all duration-200"
               data-testid="logout-button"
             >
               <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Logout</span>
+              <span className="hidden sm:inline text-sm font-medium">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-8 py-8">
+        {/* Welcome Message */}
+        <div className="mb-8" data-testid="welcome-section">
+          {isFirstLogin ? (
+            <div className="animate-fade-in">
+              <h1 className="text-3xl font-bold text-[#FAFAFA]" data-testid="welcome-first-login">
+                Welcome to KOLOR STUDIO, {user?.firstName}!
+              </h1>
+              <p className="text-base text-[#A3A3A3] mt-2">
+                Your creative workspace is ready. Start by adding your first lead or sharing your inquiry form.
+              </p>
+            </div>
+          ) : (
+            <div className="animate-fade-in">
+              <h1 className="text-3xl font-bold text-[#FAFAFA]" data-testid="welcome-back">
+                {getGreeting()}, {user?.firstName}
+              </h1>
+              <p className="text-sm text-[#A3A3A3] mt-1">{formatCurrentDate()}</p>
+            </div>
+          )}
+        </div>
+
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
           <div 
-            className="bg-dark-card rounded-xl p-4 shadow-sm border border-dark-border cursor-pointer hover:border-violet-500/50 transition group"
+            className="bg-[#1A1A1A] rounded-xl p-6 border border-[#333] cursor-pointer hover:border-violet-500/50 transition-all duration-200 group hover:shadow-lg hover:shadow-violet-500/5"
             onClick={clearStatusFilter}
             data-testid="stat-total-leads"
           >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-900/50 rounded-lg border border-blue-700/50 group-hover:bg-blue-900/70 transition">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-blue-900/50 rounded-xl border border-blue-700/50 group-hover:bg-blue-900/70 transition-all duration-200 group-hover:scale-110">
                 <Users className="w-5 h-5 text-blue-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-white" data-testid="total-leads">{stats?.total || 0}</p>
-                <p className="text-sm text-gray-400">Total Leads</p>
+                <p className="text-2xl font-bold text-[#FAFAFA]" data-testid="total-leads">{stats?.total || 0}</p>
+                <p className="text-sm text-[#A3A3A3]">Total Leads</p>
               </div>
             </div>
           </div>
           <div 
-            className={`bg-dark-card rounded-xl p-4 shadow-sm border cursor-pointer hover:border-violet-500/50 transition group ${statusFilter === 'NEW' ? 'border-yellow-500 bg-yellow-900/10' : 'border-dark-border'}`}
+            className={`bg-[#1A1A1A] rounded-xl p-6 border cursor-pointer hover:border-violet-500/50 transition-all duration-200 group hover:shadow-lg hover:shadow-violet-500/5 ${statusFilter === 'NEW' ? 'border-yellow-500 bg-yellow-900/10' : 'border-[#333]'}`}
             onClick={() => handleFilterByStatus(statusFilter === 'NEW' ? null : 'NEW')}
             data-testid="stat-new-leads"
           >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-yellow-900/50 rounded-lg border border-yellow-700/50 group-hover:bg-yellow-900/70 transition">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-yellow-900/50 rounded-xl border border-yellow-700/50 group-hover:bg-yellow-900/70 transition-all duration-200 group-hover:scale-110">
                 <TrendingUp className="w-5 h-5 text-yellow-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-white">{stats?.statusCounts?.NEW || 0}</p>
-                <p className="text-sm text-gray-400">New Leads</p>
+                <p className="text-2xl font-bold text-[#FAFAFA]">{stats?.statusCounts?.NEW || 0}</p>
+                <p className="text-sm text-[#A3A3A3]">New Leads</p>
               </div>
             </div>
           </div>
           <div 
-            className={`bg-dark-card rounded-xl p-4 shadow-sm border cursor-pointer hover:border-violet-500/50 transition group ${statusFilter === 'QUOTED' ? 'border-orange-500 bg-orange-900/10' : 'border-dark-border'}`}
+            className={`bg-[#1A1A1A] rounded-xl p-6 border cursor-pointer hover:border-violet-500/50 transition-all duration-200 group hover:shadow-lg hover:shadow-violet-500/5 ${statusFilter === 'QUOTED' ? 'border-orange-500 bg-orange-900/10' : 'border-[#333]'}`}
             onClick={() => handleFilterByStatus(statusFilter === 'QUOTED' ? null : 'QUOTED')}
             data-testid="stat-quoted"
           >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-900/50 rounded-lg border border-orange-700/50 group-hover:bg-orange-900/70 transition">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-orange-900/50 rounded-xl border border-orange-700/50 group-hover:bg-orange-900/70 transition-all duration-200 group-hover:scale-110">
                 <Calendar className="w-5 h-5 text-orange-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-white">{stats?.statusCounts?.QUOTED || 0}</p>
-                <p className="text-sm text-gray-400">Quoted</p>
+                <p className="text-2xl font-bold text-[#FAFAFA]">{stats?.statusCounts?.QUOTED || 0}</p>
+                <p className="text-sm text-[#A3A3A3]">Quoted</p>
               </div>
             </div>
           </div>
           <div 
-            className={`bg-dark-card rounded-xl p-4 shadow-sm border cursor-pointer hover:border-violet-500/50 transition group ${statusFilter === 'BOOKED' ? 'border-green-500 bg-green-900/10' : 'border-dark-border'}`}
+            className={`bg-[#1A1A1A] rounded-xl p-6 border cursor-pointer hover:border-violet-500/50 transition-all duration-200 group hover:shadow-lg hover:shadow-violet-500/5 ${statusFilter === 'BOOKED' ? 'border-green-500 bg-green-900/10' : 'border-[#333]'}`}
             onClick={() => handleFilterByStatus(statusFilter === 'BOOKED' ? null : 'BOOKED')}
             data-testid="stat-booked"
           >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-900/50 rounded-lg border border-green-700/50 group-hover:bg-green-900/70 transition">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-green-900/50 rounded-xl border border-green-700/50 group-hover:bg-green-900/70 transition-all duration-200 group-hover:scale-110">
                 <DollarSign className="w-5 h-5 text-green-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-white">{stats?.statusCounts?.BOOKED || 0}</p>
-                <p className="text-sm text-gray-400">Booked</p>
+                <p className="text-2xl font-bold text-[#FAFAFA]">{stats?.statusCounts?.BOOKED || 0}</p>
+                <p className="text-sm text-[#A3A3A3]">Booked</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Toolbar */}
-        <div className="bg-dark-card rounded-xl shadow-sm border border-dark-border p-4 mb-6">
+        <div className="bg-[#1A1A1A] rounded-xl border border-[#333] p-5 mb-8">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <div className="relative flex-1 sm:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
                   type="text"
                   placeholder="Search leads..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-gray-500"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-gray-500 transition-all duration-200"
                   data-testid="search-input"
                 />
               </div>
-              {/* Active Filter Indicator */}
               {(statusFilter || projectTypeFilter || industryFilter) && (
                 <div className="flex items-center gap-2 flex-wrap">
                   {statusFilter && (
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-900/30 border border-violet-700/50 rounded-lg">
                       <span className="text-xs text-violet-300 font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
-                      <button onClick={clearStatusFilter} className="p-0.5 hover:bg-violet-800/50 rounded transition" data-testid="clear-filter">
+                      <button onClick={clearStatusFilter} className="p-0.5 hover:bg-violet-800/50 rounded transition-colors duration-200" data-testid="clear-filter">
                         <X className="w-3.5 h-3.5 text-violet-400" />
                       </button>
                     </div>
@@ -349,7 +435,7 @@ const Dashboard = () => {
                   {projectTypeFilter && (
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-900/30 border border-blue-700/50 rounded-lg">
                       <span className="text-xs text-blue-300 font-medium">{PROJECT_TYPE_LABELS[projectTypeFilter as ProjectType]}</span>
-                      <button onClick={() => setProjectTypeFilter('')} className="p-0.5 hover:bg-blue-800/50 rounded transition" data-testid="clear-project-type-filter">
+                      <button onClick={() => setProjectTypeFilter('')} className="p-0.5 hover:bg-blue-800/50 rounded transition-colors duration-200" data-testid="clear-project-type-filter">
                         <X className="w-3.5 h-3.5 text-blue-400" />
                       </button>
                     </div>
@@ -357,7 +443,7 @@ const Dashboard = () => {
                   {industryFilter && (
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-900/30 border border-amber-700/50 rounded-lg">
                       <span className="text-xs text-amber-300 font-medium">{INDUSTRY_TYPE_LABELS[industryFilter as IndustryType]}</span>
-                      <button onClick={() => setIndustryFilter('')} className="p-0.5 hover:bg-amber-800/50 rounded transition" data-testid="clear-industry-filter">
+                      <button onClick={() => setIndustryFilter('')} className="p-0.5 hover:bg-amber-800/50 rounded transition-colors duration-200" data-testid="clear-industry-filter">
                         <X className="w-3.5 h-3.5 text-amber-400" />
                       </button>
                     </div>
@@ -366,60 +452,36 @@ const Dashboard = () => {
               )}
               <button
                 onClick={handleRefresh}
-                className="p-2 hover:bg-dark-card-hover rounded-lg transition"
+                className="p-2.5 hover:bg-[#262626] rounded-xl transition-all duration-200"
                 disabled={refreshing}
               >
-                <RefreshCw className={`w-5 h-5 text-gray-400 ${refreshing ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-5 h-5 text-[#A3A3A3] ${refreshing ? 'animate-spin' : ''}`} />
               </button>
             </div>
             <div className="flex items-center gap-3 w-full sm:w-auto">
-              <div className="flex bg-dark-bg-secondary rounded-lg p-1 border border-dark-border">
-                <button
-                  onClick={() => handleViewChange('kanban')}
-                  className={`p-2 rounded-md transition ${viewMode === 'kanban' ? 'bg-dark-card shadow-sm text-violet-400' : 'text-gray-400'}`}
-                  data-testid="view-kanban"
-                  title="Pipeline View"
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleViewChange('list')}
-                  className={`p-2 rounded-md transition ${viewMode === 'list' ? 'bg-dark-card shadow-sm text-violet-400' : 'text-gray-400'}`}
-                  data-testid="view-list"
-                  title="List View"
-                >
-                  <List className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleViewChange('analytics')}
-                  className={`p-2 rounded-md transition ${viewMode === 'analytics' ? 'bg-dark-card shadow-sm text-violet-400' : 'text-gray-400'}`}
-                  data-testid="view-analytics"
-                  title="Analytics"
-                >
-                  <BarChart3 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleViewChange('calendar')}
-                  className={`p-2 rounded-md transition ${viewMode === 'calendar' ? 'bg-dark-card shadow-sm text-violet-400' : 'text-gray-400'}`}
-                  data-testid="view-calendar"
-                  title="Calendar"
-                >
-                  <CalendarDays className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleViewChange('portfolio')}
-                  className={`p-2 rounded-md transition ${viewMode === 'portfolio' ? 'bg-dark-card shadow-sm text-violet-400' : 'text-gray-400'}`}
-                  data-testid="view-portfolio"
-                  title="Portfolio"
-                >
-                  <Briefcase className="w-4 h-4" />
-                </button>
+              <div className="flex bg-[#0F0F0F] rounded-xl p-1 border border-[#333]">
+                {([
+                  { mode: 'kanban' as ViewMode, icon: LayoutGrid, title: 'Pipeline View' },
+                  { mode: 'list' as ViewMode, icon: List, title: 'List View' },
+                  { mode: 'analytics' as ViewMode, icon: BarChart3, title: 'Analytics' },
+                  { mode: 'calendar' as ViewMode, icon: CalendarDays, title: 'Calendar' },
+                  { mode: 'portfolio' as ViewMode, icon: Briefcase, title: 'Portfolio' },
+                ]).map(({ mode, icon: Icon, title }) => (
+                  <button
+                    key={mode}
+                    onClick={() => handleViewChange(mode)}
+                    className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === mode ? 'bg-[#1A1A1A] shadow-sm text-violet-400' : 'text-[#A3A3A3] hover:text-white'}`}
+                    data-testid={`view-${mode}`}
+                    title={title}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </button>
+                ))}
               </div>
-              {/* Filter Dropdowns */}
               <select
                 value={projectTypeFilter}
                 onChange={(e) => setProjectTypeFilter(e.target.value)}
-                className="px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-sm text-gray-300 focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                className="px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3] focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                 data-testid="filter-project-type"
               >
                 <option value="">All Types</option>
@@ -430,7 +492,7 @@ const Dashboard = () => {
               <select
                 value={industryFilter}
                 onChange={(e) => setIndustryFilter(e.target.value)}
-                className="px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-sm text-gray-300 focus:ring-2 focus:ring-violet-500 focus:border-transparent hidden md:block"
+                className="px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3] focus:ring-2 focus:ring-violet-500 focus:border-transparent hidden md:block transition-all duration-200"
                 data-testid="filter-industry"
               >
                 <option value="">All Industries</option>
@@ -440,7 +502,7 @@ const Dashboard = () => {
               </select>
               <button
                 onClick={() => setShowShareModal(true)}
-                className="flex items-center gap-2 px-4 py-2 border border-violet-600 text-violet-400 rounded-lg hover:bg-violet-900/30 transition font-medium"
+                className="flex items-center gap-2 px-4 py-2.5 border border-violet-600 text-violet-400 rounded-xl hover:bg-violet-900/30 transition-all duration-200 font-medium text-sm"
                 data-testid="share-form-button"
               >
                 <Link2 className="w-4 h-4" />
@@ -448,7 +510,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => setShowAddModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium"
+                className="flex items-center gap-2 px-5 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition-all duration-200 font-medium text-sm hover:shadow-lg hover:shadow-violet-500/20"
                 data-testid="add-lead-button"
               >
                 <Plus className="w-4 h-4" />
@@ -469,7 +531,6 @@ const Dashboard = () => {
               if (lead) {
                 setSelectedLead(lead)
               } else {
-                // Fetch lead if not in current list
                 leadsApi.getOne(leadId).then(result => {
                   if (result.data?.lead) {
                     setSelectedLead(result.data.lead)
@@ -481,45 +542,43 @@ const Dashboard = () => {
         ) : viewMode === 'portfolio' ? (
           <PortfolioPage user={user} />
         ) : filteredLeads.length === 0 && !loading ? (
-          <div className="bg-dark-card rounded-xl shadow-sm border border-dark-border p-8 md:p-12">
-            {/* Empty State with Share Helper */}
+          <div className="bg-[#1A1A1A] rounded-xl border border-[#333] p-8 md:p-12">
             <div className="max-w-md mx-auto text-center">
               <div className="w-16 h-16 bg-violet-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-violet-700/30">
                 <Target className="w-8 h-8 text-violet-400" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">Ready to get your first lead?</h3>
-              <p className="text-gray-400 mb-6">
+              <h3 className="text-xl font-semibold mb-3 text-[#FAFAFA]">Ready to get your first lead?</h3>
+              <p className="text-base text-[#A3A3A3] mb-8">
                 Share your inquiry form with potential clients to start receiving project requests.
               </p>
               
-              {/* Quick Share Actions */}
-              <div className="bg-dark-bg-secondary rounded-xl p-4 mb-6 border border-dark-border">
-                <div className="flex items-center gap-2 mb-3">
+              <div className="bg-[#0F0F0F] rounded-xl p-5 mb-8 border border-[#333]">
+                <div className="flex items-center gap-2 mb-4">
                   <input
                     type="text"
                     value={`${window.location.origin}/inquiry`}
                     readOnly
-                    className="flex-1 px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-400 text-sm"
+                    className="flex-1 px-4 py-2.5 bg-[#1A1A1A] border border-[#333] rounded-xl text-[#A3A3A3] text-sm"
                   />
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(`${window.location.origin}/inquiry`);
                     }}
-                    className="px-3 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition text-sm font-medium flex items-center gap-1"
+                    className="px-4 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition-all duration-200 text-sm font-medium flex items-center gap-1.5"
                     data-testid="empty-copy-link"
                   >
                     <Copy className="w-4 h-4" />
                     Copy
                   </button>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <button
                     onClick={() => {
                       const subject = encodeURIComponent('Submit Your Project Request');
                       const body = encodeURIComponent(`Hi,\n\nI'd love to learn more about your project!\n\nPlease submit your details through this form, and I'll get back to you within 24 hours:\n\n${window.location.origin}/inquiry\n\nLooking forward to working with you!`);
                       window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
                     }}
-                    className="flex-1 px-3 py-2 border border-dark-border text-gray-300 rounded-lg hover:bg-dark-card-hover transition text-sm font-medium flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-2.5 border border-[#333] text-[#A3A3A3] rounded-xl hover:bg-[#262626] transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2"
                     data-testid="empty-email-link"
                   >
                     <Mail className="w-4 h-4 text-violet-400" />
@@ -527,7 +586,7 @@ const Dashboard = () => {
                   </button>
                   <button
                     onClick={() => setShowShareModal(true)}
-                    className="flex-1 px-3 py-2 border border-dark-border text-gray-300 rounded-lg hover:bg-dark-card-hover transition text-sm font-medium flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-2.5 border border-[#333] text-[#A3A3A3] rounded-xl hover:bg-[#262626] transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2"
                     data-testid="empty-more-options"
                   >
                     <Link2 className="w-4 h-4 text-violet-400" />
@@ -539,7 +598,7 @@ const Dashboard = () => {
               <p className="text-sm text-gray-500 mb-4">Or add a lead manually</p>
               <button
                 onClick={() => setShowAddModal(true)}
-                className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium"
+                className="px-8 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition-all duration-200 font-medium hover:shadow-lg hover:shadow-violet-500/20"
               >
                 Add Your First Lead
               </button>
@@ -553,41 +612,40 @@ const Dashboard = () => {
             onLeadDelete={handleLeadDelete}
           />
         ) : (
-          /* List View */
-          <div className="bg-dark-card rounded-xl shadow-sm border border-dark-border overflow-hidden">
+          <div className="bg-[#1A1A1A] rounded-xl border border-[#333] overflow-hidden">
             <table className="w-full">
-              <thead className="bg-dark-bg-secondary border-b border-dark-border">
+              <thead className="bg-[#0F0F0F] border-b border-[#333]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Client</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Project</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Client</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Project</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-dark-border">
+              <tbody className="divide-y divide-[#333]">
                 {filteredLeads.map((lead) => (
                   <tr 
                     key={lead.id} 
-                    className="hover:bg-dark-card-hover cursor-pointer transition"
+                    className="hover:bg-[#262626] cursor-pointer transition-all duration-200"
                     onClick={() => setSelectedLead(lead)}
                     data-testid={`lead-row-${lead.id}`}
                   >
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-5">
                       <div>
-                        <p className="font-medium text-white">{lead.clientName}</p>
-                        <p className="text-sm text-gray-400">{lead.clientEmail}</p>
+                        <p className="font-medium text-[#FAFAFA]">{lead.clientName}</p>
+                        <p className="text-sm text-[#A3A3A3]">{lead.clientEmail}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <p className="font-medium text-white">{lead.projectTitle}</p>
-                      <p className="text-sm text-gray-400">{lead.budget || 'No budget specified'}</p>
+                    <td className="px-6 py-5">
+                      <p className="font-medium text-[#FAFAFA]">{lead.projectTitle}</p>
+                      <p className="text-sm text-[#A3A3A3]">{lead.budget || 'No budget specified'}</p>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-5">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${DARK_STATUS_COLORS[lead.status]}`}>
                         {LEAD_STATUS_LABELS[lead.status]}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-400">
+                    <td className="px-6 py-5 text-sm text-[#A3A3A3]">
                       {new Date(lead.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
@@ -627,7 +685,6 @@ const Dashboard = () => {
         <SettingsModal
           onClose={() => setShowSettings(false)}
           onSettingsUpdate={(newSettings) => {
-            // Update local user state with new currency settings
             if (user) {
               setUser({
                 ...user,

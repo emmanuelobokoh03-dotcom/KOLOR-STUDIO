@@ -11,7 +11,7 @@ from datetime import datetime
 import uuid
 
 class KolorStudioAPITester:
-    def __init__(self, base_url="https://booking-system-166.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://polish-studio-4.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.tests_run = 0
