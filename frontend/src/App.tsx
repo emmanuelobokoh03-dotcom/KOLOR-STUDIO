@@ -11,6 +11,7 @@ import ResetPassword from './pages/ResetPassword'
 import PublicQuote from './pages/PublicQuote'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
+import PublicPortfolio from './pages/PublicPortfolio'
 import CookieConsent from './components/CookieConsent'
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/inquiry" element={<SubmitInquiry />} />
         <Route path="/portal/:token" element={<ClientPortal />} />
         <Route path="/quote/:quoteToken" element={<PublicQuote />} />
+        <Route path="/portfolio/:userId" element={<PublicPortfolio />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
       </Routes>

@@ -197,7 +197,7 @@ router.post(
 );
 
 // DELETE /api/files/:fileId - Delete a file
-router.delete('/files/:fileId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.delete('/:fileId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId as string;
     const fileId = req.params.fileId as string;
@@ -252,7 +252,7 @@ router.delete('/files/:fileId', authMiddleware, async (req: AuthRequest, res: Re
 });
 
 // GET /api/files/:fileId/download - Get download URL for a file
-router.get('/files/:fileId/download', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.get('/:fileId/download', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId as string;
     const fileId = req.params.fileId as string;

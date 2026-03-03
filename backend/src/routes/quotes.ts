@@ -384,7 +384,7 @@ router.patch('/:quoteId', authMiddleware, async (req: AuthRequest, res: Response
 });
 
 // DELETE /api/quotes/:quoteId - Delete quote
-router.delete('/quotes/:quoteId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+router.delete('/:quoteId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const quoteId = req.params.quoteId as string;
     const userId = req.userId!;
@@ -521,7 +521,7 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
 });
 
 // GET /api/quotes/public/:quoteToken - Get quote by token (PUBLIC)
-router.get('/quotes/public/:quoteToken', async (req: Request, res: Response): Promise<void> => {
+router.get('/public/:quoteToken', async (req: Request, res: Response): Promise<void> => {
   try {
     const quoteToken = req.params.quoteToken as string;
 
@@ -612,7 +612,7 @@ router.get('/quotes/public/:quoteToken', async (req: Request, res: Response): Pr
 });
 
 // GET /api/quotes/public/:quoteToken/pdf - Download quote as PDF (PUBLIC)
-router.get('/quotes/public/:quoteToken/pdf', async (req: Request, res: Response): Promise<void> => {
+router.get('/public/:quoteToken/pdf', async (req: Request, res: Response): Promise<void> => {
   try {
     const quoteToken = req.params.quoteToken as string;
 
@@ -666,7 +666,7 @@ router.get('/quotes/public/:quoteToken/pdf', async (req: Request, res: Response)
 });
 
 // POST /api/quotes/public/:quoteToken/accept - Client accepts quote (PUBLIC)
-router.post('/quotes/public/:quoteToken/accept', async (req: Request, res: Response): Promise<void> => {
+router.post('/public/:quoteToken/accept', async (req: Request, res: Response): Promise<void> => {
   try {
     const quoteToken = req.params.quoteToken as string;
 
@@ -757,7 +757,7 @@ router.post('/quotes/public/:quoteToken/accept', async (req: Request, res: Respo
 });
 
 // POST /api/quotes/public/:quoteToken/decline - Client declines quote (PUBLIC)
-router.post('/quotes/public/:quoteToken/decline', async (req: Request, res: Response): Promise<void> => {
+router.post('/public/:quoteToken/decline', async (req: Request, res: Response): Promise<void> => {
   try {
     const quoteToken = req.params.quoteToken as string;
     const { reason } = req.body;

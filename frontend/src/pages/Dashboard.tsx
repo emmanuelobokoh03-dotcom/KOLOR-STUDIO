@@ -19,7 +19,8 @@ import {
   Settings,
   BarChart3,
   CalendarDays,
-  X
+  X,
+  Briefcase
 } from 'lucide-react'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking } from '../services/api'
 import KanbanBoard from '../components/KanbanBoard'
@@ -29,13 +30,14 @@ import ShareFormModal from '../components/ShareFormModal'
 import SettingsModal from '../components/SettingsModal'
 import AnalyticsDashboard from '../components/AnalyticsDashboard'
 import CalendarViewNew from '../components/CalendarViewNew'
+import PortfolioPage from './Portfolio'
 import HelpMenu from '../components/HelpMenu'
 import FeedbackModal from '../components/FeedbackModal'
 import AnnouncementBanner from '../components/AnnouncementBanner'
 import BookingModal from '../components/BookingModal'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
-type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar';
+type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
 
 // Dark theme status colors
 const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
@@ -380,6 +382,14 @@ const Dashboard = () => {
                 >
                   <CalendarDays className="w-4 h-4" />
                 </button>
+                <button
+                  onClick={() => handleViewChange('portfolio')}
+                  className={`p-2 rounded-md transition ${viewMode === 'portfolio' ? 'bg-dark-card shadow-sm text-violet-400' : 'text-gray-400'}`}
+                  data-testid="view-portfolio"
+                  title="Portfolio"
+                >
+                  <Briefcase className="w-4 h-4" />
+                </button>
               </div>
               <button
                 onClick={() => setShowShareModal(true)}
@@ -421,6 +431,8 @@ const Dashboard = () => {
               }
             }}
           />
+        ) : viewMode === 'portfolio' ? (
+          <PortfolioPage user={user} />
         ) : filteredLeads.length === 0 && !loading ? (
           <div className="bg-dark-card rounded-xl shadow-sm border border-dark-border p-8 md:p-12">
             {/* Empty State with Share Helper */}

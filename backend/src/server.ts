@@ -40,7 +40,7 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5173',
     'http://localhost:3000',
-    'https://crm-ready-go.preview.emergentagent.com'
+    'https://booking-system-166.preview.emergentagent.com'
   ],
   credentials: true,
 }));
@@ -78,21 +78,20 @@ app.get('/health', (_req: Request, res: Response) => {
   });
 });
 
-// API Routes (to be implemented)
-app.use('/auth', authRoutes);
-app.use('/leads', leadsRoutes);
-app.use('/leads', activitiesRoutes); // Activities are under /api/leads/:id/activities
-app.use('/leads', filesRoutes); // Files are under /api/leads/:id/files
-app.use('/api', filesRoutes); // Also handle /api/files/:id routes
-app.use('/portal', portalRoutes); // Public portal access
-app.use('/leads', quotesRoutes); // Quotes routes - handles /api/leads/:leadId/quotes and /api/quotes/*
-app.use('/quotes', quotesRoutes); // For /quotes/:quoteId/* routes
-app.use('/settings', settingsRoutes); // User settings routes
-app.use('/analytics', analyticsRoutes); // Analytics routes
-app.use('/quote-templates', quoteTemplatesRoutes); // Quote templates routes
-app.use('/bookings', bookingsRoutes); // Bookings routes
-app.use('/portfolio', portfolioRoutes); // Portfolio routes
-// app.use('/messages', messagesRoutes);
+// API Routes - all prefixed with /api for K8s ingress routing
+app.use('/api/auth', authRoutes);
+app.use('/api/leads', leadsRoutes);
+app.use('/api/leads', activitiesRoutes); // Activities: /api/leads/:id/activities
+app.use('/api/leads', filesRoutes); // Files: /api/leads/:id/files
+app.use('/api/files', filesRoutes); // Also handle /api/files/:id routes
+app.use('/api/portal', portalRoutes); // Public portal access
+app.use('/api/leads', quotesRoutes); // Quotes: /api/leads/:leadId/quotes
+app.use('/api/quotes', quotesRoutes); // Quotes: /api/quotes/:quoteId/*
+app.use('/api/settings', settingsRoutes); // User settings
+app.use('/api/analytics', analyticsRoutes); // Analytics
+app.use('/api/quote-templates', quoteTemplatesRoutes); // Quote templates
+app.use('/api/bookings', bookingsRoutes); // Bookings
+app.use('/api/portfolio', portfolioRoutes); // Portfolio
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {

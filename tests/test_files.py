@@ -7,7 +7,7 @@ import requests
 import os
 import io
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://crm-ready-go.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://booking-system-166.preview.emergentagent.com')
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"
