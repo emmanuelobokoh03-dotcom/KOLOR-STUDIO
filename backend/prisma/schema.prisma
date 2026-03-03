@@ -31,6 +31,9 @@ model User {
   logo          String?   // URL to logo image
   timezone      String    @default("UTC")
   
+  // Industry
+  primaryIndustry IndustryType?
+  
   // Currency Settings
   currency        String    @default("USD")       // Currency code (USD, EUR, GBP, etc.)
   currencySymbol  String    @default("$")         // Symbol ($, €, £, etc.)
@@ -58,6 +61,7 @@ model User {
   quoteTemplates QuoteTemplate[]
   bookings      Booking[]
   portfolio     Portfolio[]
+  workflowTemplates WorkflowTemplate[]
   
   @@map("users")
 }
@@ -66,6 +70,59 @@ enum UserRole {
   OWNER
   ADMIN
   MEMBER
+}
+
+// =====================
+// ENUMS — Project & Workflow Types
+// =====================
+
+enum ProjectType {
+  SERVICE          // Photography session, videography, consulting
+  COMMISSION       // Custom artwork, illustration, sculpture
+  PROJECT          // Web design, branding package, content series
+  PRODUCT_SALE     // Prints, merchandise, digital products
+}
+
+enum IndustryType {
+  PHOTOGRAPHY
+  VIDEOGRAPHY
+  GRAPHIC_DESIGN
+  WEB_DESIGN
+  ILLUSTRATION
+  FINE_ART
+  SCULPTURE
+  BRANDING
+  CONTENT_CREATION
+  OTHER
+}
+
+enum DeliverableType {
+  DIGITAL_FILES    // Photos, videos, design files
+  PHYSICAL_ART     // Paintings, sculptures, installations
+  PRINTS           // Photo prints, art prints, posters
+  SERVICE          // Consulting, coaching, live event
+  WEBSITE          // Web design deliverable
+  MIXED            // Combination of above
+}
+
+enum StageType {
+  DISCOVERY        // Initial consultation, requirements gathering
+  QUOTATION        // Quote/proposal creation and negotiation
+  AGREEMENT        // Contract signing, deposit collection
+  SCHEDULING       // Session/event scheduling
+  CREATION         // Active work (shooting, designing, painting)
+  REVIEW           // Client review, feedback, revisions
+  DELIVERY         // Final delivery of work
+  PAYMENT          // Final payment collection
+  FOLLOWUP         // Post-project follow-up, testimonials
+}
+
+enum DeliverableStatus {
+  PENDING          // Not started
+  IN_PROGRESS      // Currently being worked on
+  READY            // Ready for delivery/review
+  DELIVERED        // Delivered to client
+  SHIPPED          // Physical item shipped
 }
 
 // =====================
@@ -88,6 +145,12 @@ model Lead {
   budget          String?     // e.g., "$5,000-$10,000"
   timeline        String?     // e.g., "Needed by March 2026"
   eventDate       DateTime?   // For events like weddings
+  
+  // Project Classification (new — all optional/defaulted for backwards compat)
+  projectType     ProjectType     @default(SERVICE)
+  industry        IndustryType?
+  deliverableType DeliverableType @default(DIGITAL_FILES)
+  workflowData    Json?           // Stores workflow stage progress & custom data
   
   // Lead Management
   status          LeadStatus  @default(NEW)
@@ -124,11 +187,13 @@ model Lead {
   files           File[]
   quotes          Quote[]
   bookings        Booking[]
+  deliverables    Deliverable[]
   
   @@map("leads")
   @@index([status])
   @@index([createdAt])
   @@index([assignedToId])
+  @@index([projectType])
 }
 
 enum ServiceType {
@@ -170,6 +235,117 @@ enum LeadSource {
   TIKTOK
   EMAIL
   OTHER
+}
+
+// =====================
+// WORKFLOW TEMPLATES
+// =====================
+
+model WorkflowTemplate {
+  id            String        @id @default(uuid())
+  name          String        // e.g., "Wedding Photography Workflow"
+  description   String?       @db.Text
+  industry      IndustryType?
+  projectType   ProjectType?
+  isDefault     Boolean       @default(false)  // Default template for this industry/projectType combo
+  isSystem      Boolean       @default(false)  // System-provided (non-deletable)
+  
+  // Ownership
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  
+  // Timestamps
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  // Relations
+  stages        WorkflowStage[]
+  
+  @@map("workflow_templates")
+  @@index([userId])
+  @@index([industry])
+  @@index([projectType])
+}
+
+// =====================
+// WORKFLOW STAGES
+// =====================
+
+model WorkflowStage {
+  id            String        @id @default(uuid())
+  name          String        // e.g., "Initial Consultation", "Send Quote", "Shoot Day"
+  order         Int           // Display/execution order within template
+  type          StageType     // Category of this stage
+  required      Boolean       @default(true)   // Must complete before advancing
+  description   String?       @db.Text
+  
+  // Field configuration — defines what data to collect at this stage
+  fieldConfig   Json?         // [{fieldName, fieldType, label, required, options}]
+  
+  // Relations
+  template      WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  templateId    String
+  
+  // Timestamps
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@map("workflow_stages")
+  @@index([templateId])
+  @@index([order])
+}
+
+// =====================
+// DELIVERABLES
+// =====================
+
+model Deliverable {
+  id            String            @id @default(uuid())
+  
+  // Core
+  name          String            // e.g., "Wedding Album", "Logo Package", "Oil Portrait"
+  type          DeliverableType
+  status        DeliverableStatus @default(PENDING)
+  description   String?           @db.Text
+  
+  // Digital deliverables
+  fileUrls      String[]          @default([])  // URLs to delivered files
+  
+  // Physical deliverables
+  dimensions    String?           // e.g., "24x36 inches"
+  material      String?           // e.g., "Oil on canvas", "Glossy photo paper"
+  weight        String?           // e.g., "2.5 lbs"
+  
+  // Shipping (physical items)
+  shippingAddress   String?       @db.Text
+  shippingMethod    String?
+  trackingNumber    String?
+  shippedAt         DateTime?
+  
+  // Session details (service deliverables)
+  sessionDate       DateTime?
+  sessionLocation   String?
+  sessionDuration   Int?          // minutes
+  sessionNotes      String?       @db.Text
+  
+  // Metadata
+  dueDate       DateTime?
+  completedAt   DateTime?
+  notes         String?       @db.Text
+  metadata      Json?         // Flexible extra data
+  
+  // Relations
+  lead          Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  leadId        String
+  
+  // Timestamps
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@map("deliverables")
+  @@index([leadId])
+  @@index([status])
+  @@index([type])
 }
 
 // =====================
