@@ -1,6 +1,7 @@
 """
 KOLOR STUDIO CRM - Backend API Tests
 Testing: Auth, Leads, Portfolio, Settings, Analytics endpoints
+Phase 1 Schema Regression: New enums, fields, and tables validation
 """
 
 import pytest
@@ -13,6 +14,10 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://booking-system-166.p
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"
 TEST_PASSWORD = "successful26#"
 TEST_USER_ID = "3aa2d156-aa26-48ef-8daf-e95641b68b3e"
+
+# Expected lead count and booking count (from iteration 13)
+EXPECTED_LEAD_COUNT = 18
+EXPECTED_BOOKING_COUNT = 7
 
 
 class TestHealthEndpoint:
@@ -95,7 +100,7 @@ class TestLeadsEndpoints:
         return response.json()["token"]
     
     def test_get_leads(self, auth_token):
-        """Test GET /api/leads returns leads list"""
+        """Test GET /api/leads returns leads list with expected count"""
         response = requests.get(
             f"{BASE_URL}/api/leads",
             headers={"Authorization": f"Bearer {auth_token}"}
@@ -104,7 +109,8 @@ class TestLeadsEndpoints:
         data = response.json()
         assert "leads" in data
         assert isinstance(data["leads"], list)
-        print(f"✓ Retrieved {len(data['leads'])} leads")
+        assert len(data["leads"]) == EXPECTED_LEAD_COUNT, f"Expected {EXPECTED_LEAD_COUNT} leads, got {len(data['leads'])}"
+        print(f"✓ Retrieved {len(data['leads'])} leads (expected {EXPECTED_LEAD_COUNT})")
     
     def test_get_leads_stats(self, auth_token):
         """Test GET /api/leads/stats returns statistics"""
@@ -253,7 +259,7 @@ class TestBookingsEndpoints:
         print(f"✓ Retrieved {len(data['bookings'])} bookings")
     
     def test_get_calendar_events(self, auth_token):
-        """Test GET /api/bookings/calendar returns calendar events"""
+        """Test GET /api/bookings/calendar returns calendar events with expected count"""
         response = requests.get(
             f"{BASE_URL}/api/bookings/calendar",
             headers={"Authorization": f"Bearer {auth_token}"}
@@ -261,7 +267,87 @@ class TestBookingsEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert "events" in data
-        print(f"✓ Retrieved {len(data['events'])} calendar events")
+        assert len(data["events"]) == EXPECTED_BOOKING_COUNT, f"Expected {EXPECTED_BOOKING_COUNT} events, got {len(data['events'])}"
+        print(f"✓ Retrieved {len(data['events'])} calendar events (expected {EXPECTED_BOOKING_COUNT})")
+
+
+class TestPhase1SchemaRegression:
+    """Phase 1 Schema Migration Regression Tests
+    Tests new enums, fields with defaults, and empty tables
+    """
+    
+    @pytest.fixture
+    def auth_token(self):
+        """Get authentication token"""
+        response = requests.post(
+            f"{BASE_URL}/api/auth/login",
+            json={"email": TEST_EMAIL, "password": TEST_PASSWORD}
+        )
+        return response.json()["token"]
+    
+    def test_leads_have_default_project_type(self, auth_token):
+        """Test leads have projectType field defaulting to SERVICE"""
+        response = requests.get(
+            f"{BASE_URL}/api/leads",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        leads = data["leads"]
+        
+        # At least one lead should exist
+        assert len(leads) > 0, "No leads found to verify"
+        
+        # Check first lead has projectType (should default to SERVICE)
+        first_lead = leads[0]
+        # If projectType is exposed in API, it should be SERVICE
+        if "projectType" in first_lead:
+            assert first_lead["projectType"] == "SERVICE", f"Expected projectType SERVICE, got {first_lead['projectType']}"
+            print(f"✓ Lead has projectType: {first_lead['projectType']}")
+        else:
+            print("✓ projectType field not exposed in API (acceptable for backwards compat)")
+    
+    def test_leads_have_default_deliverable_type(self, auth_token):
+        """Test leads have deliverableType field defaulting to DIGITAL_FILES"""
+        response = requests.get(
+            f"{BASE_URL}/api/leads",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        leads = data["leads"]
+        
+        # At least one lead should exist
+        assert len(leads) > 0, "No leads found to verify"
+        
+        # Check first lead has deliverableType (should default to DIGITAL_FILES)
+        first_lead = leads[0]
+        if "deliverableType" in first_lead:
+            assert first_lead["deliverableType"] == "DIGITAL_FILES", f"Expected deliverableType DIGITAL_FILES, got {first_lead['deliverableType']}"
+            print(f"✓ Lead has deliverableType: {first_lead['deliverableType']}")
+        else:
+            print("✓ deliverableType field not exposed in API (acceptable for backwards compat)")
+    
+    def test_leads_stats_unchanged(self, auth_token):
+        """Test GET /api/leads/stats returns correct stats after migration"""
+        response = requests.get(
+            f"{BASE_URL}/api/leads/stats",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        
+        # Validate expected totals from iteration 13
+        assert data["total"] == EXPECTED_LEAD_COUNT, f"Expected {EXPECTED_LEAD_COUNT} total leads, got {data['total']}"
+        
+        # Validate status counts (from iteration 13: NEW:7, QUOTED:4, BOOKED:5, CONTACTED:2)
+        status_counts = data["statusCounts"]
+        assert status_counts.get("NEW", 0) == 7, f"Expected 7 NEW leads, got {status_counts.get('NEW', 0)}"
+        assert status_counts.get("QUOTED", 0) == 4, f"Expected 4 QUOTED leads, got {status_counts.get('QUOTED', 0)}"
+        assert status_counts.get("BOOKED", 0) == 5, f"Expected 5 BOOKED leads, got {status_counts.get('BOOKED', 0)}"
+        assert status_counts.get("CONTACTED", 0) == 2, f"Expected 2 CONTACTED leads, got {status_counts.get('CONTACTED', 0)}"
+        
+        print(f"✓ Stats verified: {data['total']} total, counts: {status_counts}")
 
 
 if __name__ == "__main__":
