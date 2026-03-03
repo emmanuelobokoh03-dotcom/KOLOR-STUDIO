@@ -1,50 +1,79 @@
-# KOLOR STUDIO v2 - Product Requirements Document
+# KOLOR STUDIO - Product Requirements Document
 
-## Original Problem Statement
-Build a CRM platform for creative professionals with JWT auth, Lead Pipeline, email notifications, activity tracking. Universal CRM for all creatives.
+## Overview
+A full-stack CRM application for creative professionals (photographers, designers, artists). Built with React/TypeScript frontend + Node.js/Express/Prisma backend + PostgreSQL (Supabase).
 
-## Tech Stack
-- **Frontend**: React 18 + TypeScript + Vite + TailwindCSS + react-big-calendar
-- **Backend**: Node.js + Express + TypeScript + Prisma + Supabase PostgreSQL
-- **Auth**: JWT + bcrypt | **Email**: Resend | **Storage**: Supabase Storage
+## Core Features (All Implemented)
+- **Authentication**: JWT-based login/signup with industry onboarding for new users
+- **Lead Management**: Full CRUD with Kanban board, list view, search, and filters
+- **Booking & Calendar**: Booking system integrated with calendar view
+- **Portfolio**: Public-facing portfolio page for showcasing work
+- **Workflows**: Custom workflow templates with stages per industry
+- **Deliverables**: Track deliverables per lead with status management
+- **Analytics Dashboard**: Stats, charts, pipeline views
+- **Client Portal**: Shareable portal links for clients to track project status
+- **Email Integration**: Notifications via Resend for status changes, new leads
+- **Quotes System**: Create and manage quotes for leads
 
-## Implemented Features
+## Phase History
 
-### Core Features (Phases 1-24) — All DONE
-JWT Auth, Lead Pipeline (Kanban/List), Email, Activity Log, Files, Client Portal, Quotes, Analytics, Calendar+Bookings, Templates, Landing Page
+### Phase 1: Database Schema Refactor (DONE)
+- Added ProjectType, IndustryType, DeliverableType, WorkflowTemplate, WorkflowStage, Deliverable models
 
-### Phase 25: Portfolio System — DONE
-### Phase 26: Schema Refactor (DB) — DONE
-### Phase 27: Backend API (Workflows, Deliverables) — DONE
-### Phase 28: Frontend UI (Project Types, Deliverables, Filters) — DONE
-### Phase 29: System Templates + Industry Onboarding — DONE (Mar 3, 2026)
+### Phase 2: Backend API (DONE)
+- CRUD APIs for workflow templates and deliverables
+- Updated leads API with new fields and filters
 
-- 3 system workflow templates: Wedding Photography (9 stages), Portrait Commission (10 stages), Logo Design Project (10 stages)
-- POST /api/auth/onboarding endpoint (sets industry, seeds templates)
-- IndustryOnboarding component with 10 industry cards, selection, success screen
-- Updated signup → auto-login → onboarding flow
-- Industry-to-template mapping for all 10 creative disciplines
-- Login/me responses include primaryIndustry
+### Phase 3: Frontend UI (DONE)
+- Updated Add Lead modal with project/industry selectors
+- Deliverables tab in lead detail view
+- Dashboard filters for project type and industry
 
-## Test Credentials
-- emmanuelobokoh03@gmail.com / successful26#
+### Phase 4: System Templates & Onboarding (DONE)
+- Seed script for default workflow templates
+- Industry onboarding flow for new users
+- Auto-generation of workflow templates based on selected industry
 
-## Prioritized Backlog
+### Phase 5: UI/UX Polish (DONE - March 3, 2026)
+- **Part A**: Personal welcome messages (first login + welcome back with date), clickable KOLOR STUDIO header
+- **Part B**: Image-first project cards with coverImage field, upload endpoint, gradient placeholders
+- **Part C**: Visual file gallery with responsive grid, image thumbnails, hover overlays with download/delete
+- **Part D**: Typography scale (text-3xl titles, #0F0F0F bg, #1A1A1A cards, #FAFAFA headings, #A3A3A3 body)
+- **Part E**: Micro-interactions (hover effects, transitions, skeleton loading states, entrance animations)
 
-### P0 — Big Refactor (COMPLETE)
-- [x] Phase 1: Database Schema — DONE
-- [x] Phase 2: Backend API — DONE
-- [x] Phase 3: Frontend UI — DONE
-- [x] Phase 4: System Templates + Onboarding — DONE
+## Architecture
+```
+/app/kolor-studio-v2/
+├── backend/         # Node.js + Express + Prisma + TypeScript
+│   ├── prisma/      # Schema & migrations
+│   ├── src/routes/  # API endpoints
+│   ├── src/services/# Storage, email
+│   └── src/middleware/# Auth middleware
+├── frontend/        # React + Vite + TypeScript + Tailwind CSS
+│   ├── src/pages/   # Dashboard, Login, Signup, Portfolio
+│   ├── src/components/# UI components
+│   └── src/services/# API client
+```
 
-### P1 — Next Up
-- [ ] Mobile responsiveness
-- [ ] UI/UX polish
+## Key DB Schema
+- **User**: id, email, firstName, lastName, studioName, primaryIndustry, role, lastLoginAt
+- **Lead**: id, clientName, clientEmail, projectTitle, status, serviceType, projectType, industry, deliverableType, coverImage, budget, timeline, portalToken, portalViews
+- **WorkflowTemplate**: id, name, industry, projectType, isDefault, isSystem, userId, stages[]
+- **Deliverable**: id, leadId, type, status, fileUrls, details
 
-### P2 — Medium Priority
-- [ ] Portfolio sharing (link in emails/portal)
-- [ ] Recurring events
-- [ ] Email verification
+## Key API Endpoints
+- `POST /api/auth/login` & `POST /api/auth/signup` - Authentication
+- `POST /api/auth/onboarding` - Industry onboarding
+- `GET/POST/PATCH/DELETE /api/leads` - Lead CRUD
+- `POST /api/leads/upload-cover` - Upload cover image
+- `GET/POST /api/leads/:id/activities` - Activity log
+- `GET/POST/DELETE /api/leads/:id/files` - File management
+- `/api/workflow-templates/*` - Workflow CRUD
+- `/api/leads/:leadId/deliverables` - Deliverables CRUD
 
-### P3 — Backlog
-- [ ] Invoice generation, Multi-user teams, Messaging
+## Backlog (P2/P3)
+- **(P2)** Email verification for signups
+- **(P2)** Client file upload on public inquiry form
+- **(P3)** Distinct icons for activity types in timeline
+- **(P3)** "Your Links" section in user settings
+- **(P3)** Keyboard Shortcuts modal
