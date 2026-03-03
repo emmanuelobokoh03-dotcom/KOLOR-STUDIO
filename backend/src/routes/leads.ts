@@ -14,6 +14,8 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
     const status = req.query.status as string | undefined;
     const search = req.query.search as string | undefined;
     const sort = req.query.sort as string | undefined;
+    const projectType = req.query.projectType as string | undefined;
+    const industry = req.query.industry as string | undefined;
     
     console.log('[GET /leads] userId:', userId);
     
@@ -27,6 +29,14 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
     
     if (status && status !== 'ALL') {
       where.status = status;
+    }
+
+    if (projectType) {
+      where.projectType = projectType;
+    }
+
+    if (industry) {
+      where.industry = industry;
     }
     
     if (search) {
@@ -68,6 +78,9 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
         createdAt: true,
         updatedAt: true,
         assignedToId: true,
+        projectType: true,
+        industry: true,
+        deliverableType: true,
       }
     });
 
@@ -252,7 +265,13 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response): Prom
     const id = req.params.id as string;
 
     const lead = await prisma.lead.findFirst({
-      where: { id, assignedToId: userId },
+      where: {
+        id,
+        OR: [
+          { assignedToId: userId },
+          { assignedToId: null }
+        ]
+      },
     });
 
     if (!lead) {
@@ -286,6 +305,9 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
       source,
       estimatedValue,
       tags,
+      projectType,
+      industry,
+      deliverableType,
     } = req.body;
 
     // Validation
@@ -315,6 +337,9 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
         tags: tags || [],
         assignedToId: userId,
         status: 'NEW',
+        projectType: projectType || 'SERVICE',
+        industry: industry || null,
+        deliverableType: deliverableType || 'DIGITAL_FILES',
       },
     });
 
@@ -488,7 +513,7 @@ router.patch('/:id', authMiddleware, async (req: AuthRequest, res: Response): Pr
 
     // Check ownership
     const existingLead = await prisma.lead.findFirst({
-      where: { id, assignedToId: userId }
+      where: { id, OR: [{ assignedToId: userId }, { assignedToId: null }] }
     });
 
     if (!existingLead) {
