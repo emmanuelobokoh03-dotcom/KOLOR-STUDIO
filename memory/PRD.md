@@ -1,7 +1,7 @@
 # KOLOR STUDIO v2 - Product Requirements Document
 
 ## Original Problem Statement
-Build a CRM platform for creative professionals with JWT authentication, Lead Pipeline management, email notifications, and activity tracking. Evolving into a universal CRM for all creative professionals.
+Build a CRM platform for creative professionals with JWT auth, Lead Pipeline, email notifications, activity tracking. Evolving into a universal CRM for all creatives.
 
 ## Tech Stack
 - **Frontend**: React 18 + TypeScript + Vite + TailwindCSS + react-big-calendar
@@ -11,32 +11,28 @@ Build a CRM platform for creative professionals with JWT authentication, Lead Pi
 ## What's Been Implemented
 
 ### Core Features (Phases 1-24) — All DONE
-- JWT Auth, Lead Pipeline (Kanban + List), Email Notifications, Activity Logging
-- File Attachments, Client Portal, Quote/Proposal System, Dark Theme
-- Revenue Analytics, Calendar + Booking System, Quote Templates
-- Landing Page, Legal Pages, Support Infrastructure
+JWT Auth, Lead Pipeline (Kanban/List), Email, Activity Log, Files, Client Portal, Quotes, Analytics, Calendar+Bookings, Templates, Landing Page, Legal, Support
 
 ### Phase 25: Portfolio System — DONE
 ### Phase 26: Schema Refactor (DB) — DONE
-### Phase 27: Backend API Refactor — DONE (Mar 3, 2026)
+### Phase 27: Backend API (Workflows, Deliverables) — DONE
+### Phase 28: Frontend UI (Project Types, Deliverables, Filters) — DONE (Mar 3, 2026)
 
-New API endpoints:
-- **Workflow Templates** (6 endpoints): GET/POST/PATCH/DELETE /api/workflow-templates, GET /api/workflow-templates/:id, GET /api/workflow-templates/industry/:industry
-- **Deliverables** (7 endpoints): GET/POST /api/leads/:leadId/deliverables, GET/PATCH/DELETE /api/deliverables/:id, PATCH /api/deliverables/:id/status
-- **Updated Leads**: GET with ?projectType & ?industry filters, POST/PATCH accept projectType/industry/deliverableType
-- **Fixed**: Lead GET/:id and PATCH/:id now include unassigned leads (OR assignedToId)
-- **Fixed**: Backend route prefixes (/api), files/quotes double-path bugs
+New UI features:
+- **AddLeadModal**: Project Type selector (4 cards with icons), Industry dropdown, Deliverable Type selector (6 options), conditional fields (commission details, physical art specs)
+- **DeliverablesTab** in LeadDetailModal: Full CRUD with status progression (PENDING → IN_PROGRESS → READY → DELIVERED), conditional form fields by type (Physical Art: dimensions/material/weight, Service: date/location/duration)
+- **Dashboard Filters**: Project Type and Industry filter dropdowns in toolbar with active filter badges (X to clear)
+- **Kanban Cards**: Project type badges alongside service type badges
 
 ## Test Credentials
 - emmanuelobokoh03@gmail.com / successful26#
-- User ID: 3aa2d156-aa26-48ef-8daf-e95641b68b3e
 
 ## Prioritized Backlog
 
 ### P0 — Big Refactor (In Progress)
 - [x] Phase 1: Database Schema — DONE
 - [x] Phase 2: Backend API — DONE
-- [ ] Phase 3: Frontend UI (project type selectors, workflow views, deliverable tracker)
+- [x] Phase 3: Frontend UI — DONE
 - [ ] Phase 4: System workflow templates (pre-built per industry)
 
 ### P1 — Next Up
@@ -46,6 +42,7 @@ New API endpoints:
 ### P2 — Medium Priority
 - [ ] Portfolio sharing (link in emails/portal)
 - [ ] Recurring events
+- [ ] Email verification
 
 ### P3 — Backlog
 - [ ] Invoice generation, Multi-user teams, Messaging
