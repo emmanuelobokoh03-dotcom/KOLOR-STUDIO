@@ -205,7 +205,7 @@ export const leadsApi = {
     formData.append('coverImage', file);
 
     try {
-      const response = await fetch(`${API_URL}/leads/upload-cover`, {
+      const response = await fetch(`${API_URL}/api/leads/upload-cover`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -1099,7 +1099,7 @@ export const portfolioApi = {
   // Create portfolio item with image
   create: async (formData: FormData) => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`${API_URL}/portfolio`, {
+    const response = await fetch(`${API_URL}/api/portfolio`, {
       method: 'POST',
       headers: {
         ...(token && { Authorization: `Bearer ${token}` }),
@@ -1116,7 +1116,7 @@ export const portfolioApi = {
   // Update portfolio item
   update: async (id: string, formData: FormData) => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`${API_URL}/portfolio/${id}`, {
+    const response = await fetch(`${API_URL}/api/portfolio/${id}`, {
       method: 'PATCH',
       headers: {
         ...(token && { Authorization: `Bearer ${token}` }),

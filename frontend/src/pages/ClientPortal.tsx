@@ -164,7 +164,7 @@ export default function ClientPortal() {
     setSigning(contractId);
     setSignError(null);
     try {
-      const response = await fetch(`${API_URL}/contracts/${contractId}/agree`, {
+      const response = await fetch(`${API_URL}/api/contracts/${contractId}/agree`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ portalToken: token }),
