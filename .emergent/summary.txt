@@ -1,99 +1,69 @@
 <analysis>**original_problem_statement:**
-The user is building a full-stack CRM application, KOLOR STUDIO, for creative professionals. The current objective is a major UI/UX overhaul to enhance the visual appeal and user experience.
+The user is building a full-stack CRM application, KOLOR STUDIO. The current objective is to implement **Phase 6B: Basic Contracts & Consent System**.
 
-The user has defined this overhaul as **Phase 5: UI/UX Polish - Visual Design + Personal Touches**, with the following detailed requirements:
-
-*   **Part A: Personal Welcome Messages:**
-    *   Display a first login welcome message on the dashboard.
-    *   Display a welcome back message with the current date for subsequent logins.
-    *   Make the main KOLOR STUDIO header a clickable link to the dashboard.
-*   **Part B: Image-First Project Cards:**
-    *   Add a  field to the  model.
-    *   Implement a cover image uploader in the .
-    *   Redesign the project cards on the dashboard to be visual-first, showing the cover image prominently.
-*   **Part C: Visual File Gallery:**
-    *   Transform the files list in the  from a list into a responsive image/icon grid.
-    *   Show image thumbnails or file-type icons.
-    *   Include a hover overlay with the filename and action buttons (download, delete).
-*   **Part D: Typography & Spacing:**
-    *   Apply a professional and consistent typography scale and increase spacing for better readability across the application.
-*   **Part E: Micro-Interactions:**
-    *   Add subtle hover and transition effects to buttons, cards, and images to make the UI feel more alive and responsive.
-    *   Use skeleton screens for loading states instead of spinners.
+PRODUCT REQUIREMENTS:
+1.  **Database Schema**: Add a  model to Prisma with fields for , , , , client consent details (, , ), and .
+2.  **Contract Templates**: Create three basic contract templates (Photography, Art Commission, Design Project) as hardcoded strings with placeholders (, , etc.).
+3.  **Backend API**: Create a new  route with endpoints for CRUD operations, sending the contract to the client, and an unauthenticated endpoint for the client to agree.
+4.  **Frontend - Contracts Tab**: Add a Contracts tab to the  to list, create, edit, and send contracts.
+5.  **Client Portal Integration**: Update the public client portal to display the contract for review and allow the client to agree by checking a box and clicking a button.
+6.  **Email Notifications**: Implement emails for when a contract is sent to the client and when a client agrees to a contract.
 
 **User's preferred language**: English
 
 **what currently exists?**
-A stable, full-stack monorepo application named KOLOR STUDIO located at . The application uses a React/TypeScript frontend and a Node.js/Express/Prisma backend with a PostgreSQL database on Supabase.
-
-Core features are fully functional, including:
-*   JWT Authentication and a new Industry Onboarding flow for new users.
-*   Lead management with a Kanban board view.
-*   A comprehensive booking and calendar system.
-*   A portfolio management system with a public-facing page.
-*   A newly implemented, multi-phase system for custom Workflows, Project Types, Industries, and Deliverables, complete with backend APIs and frontend UI.
-
-The application is in a healthy, tested state, with all previous critical bugs (database connection, API routing) resolved.
+A stable, full-stack monorepo application named KOLOR STUDIO with a React/TypeScript frontend and a Node.js/Express/Prisma backend. Core features are complete, including auth, lead management, calendars, portfolios, and custom workflows. The UI has been recently polished (Phase 5) and the entire application is mobile-responsive (Part F).
 
 **Last working item**:
-The agent was preparing to start the implementation of Phase 5, the major UI/UX polish.
--   Last item agent was working: The agent finished exploring the key files (, , ) that will be modified for the UI/UX overhaul and was ready to begin implementation.
--   Status: NOT STARTED
+-   Last item agent was working: The agent was implementing **Phase 6B: Basic Contracts & Consent System**. The backend (schema, API, email functions) has been created. The agent was in the middle of the frontend implementation, specifically modifying  to display the contract and handle the client agreement flow.
+-   Status: IN PROGRESS
 -   Agent Testing Done: N
--   Which testing method agent to use? frontend testing agent. Given the extensive UI/UX changes across multiple components, a comprehensive frontend test is required. The screenshot tool can be used for spot-checking individual components during development.
+-   Which testing method agent to use? both. The new backend contract API requires full CRUD and logic testing. The frontend needs testing for the Contracts tab in the lead modal and the entire client agreement flow on the public portal. The  should be used after implementation is complete.
 -   User Testing Done: N
 
 **All Pending/In progress Issue list**:
-There are no pending or in-progress issues. All previously identified critical blockers have been resolved.
+-   **Issue 1: Complete Phase 6B: Basic Contracts & Consent System (P0)**
+    -   **Attempted fixes**: The backend schema, API routes (), and email notifications have been created and successfully compiled after fixing multiple TypeScript errors related to types, Prisma queries, and email service integration. The frontend  component has been created and integrated into the .
+    -   **Next debug checklist**:
+        1.  Resume work in .
+        2.  Add the JSX to render the contract content, the I agree checkbox, and the Sign Agreement button.
+        3.  Implement the component state () and the  function to call the  endpoint.
+        4.  Ensure the lead data fetched for the portal includes the  relation.
+    -   **Why fix this issue and what will be achieved with the fix?**: This will complete the contracts feature, providing a critical legal protection mechanism for the application's users.
+    -   **Status**: IN PROGRESS
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: both
+    -   **Blocked on other issue**: None
 
 **In progress Task List**:
--   **Task 1: Implement Phase 5: UI/UX Polish (P0)**
-
- Task Detail:
-  - Task 1:
-     - Where to resume: Start with **Part B: Image-First Project Cards**. The first step is to modify the database schema by adding a  field to the  model in . After that, generate and apply the migration. Then, proceed with implementing the other parts of Phase 5 in the order requested by the user.
-     - What will be achieved with this?: A significantly improved, visually appealing, and more engaging user interface that enhances the KOLOR STUDIO brand and provides a more intuitive user experience.
-     - Status:  NOT STARTED
-     - Should Test frontend/backend/both after fix?: Both. The backend needs testing for the new  field and upload logic. The frontend requires extensive testing for all the new UI components, interactions, and visual changes.
-     - Blocked on something: None.
+-   **Task 1: Complete Phase 6B: Basic Contracts & Consent System (P0)**
+    -   **Where to resume**:  (Chat Message 317). The immediate next step is to add the React components and logic for displaying and signing the contract.
+    -   **What will be achieved with this?**: A fully functional, end-to-end contract management system within the application.
+    -   **Status**: IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?**: Both
+    -   **Blocked on something**: None
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
-*   There are no explicitly defined tasks after Phase 5. The focus is entirely on completing the current UI/UX polish.
+*   (P1) Testing of the complete Phase 6B feature.
 
-**Future Tasks (Backlog):**
-*(These are from the original problem statement and may have been superseded by the recent large-scale refactor)*
--   **(P2)** Implement email verification for new user signups.
--   **(P2)** Allow clients to upload files on the public inquiry form.
--   **(P3)** Add distinct icons for different activity types in the timeline view.
--   **(P3)** Add a Your Links section to the user settings page for social/portfolio links.
--   **(P3)** Implement a Keyboard Shortcuts modal ().
+**Future Tasks:**
+*   (P2) **PWA Functionality**: Make the application installable as a Progressive Web App.
+*   (P2) **Email Verification**: Implement email verification for new user signups.
+*   (P2) **Client File Uploads**: Allow clients to upload files via the public inquiry form.
+*   (P3) **Activity Icons**: Add distinct icons for different activity types in the timeline view.
+*   (P3) **User Social Links**: Add a Your Links section to the user settings page.
+*   (P3) **Keyboard Shortcuts**: Implement a Keyboard Shortcuts modal ().
 
 **Completed work in this session**
--   **Critical Bug Fixes (DONE)**:
-    -   Resolved the persistent Supabase database connection failure by updating the .
-    -   Corrected backend API routing issues, including double  prefixes and incorrect route mounting.
-    -   Fixed a bug where unassigned leads from the inquiry form were not appearing on the dashboard.
--   **Phase 1: Database Schema Refactor (DONE)**:
-    -   Added , , , , , and  models and enums to .
--   **Phase 2: Backend API (DONE)**:
-    -   Created all required API endpoints for  and .
-    -   Updated  API to support creation and filtering by new project types and industries.
--   **Phase 3: Frontend UI (DONE)**:
-    -   Updated the Add Lead modal with selectors for Project Type, Industry, and Deliverable Type.
-    -   Added a new Deliverables tab to the lead detail view.
-    -   Implemented filter dropdowns for Project Type and Industry on the main dashboard.
--   **Phase 4: System Templates & Onboarding (DONE)**:
-    -   Created a backend seed script for default workflow templates (Photography, Fine Art, Graphic Design).
-    -   Built a new  component for new users to select their industry.
-    -   Integrated the onboarding flow into the signup process to auto-generate a relevant workflow template for the user.
--   **Comprehensive Testing (DONE)**: Used the testing agent to run and pass full regression and feature tests after each completed phase, ensuring no regressions were introduced.
+-   **Phase 5: UI/UX Polish (DONE)**: Fully implemented a major visual overhaul, including personal welcome messages, image-first project cards, a visual file gallery, improved typography and spacing, and micro-interactions.
+-   **Part F: Mobile Responsiveness (DONE)**: Made the entire application fully responsive, implementing a mobile sidebar, tab-based Kanban, bottom navigation, full-screen modals, and responsive forms/grids. Tested on multiple breakpoints.
 
 **Earlier issues found/mentioned but not fixed**
--   None. All issues identified during the session were addressed and resolved.
+-   None.
 
 **Known issue recurrence from previous fork**
--   The Supabase database connection failure was resolved and is no longer a recurring issue.
+-   None.
 
 **Code Architecture**
 
@@ -102,78 +72,74 @@ There are no pending or in-progress issues. All previously identified critical b
 -   **Frontend**: React, Vite, TypeScript, Tailwind CSS, Axios
 -   **Backend**: Node.js, Express, TypeScript, Prisma
 -   **Database**: PostgreSQL (on Supabase)
--   **Architecture**: Monorepo with distinct frontend and backend services.
+-   **Architecture**: Monorepo
 
 **key DB schema**
--   : { ..., , ,  }
--   : { ..., , , , , ,  }
--   : { id, name, industry, projectType, isDefault, isSystem, userId,  }
--   : { id, templateId, name, order, type, required, fieldConfig }
--   : { id, leadId, type, status, fileUrls, details }
+-   ****: { ..., : Contract[] }
+-   ****: { uid=0(root) gid=0(root) groups=0(root), , , , , , , , , ,  }
+-   ****: enum (PHOTOGRAPHY_SHOOT, PORTRAIT_COMMISSION, ...)
+-   ****: enum (DRAFT, SENT, VIEWED, AGREED)
 
 **changes in tech stack**
 -   None.
 
 **All files of reference**
 **New Files:**
--   : API for workflow templates.
--   : API for lead deliverables.
--   : Seed data for default workflows.
--   : UI for the new deliverables tab.
--   : UI for the new user onboarding flow.
+-   : API for contracts.
+-   : UI for the new Contracts tab.
 
 **Significantly Modified Files:**
--   : Major schema updates for all new models.
--   : Updated to handle new fields and filters.
--   : Added onboarding endpoint and updated  response.
--   : Added types and API functions for all new features.
--   : Added new filters and project type badges.
--   : Rewritten to include new project/industry selectors.
--   : Integrated the new .
--    & : Integrated the new onboarding route.
+-   : Added  model and enums.
+-   : Mounted new contracts API route.
+-   : Added functions for sending contract-related emails.
+-   : Updated to include contracts in the portal data.
+-   : Added types and API functions for contracts.
+-   : Integrated the .
+-   : In progress to display contracts.
 
 **key api endpoints**
--   : Sets user's primary industry and seeds system workflow templates.
--   : Full CRUD API for managing workflow templates.
--    & : Full CRUD API for managing deliverables.
--   : Updated with  and  filters.
--   : Updated to accept new fields like , , etc.
+-   : List contracts for a lead.
+-   : Create a new contract from a template.
+-   : Full CRUD for a single contract.
+-   : Mark a contract as sent and email the client.
+-   : Public endpoint for a client to agree to a contract.
 
 **Critical Info for New Agent**
--   **Your immediate task is to begin implementing Phase 5: UI/UX Polish**. Follow the user's detailed specifications, starting with Part A (database change for ) and proceeding through all parts.
--   The application is currently stable and fully tested. Maintain this stability by testing changes thoroughly.
--   The user is highly engaged and provides excellent, detailed instructions for each phase. Follow them closely.
--   Use the existing UI components and styling conventions as a baseline, but feel free to elevate the design as requested in the Phase 5 brief.
+-   You are in the middle of implementing **Phase 6B: Contracts**.
+-   The backend API and database changes are complete and compiled.
+-   Your immediate task is to finish the frontend implementation in  by adding the UI and logic for a client to view and agree to a contract.
+-   After completing the implementation, a full end-to-end test of the contract lifecycle is required using the testing agent.
 
 **documents and test reports created in this job**
--    (Continuously updated)
--   Multiple test reports in , with the latest confirming 100% pass rate for all features up to Phase 4.
+-   
+-    (Phase 5 - UI/UX Polish Test Report)
+-    (Part F - Mobile Responsiveness Test Report)
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Kicked off Phase 5: UI/UX Polish with detailed requirements. (Pending Implementation)
-2.  **Agent**: Finished Phase 4 and confirmed readiness for Phase 5.
-3.  **User**: Confirmed Phase 4 was deployed and tested successfully.
-4.  **Agent**: Ran testing agent on Phase 4, which passed all tests.
-5.  **Agent**: Completed implementation of Phase 4 onboarding flow.
-6.  **User**: Kicked off Phase 4: System Templates + Industry Onboarding with detailed requirements.
-7.  **Agent**: Finished Phase 3 and confirmed readiness for Phase 4.
-8.  **User**: Confirmed Phase 3 was deployed and tested successfully.
-9.  **Agent**: Ran testing agent on Phase 3, which passed all tests.
-10. **Agent**: Completed implementation of Phase 3 frontend UI.
+1.  **User**: Confirmed and provided detailed requirements for Phase 6B: Contracts.
+2.  **Agent**: Proposed a plan for implementing Phase 6B.
+3.  **User**: Kicked off Phase 6B with detailed requirements.
+4.  **Agent**: Finished Part F (Mobile Responsiveness) and updated PRD.
+5.  **Agent**: Ran testing agent on mobile responsiveness features, which passed 100%.
+6.  **User**: Confirmed and provided detailed requirements for Part F.
+7.  **Agent**: Proposed a plan for implementing Part F.
+8.  **User**: Kicked off Part F (Mobile Responsiveness).
+9.  **Agent**: Finished Phase 5 (UI/UX Polish) and updated PRD.
+10. **Agent**: Ran testing agent on Phase 5 features, which passed 100%.
 
 **Project Health Check:**
--   **Broken**: None
--   **Mocked**: None
+-   **Broken**: The contract agreement flow is incomplete. The application will run, but attempting to view a contract on the client portal will not work as expected until  is finished.
+-   **Mocked**: None.
 
 **3rd Party Integrations**
 -   **Supabase (PostgreSQL & Storage)** — requires User-provided key. (Status: **WORKING**)
--   **Resend** — requires User API Key.
+-   **Resend** — requires User API Key. (Status: **WORKING**)
 -   **Vercel Analytics**
 
 **Testing status**
--   **Testing agent used after significant changes**: YES. The agent was used successfully after completing Phase 1, 2, 3, and 4, confirming no regressions.
+-   **Testing agent used after significant changes**: YES (for Phase 5 and Part F).
 -   **Troubleshoot agent used after agent stuck in loop**: NO
--   **Test files created**: None. Testing was performed by the .
+-   **Test files created**: None.
 -   **Known regressions**: None.
 
 **Credentials to test flow:**
@@ -181,4 +147,4 @@ There are no pending or in-progress issues. All previously identified critical b
 -   **Password**: 
 
 **What agent forgot to execute**
--   Nothing. The agent successfully completed all requested phases and was awaiting the command to start the next phase, which it has now received.</analysis>
+-   The agent has not forgotten any steps; it is currently in the middle of a multi-step implementation.</analysis>
