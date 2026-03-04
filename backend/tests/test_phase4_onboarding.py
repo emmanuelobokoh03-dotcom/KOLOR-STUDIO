@@ -12,7 +12,7 @@ import requests
 import os
 import time
 
-BASE_URL = "https://polish-studio-4.preview.emergentagent.com"
+BASE_URL = "https://legal-agreements-1.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

@@ -107,7 +107,7 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
     return false;
   }
 
-  const dashboardUrl = process.env.FRONTEND_URL || 'https://polish-studio-4.preview.emergentagent.com';
+  const dashboardUrl = process.env.FRONTEND_URL || 'https://legal-agreements-1.preview.emergentagent.com';
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
 
   const content = `
@@ -256,7 +256,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   }
 
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
-  const baseUrl = process.env.FRONTEND_URL || 'https://polish-studio-4.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://legal-agreements-1.preview.emergentagent.com';
   const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null;
 
   const content = `
@@ -439,7 +439,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://polish-studio-4.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://legal-agreements-1.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -535,7 +535,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://polish-studio-4.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://legal-agreements-1.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -630,7 +630,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://polish-studio-4.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://legal-agreements-1.preview.emergentagent.com';
   const resetUrl = `${baseUrl}/reset-password/${data.resetToken}`;
 
   const content = `
@@ -732,7 +732,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://polish-studio-4.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://legal-agreements-1.preview.emergentagent.com';
   const quoteUrl = `${baseUrl}/quotes/${data.quoteToken}`;
   const firstName = data.clientName.split(' ')[0];
   // Format currency based on quote settings
@@ -850,7 +850,7 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://polish-studio-4.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://legal-agreements-1.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -950,7 +950,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://polish-studio-4.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://legal-agreements-1.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -1306,3 +1306,129 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
   }
 }
 
+
+
+// =====================
+// CONTRACT EMAIL FUNCTIONS
+// =====================
+
+interface ContractSentEmailData {
+  clientName: string;
+  clientEmail: string;
+  projectTitle: string;
+  contractTitle: string;
+  studioName: string;
+  portalUrl: string;
+}
+
+export async function sendContractSentEmail(data: ContractSentEmailData): Promise<boolean> {
+  try {
+    if (!resend) {
+      console.log('[DEV] Contract sent email would go to:', data.clientEmail);
+      return true;
+    }
+
+    const { data: emailData } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: `Agreement for ${data.projectTitle} - ${data.studioName}`,
+      html: `
+        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f0f0f; padding: 0;">
+          <div style="background: linear-gradient(135deg, #7c3aed, #9333ea); padding: 32px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">Agreement Ready</h1>
+            <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 14px;">${data.studioName}</p>
+          </div>
+          <div style="padding: 32px; background: #1a1a1a;">
+            <p style="color: #fafafa; font-size: 16px; line-height: 1.6;">Hi ${data.clientName.split(' ')[0]},</p>
+            <p style="color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+              An agreement for your project <strong style="color: #fafafa;">"${data.projectTitle}"</strong> is ready for your review. 
+              Please review the terms and sign the agreement using the link below.
+            </p>
+            <div style="margin: 24px 0; text-align: center;">
+              <a href="${data.portalUrl}" 
+                 style="display: inline-block; padding: 14px 32px; background: #7c3aed; color: white; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 14px;">
+                Review &amp; Sign Agreement
+              </a>
+            </div>
+            <div style="margin-top: 24px; padding: 16px; background: #0f0f0f; border-radius: 12px; border: 1px solid #333;">
+              <p style="color: #a3a3a3; font-size: 12px; margin: 0;">
+                <strong style="color: #fafafa;">Document:</strong> ${data.contractTitle}<br/>
+                <strong style="color: #fafafa;">Project:</strong> ${data.projectTitle}
+              </p>
+            </div>
+            <p style="color: #666; font-size: 12px; margin-top: 24px; line-height: 1.5;">
+              If you have any questions about the agreement, please reply to this email or contact ${data.studioName} directly.
+            </p>
+          </div>
+        </div>
+      `,
+    });
+
+    console.log('Contract sent email sent to:', data.clientEmail, 'ID:', emailData?.id);
+    return true;
+  } catch (error) {
+    console.error('Error sending contract email:', error);
+    return false;
+  }
+}
+
+interface ContractAgreedData {
+  ownerEmail: string;
+  clientName: string;
+  projectTitle: string;
+  contractTitle: string;
+  agreedAt: string;
+  clientIP: string;
+  studioName: string;
+}
+
+export async function sendContractAgreedNotification(data: ContractAgreedData): Promise<boolean> {
+  try {
+    if (!resend) {
+      console.log('[DEV] Contract agreed notification would go to:', data.ownerEmail);
+      return true;
+    }
+
+    const agreedDate = new Date(data.agreedAt).toLocaleString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', timeZoneName: 'short',
+    });
+
+    const { data: emailData } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: data.ownerEmail,
+      subject: `Client signed agreement for ${data.projectTitle}`,
+      html: `
+        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f0f0f; padding: 0;">
+          <div style="background: linear-gradient(135deg, #059669, #10b981); padding: 32px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">Agreement Signed!</h1>
+            <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 14px;">${data.studioName}</p>
+          </div>
+          <div style="padding: 32px; background: #1a1a1a;">
+            <p style="color: #fafafa; font-size: 16px; line-height: 1.6;">Great news!</p>
+            <p style="color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+              <strong style="color: #fafafa;">${data.clientName}</strong> has signed the agreement for 
+              <strong style="color: #fafafa;">"${data.projectTitle}"</strong>.
+            </p>
+            <div style="margin: 24px 0; padding: 16px; background: #0f0f0f; border-radius: 12px; border: 1px solid #333;">
+              <p style="color: #a3a3a3; font-size: 12px; margin: 0; line-height: 1.8;">
+                <strong style="color: #fafafa;">Document:</strong> ${data.contractTitle}<br/>
+                <strong style="color: #fafafa;">Signed:</strong> ${agreedDate}<br/>
+                <strong style="color: #fafafa;">Client IP:</strong> ${data.clientIP}
+              </p>
+            </div>
+            <p style="color: #666; font-size: 12px; margin-top: 24px;">
+              This record serves as an audit trail for the client's consent.
+            </p>
+          </div>
+        </div>
+      `,
+    });
+
+    console.log('Contract agreed notification sent to:', data.ownerEmail, 'ID:', emailData?.id);
+    return true;
+  } catch (error) {
+    console.error('Error sending contract agreed notification:', error);
+    return false;
+  }
+}

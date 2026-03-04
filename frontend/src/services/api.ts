@@ -1186,4 +1186,90 @@ export const deliverablesApi = {
   },
 };
 
-export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi };
+// =====================
+// CONTRACTS
+// =====================
+
+export type ContractType = 'PHOTOGRAPHY_SHOOT' | 'PORTRAIT_COMMISSION' | 'LOGO_DESIGN' | 'WEB_DESIGN' | 'GENERAL_SERVICE' | 'CUSTOM';
+export type ContractStatus = 'DRAFT' | 'SENT' | 'VIEWED' | 'AGREED';
+
+export const CONTRACT_TYPE_LABELS: Record<ContractType, string> = {
+  PHOTOGRAPHY_SHOOT: 'Photography Shoot',
+  PORTRAIT_COMMISSION: 'Art Commission',
+  LOGO_DESIGN: 'Design Project',
+  WEB_DESIGN: 'Web Design',
+  GENERAL_SERVICE: 'General Service',
+  CUSTOM: 'Custom',
+};
+
+export const CONTRACT_STATUS_LABELS: Record<ContractStatus, string> = {
+  DRAFT: 'Draft',
+  SENT: 'Sent',
+  VIEWED: 'Viewed',
+  AGREED: 'Signed',
+};
+
+export interface Contract {
+  id: string;
+  leadId: string;
+  templateType: ContractType;
+  title: string;
+  content: string;
+  clientAgreed: boolean;
+  clientAgreedAt?: string;
+  clientIP?: string;
+  status: ContractStatus;
+  sentAt?: string;
+  viewedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContractTemplate {
+  type: string;
+  title: string;
+  label: string;
+}
+
+export const contractsApi = {
+  getTemplates: async () => {
+    return request<{ templates: ContractTemplate[] }>('/contracts/templates/list');
+  },
+  getForLead: async (leadId: string) => {
+    return request<{ contracts: Contract[] }>(`/leads/${leadId}/contracts`);
+  },
+  create: async (leadId: string, data: { templateType: string; title?: string; content?: string }) => {
+    return request<{ contract: Contract }>(`/leads/${leadId}/contracts`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  getOne: async (id: string) => {
+    return request<{ contract: Contract }>(`/contracts/${id}`);
+  },
+  update: async (id: string, data: { title?: string; content?: string }) => {
+    return request<{ contract: Contract }>(`/contracts/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+  delete: async (id: string) => {
+    return request<{ message: string }>(`/contracts/${id}`, {
+      method: 'DELETE',
+    });
+  },
+  send: async (id: string) => {
+    return request<{ contract: Contract }>(`/contracts/${id}/send`, {
+      method: 'POST',
+    });
+  },
+  agree: async (id: string, portalToken: string) => {
+    return request<{ contract: { id: string; status: string; clientAgreedAt: string } }>(`/contracts/${id}/agree`, {
+      method: 'POST',
+      body: JSON.stringify({ portalToken }),
+    });
+  },
+};
+
+
+export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi, contractsApi };

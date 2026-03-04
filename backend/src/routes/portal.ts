@@ -84,7 +84,20 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
             lastName: true,
             email: true,
           }
-        }
+        },
+        contracts: {
+          where: { status: { in: ['SENT', 'VIEWED', 'AGREED'] } },
+          select: {
+            id: true,
+            title: true,
+            content: true,
+            status: true,
+            clientAgreed: true,
+            clientAgreedAt: true,
+            sentAt: true,
+          },
+          orderBy: { createdAt: 'desc' },
+        },
       },
     });
 
@@ -157,6 +170,7 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
       },
       timeline: clientActivities,
       files: clientFiles,
+      contracts: (lead as any).contracts || [],
       contact: {
         email: assignedTo?.email || process.env.OWNER_NOTIFICATION_EMAIL || 'contact@kolorstudio.com',
         name: assignedTo 

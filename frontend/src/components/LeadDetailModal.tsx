@@ -40,12 +40,14 @@ import {
   BarChart3,
   Receipt,
   MailPlus,
-  Package
+  Package,
+  ScrollText
 } from 'lucide-react'
 import QuotesTab from './QuotesTab'
 import EmailComposerModal from './EmailComposerModal'
 import BookingModal from './BookingModal'
 import DeliverablesTab from './DeliverablesTab'
+import ContractsTab from './ContractsTab'
 import { 
   trackFileUploaded, 
   trackFileDownloaded, 
@@ -154,7 +156,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [newNote, setNewNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
-  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables'>('activity');
+  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables' | 'contracts'>('activity');
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -481,6 +483,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
           <div className="flex border-b border-[#333] flex-shrink-0 overflow-x-auto scrollbar-hide">
             {([
               { key: 'activity' as const, icon: History, label: 'Activity' },
+              { key: 'contracts' as const, icon: ScrollText, label: 'Contracts' },
               { key: 'quotes' as const, icon: Receipt, label: 'Quotes' },
               { key: 'files' as const, icon: Paperclip, label: 'Files', badge: files.length },
               { key: 'details' as const, icon: User, label: 'Details' },
@@ -756,6 +759,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
               <div className="p-4 md:p-6">
                 <DeliverablesTab leadId={lead.id} />
               </div>
+            ) : activeTab === 'contracts' ? (
+              <ContractsTab leadId={lead.id} />
             ) : (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                 {/* Status & Actions */}

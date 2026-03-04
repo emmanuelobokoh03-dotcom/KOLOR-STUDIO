@@ -15,6 +15,7 @@ import bookingsRoutes from './routes/bookings';
 import portfolioRoutes from './routes/portfolio';
 import workflowTemplatesRoutes from './routes/workflow-templates';
 import deliverablesRoutes from './routes/deliverables';
+import contractsRoutes from './routes/contracts';
 import { ensureBucketExists } from './services/storage';
 
 // Load environment variables
@@ -42,7 +43,7 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5173',
     'http://localhost:3000',
-    'https://polish-studio-4.preview.emergentagent.com'
+    'https://legal-agreements-1.preview.emergentagent.com'
   ],
   credentials: true,
 }));
@@ -95,7 +96,8 @@ app.use('/api/quote-templates', quoteTemplatesRoutes); // Quote templates
 app.use('/api/bookings', bookingsRoutes); // Bookings
 app.use('/api/portfolio', portfolioRoutes); // Portfolio
 app.use('/api/workflow-templates', workflowTemplatesRoutes); // Workflow templates
-app.use('/api', deliverablesRoutes); // Deliverables: /api/leads/:leadId/deliverables + /api/deliverables/:id
+app.use('/api', deliverablesRoutes);
+app.use('/api', contractsRoutes); // Deliverables: /api/leads/:leadId/deliverables + /api/deliverables/:id
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {

@@ -10,11 +10,23 @@ import {
   FileText, 
   MessageCircle,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  ScrollText,
+  ShieldCheck
 } from 'lucide-react';
 import { trackPortalViewed } from '../utils/analytics';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+interface PortalContract {
+  id: string;
+  title: string;
+  content: string;
+  status: string;
+  clientAgreed: boolean;
+  clientAgreedAt?: string;
+  sentAt?: string;
+}
 
 interface PortalData {
   project: {
@@ -52,6 +64,7 @@ interface PortalData {
     size: number;
     uploadedAt: string;
   }>;
+  contracts: PortalContract[];
   contact: {
     email: string;
     name: string;
@@ -88,6 +101,10 @@ export default function ClientPortal() {
   const [data, setData] = useState<PortalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [agreedChecked, setAgreedChecked] = useState<Record<string, boolean>>({});
+  const [signing, setSigning] = useState<string | null>(null);
+  const [signSuccess, setSignSuccess] = useState<string | null>(null);
+  const [signError, setSignError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPortalData();
@@ -141,6 +158,39 @@ export default function ClientPortal() {
       day: 'numeric',
       year: 'numeric',
     });
+  };
+
+  const handleAgree = async (contractId: string) => {
+    setSigning(contractId);
+    setSignError(null);
+    try {
+      const response = await fetch(`${API_URL}/contracts/${contractId}/agree`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ portalToken: token }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        setSignError(result.error || 'Failed to sign agreement');
+        setSigning(null);
+        return;
+      }
+      // Update the contract in local state
+      if (data) {
+        setData({
+          ...data,
+          contracts: data.contracts.map(c =>
+            c.id === contractId
+              ? { ...c, status: 'AGREED', clientAgreed: true, clientAgreedAt: result.contract.clientAgreedAt }
+              : c
+          ),
+        });
+      }
+      setSignSuccess(contractId);
+    } catch (err) {
+      setSignError('Unable to connect. Please try again.');
+    }
+    setSigning(null);
   };
 
   if (loading) {
@@ -384,6 +434,135 @@ export default function ClientPortal() {
             </div>
           </div>
         </div>
+
+        {/* Contracts Section */}
+        {data.contracts && data.contracts.length > 0 && (
+          <div className="space-y-6" data-testid="contracts-section">
+            {data.contracts.map((contract) => {
+              const isAgreed = contract.status === 'AGREED' || contract.clientAgreed;
+              const justSigned = signSuccess === contract.id;
+
+              return (
+                <div
+                  key={contract.id}
+                  className={`bg-white rounded-2xl shadow-lg border overflow-hidden transition-all duration-300 ${
+                    isAgreed ? 'border-green-200' : 'border-violet-200'
+                  }`}
+                  data-testid={`portal-contract-${contract.id}`}
+                >
+                  {/* Contract Header */}
+                  <div className={`px-6 py-4 flex items-center gap-3 ${
+                    isAgreed
+                      ? 'bg-gradient-to-r from-green-50 to-emerald-50'
+                      : 'bg-gradient-to-r from-violet-50 to-purple-50'
+                  }`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                      isAgreed ? 'bg-green-100' : 'bg-violet-100'
+                    }`}>
+                      {isAgreed ? (
+                        <ShieldCheck className={`w-5 h-5 text-green-600`} />
+                      ) : (
+                        <ScrollText className={`w-5 h-5 text-violet-600`} />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base font-semibold text-gray-900">{contract.title}</h3>
+                      <p className="text-sm text-gray-500">
+                        {isAgreed ? 'Agreement signed' : 'Please review and sign below'}
+                      </p>
+                    </div>
+                    {isAgreed && (
+                      <span className="flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold flex-shrink-0">
+                        <CheckCircle className="w-3.5 h-3.5" /> Signed
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Contract Content */}
+                  <div className="px-6 py-6 border-t border-gray-100">
+                    <div
+                      className="prose prose-sm max-w-none text-gray-700 [&_h2]:text-gray-900 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-gray-900 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_strong]:text-gray-900 [&_p]:leading-relaxed [&_p]:mb-3"
+                      dangerouslySetInnerHTML={{ __html: contract.content }}
+                    />
+                  </div>
+
+                  {/* Agreement / Signed Section */}
+                  <div className="px-6 py-5 border-t border-gray-100 bg-gray-50">
+                    {isAgreed ? (
+                      <div className={`flex items-center gap-3 p-4 rounded-xl transition-all duration-500 ${
+                        justSigned
+                          ? 'bg-green-100 border border-green-300 animate-pulse'
+                          : 'bg-green-50 border border-green-200'
+                      }`} data-testid={`contract-agreed-${contract.id}`}>
+                        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <CheckCircle className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-green-800">
+                            {justSigned ? 'Agreement Successfully Signed!' : 'Agreement Signed'}
+                          </p>
+                          <p className="text-sm text-green-600">
+                            {contract.clientAgreedAt
+                              ? `Signed on ${new Date(contract.clientAgreedAt).toLocaleDateString('en-US', {
+                                  weekday: 'long',
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric',
+                                  hour: 'numeric',
+                                  minute: '2-digit',
+                                })}`
+                              : 'Thank you for signing this agreement'}
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {signError && (
+                          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm" data-testid="sign-error">
+                            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                            {signError}
+                          </div>
+                        )}
+
+                        <label className="flex items-start gap-3 cursor-pointer select-none group" data-testid={`agree-checkbox-label-${contract.id}`}>
+                          <input
+                            type="checkbox"
+                            checked={agreedChecked[contract.id] || false}
+                            onChange={(e) => setAgreedChecked({ ...agreedChecked, [contract.id]: e.target.checked })}
+                            className="mt-1 w-5 h-5 rounded border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                            data-testid={`agree-checkbox-${contract.id}`}
+                          />
+                          <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">
+                            I have read the terms above and I agree to the conditions outlined in this agreement.
+                          </span>
+                        </label>
+
+                        <button
+                          onClick={() => handleAgree(contract.id)}
+                          disabled={!agreedChecked[contract.id] || signing === contract.id}
+                          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl font-semibold text-base hover:from-violet-700 hover:to-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-violet-200"
+                          data-testid={`sign-agreement-btn-${contract.id}`}
+                        >
+                          {signing === contract.id ? (
+                            <>
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                              Signing Agreement...
+                            </>
+                          ) : (
+                            <>
+                              <ShieldCheck className="w-5 h-5" />
+                              Sign Agreement
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Activity Timeline */}
         {data.timeline.length > 0 && (
