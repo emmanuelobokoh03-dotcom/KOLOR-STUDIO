@@ -49,24 +49,24 @@ export const authApi = {
     lastName: string;
     studioName?: string;
   }) => {
-    return request<{ message: string; user: User }>('/auth/signup', {
+    return request<{ message: string; user: User }>('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify(userData),
     });
   },
 
   login: async (credentials: { email: string; password: string }) => {
-    return request<{ message: string; token: string; user: User }>('/auth/login', {
+    return request<{ message: string; token: string; user: User }>('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
   },
 
   getMe: async () => {
-    return request<{ user: User }>('/auth/me');
+    return request<{ user: User }>('/api/auth/me');
   },
   onboarding: async (primaryIndustry: string) => {
-    return request<{ message: string; user: any; templates: any[] }>('/auth/onboarding', {
+    return request<{ message: string; user: any; templates: any[] }>('/api/auth/onboarding', {
       method: 'POST',
       body: JSON.stringify({ primaryIndustry }),
     });
