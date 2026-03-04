@@ -158,31 +158,31 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
     }, 1000);
   };
 
-  const inputClass = "w-full px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-gray-500 transition-all duration-200";
+  const inputClass = "w-full px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-gray-500 transition-all duration-200 text-base";
   const labelClass = "block text-sm font-medium text-[#A3A3A3] mb-1.5";
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose}>
       <div 
-        className="bg-[#1A1A1A] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-[#333] animate-fade-in"
+        className="bg-[#1A1A1A] w-full md:rounded-2xl md:shadow-2xl md:max-w-2xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden border-t md:border border-[#333] animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
         data-testid="add-lead-modal"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6">
+        <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold">Add New Lead</h2>
-              <p className="text-violet-100 mt-1 text-sm">Manually add a potential client</p>
+              <h2 className="text-xl md:text-2xl font-bold">Add New Lead</h2>
+              <p className="text-violet-100 mt-0.5 md:mt-1 text-sm">Manually add a potential client</p>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-xl transition-all duration-200" data-testid="add-lead-close">
+            <button onClick={onClose} className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 touch-target" data-testid="add-lead-close">
               <X className="w-6 h-6" />
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[70vh]">
+        <div className="p-4 md:p-6 overflow-y-auto flex-1 md:max-h-[70vh]">
           {error && (
             <div className="mb-5 p-4 bg-red-900/30 border border-red-700/50 rounded-xl flex items-center gap-3 text-red-400 animate-fade-in">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -196,10 +196,10 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
             {/* Cover Image Upload */}
             <div>
-              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Cover Image</h3>
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Cover Image</h3>
               <input
                 type="file"
                 ref={coverInputRef}
@@ -250,8 +250,8 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Project Type Selector */}
             <div>
-              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Project Type</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3" data-testid="project-type-selector">
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Project Type</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3" data-testid="project-type-selector">
                 {PROJECT_TYPE_CONFIG.map(({ type, icon: Icon, desc, color }) => {
                   const selected = formData.projectType === type;
                   return (
@@ -279,8 +279,8 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Client Info */}
             <div>
-              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Client Information</h3>
-              <div className="grid md:grid-cols-2 gap-4">
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Client Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <label className={labelClass}>Client Name *</label>
                   <input type="text" name="clientName" value={formData.clientName} onChange={handleChange} className={inputClass} placeholder="John Smith" data-testid="add-lead-client-name" />
@@ -302,9 +302,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Project Details */}
             <div>
-              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Project Details</h3>
-              <div className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Project Details</h3>
+              <div className="space-y-3 md:space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div>
                     <label className={labelClass}>Service Type *</label>
                     <select name="serviceType" value={formData.serviceType} onChange={handleChange} className={inputClass} data-testid="add-lead-service-type">
@@ -329,7 +329,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                     </select>
                   </div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div>
                     <label className={labelClass}>Lead Source</label>
                     <select name="source" value={formData.source} onChange={handleChange} className={inputClass}>
@@ -360,8 +360,8 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Deliverable Type */}
             <div>
-              <h3 className="text-base font-semibold mb-3 text-[#FAFAFA]">Deliverable Type</h3>
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-3" data-testid="deliverable-type-selector">
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Deliverable Type</h3>
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3" data-testid="deliverable-type-selector">
                 {DELIVERABLE_CONFIG.map(({ type, icon: Icon, color }) => {
                   const selected = formData.deliverableType === type;
                   return (
@@ -421,11 +421,11 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Submit */}
             <div className="flex justify-end gap-3 pt-4 border-t border-[#333]">
-              <button type="button" onClick={onClose} className="px-6 py-2.5 text-[#A3A3A3] hover:bg-[#262626] rounded-xl font-medium transition-all duration-200">Cancel</button>
+              <button type="button" onClick={onClose} className="px-5 md:px-6 py-2.5 text-[#A3A3A3] hover:bg-[#262626] rounded-xl font-medium transition-all duration-200 touch-target">Cancel</button>
               <button 
                 type="submit" 
                 disabled={loading} 
-                className="px-6 py-2.5 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-500 disabled:opacity-50 flex items-center gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-violet-500/20" 
+                className="px-5 md:px-6 py-2.5 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-500 disabled:opacity-50 flex items-center gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-violet-500/20 touch-target" 
                 data-testid="add-lead-submit"
               >
                 {loading ? (

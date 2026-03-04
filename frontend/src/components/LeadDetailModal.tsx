@@ -417,75 +417,90 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose}>
         <div 
-          className="bg-[#1A1A1A] rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col border border-[#333] animate-fade-in"
+          className="bg-[#1A1A1A] w-full md:rounded-2xl md:shadow-2xl md:max-w-3xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-[#333] animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
           onClick={(e) => e.stopPropagation()}
           data-testid="lead-detail-modal"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6 flex-shrink-0">
+          <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-4 md:p-6 flex-shrink-0">
             <div className="flex items-start justify-between">
-              <div>
+              <div className="flex-1 min-w-0 mr-3">
                 <span className="text-xs px-2.5 py-1 bg-white/20 rounded-full backdrop-blur-sm">
                   {SERVICE_TYPE_LABELS[lead.serviceType]}
                 </span>
-                <h2 className="text-2xl font-bold mt-2">{lead.projectTitle}</h2>
-                <p className="text-violet-100 mt-1 text-sm">Submitted {formatDate(lead.createdAt)}</p>
+                <h2 className="text-xl md:text-2xl font-bold mt-2 truncate">{lead.projectTitle}</h2>
+                <p className="text-violet-100 mt-0.5 md:mt-1 text-xs md:text-sm">Submitted {formatDate(lead.createdAt)}</p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
                 <button 
                   onClick={() => setShowBookingModal(true)}
-                  className="flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm"
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm touch-target"
                   data-testid="create-booking-btn"
                   title="Create Booking"
                 >
                   <Calendar className="w-4 h-4" />
-                  Book
+                  <span className="hidden md:inline">Book</span>
                 </button>
                 <button 
                   onClick={() => setShowEmailComposer(true)}
-                  className="flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm"
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm touch-target"
                   data-testid="email-client-btn"
                   title="Email Client"
                 >
                   <MailPlus className="w-4 h-4" />
-                  Email
+                  <span className="hidden md:inline">Email</span>
                 </button>
                 <button 
                   onClick={onClose}
-                  className="p-2 hover:bg-white/20 rounded-xl transition-all duration-200"
+                  className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 touch-target"
                 >
                   <X className="w-6 h-6" />
                 </button>
               </div>
             </div>
+            {/* Mobile action buttons */}
+            <div className="flex gap-2 mt-3 sm:hidden">
+              <button 
+                onClick={() => setShowBookingModal(true)}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white/20 rounded-xl text-sm font-medium touch-target"
+              >
+                <Calendar className="w-4 h-4" /> Book
+              </button>
+              <button 
+                onClick={() => setShowEmailComposer(true)}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white/20 rounded-xl text-sm font-medium touch-target"
+              >
+                <MailPlus className="w-4 h-4" /> Email
+              </button>
+            </div>
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex border-b border-[#333] flex-shrink-0">
+          <div className="flex border-b border-[#333] flex-shrink-0 overflow-x-auto scrollbar-hide">
             {([
               { key: 'activity' as const, icon: History, label: 'Activity' },
               { key: 'quotes' as const, icon: Receipt, label: 'Quotes' },
               { key: 'files' as const, icon: Paperclip, label: 'Files', badge: files.length },
               { key: 'details' as const, icon: User, label: 'Details' },
-              { key: 'deliverables' as const, icon: Package, label: 'Deliverables' },
+              { key: 'deliverables' as const, icon: Package, label: 'Deliver.' },
             ]).map(({ key, icon: Icon, label, badge }) => (
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`flex-1 px-4 py-3.5 text-sm font-medium transition-all duration-200 ${
+                className={`flex-shrink-0 flex-1 min-w-0 px-2 md:px-4 py-3 md:py-3.5 text-xs md:text-sm font-medium transition-all duration-200 touch-target ${
                   activeTab === key 
                     ? 'text-violet-400 border-b-2 border-violet-500 bg-violet-900/10' 
                     : 'text-[#A3A3A3] hover:text-white hover:bg-[#262626]'
                 }`}
                 data-testid={`tab-${key}`}
               >
-                <div className="flex items-center justify-center gap-2">
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{label}</span>
+                <div className="flex items-center justify-center gap-1 md:gap-2">
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span className="truncate">{label}</span>
                   {badge !== undefined && badge > 0 && (
-                    <span className="bg-violet-900/50 text-violet-300 text-xs px-2 py-0.5 rounded-full">
+                    <span className="bg-violet-900/50 text-violet-300 text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full flex-shrink-0">
                       {badge}
                     </span>
                   )}
@@ -497,9 +512,9 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
           {/* Content */}
           <div className="flex-1 overflow-y-auto">
             {activeTab === 'activity' ? (
-              <div className="p-6 space-y-6">
+              <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                 {/* Add Note */}
-                <div className="bg-[#0F0F0F] rounded-xl p-5 border border-[#333]">
+                <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 border border-[#333]">
                   <h3 className="text-sm font-semibold text-[#A3A3A3] mb-3 flex items-center gap-2">
                     <MessageSquare className="w-4 h-4" />
                     Add Note
@@ -582,10 +597,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                 </div>
               </div>
             ) : activeTab === 'files' ? (
-              <div className="p-6 space-y-6">
+              <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                 {/* Upload Section */}
                 <div 
-                  className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
+                  className={`border-2 border-dashed rounded-xl p-6 md:p-8 text-center transition-all duration-200 ${
                     dragOver 
                       ? 'border-violet-500 bg-violet-900/20' 
                       : 'border-[#333] hover:border-violet-500/50 hover:bg-[#0F0F0F]'
@@ -647,7 +662,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                       <p className="text-sm mt-1">Upload contracts, briefs, or reference images</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4" data-testid="file-gallery">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" data-testid="file-gallery">
                       {files.map((file) => {
                         const isImage = isImageFile(file);
                         const FileIcon = FILE_ICONS[file.category] || File;
@@ -738,11 +753,11 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                 }} 
               />
             ) : activeTab === 'deliverables' ? (
-              <div className="p-6">
+              <div className="p-4 md:p-6">
                 <DeliverablesTab leadId={lead.id} />
               </div>
             ) : (
-              <div className="p-6 space-y-6">
+              <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                 {/* Status & Actions */}
                 <div className="flex items-center justify-between pb-6 border-b border-[#333]">
                   <div className="flex items-center gap-3">
@@ -796,16 +811,16 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                     <User className="w-5 h-5 text-violet-400" />
                     Client Information
                   </h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
-                      <User className="w-5 h-5 text-gray-500" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                    <div className="flex items-center gap-3 p-3 md:p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
+                      <User className="w-5 h-5 text-gray-500 flex-shrink-0" />
                       <div>
                         <p className="text-xs text-gray-500">Name</p>
                         <p className="font-medium text-[#FAFAFA]">{lead.clientName}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
-                      <Mail className="w-5 h-5 text-gray-500" />
+                    <div className="flex items-center gap-3 p-3 md:p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
+                      <Mail className="w-5 h-5 text-gray-500 flex-shrink-0" />
                       <div>
                         <p className="text-xs text-gray-500">Email</p>
                         <a href={`mailto:${lead.clientEmail}`} className="font-medium text-violet-400 hover:underline">
@@ -840,10 +855,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                     <FileText className="w-5 h-5 text-violet-400" />
                     Project Details
                   </h3>
-                  <div className="bg-[#0F0F0F] rounded-xl p-5 mb-4 border border-[#333]">
+                  <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 mb-3 md:mb-4 border border-[#333]">
                     <p className="text-[#A3A3A3] whitespace-pre-wrap text-sm leading-relaxed">{lead.description}</p>
                   </div>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     {(editing || lead.budget) && (
                       <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
                         <DollarSign className="w-5 h-5 text-gray-500" />
@@ -964,7 +979,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                       </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
                       <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
                         <div className="w-10 h-10 bg-blue-900/50 rounded-xl flex items-center justify-center border border-blue-700/50">
                           <Eye className="w-5 h-5 text-blue-400" />
