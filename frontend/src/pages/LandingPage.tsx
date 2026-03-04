@@ -458,7 +458,7 @@ const LandingPage = () => {
             </div>
           ) : (
             <>
-              <form onSubmit={handleEmailSubmit} className="flex gap-3 max-w-md mx-auto mb-3">
+              <form onSubmit={handleEmailSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-3">
                 <input
                   type="email"
                   value={email}
@@ -469,7 +469,7 @@ const LandingPage = () => {
                 />
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium whitespace-nowrap"
+                  className="px-4 py-2.5 sm:px-6 sm:py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium "
                 >
                   Subscribe
                 </button>
