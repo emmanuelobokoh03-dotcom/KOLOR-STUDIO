@@ -372,11 +372,7 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
                           </button>
                         </>
                       )}
-<<<<<<< HEAD
                       {contract.status !== 'AGREED' && (
-=======
-                      {(contract.status === 'DRAFT' || contract.status === 'SENT' || contract.status === 'VIEWED') && contract.status !== 'AGREED' && (
->>>>>>> 5bca0a891cb3f048a362027e2325ce2d87ba4580
                         <button
                           onClick={(e) => { e.stopPropagation(); handleSend(contract.id); }}
                           disabled={sending === contract.id}
