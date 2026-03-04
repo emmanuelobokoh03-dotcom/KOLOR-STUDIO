@@ -147,7 +147,7 @@ export const leadsApi = {
     files.forEach(file => formData.append('files', file));
 
     try {
-      const response = await fetch(`${API_URL}/leads/${leadId}/files`, {
+      const response = await fetch(`${API_URL}/api/leads/${leadId}/files`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

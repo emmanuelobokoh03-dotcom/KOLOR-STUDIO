@@ -112,7 +112,7 @@ export default function ClientPortal() {
 
   const fetchPortalData = async () => {
     try {
-      const response = await fetch(`${API_URL}/portal/${token}`);
+      const response = await fetch(`${API_URL}/api/portal/${token}`);
       const result = await response.json();
       
       if (!response.ok) {
