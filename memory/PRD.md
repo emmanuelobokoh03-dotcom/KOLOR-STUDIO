@@ -62,6 +62,13 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Email Notifications**: Contract sent email to client, agreement notification to studio owner
 - **Tested**: 22/22 backend tests passed, all frontend features verified (100% pass rate)
 
+### Dashboard Visual Polish - Status Colors (DONE - March 4, 2026)
+- Updated Kanban column headers to violet-centric palette: Violet (New) → Purple (Contacted) → Indigo (Qualified) → Fuchsia (Quoted) → Blue (Negotiating) → Emerald (Booked) → Slate (Lost)
+- Updated status badges across Dashboard, LeadDetailModal with matching /30 opacity backgrounds
+- Updated stat card icons to violet/purple/fuchsia/emerald palette
+- Fixed double /api prefix bug in frontend API client (was causing /api/api/... routes)
+- Fixed in: KanbanBoard.tsx, Dashboard.tsx, LeadDetailModal.tsx, api.ts, ClientPortal.tsx, IndustryOnboarding.tsx, ForgotPassword.tsx, ResetPassword.tsx
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
