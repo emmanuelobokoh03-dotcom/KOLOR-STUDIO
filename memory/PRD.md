@@ -14,6 +14,7 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Client Portal**: Shareable portal links for clients to track project status
 - **Email Integration**: Notifications via Resend for status changes, new leads
 - **Quotes System**: Create and manage quotes for leads
+- **Contracts & Consent**: Create contracts from templates, send to clients, client signs via portal
 
 ## Phase History
 
@@ -48,22 +49,30 @@ A full-stack CRM application for creative professionals (photographers, designer
   - Single-column form layouts on mobile, 2-column on desktop
   - 44px minimum touch targets on all interactive elements
   - 16px minimum input font size (prevents iOS zoom)
-  - Responsive grids: 1→2→3→4 columns across breakpoints
+  - Responsive grids: 1-2-3-4 columns across breakpoints
   - Safe area padding for notched devices
   - Mobile filter toggle with badge count
-  - Tested on iPhone SE (320px), standard mobile (375px), tablet (768px), desktop (1280px+)
+
+### Phase 6B: Contracts & Consent System (DONE - March 4, 2026)
+- **Database**: Contract model with leadId, templateType, title, content, clientAgreed, clientAgreedAt, clientIP, status
+- **Contract Templates**: 6 templates (Photography Shoot, Art Commission, Design Project, Web Design, General Service, Custom)
+- **Backend API**: Full CRUD + send + public agree endpoint at /api/contracts
+- **Frontend ContractsTab**: Template selector, contract editor with live preview, status badges, expand/collapse
+- **Client Portal**: Contracts section showing sent contracts, checkbox + Sign Agreement button, green signed confirmation
+- **Email Notifications**: Contract sent email to client, agreement notification to studio owner
+- **Tested**: 22/22 backend tests passed, all frontend features verified (100% pass rate)
 
 ## Architecture
 ```
 /app/kolor-studio-v2/
 ├── backend/         # Node.js + Express + Prisma + TypeScript
 │   ├── prisma/      # Schema & migrations
-│   ├── src/routes/  # API endpoints
+│   ├── src/routes/  # API endpoints (contracts.ts, portal.ts, leads.ts, etc.)
 │   ├── src/services/# Storage, email
 │   └── src/middleware/# Auth middleware
 ├── frontend/        # React + Vite + TypeScript + Tailwind CSS
-│   ├── src/pages/   # Dashboard, Login, Signup, Portfolio
-│   ├── src/components/# UI components (incl. MobileBottomNav)
+│   ├── src/pages/   # Dashboard, Login, Signup, Portfolio, ClientPortal
+│   ├── src/components/# UI components (ContractsTab, LeadDetailModal, etc.)
 │   └── src/services/# API client
 ```
 
@@ -72,6 +81,7 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Lead**: id, clientName, clientEmail, projectTitle, status, serviceType, projectType, industry, deliverableType, coverImage, budget, timeline, portalToken, portalViews
 - **WorkflowTemplate**: id, name, industry, projectType, isDefault, isSystem, userId, stages[]
 - **Deliverable**: id, leadId, type, status, fileUrls, details
+- **Contract**: id, leadId, templateType, title, content, clientAgreed, clientAgreedAt, clientIP, status (DRAFT/SENT/VIEWED/AGREED), sentAt, viewedAt
 
 ## Key API Endpoints
 - `POST /api/auth/login` & `POST /api/auth/signup` - Authentication
@@ -82,8 +92,14 @@ A full-stack CRM application for creative professionals (photographers, designer
 - `GET/POST/DELETE /api/leads/:id/files` - File management
 - `/api/workflow-templates/*` - Workflow CRUD
 - `/api/leads/:leadId/deliverables` - Deliverables CRUD
+- `GET /api/contracts/templates/list` - List contract templates (auth)
+- `GET/POST /api/leads/:leadId/contracts` - Lead-scoped contracts (auth)
+- `GET/PATCH/DELETE /api/contracts/:id` - Single contract CRUD (auth)
+- `POST /api/contracts/:id/send` - Send contract to client (auth)
+- `POST /api/contracts/:id/agree` - Client signs contract (public, uses portalToken)
 
 ## Backlog (P2/P3)
+- **(P2)** PWA Functionality - make app installable
 - **(P2)** Email verification for signups
 - **(P2)** Client file upload on public inquiry form
 - **(P3)** Distinct icons for activity types in timeline
