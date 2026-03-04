@@ -79,58 +79,58 @@ export const leadsApi = {
     const query = params ? '?' + new URLSearchParams(
       Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== ''))
     ).toString() : '';
-    return request<{ leads: Lead[]; count: number }>(`/leads${query}`);
+    return request<{ leads: Lead[]; count: number }>(`/api/leads${query}`);
   },
 
   getStats: async () => {
-    return request<{ total: number; statusCounts: Record<string, number>; recentLeads: Lead[] }>('/leads/stats');
+    return request<{ total: number; statusCounts: Record<string, number>; recentLeads: Lead[] }>('/api/leads/stats');
   },
 
   getOne: async (id: string) => {
-    return request<{ lead: Lead }>(`/leads/${id}`);
+    return request<{ lead: Lead }>(`/api/leads/${id}`);
   },
 
   create: async (leadData: CreateLeadData) => {
-    return request<{ message: string; lead: Lead }>('/leads', {
+    return request<{ message: string; lead: Lead }>('/api/leads', {
       method: 'POST',
       body: JSON.stringify(leadData),
     });
   },
 
   submit: async (leadData: SubmitLeadData) => {
-    return request<{ message: string; leadId: string }>('/portal/submit', {
+    return request<{ message: string; leadId: string }>('/api/portal/submit', {
       method: 'POST',
       body: JSON.stringify(leadData),
     });
   },
 
   update: async (id: string, updates: Partial<Lead>) => {
-    return request<{ message: string; lead: Lead }>(`/leads/${id}`, {
+    return request<{ message: string; lead: Lead }>(`/api/leads/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(updates),
     });
   },
 
   updateStatus: async (id: string, status: LeadStatus) => {
-    return request<{ message: string; lead: Lead }>(`/leads/${id}/status`, {
+    return request<{ message: string; lead: Lead }>(`/api/leads/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
     });
   },
 
   delete: async (id: string) => {
-    return request<{ message: string }>(`/leads/${id}`, {
+    return request<{ message: string }>(`/api/leads/${id}`, {
       method: 'DELETE',
     });
   },
 
   // Activities
   getActivities: async (leadId: string) => {
-    return request<{ activities: Activity[] }>(`/leads/${leadId}/activities`);
+    return request<{ activities: Activity[] }>(`/api/leads/${leadId}/activities`);
   },
 
   addNote: async (leadId: string, content: string) => {
-    return request<{ message: string; activity: Activity }>(`/leads/${leadId}/notes`, {
+    return request<{ message: string; activity: Activity }>(`/api/leads/${leadId}/notes`, {
       method: 'POST',
       body: JSON.stringify({ content }),
     });
@@ -138,7 +138,7 @@ export const leadsApi = {
 
   // Files
   getFiles: async (leadId: string) => {
-    return request<{ files: LeadFile[] }>(`/leads/${leadId}/files`);
+    return request<{ files: LeadFile[] }>(`/api/leads/${leadId}/files`);
   },
 
   uploadFiles: async (leadId: string, files: File[]) => {
@@ -167,7 +167,7 @@ export const leadsApi = {
   },
 
   deleteFile: async (fileId: string) => {
-    return request<{ message: string }>(`/files/${fileId}`, {
+    return request<{ message: string }>(`/api/files/${fileId}`, {
       method: 'DELETE',
     });
   },
@@ -178,23 +178,23 @@ export const leadsApi = {
     if (start) params.append('start', start);
     if (end) params.append('end', end);
     const query = params.toString() ? `?${params.toString()}` : '';
-    return request<{ events: CalendarEvent[] }>(`/leads/calendar/events${query}`);
+    return request<{ events: CalendarEvent[] }>(`/api/leads/calendar/events${query}`);
   },
 
   // Custom Email
   sendEmail: async (leadId: string, data: { subject: string; body: string; cc?: string; bcc?: string }) => {
-    return request<{ message: string }>(`/leads/${leadId}/send-email`, {
+    return request<{ message: string }>(`/api/leads/${leadId}/send-email`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
   getFileDownloadUrl: async (fileId: string) => {
-    return request<{ url: string; filename: string }>(`/files/${fileId}/download`);
+    return request<{ url: string; filename: string }>(`/api/files/${fileId}/download`);
   },
 
   sendPortalLink: async (leadId: string) => {
-    return request<{ message: string; sentTo: string }>(`/leads/${leadId}/send-portal-link`, {
+    return request<{ message: string; sentTo: string }>(`/api/leads/${leadId}/send-portal-link`, {
       method: 'POST',
     });
   },
@@ -731,22 +731,22 @@ export const PAYMENT_TERMS_LABELS: Record<string, string> = {
 export const quotesApi = {
   // Get all quotes for a lead
   getByLead: async (leadId: string) => {
-    return request<{ quotes: Quote[] }>(`/leads/${leadId}/quotes`);
+    return request<{ quotes: Quote[] }>(`/api/leads/${leadId}/quotes`);
   },
 
   // Get single quote
   getById: async (quoteId: string) => {
-    return request<{ quote: Quote }>(`/quotes/${quoteId}`);
+    return request<{ quote: Quote }>(`/api/quotes/${quoteId}`);
   },
 
   // Get public quote by token
   getPublic: async (quoteToken: string) => {
-    return request<{ quote: Quote }>(`/quotes/public/${quoteToken}`);
+    return request<{ quote: Quote }>(`/api/quotes/public/${quoteToken}`);
   },
 
   // Create quote
   create: async (leadId: string, data: CreateQuoteData) => {
-    return request<{ quote: Quote }>(`/leads/${leadId}/quotes`, {
+    return request<{ quote: Quote }>(`/api/leads/${leadId}/quotes`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -754,7 +754,7 @@ export const quotesApi = {
 
   // Update quote
   update: async (quoteId: string, data: Partial<CreateQuoteData>) => {
-    return request<{ quote: Quote }>(`/quotes/${quoteId}`, {
+    return request<{ quote: Quote }>(`/api/quotes/${quoteId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
@@ -762,40 +762,40 @@ export const quotesApi = {
 
   // Delete quote
   delete: async (quoteId: string) => {
-    return request<{ message: string }>(`/quotes/${quoteId}`, {
+    return request<{ message: string }>(`/api/quotes/${quoteId}`, {
       method: 'DELETE',
     });
   },
 
   // Send quote to client
   send: async (quoteId: string) => {
-    return request<{ message: string; quote: Quote }>(`/quotes/${quoteId}/send`, {
+    return request<{ message: string; quote: Quote }>(`/api/quotes/${quoteId}/send`, {
       method: 'POST',
     });
   },
 
   // Duplicate quote
   duplicate: async (quoteId: string) => {
-    return request<{ quote: Quote }>(`/quotes/${quoteId}/duplicate`, {
+    return request<{ quote: Quote }>(`/api/quotes/${quoteId}/duplicate`, {
       method: 'POST',
     });
   },
 
   // Get quote by public token (public)
   getByToken: async (quoteToken: string) => {
-    return request<{ quote: Quote }>(`/quotes/public/${quoteToken}`);
+    return request<{ quote: Quote }>(`/api/quotes/public/${quoteToken}`);
   },
 
   // Accept quote (public)
   accept: async (quoteToken: string) => {
-    return request<{ message: string }>(`/quotes/public/${quoteToken}/accept`, {
+    return request<{ message: string }>(`/api/quotes/public/${quoteToken}/accept`, {
       method: 'POST',
     });
   },
 
   // Decline quote (public)
   decline: async (quoteToken: string, reason?: string) => {
-    return request<{ message: string }>(`/quotes/public/${quoteToken}/decline`, {
+    return request<{ message: string }>(`/api/quotes/public/${quoteToken}/decline`, {
       method: 'POST',
       body: JSON.stringify({ reason }),
     });
@@ -859,12 +859,12 @@ export interface UserSettings {
 export const settingsApi = {
   // Get user settings
   get: async () => {
-    return request<{ settings: UserSettings; availableCurrencies: CurrencyOption[] }>('/settings');
+    return request<{ settings: UserSettings; availableCurrencies: CurrencyOption[] }>('/api/settings');
   },
 
   // Update user settings
   update: async (data: Partial<UserSettings>) => {
-    return request<{ message: string; settings: UserSettings }>('/settings', {
+    return request<{ message: string; settings: UserSettings }>('/api/settings', {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
@@ -872,7 +872,7 @@ export const settingsApi = {
 
   // Get available currencies
   getCurrencies: async () => {
-    return request<{ currencies: CurrencyOption[] }>('/settings/currencies');
+    return request<{ currencies: CurrencyOption[] }>('/api/settings/currencies');
   },
 };
 
@@ -935,22 +935,22 @@ export interface PipelineStatusData {
 export const analyticsApi = {
   // Get dashboard analytics
   getDashboard: async () => {
-    return request<DashboardAnalytics>('/analytics/dashboard');
+    return request<DashboardAnalytics>('/api/analytics/dashboard');
   },
 
   // Get monthly trend data
   getMonthlyTrend: async () => {
-    return request<{ trend: MonthlyTrendData[] }>('/analytics/monthly-trend');
+    return request<{ trend: MonthlyTrendData[] }>('/api/analytics/monthly-trend');
   },
 
   // Get lead source performance
   getLeadSources: async () => {
-    return request<{ sources: LeadSourceData[] }>('/analytics/lead-sources');
+    return request<{ sources: LeadSourceData[] }>('/api/analytics/lead-sources');
   },
 
   // Get pipeline breakdown by status
   getPipelineByStatus: async () => {
-    return request<{ pipeline: PipelineStatusData[] }>('/analytics/pipeline-by-status');
+    return request<{ pipeline: PipelineStatusData[] }>('/api/analytics/pipeline-by-status');
   },
 };
 
@@ -984,7 +984,7 @@ export interface CreateQuoteTemplateData {
 export const quoteTemplatesApi = {
   // Get all templates
   getAll: async () => {
-    return request<{ templates: QuoteTemplate[] }>('/quote-templates');
+    return request<{ templates: QuoteTemplate[] }>('/api/quote-templates');
   },
 
   // Get single template
@@ -994,7 +994,7 @@ export const quoteTemplatesApi = {
 
   // Create template
   create: async (data: CreateQuoteTemplateData) => {
-    return request<{ message: string; template: QuoteTemplate }>('/quote-templates', {
+    return request<{ message: string; template: QuoteTemplate }>('/api/quote-templates', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -1021,7 +1021,7 @@ export const bookingsApi = {
   // Get all bookings
   getAll: async (params?: { start?: string; end?: string; status?: string; leadId?: string }) => {
     const query = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
-    return request<{ bookings: Booking[]; count: number }>(`/bookings${query}`);
+    return request<{ bookings: Booking[]; count: number }>(`/api/bookings${query}`);
   },
 
   // Get calendar events (formatted for react-big-calendar)
@@ -1030,17 +1030,17 @@ export const bookingsApi = {
     if (start) params.set('start', start);
     if (end) params.set('end', end);
     const query = params.toString() ? `?${params.toString()}` : '';
-    return request<{ events: CalendarBookingEvent[] }>(`/bookings/calendar${query}`);
+    return request<{ events: CalendarBookingEvent[] }>(`/api/bookings/calendar${query}`);
   },
 
   // Get single booking
   getOne: async (bookingId: string) => {
-    return request<{ booking: Booking }>(`/bookings/${bookingId}`);
+    return request<{ booking: Booking }>(`/api/bookings/${bookingId}`);
   },
 
   // Create booking
   create: async (data: CreateBookingData) => {
-    return request<{ message: string; booking: Booking }>('/bookings', {
+    return request<{ message: string; booking: Booking }>('/api/bookings', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -1048,7 +1048,7 @@ export const bookingsApi = {
 
   // Update booking
   update: async (bookingId: string, data: Partial<CreateBookingData> & { status?: BookingStatus }) => {
-    return request<{ message: string; booking: Booking }>(`/bookings/${bookingId}`, {
+    return request<{ message: string; booking: Booking }>(`/api/bookings/${bookingId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
@@ -1056,21 +1056,21 @@ export const bookingsApi = {
 
   // Delete booking
   delete: async (bookingId: string) => {
-    return request<{ message: string }>(`/bookings/${bookingId}`, {
+    return request<{ message: string }>(`/api/bookings/${bookingId}`, {
       method: 'DELETE',
     });
   },
 
   // Complete booking
   complete: async (bookingId: string) => {
-    return request<{ message: string; booking: Booking }>(`/bookings/${bookingId}/complete`, {
+    return request<{ message: string; booking: Booking }>(`/api/bookings/${bookingId}/complete`, {
       method: 'POST',
     });
   },
 
   // Cancel booking
   cancel: async (bookingId: string, reason?: string) => {
-    return request<{ message: string; booking: Booking }>(`/bookings/${bookingId}/cancel`, {
+    return request<{ message: string; booking: Booking }>(`/api/bookings/${bookingId}/cancel`, {
       method: 'POST',
       body: JSON.stringify({ reason }),
     });
@@ -1082,18 +1082,18 @@ export const portfolioApi = {
   // Get all portfolio items
   getAll: async (params?: { category?: string; featured?: string }) => {
     const query = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
-    return request<{ portfolio: PortfolioItem[]; count: number }>(`/portfolio${query}`);
+    return request<{ portfolio: PortfolioItem[]; count: number }>(`/api/portfolio${query}`);
   },
 
   // Get public portfolio
   getPublic: async (userId: string, params?: { category?: string; featured?: string }) => {
     const query = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
-    return request<{ user: { id: string; name: string; studioName?: string }; portfolio: PortfolioItem[]; count: number }>(`/portfolio/public/${userId}${query}`);
+    return request<{ user: { id: string; name: string; studioName?: string }; portfolio: PortfolioItem[]; count: number }>(`/api/portfolio/public/${userId}${query}`);
   },
 
   // Get single item
   getOne: async (id: string) => {
-    return request<{ item: PortfolioItem }>(`/portfolio/${id}`);
+    return request<{ item: PortfolioItem }>(`/api/portfolio/${id}`);
   },
 
   // Create portfolio item with image
@@ -1132,21 +1132,21 @@ export const portfolioApi = {
 
   // Delete portfolio item
   delete: async (id: string) => {
-    return request<{ message: string }>(`/portfolio/${id}`, {
+    return request<{ message: string }>(`/api/portfolio/${id}`, {
       method: 'DELETE',
     });
   },
 
   // Toggle featured status
   toggleFeatured: async (id: string) => {
-    return request<{ message: string; item: PortfolioItem }>(`/portfolio/${id}/featured`, {
+    return request<{ message: string; item: PortfolioItem }>(`/api/portfolio/${id}/featured`, {
       method: 'PATCH',
     });
   },
 
   // Reorder items
   reorder: async (items: Array<{ id: string; order: number }>) => {
-    return request<{ message: string }>('/portfolio/reorder', {
+    return request<{ message: string }>('/api/portfolio/reorder', {
       method: 'PATCH',
       body: JSON.stringify({ items }),
     });
@@ -1156,31 +1156,31 @@ export const portfolioApi = {
 // Deliverables API
 export const deliverablesApi = {
   getForLead: async (leadId: string) => {
-    return request<{ deliverables: Deliverable[]; count: number }>(`/leads/${leadId}/deliverables`);
+    return request<{ deliverables: Deliverable[]; count: number }>(`/api/leads/${leadId}/deliverables`);
   },
   create: async (leadId: string, data: Partial<Deliverable>) => {
-    return request<{ message: string; deliverable: Deliverable }>(`/leads/${leadId}/deliverables`, {
+    return request<{ message: string; deliverable: Deliverable }>(`/api/leads/${leadId}/deliverables`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
   getOne: async (id: string) => {
-    return request<{ deliverable: Deliverable }>(`/deliverables/${id}`);
+    return request<{ deliverable: Deliverable }>(`/api/deliverables/${id}`);
   },
   update: async (id: string, data: Partial<Deliverable>) => {
-    return request<{ message: string; deliverable: Deliverable }>(`/deliverables/${id}`, {
+    return request<{ message: string; deliverable: Deliverable }>(`/api/deliverables/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
   },
   updateStatus: async (id: string, status: DeliverableStatus) => {
-    return request<{ message: string; deliverable: Deliverable }>(`/deliverables/${id}/status`, {
+    return request<{ message: string; deliverable: Deliverable }>(`/api/deliverables/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
     });
   },
   delete: async (id: string) => {
-    return request<{ message: string }>(`/deliverables/${id}`, {
+    return request<{ message: string }>(`/api/deliverables/${id}`, {
       method: 'DELETE',
     });
   },
@@ -1233,38 +1233,38 @@ export interface ContractTemplate {
 
 export const contractsApi = {
   getTemplates: async () => {
-    return request<{ templates: ContractTemplate[] }>('/contracts/templates/list');
+    return request<{ templates: ContractTemplate[] }>('/api/contracts/templates/list');
   },
   getForLead: async (leadId: string) => {
-    return request<{ contracts: Contract[] }>(`/leads/${leadId}/contracts`);
+    return request<{ contracts: Contract[] }>(`/api/leads/${leadId}/contracts`);
   },
   create: async (leadId: string, data: { templateType: string; title?: string; content?: string }) => {
-    return request<{ contract: Contract }>(`/leads/${leadId}/contracts`, {
+    return request<{ contract: Contract }>(`/api/leads/${leadId}/contracts`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
   getOne: async (id: string) => {
-    return request<{ contract: Contract }>(`/contracts/${id}`);
+    return request<{ contract: Contract }>(`/api/contracts/${id}`);
   },
   update: async (id: string, data: { title?: string; content?: string }) => {
-    return request<{ contract: Contract }>(`/contracts/${id}`, {
+    return request<{ contract: Contract }>(`/api/contracts/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
   },
   delete: async (id: string) => {
-    return request<{ message: string }>(`/contracts/${id}`, {
+    return request<{ message: string }>(`/api/contracts/${id}`, {
       method: 'DELETE',
     });
   },
   send: async (id: string) => {
-    return request<{ contract: Contract }>(`/contracts/${id}/send`, {
+    return request<{ contract: Contract }>(`/api/contracts/${id}/send`, {
       method: 'POST',
     });
   },
   agree: async (id: string, portalToken: string) => {
-    return request<{ contract: { id: string; status: string; clientAgreedAt: string } }>(`/contracts/${id}/agree`, {
+    return request<{ contract: { id: string; status: string; clientAgreedAt: string } }>(`/api/contracts/${id}/agree`, {
       method: 'POST',
       body: JSON.stringify({ portalToken }),
     });
