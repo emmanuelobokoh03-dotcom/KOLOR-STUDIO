@@ -10,11 +10,23 @@ import {
   FileText, 
   MessageCircle,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  ScrollText,
+  ShieldCheck
 } from 'lucide-react';
 import { trackPortalViewed } from '../utils/analytics';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+interface PortalContract {
+  id: string;
+  title: string;
+  content: string;
+  status: string;
+  clientAgreed: boolean;
+  clientAgreedAt?: string;
+  sentAt?: string;
+}
 
 interface PortalData {
   project: {
@@ -52,6 +64,7 @@ interface PortalData {
     size: number;
     uploadedAt: string;
   }>;
+  contracts: PortalContract[];
   contact: {
     email: string;
     name: string;

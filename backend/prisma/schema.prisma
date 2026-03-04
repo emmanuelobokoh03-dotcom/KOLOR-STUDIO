@@ -189,6 +189,7 @@ model Lead {
   quotes          Quote[]
   bookings        Booking[]
   deliverables    Deliverable[]
+  contracts       Contract[]
   
   @@map("leads")
   @@index([status])
@@ -628,4 +629,53 @@ enum PortfolioCategory {
   BRANDING
   CONTENT_CREATION
   OTHER
+}
+
+
+// =====================
+// CONTRACTS
+// =====================
+
+model Contract {
+  id              String         @id @default(cuid())
+  leadId          String
+  templateType    ContractType
+  title           String
+  content         String         @db.Text
+
+  // Client consent
+  clientAgreed    Boolean        @default(false)
+  clientAgreedAt  DateTime?
+  clientIP        String?
+
+  // Status
+  status          ContractStatus @default(DRAFT)
+  sentAt          DateTime?
+  viewedAt        DateTime?
+
+  // Timestamps
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  lead            Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("contracts")
+  @@index([leadId])
+  @@index([status])
+}
+
+enum ContractType {
+  PHOTOGRAPHY_SHOOT
+  PORTRAIT_COMMISSION
+  LOGO_DESIGN
+  WEB_DESIGN
+  GENERAL_SERVICE
+  CUSTOM
+}
+
+enum ContractStatus {
+  DRAFT
+  SENT
+  VIEWED
+  AGREED
 }
