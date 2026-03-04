@@ -35,7 +35,7 @@ export default function IndustryOnboarding() {
     try {
       const token = localStorage.getItem('token')
       const API_URL = import.meta.env.VITE_API_URL || '/api'
-      const res = await fetch(`${API_URL}/auth/onboarding`, {
+      const res = await fetch(`${API_URL}/api/auth/onboarding`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
