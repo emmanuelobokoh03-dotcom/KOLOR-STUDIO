@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   HelpCircle, X, FileText, Calendar, Upload, ScrollText,
-  Copy, ChevronDown, Mail,
+  Copy, ChevronDown, Mail, RefreshCw,
 } from 'lucide-react'
 
 const quickStartItems = [
@@ -89,9 +89,10 @@ function FAQ({ question, answer }: { question: string; answer: string }) {
 interface HelpPanelProps {
   open: boolean
   onClose: () => void
+  startTour?: () => void
 }
 
-export default function HelpPanel({ open, onClose }: HelpPanelProps) {
+export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) {
   return (
     <AnimatePresence>
       {open && (
@@ -188,7 +189,21 @@ export default function HelpPanel({ open, onClose }: HelpPanelProps) {
             </div>
 
             {/* Footer */}
-            <div className="p-5 border-t border-[#262626] flex-shrink-0">
+            <div className="p-5 border-t border-[#262626] flex-shrink-0 space-y-2">
+              {startTour && (
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('onboarding_tour_complete')
+                    onClose()
+                    setTimeout(() => startTour(), 300)
+                  }}
+                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-violet-400 hover:bg-violet-900/20 transition-colors text-sm font-medium"
+                  data-testid="help-restart-tour"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Restart Tutorial
+                </button>
+              )}
               <a
                 href="mailto:hello@kolorstudio.app"
                 className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl border border-[#333] text-[#A3A3A3] hover:text-[#FAFAFA] hover:border-[#444] transition-colors text-sm font-medium"

@@ -41,6 +41,9 @@ import BookingModal from '../components/BookingModal'
 import MobileBottomNav from '../components/MobileBottomNav'
 import HelpPanel, { HelpButton } from '../components/HelpPanel'
 import { PhotographyWidgets, FineArtWidgets, DesignWidgets } from '../components/IndustryWidgets'
+import { useOnboardingTour } from '../components/OnboardingTour'
+import { SmartSuggestion } from '../components/SmartSuggestion'
+import { CelebrationModal, checkCelebration, Achievement } from '../components/CelebrationModal'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
@@ -127,6 +130,9 @@ const Dashboard = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [showHelpPanel, setShowHelpPanel] = useState(false)
+  const [celebration, setCelebration] = useState<Achievement | null>(null)
+  const [showCelebration, setShowCelebration] = useState(false)
+  const { startTour, tourComplete } = useOnboardingTour()
 
   useEffect(() => {
     const init = async () => {
@@ -156,6 +162,14 @@ const Dashboard = () => {
     }
     init()
   }, [navigate])
+
+  // Auto-start onboarding tour for new users
+  useEffect(() => {
+    if (!loading && user && !tourComplete) {
+      const timer = setTimeout(() => startTour(), 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [loading, user, tourComplete, startTour])
 
   const fetchLeads = async () => {
     const params: any = {};
@@ -420,6 +434,21 @@ const Dashboard = () => {
           )}
         </div>
 
+        {/* Smart Suggestion */}
+        <SmartSuggestion
+          leadCount={leads.length}
+          hasQuotes={leads.some(l => (l as any).quotesCount > 0)}
+          hasPortfolio={false}
+          hasContracts={leads.some(l => (l as any).contractsCount > 0)}
+          hasStudioName={!!user?.studioName}
+          onAction={(action) => {
+            if (action === 'open-add-lead') setShowAddModal(true)
+            else if (action === 'view-kanban') handleViewChange('kanban')
+            else if (action === 'view-portfolio') handleViewChange('portfolio')
+            else if (action === 'open-settings') setShowSettings(true)
+          }}
+        />
+
         {/* Industry-Specific Widgets */}
         {user?.primaryIndustry === 'PHOTOGRAPHY' && (
           <PhotographyWidgets
@@ -523,6 +552,7 @@ const Dashboard = () => {
                   onClick={() => handleViewChange(mode)}
                   className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === mode ? 'bg-[#1A1A1A] shadow-sm text-violet-400' : 'text-[#A3A3A3] hover:text-white'}`}
                   data-testid={`view-${mode}`}
+                  data-tour={mode === 'portfolio' ? 'view-portfolio' : mode === 'calendar' ? 'view-calendar' : undefined}
                   title={title}
                 >
                   <Icon className="w-4 h-4" />
@@ -566,6 +596,7 @@ const Dashboard = () => {
               onClick={() => setShowAddModal(true)}
               className="flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition-all duration-200 font-medium text-sm hover:shadow-lg hover:shadow-violet-500/20 touch-target"
               data-testid="add-lead-button"
+              data-tour="add-lead"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Add Lead</span>
@@ -751,12 +782,14 @@ const Dashboard = () => {
             </div>
           </div>
         ) : viewMode === 'kanban' ? (
-          <KanbanBoard
-            leads={filteredLeads}
-            onLeadClick={setSelectedLead}
-            onStatusChange={handleStatusChange}
-            onLeadDelete={handleLeadDelete}
-          />
+          <div data-tour="kanban-board">
+            <KanbanBoard
+              leads={filteredLeads}
+              onLeadClick={setSelectedLead}
+              onStatusChange={handleStatusChange}
+              onLeadDelete={handleLeadDelete}
+            />
+          </div>
         ) : (
           /* List view with responsive table */
           <div className="bg-[#1A1A1A] rounded-xl border border-[#333] overflow-hidden">
@@ -821,7 +854,12 @@ const Dashboard = () => {
       {showAddModal && (
         <AddLeadModal
           onClose={() => setShowAddModal(false)}
-          onLeadCreated={() => { fetchLeads(); fetchStats() }}
+          onLeadCreated={() => {
+            fetchLeads(); fetchStats()
+            // Trigger celebration for first project
+            const ach = checkCelebration('first_project', 'firstProject')
+            if (ach) { setCelebration(ach); setShowCelebration(true) }
+          }}
         />
       )}
       {showShareModal && <ShareFormModal onClose={() => setShowShareModal(false)} />}
@@ -850,8 +888,15 @@ const Dashboard = () => {
           onSaved={handleBookingSaved}
         />
       )}
-      <HelpButton onClick={() => setShowHelpPanel(true)} />
-      <HelpPanel open={showHelpPanel} onClose={() => setShowHelpPanel(false)} />
+      <div data-tour="help-button">
+        <HelpButton onClick={() => setShowHelpPanel(true)} />
+      </div>
+      <HelpPanel open={showHelpPanel} onClose={() => setShowHelpPanel(false)} startTour={startTour} />
+      <CelebrationModal
+        achievement={celebration}
+        show={showCelebration}
+        onClose={() => setShowCelebration(false)}
+      />
     </div>
   )
 }
