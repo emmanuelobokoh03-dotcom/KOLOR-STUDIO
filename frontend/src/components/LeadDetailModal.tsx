@@ -65,14 +65,14 @@ interface LeadDetailModalProps {
 const STATUS_OPTIONS: LeadStatus[] = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
 
 const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
-  NEW: 'bg-blue-900/50 text-blue-300 border border-blue-700/50',
-  REVIEWING: 'bg-yellow-900/50 text-yellow-300 border border-yellow-700/50',
-  CONTACTED: 'bg-purple-900/50 text-purple-300 border border-purple-700/50',
-  QUALIFIED: 'bg-indigo-900/50 text-indigo-300 border border-indigo-700/50',
-  QUOTED: 'bg-orange-900/50 text-orange-300 border border-orange-700/50',
-  NEGOTIATING: 'bg-pink-900/50 text-pink-300 border border-pink-700/50',
-  BOOKED: 'bg-green-900/50 text-green-300 border border-green-700/50',
-  LOST: 'bg-gray-800/50 text-gray-400 border border-gray-700/50',
+  NEW: 'bg-violet-900/30 text-violet-300 border border-violet-700/50',
+  REVIEWING: 'bg-violet-900/30 text-violet-300 border border-violet-700/50',
+  CONTACTED: 'bg-purple-900/30 text-purple-300 border border-purple-700/50',
+  QUALIFIED: 'bg-indigo-900/30 text-indigo-300 border border-indigo-700/50',
+  QUOTED: 'bg-fuchsia-900/30 text-fuchsia-300 border border-fuchsia-700/50',
+  NEGOTIATING: 'bg-blue-900/30 text-blue-300 border border-blue-700/50',
+  BOOKED: 'bg-emerald-900/30 text-emerald-300 border border-emerald-700/50',
+  LOST: 'bg-slate-900/30 text-slate-400 border border-slate-700/50',
 };
 
 const ACTIVITY_ICONS: Record<string, React.ElementType> = {

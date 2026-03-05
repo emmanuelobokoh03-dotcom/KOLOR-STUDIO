@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { trackPortalViewed } from '../utils/analytics';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 interface PortalContract {
   id: string;

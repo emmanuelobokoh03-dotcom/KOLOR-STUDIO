@@ -44,14 +44,14 @@ import { trackLogout, trackViewChanged } from '../utils/analytics'
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
 
 const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
-  NEW: 'bg-blue-900/50 text-blue-300 border border-blue-700/50',
-  REVIEWING: 'bg-yellow-900/50 text-yellow-300 border border-yellow-700/50',
-  CONTACTED: 'bg-purple-900/50 text-purple-300 border border-purple-700/50',
-  QUALIFIED: 'bg-indigo-900/50 text-indigo-300 border border-indigo-700/50',
-  QUOTED: 'bg-orange-900/50 text-orange-300 border border-orange-700/50',
-  NEGOTIATING: 'bg-pink-900/50 text-pink-300 border border-pink-700/50',
-  BOOKED: 'bg-green-900/50 text-green-300 border border-green-700/50',
-  LOST: 'bg-gray-800/50 text-gray-400 border border-gray-700/50',
+  NEW: 'bg-violet-900/30 text-violet-300 border border-violet-700/50',
+  REVIEWING: 'bg-violet-900/30 text-violet-300 border border-violet-700/50',
+  CONTACTED: 'bg-purple-900/30 text-purple-300 border border-purple-700/50',
+  QUALIFIED: 'bg-indigo-900/30 text-indigo-300 border border-indigo-700/50',
+  QUOTED: 'bg-fuchsia-900/30 text-fuchsia-300 border border-fuchsia-700/50',
+  NEGOTIATING: 'bg-blue-900/30 text-blue-300 border border-blue-700/50',
+  BOOKED: 'bg-emerald-900/30 text-emerald-300 border border-emerald-700/50',
+  LOST: 'bg-slate-900/30 text-slate-400 border border-slate-700/50',
 };
 
 // Skeleton components for loading states
@@ -420,10 +420,10 @@ const Dashboard = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
           {([
-            { key: null, label: 'Total Leads', count: stats?.total || 0, icon: Users, iconBg: 'bg-blue-900/50 border-blue-700/50', iconColor: 'text-blue-400', testId: 'stat-total-leads' },
-            { key: 'NEW', label: 'New Leads', count: stats?.statusCounts?.NEW || 0, icon: TrendingUp, iconBg: 'bg-yellow-900/50 border-yellow-700/50', iconColor: 'text-yellow-400', testId: 'stat-new-leads' },
-            { key: 'QUOTED', label: 'Quoted', count: stats?.statusCounts?.QUOTED || 0, icon: Calendar, iconBg: 'bg-orange-900/50 border-orange-700/50', iconColor: 'text-orange-400', testId: 'stat-quoted' },
-            { key: 'BOOKED', label: 'Booked', count: stats?.statusCounts?.BOOKED || 0, icon: DollarSign, iconBg: 'bg-green-900/50 border-green-700/50', iconColor: 'text-green-400', testId: 'stat-booked' },
+            { key: null, label: 'Total Leads', count: stats?.total || 0, icon: Users, iconBg: 'bg-violet-900/50 border-violet-700/50', iconColor: 'text-violet-400', testId: 'stat-total-leads' },
+            { key: 'NEW', label: 'New Leads', count: stats?.statusCounts?.NEW || 0, icon: TrendingUp, iconBg: 'bg-purple-900/50 border-purple-700/50', iconColor: 'text-purple-400', testId: 'stat-new-leads' },
+            { key: 'QUOTED', label: 'Quoted', count: stats?.statusCounts?.QUOTED || 0, icon: Calendar, iconBg: 'bg-fuchsia-900/50 border-fuchsia-700/50', iconColor: 'text-fuchsia-400', testId: 'stat-quoted' },
+            { key: 'BOOKED', label: 'Booked', count: stats?.statusCounts?.BOOKED || 0, icon: DollarSign, iconBg: 'bg-emerald-900/50 border-emerald-700/50', iconColor: 'text-emerald-400', testId: 'stat-booked' },
           ]).map(({ key, label, count, icon: Icon, iconBg, iconColor, testId }) => (
             <div
               key={testId}

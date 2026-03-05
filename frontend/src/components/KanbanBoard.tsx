@@ -31,14 +31,14 @@ interface KanbanBoardProps {
 const KANBAN_COLUMNS: LeadStatus[] = ['NEW', 'CONTACTED', 'QUOTED', 'NEGOTIATING', 'BOOKED'];
 
 const COLUMN_COLORS: Record<LeadStatus, { bg: string; border: string; header: string }> = {
-  NEW: { bg: 'bg-blue-950/20', border: 'border-blue-800/40', header: 'bg-blue-600' },
-  REVIEWING: { bg: 'bg-yellow-950/20', border: 'border-yellow-800/40', header: 'bg-yellow-600' },
-  CONTACTED: { bg: 'bg-purple-950/20', border: 'border-purple-800/40', header: 'bg-purple-600' },
-  QUALIFIED: { bg: 'bg-indigo-950/20', border: 'border-indigo-800/40', header: 'bg-indigo-600' },
-  QUOTED: { bg: 'bg-orange-950/20', border: 'border-orange-800/40', header: 'bg-orange-600' },
-  NEGOTIATING: { bg: 'bg-pink-950/20', border: 'border-pink-800/40', header: 'bg-pink-600' },
-  BOOKED: { bg: 'bg-green-950/20', border: 'border-green-800/40', header: 'bg-green-600' },
-  LOST: { bg: 'bg-gray-900/20', border: 'border-gray-700/40', header: 'bg-gray-600' },
+  NEW: { bg: 'bg-violet-950/20', border: 'border-violet-800/40', header: 'bg-violet-600' },
+  REVIEWING: { bg: 'bg-violet-950/20', border: 'border-violet-800/40', header: 'bg-violet-600' },
+  CONTACTED: { bg: 'bg-purple-950/20', border: 'border-purple-800/40', header: 'bg-purple-500' },
+  QUALIFIED: { bg: 'bg-indigo-950/20', border: 'border-indigo-800/40', header: 'bg-indigo-500' },
+  QUOTED: { bg: 'bg-fuchsia-950/20', border: 'border-fuchsia-800/40', header: 'bg-fuchsia-500' },
+  NEGOTIATING: { bg: 'bg-blue-950/20', border: 'border-blue-800/40', header: 'bg-blue-500' },
+  BOOKED: { bg: 'bg-emerald-950/20', border: 'border-emerald-800/40', header: 'bg-emerald-500' },
+  LOST: { bg: 'bg-slate-950/20', border: 'border-slate-700/40', header: 'bg-slate-500' },
 };
 
 export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLeadDelete }: KanbanBoardProps) {

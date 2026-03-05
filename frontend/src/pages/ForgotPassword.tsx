@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Sparkles, Loader2, AlertCircle, CheckCircle, ArrowLeft, Mail } from 'lucide-react'
 
-const API_URL = import.meta.env.VITE_API_URL || '/api'
+const API_URL = import.meta.env.VITE_API_URL || ''
 
 const ForgotPassword = () => {
   const [loading, setLoading] = useState(false)
