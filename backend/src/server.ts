@@ -16,6 +16,7 @@ import portfolioRoutes from './routes/portfolio';
 import workflowTemplatesRoutes from './routes/workflow-templates';
 import deliverablesRoutes from './routes/deliverables';
 import contractsRoutes from './routes/contracts';
+import crmRoutes from './routes/crm';
 import { ensureBucketExists } from './services/storage';
 
 // Load environment variables
@@ -98,6 +99,7 @@ app.use('/api/portfolio', portfolioRoutes); // Portfolio
 app.use('/api/workflow-templates', workflowTemplatesRoutes); // Workflow templates
 app.use('/api', deliverablesRoutes);
 app.use('/api', contractsRoutes); // Deliverables: /api/leads/:leadId/deliverables + /api/deliverables/:id
+app.use('/api/crm', crmRoutes); // CRM: /api/crm/*
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {

@@ -719,10 +719,43 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
       where: { id: quote.leadId },
       data: {
         status: 'BOOKED',
+        pipelineStatus: 'BOOKED',
         actualValue: quote.total,
         convertedAt: new Date()
       }
     });
+
+    // Auto-create income record
+    try {
+      await prisma.income.create({
+        data: {
+          userId: quote.createdById,
+          leadId: quote.leadId,
+          quoteId: quote.id,
+          amount: quote.total,
+          currency: quote.currency || 'USD',
+          description: `${(quote as any).lead.clientName} - ${(quote as any).lead.projectTitle}`,
+          category: 'PROJECT',
+          status: 'EXPECTED',
+          expectedDate: (quote as any).lead.eventDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        }
+      });
+    } catch (incomeError) {
+      console.error('Failed to create income record:', incomeError);
+    }
+
+    // Log interaction
+    try {
+      await prisma.interaction.create({
+        data: {
+          leadId: quote.leadId,
+          type: 'QUOTE_ACCEPTED',
+          content: `Quote ${quote.quoteNumber} accepted - $${quote.total.toLocaleString()}`
+        }
+      });
+    } catch (interactionError) {
+      console.error('Failed to log interaction:', interactionError);
+    }
 
     // Log activity
     await prisma.activity.create({

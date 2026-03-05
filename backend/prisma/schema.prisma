@@ -68,6 +68,7 @@ model User {
   bookings      Booking[]
   portfolio     Portfolio[]
   workflowTemplates WorkflowTemplate[]
+  incomes       Income[]
   
   @@map("users")
 }
@@ -165,6 +166,14 @@ model Lead {
   source          LeadSource  @default(WEBSITE)
   score           Int         @default(0)  // AI-powered lead score (0-100)
   
+  // CRM Pipeline
+  pipelineStatus    PipelineStatus  @default(NEW_INQUIRY)
+  lastContactedAt   DateTime?
+  nextFollowUpAt    DateTime?
+  followUpPriority  Priority        @default(MEDIUM)
+  leadSource        String?
+  crmNotes          String?         @db.Text
+  
   // Value Tracking
   estimatedValue  Float?      // Estimated project value
   actualValue     Float?      // Actual booked value
@@ -196,12 +205,16 @@ model Lead {
   bookings        Booking[]
   deliverables    Deliverable[]
   contracts       Contract[]
+  interactions    Interaction[]
+  incomeRecords   Income[]
   
   @@map("leads")
   @@index([status])
   @@index([createdAt])
   @@index([assignedToId])
   @@index([projectType])
+  @@index([pipelineStatus])
+  @@index([nextFollowUpAt])
 }
 
 enum ServiceType {
@@ -243,6 +256,16 @@ enum LeadSource {
   TIKTOK
   EMAIL
   OTHER
+}
+
+enum PipelineStatus {
+  NEW_INQUIRY
+  CONTACTED
+  QUOTED
+  NEGOTIATING
+  BOOKED
+  COMPLETED
+  LOST
 }
 
 // =====================
@@ -505,6 +528,8 @@ model Quote {
   createdBy     User        @relation(fields: [createdById], references: [id])
   createdById   String
   
+  incomeRecords Income[]
+  
   @@map("quotes")
   @@index([leadId])
   @@index([status])
@@ -684,4 +709,84 @@ enum ContractStatus {
   SENT
   VIEWED
   AGREED
+}
+
+// =====================
+// CRM INTERACTIONS
+// =====================
+
+model Interaction {
+  id            String           @id @default(cuid())
+  leadId        String
+  type          InteractionType
+  content       String?          @db.Text
+  createdAt     DateTime         @default(now())
+  
+  lead          Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  
+  @@map("interactions")
+  @@index([leadId])
+  @@index([createdAt])
+}
+
+enum InteractionType {
+  EMAIL_SENT
+  EMAIL_RECEIVED
+  PHONE_CALL
+  MEETING
+  NOTE
+  QUOTE_SENT
+  QUOTE_ACCEPTED
+  QUOTE_DECLINED
+  CONTRACT_SENT
+  CONTRACT_SIGNED
+  PAYMENT_RECEIVED
+  FOLLOW_UP_SCHEDULED
+}
+
+// =====================
+// INCOME TRACKING
+// =====================
+
+model Income {
+  id            String          @id @default(cuid())
+  userId        String
+  leadId        String?
+  quoteId       String?
+  
+  amount        Decimal
+  currency      String          @default("USD")
+  description   String
+  category      IncomeCategory  @default(PROJECT)
+  
+  status        IncomeStatus    @default(EXPECTED)
+  expectedDate  DateTime?
+  receivedDate  DateTime?
+  
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lead          Lead?           @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  quote         Quote?          @relation(fields: [quoteId], references: [id], onDelete: SetNull)
+  
+  @@map("incomes")
+  @@index([userId])
+  @@index([status])
+  @@index([receivedDate])
+}
+
+enum IncomeCategory {
+  PROJECT
+  COMMISSION
+  PRODUCT_SALE
+  LICENSING
+  CONSULTATION
+  OTHER
+}
+
+enum IncomeStatus {
+  EXPECTED
+  RECEIVED
+  CANCELLED
 }

@@ -44,6 +44,8 @@ import { PhotographyWidgets, FineArtWidgets, DesignWidgets } from '../components
 import { useOnboardingTour } from '../components/OnboardingTour'
 import { SmartSuggestion } from '../components/SmartSuggestion'
 import { CelebrationModal, checkCelebration, Achievement, achievements } from '../components/CelebrationModal'
+import CRMAlerts from '../components/CRMAlerts'
+import RevenueDashboard from '../components/RevenueDashboard'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
@@ -465,6 +467,15 @@ const Dashboard = () => {
             else if (action === 'open-settings') setShowSettings(true)
           }}
         />
+
+        {/* CRM Alerts + Revenue Dashboard */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+          <CRMAlerts onLeadClick={(leadId) => {
+            const lead = leads.find(l => l.id === leadId)
+            if (lead) setSelectedLead(lead)
+          }} />
+          <RevenueDashboard />
+        </div>
 
         {/* Industry-Specific Widgets */}
         {user?.primaryIndustry === 'PHOTOGRAPHY' && (
