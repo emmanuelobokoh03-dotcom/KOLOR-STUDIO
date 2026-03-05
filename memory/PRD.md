@@ -78,6 +78,13 @@ A full-stack CRM application for creative professionals (photographers, designer
 - Widgets sit between Welcome message and Stats cards on existing Dashboard
 - Tested: 100% pass rate across all 3 industry types (backend + frontend)
 
+### User Education System Phase 1 (DONE - March 5, 2026)
+- **Educational Empty States** (8 locations): Dashboard, Portfolio, QuotesTab, CalendarView, Files, Contracts, Deliverables, Activities — all with emoji icon, headline, educational description, CTA button, and "Pro tip"
+- **Inline Hints** (dismissible via localStorage): AddLeadModal project type selector, ContractsTab template selector, QuotesTab before first quote, Client Portal section (always visible)
+- **Help Panel**: Floating violet help button (z-50) + slide-in panel with Quick Start (4 items), Common Questions (5 expandable FAQs), Pro Tips (3 colored cards), Contact Support
+- Components: HelpPanel.tsx (framer-motion animations), InlineHint.tsx (localStorage persistence), HelpButton (floating)
+- Tested: 100% pass rate (13/13 testable features verified, 6 require specific data conditions — code verified)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
@@ -121,3 +128,4 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **(P3)** Distinct icons for activity types in timeline
 - **(P3)** "Your Links" section in user settings
 - **(P3)** Keyboard Shortcuts modal
+- **(P3)** Dashboard customization (drag/reorder/toggle widgets)
