@@ -121,7 +121,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div className="bg-dark-card rounded-2xl p-8">
+        <div className="bg-dark-card rounded-2xl p-6 md:p-8">
           <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
         </div>
       </div>
@@ -129,19 +129,19 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
   }
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-50 p-0 md:p-4" onClick={onClose}>
       <div 
-        className={`bg-dark-card rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-dark-border transition-all duration-300 ${
-          activeTab === 'brand' || activeTab === 'testimonials' ? 'max-w-5xl' : 'max-w-2xl'
+        className={`bg-dark-card md:rounded-2xl shadow-2xl w-full h-full md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-dark-border transition-all duration-300 ${
+          activeTab === 'brand' || activeTab === 'testimonials' ? 'md:max-w-5xl' : 'md:max-w-2xl'
         }`}
         onClick={e => e.stopPropagation()}
         data-testid="settings-modal"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6 flex-shrink-0">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-4 md:p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Settings className="w-6 h-6" />
+              <Settings className="w-5 h-5 md:w-6 md:h-6" />
               <div>
                 <h2 className="text-xl font-bold">Settings</h2>
                 <p className="text-brand-primary-light text-sm">Manage your preferences</p>
@@ -156,10 +156,10 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
           </div>
           
           {/* Tabs */}
-          <div className="flex gap-1 mt-4 -mb-6 px-1">
+          <div className="flex gap-1 mt-4 -mb-6 px-1 overflow-x-auto scrollbar-hide">
             <button
               onClick={() => setActiveTab('currency')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-t-lg text-sm font-medium transition ${
+              className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'currency'
                   ? 'bg-dark-card text-white'
                   : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
@@ -170,7 +170,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
             </button>
             <button
               onClick={() => setActiveTab('portfolio')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-t-lg text-sm font-medium transition ${
+              className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'portfolio'
                   ? 'bg-dark-card text-white'
                   : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
@@ -181,7 +181,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
             </button>
             <button
               onClick={() => setActiveTab('brand')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-t-lg text-sm font-medium transition ${
+              className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'brand'
                   ? 'bg-dark-card text-white'
                   : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
@@ -193,7 +193,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
             </button>
             <button
               onClick={() => setActiveTab('testimonials')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all ${
+              className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-xl font-medium text-sm transition-all ${
                 activeTab === 'testimonials'
                   ? 'bg-dark-card text-white'
                   : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
@@ -207,7 +207,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
           {activeTab === 'brand' ? (
             <BrandSettings />
           ) : activeTab === 'testimonials' ? (

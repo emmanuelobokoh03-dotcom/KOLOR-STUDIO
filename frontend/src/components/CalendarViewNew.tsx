@@ -308,7 +308,8 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       </div>
 
       {/* Calendar */}
-      <div className="flex-1 bg-dark-card border border-dark-border rounded-xl p-4 min-h-[600px]">
+      <div className="flex-1 bg-dark-card border border-dark-border rounded-xl p-2 md:p-4 min-h-[600px] overflow-x-auto">
+        <div className="min-w-[600px] h-full">
         {loading && events.length === 0 ? (
           <div className="h-full flex items-center justify-center">
             <Loader2 className="w-8 h-8 animate-spin text-brand-primary-light" />
@@ -336,6 +337,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             views={['month', 'week', 'day', 'agenda']}
           />
         )}
+        </div>
       </div>
 
       {/* Service Legend */}

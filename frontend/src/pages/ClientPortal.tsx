@@ -219,7 +219,7 @@ export default function ClientPortal() {
   if (error || !data) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-brand-primary/5 via-white to-brand-primary/5 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+        <div className="bg-white rounded-2xl shadow-xl p-5 md:p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-red-500" />
           </div>
@@ -631,7 +631,7 @@ export default function ClientPortal() {
                     href={`${API_URL}/api/portal/${token}/files/${file.id}/download`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg text-sm font-medium hover:opacity-90 transition ml-3 whitespace-nowrap"
+                    className="flex items-center gap-2 px-4 py-3 bg-brand-primary text-white rounded-lg text-sm font-medium hover:opacity-90 transition ml-3 whitespace-nowrap"
                     data-testid={`download-file-${file.id}`}
                   >
                     <Download className="w-4 h-4" />

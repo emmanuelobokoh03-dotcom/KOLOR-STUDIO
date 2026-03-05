@@ -287,6 +287,8 @@ const LandingPage = () => {
           className="max-w-4xl mx-auto"
         >
           <div className="bg-dark-card rounded-2xl border border-dark-border overflow-hidden">
+            <div className="overflow-x-auto">
+            <div className="min-w-[600px]">
             <div className="grid grid-cols-3 bg-dark-bg-secondary border-b border-dark-border">
               <div className="p-4 text-gray-400 text-sm font-medium">Task</div>
               <div className="p-4 text-center text-gray-400 text-sm font-medium border-x border-dark-border">Spreadsheets</div>
@@ -324,6 +326,8 @@ const LandingPage = () => {
               newWay="Under 5 minutes" 
               isLast
             />
+            </div>
+            </div>
           </div>
         </motion.div>
       </section>

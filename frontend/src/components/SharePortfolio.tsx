@@ -101,7 +101,7 @@ export default function SharePortfolio() {
       {qrCodeUrl && (
         <div className="pt-4 border-t border-brand-primary/20">
           <p className="text-xs font-medium text-[#A3A3A3] mb-3">QR Code</p>
-          <div className="flex items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-start gap-4">
             <img src={qrCodeUrl} alt="Portfolio QR Code" className="w-24 h-24 bg-white rounded-lg p-1.5" data-testid="qr-code-img" />
             <div className="flex-1">
               <p className="text-xs text-[#888] mb-3 leading-relaxed">

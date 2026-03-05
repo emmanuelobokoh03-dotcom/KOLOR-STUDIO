@@ -81,9 +81,9 @@ export default function CRMAlerts({ onLeadClick }: { onLeadClick?: (leadId: stri
       {/* Alerts List */}
       <div className="divide-y divide-[#262626] max-h-[320px] overflow-y-auto">
         {loading && alerts.length === 0 ? (
-          <div className="p-8 text-center text-[#666] text-sm">Loading alerts...</div>
+          <div className="p-4 md:p-8 text-center text-[#666] text-sm">Loading alerts...</div>
         ) : alerts.length === 0 ? (
-          <div className="p-8 text-center">
+          <div className="p-4 md:p-8 text-center">
             <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-2">
               <Bell className="w-5 h-5 text-emerald-400" />
             </div>

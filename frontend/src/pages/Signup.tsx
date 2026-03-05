@@ -194,7 +194,20 @@ const Signup = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-4 text-center">
+            <p className="text-xs text-gray-500" data-testid="signup-legal-agreement">
+              By signing up, you agree to our{' '}
+              <Link to="/terms" className="text-brand-primary-light hover:text-brand-primary-light underline">
+                Terms of Service
+              </Link>
+              {' '}and{' '}
+              <Link to="/privacy" className="text-brand-primary-light hover:text-brand-primary-light underline">
+                Privacy Policy
+              </Link>
+            </p>
+          </div>
+
+          <div className="mt-4 text-center">
             <p className="text-sm text-gray-400">
               Already have an account?{' '}
               <Link to="/login" className="text-brand-primary-light hover:text-brand-primary-light font-semibold">
