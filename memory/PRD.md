@@ -87,6 +87,14 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Email**: Branded verification email via Resend with verify button
 - **Testing**: 100% pass rate (11/11 tests, iteration_30.json)
 
+### File Sharing System — Phase 4 Part 2 (DONE - March 5, 2026)
+- **Database**: Added sharedWithClient, sharedAt, downloadCount, lastDownloadedAt to File model
+- **Backend**: PATCH /api/files/:id/share (toggle sharing), PATCH /api/files/:id/track-download, GET /api/portal/:token/files/:fileId/download (redirect with tracking)
+- **Portal API**: Filters files to only include shared ones; portal download validates file is shared before redirecting
+- **Frontend LeadDetailModal**: Share toggle (Shared/Private) in file hover overlay, green "Shared" badge on file cards
+- **Frontend ClientPortal**: Shared Files section with file name, size, shared timestamp, and download button
+- **Testing**: 100% pass rate (22/22 tests, iteration_31.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
@@ -123,7 +131,6 @@ A full-stack CRM application for creative professionals (photographers, designer
 - `GET /api/testimonials/public/:userId` - Public testimonials
 
 ## Backlog (P2/P3)
-- **(P1) Phase 4 Part 2: File Sharing System** - User to provide specs
 - **(P2)** PWA Functionality - make app installable
 - **(P2)** Client file upload on public inquiry form
 - **(P3)** Referral Tracking System (post-launch Month 2)
