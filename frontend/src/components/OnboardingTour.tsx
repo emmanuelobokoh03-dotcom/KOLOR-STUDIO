@@ -30,6 +30,24 @@ const tourSteps: DriveStep[] = [
     },
   },
   {
+    element: '[data-tour="crm-alerts"]',
+    popover: {
+      title: 'Never Miss a Follow-Up',
+      description: 'See which leads need attention today. KOLOR STUDIO reminds you exactly when to reach out.',
+      side: 'bottom',
+      align: 'center',
+    },
+  },
+  {
+    element: '[data-tour="revenue-dashboard"]',
+    popover: {
+      title: 'Track Your Earnings',
+      description: 'See monthly income, yearly totals, and tax estimates \u2014 all updated automatically from your quotes.',
+      side: 'bottom',
+      align: 'center',
+    },
+  },
+  {
     element: '[data-tour="view-portfolio"]',
     popover: {
       title: 'Portfolio Showcase',
@@ -45,6 +63,15 @@ const tourSteps: DriveStep[] = [
       description: 'Track all your bookings, shoots, and deadlines in one place.',
       side: 'bottom',
       align: 'center',
+    },
+  },
+  {
+    element: '[data-tour="settings-reviews"]',
+    popover: {
+      title: 'Collect Testimonials',
+      description: 'Automatically request and display 5-star reviews from happy clients on your portfolio.',
+      side: 'left',
+      align: 'end',
     },
   },
   {

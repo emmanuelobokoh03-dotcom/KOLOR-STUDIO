@@ -8,13 +8,11 @@ import {
   Check,
   Globe,
   Percent,
-  Image as ImageIcon,
   Palette,
   MessageSquare
 } from 'lucide-react'
 import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 import { formatCurrency, NUMBER_FORMAT_OPTIONS } from '../utils/currency'
-import PortfolioSettings from './PortfolioSettings'
 import BrandSettings from './BrandSettings'
 import TestimonialsManagement from './TestimonialsManagement'
 
@@ -23,7 +21,7 @@ interface SettingsModalProps {
   onSettingsUpdate?: (settings: UserSettings) => void;
 }
 
-type SettingsTab = 'currency' | 'portfolio' | 'brand' | 'testimonials';
+type SettingsTab = 'currency' | 'brand' | 'testimonials';
 
 export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>('currency')
@@ -169,17 +167,6 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               Currency
             </button>
             <button
-              onClick={() => setActiveTab('portfolio')}
-              className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
-                activeTab === 'portfolio'
-                  ? 'bg-dark-card text-white'
-                  : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
-              }`}
-            >
-              <ImageIcon className="w-4 h-4" />
-              Portfolio
-            </button>
-            <button
               onClick={() => setActiveTab('brand')}
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'brand'
@@ -199,6 +186,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
                   : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
               }`}
               data-testid="testimonials-tab"
+              data-tour="settings-reviews"
             >
               <MessageSquare className="w-4 h-4" />
               Reviews
@@ -212,8 +200,6 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
             <BrandSettings />
           ) : activeTab === 'testimonials' ? (
             <TestimonialsManagement />
-          ) : activeTab === 'portfolio' ? (
-            <PortfolioSettings />
           ) : (
             <div className="space-y-6">
               {error && (

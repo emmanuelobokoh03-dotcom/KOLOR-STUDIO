@@ -467,16 +467,21 @@ const Dashboard = () => {
             else if (action === 'view-kanban') handleViewChange('kanban')
             else if (action === 'view-portfolio') handleViewChange('portfolio')
             else if (action === 'open-settings') setShowSettings(true)
+            else if (action === 'open-brand-settings') setShowSettings(true)
           }}
         />
 
         {/* CRM Alerts + Revenue Dashboard */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
-          <CRMAlerts onLeadClick={(leadId) => {
-            const lead = leads.find(l => l.id === leadId)
-            if (lead) setSelectedLead(lead)
-          }} />
-          <RevenueDashboard />
+          <div data-tour="crm-alerts">
+            <CRMAlerts onLeadClick={(leadId) => {
+              const lead = leads.find(l => l.id === leadId)
+              if (lead) setSelectedLead(lead)
+            }} />
+          </div>
+          <div data-tour="revenue-dashboard">
+            <RevenueDashboard />
+          </div>
         </div>
 
         {/* Industry-Specific Widgets */}
@@ -757,7 +762,7 @@ const Dashboard = () => {
               <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F3A8;</div>
               <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-2 md:mb-3">Your creative projects start here</h3>
               <p className="text-sm md:text-base text-[#A3A3A3] max-w-md mb-6 md:mb-8 leading-relaxed">
-                Create your first project to track client communications, send professional quotes, manage bookings, and deliver work.
+                Create your first project to track communications, send quotes, collect testimonials, share files, and watch your income grow.
               </p>
               <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 mb-6 md:mb-8 border border-[#333] w-full max-w-md">
                 <div className="flex items-center gap-2 mb-3 md:mb-4">

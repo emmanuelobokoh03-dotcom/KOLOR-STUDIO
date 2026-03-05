@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   HelpCircle, X, FileText, Calendar, Upload, ScrollText,
-  Copy, ChevronDown, Mail, RefreshCw,
+  ChevronDown, Mail, RefreshCw, TrendingUp, Star, Paperclip
 } from 'lucide-react'
 
 const quickStartItems = [
@@ -30,16 +30,36 @@ const quickStartItems = [
     description: 'Protect yourself legally',
     color: 'text-emerald-400 bg-emerald-900/30 border-emerald-700/30',
   },
+  {
+    icon: TrendingUp,
+    title: 'Track Your Income',
+    description: 'See earnings and tax estimates automatically',
+    color: 'text-amber-400 bg-amber-900/30 border-amber-700/30',
+  },
+  {
+    icon: Star,
+    title: 'Get Testimonials',
+    description: 'Automatically collect 5-star reviews',
+    color: 'text-yellow-400 bg-yellow-900/30 border-yellow-700/30',
+  },
+  {
+    icon: Mail,
+    title: 'Email Signature',
+    description: 'Market your portfolio in every email',
+    color: 'text-cyan-400 bg-cyan-900/30 border-cyan-700/30',
+  },
+  {
+    icon: Paperclip,
+    title: 'Share Files with Clients',
+    description: 'Securely share deliverables via portal',
+    color: 'text-violet-400 bg-violet-900/30 border-violet-700/30',
+  },
 ]
 
 const faqs = [
   {
     q: 'How do I share my portfolio?',
     a: 'Go to Portfolio, click "Copy Link", and share it anywhere! Your public portfolio is always up to date.',
-  },
-  {
-    q: 'Can clients upload files?',
-    a: 'Yes! Clients can upload files through the Client Portal link you share with them.',
   },
   {
     q: 'How do contracts work?',
@@ -52,6 +72,22 @@ const faqs = [
   {
     q: 'Can I customize my pipeline stages?',
     a: 'Your pipeline follows: New, Contacted, Qualified, Quoted, Negotiating, Booked. Drag cards between columns to update.',
+  },
+  {
+    q: 'How does income tracking work?',
+    a: 'When a quote is accepted, KOLOR STUDIO automatically tracks expected income. Mark payments as received to update your revenue dashboard and tax estimates.',
+  },
+  {
+    q: 'How do I get client testimonials?',
+    a: 'After delivering work, KOLOR STUDIO automatically sends a testimonial request to your client. You can also manually request testimonials from any lead via Settings > Reviews.',
+  },
+  {
+    q: 'How do I share files with clients?',
+    a: 'Upload files to any project, then click the "Share" toggle on the file card. Shared files appear automatically in your client\'s portal where they can download them.',
+  },
+  {
+    q: 'What\'s the "Powered by" badge?',
+    a: 'It appears on your client portal and public portfolio, helping others discover KOLOR STUDIO. It\'s a free viral marketing tool for your business.',
   },
 ]
 
@@ -176,12 +212,17 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
                   </div>
                   <div className="p-3 rounded-xl bg-emerald-900/15 border border-emerald-800/25">
                     <p className="text-xs text-emerald-300 leading-relaxed">
-                      <strong>Client portal:</strong> Share one link and clients can view quotes, sign contracts, and track progress — no login needed.
+                      <strong>Client portal:</strong> Share one link and clients can view quotes, sign contracts, download files, and track progress \u2014 no login needed.
                     </p>
                   </div>
                   <div className="p-3 rounded-xl bg-brand-accent-dark/15 border border-brand-accent-dark/25">
                     <p className="text-xs text-brand-accent-light leading-relaxed">
-                      <strong>Quick add:</strong> Use the "+ Add Lead" button to capture new inquiries on the spot.
+                      <strong>Email signature:</strong> Go to Settings &gt; Brand to create a signature with your portfolio link. Free marketing in every email!
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-amber-900/15 border border-amber-800/25">
+                    <p className="text-xs text-amber-300 leading-relaxed">
+                      <strong>Share files:</strong> Upload files to any project, then toggle "Share" to make them available in your client's portal.
                     </p>
                   </div>
                 </div>
