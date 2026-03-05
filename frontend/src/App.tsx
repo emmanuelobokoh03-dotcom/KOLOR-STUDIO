@@ -12,6 +12,7 @@ import PublicQuote from './pages/PublicQuote'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import PublicPortfolio from './pages/PublicPortfolio'
+import SubmitTestimonial from './pages/SubmitTestimonial'
 import IndustryOnboarding from './components/IndustryOnboarding'
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
@@ -31,6 +32,7 @@ function App() {
         <Route path="/portal/:token" element={<ClientPortal />} />
         <Route path="/quote/:quoteToken" element={<PublicQuote />} />
         <Route path="/portfolio/:userId" element={<PublicPortfolio />} />
+        <Route path="/testimonial/:token" element={<SubmitTestimonial />} />
         <Route path="/onboarding" element={<IndustryOnboarding />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />

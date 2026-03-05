@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { 
+import {
   X, 
   Settings, 
   DollarSign, 
@@ -9,19 +9,21 @@ import {
   Globe,
   Percent,
   Image as ImageIcon,
-  Palette
+  Palette,
+  MessageSquare
 } from 'lucide-react'
 import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 import { formatCurrency, NUMBER_FORMAT_OPTIONS } from '../utils/currency'
 import PortfolioSettings from './PortfolioSettings'
 import BrandSettings from './BrandSettings'
+import TestimonialsManagement from './TestimonialsManagement'
 
 interface SettingsModalProps {
   onClose: () => void;
   onSettingsUpdate?: (settings: UserSettings) => void;
 }
 
-type SettingsTab = 'currency' | 'portfolio' | 'brand';
+type SettingsTab = 'currency' | 'portfolio' | 'brand' | 'testimonials';
 
 export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>('currency')
@@ -130,7 +132,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div 
         className={`bg-dark-card rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-dark-border transition-all duration-300 ${
-          activeTab === 'brand' ? 'max-w-5xl' : 'max-w-2xl'
+          activeTab === 'brand' || activeTab === 'testimonials' ? 'max-w-5xl' : 'max-w-2xl'
         }`}
         onClick={e => e.stopPropagation()}
         data-testid="settings-modal"
@@ -189,6 +191,18 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               <Palette className="w-4 h-4" />
               Brand
             </button>
+            <button
+              onClick={() => setActiveTab('testimonials')}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all ${
+                activeTab === 'testimonials'
+                  ? 'bg-dark-card text-white'
+                  : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
+              }`}
+              data-testid="testimonials-tab"
+            >
+              <MessageSquare className="w-4 h-4" />
+              Reviews
+            </button>
           </div>
         </div>
 
@@ -196,6 +210,8 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
         <div className="flex-1 overflow-y-auto p-6">
           {activeTab === 'brand' ? (
             <BrandSettings />
+          ) : activeTab === 'testimonials' ? (
+            <TestimonialsManagement />
           ) : activeTab === 'portfolio' ? (
             <PortfolioSettings />
           ) : (

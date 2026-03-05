@@ -69,6 +69,7 @@ model User {
   portfolio     Portfolio[]
   workflowTemplates WorkflowTemplate[]
   incomes       Income[]
+  testimonials  Testimonial[]
   
   @@map("users")
 }
@@ -207,6 +208,7 @@ model Lead {
   contracts       Contract[]
   interactions    Interaction[]
   incomeRecords   Income[]
+  testimonials    Testimonial[]
   
   @@map("leads")
   @@index([status])
@@ -789,4 +791,48 @@ enum IncomeStatus {
   EXPECTED
   RECEIVED
   CANCELLED
+}
+
+// =====================
+// TESTIMONIALS
+// =====================
+
+model Testimonial {
+  id              String              @id @default(cuid())
+  userId          String
+  leadId          String?
+  
+  clientName      String
+  clientEmail     String?
+  rating          Int                 @default(0)
+  content         String              @default("") @db.Text
+  recommend       Boolean             @default(true)
+  
+  status          TestimonialStatus   @default(PENDING)
+  featured        Boolean             @default(false)
+  
+  requestedAt     DateTime?
+  submittedAt     DateTime?
+  approvedAt      DateTime?
+  
+  consentGiven    Boolean             @default(false)
+  publicToken     String              @unique @default(cuid())
+  
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lead            Lead?               @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  
+  @@map("testimonials")
+  @@index([userId])
+  @@index([status])
+  @@index([featured])
+  @@index([publicToken])
+}
+
+enum TestimonialStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

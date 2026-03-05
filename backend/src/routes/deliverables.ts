@@ -210,6 +210,33 @@ router.patch('/deliverables/:id/status', authMiddleware, async (req: AuthRequest
 
     const deliverable = await prisma.deliverable.update({ where: { id }, data });
 
+    // Auto-request testimonial when deliverable is marked DELIVERED
+    if (status === 'DELIVERED') {
+      try {
+        const lead = await prisma.lead.findUnique({ where: { id: existing.leadId } });
+        if (lead && lead.assignedToId) {
+          // Check if testimonial already exists for this lead
+          const existingTestimonial = await prisma.testimonial.findFirst({
+            where: { leadId: lead.id, userId: lead.assignedToId }
+          });
+          if (!existingTestimonial) {
+            await prisma.testimonial.create({
+              data: {
+                userId: lead.assignedToId,
+                leadId: lead.id,
+                clientName: lead.clientName,
+                clientEmail: lead.clientEmail,
+                status: 'PENDING',
+                requestedAt: new Date()
+              }
+            });
+          }
+        }
+      } catch (autoReqError) {
+        console.error('Auto testimonial request failed:', autoReqError);
+      }
+    }
+
     res.json({ message: `Deliverable status updated to ${status}`, deliverable });
   } catch (error) {
     console.error('Update deliverable status error:', error);

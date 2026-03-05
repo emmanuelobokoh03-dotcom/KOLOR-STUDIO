@@ -24,6 +24,7 @@ export default function PublicPortfolio() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [userInfo, setUserInfo] = useState<{ id: string; name: string; studioName?: string } | null>(null)
+  const [testimonials, setTestimonials] = useState<any[]>([])
   
   // Filters
   const [activeCategory, setActiveCategory] = useState<PortfolioCategory | 'ALL'>('ALL')
@@ -53,7 +54,15 @@ export default function PublicPortfolio() {
 
   useEffect(() => {
     fetchPortfolio()
-  }, [fetchPortfolio])
+    // Fetch testimonials
+    if (userId) {
+      const API_URL = import.meta.env.VITE_API_URL || ''
+      fetch(`${API_URL}/api/testimonials/public/${userId}`)
+        .then(r => r.ok ? r.json() : { testimonials: [] })
+        .then(d => setTestimonials(d.testimonials || []))
+        .catch(() => {})
+    }
+  }, [fetchPortfolio, userId])
 
   // Apply filters
   useEffect(() => {
@@ -277,6 +286,43 @@ export default function PublicPortfolio() {
           </div>
         )}
       </main>
+
+      {/* Testimonials Section */}
+      {testimonials.length > 0 && (
+        <section className="py-16 px-4" data-testid="portfolio-testimonials">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-[#FAFAFA] mb-3">What Clients Say</h2>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                {[1,2,3,4,5].map(s => {
+                  const avg = testimonials.reduce((a: number, t: any) => a + t.rating, 0) / testimonials.length
+                  return <Star key={s} className="w-5 h-5" fill={s <= Math.round(avg) ? '#FBBF24' : 'none'} stroke={s <= Math.round(avg) ? '#FBBF24' : '#555'} strokeWidth={1.5} />
+                })}
+              </div>
+              <p className="text-sm text-[#888]">Based on {testimonials.length} review{testimonials.length !== 1 ? 's' : ''}</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {testimonials.slice(0, 6).map((t: any) => (
+                <div key={t.id} className="bg-[#1A1A1A] rounded-xl p-6 border border-[#262626] hover:border-brand-primary/30 transition-colors">
+                  <div className="flex items-center gap-1 mb-3">
+                    {[1,2,3,4,5].map(s => (
+                      <Star key={s} className="w-4 h-4" fill={s <= t.rating ? '#FBBF24' : 'none'} stroke={s <= t.rating ? '#FBBF24' : '#555'} strokeWidth={1.5} />
+                    ))}
+                  </div>
+                  <p className="text-[#CCC] mb-4 italic leading-relaxed text-sm">"{t.content}"</p>
+                  <p className="text-xs text-[#888]">— {t.clientName}</p>
+                  {t.featured && (
+                    <span className="inline-block mt-2 px-2 py-1 bg-brand-primary/20 text-brand-primary text-[10px] rounded font-medium">
+                      Featured Review
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-slate-800 mt-12">

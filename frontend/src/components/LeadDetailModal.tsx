@@ -41,7 +41,8 @@ import {
   Receipt,
   MailPlus,
   Package,
-  ScrollText
+  ScrollText,
+  Star as StarIcon
 } from 'lucide-react'
 import QuotesTab from './QuotesTab'
 import EmailComposerModal from './EmailComposerModal'
@@ -172,6 +173,25 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
   const [loadingFiles, setLoadingFiles] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>('');
+
+  const handleRequestTestimonial = async () => {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || ''
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_URL}/api/testimonials/request/${lead.id}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      const data = await res.json()
+      if (res.ok) {
+        const link = `${window.location.origin}/testimonial/${data.testimonial.publicToken}`
+        await navigator.clipboard.writeText(link)
+        alert('Testimonial requested! Submission link copied to clipboard.')
+      } else {
+        alert(data.error || 'Failed to request testimonial')
+      }
+    } catch { alert('Failed to request testimonial') }
+  }
   const [dragOver, setDragOver] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -454,6 +474,15 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 >
                   <MailPlus className="w-4 h-4" />
                   <span className="hidden md:inline">Email</span>
+                </button>
+                <button 
+                  onClick={handleRequestTestimonial}
+                  className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm touch-target"
+                  data-testid="request-testimonial-btn"
+                  title="Request Testimonial"
+                >
+                  <StarIcon className="w-4 h-4" />
+                  <span className="hidden lg:inline">Review</span>
                 </button>
                 <button 
                   onClick={onClose}
