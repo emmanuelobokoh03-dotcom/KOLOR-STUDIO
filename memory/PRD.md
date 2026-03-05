@@ -90,6 +90,16 @@ A full-stack CRM application for creative professionals (photographers, designer
 - Uses inline styles for preview elements to avoid CSS variable feedback loops
 - **Testing**: 100% pass rate (12/12 features verified)
 
+### CRM + Revenue Dashboard — Phase 1 (DONE - March 5, 2026)
+- **Database Schema**: Added PipelineStatus enum, Interaction model, Income model, CRM fields on Lead (pipelineStatus, lastContactedAt, nextFollowUpAt, followUpPriority, leadSource, crmNotes)
+- **Backend CRM Service**: Alert generation (overdue follow-ups, new inquiries, hot leads, cold leads), pipeline auto-advancement, revenue stats aggregation
+- **Backend Routes**: GET /api/crm/alerts, POST /api/crm/interactions, PATCH /api/crm/leads/:id/pipeline, GET /api/crm/revenue, POST/PATCH/GET /api/crm/income
+- **Auto-integrations**: Quote acceptance auto-creates Income record + logs Interaction + updates pipelineStatus to BOOKED
+- **Frontend CRMAlerts**: Priority-sorted alert list with lead click-through, show all toggle, refresh button
+- **Frontend RevenueDashboard**: 4 stat cards (This Month, YTD, Pipeline, Goal%) + 12-month bar chart (recharts)
+- **Dashboard Integration**: Side-by-side CRM + Revenue grid after SmartSuggestion
+- **Testing**: 100% pass rate (13/13 backend, all frontend verified)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
