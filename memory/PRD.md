@@ -112,6 +112,15 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **SharePortfolio**: QR code section stacks vertically on small screens
 - **Testing**: 9/10 pages passed at 375px viewport (iPhone SE), calendar overflow fixed (iteration_32.json)
 
+### Pre-Phase 6 Cleanup (DONE - March 5, 2026)
+- **Portfolio tab removed from Settings**: SettingsModal now has 3 tabs (Currency, Brand, Reviews). Portfolio managed only on /portfolio page.
+- **Onboarding Tour updated**: 3 new steps for CRM Alerts, Revenue Dashboard, and Testimonials. Total: 10 tour steps.
+- **Help Panel updated**: 4 new quick-start guides (Income, Testimonials, Email Signature, File Sharing), 4 new FAQs, updated pro tips.
+- **Smart Suggestions updated**: 2 new suggestions (Email Signature setup, Portfolio sharing).
+- **data-tour attributes**: Added to CRM Alerts, Revenue Dashboard, and Reviews tab for tour integration.
+- **Dashboard welcome message**: Updated to mention new features.
+- **Testing**: 100% pass rate (10/10 tests, iteration_33.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
