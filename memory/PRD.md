@@ -17,6 +17,9 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Contracts & Consent**: Create contracts from templates, send to clients, client signs via portal
 - **Personalized Brand Theme**: Customizable primary/accent colors, fonts, logo — applied app-wide
 - **Celebration Modals**: Confetti celebrations for 6 key milestones
+- **CRM & Revenue Dashboard**: Smart alerts, pipeline tracking, revenue charts
+- **Testimonial Collection**: Automated request/submit/moderate/display system
+- **Quick Growth Features**: Email signature generator, share portfolio widget with QR code, "Powered by" badges
 
 ## Phase History
 
@@ -38,112 +41,77 @@ A full-stack CRM application for creative professionals (photographers, designer
 - Auto-generation of workflow templates based on selected industry
 
 ### Phase 5: UI/UX Polish (DONE - March 3, 2026)
-- **Part A**: Personal welcome messages (first login + welcome back with date), clickable KOLOR STUDIO header
-- **Part B**: Image-first project cards with coverImage field, upload endpoint, gradient placeholders
-- **Part C**: Visual file gallery with responsive grid, image thumbnails, hover overlays with download/delete
-- **Part D**: Typography scale (text-3xl titles, #0F0F0F bg, #1A1A1A cards, #FAFAFA headings, #A3A3A3 body)
-- **Part E**: Micro-interactions (hover effects, transitions, skeleton loading states, entrance animations)
-- **Part F**: Mobile Responsiveness (DONE - March 3, 2026)
+- Personal welcome messages, image-first project cards, visual file gallery
+- Typography scale, micro-interactions, mobile responsiveness
 
 ### Phase 6B: Contracts & Consent System (DONE - March 4, 2026)
-- Contract model with leadId, templateType, title, content, clientAgreed, clientAgreedAt, clientIP, status
-- 6 contract templates, Backend API, Frontend ContractsTab, Client Portal, Email Notifications
+- Contract model, 6 templates, Backend API, Frontend ContractsTab, Client Portal, Email Notifications
 
-### Dashboard Visual Polish - Status Colors (DONE - March 4, 2026)
-- Updated Kanban column headers to violet-centric palette
-- Updated status badges across Dashboard, LeadDetailModal
+### Dashboard Visual Polish (DONE - March 4, 2026)
+- Updated Kanban column headers to violet-centric palette, status badges
 
 ### Industry-Specific Dashboard Widgets (DONE - March 5, 2026)
 - PhotographyWidgets, FineArtWidgets, DesignWidgets with conditional rendering
 
-### User Education System Phase 1 (DONE - March 5, 2026)
-- Educational Empty States, Inline Hints, Help Panel
-
-### User Education System Phase 2 (DONE - March 5, 2026)
-- Interactive Onboarding Tour (Driver.js), Smart Suggestions, Celebration Moments
+### User Education System Phases 1 & 2 (DONE - March 5, 2026)
+- Empty States, Inline Hints, Help Panel, Onboarding Tour (Driver.js), Smart Suggestions, Celebration Moments
 
 ### Personalized Brand Theme System (DONE - March 5, 2026)
-- **Backend**: Brand settings fields on User model (primaryColor, accentColor, fontFamily, logoUrl)
-- **Backend API**: GET/PATCH /api/settings/brand, POST/DELETE /api/settings/brand/logo
-- **Frontend BrandThemeContext**: Converts hex to RGB channels, sets CSS variables on document root
-- **Frontend BrandSettings UI**: Color pickers, 6 preset palettes, 6 font options, logo upload, live preview
-- **Tailwind Config**: Brand colors use `rgb(var(--color-brand-primary-rgb) / <alpha-value>)` format for full opacity support
-- **Global Application**: Replaced 820+ hardcoded violet/fuchsia/purple color classes across 41 files with brand-aware CSS variables
-- **index.css**: Font uses `var(--font-brand)`, text selection uses brand color, Driver.js theme uses CSS variables
-- **Testing**: 100% pass rate (9/9 backend, all frontend verified)
+- Backend settings, BrandThemeContext, color pickers, live preview, 820+ class replacements
 
 ### Celebration Modal Triggers (DONE - March 5, 2026)
-- **firstProject**: Fires in Dashboard after AddLeadModal creates first lead
-- **firstQuote**: Fires via callback chain QuotesTab → LeadDetailModal → Dashboard after first quote sent
-- **quoteAccepted**: Fires on Dashboard init when BOOKED status count > 0
-- **firstBooking**: Fires in Dashboard after handleBookingSaved
-- **portfolioPublished**: Fires in Portfolio page after first portfolio item creation
-- **firstContract**: Fires via callback chain ContractsTab → LeadDetailModal → Dashboard when AGREED contract found
-- **Deduplication**: Uses localStorage `celebrated_{key}` to fire each celebration only once
-- **Testing**: 100% pass rate (all 6 triggers verified)
+- 6 triggers: firstProject, firstQuote, quoteAccepted, firstBooking, portfolioPublished, firstContract
 
 ### Brand Preview System (DONE - March 5, 2026)
-- Inline live preview panel in Brand Settings (settings left, preview right on desktop)
-- 3 tabbed previews: Portfolio, Quote, Client Portal — each shows realistic mini mockups
-- Live updates as user changes colors, fonts, or logo (no save required)
-- Settings modal widens to max-w-5xl when Brand tab is active
-- Uses inline styles for preview elements to avoid CSS variable feedback loops
-- **Testing**: 100% pass rate (12/12 features verified)
+- Inline live preview panel with 3 tabbed previews (Portfolio, Quote, Client Portal)
 
 ### CRM + Revenue Dashboard — Phase 1 (DONE - March 5, 2026)
-- **Database Schema**: Added PipelineStatus enum, Interaction model, Income model, CRM fields on Lead (pipelineStatus, lastContactedAt, nextFollowUpAt, followUpPriority, leadSource, crmNotes)
-- **Backend CRM Service**: Alert generation (overdue follow-ups, new inquiries, hot leads, cold leads), pipeline auto-advancement, revenue stats aggregation
-- **Backend Routes**: GET /api/crm/alerts, POST /api/crm/interactions, PATCH /api/crm/leads/:id/pipeline, GET /api/crm/revenue, POST/PATCH/GET /api/crm/income
-- **Auto-integrations**: Quote acceptance auto-creates Income record + logs Interaction + updates pipelineStatus to BOOKED
-- **Frontend CRMAlerts**: Priority-sorted alert list with lead click-through, show all toggle, refresh button
-- **Frontend RevenueDashboard**: 4 stat cards (This Month, YTD, Pipeline, Goal%) + 12-month bar chart (recharts)
-- **Dashboard Integration**: Side-by-side CRM + Revenue grid after SmartSuggestion
-- **Testing**: 100% pass rate (13/13 backend, all frontend verified)
+- CRM alerts, pipeline management, revenue dashboard with recharts, auto-integrations
 
 ### Testimonial Collection System — Phase 2 (DONE - March 5, 2026)
-- **Database**: Testimonial model with publicToken-based submission flow, status (PENDING/APPROVED/REJECTED), featured flag, consent tracking
-- **Backend Routes**: GET/POST testimonials, public submit via token, approve/reject/feature toggles, stats endpoint
-- **Public Submission Form**: Light-themed page at /testimonial/:token with star rating, textarea, consent checkbox, branded with studio colors
-- **Moderation Dashboard**: TestimonialsManagement component in Settings → Reviews tab with stats cards, filter tabs (All/Pending/Approved/Rejected), approve/reject/feature actions
-- **Portfolio Display**: Approved testimonials shown on public portfolio page with star ratings and "Featured Review" badges
-- **Request Button**: "Request Testimonial" button in LeadDetailModal with clipboard copy of submission link
-- **Auto-Request**: Deliverable marked DELIVERED auto-creates testimonial request for the lead
-- **Testing**: 92% backend + 100% frontend (iteration_28.json)
+- Public submission form, moderation dashboard, portfolio display, auto-request on delivery
+
+### Quick Growth Features — Phase 3 (DONE - March 5, 2026)
+- **Email Signature Generator**: Professional HTML signature with portfolio link, copy-to-clipboard, instructions for Gmail/Outlook/Apple Mail. Located in Settings → Brand tab.
+- **Share Portfolio Widget**: Portfolio URL display with copy button, share via Email/SMS buttons. Located on Portfolio management page.
+- **QR Code Generator**: Auto-generated QR code of portfolio URL using `qrcode` library, downloadable as PNG. Within Share Portfolio widget.
+- **"Powered by KOLOR STUDIO" Badge**: Viral marketing link in footer of all 3 client-facing pages (PublicPortfolio, ClientPortal, SubmitTestimonial).
+- **Testing**: 100% frontend pass rate (15/15 tests, iteration_29.json)
 
 ## Architecture
 ```
 /app/kolor-studio-v2/
 ├── backend/         # Node.js + Express + Prisma + TypeScript
 │   ├── prisma/      # Schema & migrations
-│   ├── src/routes/  # API endpoints (contracts.ts, portal.ts, leads.ts, settings.ts)
-│   ├── src/services/# Storage, email
+│   ├── src/routes/  # API endpoints (contracts, portal, leads, settings, crm, testimonials, analytics)
+│   ├── src/services/# Storage, email, CRM
 │   └── src/middleware/# Auth middleware
 ├── frontend/        # React + Vite + TypeScript + Tailwind CSS
-│   ├── src/pages/   # Dashboard, Login, Signup, Portfolio, ClientPortal
-│   ├── src/components/# UI components (CelebrationModal, BrandSettings, etc.)
+│   ├── src/pages/   # Dashboard, Login, Signup, Portfolio, ClientPortal, PublicPortfolio, SubmitTestimonial
+│   ├── src/components/# UI components (EmailSignatureGenerator, SharePortfolio, BrandSettings, CRMAlerts, RevenueDashboard, TestimonialsManagement, etc.)
 │   ├── src/contexts/ # BrandThemeContext
 │   └── src/services/# API client
 ```
 
 ## Key DB Schema
 - **User**: id, email, firstName, lastName, studioName, primaryIndustry, role, lastLoginAt, brandPrimaryColor, brandAccentColor, brandLogoUrl, brandFontFamily
-- **Lead**: id, clientName, clientEmail, projectTitle, status, serviceType, projectType, industry, deliverableType, coverImage, budget, timeline, portalToken, portalViews
-- **Contract**: id, leadId, templateType, title, content, clientAgreed, clientAgreedAt, clientIP, status (DRAFT/SENT/VIEWED/AGREED)
+- **Lead**: id, clientName, clientEmail, projectTitle, status, serviceType, projectType, industry, pipelineStatus, lastContactedAt, nextFollowUpAt, followUpPriority, leadSource, crmNotes
+- **Contract**: id, leadId, templateType, title, content, clientAgreed, status (DRAFT/SENT/VIEWED/AGREED)
+- **Interaction**: id, leadId, type, content, createdAt
+- **Income**: id, userId, leadId, amount, status, receivedDate
+- **Testimonial**: id, userId, leadId, rating, content, status, featured, publicToken
 
 ## Key API Endpoints
 - `POST /api/auth/login` & `POST /api/auth/signup` - Authentication
-- `POST /api/auth/onboarding` - Industry onboarding
 - `GET/POST/PATCH/DELETE /api/leads` - Lead CRUD
-- `GET /api/settings/brand` - Get brand settings
-- `PATCH /api/settings/brand` - Update brand colors/font
-- `POST /api/settings/brand/logo` - Upload brand logo
-- `DELETE /api/settings/brand/logo` - Remove brand logo
-- `GET/POST /api/leads/:leadId/contracts` - Lead-scoped contracts
-- `POST /api/contracts/:id/send` - Send contract to client
-- `POST /api/contracts/:id/agree` - Client signs contract
+- `GET/PATCH /api/settings/brand` - Brand settings
+- `GET/POST /api/leads/:leadId/contracts` - Contracts
+- `GET /api/crm/alerts` - CRM smart alerts
+- `GET /api/crm/revenue` - Revenue stats
+- `GET/POST /api/testimonials` - Testimonial management
+- `GET /api/testimonials/public/:userId` - Public testimonials
 
 ## Backlog (P2/P3)
-- **(P1.5)** CRM Automation System — Lead status pipeline auto-triggers, smart dashboard alerts, email sequence templates, follow-up automation, client relationship timeline
 - **(P2)** PWA Functionality - make app installable
 - **(P2)** Email verification for signups
 - **(P2)** Client file upload on public inquiry form
@@ -151,3 +119,11 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **(P3)** "Your Links" section in user settings
 - **(P3)** Keyboard Shortcuts modal
 - **(P3)** Dashboard customization (drag/reorder/toggle widgets)
+
+## 3rd Party Integrations
+- Supabase (PostgreSQL & Storage), Resend (emails), Vercel Analytics, Driver.js (tours), React Colorful, React Confetti, Google Fonts, recharts, qrcode
+
+## Test Credentials
+- Email: emmanuelobokoh03@gmail.com
+- Password: successful26#
+- User ID: 3aa2d156-aa26-48ef-8daf-e95641b68b3e
