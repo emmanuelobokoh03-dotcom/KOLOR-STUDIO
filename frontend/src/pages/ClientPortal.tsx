@@ -618,6 +618,12 @@ export default function ClientPortal() {
           <p className="mt-2">
             <Link to="/" className="text-brand-primary hover:underline">Visit our website</Link>
           </p>
+          <p className="mt-3 text-xs text-gray-500" data-testid="powered-by-badge">
+            Powered by{' '}
+            <Link to="/" className="text-brand-primary hover:text-brand-primary-light transition">
+              KOLOR STUDIO
+            </Link>
+          </p>
         </footer>
       </main>
     </div>

@@ -7,6 +7,7 @@ import {
   Loader2, Check, X,
 } from 'lucide-react'
 import BrandPreview from './BrandPreview'
+import EmailSignatureGenerator from './EmailSignatureGenerator'
 
 const FONT_OPTIONS = [
   { value: 'Inter', label: 'Inter', style: 'Modern & Clean' },
@@ -283,8 +284,11 @@ export default function BrandSettings() {
       </div>
 
       {/* Right Column: Live Preview */}
-      <div className="lg:w-[320px] flex-shrink-0">
+      <div className="lg:w-[320px] flex-shrink-0 space-y-5">
         <BrandPreview primary={primary} accent={accent} font={font} logoUrl={logoUrl} />
+        <div className="border-t border-[#262626] pt-5">
+          <EmailSignatureGenerator />
+        </div>
       </div>
     </div>
   )

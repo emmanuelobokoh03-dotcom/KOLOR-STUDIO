@@ -23,6 +23,7 @@ import {
   User 
 } from '../services/api'
 import { CelebrationModal, checkCelebration, Achievement } from '../components/CelebrationModal'
+import SharePortfolio from '../components/SharePortfolio'
 
 interface PortfolioPageProps {
   user: User | null;
@@ -273,6 +274,9 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Share Portfolio Widget */}
+      <SharePortfolio />
 
       {/* Error */}
       {error && (

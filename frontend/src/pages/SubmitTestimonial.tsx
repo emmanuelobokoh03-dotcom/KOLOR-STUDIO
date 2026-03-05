@@ -216,8 +216,9 @@ export default function SubmitTestimonial() {
           </button>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
-          Powered by Kolor Studio
+        <p className="text-center text-xs text-gray-400 mt-6" data-testid="powered-by-badge">
+          Powered by{' '}
+          <a href="/" className="text-brand-primary hover:underline transition">Kolor Studio</a>
         </p>
       </div>
     </div>

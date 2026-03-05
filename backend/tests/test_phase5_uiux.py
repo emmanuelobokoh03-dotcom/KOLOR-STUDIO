@@ -11,7 +11,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = "https://design-theme.preview.emergentagent.com"
+BASE_URL = "https://kolor-growth-engine.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

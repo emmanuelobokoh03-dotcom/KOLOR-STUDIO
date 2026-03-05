@@ -15,7 +15,7 @@ import uuid
 from datetime import datetime
 
 # Test Configuration
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://design-theme.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://kolor-growth-engine.preview.emergentagent.com').rstrip('/')
 API_URL = f"{BASE_URL}/api"
 
 # Test credentials
