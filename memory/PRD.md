@@ -103,6 +103,15 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **CookieConsent**: Already implemented
 - **Testing**: Visual verification passed (screenshot)
 
+### Mobile Responsiveness Audit (DONE - March 5, 2026)
+- **SettingsModal**: Full-screen on mobile, tabs scroll horizontally, reduced padding (p-4 md:p-6)
+- **CalendarViewNew**: Wrapped react-big-calendar in overflow-x-auto + min-w-[600px] scroll container
+- **LandingPage**: Pricing comparison table wrapped in overflow-x-auto + min-w-[600px]
+- **CRMAlerts**: Reduced empty/loading state padding for mobile
+- **ClientPortal**: Reduced password modal padding, increased download button touch target to 44px
+- **SharePortfolio**: QR code section stacks vertically on small screens
+- **Testing**: 9/10 pages passed at 375px viewport (iPhone SE), calendar overflow fixed (iteration_32.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
