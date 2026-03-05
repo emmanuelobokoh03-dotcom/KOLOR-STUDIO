@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { InlineHint } from './InlineHint'
 import { 
   FileText, 
   Plus, 
@@ -197,20 +198,31 @@ export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
         </button>
       </div>
 
+      {quotes.length === 0 && (
+        <InlineHint storageKey="seen_first_quote_tip" variant="violet">
+          <span className="text-xs"><strong>Sending your first quote?</strong> Add line items, set your rate, and send directly to your client's email. They can accept online!</span>
+        </InlineHint>
+      )}
+
       {/* Quotes List */}
       {quotes.length === 0 ? (
-        <div className="text-center py-12">
-          <FileText className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-          <h4 className="text-lg font-medium text-white mb-2">No quotes yet</h4>
-          <p className="text-gray-400 mb-6">
-            Create your first quote to send to this client.
+        <div className="flex flex-col items-center justify-center py-16 md:py-20 px-6 text-center" data-testid="quotes-empty-state">
+          <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4B0;</div>
+          <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-2 md:mb-3">No quotes yet</h3>
+          <p className="text-sm md:text-base text-[#A3A3A3] max-w-md mb-5 md:mb-6 leading-relaxed">
+            Send a professional quote to lock in this project and get paid what you're worth.
           </p>
           <button
             onClick={() => setShowBuilder(true)}
-            className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition font-medium"
+            data-testid="quotes-empty-cta"
           >
-            Create Your First Quote
+            <FileText className="w-5 h-5" />
+            Create Quote
           </button>
+          <p className="text-xs text-gray-500 mt-4 max-w-sm">
+            <strong>Pro tip:</strong> Use quote templates to save time on similar projects.
+          </p>
         </div>
       ) : (
         <div className="space-y-4">

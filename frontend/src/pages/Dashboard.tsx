@@ -39,6 +39,7 @@ import FeedbackModal from '../components/FeedbackModal'
 import AnnouncementBanner from '../components/AnnouncementBanner'
 import BookingModal from '../components/BookingModal'
 import MobileBottomNav from '../components/MobileBottomNav'
+import HelpPanel, { HelpButton } from '../components/HelpPanel'
 import { PhotographyWidgets, FineArtWidgets, DesignWidgets } from '../components/IndustryWidgets'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
@@ -125,6 +126,7 @@ const Dashboard = () => {
   const [isFirstLogin, setIsFirstLogin] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
+  const [showHelpPanel, setShowHelpPanel] = useState(false)
 
   useEffect(() => {
     const init = async () => {
@@ -690,15 +692,13 @@ const Dashboard = () => {
           <PortfolioPage user={user} />
         ) : filteredLeads.length === 0 && !loading ? (
           <div className="bg-[#1A1A1A] rounded-xl border border-[#333] p-6 md:p-12">
-            <div className="max-w-md mx-auto text-center">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-violet-900/30 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 border border-violet-700/30">
-                <Target className="w-7 h-7 md:w-8 md:h-8 text-violet-400" />
-              </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 text-[#FAFAFA]">Ready to get your first lead?</h3>
-              <p className="text-sm md:text-base text-[#A3A3A3] mb-6 md:mb-8">
-                Share your inquiry form with potential clients to start receiving project requests.
+            <div className="flex flex-col items-center justify-center py-4 md:py-8 px-4 text-center" data-testid="dashboard-empty-state">
+              <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F3A8;</div>
+              <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-2 md:mb-3">Your creative projects start here</h3>
+              <p className="text-sm md:text-base text-[#A3A3A3] max-w-md mb-6 md:mb-8 leading-relaxed">
+                Create your first project to track client communications, send professional quotes, manage bookings, and deliver work.
               </p>
-              <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 mb-6 md:mb-8 border border-[#333]">
+              <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 mb-6 md:mb-8 border border-[#333] w-full max-w-md">
                 <div className="flex items-center gap-2 mb-3 md:mb-4">
                   <input
                     type="text"
@@ -741,9 +741,13 @@ const Dashboard = () => {
               <button
                 onClick={() => setShowAddModal(true)}
                 className="px-6 md:px-8 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 font-medium touch-target"
+                data-testid="dashboard-empty-cta"
               >
-                Add Your First Lead
+                Create Your First Project
               </button>
+              <p className="text-xs text-gray-500 mt-4 max-w-sm">
+                <strong>Pro tip:</strong> Start with a real client project for the best experience. You can always delete it later!
+              </p>
             </div>
           </div>
         ) : viewMode === 'kanban' ? (
@@ -846,6 +850,8 @@ const Dashboard = () => {
           onSaved={handleBookingSaved}
         />
       )}
+      <HelpButton onClick={() => setShowHelpPanel(true)} />
+      <HelpPanel open={showHelpPanel} onClose={() => setShowHelpPanel(false)} />
     </div>
   )
 }

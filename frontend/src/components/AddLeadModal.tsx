@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { InlineHint } from './InlineHint'
 import { 
   ServiceType, 
   LeadSource,
@@ -251,6 +252,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
             {/* Project Type Selector */}
             <div>
               <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Project Type</h3>
+              <InlineHint storageKey="seen_project_type_tip" variant="violet">
+                <span className="text-xs"><strong>First project?</strong> Choose the type that matches your workflow. This helps us show you the right tools.</span>
+              </InlineHint>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3" data-testid="project-type-selector">
                 {PROJECT_TYPE_CONFIG.map(({ type, icon: Icon, desc, color }) => {
                   const selected = formData.projectType === type;

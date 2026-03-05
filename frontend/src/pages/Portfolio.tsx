@@ -280,21 +280,23 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
         </div>
       ) : items.length === 0 ? (
         /* Empty State */
-        <div className="text-center py-16 bg-slate-800/50 rounded-2xl border border-slate-700">
-          <div className="w-16 h-16 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <ImageIcon className="w-8 h-8 text-gray-400" />
-          </div>
-          <h3 className="text-lg font-semibold text-white mb-2">No Portfolio Items Yet</h3>
-          <p className="text-gray-400 mb-6 max-w-md mx-auto">
-            Upload your best work to showcase your skills and impress potential clients.
+        <div className="flex flex-col items-center justify-center py-16 md:py-20 px-6 text-center bg-slate-800/50 rounded-2xl border border-slate-700" data-testid="portfolio-empty-state">
+          <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F5BC;&#xFE0F;</div>
+          <h3 className="text-xl md:text-2xl font-semibold text-white mb-2 md:mb-3">Showcase your best work</h3>
+          <p className="text-sm md:text-base text-gray-400 max-w-md mb-5 md:mb-6 leading-relaxed">
+            Upload 5-10 of your favorite pieces to create a stunning portfolio that attracts dream clients.
           </p>
           <button
             onClick={handleAddNew}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition font-medium"
+            data-testid="portfolio-empty-cta"
           >
             <Upload className="w-5 h-5" />
-            Upload Your First Work
+            Upload Your First Piece
           </button>
+          <p className="text-xs text-gray-500 mt-4 max-w-sm">
+            <strong>Pro tip:</strong> Quality over quantity! Choose work that represents your unique style.
+          </p>
         </div>
       ) : (
         /* Portfolio Grid */

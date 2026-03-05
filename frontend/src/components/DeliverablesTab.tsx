@@ -253,10 +253,23 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
 
       {/* Deliverables List */}
       {deliverables.length === 0 && !showForm ? (
-        <div className="text-center py-12 text-gray-500">
-          <Package className="w-10 h-10 mx-auto mb-3 opacity-30" />
-          <p className="text-sm">No deliverables yet</p>
-          <p className="text-xs mt-1">Add deliverables to track what you're delivering</p>
+        <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="deliverables-empty-state">
+          <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F381;</div>
+          <h3 className="text-lg md:text-xl font-semibold text-[#FAFAFA] mb-2">Track what you'll deliver</h3>
+          <p className="text-sm text-[#A3A3A3] max-w-md mb-5 leading-relaxed">
+            Add deliverables to show your client exactly what they'll receive and when.
+          </p>
+          <button
+            onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(true); }}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition font-medium"
+            data-testid="deliverables-empty-cta"
+          >
+            <Plus className="w-5 h-5" />
+            Add Deliverable
+          </button>
+          <p className="text-xs text-gray-500 mt-4 max-w-sm">
+            <strong>Pro tip:</strong> Update deliverable status to keep clients informed of your progress.
+          </p>
         </div>
       ) : (
         <div className="space-y-2">

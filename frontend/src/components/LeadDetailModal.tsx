@@ -553,10 +553,15 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                   {loadingActivities ? (
                     <ActivitySkeleton />
                   ) : activities.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                      <History className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                      <p className="font-medium">No activity yet</p>
-                      <p className="text-sm mt-1">Add a note to start tracking this lead</p>
+                    <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="activities-empty-state">
+                      <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4CA;</div>
+                      <h3 className="text-lg md:text-xl font-semibold text-[#FAFAFA] mb-2">Project activity appears here</h3>
+                      <p className="text-sm text-[#A3A3A3] max-w-md leading-relaxed">
+                        See a timeline of all communications, file uploads, and status changes for this project.
+                      </p>
+                      <p className="text-xs text-gray-500 mt-4 max-w-sm">
+                        <strong>Pro tip:</strong> Every action you take is automatically logged here.
+                      </p>
                     </div>
                   ) : (
                     <div className="relative">
@@ -659,10 +664,15 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                   {loadingFiles ? (
                     <FileGridSkeleton />
                   ) : files.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                      <File className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                      <p className="font-medium">No files uploaded yet</p>
-                      <p className="text-sm mt-1">Upload contracts, briefs, or reference images</p>
+                    <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="files-empty-state">
+                      <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4CE;</div>
+                      <h3 className="text-lg md:text-xl font-semibold text-[#FAFAFA] mb-2">No files uploaded yet</h3>
+                      <p className="text-sm text-[#A3A3A3] max-w-md mb-1 leading-relaxed">
+                        Upload contracts, references, or deliverables to keep everything organized with your client.
+                      </p>
+                      <p className="text-xs text-gray-500 mt-3 max-w-sm">
+                        <strong>Pro tip:</strong> Share files with your client by toggling "Share with client" on each file.
+                      </p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" data-testid="file-gallery">
@@ -942,6 +952,11 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                       <BarChart3 className="w-5 h-5 text-violet-400" />
                       Client Portal
                     </h3>
+                    <div className="rounded-xl border border-[#333] bg-[#0F0F0F] p-3 mb-4">
+                      <p className="text-xs text-[#A3A3A3] leading-relaxed">
+                        <strong className="text-violet-300">Pro tip:</strong> Your client can view quotes, sign contracts, and track progress — all without logging in!
+                      </p>
+                    </div>
                     
                     <div className="bg-gradient-to-r from-violet-900/30 to-purple-900/30 border border-violet-700/50 rounded-xl p-5 mb-4">
                       <div className="flex items-center gap-2 mb-3">

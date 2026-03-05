@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { InlineHint } from './InlineHint'
 import {
   Contract,
   ContractStatus,
@@ -233,6 +234,9 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
               <X className="w-4 h-4" />
             </button>
           </div>
+          <InlineHint storageKey="seen_contract_template_tip" variant="violet">
+            <span className="text-xs"><strong>First contract?</strong> Pick a template that fits your project. You can edit every word before sending.</span>
+          </InlineHint>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {templates.map((tmpl) => {
               const Icon = TEMPLATE_ICONS[tmpl.type] || FileText;
@@ -279,10 +283,23 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
           ))}
         </div>
       ) : contracts.length === 0 ? (
-        <div className="text-center py-10 md:py-12">
-          <FileText className="w-12 h-12 mx-auto mb-3 text-gray-600 opacity-30" />
-          <p className="text-[#A3A3A3] font-medium">No contracts yet</p>
-          <p className="text-sm text-gray-500 mt-1">Create a contract from a template to get started</p>
+        <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="contracts-empty-state">
+          <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4DD;</div>
+          <h3 className="text-lg md:text-xl font-semibold text-[#FAFAFA] mb-2">Protect yourself legally</h3>
+          <p className="text-sm text-[#A3A3A3] max-w-md mb-5 leading-relaxed">
+            Create a contract to set clear expectations and protect both you and your client.
+          </p>
+          <button
+            onClick={() => setShowTemplateSelector(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition font-medium"
+            data-testid="contracts-empty-cta"
+          >
+            <FileText className="w-5 h-5" />
+            Create Contract
+          </button>
+          <p className="text-xs text-gray-500 mt-4 max-w-sm">
+            <strong>Pro tip:</strong> Use a template to get started quickly. You can customize it before sending.
+          </p>
         </div>
       ) : (
         <div className="space-y-3">

@@ -19,7 +19,8 @@ import {
   MapPin,
   Filter,
   Eye,
-  EyeOff
+  EyeOff,
+  Plus
 } from 'lucide-react'
 import { leadsApi, CalendarEvent, User, ServiceType, SERVICE_TYPE_LABELS } from '../services/api'
 import { formatCurrency, CurrencySettings } from '../utils/currency'
@@ -438,17 +439,17 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
       ) : hasNoBookings ? (
         /* Empty State */
-        <div className="bg-dark-card rounded-xl border border-dark-border p-8 md:p-12 text-center">
-          <div className="w-16 h-16 bg-violet-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-violet-700/30">
-            <CalendarDays className="w-8 h-8 text-violet-400" />
+        <div className="bg-dark-card rounded-xl border border-dark-border p-6 md:p-12">
+          <div className="flex flex-col items-center justify-center py-8 md:py-12 px-6 text-center" data-testid="bookings-empty-state">
+            <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4C5;</div>
+            <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-2 md:mb-3">No bookings scheduled</h3>
+            <p className="text-sm md:text-base text-[#A3A3A3] max-w-md mb-5 md:mb-6 leading-relaxed">
+              Create your first booking to manage shoot dates, meetings, or deadlines in one place.
+            </p>
+            <p className="text-xs text-gray-500 max-w-sm">
+              <strong>Pro tip:</strong> Set a lead's status to "Booked" and add an event date — it'll appear here automatically.
+            </p>
           </div>
-          <h3 className="text-xl font-semibold mb-2 text-white">No bookings scheduled yet</h3>
-          <p className="text-gray-400 mb-4 max-w-md mx-auto">
-            When you book projects, they'll appear here on the calendar. Add event dates to your BOOKED leads to see them.
-          </p>
-          <p className="text-sm text-gray-500">
-            Tip: Set the lead status to "Booked" and add an event date to track it here.
-          </p>
         </div>
       ) : viewType === 'month' ? (
         /* Month View */
