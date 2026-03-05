@@ -87,7 +87,6 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
     });
 
     // Send verification email
-    const baseUrl = process.env.FRONTEND_URL || 'https://kolor-growth-engine.preview.emergentagent.com';
     try {
       await sendVerificationEmail({
         email: user.email,
@@ -496,7 +495,7 @@ router.post('/send-verification', authMiddleware, async (req: AuthRequest, res: 
 router.get('/verify-email/:token', async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await prisma.user.findFirst({
-      where: { verificationToken: req.params.token }
+      where: { verificationToken: String(req.params.token) }
     });
 
     if (!user) {
