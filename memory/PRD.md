@@ -85,6 +85,13 @@ A full-stack CRM application for creative professionals (photographers, designer
 - Components: HelpPanel.tsx (framer-motion animations), InlineHint.tsx (localStorage persistence), HelpButton (floating)
 - Tested: 100% pass rate (13/13 testable features verified, 6 require specific data conditions — code verified)
 
+### User Education System Phase 2 (DONE - March 5, 2026)
+- **Interactive Onboarding Tour** (Driver.js): 7-step guided walkthrough — Welcome → Create Project → Pipeline → Portfolio → Calendar → Help → All Set. Dark violet custom theme. Auto-starts for new users (1.5s delay), marks completion in localStorage. "Restart Tutorial" button in Help Panel.
+- **Smart Suggestions**: Priority-based contextual tips on dashboard — first-project, send-quote, portfolio-upload, first-contract, complete-profile. Gradient cards with emoji, CTA buttons, dismissible via localStorage.
+- **Celebration Moments**: Confetti modal (react-confetti) triggered on milestones — First Project Created, First Quote Sent, Quote Accepted, Portfolio Live, First Booking, First Contract Signed. Uses checkCelebration() to fire once per achievement.
+- Components: OnboardingTour.tsx (driver.js hook), SmartSuggestion.tsx, CelebrationModal.tsx
+- Tested: 100% pass rate (21/21 features verified)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
