@@ -12,7 +12,9 @@ import {
   Loader2,
   AlertCircle,
   ScrollText,
-  ShieldCheck
+  ShieldCheck,
+  Download,
+  Paperclip
 } from 'lucide-react';
 import { trackPortalViewed } from '../utils/analytics';
 
@@ -62,6 +64,8 @@ interface PortalData {
     name: string;
     type: string;
     size: number;
+    url: string;
+    sharedAt?: string;
     uploadedAt: string;
   }>;
   contracts: PortalContract[];
@@ -158,6 +162,14 @@ export default function ClientPortal() {
       day: 'numeric',
       year: 'numeric',
     });
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   };
 
   const handleAgree = async (contractId: string) => {
@@ -585,6 +597,48 @@ export default function ClientPortal() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Shared Files Section */}
+        {data.files && data.files.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100" data-testid="shared-files-section">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Paperclip className="w-5 h-5 text-brand-primary" />
+              Shared Files
+            </h3>
+            <div className="space-y-3">
+              {data.files.map((file) => (
+                <div
+                  key={file.id}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-brand-primary/30 transition-colors"
+                  data-testid={`shared-file-${file.id}`}
+                >
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-10 h-10 bg-brand-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <FileText className="w-5 h-5 text-brand-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 truncate">{file.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {formatFileSize(file.size)}
+                        {file.sharedAt && ` \u00b7 Shared ${formatTimeAgo(file.sharedAt)}`}
+                      </p>
+                    </div>
+                  </div>
+                  <a
+                    href={`${API_URL}/api/portal/${token}/files/${file.id}/download`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg text-sm font-medium hover:opacity-90 transition ml-3 whitespace-nowrap"
+                    data-testid={`download-file-${file.id}`}
+                  >
+                    <Download className="w-4 h-4" />
+                    Download
+                  </a>
+                </div>
+              ))}
             </div>
           </div>
         )}

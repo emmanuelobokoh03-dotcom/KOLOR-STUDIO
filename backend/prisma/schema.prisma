@@ -477,7 +477,13 @@ model File {
   // Relations
   lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
   leadId      String
-  
+
+  // File sharing
+  sharedWithClient  Boolean   @default(false)
+  sharedAt          DateTime?
+  downloadCount     Int       @default(0)
+  lastDownloadedAt  DateTime?
+
   createdAt   DateTime  @default(now())
   
   @@map("files")

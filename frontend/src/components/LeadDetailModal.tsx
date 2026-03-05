@@ -37,6 +37,7 @@ import {
   Copy,
   ExternalLink,
   Eye,
+  EyeOff,
   BarChart3,
   Receipt,
   MailPlus,
@@ -345,6 +346,13 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
       alert('Failed to delete file');
     }
     setDeleteConfirm(null);
+  };
+
+  const handleToggleShare = async (fileId: string, currentShared: boolean) => {
+    const result = await leadsApi.toggleFileShare(fileId, !currentShared);
+    if (result.data?.file) {
+      setFiles(files.map(f => f.id === fileId ? { ...f, sharedWithClient: result.data!.file.sharedWithClient, sharedAt: result.data!.file.sharedAt || undefined } : f));
+    }
   };
 
   const handleCopyPortalLink = async () => {
@@ -717,6 +725,13 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                             className="group relative aspect-square rounded-xl overflow-hidden border border-[#333] bg-[#0F0F0F] hover:border-brand-primary/50 transition-all duration-200"
                             data-testid={`file-${file.id}`}
                           >
+                            {/* Shared badge */}
+                            {file.sharedWithClient && (
+                              <div className="absolute top-2 right-2 z-10 px-1.5 py-0.5 bg-green-600/80 text-white text-[10px] font-medium rounded-md flex items-center gap-1" data-testid={`shared-badge-${file.id}`}>
+                                <Eye className="w-3 h-3" /> Shared
+                              </div>
+                            )}
+
                             {/* File Content */}
                             {isImage ? (
                               <img 
@@ -741,9 +756,21 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                               <p className="text-white text-xs font-medium text-center truncate w-full mb-1" title={file.originalName}>
                                 {file.originalName}
                               </p>
-                              <p className="text-gray-400 text-xs mb-3">
+                              <p className="text-gray-400 text-xs mb-2">
                                 {file.formattedSize}
                               </p>
+                              {/* Share toggle */}
+                              <button
+                                onClick={() => handleToggleShare(file.id, !!file.sharedWithClient)}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium mb-2 transition-all ${
+                                  file.sharedWithClient
+                                    ? 'bg-green-600/30 text-green-400 hover:bg-green-600/50'
+                                    : 'bg-[#333] text-[#A3A3A3] hover:bg-[#444]'
+                                }`}
+                                data-testid={`share-toggle-${file.id}`}
+                              >
+                                {file.sharedWithClient ? <><Eye className="w-3 h-3" /> Shared</> : <><EyeOff className="w-3 h-3" /> Private</>}
+                              </button>
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => handleDownload(file)}

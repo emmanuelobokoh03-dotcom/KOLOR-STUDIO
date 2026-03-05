@@ -75,8 +75,9 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
           take: 20, // Last 20 activities
         },
         files: {
+          where: { sharedWithClient: true },
           orderBy: { createdAt: 'desc' },
-          take: 10,
+          take: 50,
         },
         assignedTo: {
           select: {
@@ -133,12 +134,14 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
       createdAt: activity.createdAt,
     }));
 
-    // Format files for client view
+    // Format files for client view (only shared files)
     const clientFiles = (lead.files || []).map((file: any) => ({
       id: file.id,
       name: file.originalName,
       type: file.mimeType,
       size: file.size,
+      url: file.url,
+      sharedAt: file.sharedAt,
       uploadedAt: file.createdAt,
     }));
 
@@ -234,6 +237,50 @@ function sanitizeActivityDescription(type: string, description: string): string 
       return 'Update on your project';
   }
 }
+
+// GET /api/portal/:token/files/:fileId/download - Download a shared file (public)
+router.get('/:token/files/:fileId/download', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { token, fileId } = req.params;
+
+    const lead = await prisma.lead.findUnique({
+      where: { portalToken: String(token) },
+    });
+
+    if (!lead) {
+      res.status(404).json({ error: 'Portal not found' });
+      return;
+    }
+
+    const file = await prisma.file.findFirst({
+      where: {
+        id: String(fileId),
+        leadId: lead.id,
+        sharedWithClient: true,
+      },
+    });
+
+    if (!file) {
+      res.status(404).json({ error: 'File not found or not shared' });
+      return;
+    }
+
+    // Track download
+    await prisma.file.update({
+      where: { id: file.id },
+      data: {
+        downloadCount: { increment: 1 },
+        lastDownloadedAt: new Date(),
+      },
+    });
+
+    // Redirect to file URL
+    res.redirect(file.url);
+  } catch (error) {
+    console.error('Portal file download error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to download file' });
+  }
+});
 
 export default router;
 

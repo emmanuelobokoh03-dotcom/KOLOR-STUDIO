@@ -201,6 +201,13 @@ export const leadsApi = {
     return request<{ url: string; filename: string }>(`/api/files/${fileId}/download`);
   },
 
+  toggleFileShare: async (fileId: string, shared: boolean) => {
+    return request<{ file: { id: string; sharedWithClient: boolean; sharedAt: string | null } }>(`/api/files/${fileId}/share`, {
+      method: 'PATCH',
+      body: JSON.stringify({ shared }),
+    });
+  },
+
   sendPortalLink: async (leadId: string) => {
     return request<{ message: string; sentTo: string }>(`/api/leads/${leadId}/send-portal-link`, {
       method: 'POST',
@@ -511,6 +518,9 @@ export interface LeadFile {
   category: 'image' | 'pdf' | 'document' | 'spreadsheet' | 'text' | 'file';
   url: string;
   uploadedBy: string | null;
+  sharedWithClient?: boolean;
+  sharedAt?: string;
+  downloadCount?: number;
   createdAt: string;
 }
 

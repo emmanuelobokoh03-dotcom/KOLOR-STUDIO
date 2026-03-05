@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import multer from 'multer';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
@@ -79,6 +79,9 @@ router.get('/:leadId/files', authMiddleware, async (req: AuthRequest, res: Respo
           category: getFileCategory(file.mimeType),
           url: signedUrl || file.url,
           uploadedBy: file.uploadedBy,
+          sharedWithClient: file.sharedWithClient,
+          sharedAt: file.sharedAt,
+          downloadCount: file.downloadCount,
           createdAt: file.createdAt,
         };
       })
@@ -158,6 +161,9 @@ router.post(
             category: getFileCategory(dbFile.mimeType),
             url: result.url,
             uploadedBy: dbFile.uploadedBy,
+            sharedWithClient: dbFile.sharedWithClient,
+            sharedAt: dbFile.sharedAt,
+            downloadCount: dbFile.downloadCount,
             createdAt: dbFile.createdAt,
           });
 
@@ -293,6 +299,70 @@ router.get('/:fileId/download', authMiddleware, async (req: AuthRequest, res: Re
   } catch (error) {
     console.error('Download URL error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to get download URL' });
+  }
+});
+
+// PATCH /api/files/:fileId/share - Toggle share with client
+router.patch('/:fileId/share', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const fileId = req.params.fileId as string;
+    const { shared } = req.body;
+
+    const file = await prisma.file.findUnique({
+      where: { id: fileId },
+      include: { lead: { select: { assignedToId: true } } }
+    });
+
+    if (!file) {
+      res.status(404).json({ error: 'Not Found', message: 'File not found' });
+      return;
+    }
+
+    // Verify ownership: user must own the lead (directly assigned or unassigned)
+    if (file.lead.assignedToId && file.lead.assignedToId !== userId) {
+      res.status(403).json({ error: 'Forbidden', message: 'Access denied' });
+      return;
+    }
+
+    const updated = await prisma.file.update({
+      where: { id: fileId },
+      data: {
+        sharedWithClient: !!shared,
+        sharedAt: shared ? new Date() : null
+      }
+    });
+
+    res.json({
+      file: {
+        id: updated.id,
+        sharedWithClient: updated.sharedWithClient,
+        sharedAt: updated.sharedAt,
+      }
+    });
+  } catch (error) {
+    console.error('Share file error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to update sharing status' });
+  }
+});
+
+// PATCH /api/files/:fileId/track-download - Track download
+router.patch('/:fileId/track-download', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const fileId = req.params.fileId as string;
+
+    await prisma.file.update({
+      where: { id: fileId },
+      data: {
+        downloadCount: { increment: 1 },
+        lastDownloadedAt: new Date()
+      }
+    });
+
+    res.json({ message: 'Download tracked' });
+  } catch (error) {
+    console.error('Track download error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to track download' });
   }
 });
 
