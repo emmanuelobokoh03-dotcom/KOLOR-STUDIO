@@ -15,6 +15,8 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Email Integration**: Notifications via Resend for status changes, new leads
 - **Quotes System**: Create and manage quotes for leads
 - **Contracts & Consent**: Create contracts from templates, send to clients, client signs via portal
+- **Personalized Brand Theme**: Customizable primary/accent colors, fonts, logo — applied app-wide
+- **Celebration Modals**: Confetti celebrations for 6 key milestones
 
 ## Phase History
 
@@ -42,93 +44,78 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Part D**: Typography scale (text-3xl titles, #0F0F0F bg, #1A1A1A cards, #FAFAFA headings, #A3A3A3 body)
 - **Part E**: Micro-interactions (hover effects, transitions, skeleton loading states, entrance animations)
 - **Part F**: Mobile Responsiveness (DONE - March 3, 2026)
-  - Hamburger menu + slide-out sidebar overlay on mobile
-  - Fixed bottom navigation bar (Dashboard, Calendar, Portfolio, Settings)
-  - Tab-based Kanban column selector on mobile (one column at a time)
-  - Full-screen slide-up modals on mobile with smooth animation
-  - Single-column form layouts on mobile, 2-column on desktop
-  - 44px minimum touch targets on all interactive elements
-  - 16px minimum input font size (prevents iOS zoom)
-  - Responsive grids: 1-2-3-4 columns across breakpoints
-  - Safe area padding for notched devices
-  - Mobile filter toggle with badge count
 
 ### Phase 6B: Contracts & Consent System (DONE - March 4, 2026)
-- **Database**: Contract model with leadId, templateType, title, content, clientAgreed, clientAgreedAt, clientIP, status
-- **Contract Templates**: 6 templates (Photography Shoot, Art Commission, Design Project, Web Design, General Service, Custom)
-- **Backend API**: Full CRUD + send + public agree endpoint at /api/contracts
-- **Frontend ContractsTab**: Template selector, contract editor with live preview, status badges, expand/collapse
-- **Client Portal**: Contracts section showing sent contracts, checkbox + Sign Agreement button, green signed confirmation
-- **Email Notifications**: Contract sent email to client, agreement notification to studio owner
-- **Tested**: 22/22 backend tests passed, all frontend features verified (100% pass rate)
+- Contract model with leadId, templateType, title, content, clientAgreed, clientAgreedAt, clientIP, status
+- 6 contract templates, Backend API, Frontend ContractsTab, Client Portal, Email Notifications
 
 ### Dashboard Visual Polish - Status Colors (DONE - March 4, 2026)
-- Updated Kanban column headers to violet-centric palette: Violet (New) → Purple (Contacted) → Indigo (Qualified) → Fuchsia (Quoted) → Blue (Negotiating) → Emerald (Booked) → Slate (Lost)
-- Updated status badges across Dashboard, LeadDetailModal with matching /30 opacity backgrounds
-- Updated stat card icons to violet/purple/fuchsia/emerald palette
-- Fixed double /api prefix bug in frontend API client (was causing /api/api/... routes)
-- Fixed in: KanbanBoard.tsx, Dashboard.tsx, LeadDetailModal.tsx, api.ts, ClientPortal.tsx, IndustryOnboarding.tsx, ForgotPassword.tsx, ResetPassword.tsx
+- Updated Kanban column headers to violet-centric palette
+- Updated status badges across Dashboard, LeadDetailModal
 
 ### Industry-Specific Dashboard Widgets (DONE - March 5, 2026)
-- **PhotographyWidgets**: Upcoming Shoots (next 7 days from bookings API with date/time/location), Active Projects list with status badges, "Today's shoots" live indicator, Calendar quick link
-- **FineArtWidgets**: Active Commissions 2-col grid with cover images, Pipeline sidebar (status counts + pending quotes indicator), New Commission quick action
-- **DesignWidgets**: Projects by Phase colored progress bar + phase counts (Brief/Discovery/Proposal/Revisions/Delivered), Awaiting Action panel (Pending Proposals/In Revisions/Delivered), New Project quick action
-- Conditional rendering based on user.primaryIndustry: PHOTOGRAPHY → Photography, FINE_ART → FineArt, WEB_DESIGN/GRAPHIC_DESIGN/BRANDING/ILLUSTRATION → Design
-- Responsive layouts (1-col mobile, 2-3 cols desktop), loading skeletons, empty states
-- Widgets sit between Welcome message and Stats cards on existing Dashboard
-- Tested: 100% pass rate across all 3 industry types (backend + frontend)
+- PhotographyWidgets, FineArtWidgets, DesignWidgets with conditional rendering
 
 ### User Education System Phase 1 (DONE - March 5, 2026)
-- **Educational Empty States** (8 locations): Dashboard, Portfolio, QuotesTab, CalendarView, Files, Contracts, Deliverables, Activities — all with emoji icon, headline, educational description, CTA button, and "Pro tip"
-- **Inline Hints** (dismissible via localStorage): AddLeadModal project type selector, ContractsTab template selector, QuotesTab before first quote, Client Portal section (always visible)
-- **Help Panel**: Floating violet help button (z-50) + slide-in panel with Quick Start (4 items), Common Questions (5 expandable FAQs), Pro Tips (3 colored cards), Contact Support
-- Components: HelpPanel.tsx (framer-motion animations), InlineHint.tsx (localStorage persistence), HelpButton (floating)
-- Tested: 100% pass rate (13/13 testable features verified, 6 require specific data conditions — code verified)
+- Educational Empty States, Inline Hints, Help Panel
 
 ### User Education System Phase 2 (DONE - March 5, 2026)
-- **Interactive Onboarding Tour** (Driver.js): 7-step guided walkthrough — Welcome → Create Project → Pipeline → Portfolio → Calendar → Help → All Set. Dark violet custom theme. Auto-starts for new users (1.5s delay), marks completion in localStorage. "Restart Tutorial" button in Help Panel.
-- **Smart Suggestions**: Priority-based contextual tips on dashboard — first-project, send-quote, portfolio-upload, first-contract, complete-profile. Gradient cards with emoji, CTA buttons, dismissible via localStorage.
-- **Celebration Moments**: Confetti modal (react-confetti) triggered on milestones — First Project Created, First Quote Sent, Quote Accepted, Portfolio Live, First Booking, First Contract Signed. Uses checkCelebration() to fire once per achievement.
-- Components: OnboardingTour.tsx (driver.js hook), SmartSuggestion.tsx, CelebrationModal.tsx
-- Tested: 100% pass rate (21/21 features verified)
+- Interactive Onboarding Tour (Driver.js), Smart Suggestions, Celebration Moments
+
+### Personalized Brand Theme System (DONE - March 5, 2026)
+- **Backend**: Brand settings fields on User model (primaryColor, accentColor, fontFamily, logoUrl)
+- **Backend API**: GET/PATCH /api/settings/brand, POST/DELETE /api/settings/brand/logo
+- **Frontend BrandThemeContext**: Converts hex to RGB channels, sets CSS variables on document root
+- **Frontend BrandSettings UI**: Color pickers, 6 preset palettes, 6 font options, logo upload, live preview
+- **Tailwind Config**: Brand colors use `rgb(var(--color-brand-primary-rgb) / <alpha-value>)` format for full opacity support
+- **Global Application**: Replaced 820+ hardcoded violet/fuchsia/purple color classes across 41 files with brand-aware CSS variables
+- **index.css**: Font uses `var(--font-brand)`, text selection uses brand color, Driver.js theme uses CSS variables
+- **Testing**: 100% pass rate (9/9 backend, all frontend verified)
+
+### Celebration Modal Triggers (DONE - March 5, 2026)
+- **firstProject**: Fires in Dashboard after AddLeadModal creates first lead
+- **firstQuote**: Fires via callback chain QuotesTab → LeadDetailModal → Dashboard after first quote sent
+- **quoteAccepted**: Fires on Dashboard init when BOOKED status count > 0
+- **firstBooking**: Fires in Dashboard after handleBookingSaved
+- **portfolioPublished**: Fires in Portfolio page after first portfolio item creation
+- **firstContract**: Fires via callback chain ContractsTab → LeadDetailModal → Dashboard when AGREED contract found
+- **Deduplication**: Uses localStorage `celebrated_{key}` to fire each celebration only once
+- **Testing**: 100% pass rate (all 6 triggers verified)
 
 ## Architecture
 ```
 /app/kolor-studio-v2/
 ├── backend/         # Node.js + Express + Prisma + TypeScript
 │   ├── prisma/      # Schema & migrations
-│   ├── src/routes/  # API endpoints (contracts.ts, portal.ts, leads.ts, etc.)
+│   ├── src/routes/  # API endpoints (contracts.ts, portal.ts, leads.ts, settings.ts)
 │   ├── src/services/# Storage, email
 │   └── src/middleware/# Auth middleware
 ├── frontend/        # React + Vite + TypeScript + Tailwind CSS
 │   ├── src/pages/   # Dashboard, Login, Signup, Portfolio, ClientPortal
-│   ├── src/components/# UI components (ContractsTab, LeadDetailModal, etc.)
+│   ├── src/components/# UI components (CelebrationModal, BrandSettings, etc.)
+│   ├── src/contexts/ # BrandThemeContext
 │   └── src/services/# API client
 ```
 
 ## Key DB Schema
-- **User**: id, email, firstName, lastName, studioName, primaryIndustry, role, lastLoginAt
+- **User**: id, email, firstName, lastName, studioName, primaryIndustry, role, lastLoginAt, brandPrimaryColor, brandAccentColor, brandLogoUrl, brandFontFamily
 - **Lead**: id, clientName, clientEmail, projectTitle, status, serviceType, projectType, industry, deliverableType, coverImage, budget, timeline, portalToken, portalViews
-- **WorkflowTemplate**: id, name, industry, projectType, isDefault, isSystem, userId, stages[]
-- **Deliverable**: id, leadId, type, status, fileUrls, details
-- **Contract**: id, leadId, templateType, title, content, clientAgreed, clientAgreedAt, clientIP, status (DRAFT/SENT/VIEWED/AGREED), sentAt, viewedAt
+- **Contract**: id, leadId, templateType, title, content, clientAgreed, clientAgreedAt, clientIP, status (DRAFT/SENT/VIEWED/AGREED)
 
 ## Key API Endpoints
 - `POST /api/auth/login` & `POST /api/auth/signup` - Authentication
 - `POST /api/auth/onboarding` - Industry onboarding
 - `GET/POST/PATCH/DELETE /api/leads` - Lead CRUD
-- `POST /api/leads/upload-cover` - Upload cover image
-- `GET/POST /api/leads/:id/activities` - Activity log
-- `GET/POST/DELETE /api/leads/:id/files` - File management
-- `/api/workflow-templates/*` - Workflow CRUD
-- `/api/leads/:leadId/deliverables` - Deliverables CRUD
-- `GET /api/contracts/templates/list` - List contract templates (auth)
-- `GET/POST /api/leads/:leadId/contracts` - Lead-scoped contracts (auth)
-- `GET/PATCH/DELETE /api/contracts/:id` - Single contract CRUD (auth)
-- `POST /api/contracts/:id/send` - Send contract to client (auth)
-- `POST /api/contracts/:id/agree` - Client signs contract (public, uses portalToken)
+- `GET /api/settings/brand` - Get brand settings
+- `PATCH /api/settings/brand` - Update brand colors/font
+- `POST /api/settings/brand/logo` - Upload brand logo
+- `DELETE /api/settings/brand/logo` - Remove brand logo
+- `GET/POST /api/leads/:leadId/contracts` - Lead-scoped contracts
+- `POST /api/contracts/:id/send` - Send contract to client
+- `POST /api/contracts/:id/agree` - Client signs contract
 
 ## Backlog (P2/P3)
+- **(P1.5)** CRM Automation System — Lead status pipeline auto-triggers, smart dashboard alerts, email sequence templates, follow-up automation, client relationship timeline
 - **(P2)** PWA Functionality - make app installable
 - **(P2)** Email verification for signups
 - **(P2)** Client file upload on public inquiry form
