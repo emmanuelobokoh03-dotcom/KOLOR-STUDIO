@@ -78,6 +78,15 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **"Powered by KOLOR STUDIO" Badge**: Viral marketing link in footer of all 3 client-facing pages (PublicPortfolio, ClientPortal, SubmitTestimonial).
 - **Testing**: 100% frontend pass rate (15/15 tests, iteration_29.json)
 
+### Email Verification System — Phase 4 Part 1 (DONE - March 5, 2026)
+- **Database**: Added verificationToken, verificationSentAt fields to User model
+- **Backend**: POST /api/auth/send-verification (with 60s rate limit), GET /api/auth/verify-email/:token, /me includes emailVerified
+- **Auto-send on signup**: Verification token + email automatically sent when new account is created
+- **Frontend EmailVerificationBanner**: Yellow banner on Dashboard for unverified users, resend + dismiss buttons
+- **Frontend VerifyEmail page**: Loading/success/error states, auto-redirect to dashboard on success
+- **Email**: Branded verification email via Resend with verify button
+- **Testing**: 100% pass rate (11/11 tests, iteration_30.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
@@ -94,7 +103,7 @@ A full-stack CRM application for creative professionals (photographers, designer
 ```
 
 ## Key DB Schema
-- **User**: id, email, firstName, lastName, studioName, primaryIndustry, role, lastLoginAt, brandPrimaryColor, brandAccentColor, brandLogoUrl, brandFontFamily
+- **User**: id, email, firstName, lastName, studioName, primaryIndustry, role, lastLoginAt, emailVerified, verificationToken, verificationSentAt, brandPrimaryColor, brandAccentColor, brandLogoUrl, brandFontFamily
 - **Lead**: id, clientName, clientEmail, projectTitle, status, serviceType, projectType, industry, pipelineStatus, lastContactedAt, nextFollowUpAt, followUpPriority, leadSource, crmNotes
 - **Contract**: id, leadId, templateType, title, content, clientAgreed, status (DRAFT/SENT/VIEWED/AGREED)
 - **Interaction**: id, leadId, type, content, createdAt
@@ -103,6 +112,8 @@ A full-stack CRM application for creative professionals (photographers, designer
 
 ## Key API Endpoints
 - `POST /api/auth/login` & `POST /api/auth/signup` - Authentication
+- `POST /api/auth/send-verification` - Send/resend email verification
+- `GET /api/auth/verify-email/:token` - Verify email (public)
 - `GET/POST/PATCH/DELETE /api/leads` - Lead CRUD
 - `GET/PATCH /api/settings/brand` - Brand settings
 - `GET/POST /api/leads/:leadId/contracts` - Contracts
@@ -112,9 +123,10 @@ A full-stack CRM application for creative professionals (photographers, designer
 - `GET /api/testimonials/public/:userId` - Public testimonials
 
 ## Backlog (P2/P3)
+- **(P1) Phase 4 Part 2: File Sharing System** - User to provide specs
 - **(P2)** PWA Functionality - make app installable
-- **(P2)** Email verification for signups
 - **(P2)** Client file upload on public inquiry form
+- **(P3)** Referral Tracking System (post-launch Month 2)
 - **(P3)** Distinct icons for activity types in timeline
 - **(P3)** "Your Links" section in user settings
 - **(P3)** Keyboard Shortcuts modal
