@@ -34,7 +34,7 @@ type ViewType = 'month' | 'week' | 'day' | 'agenda';
 
 // Service type colors
 const SERVICE_COLORS: Record<ServiceType, { bg: string; border: string; text: string; dot: string }> = {
-  PHOTOGRAPHY: { bg: 'bg-purple-900/60', border: 'border-purple-500', text: 'text-purple-200', dot: 'bg-purple-500' },
+  PHOTOGRAPHY: { bg: 'bg-brand-primary-dark/60', border: 'border-brand-primary', text: 'text-brand-primary-light', dot: 'bg-brand-primary' },
   VIDEOGRAPHY: { bg: 'bg-blue-900/60', border: 'border-blue-500', text: 'text-blue-200', dot: 'bg-blue-500' },
   GRAPHIC_DESIGN: { bg: 'bg-pink-900/60', border: 'border-pink-500', text: 'text-pink-200', dot: 'bg-pink-500' },
   WEB_DESIGN: { bg: 'bg-cyan-900/60', border: 'border-cyan-500', text: 'text-cyan-200', dot: 'bg-cyan-500' },
@@ -322,7 +322,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             onClick={() => setShowUpcomingOnly(!showUpcomingOnly)}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition border ${
               showUpcomingOnly 
-                ? 'bg-violet-600 text-white border-violet-500' 
+                ? 'bg-brand-primary text-white border-brand-primary' 
                 : 'bg-dark-bg-secondary text-gray-400 border-dark-border hover:text-white'
             }`}
             data-testid="upcoming-toggle"
@@ -336,7 +336,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             <button
               onClick={() => setViewType('month')}
               className={`p-2 rounded text-sm font-medium transition ${
-                viewType === 'month' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+                viewType === 'month' ? 'bg-brand-primary text-white' : 'text-gray-400 hover:text-white'
               }`}
               data-testid="view-month"
               title="Month View"
@@ -346,7 +346,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             <button
               onClick={() => setViewType('week')}
               className={`p-2 rounded text-sm font-medium transition ${
-                viewType === 'week' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+                viewType === 'week' ? 'bg-brand-primary text-white' : 'text-gray-400 hover:text-white'
               }`}
               data-testid="view-week"
               title="Week View"
@@ -356,7 +356,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             <button
               onClick={() => setViewType('day')}
               className={`p-2 rounded text-sm font-medium transition ${
-                viewType === 'day' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+                viewType === 'day' ? 'bg-brand-primary text-white' : 'text-gray-400 hover:text-white'
               }`}
               data-testid="view-day"
               title="Day View"
@@ -366,7 +366,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             <button
               onClick={() => setViewType('agenda')}
               className={`p-2 rounded text-sm font-medium transition ${
-                viewType === 'agenda' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+                viewType === 'agenda' ? 'bg-brand-primary text-white' : 'text-gray-400 hover:text-white'
               }`}
               data-testid="view-agenda"
               title="Agenda View"
@@ -405,7 +405,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             </h3>
             <button
               onClick={goToToday}
-              className="px-3 py-1 text-sm bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition"
+              className="px-3 py-1 text-sm bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition"
               data-testid="calendar-today"
             >
               Today
@@ -435,7 +435,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       {/* Calendar Content */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
+          <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
         </div>
       ) : hasNoBookings ? (
         /* Empty State */
@@ -471,11 +471,11 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
                 key={index}
                 className={`min-h-[80px] sm:min-h-[100px] p-1 sm:p-2 border-b border-r border-dark-border ${
                   !day.isCurrentMonth ? 'bg-dark-bg-secondary/30' : ''
-                } ${isToday(day.date) ? 'bg-violet-900/20' : ''}`}
+                } ${isToday(day.date) ? 'bg-brand-primary-dark/20' : ''}`}
               >
                 <div className={`text-xs sm:text-sm font-medium mb-1 ${
                   isToday(day.date) 
-                    ? 'text-violet-400' 
+                    ? 'text-brand-primary-light' 
                     : day.isCurrentMonth ? 'text-white' : 'text-gray-600'
                 }`}>
                   {day.date.getDate()}
@@ -516,11 +516,11 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             {weekDays.map((day, index) => (
               <div key={index} className="min-h-[300px] sm:min-h-[400px]">
                 <div className={`p-2 sm:p-3 border-b border-dark-border text-center ${
-                  isToday(day.date) ? 'bg-violet-900/30' : ''
+                  isToday(day.date) ? 'bg-brand-primary-dark/30' : ''
                 }`}>
                   <div className="text-xs sm:text-sm text-gray-400">{DAYS[day.date.getDay()]}</div>
                   <div className={`text-lg sm:text-xl font-semibold ${
-                    isToday(day.date) ? 'text-violet-400' : 'text-white'
+                    isToday(day.date) ? 'text-brand-primary-light' : 'text-white'
                   }`}>
                     {day.date.getDate()}
                   </div>
@@ -549,7 +549,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
                           {event.title}
                         </div>
                         {event.value && (
-                          <div className="text-xs text-violet-400 mt-1 hidden sm:block">
+                          <div className="text-xs text-brand-primary-light mt-1 hidden sm:block">
                             {formatCurrency(event.value, currencySettings)}
                           </div>
                         )}
@@ -597,7 +597,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
                         <p className="text-gray-400">{event.title}</p>
                       </div>
                       {event.value && (
-                        <div className="text-lg font-bold text-violet-400">
+                        <div className="text-lg font-bold text-brand-primary-light">
                           {formatCurrency(event.value, currencySettings)}
                         </div>
                       )}
@@ -647,7 +647,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
                     <div className="text-right flex-shrink-0">
                       <div className="text-sm text-gray-300">{formatEventDate(event.date)}</div>
                       {event.value && (
-                        <div className="text-sm font-medium text-violet-400">
+                        <div className="text-sm font-medium text-brand-primary-light">
                           {formatCurrency(event.value, currencySettings)}
                         </div>
                       )}
@@ -664,7 +664,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
           <div className="flex items-center gap-2 mb-2">
-            <CalendarDays className="w-4 h-4 text-violet-400" />
+            <CalendarDays className="w-4 h-4 text-brand-primary-light" />
             <span className="text-sm text-gray-400">Total Bookings</span>
           </div>
           <p className="text-2xl font-bold text-white" data-testid="total-bookings">

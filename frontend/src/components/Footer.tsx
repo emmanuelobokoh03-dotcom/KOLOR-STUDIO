@@ -12,7 +12,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-primary rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <span className="text-lg font-bold text-white">KOLOR STUDIO</span>
@@ -33,22 +33,22 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-white mb-4">Product</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <Link to="/" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   Features
                 </Link>
               </li>
               <li>
-                <Link to="/" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <Link to="/" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   Pricing
                 </Link>
               </li>
               <li>
-                <Link to="/" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <Link to="/" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   Roadmap
                 </Link>
               </li>
               <li>
-                <Link to="/" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <Link to="/" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   Changelog
                 </Link>
               </li>
@@ -60,22 +60,22 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-white mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <Link to="/" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   About Us
                 </Link>
               </li>
               <li>
-                <a href="mailto:hello@kolorstudio.com" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <a href="mailto:hello@kolorstudio.com" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   Contact
                 </a>
               </li>
               <li>
-                <Link to="/privacy" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <Link to="/privacy" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <Link to="/terms" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   Terms of Service
                 </Link>
               </li>
@@ -87,12 +87,12 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-white mb-4">Connect</h3>
             <ul className="space-y-2 mb-4">
               <li>
-                <a href="mailto:hello@kolorstudio.com" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <a href="mailto:hello@kolorstudio.com" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   hello@kolorstudio.com
                 </a>
               </li>
               <li>
-                <a href="mailto:support@kolorstudio.com" className="text-gray-500 hover:text-violet-400 text-sm transition">
+                <a href="mailto:support@kolorstudio.com" className="text-gray-500 hover:text-brand-primary-light text-sm transition">
                   support@kolorstudio.com
                 </a>
               </li>
@@ -103,7 +103,7 @@ export default function Footer() {
                 href="https://instagram.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-dark-bg-secondary rounded-lg flex items-center justify-center text-gray-500 hover:text-violet-400 hover:bg-violet-900/30 transition"
+                className="w-8 h-8 bg-dark-bg-secondary rounded-lg flex items-center justify-center text-gray-500 hover:text-brand-primary-light hover:bg-brand-primary-dark/30 transition"
               >
                 <Instagram className="w-4 h-4" />
               </a>
@@ -111,7 +111,7 @@ export default function Footer() {
                 href="https://twitter.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-dark-bg-secondary rounded-lg flex items-center justify-center text-gray-500 hover:text-violet-400 hover:bg-violet-900/30 transition"
+                className="w-8 h-8 bg-dark-bg-secondary rounded-lg flex items-center justify-center text-gray-500 hover:text-brand-primary-light hover:bg-brand-primary-dark/30 transition"
               >
                 <Twitter className="w-4 h-4" />
               </a>
@@ -119,7 +119,7 @@ export default function Footer() {
                 href="https://linkedin.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-dark-bg-secondary rounded-lg flex items-center justify-center text-gray-500 hover:text-violet-400 hover:bg-violet-900/30 transition"
+                className="w-8 h-8 bg-dark-bg-secondary rounded-lg flex items-center justify-center text-gray-500 hover:text-brand-primary-light hover:bg-brand-primary-dark/30 transition"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
@@ -131,7 +131,7 @@ export default function Footer() {
         <div className="mt-8 pt-6 border-t border-dark-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <StatusIndicator />
           <p className="text-gray-600 text-sm">
-            Made with <span className="text-violet-400">💜</span> for creative professionals worldwide
+            Made with <span className="text-brand-primary-light">💜</span> for creative professionals worldwide
           </p>
           <p className="text-gray-600 text-xs">
             © {currentYear} KOLOR STUDIO. All rights reserved.

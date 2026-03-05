@@ -10,7 +10,7 @@ const quickStartItems = [
     icon: FileText,
     title: 'Create Your First Quote',
     description: 'Send professional pricing to clients',
-    color: 'text-fuchsia-400 bg-fuchsia-900/30 border-fuchsia-700/30',
+    color: 'text-brand-accent-light bg-brand-accent-dark/30 border-brand-accent-dark/30',
   },
   {
     icon: Calendar,
@@ -22,7 +22,7 @@ const quickStartItems = [
     icon: Upload,
     title: 'Upload Portfolio Work',
     description: 'Showcase your best pieces',
-    color: 'text-violet-400 bg-violet-900/30 border-violet-700/30',
+    color: 'text-brand-primary-light bg-brand-primary-dark/30 border-brand-primary-dark/30',
   },
   {
     icon: ScrollText,
@@ -117,8 +117,8 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-[#262626] flex-shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-violet-900/40 border border-violet-700/30 flex items-center justify-center">
-                  <HelpCircle className="w-4 h-4 text-violet-400" />
+                <div className="w-8 h-8 rounded-lg bg-brand-primary-dark/40 border border-brand-primary-dark/30 flex items-center justify-center">
+                  <HelpCircle className="w-4 h-4 text-brand-primary-light" />
                 </div>
                 <h3 className="text-lg font-semibold text-[#FAFAFA]">Need Help?</h3>
               </div>
@@ -169,9 +169,9 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
               <div className="p-5 border-t border-[#262626]">
                 <h4 className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider mb-3">Pro Tips</h4>
                 <div className="space-y-2.5">
-                  <div className="p-3 rounded-xl bg-violet-900/15 border border-violet-800/25">
-                    <p className="text-xs text-violet-300 leading-relaxed">
-                      <strong>Keyboard shortcut:</strong> Press <kbd className="px-1.5 py-0.5 rounded bg-violet-900/40 text-violet-200 text-[10px] font-mono">?</kbd> anywhere to open this panel.
+                  <div className="p-3 rounded-xl bg-brand-primary-dark/15 border border-brand-primary-dark/25">
+                    <p className="text-xs text-brand-primary-light leading-relaxed">
+                      <strong>Keyboard shortcut:</strong> Press <kbd className="px-1.5 py-0.5 rounded bg-brand-primary-dark/40 text-brand-primary-light text-[10px] font-mono">?</kbd> anywhere to open this panel.
                     </p>
                   </div>
                   <div className="p-3 rounded-xl bg-emerald-900/15 border border-emerald-800/25">
@@ -179,8 +179,8 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
                       <strong>Client portal:</strong> Share one link and clients can view quotes, sign contracts, and track progress — no login needed.
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-fuchsia-900/15 border border-fuchsia-800/25">
-                    <p className="text-xs text-fuchsia-300 leading-relaxed">
+                  <div className="p-3 rounded-xl bg-brand-accent-dark/15 border border-brand-accent-dark/25">
+                    <p className="text-xs text-brand-accent-light leading-relaxed">
                       <strong>Quick add:</strong> Use the "+ Add Lead" button to capture new inquiries on the spot.
                     </p>
                   </div>
@@ -197,7 +197,7 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
                     onClose()
                     setTimeout(() => startTour(), 300)
                   }}
-                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-violet-400 hover:bg-violet-900/20 transition-colors text-sm font-medium"
+                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-brand-primary-light hover:bg-brand-primary-dark/20 transition-colors text-sm font-medium"
                   data-testid="help-restart-tour"
                 >
                   <RefreshCw className="w-4 h-4" />
@@ -225,7 +225,7 @@ export function HelpButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-violet-600 hover:bg-violet-500 text-white rounded-full shadow-lg shadow-violet-900/30 hover:shadow-xl hover:shadow-violet-900/40 flex items-center justify-center transition-all duration-200 hover:scale-110 md:bottom-6 md:right-6"
+      className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-brand-primary hover:brightness-110 text-white rounded-full shadow-lg shadow-brand-primary/20 hover:shadow-xl hover:shadow-brand-primary/30 flex items-center justify-center transition-all duration-200 hover:scale-110 md:bottom-6 md:right-6"
       aria-label="Open help panel"
       data-testid="help-button"
     >

@@ -41,7 +41,7 @@ export function SmartSuggestion({
       message: 'Start by adding a client project. This is the foundation of everything in KOLOR STUDIO.',
       cta: 'Create Project',
       action: 'open-add-lead',
-      gradient: 'from-violet-900/30 to-purple-900/30 border-violet-700/40',
+      gradient: 'from-brand-primary-dark/30 to-brand-primary-dark/30 border-brand-primary-dark/40',
     },
     {
       id: 'send-quote',
@@ -51,7 +51,7 @@ export function SmartSuggestion({
       message: 'You have projects but no quotes yet. Send your first quote to lock in work!',
       cta: 'View Projects',
       action: 'view-kanban',
-      gradient: 'from-fuchsia-900/30 to-pink-900/30 border-fuchsia-700/40',
+      gradient: 'from-brand-accent-dark/30 to-pink-900/30 border-brand-accent-dark/40',
     },
     {
       id: 'portfolio-upload',
@@ -112,7 +112,7 @@ export function SmartSuggestion({
             <p className="text-sm text-[#CCCCCC] mb-3">{active.message}</p>
             <button
               onClick={() => onAction(active.action)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition text-sm font-medium"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition text-sm font-medium"
               data-testid={`suggestion-cta-${active.id}`}
             >
               {active.cta}

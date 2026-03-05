@@ -283,8 +283,8 @@ export default function BookingModal({
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-dark-border">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-violet-900/50 rounded-xl flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-violet-400" />
+            <div className="w-10 h-10 bg-brand-primary-dark/50 rounded-xl flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-brand-primary-light" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-white">
@@ -342,7 +342,7 @@ export default function BookingModal({
                   <select
                     value={selectedLeadId}
                     onChange={(e) => setSelectedLeadId(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 appearance-none cursor-pointer"
+                    className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary appearance-none cursor-pointer"
                     data-testid="booking-lead-select"
                   >
                     <option value="">Choose a lead...</option>
@@ -370,7 +370,7 @@ export default function BookingModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Wedding Photography Shoot"
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
               data-testid="booking-title-input"
             />
           </div>
@@ -382,7 +382,7 @@ export default function BookingModal({
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
               data-testid="booking-date-input"
             />
           </div>
@@ -394,7 +394,7 @@ export default function BookingModal({
               id="allDay"
               checked={allDay}
               onChange={(e) => setAllDay(e.target.checked)}
-              className="w-4 h-4 rounded border-dark-border bg-dark-bg-secondary text-violet-600 focus:ring-violet-500"
+              className="w-4 h-4 rounded border-dark-border bg-dark-bg-secondary text-brand-primary focus:ring-brand-primary"
             />
             <label htmlFor="allDay" className="text-sm text-gray-300">
               All day event
@@ -412,7 +412,7 @@ export default function BookingModal({
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                    className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
                     data-testid="booking-start-time"
                   />
                 </div>
@@ -425,7 +425,7 @@ export default function BookingModal({
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                    className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
                     data-testid="booking-end-time"
                   />
                 </div>
@@ -450,7 +450,7 @@ export default function BookingModal({
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g., Studio A, 123 Main St"
-                className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
                 data-testid="booking-location-input"
               />
             </div>
@@ -466,7 +466,7 @@ export default function BookingModal({
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any additional details..."
                 rows={3}
-                className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-none"
+                className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary resize-none"
                 data-testid="booking-notes-input"
               />
             </div>
@@ -546,7 +546,7 @@ export default function BookingModal({
             <button
               onClick={handleSave}
               disabled={loading || !!success}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition text-sm font-medium disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition text-sm font-medium disabled:opacity-50"
               data-testid="save-booking-btn"
             >
               {loading ? (

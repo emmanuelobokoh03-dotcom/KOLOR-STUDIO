@@ -60,16 +60,17 @@ interface LeadDetailModalProps {
   lead: Lead;
   onClose: () => void;
   onUpdate: (updatedLead: Lead) => void;
+  onCelebrate?: (key: string, achievementKey: string) => void;
 }
 
 const STATUS_OPTIONS: LeadStatus[] = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
 
 const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
-  NEW: 'bg-violet-900/30 text-violet-300 border border-violet-700/50',
-  REVIEWING: 'bg-violet-900/30 text-violet-300 border border-violet-700/50',
-  CONTACTED: 'bg-purple-900/30 text-purple-300 border border-purple-700/50',
+  NEW: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
+  REVIEWING: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
+  CONTACTED: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
   QUALIFIED: 'bg-indigo-900/30 text-indigo-300 border border-indigo-700/50',
-  QUOTED: 'bg-fuchsia-900/30 text-fuchsia-300 border border-fuchsia-700/50',
+  QUOTED: 'bg-brand-accent-dark/30 text-brand-accent-light border border-brand-accent-dark/50',
   NEGOTIATING: 'bg-blue-900/30 text-blue-300 border border-blue-700/50',
   BOOKED: 'bg-emerald-900/30 text-emerald-300 border border-emerald-700/50',
   LOST: 'bg-slate-900/30 text-slate-400 border border-slate-700/50',
@@ -92,7 +93,7 @@ const ACTIVITY_ICONS: Record<string, React.ElementType> = {
 
 const ACTIVITY_COLORS: Record<string, string> = {
   NOTE_ADDED: 'bg-blue-900/50 text-blue-400',
-  STATUS_CHANGED: 'bg-purple-900/50 text-purple-400',
+  STATUS_CHANGED: 'bg-brand-primary-dark/50 text-brand-primary-light',
   EMAIL_SENT: 'bg-green-900/50 text-green-400',
   EMAIL_RECEIVED: 'bg-teal-900/50 text-teal-400',
   CALL_MADE: 'bg-orange-900/50 text-orange-400',
@@ -120,7 +121,7 @@ const FILE_COLORS: Record<string, string> = {
   document: 'bg-blue-900/50 text-blue-400',
   spreadsheet: 'bg-emerald-900/50 text-emerald-400',
   text: 'bg-gray-800/50 text-gray-400',
-  file: 'bg-purple-900/50 text-purple-400',
+  file: 'bg-brand-primary-dark/50 text-brand-primary-light',
 };
 
 // Activity Skeleton
@@ -149,7 +150,7 @@ const FileGridSkeleton = () => (
   </div>
 );
 
-export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailModalProps) {
+export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }: LeadDetailModalProps) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -426,14 +427,14 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
           data-testid="lead-detail-modal"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-4 md:p-6 flex-shrink-0">
+          <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-4 md:p-6 flex-shrink-0">
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0 mr-3">
                 <span className="text-xs px-2.5 py-1 bg-white/20 rounded-full backdrop-blur-sm">
                   {SERVICE_TYPE_LABELS[lead.serviceType]}
                 </span>
                 <h2 className="text-xl md:text-2xl font-bold mt-2 truncate">{lead.projectTitle}</h2>
-                <p className="text-violet-100 mt-0.5 md:mt-1 text-xs md:text-sm">Submitted {formatDate(lead.createdAt)}</p>
+                <p className="text-brand-primary-light mt-0.5 md:mt-1 text-xs md:text-sm">Submitted {formatDate(lead.createdAt)}</p>
               </div>
               <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
                 <button 
@@ -494,7 +495,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                 onClick={() => setActiveTab(key)}
                 className={`flex-shrink-0 flex-1 min-w-0 px-2 md:px-4 py-3 md:py-3.5 text-xs md:text-sm font-medium transition-all duration-200 touch-target ${
                   activeTab === key 
-                    ? 'text-violet-400 border-b-2 border-violet-500 bg-violet-900/10' 
+                    ? 'text-brand-primary-light border-b-2 border-brand-primary bg-brand-primary-dark/10' 
                     : 'text-[#A3A3A3] hover:text-white hover:bg-[#262626]'
                 }`}
                 data-testid={`tab-${key}`}
@@ -503,7 +504,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                   <Icon className="w-4 h-4 flex-shrink-0" />
                   <span className="truncate">{label}</span>
                   {badge !== undefined && badge > 0 && (
-                    <span className="bg-violet-900/50 text-violet-300 text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full flex-shrink-0">
+                    <span className="bg-brand-primary-dark/50 text-brand-primary-light text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full flex-shrink-0">
                       {badge}
                     </span>
                   )}
@@ -526,7 +527,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                     value={newNote}
                     onChange={(e) => setNewNote(e.target.value)}
                     placeholder="Write a note about this lead..."
-                    className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent resize-none text-sm text-white placeholder-gray-500 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#333] rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none text-sm text-white placeholder-gray-500 transition-all duration-200"
                     rows={3}
                     data-testid="note-input"
                   />
@@ -534,7 +535,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                     <button
                       onClick={handleAddNote}
                       disabled={addingNote || !newNote.trim()}
-                      className="px-4 py-2.5 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
+                      className="px-4 py-2.5 bg-brand-primary text-white rounded-xl text-sm font-medium hover:bg-brand-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
                       data-testid="save-note-button"
                     >
                       {addingNote ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
@@ -610,8 +611,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                 <div 
                   className={`border-2 border-dashed rounded-xl p-6 md:p-8 text-center transition-all duration-200 ${
                     dragOver 
-                      ? 'border-violet-500 bg-violet-900/20' 
-                      : 'border-[#333] hover:border-violet-500/50 hover:bg-[#0F0F0F]'
+                      ? 'border-brand-primary bg-brand-primary-dark/20' 
+                      : 'border-[#333] hover:border-brand-primary/50 hover:bg-[#0F0F0F]'
                   }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -630,7 +631,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                   
                   {uploading ? (
                     <div className="py-4">
-                      <Loader2 className="w-10 h-10 text-violet-500 animate-spin mx-auto mb-3" />
+                      <Loader2 className="w-10 h-10 text-brand-primary animate-spin mx-auto mb-3" />
                       <p className="text-sm text-[#A3A3A3]">{uploadProgress}</p>
                     </div>
                   ) : (
@@ -642,7 +643,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                         Drag and drop files here, or{' '}
                         <button
                           onClick={() => fileInputRef.current?.click()}
-                          className="text-violet-400 font-medium hover:underline"
+                          className="text-brand-primary-light font-medium hover:underline"
                         >
                           browse
                         </button>
@@ -684,7 +685,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                         return (
                           <div 
                             key={file.id} 
-                            className="group relative aspect-square rounded-xl overflow-hidden border border-[#333] bg-[#0F0F0F] hover:border-violet-500/50 transition-all duration-200"
+                            className="group relative aspect-square rounded-xl overflow-hidden border border-[#333] bg-[#0F0F0F] hover:border-brand-primary/50 transition-all duration-200"
                             data-testid={`file-${file.id}`}
                           >
                             {/* File Content */}
@@ -717,7 +718,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => handleDownload(file)}
-                                  className="p-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition-all duration-200"
+                                  className="p-2.5 bg-brand-primary text-white rounded-xl hover:bg-brand-primary transition-all duration-200"
                                   title="Download"
                                   data-testid={`download-${file.id}`}
                                 >
@@ -763,14 +764,15 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                 lead={lead} 
                 onQuoteUpdate={() => {
                   fetchActivities();
-                }} 
+                }}
+                onQuoteSent={() => onCelebrate?.('first_quote', 'firstQuote')}
               />
             ) : activeTab === 'deliverables' ? (
               <div className="p-4 md:p-6">
                 <DeliverablesTab leadId={lead.id} />
               </div>
             ) : activeTab === 'contracts' ? (
-              <ContractsTab leadId={lead.id} />
+              <ContractsTab leadId={lead.id} onContractSigned={() => onCelebrate?.('first_contract', 'firstContract')} />
             ) : (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                 {/* Status & Actions */}
@@ -804,7 +806,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                       <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="px-4 py-2 bg-violet-600 text-white rounded-xl text-sm hover:bg-violet-500 flex items-center gap-2 transition-all duration-200"
+                        className="px-4 py-2 bg-brand-primary text-white rounded-xl text-sm hover:bg-brand-primary flex items-center gap-2 transition-all duration-200"
                       >
                         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                         Save
@@ -813,7 +815,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                   ) : (
                     <button
                       onClick={() => setEditing(true)}
-                      className="px-4 py-2 text-violet-400 hover:bg-violet-900/30 rounded-xl text-sm font-medium transition-all duration-200"
+                      className="px-4 py-2 text-brand-primary-light hover:bg-brand-primary-dark/30 rounded-xl text-sm font-medium transition-all duration-200"
                     >
                       Edit Lead
                     </button>
@@ -823,7 +825,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                 {/* Client Information */}
                 <div>
                   <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-[#FAFAFA]">
-                    <User className="w-5 h-5 text-violet-400" />
+                    <User className="w-5 h-5 text-brand-primary-light" />
                     Client Information
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
@@ -838,7 +840,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                       <Mail className="w-5 h-5 text-gray-500 flex-shrink-0" />
                       <div>
                         <p className="text-xs text-gray-500">Email</p>
-                        <a href={`mailto:${lead.clientEmail}`} className="font-medium text-violet-400 hover:underline">
+                        <a href={`mailto:${lead.clientEmail}`} className="font-medium text-brand-primary-light hover:underline">
                           {lead.clientEmail}
                         </a>
                       </div>
@@ -867,7 +869,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                 {/* Project Details */}
                 <div>
                   <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-[#FAFAFA]">
-                    <FileText className="w-5 h-5 text-violet-400" />
+                    <FileText className="w-5 h-5 text-brand-primary-light" />
                     Project Details
                   </h3>
                   <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 mb-3 md:mb-4 border border-[#333]">
@@ -949,18 +951,18 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                 {portalUrl && (
                   <div>
                     <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-[#FAFAFA]">
-                      <BarChart3 className="w-5 h-5 text-violet-400" />
+                      <BarChart3 className="w-5 h-5 text-brand-primary-light" />
                       Client Portal
                     </h3>
                     <div className="rounded-xl border border-[#333] bg-[#0F0F0F] p-3 mb-4">
                       <p className="text-xs text-[#A3A3A3] leading-relaxed">
-                        <strong className="text-violet-300">Pro tip:</strong> Your client can view quotes, sign contracts, and track progress — all without logging in!
+                        <strong className="text-brand-primary-light">Pro tip:</strong> Your client can view quotes, sign contracts, and track progress — all without logging in!
                       </p>
                     </div>
                     
-                    <div className="bg-gradient-to-r from-violet-900/30 to-purple-900/30 border border-violet-700/50 rounded-xl p-5 mb-4">
+                    <div className="bg-gradient-to-r from-brand-primary-dark/30 to-brand-primary-dark/30 border border-brand-primary-dark/50 rounded-xl p-5 mb-4">
                       <div className="flex items-center gap-2 mb-3">
-                        <Link className="w-4 h-4 text-violet-400" />
+                        <Link className="w-4 h-4 text-brand-primary-light" />
                         <span className="text-sm font-medium text-[#A3A3A3]">Portal URL</span>
                       </div>
                       <div className="flex items-center gap-2 bg-[#1A1A1A] rounded-xl p-2 border border-[#333]">
@@ -976,7 +978,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                           className={`px-3 py-1.5 rounded-xl text-sm font-medium flex items-center gap-1.5 transition-all duration-200 ${
                             copiedLink 
                               ? 'bg-green-900/50 text-green-400' 
-                              : 'bg-violet-900/50 text-violet-300 hover:bg-violet-800/50'
+                              : 'bg-brand-primary-dark/50 text-brand-primary-light hover:bg-brand-primary-dark/50'
                           }`}
                           data-testid="copy-portal-link-btn"
                         >
@@ -990,7 +992,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                           href={portalUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-1.5 bg-violet-600 text-white rounded-xl text-sm font-medium flex items-center gap-1.5 hover:bg-violet-500 transition-all duration-200"
+                          className="px-3 py-1.5 bg-brand-primary text-white rounded-xl text-sm font-medium flex items-center gap-1.5 hover:bg-brand-primary transition-all duration-200"
                           data-testid="open-portal-btn"
                         >
                           <ExternalLink className="w-4 h-4" />
@@ -1010,8 +1012,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                         </div>
                       </div>
                       <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
-                        <div className="w-10 h-10 bg-purple-900/50 rounded-xl flex items-center justify-center border border-purple-700/50">
-                          <Clock className="w-5 h-5 text-purple-400" />
+                        <div className="w-10 h-10 bg-brand-primary-dark/50 rounded-xl flex items-center justify-center border border-brand-primary-dark/50">
+                          <Clock className="w-5 h-5 text-brand-primary-light" />
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Last Viewed</p>
@@ -1045,7 +1047,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate }: LeadDetailM
                         className={`w-full px-4 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-all duration-200 ${
                           portalLinkSent
                             ? 'bg-green-600 text-white'
-                            : 'bg-violet-600 text-white hover:bg-violet-500 hover:shadow-lg hover:shadow-violet-500/20'
+                            : 'bg-brand-primary text-white hover:bg-brand-primary hover:shadow-lg hover:shadow-brand-primary/20'
                         } disabled:opacity-50`}
                         data-testid="send-portal-link-btn"
                       >

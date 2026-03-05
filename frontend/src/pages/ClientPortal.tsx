@@ -195,9 +195,9 @@ export default function ClientPortal() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-brand-primary/5 via-white to-brand-primary/5 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-violet-600 animate-spin mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 text-brand-primary animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading your project portal...</p>
         </div>
       </div>
@@ -206,7 +206,7 @@ export default function ClientPortal() {
 
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-brand-primary/5 via-white to-brand-primary/5 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-red-500" />
@@ -215,7 +215,7 @@ export default function ClientPortal() {
           <p className="text-gray-600 mb-6">{error || 'This project portal could not be found.'}</p>
           <p className="text-sm text-gray-500">
             Please check your link or contact us at{' '}
-            <a href="mailto:emmanuelobokoh03@gmail.com" className="text-violet-600 hover:underline">
+            <a href="mailto:emmanuelobokoh03@gmail.com" className="text-brand-primary hover:underline">
               emmanuelobokoh03@gmail.com
             </a>
           </p>
@@ -227,9 +227,9 @@ export default function ClientPortal() {
   const currentStepIndex = STATUS_TO_STEP[data.status.current] ?? 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-brand-primary/5 via-white to-brand-primary/5">
       {/* Header */}
-      <header className="bg-gradient-to-r from-violet-600 to-purple-600 text-white">
+      <header className="bg-gradient-to-r from-brand-primary to-brand-primary text-white">
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
@@ -239,7 +239,7 @@ export default function ClientPortal() {
           </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <p className="text-violet-200 text-sm">Project Portal</p>
+              <p className="text-brand-primary-light text-sm">Project Portal</p>
               <h1 className="text-2xl md:text-3xl font-bold">{data.project.title}</h1>
             </div>
             <div className="flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2">
@@ -264,12 +264,12 @@ export default function ClientPortal() {
           }`}>
             <div className="flex items-start gap-4">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                data.status.isBooked ? 'bg-white/20' : 'bg-violet-100'
+                data.status.isBooked ? 'bg-white/20' : 'bg-brand-primary/10'
               }`}>
                 {data.status.isBooked ? (
                   <CheckCircle className="w-6 h-6" />
                 ) : (
-                  <Clock className={`w-6 h-6 ${data.status.isBooked ? '' : 'text-violet-600'}`} />
+                  <Clock className={`w-6 h-6 ${data.status.isBooked ? '' : 'text-brand-primary'}`} />
                 )}
               </div>
               <div>
@@ -297,7 +297,7 @@ export default function ClientPortal() {
                 {/* Progress Line */}
                 <div className="absolute top-5 left-0 right-0 h-1 bg-gray-200 rounded-full">
                   <div 
-                    className="h-full bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-brand-primary to-brand-primary rounded-full transition-all duration-500"
                     style={{ width: `${(currentStepIndex / (STATUS_STEPS.length - 1)) * 100}%` }}
                   />
                 </div>
@@ -311,13 +311,13 @@ export default function ClientPortal() {
                     <div key={step.key} className="flex flex-col items-center relative z-10">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                         isCompleted 
-                          ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg' 
+                          ? 'bg-gradient-to-br from-brand-primary to-brand-primary text-white shadow-lg' 
                           : 'bg-gray-100 text-gray-400'
-                      } ${isCurrent ? 'ring-4 ring-violet-200' : ''}`}>
+                      } ${isCurrent ? 'ring-4 ring-brand-primary/20' : ''}`}>
                         <Icon className="w-5 h-5" />
                       </div>
                       <span className={`mt-2 text-sm font-medium ${
-                        isCompleted ? 'text-violet-600' : 'text-gray-400'
+                        isCompleted ? 'text-brand-primary' : 'text-gray-400'
                       }`}>
                         {step.label}
                       </span>
@@ -336,11 +336,11 @@ export default function ClientPortal() {
 
                 return (
                   <div key={step.key} className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
-                    isCurrent ? 'bg-violet-50 border border-violet-200' : ''
+                    isCurrent ? 'bg-brand-primary/5 border border-brand-primary/20' : ''
                   }`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       isCompleted 
-                        ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white' 
+                        ? 'bg-gradient-to-br from-brand-primary to-brand-primary text-white' 
                         : 'bg-gray-100 text-gray-400'
                     }`}>
                       <Icon className="w-4 h-4" />
@@ -351,7 +351,7 @@ export default function ClientPortal() {
                       {step.label}
                     </span>
                     {isCurrent && (
-                      <span className="ml-auto text-xs text-violet-600 font-medium">Current</span>
+                      <span className="ml-auto text-xs text-brand-primary font-medium">Current</span>
                     )}
                     {isCompleted && index < currentStepIndex && (
                       <CheckCircle className="ml-auto w-4 h-4 text-green-500" />
@@ -371,8 +371,8 @@ export default function ClientPortal() {
           
           <div className="space-y-4">
             <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-              <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-violet-600" />
+              <div className="w-10 h-10 bg-brand-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-brand-primary" />
               </div>
               <div>
                 <p className="text-sm text-gray-500">Service Type</p>
@@ -423,8 +423,8 @@ export default function ClientPortal() {
               )}
 
               <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Calendar className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-brand-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Calendar className="w-5 h-5 text-brand-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Submitted On</p>
@@ -446,7 +446,7 @@ export default function ClientPortal() {
                 <div
                   key={contract.id}
                   className={`bg-white rounded-2xl shadow-lg border overflow-hidden transition-all duration-300 ${
-                    isAgreed ? 'border-green-200' : 'border-violet-200'
+                    isAgreed ? 'border-green-200' : 'border-brand-primary/20'
                   }`}
                   data-testid={`portal-contract-${contract.id}`}
                 >
@@ -454,15 +454,15 @@ export default function ClientPortal() {
                   <div className={`px-6 py-4 flex items-center gap-3 ${
                     isAgreed
                       ? 'bg-gradient-to-r from-green-50 to-emerald-50'
-                      : 'bg-gradient-to-r from-violet-50 to-purple-50'
+                      : 'bg-gradient-to-r from-brand-primary/5 to-brand-primary/5'
                   }`}>
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                      isAgreed ? 'bg-green-100' : 'bg-violet-100'
+                      isAgreed ? 'bg-green-100' : 'bg-brand-primary/10'
                     }`}>
                       {isAgreed ? (
                         <ShieldCheck className={`w-5 h-5 text-green-600`} />
                       ) : (
-                        <ScrollText className={`w-5 h-5 text-violet-600`} />
+                        <ScrollText className={`w-5 h-5 text-brand-primary`} />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -529,7 +529,7 @@ export default function ClientPortal() {
                             type="checkbox"
                             checked={agreedChecked[contract.id] || false}
                             onChange={(e) => setAgreedChecked({ ...agreedChecked, [contract.id]: e.target.checked })}
-                            className="mt-1 w-5 h-5 rounded border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                            className="mt-1 w-5 h-5 rounded border-gray-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
                             data-testid={`agree-checkbox-${contract.id}`}
                           />
                           <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">
@@ -540,7 +540,7 @@ export default function ClientPortal() {
                         <button
                           onClick={() => handleAgree(contract.id)}
                           disabled={!agreedChecked[contract.id] || signing === contract.id}
-                          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl font-semibold text-base hover:from-violet-700 hover:to-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-violet-200"
+                          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand-primary to-brand-primary text-white rounded-xl font-semibold text-base hover:from-brand-primary-dark hover:to-brand-primary-dark disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-brand-primary/20"
                           data-testid={`sign-agreement-btn-${contract.id}`}
                         >
                           {signing === contract.id ? (
@@ -577,7 +577,7 @@ export default function ClientPortal() {
               <div className="space-y-4">
                 {data.timeline.map((activity) => (
                   <div key={activity.id} className="relative flex gap-4 pl-2">
-                    <div className="relative z-10 w-5 h-5 rounded-full bg-violet-500 border-4 border-white shadow flex-shrink-0" />
+                    <div className="relative z-10 w-5 h-5 rounded-full bg-brand-primary border-4 border-white shadow flex-shrink-0" />
                     <div className="flex-1 pb-4">
                       <p className="text-gray-700">{activity.description}</p>
                       <p className="text-sm text-gray-400 mt-1">{formatTimeAgo(activity.createdAt)}</p>
@@ -590,17 +590,17 @@ export default function ClientPortal() {
         )}
 
         {/* Contact Section */}
-        <div className="bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl p-6 text-white">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary rounded-2xl p-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h3 className="text-lg font-semibold mb-1">Have Questions?</h3>
-              <p className="text-violet-100">
+              <p className="text-brand-primary-light">
                 {data.contact.name} is here to help with your project.
               </p>
             </div>
             <a 
               href={`mailto:${data.contact.email}?subject=Re: ${data.project.title}`}
-              className="inline-flex items-center gap-2 bg-white text-violet-600 px-6 py-3 rounded-xl font-semibold hover:bg-violet-50 transition-colors"
+              className="inline-flex items-center gap-2 bg-white text-brand-primary px-6 py-3 rounded-xl font-semibold hover:bg-brand-primary/5 transition-colors"
             >
               <Mail className="w-5 h-5" />
               Contact Us
@@ -616,7 +616,7 @@ export default function ClientPortal() {
           </div>
           <p>Thank you for choosing us for your creative project.</p>
           <p className="mt-2">
-            <Link to="/" className="text-violet-600 hover:underline">Visit our website</Link>
+            <Link to="/" className="text-brand-primary hover:underline">Visit our website</Link>
           </p>
         </footer>
       </main>

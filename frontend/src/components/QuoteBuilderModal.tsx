@@ -386,13 +386,13 @@ export default function QuoteBuilderModal({
         data-testid="quote-builder-modal"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6 flex-shrink-0">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold">
                 {existingQuote ? 'Edit Quote' : 'Create Quote'}
               </h2>
-              <p className="text-violet-100 text-sm mt-1">
+              <p className="text-brand-primary-light text-sm mt-1">
                 For {lead.clientName} • {lead.projectTitle}
               </p>
             </div>
@@ -454,7 +454,7 @@ export default function QuoteBuilderModal({
                         data-testid={`template-option-${template.id}`}
                       >
                         <div className="flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                          <FileText className="w-4 h-4 text-brand-primary-light flex-shrink-0" />
                           <div className="min-w-0">
                             <p className="text-sm font-medium text-white truncate">{template.name}</p>
                             {template.description && (
@@ -483,7 +483,7 @@ export default function QuoteBuilderModal({
             </button>
 
             {loadedTemplateName && (
-              <span className="text-xs text-violet-400 bg-violet-900/30 px-2 py-1 rounded">
+              <span className="text-xs text-brand-primary-light bg-brand-primary-dark/30 px-2 py-1 rounded">
                 Using: {loadedTemplateName}
               </span>
             )}
@@ -492,7 +492,7 @@ export default function QuoteBuilderModal({
           {/* Line Items */}
           <div>
             <h3 className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-violet-400" />
+              <DollarSign className="w-4 h-4 text-brand-primary-light" />
               Line Items
             </h3>
             
@@ -506,7 +506,7 @@ export default function QuoteBuilderModal({
                         type="text"
                         value={item.description}
                         onChange={(e) => updateLineItem(index, 'description', e.target.value)}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                         placeholder="Service description"
                         data-testid={`line-item-description-${index}`}
                       />
@@ -518,7 +518,7 @@ export default function QuoteBuilderModal({
                         min="1"
                         value={item.quantity}
                         onChange={(e) => updateLineItem(index, 'quantity', e.target.value)}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                         data-testid={`line-item-quantity-${index}`}
                       />
                     </div>
@@ -530,7 +530,7 @@ export default function QuoteBuilderModal({
                         step="0.01"
                         value={item.price || ''}
                         onChange={(e) => updateLineItem(index, 'price', e.target.value)}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                         placeholder="0.00"
                         data-testid={`line-item-price-${index}`}
                       />
@@ -557,7 +557,7 @@ export default function QuoteBuilderModal({
 
             <button
               onClick={addLineItem}
-              className="mt-3 flex items-center gap-2 px-4 py-2 text-violet-400 hover:bg-violet-900/30 rounded-lg transition text-sm font-medium"
+              className="mt-3 flex items-center gap-2 px-4 py-2 text-brand-primary-light hover:bg-brand-primary-dark/30 rounded-lg transition text-sm font-medium"
               data-testid="add-line-item"
             >
               <Plus className="w-4 h-4" />
@@ -582,7 +582,7 @@ export default function QuoteBuilderModal({
                     step="0.1"
                     value={tax || ''}
                     onChange={(e) => setTax(Number(e.target.value) || 0)}
-                    className="w-16 px-2 py-1 bg-dark-card border border-dark-border rounded text-white text-sm focus:ring-2 focus:ring-violet-500"
+                    className="w-16 px-2 py-1 bg-dark-card border border-dark-border rounded text-white text-sm focus:ring-2 focus:ring-brand-primary"
                     placeholder="0"
                     data-testid="tax-input"
                   />
@@ -592,7 +592,7 @@ export default function QuoteBuilderModal({
               </div>
               <div className="pt-3 border-t border-dark-border flex justify-between">
                 <span className="text-lg font-semibold text-white">Total</span>
-                <span className="text-2xl font-bold text-violet-400" data-testid="quote-total">
+                <span className="text-2xl font-bold text-brand-primary-light" data-testid="quote-total">
                   {formatCurrency(total, effectiveCurrency)}
                 </span>
               </div>
@@ -609,7 +609,7 @@ export default function QuoteBuilderModal({
               <span className="flex items-center gap-2">
                 <Globe className="w-4 h-4" />
                 Currency Settings
-                <span className="text-xs text-violet-400">
+                <span className="text-xs text-brand-primary-light">
                   ({effectiveCurrency.currency} - {effectiveCurrency.currencySymbol})
                 </span>
               </span>
@@ -624,7 +624,7 @@ export default function QuoteBuilderModal({
                     id="useCurrencyOverride"
                     checked={useCurrencyOverride}
                     onChange={(e) => setUseCurrencyOverride(e.target.checked)}
-                    className="w-4 h-4 rounded border-dark-border bg-dark-bg-secondary text-violet-600 focus:ring-violet-500"
+                    className="w-4 h-4 rounded border-dark-border bg-dark-bg-secondary text-brand-primary focus:ring-brand-primary"
                   />
                   <label htmlFor="useCurrencyOverride" className="text-sm text-gray-300">
                     Use different currency for this quote
@@ -646,7 +646,7 @@ export default function QuoteBuilderModal({
                             currencyPosition: currencyOverride.currencyPosition || 'BEFORE'
                           });
                         }}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500"
+                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
                         data-testid="currency-override-select"
                       >
                         <option value="">Select currency...</option>
@@ -665,7 +665,7 @@ export default function QuoteBuilderModal({
                           ...currencyOverride,
                           currencyPosition: e.target.value as 'BEFORE' | 'AFTER'
                         })}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500"
+                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
                       >
                         <option value="BEFORE">Before ({currencyOverride.currencySymbol || '$'}100)</option>
                         <option value="AFTER">After (100{currencyOverride.currencySymbol || '$'})</option>
@@ -690,7 +690,7 @@ export default function QuoteBuilderModal({
               <select
                 value={paymentTerms}
                 onChange={(e) => setPaymentTerms(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
                 data-testid="payment-terms-select"
               >
                 {PAYMENT_TERMS_OPTIONS.map(option => (
@@ -706,7 +706,7 @@ export default function QuoteBuilderModal({
                 type="date"
                 value={validUntil}
                 onChange={(e) => setValidUntil(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
                 data-testid="valid-until-input"
               />
             </div>
@@ -718,7 +718,7 @@ export default function QuoteBuilderModal({
               value={terms}
               onChange={(e) => setTerms(e.target.value)}
               rows={5}
-              className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 resize-none"
+              className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary resize-none"
               placeholder="Enter terms and conditions..."
               data-testid="terms-input"
             />
@@ -745,7 +745,7 @@ export default function QuoteBuilderModal({
             </button>
             <button
               onClick={() => setShowPreview(true)}
-              className="flex items-center gap-2 px-4 py-2 border border-violet-600 text-violet-400 rounded-lg hover:bg-violet-900/30 transition font-medium"
+              className="flex items-center gap-2 px-4 py-2 border border-brand-primary text-brand-primary-light rounded-lg hover:bg-brand-primary-dark/30 transition font-medium"
               data-testid="preview-btn"
             >
               <Eye className="w-4 h-4" />
@@ -754,7 +754,7 @@ export default function QuoteBuilderModal({
             <button
               onClick={handleSend}
               disabled={sending}
-              className="flex items-center gap-2 px-5 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
               data-testid="send-quote-btn"
             >
               {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
@@ -792,7 +792,7 @@ export default function QuoteBuilderModal({
                   type="text"
                   value={templateName}
                   onChange={(e) => setTemplateName(e.target.value)}
-                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
                   placeholder="e.g., Wedding Photography Package"
                   maxLength={100}
                   data-testid="template-name-input"
@@ -804,7 +804,7 @@ export default function QuoteBuilderModal({
                 <textarea
                   value={templateDescription}
                   onChange={(e) => setTemplateDescription(e.target.value)}
-                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 resize-none"
+                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary resize-none"
                   placeholder="Brief description of this template..."
                   rows={2}
                   maxLength={500}
@@ -832,7 +832,7 @@ export default function QuoteBuilderModal({
               <button
                 onClick={saveAsTemplate}
                 disabled={savingTemplate || !templateName.trim()}
-                className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
                 data-testid="confirm-save-template-btn"
               >
                 {savingTemplate ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
@@ -893,12 +893,12 @@ function QuotePreview({
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Preview Header */}
-        <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-2xl font-bold">KOLOR STUDIO</span>
             </div>
-            <div className="text-right text-sm text-violet-100">
+            <div className="text-right text-sm text-brand-primary-light">
               <p>Preview Mode</p>
               <p className="text-xs">This is what your client will see</p>
             </div>
@@ -950,7 +950,7 @@ function QuotePreview({
               )}
               <div className="pt-2 border-t border-gray-200 flex justify-between">
                 <span className="text-lg font-semibold text-gray-900">Total</span>
-                <span className="text-2xl font-bold text-violet-600">{formatCurrency(total, currencySettings)}</span>
+                <span className="text-2xl font-bold text-brand-primary">{formatCurrency(total, currencySettings)}</span>
               </div>
             </div>
           </div>
@@ -987,7 +987,7 @@ function QuotePreview({
           <button
             onClick={onSend}
             disabled={sending}
-            className="flex items-center gap-2 px-5 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
           >
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Send to Client

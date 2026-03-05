@@ -44,6 +44,12 @@ model User {
   // Preferences
   preferences   Json?     // Store user preferences as JSON
   
+  // Brand Customization
+  brandPrimaryColor  String   @default("#A855F7")
+  brandAccentColor   String   @default("#EC4899")
+  brandLogoUrl       String?
+  brandFontFamily    String   @default("Inter")
+  
   // Password Reset
   passwordResetToken   String?   @unique
   passwordResetExpires DateTime?

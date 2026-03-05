@@ -45,8 +45,8 @@ const LandingPage = () => {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center space-x-2"
           >
-            <Sparkles className="w-8 h-8 text-violet-500" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+            <Sparkles className="w-8 h-8 text-brand-primary" />
+            <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
           </motion.div>
@@ -64,7 +64,7 @@ const LandingPage = () => {
             </Link>
             <Link 
               to="/signup"
-              className="bg-violet-600 text-white px-6 py-2 rounded-lg hover:bg-violet-500 transition-all shadow-lg shadow-violet-900/30 hover:shadow-xl hover:shadow-violet-900/40"
+              className="bg-brand-primary text-white px-6 py-2 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-brand-primary-dark/30 hover:shadow-xl hover:shadow-brand-primary-dark/40"
             >
               Get Started
             </Link>
@@ -80,7 +80,7 @@ const LandingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <span className="inline-block px-4 py-2 bg-violet-900/50 text-violet-300 rounded-full text-sm font-medium mb-6 border border-violet-700/50">
+            <span className="inline-block px-4 py-2 bg-brand-primary-dark/50 text-brand-primary-light rounded-full text-sm font-medium mb-6 border border-brand-primary-dark/50">
               The CRM that doesn't feel like a CRM
             </span>
           </motion.div>
@@ -92,7 +92,7 @@ const LandingPage = () => {
             className="text-6xl md:text-7xl font-bold mb-6 leading-tight text-white"
           >
             Turn{' '}
-            <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               creativity
             </span>
             {' '}into revenue
@@ -118,7 +118,7 @@ const LandingPage = () => {
             <div className="flex items-center justify-center space-x-4 mb-4">
               <Link
                 to="/signup"
-                className="bg-violet-600 text-white px-8 py-4 rounded-xl hover:bg-violet-500 transition-all shadow-xl shadow-violet-900/30 hover:shadow-2xl hover:shadow-violet-900/40 flex items-center space-x-2 text-lg font-semibold"
+                className="bg-brand-primary text-white px-8 py-4 rounded-xl hover:bg-brand-primary transition-all shadow-xl shadow-brand-primary-dark/30 hover:shadow-2xl hover:shadow-brand-primary-dark/40 flex items-center space-x-2 text-lg font-semibold"
               >
                 <span>Start Managing Leads in 2 Minutes</span>
                 <ArrowRight className="w-5 h-5" />
@@ -199,7 +199,7 @@ const LandingPage = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <span className="inline-block px-4 py-2 bg-violet-900/30 text-violet-300 rounded-full text-sm font-medium mb-4 border border-violet-700/30">
+          <span className="inline-block px-4 py-2 bg-brand-primary-dark/30 text-brand-primary-light rounded-full text-sm font-medium mb-4 border border-brand-primary-dark/30">
             Trusted by Creative Professionals Worldwide
           </span>
           <h2 className="text-4xl font-bold text-white mb-4">What our users say</h2>
@@ -254,7 +254,7 @@ const LandingPage = () => {
             <p className="text-sm text-gray-400">Quotes Sent</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold text-violet-400">₦500K+</p>
+            <p className="text-3xl font-bold text-brand-primary-light">₦500K+</p>
             <p className="text-sm text-gray-400">Revenue Managed</p>
           </div>
           <div className="text-center">
@@ -290,7 +290,7 @@ const LandingPage = () => {
             <div className="grid grid-cols-3 bg-dark-bg-secondary border-b border-dark-border">
               <div className="p-4 text-gray-400 text-sm font-medium">Task</div>
               <div className="p-4 text-center text-gray-400 text-sm font-medium border-x border-dark-border">Spreadsheets</div>
-              <div className="p-4 text-center text-violet-400 text-sm font-medium bg-violet-900/20">KOLOR STUDIO</div>
+              <div className="p-4 text-center text-brand-primary-light text-sm font-medium bg-brand-primary-dark/20">KOLOR STUDIO</div>
             </div>
             
             <ComparisonRow 
@@ -445,7 +445,7 @@ const LandingPage = () => {
           viewport={{ once: true }}
           className="max-w-2xl mx-auto bg-dark-card rounded-2xl p-10 border border-dark-border text-center"
         >
-          <Mail className="w-10 h-10 text-violet-400 mx-auto mb-4" />
+          <Mail className="w-10 h-10 text-brand-primary-light mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-white mb-2">Get Lead Management Tips & Updates</h3>
           <p className="text-gray-400 mb-6">
             Join 500+ creatives getting weekly tips on booking more clients and growing their business.
@@ -464,12 +464,12 @@ const LandingPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="flex-1 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                  className="flex-1 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                   required
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2.5 sm:px-6 sm:py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium "
+                  className="px-4 py-2.5 sm:px-6 sm:py-3 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium "
                 >
                   Subscribe
                 </button>
@@ -486,18 +486,18 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl shadow-2xl p-12 text-center text-white"
+          className="max-w-4xl mx-auto bg-gradient-to-r from-brand-primary to-brand-primary rounded-2xl shadow-2xl p-12 text-center text-white"
         >
           <Sparkles className="w-12 h-12 mx-auto mb-6" />
           <h2 className="text-4xl font-bold mb-4">
             Ready to elevate your creative business?
           </h2>
-          <p className="text-xl mb-8 text-violet-100">
+          <p className="text-xl mb-8 text-brand-primary-light">
             Join photographers, videographers, designers, illustrators, and visual artists who are in control.
           </p>
           <Link
             to="/signup"
-            className="inline-block bg-white text-violet-600 px-8 py-4 rounded-xl hover:bg-gray-100 transition-all shadow-xl text-lg font-semibold"
+            className="inline-block bg-white text-brand-primary px-8 py-4 rounded-xl hover:bg-gray-100 transition-all shadow-xl text-lg font-semibold"
           >
             Start your free account
           </Link>
@@ -525,9 +525,9 @@ const FeatureCard = ({ icon, title, description, delay }: FeatureCardProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay }}
-      className="bg-dark-card p-8 rounded-2xl shadow-lg border border-dark-border hover:border-violet-500/50 hover:shadow-xl hover:shadow-violet-900/20 transition-all"
+      className="bg-dark-card p-8 rounded-2xl shadow-lg border border-dark-border hover:border-brand-primary/50 hover:shadow-xl hover:shadow-brand-primary-dark/20 transition-all"
     >
-      <div className="w-12 h-12 bg-violet-900/50 rounded-xl flex items-center justify-center text-violet-400 mb-4">
+      <div className="w-12 h-12 bg-brand-primary-dark/50 rounded-xl flex items-center justify-center text-brand-primary-light mb-4">
         {icon}
       </div>
       <h3 className="text-xl font-bold mb-3 text-white">{title}</h3>
@@ -540,8 +540,8 @@ const FeatureCard = ({ icon, title, description, delay }: FeatureCardProps) => {
 const Benefit = ({ text }: { text: string }) => {
   return (
     <div className="flex items-start space-x-3">
-      <div className="flex-shrink-0 w-6 h-6 bg-violet-900/50 rounded-full flex items-center justify-center mt-0.5">
-        <Check className="w-4 h-4 text-violet-400" />
+      <div className="flex-shrink-0 w-6 h-6 bg-brand-primary-dark/50 rounded-full flex items-center justify-center mt-0.5">
+        <Check className="w-4 h-4 text-brand-primary-light" />
       </div>
       <p className="text-gray-300">{text}</p>
     </div>
@@ -566,17 +566,17 @@ const TestimonialCard = ({ quote, author, role, location, initials, rating, dela
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay }}
-      className="bg-dark-card p-6 rounded-2xl border border-dark-border hover:border-violet-500/30 transition-all"
+      className="bg-dark-card p-6 rounded-2xl border border-dark-border hover:border-brand-primary/30 transition-all"
     >
       <div className="flex gap-1 mb-4">
         {[...Array(rating)].map((_, i) => (
           <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
         ))}
       </div>
-      <Quote className="w-8 h-8 text-violet-500/30 mb-2" />
+      <Quote className="w-8 h-8 text-brand-primary/30 mb-2" />
       <p className="text-gray-300 mb-4 italic">"{quote}"</p>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center text-white font-semibold text-sm">
+        <div className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center text-white font-semibold text-sm">
           {initials}
         </div>
         <div>
@@ -605,7 +605,7 @@ const ComparisonRow = ({ task, old, newWay, isLast = false }: ComparisonRowProps
         <XIcon className="w-4 h-4 text-red-400 flex-shrink-0" />
         <span>{old}</span>
       </div>
-      <div className="p-4 text-center text-sm bg-violet-900/10 flex items-center justify-center gap-2">
+      <div className="p-4 text-center text-sm bg-brand-primary-dark/10 flex items-center justify-center gap-2">
         <Check className="w-4 h-4 text-green-400 flex-shrink-0" />
         <span className="text-white">{newWay}</span>
       </div>
@@ -654,7 +654,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => {
       >
         <span className="font-medium text-white">{question}</span>
         {isOpen ? (
-          <ChevronUp className="w-5 h-5 text-violet-400" />
+          <ChevronUp className="w-5 h-5 text-brand-primary-light" />
         ) : (
           <ChevronDown className="w-5 h-5 text-gray-500" />
         )}

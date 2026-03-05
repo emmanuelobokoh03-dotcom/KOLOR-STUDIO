@@ -33,7 +33,7 @@ const WidgetCard = ({ children, className = '' }: { children: React.ReactNode; c
   </div>
 )
 
-const WidgetHeader = ({ icon: Icon, title, iconColor = 'text-violet-400', action }: {
+const WidgetHeader = ({ icon: Icon, title, iconColor = 'text-brand-primary-light', action }: {
   icon: React.ElementType; title: string; iconColor?: string;
   action?: { label: string; onClick: () => void }
 }) => (
@@ -45,7 +45,7 @@ const WidgetHeader = ({ icon: Icon, title, iconColor = 'text-violet-400', action
     {action && (
       <button
         onClick={action.onClick}
-        className="text-xs text-violet-400 hover:text-violet-300 font-medium flex items-center gap-1 transition-colors"
+        className="text-xs text-brand-primary-light hover:text-brand-primary-light font-medium flex items-center gap-1 transition-colors"
       >
         {action.label} <ChevronRight className="w-3 h-3" />
       </button>
@@ -59,7 +59,7 @@ const EmptyWidget = ({ message }: { message: string }) => (
 
 const LoadingDots = () => (
   <div className="flex items-center justify-center py-6">
-    <Loader2 className="w-5 h-5 text-violet-400 animate-spin" />
+    <Loader2 className="w-5 h-5 text-brand-primary-light animate-spin" />
   </div>
 )
 
@@ -113,7 +113,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
         <WidgetHeader
           icon={Camera}
           title="Upcoming Shoots"
-          iconColor="text-violet-400"
+          iconColor="text-brand-primary-light"
           action={{ label: 'Calendar', onClick: onViewCalendar }}
         />
         {bookings.length === 0 ? (
@@ -123,11 +123,11 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
             {bookings.map(b => (
               <div
                 key={b.id}
-                className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0F0F0F] border border-[#262626] hover:border-violet-700/40 transition-all group cursor-pointer"
+                className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0F0F0F] border border-[#262626] hover:border-brand-primary-dark/40 transition-all group cursor-pointer"
                 data-testid={`upcoming-shoot-${b.id}`}
               >
-                <div className="w-10 h-10 rounded-lg bg-violet-900/40 border border-violet-700/30 flex items-center justify-center flex-shrink-0">
-                  <Camera className="w-4 h-4 text-violet-400" />
+                <div className="w-10 h-10 rounded-lg bg-brand-primary-dark/40 border border-brand-primary-dark/30 flex items-center justify-center flex-shrink-0">
+                  <Camera className="w-4 h-4 text-brand-primary-light" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[#FAFAFA] truncate">{b.title}</p>
@@ -166,7 +166,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
         <WidgetHeader
           icon={Sparkles}
           title="Active Projects"
-          iconColor="text-purple-400"
+          iconColor="text-brand-primary-light"
         />
         {activeProjects.length === 0 ? (
           <EmptyWidget message="No active projects" />
@@ -176,14 +176,14 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
               <div
                 key={lead.id}
                 onClick={() => onLeadClick(lead)}
-                className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0F0F0F] border border-[#262626] hover:border-purple-700/40 transition-all cursor-pointer group"
+                className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0F0F0F] border border-[#262626] hover:border-brand-primary-dark/40 transition-all cursor-pointer group"
                 data-testid={`active-project-${lead.id}`}
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#FAFAFA] truncate group-hover:text-violet-300 transition-colors">{lead.projectTitle}</p>
+                  <p className="text-sm font-medium text-[#FAFAFA] truncate group-hover:text-brand-primary-light transition-colors">{lead.projectTitle}</p>
                   <p className="text-xs text-[#A3A3A3]">{lead.clientName}</p>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-violet-900/30 text-violet-300 border border-violet-700/50 flex-shrink-0">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50 flex-shrink-0">
                   {LEAD_STATUS_LABELS[lead.status]}
                 </span>
               </div>
@@ -293,9 +293,9 @@ export function FineArtWidgets({ onLeadClick, onAddLead }: FineArtWidgetsProps) 
             <div key={status} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${
-                  status === 'NEW' ? 'bg-violet-400' :
-                  status === 'CONTACTED' ? 'bg-purple-400' :
-                  status === 'QUOTED' ? 'bg-fuchsia-400' :
+                  status === 'NEW' ? 'bg-brand-primary-light' :
+                  status === 'CONTACTED' ? 'bg-brand-primary-light' :
+                  status === 'QUOTED' ? 'bg-brand-accent-light' :
                   status === 'NEGOTIATING' ? 'bg-blue-400' :
                   'bg-gray-400'
                 }`} />
@@ -307,8 +307,8 @@ export function FineArtWidgets({ onLeadClick, onAddLead }: FineArtWidgetsProps) 
           {pendingQuotes > 0 && (
             <div className="pt-3 border-t border-[#333]">
               <div className="flex items-center gap-2 text-xs">
-                <DollarSign className="w-3.5 h-3.5 text-fuchsia-400" />
-                <span className="text-fuchsia-300 font-medium">{pendingQuotes} pending quote{pendingQuotes > 1 ? 's' : ''}</span>
+                <DollarSign className="w-3.5 h-3.5 text-brand-accent-light" />
+                <span className="text-brand-accent-light font-medium">{pendingQuotes} pending quote{pendingQuotes > 1 ? 's' : ''}</span>
               </div>
             </div>
           )}
@@ -354,9 +354,9 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
   if (loading) return <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"><LoadingDots /><LoadingDots /><LoadingDots /></div>
 
   const phases = [
-    { key: 'NEW', label: 'Brief', color: 'bg-violet-500', count: stats.NEW || 0 },
-    { key: 'CONTACTED', label: 'Discovery', color: 'bg-purple-500', count: stats.CONTACTED || 0 },
-    { key: 'QUOTED', label: 'Proposal', color: 'bg-fuchsia-500', count: stats.QUOTED || 0 },
+    { key: 'NEW', label: 'Brief', color: 'bg-brand-primary', count: stats.NEW || 0 },
+    { key: 'CONTACTED', label: 'Discovery', color: 'bg-brand-primary', count: stats.CONTACTED || 0 },
+    { key: 'QUOTED', label: 'Proposal', color: 'bg-brand-accent', count: stats.QUOTED || 0 },
     { key: 'NEGOTIATING', label: 'Revisions', color: 'bg-blue-500', count: stats.NEGOTIATING || 0 },
     { key: 'BOOKED', label: 'Delivered', color: 'bg-emerald-500', count: stats.BOOKED || 0 },
   ]
@@ -418,16 +418,16 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
         <WidgetHeader
           icon={MessageSquare}
           title="Awaiting Action"
-          iconColor="text-fuchsia-400"
+          iconColor="text-brand-accent-light"
         />
         <div className="space-y-3">
-          <div className="p-3 rounded-lg bg-fuchsia-900/20 border border-fuchsia-800/30">
+          <div className="p-3 rounded-lg bg-brand-accent-dark/20 border border-brand-accent-dark/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-fuchsia-400" />
+                <FileText className="w-4 h-4 text-brand-accent-light" />
                 <span className="text-xs text-[#A3A3A3]">Pending Proposals</span>
               </div>
-              <span className="text-lg font-bold text-fuchsia-300">{pendingApprovals}</span>
+              <span className="text-lg font-bold text-brand-accent-light">{pendingApprovals}</span>
             </div>
           </div>
 

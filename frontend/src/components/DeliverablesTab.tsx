@@ -30,7 +30,7 @@ const TYPE_COLORS: Record<DeliverableType, string> = {
   DIGITAL_FILES: 'bg-blue-900/40 text-blue-400 border-blue-700/40',
   PHYSICAL_ART: 'bg-amber-900/40 text-amber-400 border-amber-700/40',
   PRINTS: 'bg-emerald-900/40 text-emerald-400 border-emerald-700/40',
-  SERVICE: 'bg-violet-900/40 text-violet-400 border-violet-700/40',
+  SERVICE: 'bg-brand-primary-dark/40 text-brand-primary-light border-brand-primary-dark/40',
   WEBSITE: 'bg-cyan-900/40 text-cyan-400 border-cyan-700/40',
   MIXED: 'bg-pink-900/40 text-pink-400 border-pink-700/40',
 };
@@ -40,7 +40,7 @@ const STATUS_COLORS: Record<DeliverableStatus, string> = {
   IN_PROGRESS: 'bg-blue-900/40 text-blue-400 border-blue-700/40',
   READY: 'bg-amber-900/40 text-amber-400 border-amber-700/40',
   DELIVERED: 'bg-green-900/40 text-green-400 border-green-700/40',
-  SHIPPED: 'bg-purple-900/40 text-purple-400 border-purple-700/40',
+  SHIPPED: 'bg-brand-primary-dark/40 text-brand-primary-light border-brand-primary-dark/40',
 };
 
 const STATUS_ICONS: Record<DeliverableStatus, React.ElementType> = {
@@ -151,10 +151,10 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
     fetchDeliverables();
   };
 
-  const inputClass = "w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-gray-500 text-sm";
+  const inputClass = "w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-white placeholder-gray-500 text-sm";
 
   if (loading) {
-    return <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-violet-400" /></div>;
+    return <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-brand-primary-light" /></div>;
   }
 
   return (
@@ -164,7 +164,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
         <div className="text-sm text-gray-400">{deliverables.length} deliverable{deliverables.length !== 1 ? 's' : ''}</div>
         <button
           onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(true); }}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 text-white text-sm rounded-lg hover:bg-violet-500 transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary text-white text-sm rounded-lg hover:bg-brand-primary transition"
           data-testid="add-deliverable-btn"
         >
           <Plus className="w-4 h-4" /> Add Deliverable
@@ -225,17 +225,17 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
 
           {/* Conditional: Service */}
           {form.type === 'SERVICE' && (
-            <div className="grid md:grid-cols-3 gap-3 p-3 bg-violet-900/10 border border-violet-800/20 rounded-lg">
+            <div className="grid md:grid-cols-3 gap-3 p-3 bg-brand-primary-dark/10 border border-brand-primary-dark/20 rounded-lg">
               <div>
-                <label className="block text-xs font-medium text-violet-400 mb-1">Session Date</label>
+                <label className="block text-xs font-medium text-brand-primary-light mb-1">Session Date</label>
                 <input type="date" value={form.sessionDate} onChange={(e) => setForm({ ...form, sessionDate: e.target.value })} className={inputClass} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-violet-400 mb-1">Location</label>
+                <label className="block text-xs font-medium text-brand-primary-light mb-1">Location</label>
                 <input value={form.sessionLocation} onChange={(e) => setForm({ ...form, sessionLocation: e.target.value })} className={inputClass} placeholder="Studio A" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-violet-400 mb-1">Duration (min)</label>
+                <label className="block text-xs font-medium text-brand-primary-light mb-1">Duration (min)</label>
                 <input type="number" value={form.sessionDuration} onChange={(e) => setForm({ ...form, sessionDuration: e.target.value })} className={inputClass} placeholder="120" />
               </div>
             </div>
@@ -243,7 +243,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
 
           <div className="flex justify-end gap-2 pt-2">
             <button onClick={() => { setShowForm(false); setEditingId(null); }} className="px-4 py-1.5 text-sm text-gray-400 hover:text-gray-200">Cancel</button>
-            <button onClick={handleSubmit} disabled={saving || !form.name.trim()} className="flex items-center gap-1.5 px-4 py-1.5 bg-violet-600 text-white text-sm rounded-lg hover:bg-violet-500 disabled:opacity-50" data-testid="deliverable-save">
+            <button onClick={handleSubmit} disabled={saving || !form.name.trim()} className="flex items-center gap-1.5 px-4 py-1.5 bg-brand-primary text-white text-sm rounded-lg hover:bg-brand-primary disabled:opacity-50" data-testid="deliverable-save">
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
               {editingId ? 'Update' : 'Create'}
             </button>
@@ -261,7 +261,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
           </p>
           <button
             onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(true); }}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-white rounded-xl hover:bg-brand-primary transition font-medium"
             data-testid="deliverables-empty-cta"
           >
             <Plus className="w-5 h-5" />
@@ -285,7 +285,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-medium text-white cursor-pointer hover:text-violet-400" onClick={() => handleEdit(d)}>{d.name}</span>
+                      <span className="text-sm font-medium text-white cursor-pointer hover:text-brand-primary-light" onClick={() => handleEdit(d)}>{d.name}</span>
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs border ${STATUS_COLORS[d.status]}`}>
                         <StatusIcon className={`w-3 h-3 ${d.status === 'IN_PROGRESS' ? 'animate-spin' : ''}`} />
                         {DELIVERABLE_STATUS_LABELS[d.status]}
@@ -304,7 +304,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
                       <button
                         onClick={() => handleStatusAdvance(d)}
                         disabled={updatingStatus === d.id}
-                        className="flex items-center gap-1 px-2 py-1 bg-violet-600/20 text-violet-400 text-xs rounded-lg hover:bg-violet-600/30 disabled:opacity-50"
+                        className="flex items-center gap-1 px-2 py-1 bg-brand-primary/20 text-brand-primary-light text-xs rounded-lg hover:bg-brand-primary/30 disabled:opacity-50"
                         data-testid={`deliverable-advance-${d.id}`}
                       >
                         {updatingStatus === d.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <ArrowRight className="w-3 h-3" />}

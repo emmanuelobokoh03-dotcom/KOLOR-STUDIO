@@ -15,6 +15,16 @@ export default {
           border: '#333333',
           'border-light': '#404040',
         },
+        'brand-primary': {
+          DEFAULT: 'rgb(var(--color-brand-primary-rgb, 168 85 247) / <alpha-value>)',
+          dark: 'rgb(var(--color-brand-primary-dark-rgb, 147 51 234) / <alpha-value>)',
+          light: 'rgb(var(--color-brand-primary-light-rgb, 192 132 252) / <alpha-value>)',
+        },
+        'brand-accent': {
+          DEFAULT: 'rgb(var(--color-brand-accent-rgb, 236 72 153) / <alpha-value>)',
+          dark: 'rgb(var(--color-brand-accent-dark-rgb, 219 39 119) / <alpha-value>)',
+          light: 'rgb(var(--color-brand-accent-light-rgb, 244 114 182) / <alpha-value>)',
+        },
         primary: {
           50: '#f5f3ff',
           100: '#ede9fe',
@@ -41,8 +51,9 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-brand, Inter)', 'system-ui', 'sans-serif'],
         display: ['Cal Sans', 'Inter', 'sans-serif'],
+        brand: ['var(--font-brand, Inter)', 'sans-serif'],
       },
       animation: {
         'slide-in': 'slideIn 0.3s ease-out',

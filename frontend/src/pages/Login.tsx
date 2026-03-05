@@ -56,8 +56,8 @@ const Login = () => {
       <div className="max-w-md w-full animate-fade-in">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-3 mb-6 group">
-            <Sparkles className="w-8 h-8 text-violet-500 group-hover:text-violet-400 transition-colors duration-200" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+            <Sparkles className="w-8 h-8 text-brand-primary group-hover:text-brand-primary-light transition-colors duration-200" />
+            <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
           </Link>
@@ -83,7 +83,7 @@ const Login = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all duration-200 text-white placeholder-gray-500"
+                className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition-all duration-200 text-white placeholder-gray-500"
                 placeholder="you@example.com"
                 data-testid="login-email"
               />
@@ -98,7 +98,7 @@ const Login = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all duration-200 text-white placeholder-gray-500"
+                className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition-all duration-200 text-white placeholder-gray-500"
                 placeholder="••••••••"
                 data-testid="login-password"
               />
@@ -107,7 +107,7 @@ const Login = () => {
             <div className="flex items-center justify-end">
               <Link
                 to="/forgot-password"
-                className="text-sm text-violet-400 hover:text-violet-300 font-medium transition-colors duration-200"
+                className="text-sm text-brand-primary-light hover:text-brand-primary-light font-medium transition-colors duration-200"
                 data-testid="forgot-password-link"
               >
                 Forgot password?
@@ -117,7 +117,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-violet-600 text-white py-3 rounded-xl hover:bg-violet-500 transition-all duration-200 shadow-lg shadow-violet-900/30 hover:shadow-xl hover:shadow-violet-900/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-brand-primary text-white py-3 rounded-xl hover:bg-brand-primary transition-all duration-200 shadow-lg shadow-brand-primary-dark/30 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               data-testid="login-submit"
             >
               {loading ? (
@@ -134,7 +134,7 @@ const Login = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-[#A3A3A3]">
               Don't have an account?{' '}
-              <Link to="/signup" className="text-violet-400 hover:text-violet-300 font-semibold transition-colors duration-200">
+              <Link to="/signup" className="text-brand-primary-light hover:text-brand-primary-light font-semibold transition-colors duration-200">
                 Sign up
               </Link>
             </p>

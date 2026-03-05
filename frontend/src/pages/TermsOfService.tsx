@@ -7,7 +7,7 @@ export default function TermsOfService() {
       {/* Header */}
       <header className="bg-dark-card border-b border-dark-border sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-violet-400 hover:text-violet-300 transition">
+          <Link to="/" className="flex items-center gap-2 text-brand-primary-light hover:text-brand-primary-light transition">
             <ArrowLeft className="w-5 h-5" />
             Back to KOLOR STUDIO
           </Link>
@@ -22,8 +22,8 @@ export default function TermsOfService() {
         {/* Title */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-violet-900/30 rounded-xl flex items-center justify-center border border-violet-700/30">
-              <FileText className="w-6 h-6 text-violet-400" />
+            <div className="w-12 h-12 bg-brand-primary-dark/30 rounded-xl flex items-center justify-center border border-brand-primary-dark/30">
+              <FileText className="w-6 h-6 text-brand-primary-light" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-white">Terms of Service</h1>
@@ -52,31 +52,31 @@ export default function TermsOfService() {
             <p className="text-gray-400 mb-4">KOLOR STUDIO provides:</p>
             <ul className="grid md:grid-cols-2 gap-2 text-gray-400">
               <li className="flex items-start gap-2">
-                <span className="text-violet-400 mt-1">•</span>
+                <span className="text-brand-primary-light mt-1">•</span>
                 Lead and client relationship management
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-violet-400 mt-1">•</span>
+                <span className="text-brand-primary-light mt-1">•</span>
                 Quote and proposal generation
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-violet-400 mt-1">•</span>
+                <span className="text-brand-primary-light mt-1">•</span>
                 Client portal for project tracking
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-violet-400 mt-1">•</span>
+                <span className="text-brand-primary-light mt-1">•</span>
                 File storage and management
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-violet-400 mt-1">•</span>
+                <span className="text-brand-primary-light mt-1">•</span>
                 Email notifications
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-violet-400 mt-1">•</span>
+                <span className="text-brand-primary-light mt-1">•</span>
                 Revenue analytics
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-violet-400 mt-1">•</span>
+                <span className="text-brand-primary-light mt-1">•</span>
                 Calendar and scheduling tools
               </li>
             </ul>
@@ -86,7 +86,7 @@ export default function TermsOfService() {
         {/* 3. Account Registration */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-violet-400" />
+            <Shield className="w-5 h-5 text-brand-primary-light" />
             3. Account Registration
           </h2>
 
@@ -144,7 +144,7 @@ export default function TermsOfService() {
         {/* 4. Subscription Plans */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-violet-400" />
+            <CreditCard className="w-5 h-5 text-brand-primary-light" />
             4. Subscription Plans
           </h2>
 
@@ -162,9 +162,9 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-gradient-to-br from-violet-900/30 to-purple-900/30 rounded-xl p-5 border border-violet-700/30">
+            <div className="bg-gradient-to-br from-brand-primary-dark/30 to-brand-primary-dark/30 rounded-xl p-5 border border-brand-primary-dark/30">
               <div className="flex items-center gap-2 mb-3">
-                <span className="px-2 py-1 bg-violet-600 text-white text-xs font-medium rounded">PRO</span>
+                <span className="px-2 py-1 bg-brand-primary text-white text-xs font-medium rounded">PRO</span>
                 <span className="text-white font-semibold">$29/month</span>
               </div>
               <ul className="space-y-2 text-gray-300 text-sm">
@@ -206,7 +206,7 @@ export default function TermsOfService() {
               <ul className="space-y-2 text-gray-300 text-sm">
                 <li>• 30-day money-back guarantee</li>
                 <li>• Request refund within 30 days of first payment</li>
-                <li>• Email: <a href="mailto:billing@kolorstudio.com" className="text-violet-400 hover:underline">billing@kolorstudio.com</a></li>
+                <li>• Email: <a href="mailto:billing@kolorstudio.com" className="text-brand-primary-light hover:underline">billing@kolorstudio.com</a></li>
               </ul>
             </div>
 
@@ -377,7 +377,7 @@ export default function TermsOfService() {
         {/* 11. Limitation of Liability */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Scale className="w-5 h-5 text-violet-400" />
+            <Scale className="w-5 h-5 text-brand-primary-light" />
             11. Limitation of Liability
           </h2>
 
@@ -433,7 +433,7 @@ export default function TermsOfService() {
             <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
               <h3 className="font-semibold text-white mb-2">Informal Resolution</h3>
               <p className="text-gray-400 text-sm">
-                Contact us first: <a href="mailto:legal@kolorstudio.com" className="text-violet-400 hover:underline">legal@kolorstudio.com</a>. We'll try to resolve within 30 days.
+                Contact us first: <a href="mailto:legal@kolorstudio.com" className="text-brand-primary-light hover:underline">legal@kolorstudio.com</a>. We'll try to resolve within 30 days.
               </p>
             </div>
 
@@ -484,21 +484,21 @@ export default function TermsOfService() {
         {/* 15. Contact Information */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-violet-400" />
+            <Mail className="w-5 h-5 text-brand-primary-light" />
             15. Contact Information
           </h2>
 
-          <div className="bg-gradient-to-r from-violet-900/30 to-purple-900/30 rounded-xl p-6 border border-violet-700/30">
+          <div className="bg-gradient-to-r from-brand-primary-dark/30 to-brand-primary-dark/30 rounded-xl p-6 border border-brand-primary-dark/30">
             <p className="text-gray-300 mb-4">Questions? Contact us:</p>
             <div className="space-y-2">
               <p className="text-gray-400">
-                Email: <a href="mailto:legal@kolorstudio.com" className="text-violet-400 hover:underline">legal@kolorstudio.com</a>
+                Email: <a href="mailto:legal@kolorstudio.com" className="text-brand-primary-light hover:underline">legal@kolorstudio.com</a>
               </p>
               <p className="text-gray-400">
-                General: <a href="mailto:hello@kolorstudio.com" className="text-violet-400 hover:underline">hello@kolorstudio.com</a>
+                General: <a href="mailto:hello@kolorstudio.com" className="text-brand-primary-light hover:underline">hello@kolorstudio.com</a>
               </p>
               <p className="text-gray-400">
-                Support: <a href="mailto:support@kolorstudio.com" className="text-violet-400 hover:underline">support@kolorstudio.com</a>
+                Support: <a href="mailto:support@kolorstudio.com" className="text-brand-primary-light hover:underline">support@kolorstudio.com</a>
               </p>
             </div>
           </div>
@@ -506,11 +506,11 @@ export default function TermsOfService() {
 
         {/* Footer Navigation */}
         <div className="flex justify-between items-center pt-8 border-t border-dark-border">
-          <Link to="/" className="text-violet-400 hover:text-violet-300 transition flex items-center gap-2">
+          <Link to="/" className="text-brand-primary-light hover:text-brand-primary-light transition flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </Link>
-          <Link to="/privacy" className="text-violet-400 hover:text-violet-300 transition">
+          <Link to="/privacy" className="text-brand-primary-light hover:text-brand-primary-light transition">
             Privacy Policy →
           </Link>
         </div>

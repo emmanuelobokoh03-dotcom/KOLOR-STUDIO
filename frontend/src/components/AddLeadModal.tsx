@@ -159,7 +159,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
     }, 1000);
   };
 
-  const inputClass = "w-full px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-gray-500 transition-all duration-200 text-base";
+  const inputClass = "w-full px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent text-white placeholder-gray-500 transition-all duration-200 text-base";
   const labelClass = "block text-sm font-medium text-[#A3A3A3] mb-1.5";
 
   return (
@@ -170,11 +170,11 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
         data-testid="add-lead-modal"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-4 md:p-6">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl md:text-2xl font-bold">Add New Lead</h2>
-              <p className="text-violet-100 mt-0.5 md:mt-1 text-sm">Manually add a potential client</p>
+              <p className="text-brand-primary-light mt-0.5 md:mt-1 text-sm">Manually add a potential client</p>
             </div>
             <button onClick={onClose} className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 touch-target" data-testid="add-lead-close">
               <X className="w-6 h-6" />
@@ -237,7 +237,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                 <button
                   type="button"
                   onClick={() => coverInputRef.current?.click()}
-                  className="w-full h-36 border-2 border-dashed border-[#333] rounded-xl flex flex-col items-center justify-center gap-2 hover:border-violet-500/50 hover:bg-violet-900/10 transition-all duration-200"
+                  className="w-full h-36 border-2 border-dashed border-[#333] rounded-xl flex flex-col items-center justify-center gap-2 hover:border-brand-primary/50 hover:bg-brand-primary-dark/10 transition-all duration-200"
                   data-testid="cover-image-upload-btn"
                 >
                   <div className="p-3 bg-[#262626] rounded-xl">
@@ -429,7 +429,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
               <button 
                 type="submit" 
                 disabled={loading} 
-                className="px-5 md:px-6 py-2.5 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-500 disabled:opacity-50 flex items-center gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-violet-500/20 touch-target" 
+                className="px-5 md:px-6 py-2.5 bg-brand-primary text-white rounded-xl font-medium hover:bg-brand-primary disabled:opacity-50 flex items-center gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-brand-primary/20 touch-target" 
                 data-testid="add-lead-submit"
               >
                 {loading ? (

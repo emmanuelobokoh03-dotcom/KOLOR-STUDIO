@@ -244,6 +244,11 @@ export interface User {
   currencyPosition?: 'BEFORE' | 'AFTER';
   numberFormat?: string;
   defaultTaxRate?: number;
+  // Brand settings
+  brandPrimaryColor?: string;
+  brandAccentColor?: string;
+  brandLogoUrl?: string;
+  brandFontFamily?: string;
   createdAt?: string;
   lastLoginAt?: string;
 }
@@ -589,7 +594,7 @@ export const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
 export const LEAD_STATUS_COLORS: Record<LeadStatus, string> = {
   NEW: 'bg-blue-100 text-blue-800',
   REVIEWING: 'bg-yellow-100 text-yellow-800',
-  CONTACTED: 'bg-purple-100 text-purple-800',
+  CONTACTED: 'bg-brand-primary/10 text-brand-primary-dark',
   QUALIFIED: 'bg-indigo-100 text-indigo-800',
   QUOTED: 'bg-orange-100 text-orange-800',
   NEGOTIATING: 'bg-pink-100 text-pink-800',
@@ -704,7 +709,7 @@ export const QUOTE_STATUS_LABELS: Record<QuoteStatus, string> = {
 export const QUOTE_STATUS_COLORS: Record<QuoteStatus, string> = {
   DRAFT: 'bg-gray-800/50 text-gray-300 border border-gray-700/50',
   SENT: 'bg-blue-900/50 text-blue-300 border border-blue-700/50',
-  VIEWED: 'bg-purple-900/50 text-purple-300 border border-purple-700/50',
+  VIEWED: 'bg-brand-primary-dark/50 text-brand-primary-light border border-brand-primary-dark/50',
   ACCEPTED: 'bg-green-900/50 text-green-300 border border-green-700/50',
   DECLINED: 'bg-red-900/50 text-red-300 border border-red-700/50',
   EXPIRED: 'bg-orange-900/50 text-orange-300 border border-orange-700/50',
@@ -858,22 +863,38 @@ export interface UserSettings {
 }
 
 export const settingsApi = {
-  // Get user settings
   get: async () => {
     return request<{ settings: UserSettings; availableCurrencies: CurrencyOption[] }>('/api/settings');
   },
-
-  // Update user settings
   update: async (data: Partial<UserSettings>) => {
     return request<{ message: string; settings: UserSettings }>('/api/settings', {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
   },
-
-  // Get available currencies
   getCurrencies: async () => {
     return request<{ currencies: CurrencyOption[] }>('/api/settings/currencies');
+  },
+  getBrand: async () => {
+    return request<{ brand: { primaryColor: string; accentColor: string; logoUrl: string | null; fontFamily: string } }>('/api/settings/brand');
+  },
+  updateBrand: async (data: { primaryColor?: string; accentColor?: string; fontFamily?: string }) => {
+    return request<{ message: string; brand: { primaryColor: string; accentColor: string; logoUrl: string | null; fontFamily: string } }>('/api/settings/brand', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+  uploadBrandLogo: async (formData: FormData) => {
+    const token = localStorage.getItem('kolor_token');
+    const res = await fetch(`${API_URL}/api/settings/brand/logo`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData,
+    });
+    return res.json();
+  },
+  deleteBrandLogo: async () => {
+    return request<{ message: string }>('/api/settings/brand/logo', { method: 'DELETE' });
   },
 };
 

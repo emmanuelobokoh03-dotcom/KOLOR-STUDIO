@@ -70,7 +70,7 @@ const SubmitInquiry = () => {
             </p>
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 font-medium"
+              className="inline-flex items-center gap-2 text-brand-primary-light hover:text-brand-primary-light font-medium"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Home
@@ -87,8 +87,8 @@ const SubmitInquiry = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Sparkles className="w-8 h-8 text-violet-500" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+            <Sparkles className="w-8 h-8 text-brand-primary" />
+            <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
           </Link>
@@ -119,7 +119,7 @@ const SubmitInquiry = () => {
                     name="clientName"
                     value={formData.clientName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
                     placeholder="John Smith"
                     data-testid="inquiry-name"
                   />
@@ -133,7 +133,7 @@ const SubmitInquiry = () => {
                     name="clientEmail"
                     value={formData.clientEmail}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
                     placeholder="john@example.com"
                     data-testid="inquiry-email"
                   />
@@ -147,7 +147,7 @@ const SubmitInquiry = () => {
                     name="clientPhone"
                     value={formData.clientPhone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
                     placeholder="+1 (555) 123-4567"
                   />
                 </div>
@@ -160,7 +160,7 @@ const SubmitInquiry = () => {
                     name="clientCompany"
                     value={formData.clientCompany}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
                     placeholder="Your Company"
                   />
                 </div>
@@ -179,7 +179,7 @@ const SubmitInquiry = () => {
                     name="serviceType"
                     value={formData.serviceType}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white"
+                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white"
                     data-testid="inquiry-service-type"
                   >
                     {SERVICE_TYPES.map((type) => (
@@ -198,7 +198,7 @@ const SubmitInquiry = () => {
                     name="projectTitle"
                     value={formData.projectTitle}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
                     placeholder="e.g., Wedding Photography - June 2026"
                     data-testid="inquiry-project-title"
                   />
@@ -212,7 +212,7 @@ const SubmitInquiry = () => {
                     value={formData.description}
                     onChange={handleChange}
                     rows={5}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition resize-none text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition resize-none text-white placeholder-gray-500"
                     placeholder="Tell us about your project... What are you looking for? Any specific requirements or vision?"
                     data-testid="inquiry-description"
                   />
@@ -226,7 +226,7 @@ const SubmitInquiry = () => {
                       name="budget"
                       value={formData.budget}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white"
+                      className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white"
                     >
                       <option value="">Select a range</option>
                       <option value="Under $1,000">Under $1,000</option>
@@ -246,7 +246,7 @@ const SubmitInquiry = () => {
                       name="timeline"
                       value={formData.timeline}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                      className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
                       placeholder="e.g., March 2026, ASAP, Flexible"
                     />
                   </div>
@@ -258,7 +258,7 @@ const SubmitInquiry = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-violet-600 text-white py-3 rounded-lg hover:bg-violet-500 transition-all shadow-lg shadow-violet-900/30 hover:shadow-xl hover:shadow-violet-900/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-brand-primary-dark/30 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               data-testid="inquiry-submit"
             >
               {loading ? (
@@ -281,7 +281,7 @@ const SubmitInquiry = () => {
         <div className="text-center mt-6">
           <Link
             to="/"
-            className="text-gray-400 hover:text-violet-400 text-sm flex items-center justify-center gap-2"
+            className="text-gray-400 hover:text-brand-primary-light text-sm flex items-center justify-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Home

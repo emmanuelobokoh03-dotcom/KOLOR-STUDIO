@@ -116,7 +116,7 @@ Looking forward to working with you!`
         data-testid="share-form-modal"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
@@ -124,7 +124,7 @@ Looking forward to working with you!`
               </div>
               <div>
                 <h2 className="text-xl font-bold">Share Your Inquiry Form</h2>
-                <p className="text-violet-100 text-sm">Get potential clients to submit project requests</p>
+                <p className="text-brand-primary-light text-sm">Get potential clients to submit project requests</p>
               </div>
             </div>
             <button 
@@ -142,7 +142,7 @@ Looking forward to working with you!`
           {/* Section 1: The Link */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-              <Link2 className="w-4 h-4 text-violet-400" />
+              <Link2 className="w-4 h-4 text-brand-primary-light" />
               Your Inquiry Form URL
             </label>
             <div className="flex gap-2">
@@ -152,7 +152,7 @@ Looking forward to working with you!`
                 value={inquiryUrl}
                 readOnly
                 onClick={handleInputClick}
-                className="flex-1 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent cursor-pointer"
+                className="flex-1 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent cursor-pointer"
                 data-testid="inquiry-url-input"
               />
               <button
@@ -160,7 +160,7 @@ Looking forward to working with you!`
                 className={`px-4 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all min-w-[110px] justify-center ${
                   copied
                     ? 'bg-green-600 text-white'
-                    : 'bg-violet-600 text-white hover:bg-violet-500'
+                    : 'bg-brand-primary text-white hover:bg-brand-primary'
                 }`}
                 data-testid="copy-link-btn"
               >
@@ -185,18 +185,18 @@ Looking forward to working with you!`
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleEmailLink}
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 hover:border-violet-500/50 hover:bg-dark-card-hover transition font-medium text-sm"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 hover:border-brand-primary/50 hover:bg-dark-card-hover transition font-medium text-sm"
                 data-testid="email-link-btn"
               >
-                <Mail className="w-4 h-4 text-violet-400" />
+                <Mail className="w-4 h-4 text-brand-primary-light" />
                 Email Link
               </button>
               <button
                 onClick={handleOpenForm}
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 hover:border-violet-500/50 hover:bg-dark-card-hover transition font-medium text-sm"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 hover:border-brand-primary/50 hover:bg-dark-card-hover transition font-medium text-sm"
                 data-testid="open-form-btn"
               >
-                <ExternalLink className="w-4 h-4 text-violet-400" />
+                <ExternalLink className="w-4 h-4 text-brand-primary-light" />
                 Open Form
               </button>
             </div>
@@ -223,7 +223,7 @@ Looking forward to working with you!`
                 </div>
                 <button
                   onClick={handleDownloadQR}
-                  className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium text-sm"
+                  className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium text-sm"
                   data-testid="download-qr-btn"
                 >
                   <Download className="w-4 h-4" />
@@ -237,10 +237,10 @@ Looking forward to working with you!`
           </div>
 
           {/* Section 4: Pro Tips */}
-          <div className="bg-violet-900/20 border border-violet-700/30 rounded-xl p-4">
+          <div className="bg-brand-primary-dark/20 border border-brand-primary-dark/30 rounded-xl p-4">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-violet-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Lightbulb className="w-4 h-4 text-violet-400" />
+              <div className="w-8 h-8 bg-brand-primary-dark/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Lightbulb className="w-4 h-4 text-brand-primary-light" />
               </div>
               <div>
                 <h4 className="font-medium text-gray-200 mb-2">Pro Tips</h4>

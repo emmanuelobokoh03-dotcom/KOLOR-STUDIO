@@ -7,14 +7,14 @@ import {
 } from 'lucide-react'
 
 const INDUSTRY_CONFIG: { type: IndustryType; icon: React.ElementType; gradient: string; desc: string }[] = [
-  { type: 'PHOTOGRAPHY', icon: Camera, gradient: 'from-violet-600 to-purple-700', desc: 'Portraits, weddings, events, commercial' },
+  { type: 'PHOTOGRAPHY', icon: Camera, gradient: 'from-brand-primary to-brand-primary-dark', desc: 'Portraits, weddings, events, commercial' },
   { type: 'VIDEOGRAPHY', icon: Film, gradient: 'from-blue-600 to-indigo-700', desc: 'Films, events, brand content, reels' },
   { type: 'GRAPHIC_DESIGN', icon: PenTool, gradient: 'from-pink-600 to-rose-700', desc: 'Logos, branding, print, digital design' },
   { type: 'WEB_DESIGN', icon: Globe, gradient: 'from-cyan-600 to-teal-700', desc: 'Websites, apps, UX/UI, digital products' },
   { type: 'ILLUSTRATION', icon: Brush, gradient: 'from-amber-600 to-orange-700', desc: 'Book covers, editorial, character design' },
   { type: 'FINE_ART', icon: Palette, gradient: 'from-emerald-600 to-green-700', desc: 'Paintings, portraits, mixed media' },
   { type: 'SCULPTURE', icon: Scissors, gradient: 'from-stone-600 to-stone-700', desc: 'Sculptures, installations, 3D work' },
-  { type: 'BRANDING', icon: Megaphone, gradient: 'from-fuchsia-600 to-pink-700', desc: 'Brand strategy, identity, campaigns' },
+  { type: 'BRANDING', icon: Megaphone, gradient: 'from-brand-accent to-pink-700', desc: 'Brand strategy, identity, campaigns' },
   { type: 'CONTENT_CREATION', icon: FileImage, gradient: 'from-sky-600 to-blue-700', desc: 'Social media, blogs, podcasts' },
   { type: 'OTHER', icon: Layers, gradient: 'from-gray-600 to-gray-700', desc: 'Other creative disciplines' },
 ]
@@ -81,7 +81,7 @@ export default function IndustryOnboarding() {
             Your <span className="text-white font-semibold">{INDUSTRY_TYPE_LABELS[selected!]}</span> workspace is ready
           </p>
           <p className="text-sm text-gray-500 mb-6">
-            We've created your "<span className="text-violet-400">{templateName}</span>" workflow template
+            We've created your "<span className="text-brand-primary-light">{templateName}</span>" workflow template
           </p>
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -97,8 +97,8 @@ export default function IndustryOnboarding() {
       {/* Header */}
       <div className="text-center pt-16 pb-8 px-6">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <Sparkles className="w-6 h-6 text-violet-400" />
-          <span className="text-sm font-medium text-violet-400 tracking-wider uppercase">Welcome to Kolor Studio</span>
+          <Sparkles className="w-6 h-6 text-brand-primary-light" />
+          <span className="text-sm font-medium text-brand-primary-light tracking-wider uppercase">Welcome to Kolor Studio</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
           What type of creative are you?
@@ -120,7 +120,7 @@ export default function IndustryOnboarding() {
                 data-testid={`industry-${type.toLowerCase().replace('_', '-')}`}
                 className={`relative p-4 rounded-2xl border-2 text-left transition-all duration-200 group ${
                   isSelected
-                    ? 'border-violet-500 bg-violet-900/20 scale-[1.02] shadow-lg shadow-violet-900/20'
+                    ? 'border-brand-primary bg-brand-primary-dark/20 scale-[1.02] shadow-lg shadow-brand-primary-dark/20'
                     : 'border-dark-border bg-dark-card hover:border-gray-600 hover:bg-dark-card-hover'
                 }`}
               >
@@ -134,7 +134,7 @@ export default function IndustryOnboarding() {
                 </div>
                 <div className="text-xs text-gray-500 leading-relaxed">{desc}</div>
                 {isSelected && (
-                  <div className="absolute top-3 right-3 w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center">
+                  <div className="absolute top-3 right-3 w-5 h-5 bg-brand-primary rounded-full flex items-center justify-center">
                     <CheckCircle className="w-3.5 h-3.5 text-white" />
                   </div>
                 )}
@@ -165,7 +165,7 @@ export default function IndustryOnboarding() {
             disabled={!selected || loading}
             className={`flex items-center gap-2 px-8 py-3 rounded-xl font-semibold text-white transition-all ${
               selected
-                ? 'bg-violet-600 hover:bg-violet-500 shadow-lg shadow-violet-900/30'
+                ? 'bg-brand-primary hover:bg-brand-primary shadow-lg shadow-brand-primary-dark/30'
                 : 'bg-gray-700 cursor-not-allowed opacity-50'
             }`}
             data-testid="onboarding-continue"

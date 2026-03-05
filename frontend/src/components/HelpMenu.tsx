@@ -85,8 +85,8 @@ export default function HelpMenu({ onOpenFeedback }: HelpMenuProps) {
             className="w-full px-4 py-2.5 text-left hover:bg-dark-card-hover flex items-center gap-3 transition"
             data-testid="send-feedback-btn"
           >
-            <div className="w-8 h-8 rounded-lg bg-violet-900/30 flex items-center justify-center border border-violet-700/30">
-              <MessageSquare className="w-4 h-4 text-violet-400" />
+            <div className="w-8 h-8 rounded-lg bg-brand-primary-dark/30 flex items-center justify-center border border-brand-primary-dark/30">
+              <MessageSquare className="w-4 h-4 text-brand-primary-light" />
             </div>
             <div>
               <p className="text-sm font-medium text-white">Send Feedback</p>

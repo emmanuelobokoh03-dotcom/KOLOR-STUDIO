@@ -110,7 +110,7 @@ export default function PublicPortfolio() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-brand-primary-light" />
       </div>
     )
   }
@@ -127,7 +127,7 @@ export default function PublicPortfolio() {
           <p className="text-gray-400 mb-6">{error}</p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition"
           >
             Go Home
           </Link>
@@ -146,7 +146,7 @@ export default function PublicPortfolio() {
           <div className="text-center">
             {/* Studio Logo/Name */}
             <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-primary rounded-xl flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
             </div>
@@ -173,7 +173,7 @@ export default function PublicPortfolio() {
                 onClick={() => setActiveCategory('ALL')}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                   activeCategory === 'ALL'
-                    ? 'bg-violet-600 text-white'
+                    ? 'bg-brand-primary text-white'
                     : 'bg-slate-800 text-gray-300 hover:bg-slate-700'
                 }`}
               >
@@ -187,7 +187,7 @@ export default function PublicPortfolio() {
                   onClick={() => setActiveCategory(cat)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                     activeCategory === cat
-                      ? 'bg-violet-600 text-white'
+                      ? 'bg-brand-primary text-white'
                       : 'bg-slate-800 text-gray-300 hover:bg-slate-700'
                   }`}
                 >
@@ -236,7 +236,7 @@ export default function PublicPortfolio() {
             {filteredItems.map((item, index) => (
               <div
                 key={item.id}
-                className="group relative bg-slate-900 rounded-xl overflow-hidden cursor-pointer border border-slate-800 hover:border-violet-500/50 transition-all hover:shadow-lg hover:shadow-violet-500/10"
+                className="group relative bg-slate-900 rounded-xl overflow-hidden cursor-pointer border border-slate-800 hover:border-brand-primary/50 transition-all hover:shadow-lg hover:shadow-brand-primary/10"
                 onClick={() => openLightbox(index)}
               >
                 {/* Image */}
@@ -260,7 +260,7 @@ export default function PublicPortfolio() {
                 {/* Hover Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                   <h3 className="text-white font-semibold text-lg">{item.title}</h3>
-                  <p className="text-violet-300 text-sm mt-1">
+                  <p className="text-brand-primary-light text-sm mt-1">
                     {PORTFOLIO_CATEGORY_LABELS[item.category]}
                   </p>
                 </div>
@@ -268,7 +268,7 @@ export default function PublicPortfolio() {
                 {/* Bottom Info (always visible) */}
                 <div className="p-4 bg-slate-900">
                   <h3 className="text-white font-medium truncate">{item.title}</h3>
-                  <span className="text-xs text-violet-400">
+                  <span className="text-xs text-brand-primary-light">
                     {PORTFOLIO_CATEGORY_LABELS[item.category]}
                   </span>
                 </div>
@@ -284,14 +284,14 @@ export default function PublicPortfolio() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-gray-500 text-sm">
               Powered by{' '}
-              <Link to="/" className="text-violet-400 hover:text-violet-300 transition">
+              <Link to="/" className="text-brand-primary-light hover:text-brand-primary-light transition">
                 KOLOR STUDIO
               </Link>
             </p>
             <div className="flex items-center gap-4">
               <a
                 href={`mailto:contact@example.com`}
-                className="flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition text-sm font-medium"
+                className="flex items-center gap-2 px-4 py-2 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition text-sm font-medium"
               >
                 <Mail className="w-4 h-4" />
                 Get in Touch
@@ -343,7 +343,7 @@ export default function PublicPortfolio() {
                 <p className="text-gray-400 mt-2 max-w-2xl mx-auto">{currentItem.description}</p>
               )}
               <div className="flex items-center justify-center gap-2 mt-3">
-                <span className="px-3 py-1 bg-violet-500/20 text-violet-300 rounded-full text-sm">
+                <span className="px-3 py-1 bg-brand-primary/20 text-brand-primary-light rounded-full text-sm">
                   {PORTFOLIO_CATEGORY_LABELS[currentItem.category]}
                 </span>
                 {currentItem.featured && (

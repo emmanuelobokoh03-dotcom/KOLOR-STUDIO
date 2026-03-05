@@ -115,7 +115,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
     e.preventDefault()
     e.stopPropagation()
     if (dropZoneRef.current) {
-      dropZoneRef.current.classList.add('border-violet-500', 'bg-violet-500/10')
+      dropZoneRef.current.classList.add('border-brand-primary', 'bg-brand-primary/10')
     }
   }
 
@@ -123,7 +123,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
     e.preventDefault()
     e.stopPropagation()
     if (dropZoneRef.current) {
-      dropZoneRef.current.classList.remove('border-violet-500', 'bg-violet-500/10')
+      dropZoneRef.current.classList.remove('border-brand-primary', 'bg-brand-primary/10')
     }
   }
 
@@ -131,7 +131,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
     e.preventDefault()
     e.stopPropagation()
     if (dropZoneRef.current) {
-      dropZoneRef.current.classList.remove('border-violet-500', 'bg-violet-500/10')
+      dropZoneRef.current.classList.remove('border-brand-primary', 'bg-brand-primary/10')
     }
     const file = e.dataTransfer.files[0]
     if (file) {
@@ -210,7 +210,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
         </div>
         <button
           onClick={handleAddNew}
-          className="flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition text-sm font-medium"
           data-testid="add-portfolio-btn"
         >
           <Plus className="w-4 h-4" />
@@ -229,7 +229,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
       {/* Loading */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
+          <Loader2 className="w-8 h-8 animate-spin text-brand-primary-light" />
         </div>
       ) : items.length === 0 ? (
         /* Empty State */
@@ -243,7 +243,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
           </p>
           <button
             onClick={handleAddNew}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition font-medium"
           >
             <Upload className="w-5 h-5" />
             Upload Your First Work
@@ -255,7 +255,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
           {items.map((item) => (
             <div
               key={item.id}
-              className="group bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-violet-500/50 transition"
+              className="group bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-brand-primary/50 transition"
             >
               {/* Image */}
               <div className="relative aspect-video bg-slate-900">
@@ -304,7 +304,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
               <div className="p-4">
                 <h3 className="font-semibold text-white truncate">{item.title}</h3>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="px-2 py-0.5 bg-violet-500/20 text-violet-300 rounded text-xs">
+                  <span className="px-2 py-0.5 bg-brand-primary/20 text-brand-primary-light rounded text-xs">
                     {PORTFOLIO_CATEGORY_LABELS[item.category]}
                   </span>
                   {item.tags.length > 0 && (
@@ -357,7 +357,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-slate-600 rounded-xl p-6 text-center cursor-pointer hover:border-violet-500 transition"
+                  className="border-2 border-dashed border-slate-600 rounded-xl p-6 text-center cursor-pointer hover:border-brand-primary transition"
                 >
                   {imagePreview ? (
                     <div className="relative">
@@ -410,7 +410,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Summer Wedding Collection"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
                   data-testid="portfolio-title-input"
                 />
               </div>
@@ -423,7 +423,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Brief description of this work..."
                   rows={3}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-none"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary resize-none"
                 />
               </div>
 
@@ -433,7 +433,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as PortfolioCategory)}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
                   data-testid="portfolio-category-select"
                 >
                   {Object.entries(PORTFOLIO_CATEGORY_LABELS).map(([value, label]) => (
@@ -450,7 +450,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder="e.g., wedding, outdoor, portraits"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
                 />
                 <p className="text-xs text-gray-500 mt-1">Separate tags with commas</p>
               </div>
@@ -462,7 +462,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   id="featured"
                   checked={featured}
                   onChange={(e) => setFeatured(e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-violet-600 focus:ring-violet-500"
+                  className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-brand-primary focus:ring-brand-primary"
                 />
                 <label htmlFor="featured" className="text-sm text-gray-300 flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-400" />
@@ -483,7 +483,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition text-sm font-medium disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition text-sm font-medium disabled:opacity-50"
                 data-testid="save-portfolio-btn"
               >
                 {saving ? (

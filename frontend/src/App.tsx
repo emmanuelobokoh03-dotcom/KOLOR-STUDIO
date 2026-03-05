@@ -13,11 +13,13 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import PublicPortfolio from './pages/PublicPortfolio'
 import IndustryOnboarding from './components/IndustryOnboarding'
+import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
 
 function App() {
   return (
-    <Router>
+    <BrandThemeProvider>
+      <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
@@ -36,6 +38,7 @@ function App() {
       <CookieConsent />
       <Analytics />
     </Router>
+    </BrandThemeProvider>
   )
 }
 

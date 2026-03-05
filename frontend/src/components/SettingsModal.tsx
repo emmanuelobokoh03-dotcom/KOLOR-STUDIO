@@ -8,18 +8,20 @@ import {
   Check,
   Globe,
   Percent,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Palette
 } from 'lucide-react'
 import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 import { formatCurrency, NUMBER_FORMAT_OPTIONS } from '../utils/currency'
 import PortfolioSettings from './PortfolioSettings'
+import BrandSettings from './BrandSettings'
 
 interface SettingsModalProps {
   onClose: () => void;
   onSettingsUpdate?: (settings: UserSettings) => void;
 }
 
-type SettingsTab = 'currency' | 'portfolio';
+type SettingsTab = 'currency' | 'portfolio' | 'brand';
 
 export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>('currency')
@@ -118,7 +120,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
     return (
       <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div className="bg-dark-card rounded-2xl p-8">
-          <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
+          <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
         </div>
       </div>
     )
@@ -132,13 +134,13 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
         data-testid="settings-modal"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6 flex-shrink-0">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Settings className="w-6 h-6" />
               <div>
                 <h2 className="text-xl font-bold">Settings</h2>
-                <p className="text-violet-100 text-sm">Manage your preferences</p>
+                <p className="text-brand-primary-light text-sm">Manage your preferences</p>
               </div>
             </div>
             <button 
@@ -156,7 +158,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               className={`flex items-center gap-2 px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'currency'
                   ? 'bg-dark-card text-white'
-                  : 'bg-white/10 text-violet-100 hover:bg-white/20'
+                  : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
               }`}
             >
               <DollarSign className="w-4 h-4" />
@@ -167,18 +169,32 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               className={`flex items-center gap-2 px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'portfolio'
                   ? 'bg-dark-card text-white'
-                  : 'bg-white/10 text-violet-100 hover:bg-white/20'
+                  : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
               }`}
             >
               <ImageIcon className="w-4 h-4" />
               Portfolio
+            </button>
+            <button
+              onClick={() => setActiveTab('brand')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-t-lg text-sm font-medium transition ${
+                activeTab === 'brand'
+                  ? 'bg-dark-card text-white'
+                  : 'bg-white/10 text-brand-primary-light hover:bg-white/20'
+              }`}
+              data-testid="brand-tab"
+            >
+              <Palette className="w-4 h-4" />
+              Brand
             </button>
           </div>
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
-          {activeTab === 'portfolio' ? (
+          {activeTab === 'brand' ? (
+            <BrandSettings />
+          ) : activeTab === 'portfolio' ? (
             <PortfolioSettings />
           ) : (
             <div className="space-y-6">
@@ -191,13 +207,13 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
           {/* Currency Selection */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-              <Globe className="w-4 h-4 text-violet-400" />
+              <Globe className="w-4 h-4 text-brand-primary-light" />
               Currency
             </label>
             <select
               value={currency}
               onChange={(e) => handleCurrencyChange(e.target.value)}
-              className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-white focus:ring-2 focus:ring-violet-500"
+              className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-white focus:ring-2 focus:ring-brand-primary"
               data-testid="currency-select"
             >
               {currencies.map(c => (
@@ -215,7 +231,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               id="useCustomSymbol"
               checked={useCustomSymbol}
               onChange={(e) => setUseCustomSymbol(e.target.checked)}
-              className="w-4 h-4 rounded border-dark-border bg-dark-bg-secondary text-violet-600 focus:ring-violet-500"
+              className="w-4 h-4 rounded border-dark-border bg-dark-bg-secondary text-brand-primary focus:ring-brand-primary"
             />
             <label htmlFor="useCustomSymbol" className="text-sm text-gray-400">
               Use custom currency symbol
@@ -232,7 +248,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
                 value={customSymbol}
                 onChange={(e) => setCustomSymbol(e.target.value.slice(0, 5))}
                 placeholder="e.g., $, €, ₦"
-                className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-white focus:ring-2 focus:ring-violet-500"
+                className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-white focus:ring-2 focus:ring-brand-primary"
                 maxLength={5}
                 data-testid="custom-symbol-input"
               />
@@ -242,7 +258,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
           {/* Symbol Position */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-              <DollarSign className="w-4 h-4 text-violet-400" />
+              <DollarSign className="w-4 h-4 text-brand-primary-light" />
               Symbol Position
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -251,8 +267,8 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
                 onClick={() => setCurrencyPosition('BEFORE')}
                 className={`px-4 py-3 rounded-lg border text-sm font-medium transition ${
                   currencyPosition === 'BEFORE'
-                    ? 'bg-violet-600 border-violet-600 text-white'
-                    : 'bg-dark-bg-secondary border-dark-border text-gray-300 hover:border-violet-500/50'
+                    ? 'bg-brand-primary border-brand-primary text-white'
+                    : 'bg-dark-bg-secondary border-dark-border text-gray-300 hover:border-brand-primary/50'
                 }`}
                 data-testid="position-before"
               >
@@ -263,8 +279,8 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
                 onClick={() => setCurrencyPosition('AFTER')}
                 className={`px-4 py-3 rounded-lg border text-sm font-medium transition ${
                   currencyPosition === 'AFTER'
-                    ? 'bg-violet-600 border-violet-600 text-white'
-                    : 'bg-dark-bg-secondary border-dark-border text-gray-300 hover:border-violet-500/50'
+                    ? 'bg-brand-primary border-brand-primary text-white'
+                    : 'bg-dark-bg-secondary border-dark-border text-gray-300 hover:border-brand-primary/50'
                 }`}
                 data-testid="position-after"
               >
@@ -286,8 +302,8 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
                   onClick={() => setNumberFormat(opt.value)}
                   className={`w-full px-4 py-3 rounded-lg border text-left transition flex items-center justify-between ${
                     numberFormat === opt.value
-                      ? 'bg-violet-900/30 border-violet-600 text-white'
-                      : 'bg-dark-bg-secondary border-dark-border text-gray-300 hover:border-violet-500/50'
+                      ? 'bg-brand-primary-dark/30 border-brand-primary text-white'
+                      : 'bg-dark-bg-secondary border-dark-border text-gray-300 hover:border-brand-primary/50'
                   }`}
                   data-testid={`format-${opt.value.replace(/[,.]/g, '')}`}
                 >
@@ -301,7 +317,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
           {/* Default Tax Rate */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-              <Percent className="w-4 h-4 text-violet-400" />
+              <Percent className="w-4 h-4 text-brand-primary-light" />
               Default Tax Rate
             </label>
             <div className="relative">
@@ -312,7 +328,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
                 step="0.1"
                 value={defaultTaxRate}
                 onChange={(e) => setDefaultTaxRate(Number(e.target.value))}
-                className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-white focus:ring-2 focus:ring-violet-500 pr-12"
+                className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-white focus:ring-2 focus:ring-brand-primary pr-12"
                 placeholder="0"
                 data-testid="tax-rate-input"
               />
@@ -324,8 +340,8 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
           </div>
 
           {/* Preview */}
-          <div className="bg-gradient-to-r from-violet-900/30 to-purple-900/30 border border-violet-700/50 rounded-xl p-4">
-            <p className="text-xs text-violet-400 font-medium mb-2 uppercase tracking-wide">Preview</p>
+          <div className="bg-gradient-to-r from-brand-primary-dark/30 to-brand-primary-dark/30 border border-brand-primary-dark/50 rounded-xl p-4">
+            <p className="text-xs text-brand-primary-light font-medium mb-2 uppercase tracking-wide">Preview</p>
             <p className="text-3xl font-bold text-white">
               {formatCurrency(previewAmount, {
                 currencySymbol: effectiveSymbol,
@@ -356,7 +372,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
             className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition ${
               saved
                 ? 'bg-green-600 text-white'
-                : 'bg-violet-600 text-white hover:bg-violet-500'
+                : 'bg-brand-primary text-white hover:bg-brand-primary'
             } disabled:opacity-50`}
             data-testid="save-settings-btn"
           >

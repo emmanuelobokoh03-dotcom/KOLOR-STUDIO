@@ -21,7 +21,7 @@ export function InlineHint({ storageKey, children, dismissible = true, variant =
   }
 
   const styles = variant === 'violet'
-    ? 'bg-violet-900/20 border-violet-700/30 text-violet-300'
+    ? 'bg-brand-primary-dark/20 border-brand-primary-dark/30 text-brand-primary-light'
     : 'bg-[#1A1A1A] border-[#333] text-[#A3A3A3]'
 
   return (

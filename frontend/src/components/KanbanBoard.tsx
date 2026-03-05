@@ -31,11 +31,11 @@ interface KanbanBoardProps {
 const KANBAN_COLUMNS: LeadStatus[] = ['NEW', 'CONTACTED', 'QUOTED', 'NEGOTIATING', 'BOOKED'];
 
 const COLUMN_COLORS: Record<LeadStatus, { bg: string; border: string; header: string }> = {
-  NEW: { bg: 'bg-violet-950/20', border: 'border-violet-800/40', header: 'bg-violet-600' },
-  REVIEWING: { bg: 'bg-violet-950/20', border: 'border-violet-800/40', header: 'bg-violet-600' },
-  CONTACTED: { bg: 'bg-purple-950/20', border: 'border-purple-800/40', header: 'bg-purple-500' },
+  NEW: { bg: 'bg-brand-primary-dark/20', border: 'border-brand-primary-dark/40', header: 'bg-brand-primary' },
+  REVIEWING: { bg: 'bg-brand-primary-dark/20', border: 'border-brand-primary-dark/40', header: 'bg-brand-primary' },
+  CONTACTED: { bg: 'bg-brand-primary-dark/20', border: 'border-brand-primary-dark/40', header: 'bg-brand-primary' },
   QUALIFIED: { bg: 'bg-indigo-950/20', border: 'border-indigo-800/40', header: 'bg-indigo-500' },
-  QUOTED: { bg: 'bg-fuchsia-950/20', border: 'border-fuchsia-800/40', header: 'bg-fuchsia-500' },
+  QUOTED: { bg: 'bg-brand-accent-dark/20', border: 'border-brand-accent-dark/40', header: 'bg-brand-accent' },
   NEGOTIATING: { bg: 'bg-blue-950/20', border: 'border-blue-800/40', header: 'bg-blue-500' },
   BOOKED: { bg: 'bg-emerald-950/20', border: 'border-emerald-800/40', header: 'bg-emerald-500' },
   LOST: { bg: 'bg-slate-950/20', border: 'border-slate-700/40', header: 'bg-slate-500' },
@@ -88,7 +88,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
       key={lead.id}
       draggable
       onDragStart={(e) => handleDragStart(e, lead)}
-      className={`bg-[#1A1A1A] rounded-xl border border-[#333] overflow-hidden cursor-grab active:cursor-grabbing hover:border-violet-500/50 hover:shadow-lg hover:shadow-violet-500/5 transition-all duration-200 group ${
+      className={`bg-[#1A1A1A] rounded-xl border border-[#333] overflow-hidden cursor-grab active:cursor-grabbing hover:border-brand-primary/50 hover:shadow-lg hover:shadow-brand-primary/5 transition-all duration-200 group ${
         draggedLead?.id === lead.id ? 'opacity-50 scale-95' : ''
       }`}
       data-testid={`lead-card-${lead.id}`}
@@ -99,16 +99,16 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           <img src={lead.coverImage} alt={lead.projectTitle} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent opacity-60" />
           <div className="absolute bottom-2 left-3 right-3">
-            <span className="text-xs px-2 py-0.5 bg-violet-600/80 backdrop-blur-sm text-white rounded-full">
+            <span className="text-xs px-2 py-0.5 bg-brand-primary/80 backdrop-blur-sm text-white rounded-full">
               {SERVICE_TYPE_LABELS[lead.serviceType]}
             </span>
           </div>
         </div>
       ) : (
-        <div className="relative h-20 md:h-24 bg-gradient-to-br from-violet-900/30 to-purple-900/20 flex items-center justify-center cursor-pointer overflow-hidden" onClick={() => onLeadClick(lead)}>
-          <ImageIcon className="w-7 h-7 md:w-8 md:h-8 text-violet-500/30" />
+        <div className="relative h-20 md:h-24 bg-gradient-to-br from-brand-primary-dark/30 to-brand-primary-dark/20 flex items-center justify-center cursor-pointer overflow-hidden" onClick={() => onLeadClick(lead)}>
+          <ImageIcon className="w-7 h-7 md:w-8 md:h-8 text-brand-primary/30" />
           <div className="absolute bottom-2 left-3 right-3">
-            <span className="text-xs px-2 py-0.5 bg-violet-900/80 backdrop-blur-sm text-violet-300 rounded-full border border-violet-700/50">
+            <span className="text-xs px-2 py-0.5 bg-brand-primary-dark/80 backdrop-blur-sm text-brand-primary-light rounded-full border border-brand-primary-dark/50">
               {SERVICE_TYPE_LABELS[lead.serviceType]}
             </span>
           </div>
@@ -152,7 +152,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           </div>
         </div>
 
-        <h4 className="font-semibold text-[#FAFAFA] mb-2 md:mb-3 cursor-pointer hover:text-violet-400 transition-colors duration-200 text-sm leading-snug line-clamp-2" onClick={() => onLeadClick(lead)}>
+        <h4 className="font-semibold text-[#FAFAFA] mb-2 md:mb-3 cursor-pointer hover:text-brand-primary-light transition-colors duration-200 text-sm leading-snug line-clamp-2" onClick={() => onLeadClick(lead)}>
           {lead.projectTitle}
         </h4>
 
@@ -263,7 +263,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
             <div
               key={status}
               className={`flex-shrink-0 w-[300px] rounded-xl ${colors.bg} ${colors.border} border-2 transition-all duration-300 ${
-                isOver ? 'ring-2 ring-violet-400 scale-[1.02]' : ''
+                isOver ? 'ring-2 ring-brand-primary-light scale-[1.02]' : ''
               }`}
               onDragOver={(e) => handleDragOver(e, status)}
               onDragLeave={handleDragLeave}

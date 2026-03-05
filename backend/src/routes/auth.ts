@@ -233,6 +233,10 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response): Promi
         numberFormat: true,
         defaultTaxRate: true,
         primaryIndustry: true,
+        brandPrimaryColor: true,
+        brandAccentColor: true,
+        brandLogoUrl: true,
+        brandFontFamily: true,
         createdAt: true,
         lastLoginAt: true,
       }

@@ -32,7 +32,7 @@ export default function MobileBottomNav({ viewMode, onViewChange, onOpenSettings
               onClick={() => isSettings ? onOpenSettings() : onViewChange(mode as ViewMode)}
               className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-3 rounded-xl min-w-[64px] touch-target transition-all duration-200 ${
                 isActive
-                  ? 'text-violet-400'
+                  ? 'text-brand-primary-light'
                   : 'text-[#666] active:text-white'
               }`}
               data-testid={`bottom-nav-${mode}`}

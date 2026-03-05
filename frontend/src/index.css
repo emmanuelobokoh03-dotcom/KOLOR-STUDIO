@@ -6,7 +6,7 @@
   body {
     background-color: #0f0f0f;
     color: #fafafa;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-brand, 'Inter'), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
@@ -65,7 +65,7 @@
 
   /* Smoother selection */
   ::selection {
-    background-color: rgba(168, 85, 247, 0.3);
+    background-color: rgb(var(--color-brand-primary-rgb, 168 85 247) / 0.3);
     color: #fafafa;
   }
 }
@@ -152,7 +152,7 @@
 }
 .kolor-tour-popover .driver-popover-next-btn,
 .kolor-tour-popover .driver-popover-close-btn[data-button-name="done"] {
-  background: #7C3AED !important;
+  background: rgb(var(--color-brand-primary-rgb, 168 85 247)) !important;
   color: white !important;
   border: none !important;
   padding: 8px 20px !important;
@@ -163,7 +163,7 @@
 }
 .kolor-tour-popover .driver-popover-next-btn:hover,
 .kolor-tour-popover .driver-popover-close-btn[data-button-name="done"]:hover {
-  background: #6D28D9 !important;
+  background: rgb(var(--color-brand-primary-dark-rgb, 147 51 234)) !important;
 }
 .kolor-tour-popover .driver-popover-prev-btn {
   color: #A3A3A3 !important;

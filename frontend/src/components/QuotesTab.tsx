@@ -35,9 +35,10 @@ import {
 interface QuotesTabProps {
   lead: Lead;
   onQuoteUpdate?: () => void;
+  onQuoteSent?: () => void;
 }
 
-export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
+export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTabProps) {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
   const [showBuilder, setShowBuilder] = useState(false);
@@ -100,6 +101,7 @@ export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
     }
     fetchQuotes();
     onQuoteUpdate?.();
+    onQuoteSent?.();
   };
 
   const handleDeleteQuote = async (quoteId: string) => {
@@ -165,7 +167,7 @@ export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
     switch (status) {
       case 'ACCEPTED': return <CheckCircle className="w-4 h-4 text-green-400" />;
       case 'DECLINED': return <XCircle className="w-4 h-4 text-red-400" />;
-      case 'VIEWED': return <Eye className="w-4 h-4 text-purple-400" />;
+      case 'VIEWED': return <Eye className="w-4 h-4 text-brand-primary-light" />;
       case 'SENT': return <Send className="w-4 h-4 text-blue-400" />;
       case 'EXPIRED': return <Clock className="w-4 h-4 text-orange-400" />;
       default: return <FileText className="w-4 h-4 text-gray-400" />;
@@ -175,7 +177,7 @@ export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
   if (loading) {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-violet-500" />
+        <Loader2 className="w-6 h-6 animate-spin text-brand-primary" />
       </div>
     );
   }
@@ -185,12 +187,12 @@ export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
-          <FileText className="w-4 h-4 text-violet-400" />
+          <FileText className="w-4 h-4 text-brand-primary-light" />
           Quotes ({quotes.length})
         </h3>
         <button
           onClick={() => setShowBuilder(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium text-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium text-sm"
           data-testid="create-quote-btn"
         >
           <Plus className="w-4 h-4" />
@@ -214,7 +216,7 @@ export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
           </p>
           <button
             onClick={() => setShowBuilder(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-white rounded-xl hover:bg-brand-primary transition font-medium"
             data-testid="quotes-empty-cta"
           >
             <FileText className="w-5 h-5" />
@@ -231,7 +233,7 @@ export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
             return (
             <div
               key={quote.id}
-              className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border hover:border-violet-500/30 transition"
+              className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border hover:border-brand-primary/30 transition"
               data-testid={`quote-card-${quote.id}`}
             >
               <div className="flex items-start justify-between">
@@ -278,7 +280,7 @@ export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
                     <>
                       <button
                         onClick={() => { setEditingQuote(quote); setShowBuilder(true); }}
-                        className="p-2 text-gray-400 hover:text-violet-400 hover:bg-violet-900/30 rounded-lg transition"
+                        className="p-2 text-gray-400 hover:text-brand-primary-light hover:bg-brand-primary-dark/30 rounded-lg transition"
                         title="Edit"
                       >
                         <Edit3 className="w-4 h-4" />
@@ -286,7 +288,7 @@ export default function QuotesTab({ lead, onQuoteUpdate }: QuotesTabProps) {
                       <button
                         onClick={() => handleSendQuote(quote.id)}
                         disabled={sendingId === quote.id}
-                        className="flex items-center gap-2 px-3 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition text-sm font-medium disabled:opacity-50"
+                        className="flex items-center gap-2 px-3 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition text-sm font-medium disabled:opacity-50"
                       >
                         {sendingId === quote.id ? (
                           <Loader2 className="w-4 h-4 animate-spin" />

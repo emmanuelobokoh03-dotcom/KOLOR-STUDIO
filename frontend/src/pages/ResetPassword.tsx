@@ -99,8 +99,8 @@ const ResetPassword = () => {
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-              <Sparkles className="w-8 h-8 text-violet-500" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+              <Sparkles className="w-8 h-8 text-brand-primary" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
                 KOLOR STUDIO
               </span>
             </Link>
@@ -115,7 +115,7 @@ const ResetPassword = () => {
               <p className="text-gray-400 mb-6">
                 Your password has been changed successfully. Redirecting you to the login page...
               </p>
-              <div className="flex items-center justify-center gap-2 text-violet-400">
+              <div className="flex items-center justify-center gap-2 text-brand-primary-light">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span className="text-sm">Redirecting...</span>
               </div>
@@ -131,8 +131,8 @@ const ResetPassword = () => {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Sparkles className="w-8 h-8 text-violet-500" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+            <Sparkles className="w-8 h-8 text-brand-primary" />
+            <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
           </Link>
@@ -162,7 +162,7 @@ const ResetPassword = () => {
                     setPassword(e.target.value)
                     setError('')
                   }}
-                  className="w-full pl-12 pr-12 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                  className="w-full pl-12 pr-12 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
                   placeholder="Enter new password"
                   data-testid="reset-password-input"
                 />
@@ -224,7 +224,7 @@ const ResetPassword = () => {
                     setConfirmPassword(e.target.value)
                     setError('')
                   }}
-                  className={`w-full pl-12 pr-12 py-3 bg-dark-bg-secondary border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition text-white placeholder-gray-500 ${
+                  className={`w-full pl-12 pr-12 py-3 bg-dark-bg-secondary border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500 ${
                     confirmPassword && confirmPassword !== password
                       ? 'border-red-500/50'
                       : confirmPassword && confirmPassword === password
@@ -256,7 +256,7 @@ const ResetPassword = () => {
             <button
               type="submit"
               disabled={loading || !token}
-              className="w-full bg-violet-600 text-white py-3 rounded-lg hover:bg-violet-500 transition-all shadow-lg shadow-violet-900/30 hover:shadow-xl hover:shadow-violet-900/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-brand-primary-dark/30 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               data-testid="reset-password-submit"
             >
               {loading ? (
@@ -273,7 +273,7 @@ const ResetPassword = () => {
           <div className="mt-6 text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-violet-400 transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-brand-primary-light transition-colors"
               data-testid="back-to-login-from-reset"
             >
               <ArrowLeft className="w-4 h-4" />

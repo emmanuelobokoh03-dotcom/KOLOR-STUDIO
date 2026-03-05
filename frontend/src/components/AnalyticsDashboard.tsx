@@ -98,7 +98,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
       </div>
     )
   }
@@ -136,17 +136,17 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       {/* Revenue Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Pipeline Value */}
-        <div className="bg-gradient-to-br from-violet-900/40 to-purple-900/40 rounded-xl p-5 border border-violet-700/30" data-testid="card-pipeline">
+        <div className="bg-gradient-to-br from-brand-primary-dark/40 to-brand-primary-dark/40 rounded-xl p-5 border border-brand-primary-dark/30" data-testid="card-pipeline">
           <div className="flex items-center justify-between mb-3">
-            <div className="p-2 bg-violet-600/30 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-violet-400" />
+            <div className="p-2 bg-brand-primary/30 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-brand-primary-light" />
             </div>
           </div>
-          <p className="text-sm text-violet-300 mb-1">Pipeline Value</p>
+          <p className="text-sm text-brand-primary-light mb-1">Pipeline Value</p>
           <p className="text-3xl font-bold text-white">
             {formatCurrency(dashboard.overview.pipelineValue, currencySettings)}
           </p>
-          <p className="text-xs text-violet-400 mt-2">Total potential revenue</p>
+          <p className="text-xs text-brand-primary-light mt-2">Total potential revenue</p>
         </div>
 
         {/* Booked This Month */}
@@ -209,7 +209,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
           <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-4 h-4 text-violet-400" />
+            <DollarSign className="w-4 h-4 text-brand-primary-light" />
             <span className="text-xs text-gray-400">Avg Deal Size</span>
           </div>
           <p className="text-xl font-bold text-white">
@@ -219,7 +219,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
 
         <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
           <div className="flex items-center gap-2 mb-2">
-            <Clock className="w-4 h-4 text-violet-400" />
+            <Clock className="w-4 h-4 text-brand-primary-light" />
             <span className="text-xs text-gray-400">Avg Time to Close</span>
           </div>
           <p className="text-xl font-bold text-white">
@@ -229,7 +229,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
 
         <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
           <div className="flex items-center gap-2 mb-2">
-            <Users className="w-4 h-4 text-violet-400" />
+            <Users className="w-4 h-4 text-brand-primary-light" />
             <span className="text-xs text-gray-400">Active Leads</span>
           </div>
           <p className="text-xl font-bold text-white">
@@ -239,7 +239,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
 
         <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
           <div className="flex items-center gap-2 mb-2">
-            <Trophy className="w-4 h-4 text-violet-400" />
+            <Trophy className="w-4 h-4 text-brand-primary-light" />
             <span className="text-xs text-gray-400">Win Rate</span>
           </div>
           <p className={`text-xl font-bold ${getConversionRateColor(dashboard.metrics.winRate)}`}>
@@ -313,14 +313,14 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
                   </div>
                   <div className="flex items-center justify-between text-sm text-gray-400">
                     <span>{source.totalLeads} leads • {source.bookedLeads} booked</span>
-                    <span className="text-violet-400">
+                    <span className="text-brand-primary-light">
                       {formatCurrency(source.revenue, currencySettings)}
                     </span>
                   </div>
                   {/* Progress bar */}
                   <div className="mt-2 h-1.5 bg-dark-border rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-violet-600 to-purple-600 rounded-full"
+                      className="h-full bg-gradient-to-r from-brand-primary to-brand-primary rounded-full"
                       style={{ width: `${Math.min(source.conversionRate, 100)}%` }}
                     />
                   </div>
@@ -370,7 +370,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
                           }}
                         />
                       </div>
-                      <span className="text-sm text-violet-400 whitespace-nowrap">
+                      <span className="text-sm text-brand-primary-light whitespace-nowrap">
                         {formatCurrency(stage.value, currencySettings)}
                       </span>
                     </div>

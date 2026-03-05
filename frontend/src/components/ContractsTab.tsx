@@ -32,6 +32,7 @@ import {
 
 interface ContractsTabProps {
   leadId: string;
+  onContractSigned?: () => void;
 }
 
 const STATUS_STYLES: Record<ContractStatus, string> = {
@@ -50,7 +51,7 @@ const TEMPLATE_ICONS: Record<string, React.ElementType> = {
   CUSTOM: FileEdit,
 };
 
-export default function ContractsTab({ leadId }: ContractsTabProps) {
+export default function ContractsTab({ leadId, onContractSigned }: ContractsTabProps) {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [templates, setTemplates] = useState<ContractTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,7 +73,13 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
   const fetchContracts = async () => {
     setLoading(true);
     const result = await contractsApi.getForLead(leadId);
-    if (result.data?.contracts) setContracts(result.data.contracts);
+    if (result.data?.contracts) {
+      setContracts(result.data.contracts);
+      // Check for first signed contract celebration
+      if (result.data.contracts.some((c: Contract) => c.clientAgreed)) {
+        onContractSigned?.();
+      }
+    }
     setLoading(false);
   };
 
@@ -189,7 +196,7 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-5 py-2.5 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-500 disabled:opacity-50 flex items-center gap-2 touch-target"
+            className="px-5 py-2.5 bg-brand-primary text-white rounded-xl font-medium hover:bg-brand-primary disabled:opacity-50 flex items-center gap-2 touch-target"
             data-testid="save-contract-btn"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
@@ -213,12 +220,12 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-base md:text-lg font-semibold text-[#FAFAFA] flex items-center gap-2">
-          <FileText className="w-5 h-5 text-violet-400" />
+          <FileText className="w-5 h-5 text-brand-primary-light" />
           Contracts
         </h3>
         <button
           onClick={() => setShowTemplateSelector(true)}
-          className="flex items-center gap-1.5 px-3 md:px-4 py-2 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-500 touch-target"
+          className="flex items-center gap-1.5 px-3 md:px-4 py-2 bg-brand-primary text-white rounded-xl text-sm font-medium hover:bg-brand-primary touch-target"
           data-testid="new-contract-btn"
         >
           <Plus className="w-4 h-4" /> New Contract
@@ -245,11 +252,11 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
                   key={tmpl.type}
                   onClick={() => handleCreateFromTemplate(tmpl.type)}
                   disabled={creating}
-                  className="flex items-center gap-3 p-3 md:p-4 bg-[#1A1A1A] border border-[#333] rounded-xl hover:border-violet-500/50 hover:bg-violet-900/10 transition-all duration-200 text-left touch-target"
+                  className="flex items-center gap-3 p-3 md:p-4 bg-[#1A1A1A] border border-[#333] rounded-xl hover:border-brand-primary/50 hover:bg-brand-primary-dark/10 transition-all duration-200 text-left touch-target"
                   data-testid={`template-${tmpl.type.toLowerCase()}`}
                 >
-                  <div className="p-2 bg-violet-900/30 rounded-xl border border-violet-700/30 flex-shrink-0">
-                    <Icon className="w-5 h-5 text-violet-400" />
+                  <div className="p-2 bg-brand-primary-dark/30 rounded-xl border border-brand-primary-dark/30 flex-shrink-0">
+                    <Icon className="w-5 h-5 text-brand-primary-light" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-[#FAFAFA] truncate">{tmpl.label}</p>
@@ -260,7 +267,7 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
             })}
           </div>
           {creating && (
-            <div className="flex items-center justify-center gap-2 mt-4 text-sm text-violet-400">
+            <div className="flex items-center justify-center gap-2 mt-4 text-sm text-brand-primary-light">
               <Loader2 className="w-4 h-4 animate-spin" /> Creating contract...
             </div>
           )}
@@ -291,7 +298,7 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
           </p>
           <button
             onClick={() => setShowTemplateSelector(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-white rounded-xl hover:bg-brand-primary transition font-medium"
             data-testid="contracts-empty-cta"
           >
             <FileText className="w-5 h-5" />
@@ -318,8 +325,8 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
                   className="flex items-center gap-3 p-3 md:p-4 cursor-pointer"
                   onClick={() => setExpandedContract(isExpanded ? null : contract.id)}
                 >
-                  <div className="p-2 bg-violet-900/30 rounded-xl border border-violet-700/30 flex-shrink-0">
-                    <Icon className="w-5 h-5 text-violet-400" />
+                  <div className="p-2 bg-brand-primary-dark/30 rounded-xl border border-brand-primary-dark/30 flex-shrink-0">
+                    <Icon className="w-5 h-5 text-brand-primary-light" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -393,7 +400,7 @@ export default function ContractsTab({ leadId }: ContractsTabProps) {
                         <button
                           onClick={(e) => { e.stopPropagation(); handleSend(contract.id); }}
                           disabled={sending === contract.id}
-                          className="flex items-center gap-1.5 px-4 py-2 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-500 disabled:opacity-50 ml-auto touch-target"
+                          className="flex items-center gap-1.5 px-4 py-2 bg-brand-primary text-white rounded-xl text-sm font-medium hover:bg-brand-primary disabled:opacity-50 ml-auto touch-target"
                           data-testid={`send-contract-${contract.id}`}
                         >
                           {sending === contract.id ? (

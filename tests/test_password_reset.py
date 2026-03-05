@@ -8,7 +8,7 @@ import os
 import time
 import hashlib
 
-BASE_URL = "https://legal-agreements-1.preview.emergentagent.com"
+BASE_URL = "https://design-theme.preview.emergentagent.com"
 
 # Test user credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

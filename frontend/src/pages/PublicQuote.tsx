@@ -136,7 +136,7 @@ export default function PublicQuote() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-violet-600 mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 animate-spin text-brand-primary mx-auto mb-4" />
           <p className="text-gray-600">Loading quote...</p>
         </div>
       </div>
@@ -154,7 +154,7 @@ export default function PublicQuote() {
           </p>
           <button
             onClick={() => navigate('/')}
-            className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition"
+            className="px-6 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition"
           >
             Go to Homepage
           </button>
@@ -169,7 +169,7 @@ export default function PublicQuote() {
   const paymentTermsLabel = PAYMENT_TERMS_OPTIONS.find(o => o.value === quote.paymentTerms)?.label || quote.paymentTerms;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-primary/5 to-brand-primary/5 py-8 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Success Banner */}
         {actionSuccess && (
@@ -199,13 +199,13 @@ export default function PublicQuote() {
         {/* Quote Document */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden" data-testid="public-quote">
           {/* Header */}
-          <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6 md:p-8">
+          <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold mb-1">
                   {quote.createdBy?.studioName || 'Quote'}
                 </h1>
-                <p className="text-violet-100 font-mono text-sm">
+                <p className="text-brand-primary-light font-mono text-sm">
                   Quote #{quote.quoteNumber}
                 </p>
               </div>
@@ -294,7 +294,7 @@ export default function PublicQuote() {
                 )}
                 <div className="pt-3 border-t border-gray-200 flex justify-between">
                   <span className="text-lg font-semibold text-gray-900">Total</span>
-                  <span className="text-2xl font-bold text-violet-600" data-testid="quote-total">
+                  <span className="text-2xl font-bold text-brand-primary" data-testid="quote-total">
                     {formatCurrency(quote.total, currencySettings)}
                   </span>
                 </div>
@@ -303,8 +303,8 @@ export default function PublicQuote() {
 
             {/* Terms */}
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-violet-50 rounded-xl p-4">
-                <div className="flex items-center gap-2 text-violet-600 mb-2">
+              <div className="bg-brand-primary/5 rounded-xl p-4">
+                <div className="flex items-center gap-2 text-brand-primary mb-2">
                   <Calendar className="w-4 h-4" />
                   <span className="text-xs uppercase tracking-wide font-medium">Payment Terms</span>
                 </div>
@@ -340,7 +340,7 @@ export default function PublicQuote() {
                   {quote.createdBy.email && (
                     <a 
                       href={`mailto:${quote.createdBy.email}`}
-                      className="flex items-center gap-2 text-violet-600 hover:text-violet-700"
+                      className="flex items-center gap-2 text-brand-primary hover:text-brand-primary-dark"
                     >
                       <Mail className="w-4 h-4" />
                       {quote.createdBy.email}
@@ -349,7 +349,7 @@ export default function PublicQuote() {
                   {quote.createdBy.phone && (
                     <a 
                       href={`tel:${quote.createdBy.phone}`}
-                      className="flex items-center gap-2 text-violet-600 hover:text-violet-700"
+                      className="flex items-center gap-2 text-brand-primary hover:text-brand-primary-dark"
                     >
                       <Phone className="w-4 h-4" />
                       {quote.createdBy.phone}
@@ -406,7 +406,7 @@ export default function PublicQuote() {
 
         {/* Footer */}
         <div className="text-center mt-6 text-gray-500 text-sm">
-          Powered by <span className="font-semibold text-violet-600">KOLOR STUDIO</span>
+          Powered by <span className="font-semibold text-brand-primary">KOLOR STUDIO</span>
         </div>
       </div>
 
@@ -423,7 +423,7 @@ export default function PublicQuote() {
               onChange={(e) => setDeclineReason(e.target.value)}
               placeholder="Reason for declining (optional)"
               rows={3}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-none mb-4"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-brand-primary resize-none mb-4"
               data-testid="decline-reason-input"
             />
             <div className="flex gap-3">

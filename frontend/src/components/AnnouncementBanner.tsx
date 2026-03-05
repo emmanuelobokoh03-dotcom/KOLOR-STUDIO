@@ -48,7 +48,7 @@ export default function AnnouncementBanner() {
     info: 'bg-blue-600 text-white',
     success: 'bg-green-600 text-white',
     warning: 'bg-yellow-500 text-black',
-    celebration: 'bg-gradient-to-r from-violet-600 to-purple-600 text-white',
+    celebration: 'bg-gradient-to-r from-brand-primary to-brand-primary text-white',
   }
 
   const typeIcons = {

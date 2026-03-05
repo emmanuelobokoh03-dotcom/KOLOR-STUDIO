@@ -35,15 +35,15 @@ export default function CookieConsent() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           {/* Icon & Text */}
           <div className="flex items-start gap-3 flex-1">
-            <div className="w-10 h-10 bg-violet-900/30 rounded-xl flex items-center justify-center flex-shrink-0 border border-violet-700/30">
-              <Cookie className="w-5 h-5 text-violet-400" />
+            <div className="w-10 h-10 bg-brand-primary-dark/30 rounded-xl flex items-center justify-center flex-shrink-0 border border-brand-primary-dark/30">
+              <Cookie className="w-5 h-5 text-brand-primary-light" />
             </div>
             <div>
               <p className="text-gray-300 text-sm sm:text-base">
                 We use cookies to keep you logged in and improve our product.{' '}
                 <Link 
                   to="/privacy" 
-                  className="text-violet-400 hover:text-violet-300 underline transition"
+                  className="text-brand-primary-light hover:text-brand-primary-light underline transition"
                 >
                   Learn more
                 </Link>
@@ -62,7 +62,7 @@ export default function CookieConsent() {
             </button>
             <button
               onClick={handleAcceptAll}
-              className="px-4 py-2 text-sm font-medium bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition"
+              className="px-4 py-2 text-sm font-medium bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition"
               data-testid="cookie-accept-btn"
             >
               Accept All

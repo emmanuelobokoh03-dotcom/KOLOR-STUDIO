@@ -148,13 +148,13 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
         data-testid="email-composer-modal"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6 flex-shrink-0">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold">
                 Email {lead.clientName}
               </h2>
-              <p className="text-violet-100 text-sm mt-1">
+              <p className="text-brand-primary-light text-sm mt-1">
                 {lead.projectTitle}
               </p>
             </div>
@@ -187,7 +187,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
           {/* CC/BCC Toggle */}
           <button
             onClick={() => setShowCc(!showCc)}
-            className="flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 transition"
+            className="flex items-center gap-1 text-sm text-brand-primary-light hover:text-brand-primary-light transition"
           >
             {showCc ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             {showCc ? 'Hide CC/BCC' : 'Add CC/BCC'}
@@ -201,7 +201,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
                   type="text"
                   value={cc}
                   onChange={(e) => setCc(e.target.value)}
-                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
                   placeholder="cc@example.com"
                   data-testid="email-cc-input"
                 />
@@ -212,7 +212,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
                   type="text"
                   value={bcc}
                   onChange={(e) => setBcc(e.target.value)}
-                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
                   placeholder="bcc@example.com"
                   data-testid="email-bcc-input"
                 />
@@ -227,7 +227,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-violet-500"
+              className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
               placeholder="Enter email subject..."
               data-testid="email-subject-input"
             />
@@ -238,7 +238,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
             <span className="text-xs text-gray-500">Quick insert:</span>
             <button
               onClick={() => insertSnippet(lead.clientName)}
-              className="flex items-center gap-1 px-2 py-1 bg-dark-bg-secondary border border-dark-border rounded text-xs text-gray-400 hover:text-white hover:border-violet-500 transition"
+              className="flex items-center gap-1 px-2 py-1 bg-dark-bg-secondary border border-dark-border rounded text-xs text-gray-400 hover:text-white hover:border-brand-primary transition"
               title="Insert client name"
             >
               <User className="w-3 h-3" />
@@ -246,15 +246,15 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
             </button>
             <button
               onClick={() => insertSnippet(lead.projectTitle)}
-              className="flex items-center gap-1 px-2 py-1 bg-dark-bg-secondary border border-dark-border rounded text-xs text-gray-400 hover:text-white hover:border-violet-500 transition"
+              className="flex items-center gap-1 px-2 py-1 bg-dark-bg-secondary border border-dark-border rounded text-xs text-gray-400 hover:text-white hover:border-brand-primary transition"
               title="Insert project title"
             >
               <FileText className="w-3 h-3" />
               Project Title
             </button>
             <button
-              onClick={() => insertSnippet(`https://legal-agreements-1.preview.emergentagent.com/portal/${lead.portalToken}`)}
-              className="flex items-center gap-1 px-2 py-1 bg-dark-bg-secondary border border-dark-border rounded text-xs text-gray-400 hover:text-white hover:border-violet-500 transition"
+              onClick={() => insertSnippet(`https://design-theme.preview.emergentagent.com/portal/${lead.portalToken}`)}
+              className="flex items-center gap-1 px-2 py-1 bg-dark-bg-secondary border border-dark-border rounded text-xs text-gray-400 hover:text-white hover:border-brand-primary transition"
               title="Insert client portal link"
             >
               <Link className="w-3 h-3" />
@@ -291,7 +291,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
           <button
             onClick={handleSend}
             disabled={sending}
-            className="flex items-center gap-2 px-5 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
             data-testid="send-email-btn"
           >
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}

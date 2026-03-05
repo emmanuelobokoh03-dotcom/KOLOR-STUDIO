@@ -86,7 +86,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
           </p>
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium"
+            className="px-6 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium"
           >
             Close
           </button>
@@ -103,11 +103,11 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
         data-testid="feedback-modal"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-6 flex-shrink-0">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold">Send Feedback</h2>
-              <p className="text-violet-100 text-sm mt-1">Help us improve KOLOR STUDIO</p>
+              <p className="text-brand-primary-light text-sm mt-1">Help us improve KOLOR STUDIO</p>
             </div>
             <button 
               onClick={onClose}
@@ -161,7 +161,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+              className="w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-primary focus:border-transparent"
               placeholder={
                 feedbackType === 'bug' 
                   ? "Brief description of the bug" 
@@ -180,7 +180,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-violet-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none"
               placeholder={
                 feedbackType === 'bug'
                   ? "Please describe what happened, what you expected, and steps to reproduce..."
@@ -201,7 +201,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+              className="w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-primary focus:border-transparent"
               placeholder="you@example.com"
               data-testid="feedback-email"
             />
@@ -233,7 +233,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
           <button
             onClick={handleSubmit}
             disabled={sending}
-            className="flex items-center gap-2 px-5 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition font-medium disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
             data-testid="submit-feedback-btn"
           >
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}

@@ -43,17 +43,17 @@ import HelpPanel, { HelpButton } from '../components/HelpPanel'
 import { PhotographyWidgets, FineArtWidgets, DesignWidgets } from '../components/IndustryWidgets'
 import { useOnboardingTour } from '../components/OnboardingTour'
 import { SmartSuggestion } from '../components/SmartSuggestion'
-import { CelebrationModal, checkCelebration, Achievement } from '../components/CelebrationModal'
+import { CelebrationModal, checkCelebration, Achievement, achievements } from '../components/CelebrationModal'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
 
 const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
-  NEW: 'bg-violet-900/30 text-violet-300 border border-violet-700/50',
-  REVIEWING: 'bg-violet-900/30 text-violet-300 border border-violet-700/50',
-  CONTACTED: 'bg-purple-900/30 text-purple-300 border border-purple-700/50',
+  NEW: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
+  REVIEWING: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
+  CONTACTED: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
   QUALIFIED: 'bg-indigo-900/30 text-indigo-300 border border-indigo-700/50',
-  QUOTED: 'bg-fuchsia-900/30 text-fuchsia-300 border border-fuchsia-700/50',
+  QUOTED: 'bg-brand-accent-dark/30 text-brand-accent-light border border-brand-accent-dark/50',
   NEGOTIATING: 'bg-blue-900/30 text-blue-300 border border-blue-700/50',
   BOOKED: 'bg-emerald-900/30 text-emerald-300 border border-emerald-700/50',
   LOST: 'bg-slate-900/30 text-slate-400 border border-slate-700/50',
@@ -159,6 +159,13 @@ const Dashboard = () => {
       await fetchLeads()
       await fetchStats()
       setLoading(false)
+
+      // Async celebration checks (milestones triggered by client-side events)
+      const statsResult = await leadsApi.getStats()
+      if ((statsResult.data?.statusCounts?.BOOKED ?? 0) > 0) {
+        const ach = checkCelebration('quote_accepted', 'quoteAccepted')
+        if (ach) { setCelebration(ach); setShowCelebration(true) }
+      }
     }
     init()
   }, [navigate])
@@ -223,10 +230,16 @@ const Dashboard = () => {
     }
   }
 
+  const triggerCelebration = (key: string, achievementKey: keyof typeof achievements) => {
+    const ach = checkCelebration(key, achievementKey)
+    if (ach) { setCelebration(ach); setShowCelebration(true) }
+  }
+
   const handleBookingSaved = (booking: Booking) => {
     setShowBookingModal(false)
     setBookingLead(null)
     fetchLeads()
+    triggerCelebration('first_booking', 'firstBooking')
   }
 
   const handleLeadUpdate = (updatedLead: Lead) => {
@@ -309,9 +322,13 @@ const Dashboard = () => {
               className="flex items-center gap-2 md:gap-3 group transition-all duration-200 hover:opacity-80"
               data-testid="header-logo-link"
             >
-              <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-violet-500 group-hover:text-violet-400 transition-colors duration-200" />
-              <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-                KOLOR STUDIO
+              {user?.brandLogoUrl ? (
+                <img src={user.brandLogoUrl} alt="" className="w-6 h-6 md:w-8 md:h-8 rounded-lg object-contain" />
+              ) : (
+                <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-brand-primary group-hover:brightness-110 transition-colors duration-200" />
+              )}
+              <span className="text-lg md:text-xl font-bold text-brand-primary font-brand">
+                {user?.studioName || 'KOLOR STUDIO'}
               </span>
             </button>
           </div>
@@ -350,8 +367,8 @@ const Dashboard = () => {
             {/* Sidebar Header */}
             <div className="flex items-center justify-between p-4 border-b border-[#333]">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-6 h-6 text-violet-500" />
-                <span className="font-bold text-lg bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                <Sparkles className="w-6 h-6 text-brand-primary" />
+                <span className="font-bold text-lg bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
                   KOLOR STUDIO
                 </span>
               </div>
@@ -382,7 +399,7 @@ const Dashboard = () => {
                   onClick={() => handleViewChange(mode)}
                   className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 touch-target ${
                     viewMode === mode
-                      ? 'text-violet-400 bg-violet-900/20 border-r-2 border-violet-500'
+                      ? 'text-brand-primary bg-brand-primary/10 border-r-2 border-brand-primary'
                       : 'text-[#A3A3A3] hover:bg-[#262626] hover:text-white'
                   }`}
                   data-testid={`sidebar-${mode}`}
@@ -472,15 +489,15 @@ const Dashboard = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
           {([
-            { key: null, label: 'Total Leads', count: stats?.total || 0, icon: Users, iconBg: 'bg-violet-900/50 border-violet-700/50', iconColor: 'text-violet-400', testId: 'stat-total-leads' },
-            { key: 'NEW', label: 'New Leads', count: stats?.statusCounts?.NEW || 0, icon: TrendingUp, iconBg: 'bg-purple-900/50 border-purple-700/50', iconColor: 'text-purple-400', testId: 'stat-new-leads' },
-            { key: 'QUOTED', label: 'Quoted', count: stats?.statusCounts?.QUOTED || 0, icon: Calendar, iconBg: 'bg-fuchsia-900/50 border-fuchsia-700/50', iconColor: 'text-fuchsia-400', testId: 'stat-quoted' },
+            { key: null, label: 'Total Leads', count: stats?.total || 0, icon: Users, iconBg: 'bg-brand-primary-dark/50 border-brand-primary-dark/50', iconColor: 'text-brand-primary-light', testId: 'stat-total-leads' },
+            { key: 'NEW', label: 'New Leads', count: stats?.statusCounts?.NEW || 0, icon: TrendingUp, iconBg: 'bg-brand-primary-dark/50 border-brand-primary-dark/50', iconColor: 'text-brand-primary-light', testId: 'stat-new-leads' },
+            { key: 'QUOTED', label: 'Quoted', count: stats?.statusCounts?.QUOTED || 0, icon: Calendar, iconBg: 'bg-brand-accent-dark/50 border-brand-accent-dark/50', iconColor: 'text-brand-accent-light', testId: 'stat-quoted' },
             { key: 'BOOKED', label: 'Booked', count: stats?.statusCounts?.BOOKED || 0, icon: DollarSign, iconBg: 'bg-emerald-900/50 border-emerald-700/50', iconColor: 'text-emerald-400', testId: 'stat-booked' },
           ]).map(({ key, label, count, icon: Icon, iconBg, iconColor, testId }) => (
             <div
               key={testId}
-              className={`bg-[#1A1A1A] rounded-xl p-4 md:p-6 border cursor-pointer hover:border-violet-500/50 transition-all duration-200 group hover:shadow-lg hover:shadow-violet-500/5 active:scale-[0.98] ${
-                statusFilter === key ? `border-violet-500 bg-violet-900/10` : 'border-[#333]'
+              className={`bg-[#1A1A1A] rounded-xl p-4 md:p-6 border cursor-pointer hover:border-brand-primary/50 transition-all duration-200 group hover:shadow-lg hover:shadow-brand-primary/5 active:scale-[0.98] ${
+                statusFilter === key ? `border-brand-primary bg-brand-primary/10` : 'border-[#333]'
               }`}
               onClick={() => key === null ? clearStatusFilter() : handleFilterByStatus(statusFilter === key ? null : key)}
               data-testid={testId}
@@ -509,7 +526,7 @@ const Dashboard = () => {
                 placeholder="Search leads..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-gray-500 transition-all duration-200 text-sm"
+                className="w-full pl-9 pr-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent text-white placeholder-gray-500 transition-all duration-200 text-sm"
                 data-testid="search-input"
               />
             </div>
@@ -518,13 +535,13 @@ const Dashboard = () => {
             <button
               onClick={() => setShowMobileFilters(!showMobileFilters)}
               className={`p-2.5 rounded-xl border transition-all duration-200 touch-target md:hidden relative ${
-                activeFilterCount > 0 ? 'border-violet-500 bg-violet-900/20 text-violet-400' : 'border-[#333] text-[#A3A3A3]'
+                activeFilterCount > 0 ? 'border-brand-primary bg-brand-primary-dark/20 text-brand-primary-light' : 'border-[#333] text-[#A3A3A3]'
               }`}
               data-testid="mobile-filter-toggle"
             >
               <Filter className="w-4 h-4" />
               {activeFilterCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-violet-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                   {activeFilterCount}
                 </span>
               )}
@@ -550,7 +567,7 @@ const Dashboard = () => {
                 <button
                   key={mode}
                   onClick={() => handleViewChange(mode)}
-                  className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === mode ? 'bg-[#1A1A1A] shadow-sm text-violet-400' : 'text-[#A3A3A3] hover:text-white'}`}
+                  className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === mode ? 'bg-[#1A1A1A] shadow-sm text-brand-primary' : 'text-[#A3A3A3] hover:text-white'}`}
                   data-testid={`view-${mode}`}
                   data-tour={mode === 'portfolio' ? 'view-portfolio' : mode === 'calendar' ? 'view-calendar' : undefined}
                   title={title}
@@ -564,7 +581,7 @@ const Dashboard = () => {
             <select
               value={projectTypeFilter}
               onChange={(e) => setProjectTypeFilter(e.target.value)}
-              className="hidden md:block px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3] focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
+              className="hidden md:block px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3] focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all duration-200"
               data-testid="filter-project-type"
             >
               <option value="">All Types</option>
@@ -575,7 +592,7 @@ const Dashboard = () => {
             <select
               value={industryFilter}
               onChange={(e) => setIndustryFilter(e.target.value)}
-              className="hidden lg:block px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3] focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
+              className="hidden lg:block px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3] focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all duration-200"
               data-testid="filter-industry"
             >
               <option value="">All Industries</option>
@@ -586,7 +603,7 @@ const Dashboard = () => {
 
             <button
               onClick={() => setShowShareModal(true)}
-              className="hidden md:flex items-center gap-2 px-4 py-2.5 border border-violet-600 text-violet-400 rounded-xl hover:bg-violet-900/30 transition-all duration-200 font-medium text-sm"
+              className="hidden md:flex items-center gap-2 px-4 py-2.5 border border-brand-primary text-brand-primary-light rounded-xl hover:bg-brand-primary-dark/30 transition-all duration-200 font-medium text-sm"
               data-testid="share-form-button"
             >
               <Link2 className="w-4 h-4" />
@@ -594,7 +611,7 @@ const Dashboard = () => {
             </button>
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-500 transition-all duration-200 font-medium text-sm hover:shadow-lg hover:shadow-violet-500/20 touch-target"
+              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2.5 bg-brand-primary text-white rounded-xl hover:brightness-110 transition-all duration-200 font-medium text-sm hover:shadow-lg hover:shadow-brand-primary/20 touch-target"
               data-testid="add-lead-button"
               data-tour="add-lead"
             >
@@ -610,10 +627,10 @@ const Dashboard = () => {
               {activeFilterCount > 0 && (
                 <div className="flex items-center gap-2 flex-wrap">
                   {statusFilter && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-900/30 border border-violet-700/50 rounded-lg">
-                      <span className="text-xs text-violet-300 font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
-                      <button onClick={clearStatusFilter} className="p-0.5 hover:bg-violet-800/50 rounded" data-testid="clear-filter">
-                        <X className="w-3 h-3 text-violet-400" />
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary-dark/30 border border-brand-primary-dark/50 rounded-lg">
+                      <span className="text-xs text-brand-primary-light font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
+                      <button onClick={clearStatusFilter} className="p-0.5 hover:bg-brand-primary-dark/50 rounded" data-testid="clear-filter">
+                        <X className="w-3 h-3 text-brand-primary-light" />
                       </button>
                     </div>
                   )}
@@ -662,7 +679,7 @@ const Dashboard = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-violet-600 text-violet-400 rounded-xl text-sm font-medium touch-target"
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-brand-primary text-brand-primary-light rounded-xl text-sm font-medium touch-target"
                   data-testid="mobile-share-form"
                 >
                   <Link2 className="w-4 h-4" /> Share Form
@@ -675,10 +692,10 @@ const Dashboard = () => {
           {activeFilterCount > 0 && (
             <div className="hidden md:flex items-center gap-2 flex-wrap mt-3 pt-3 border-t border-[#333]">
               {statusFilter && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-900/30 border border-violet-700/50 rounded-lg">
-                  <span className="text-xs text-violet-300 font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
-                  <button onClick={clearStatusFilter} className="p-0.5 hover:bg-violet-800/50 rounded" data-testid="clear-filter-desktop">
-                    <X className="w-3.5 h-3.5 text-violet-400" />
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary-dark/30 border border-brand-primary-dark/50 rounded-lg">
+                  <span className="text-xs text-brand-primary-light font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
+                  <button onClick={clearStatusFilter} className="p-0.5 hover:bg-brand-primary-dark/50 rounded" data-testid="clear-filter-desktop">
+                    <X className="w-3.5 h-3.5 text-brand-primary-light" />
                   </button>
                 </div>
               )}
@@ -739,7 +756,7 @@ const Dashboard = () => {
                   />
                   <button
                     onClick={() => navigator.clipboard.writeText(`${window.location.origin}/inquiry`)}
-                    className="px-3 md:px-4 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-500 text-sm font-medium flex items-center gap-1.5 flex-shrink-0 touch-target"
+                    className="px-3 md:px-4 py-2.5 bg-brand-primary text-white rounded-xl hover:bg-brand-primary text-sm font-medium flex items-center gap-1.5 flex-shrink-0 touch-target"
                     data-testid="empty-copy-link"
                   >
                     <Copy className="w-4 h-4" />
@@ -756,7 +773,7 @@ const Dashboard = () => {
                     className="flex-1 px-3 py-2.5 border border-[#333] text-[#A3A3A3] rounded-xl hover:bg-[#262626] text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
                     data-testid="empty-email-link"
                   >
-                    <Mail className="w-4 h-4 text-violet-400" />
+                    <Mail className="w-4 h-4 text-brand-primary-light" />
                     <span className="hidden sm:inline">Email Link</span>
                   </button>
                   <button
@@ -764,14 +781,14 @@ const Dashboard = () => {
                     className="flex-1 px-3 py-2.5 border border-[#333] text-[#A3A3A3] rounded-xl hover:bg-[#262626] text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
                     data-testid="empty-more-options"
                   >
-                    <Link2 className="w-4 h-4 text-violet-400" />
+                    <Link2 className="w-4 h-4 text-brand-primary-light" />
                     <span className="hidden sm:inline">More Options</span>
                   </button>
                 </div>
               </div>
               <button
                 onClick={() => setShowAddModal(true)}
-                className="px-6 md:px-8 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-500 font-medium touch-target"
+                className="px-6 md:px-8 py-3 bg-brand-primary text-white rounded-xl hover:bg-brand-primary font-medium touch-target"
                 data-testid="dashboard-empty-cta"
               >
                 Create Your First Project
@@ -849,6 +866,7 @@ const Dashboard = () => {
           lead={selectedLead}
           onClose={() => setSelectedLead(null)}
           onUpdate={handleLeadUpdate}
+          onCelebrate={triggerCelebration}
         />
       )}
       {showAddModal && (
@@ -856,9 +874,7 @@ const Dashboard = () => {
           onClose={() => setShowAddModal(false)}
           onLeadCreated={() => {
             fetchLeads(); fetchStats()
-            // Trigger celebration for first project
-            const ach = checkCelebration('first_project', 'firstProject')
-            if (ach) { setCelebration(ach); setShowCelebration(true) }
+            triggerCelebration('first_project', 'firstProject')
           }}
         />
       )}

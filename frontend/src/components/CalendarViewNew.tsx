@@ -211,7 +211,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
           <select
             value={serviceFilter}
             onChange={(e) => setServiceFilter(e.target.value as ServiceType | 'all')}
-            className="pl-8 pr-3 py-1.5 text-sm bg-slate-800 border border-slate-600 rounded-lg text-gray-300 focus:ring-2 focus:ring-violet-500"
+            className="pl-8 pr-3 py-1.5 text-sm bg-slate-800 border border-slate-600 rounded-lg text-gray-300 focus:ring-2 focus:ring-brand-primary"
           >
             <option value="all">All Services</option>
             {Object.entries(SERVICE_TYPE_LABELS).map(([value, label]) => (
@@ -228,7 +228,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
               onClick={() => onView(v)}
               className={`px-3 py-1.5 text-sm capitalize transition ${
                 view === v 
-                  ? 'bg-violet-600 text-white' 
+                  ? 'bg-brand-primary text-white' 
                   : 'text-gray-400 hover:text-white hover:bg-dark-card'
               }`}
             >
@@ -254,7 +254,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             setEditingBooking(null)
             setShowBookingModal(true)
           }}
-          className="flex items-center gap-2 px-3 py-1.5 bg-violet-600 text-white rounded-lg hover:bg-violet-500 transition text-sm font-medium"
+          className="flex items-center gap-2 px-3 py-1.5 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition text-sm font-medium"
         >
           <Plus className="w-4 h-4" />
           New Booking
@@ -293,7 +293,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
         <div className="bg-dark-card border border-dark-border rounded-xl p-4">
           <p className="text-xs text-gray-500 mb-1">Upcoming</p>
-          <p className="text-2xl font-bold text-violet-400">{stats.upcoming}</p>
+          <p className="text-2xl font-bold text-brand-primary-light">{stats.upcoming}</p>
         </div>
         <div className="bg-dark-card border border-dark-border rounded-xl p-4">
           <p className="text-xs text-gray-500 mb-1">Completed</p>
@@ -311,7 +311,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       <div className="flex-1 bg-dark-card border border-dark-border rounded-xl p-4 min-h-[600px]">
         {loading && events.length === 0 ? (
           <div className="h-full flex items-center justify-center">
-            <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
+            <Loader2 className="w-8 h-8 animate-spin text-brand-primary-light" />
           </div>
         ) : (
           <Calendar
