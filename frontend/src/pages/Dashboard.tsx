@@ -39,6 +39,7 @@ import FeedbackModal from '../components/FeedbackModal'
 import AnnouncementBanner from '../components/AnnouncementBanner'
 import BookingModal from '../components/BookingModal'
 import MobileBottomNav from '../components/MobileBottomNav'
+import { PhotographyWidgets, FineArtWidgets, DesignWidgets } from '../components/IndustryWidgets'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
@@ -416,6 +417,26 @@ const Dashboard = () => {
             </div>
           )}
         </div>
+
+        {/* Industry-Specific Widgets */}
+        {user?.primaryIndustry === 'PHOTOGRAPHY' && (
+          <PhotographyWidgets
+            onViewCalendar={() => handleViewChange('calendar')}
+            onLeadClick={setSelectedLead}
+          />
+        )}
+        {user?.primaryIndustry === 'FINE_ART' && (
+          <FineArtWidgets
+            onLeadClick={setSelectedLead}
+            onAddLead={() => setShowAddModal(true)}
+          />
+        )}
+        {(user?.primaryIndustry === 'GRAPHIC_DESIGN' || user?.primaryIndustry === 'WEB_DESIGN' || user?.primaryIndustry === 'BRANDING' || user?.primaryIndustry === 'ILLUSTRATION') && (
+          <DesignWidgets
+            onLeadClick={setSelectedLead}
+            onAddLead={() => setShowAddModal(true)}
+          />
+        )}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">

@@ -237,6 +237,7 @@ export interface User {
   website?: string;
   logo?: string;
   timezone?: string;
+  primaryIndustry?: IndustryType;
   // Currency settings
   currency?: string;
   currencySymbol?: string;
