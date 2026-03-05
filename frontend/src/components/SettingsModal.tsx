@@ -129,7 +129,9 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div 
-        className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-dark-border"
+        className={`bg-dark-card rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-dark-border transition-all duration-300 ${
+          activeTab === 'brand' ? 'max-w-5xl' : 'max-w-2xl'
+        }`}
         onClick={e => e.stopPropagation()}
         data-testid="settings-modal"
       >

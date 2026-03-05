@@ -4,8 +4,9 @@ import { settingsApi } from '../services/api'
 import { useBrandTheme } from '../contexts/BrandThemeContext'
 import {
   Palette, Type, Upload, Trash2, RotateCcw, Save,
-  Loader2, Check, X, Eye,
+  Loader2, Check, X,
 } from 'lucide-react'
+import BrandPreview from './BrandPreview'
 
 const FONT_OPTIONS = [
   { value: 'Inter', label: 'Inter', style: 'Modern & Clean' },
@@ -95,42 +96,9 @@ export default function BrandSettings() {
   const hasChanges = primary !== brandTheme.primaryColor || accent !== brandTheme.accentColor || font !== brandTheme.fontFamily
 
   return (
-    <div className="space-y-6" data-testid="brand-settings">
-      {/* Live Preview Banner */}
-      <div
-        className="rounded-xl p-5 border"
-        style={{
-          background: `linear-gradient(135deg, ${primary}15, ${accent}15)`,
-          borderColor: `${primary}40`,
-        }}
-        data-testid="brand-preview"
-      >
-        <div className="flex items-center gap-3 mb-3">
-          {logoUrl ? (
-            <img src={logoUrl} alt="Logo" className="h-8 w-8 rounded-lg object-contain" />
-          ) : (
-            <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: primary }}>
-              <span className="text-white font-bold text-sm">K</span>
-            </div>
-          )}
-          <span className="font-bold text-[#FAFAFA]" style={{ fontFamily: font }}>KOLOR STUDIO</span>
-          <span className="ml-auto flex items-center gap-1 text-xs text-[#A3A3A3]">
-            <Eye className="w-3 h-3" /> Live Preview
-          </span>
-        </div>
-        <div className="flex gap-2">
-          <button className="px-4 py-1.5 rounded-lg text-white text-sm font-medium" style={{ background: primary }}>
-            Primary Button
-          </button>
-          <button className="px-4 py-1.5 rounded-lg text-white text-sm font-medium" style={{ background: accent }}>
-            Accent Button
-          </button>
-          <span className="px-3 py-1.5 rounded-lg text-sm" style={{ background: `${primary}20`, color: primary, fontFamily: font }}>
-            Sample Text
-          </span>
-        </div>
-      </div>
-
+    <div className="flex flex-col lg:flex-row gap-6" data-testid="brand-settings">
+      {/* Left Column: Settings */}
+      <div className="flex-1 space-y-5 min-w-0">
       {/* Color Pickers */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Primary Color */}
@@ -309,8 +277,14 @@ export default function BrandSettings() {
           data-testid="reset-brand-btn"
         >
           <RotateCcw className="w-4 h-4" />
-          Reset to Default
+          Reset
         </button>
+      </div>
+      </div>
+
+      {/* Right Column: Live Preview */}
+      <div className="lg:w-[320px] flex-shrink-0">
+        <BrandPreview primary={primary} accent={accent} font={font} logoUrl={logoUrl} />
       </div>
     </div>
   )
