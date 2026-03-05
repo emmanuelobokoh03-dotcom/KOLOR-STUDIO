@@ -69,6 +69,15 @@ A full-stack CRM application for creative professionals (photographers, designer
 - Fixed double /api prefix bug in frontend API client (was causing /api/api/... routes)
 - Fixed in: KanbanBoard.tsx, Dashboard.tsx, LeadDetailModal.tsx, api.ts, ClientPortal.tsx, IndustryOnboarding.tsx, ForgotPassword.tsx, ResetPassword.tsx
 
+### Industry-Specific Dashboard Widgets (DONE - March 5, 2026)
+- **PhotographyWidgets**: Upcoming Shoots (next 7 days from bookings API with date/time/location), Active Projects list with status badges, "Today's shoots" live indicator, Calendar quick link
+- **FineArtWidgets**: Active Commissions 2-col grid with cover images, Pipeline sidebar (status counts + pending quotes indicator), New Commission quick action
+- **DesignWidgets**: Projects by Phase colored progress bar + phase counts (Brief/Discovery/Proposal/Revisions/Delivered), Awaiting Action panel (Pending Proposals/In Revisions/Delivered), New Project quick action
+- Conditional rendering based on user.primaryIndustry: PHOTOGRAPHY → Photography, FINE_ART → FineArt, WEB_DESIGN/GRAPHIC_DESIGN/BRANDING/ILLUSTRATION → Design
+- Responsive layouts (1-col mobile, 2-3 cols desktop), loading skeletons, empty states
+- Widgets sit between Welcome message and Stats cards on existing Dashboard
+- Tested: 100% pass rate across all 3 industry types (backend + frontend)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
