@@ -82,6 +82,14 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Deduplication**: Uses localStorage `celebrated_{key}` to fire each celebration only once
 - **Testing**: 100% pass rate (all 6 triggers verified)
 
+### Brand Preview System (DONE - March 5, 2026)
+- Inline live preview panel in Brand Settings (settings left, preview right on desktop)
+- 3 tabbed previews: Portfolio, Quote, Client Portal — each shows realistic mini mockups
+- Live updates as user changes colors, fonts, or logo (no save required)
+- Settings modal widens to max-w-5xl when Brand tab is active
+- Uses inline styles for preview elements to avoid CSS variable feedback loops
+- **Testing**: 100% pass rate (12/12 features verified)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
