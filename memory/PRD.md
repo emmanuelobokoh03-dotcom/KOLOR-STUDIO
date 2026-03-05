@@ -95,6 +95,14 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Frontend ClientPortal**: Shared Files section with file name, size, shared timestamp, and download button
 - **Testing**: 100% pass rate (22/22 tests, iteration_31.json)
 
+### Compliance & Legal — Phase 5 Part 1 (DONE - March 5, 2026)
+- **Privacy Policy page** (`/privacy`): Comprehensive GDPR/CCPA compliant policy with data collection, usage, rights, cookies, data retention sections
+- **Terms of Service page** (`/terms`): Full terms covering account terms, acceptable use, payments, IP, liability, termination
+- **Footer**: Already has Privacy Policy + Terms of Service links in all public pages
+- **Signup legal agreement**: Added "By signing up, you agree to our Terms of Service and Privacy Policy" with clickable links
+- **CookieConsent**: Already implemented
+- **Testing**: Visual verification passed (screenshot)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
