@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { sendPasswordResetEmail } from '../services/email';
+import { sendPasswordResetEmail, sendVerificationEmail } from '../services/email';
 import { seedTemplatesForUser } from '../seeds/systemTemplates';
 
 const router = Router();
@@ -75,6 +75,28 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
         createdAt: true,
       }
     });
+
+    // Generate email verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        verificationToken,
+        verificationSentAt: new Date()
+      }
+    });
+
+    // Send verification email
+    const baseUrl = process.env.FRONTEND_URL || 'https://kolor-growth-engine.preview.emergentagent.com';
+    try {
+      await sendVerificationEmail({
+        email: user.email,
+        firstName: user.firstName,
+        verificationToken,
+      });
+    } catch (e) {
+      console.error('Failed to send verification email on signup:', e);
+    }
 
     res.status(201).json({
       message: 'Account created successfully',
@@ -237,6 +259,7 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response): Promi
         brandAccentColor: true,
         brandLogoUrl: true,
         brandFontFamily: true,
+        emailVerified: true,
         createdAt: true,
         lastLoginAt: true,
       }
@@ -417,6 +440,82 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
       error: 'Server Error',
       message: 'Failed to reset password'
     });
+  }
+});
+
+// POST /api/auth/send-verification - Send/resend verification email
+router.post('/send-verification', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    if (user.emailVerified) {
+      res.status(400).json({ error: 'Email already verified' });
+      return;
+    }
+
+    // Rate limit: don't send more than once per 60 seconds
+    if (user.verificationSentAt && Date.now() - user.verificationSentAt.getTime() < 60000) {
+      res.status(429).json({ error: 'Please wait before requesting another verification email' });
+      return;
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        verificationToken: token,
+        verificationSentAt: new Date()
+      }
+    });
+
+    try {
+      await sendVerificationEmail({
+        email: user.email,
+        firstName: user.firstName,
+        verificationToken: token,
+      });
+    } catch (e) {
+      console.error('Failed to send verification email:', e);
+    }
+
+    res.json({ message: 'Verification email sent' });
+  } catch (error) {
+    console.error('Send verification error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to send verification email' });
+  }
+});
+
+// GET /api/auth/verify-email/:token - Verify email (public)
+router.get('/verify-email/:token', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = await prisma.user.findFirst({
+      where: { verificationToken: req.params.token }
+    });
+
+    if (!user) {
+      res.status(404).json({ error: 'Invalid or expired verification token' });
+      return;
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: true,
+        verificationToken: null
+      }
+    });
+
+    res.json({ message: 'Email verified successfully' });
+  } catch (error) {
+    console.error('Verify email error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to verify email' });
   }
 });
 

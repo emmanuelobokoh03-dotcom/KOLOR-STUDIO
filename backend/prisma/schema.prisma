@@ -24,6 +24,8 @@ model User {
   role          UserRole  @default(OWNER)
   isActive      Boolean   @default(true)
   emailVerified Boolean   @default(false)
+  verificationToken   String?   @unique
+  verificationSentAt  DateTime?
   
   // Profile
   phone         String?

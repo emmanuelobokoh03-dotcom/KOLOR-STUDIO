@@ -711,6 +711,84 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
   }
 }
 
+// Email Verification
+interface VerificationEmailData {
+  email: string;
+  firstName: string;
+  verificationToken: string;
+}
+
+export async function sendVerificationEmail(data: VerificationEmailData): Promise<boolean> {
+  if (!resend) {
+    console.log('Resend not configured, skipping verification email');
+    return false;
+  }
+
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-growth-engine.preview.emergentagent.com';
+  const verifyUrl = `${baseUrl}/verify-email/${data.verificationToken}`;
+
+  const content = `
+    <div style="text-align: center; margin-bottom: 32px;">
+      <span style="font-size: 48px;">&#x2709;&#xFE0F;</span>
+    </div>
+    
+    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+      Verify Your Email
+    </h1>
+    
+    <p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+      Hi ${data.firstName},
+    </p>
+    
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+      Welcome to KOLOR STUDIO! Please verify your email address to unlock all features and secure your account.
+    </p>
+    
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
+      <tr>
+        <td align="center">
+          <a href="${verifyUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+            Verify Email Address
+          </a>
+        </td>
+      </tr>
+    </table>
+    
+    <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280; line-height: 1.7;">
+      If the button doesn't work, copy and paste this link into your browser:
+    </p>
+    
+    <p style="margin: 0 0 24px 0; font-size: 12px; color: #9ca3af; word-break: break-all; background-color: #f9fafb; padding: 12px; border-radius: 8px;">
+      ${verifyUrl}
+    </p>
+    
+    <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
+      Stay creative,<br>
+      <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
+    </p>
+  `;
+
+  try {
+    const { data: emailData, error } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: [data.email],
+      subject: 'Verify your KOLOR STUDIO email',
+      html: getEmailTemplate(content, 'Email Verification'),
+    });
+
+    if (error) {
+      console.error('Failed to send verification email:', error);
+      return false;
+    }
+
+    console.log('Verification email sent successfully:', emailData?.id);
+    return true;
+  } catch (error) {
+    console.error('Failed to send verification email:', error);
+    return false;
+  }
+}
+
 // Quote Email - Send to client
 interface QuoteEmailData {
   clientName: string;

@@ -46,6 +46,7 @@ import { SmartSuggestion } from '../components/SmartSuggestion'
 import { CelebrationModal, checkCelebration, Achievement, achievements } from '../components/CelebrationModal'
 import CRMAlerts from '../components/CRMAlerts'
 import RevenueDashboard from '../components/RevenueDashboard'
+import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
@@ -306,6 +307,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-[#0F0F0F]">
       <AnnouncementBanner />
+      <EmailVerificationBanner user={user} />
 
       {/* Header */}
       <header className="bg-[#1A1A1A] border-b border-[#333] sticky top-0 z-40">

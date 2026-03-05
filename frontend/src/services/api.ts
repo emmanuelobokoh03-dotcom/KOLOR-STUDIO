@@ -71,6 +71,14 @@ export const authApi = {
       body: JSON.stringify({ primaryIndustry }),
     });
   },
+  sendVerification: async () => {
+    return request<{ message: string }>('/api/auth/send-verification', {
+      method: 'POST',
+    });
+  },
+  verifyEmail: async (token: string) => {
+    return request<{ message: string }>(`/api/auth/verify-email/${token}`);
+  },
 };
 
 // Leads API
@@ -249,6 +257,8 @@ export interface User {
   brandAccentColor?: string;
   brandLogoUrl?: string;
   brandFontFamily?: string;
+  // Email verification
+  emailVerified?: boolean;
   createdAt?: string;
   lastLoginAt?: string;
 }
