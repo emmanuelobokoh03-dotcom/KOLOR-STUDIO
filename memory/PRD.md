@@ -100,6 +100,16 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Dashboard Integration**: Side-by-side CRM + Revenue grid after SmartSuggestion
 - **Testing**: 100% pass rate (13/13 backend, all frontend verified)
 
+### Testimonial Collection System — Phase 2 (DONE - March 5, 2026)
+- **Database**: Testimonial model with publicToken-based submission flow, status (PENDING/APPROVED/REJECTED), featured flag, consent tracking
+- **Backend Routes**: GET/POST testimonials, public submit via token, approve/reject/feature toggles, stats endpoint
+- **Public Submission Form**: Light-themed page at /testimonial/:token with star rating, textarea, consent checkbox, branded with studio colors
+- **Moderation Dashboard**: TestimonialsManagement component in Settings → Reviews tab with stats cards, filter tabs (All/Pending/Approved/Rejected), approve/reject/feature actions
+- **Portfolio Display**: Approved testimonials shown on public portfolio page with star ratings and "Featured Review" badges
+- **Request Button**: "Request Testimonial" button in LeadDetailModal with clipboard copy of submission link
+- **Auto-Request**: Deliverable marked DELIVERED auto-creates testimonial request for the lead
+- **Testing**: 92% backend + 100% frontend (iteration_28.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
