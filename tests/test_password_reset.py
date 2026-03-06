@@ -8,7 +8,7 @@ import os
 import time
 import hashlib
 
-BASE_URL = "https://autopilot-portal-1.preview.emergentagent.com"
+BASE_URL = "https://client-comms-1.preview.emergentagent.com"
 
 # Test user credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

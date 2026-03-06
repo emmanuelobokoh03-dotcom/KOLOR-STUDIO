@@ -11,7 +11,7 @@ from datetime import datetime
 import uuid
 
 class KolorStudioAPITester:
-    def __init__(self, base_url="https://autopilot-portal-1.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://client-comms-1.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.tests_run = 0

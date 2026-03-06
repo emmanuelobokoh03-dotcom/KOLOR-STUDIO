@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotification, sendPortalLinkEmail } from '../services/email';
+import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotification, sendPortalLinkEmail, sendAutoResponseEmail, sendDeliveryNotificationEmail, sendTestimonialRequestEmail } from '../services/email';
 import { logActivity } from './activities';
 import { uploadFile, ensureBucketExists } from '../services/storage';
 import { paymentService } from '../services/paymentService';
@@ -48,10 +48,16 @@ async function sendAutoResponse(lead: any) {
     };
     const m = msgs[cat];
     const portfolioUrl = `${process.env.FRONTEND_URL}/portfolio/${user.id}`;
-    const body = `Hi ${lead.clientName},\n\n${m.greeting}\n\n${m.next}\n\n${m.portfolio}\n${portfolioUrl}\n\nI'm excited to potentially work with you!\n\nBest regards,\n${user.firstName || user.email}\n${user.studioName || ''}`;
+    const message = `${m.greeting}\n\n${m.next}\n\n${m.portfolio}\n${portfolioUrl}\n\nI'm excited to potentially work with you!`;
 
-    // TODO: Send via Resend (Day 11 – Email Templates)
-    console.log('[AutoResponse] Email queued:', { to: lead.clientEmail, subject: 'Thanks for reaching out!', bodyLength: body.length });
+    await sendAutoResponseEmail({
+      clientName: lead.clientName,
+      clientEmail: lead.clientEmail,
+      creativeName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+      studioName: user.studioName || undefined,
+      message,
+      portalUrl: portfolioUrl,
+    });
 
     await logActivity(lead.id, null, 'EMAIL_SENT', `Auto-response sent to ${lead.clientEmail}`, { emailType: 'auto_response' });
   } catch (err) {
@@ -1067,17 +1073,34 @@ router.post('/:id/mark-delivered', authMiddleware, async (req: AuthRequest, res:
     // 3. Log activity
     await logActivity(lead.id, userId, 'STATUS_CHANGED', `Project marked as delivered — ${shared.count} file(s) shared with client`, { oldStatus: lead.status, newStatus: 'BOOKED', pipelineStatus: 'COMPLETED', filesShared: shared.count });
 
-    // 4. Send delivery email (non-blocking, Day 11 email templates)
+    // 4. Send delivery email
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (user && lead.clientEmail) {
       const portalUrl = `${process.env.FRONTEND_URL}/portal/${lead.portalToken}`;
-      console.log('[Delivery] Email queued:', { to: lead.clientEmail, subject: `Your project is ready!`, portalUrl });
+      sendDeliveryNotificationEmail({
+        clientName: lead.clientName,
+        clientEmail: lead.clientEmail,
+        creativeName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+        studioName: user.studioName || undefined,
+        projectTitle: lead.projectTitle,
+        portalUrl,
+      }).catch(e => console.error('[Delivery] Email error:', e));
       await logActivity(lead.id, userId, 'EMAIL_SENT', `Delivery notification sent to ${lead.clientEmail}`, { emailType: 'delivery_notification' });
     }
 
-    // 5. Schedule testimonial request (3 days later) — log for now
-    const testimonialDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-    console.log('[Delivery] Testimonial request scheduled for:', testimonialDate.toISOString(), 'lead:', lead.id);
+    // 5. Send testimonial request email
+    if (user && lead.clientEmail) {
+      const testimonialUrl = `${process.env.FRONTEND_URL}/portal/${lead.portalToken}`;
+      sendTestimonialRequestEmail({
+        clientName: lead.clientName,
+        clientEmail: lead.clientEmail,
+        creativeName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+        studioName: user.studioName || undefined,
+        projectTitle: lead.projectTitle,
+        testimonialUrl,
+      }).catch(e => console.error('[Delivery] Testimonial email error:', e));
+      await logActivity(lead.id, userId, 'EMAIL_SENT', `Testimonial request sent to ${lead.clientEmail}`, { emailType: 'testimonial_request' });
+    }
 
     // 6. Auto-send final payment link if deposit was paid
     const income = await prisma.income.findFirst({ where: { leadId: lead.id } });

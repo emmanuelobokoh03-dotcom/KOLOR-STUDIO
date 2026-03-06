@@ -107,7 +107,7 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
     return false;
   }
 
-  const dashboardUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com';
+  const dashboardUrl = process.env.FRONTEND_URL || 'https://client-comms-1.preview.emergentagent.com';
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
 
   const content = `
@@ -256,7 +256,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   }
 
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://client-comms-1.preview.emergentagent.com';
   const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null;
 
   const content = `
@@ -439,7 +439,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://client-comms-1.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -535,7 +535,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://client-comms-1.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -630,7 +630,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://client-comms-1.preview.emergentagent.com';
   const resetUrl = `${baseUrl}/reset-password/${data.resetToken}`;
 
   const content = `
@@ -724,7 +724,7 @@ export async function sendVerificationEmail(data: VerificationEmailData): Promis
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://client-comms-1.preview.emergentagent.com';
   const verifyUrl = `${baseUrl}/verify-email/${data.verificationToken}`;
 
   const content = `
@@ -812,7 +812,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://client-comms-1.preview.emergentagent.com';
   const quoteUrl = `${baseUrl}/quotes/${data.quoteToken}`;
   const firstName = data.clientName.split(' ')[0];
   // Format currency based on quote settings
@@ -935,7 +935,7 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://client-comms-1.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -1035,7 +1035,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://client-comms-1.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -1523,6 +1523,380 @@ export async function sendContractAgreedNotification(data: ContractAgreedData): 
     return true;
   } catch (error) {
     console.error('Error sending contract agreed notification:', error);
+    return false;
+  }
+}
+
+
+// =====================
+// AUTOPILOT EMAIL FUNCTIONS (Day 12)
+// =====================
+
+const buttonStyle = `display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;`;
+const greenButtonStyle = `display: inline-block; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;`;
+
+// 1. Auto-Response (Lead Inquiry)
+interface AutoResponseData {
+  clientName: string;
+  clientEmail: string;
+  creativeName: string;
+  studioName?: string;
+  message: string;
+  portalUrl?: string;
+}
+export async function sendAutoResponseEmail(data: AutoResponseData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DEV] Auto-response email would go to:', data.clientEmail);
+    return false;
+  }
+  try {
+    const content = `
+      <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Hi ${data.clientName}!</h2>
+      <div style="white-space: pre-wrap; color: #4b5563; font-size: 15px; line-height: 1.7;">${data.message}</div>
+      ${data.portalUrl ? `
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${data.portalUrl}" style="${buttonStyle}">View My Portfolio</a>
+      </div>` : ''}
+      <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">
+        Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong>
+      </p>
+    `;
+    const { error } = await resend.emails.send({
+      from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: 'Thanks for reaching out!',
+      html: getEmailTemplate(content, 'Thanks for reaching out!'),
+    });
+    if (error) throw error;
+    console.log('Auto-response sent to:', data.clientEmail);
+    return true;
+  } catch (error) {
+    console.error('Error sending auto-response:', error);
+    return false;
+  }
+}
+
+// 2. Deposit Payment Request
+interface DepositPaymentData {
+  clientName: string;
+  clientEmail: string;
+  creativeName: string;
+  studioName?: string;
+  projectTitle: string;
+  totalAmount: number;
+  depositAmount: number;
+  paymentUrl: string;
+}
+export async function sendDepositPaymentEmail(data: DepositPaymentData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DEV] Deposit payment email would go to:', data.clientEmail, 'Amount:', data.depositAmount);
+    return false;
+  }
+  try {
+    const content = `
+      <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Secure Your Booking</h2>
+      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #4b5563; font-size: 15px;">To confirm your booking for <strong>"${data.projectTitle}"</strong>, please pay the deposit below.</p>
+      <div style="margin: 24px 0; padding: 20px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
+        <p style="margin: 0; font-size: 14px; color: #6b7280;">Deposit (30%): <strong style="color: #1a1a1a; font-size: 20px;">$${data.depositAmount.toFixed(2)}</strong></p>
+        <p style="margin: 4px 0 0; font-size: 13px; color: #9ca3af;">Total project: $${data.totalAmount.toFixed(2)}</p>
+      </div>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${data.paymentUrl}" style="${greenButtonStyle}">Pay Deposit ($${data.depositAmount.toFixed(2)})</a>
+      </div>
+      <p style="color: #6b7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+    `;
+    const { error } = await resend.emails.send({
+      from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: `Secure Your Booking: ${data.projectTitle}`,
+      html: getEmailTemplate(content, 'Deposit Payment'),
+    });
+    if (error) throw error;
+    console.log('Deposit payment email sent to:', data.clientEmail);
+    return true;
+  } catch (error) {
+    console.error('Error sending deposit payment email:', error);
+    return false;
+  }
+}
+
+// 3. Deposit Received Confirmation
+interface DepositReceivedData {
+  clientName: string;
+  clientEmail: string;
+  creativeName: string;
+  studioName?: string;
+  projectTitle: string;
+  depositAmount: number;
+  portalUrl?: string;
+}
+export async function sendDepositReceivedEmail(data: DepositReceivedData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DEV] Deposit received email would go to:', data.clientEmail);
+    return false;
+  }
+  try {
+    const content = `
+      <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Booking Confirmed!</h2>
+      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #4b5563; font-size: 15px;">Your deposit of <strong>$${data.depositAmount.toFixed(2)}</strong> for <strong>"${data.projectTitle}"</strong> has been received!</p>
+      <p style="color: #4b5563; font-size: 15px;">Your project is officially booked. I'm looking forward to working with you!</p>
+      ${data.portalUrl ? `
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${data.portalUrl}" style="${buttonStyle}">View Project Portal</a>
+      </div>` : ''}
+      <p style="color: #6b7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+    `;
+    const { error } = await resend.emails.send({
+      from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: 'Booking Confirmed!',
+      html: getEmailTemplate(content, 'Booking Confirmed'),
+    });
+    if (error) throw error;
+    console.log('Deposit received email sent to:', data.clientEmail);
+    return true;
+  } catch (error) {
+    console.error('Error sending deposit received email:', error);
+    return false;
+  }
+}
+
+// 4. Delivery Notification
+interface DeliveryNotificationData {
+  clientName: string;
+  clientEmail: string;
+  creativeName: string;
+  studioName?: string;
+  projectTitle: string;
+  portalUrl: string;
+}
+export async function sendDeliveryNotificationEmail(data: DeliveryNotificationData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DEV] Delivery notification would go to:', data.clientEmail);
+    return false;
+  }
+  try {
+    const content = `
+      <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Your Files Are Ready!</h2>
+      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #4b5563; font-size: 15px;">Great news! Your project <strong>"${data.projectTitle}"</strong> is complete and ready to download!</p>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${data.portalUrl}" style="${greenButtonStyle}">Download Your Files</a>
+      </div>
+      <p style="color: #4b5563; font-size: 15px;">I hope you love the final result! Let me know if you have any questions.</p>
+      <p style="color: #6b7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+    `;
+    const { error } = await resend.emails.send({
+      from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: `Your ${data.projectTitle} is Ready!`,
+      html: getEmailTemplate(content, 'Files Ready'),
+    });
+    if (error) throw error;
+    console.log('Delivery notification sent to:', data.clientEmail);
+    return true;
+  } catch (error) {
+    console.error('Error sending delivery notification:', error);
+    return false;
+  }
+}
+
+// 5. Final Payment Request
+interface FinalPaymentData {
+  clientName: string;
+  clientEmail: string;
+  creativeName: string;
+  studioName?: string;
+  projectTitle: string;
+  finalAmount: number;
+  paymentUrl: string;
+}
+export async function sendFinalPaymentEmail(data: FinalPaymentData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DEV] Final payment email would go to:', data.clientEmail, 'Amount:', data.finalAmount);
+    return false;
+  }
+  try {
+    const content = `
+      <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Final Payment Due</h2>
+      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #4b5563; font-size: 15px;">Your project <strong>"${data.projectTitle}"</strong> is complete! The final payment is now due.</p>
+      <div style="margin: 24px 0; padding: 20px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
+        <p style="margin: 0; font-size: 14px; color: #6b7280;">Final Balance: <strong style="color: #1a1a1a; font-size: 20px;">$${data.finalAmount.toFixed(2)}</strong></p>
+      </div>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${data.paymentUrl}" style="${greenButtonStyle}">Pay Final Balance ($${data.finalAmount.toFixed(2)})</a>
+      </div>
+      <p style="color: #4b5563; font-size: 15px;">Thank you for choosing to work with me!</p>
+      <p style="color: #6b7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+    `;
+    const { error } = await resend.emails.send({
+      from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: `Final Payment: ${data.projectTitle}`,
+      html: getEmailTemplate(content, 'Final Payment'),
+    });
+    if (error) throw error;
+    console.log('Final payment email sent to:', data.clientEmail);
+    return true;
+  } catch (error) {
+    console.error('Error sending final payment email:', error);
+    return false;
+  }
+}
+
+// 6. Final Payment Received
+interface FinalPaymentReceivedData {
+  clientName: string;
+  clientEmail: string;
+  creativeName: string;
+  studioName?: string;
+  projectTitle: string;
+  amount: number;
+}
+export async function sendFinalPaymentReceivedEmail(data: FinalPaymentReceivedData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DEV] Final payment received email would go to:', data.clientEmail);
+    return false;
+  }
+  try {
+    const content = `
+      <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Payment Received — Thank You!</h2>
+      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #4b5563; font-size: 15px;">Your final payment of <strong>$${data.amount.toFixed(2)}</strong> for <strong>"${data.projectTitle}"</strong> has been received!</p>
+      <p style="color: #4b5563; font-size: 15px;">It was wonderful working with you. I hope we can collaborate again in the future!</p>
+      <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+    `;
+    const { error } = await resend.emails.send({
+      from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: 'Payment Received — Thank You!',
+      html: getEmailTemplate(content, 'Payment Received'),
+    });
+    if (error) throw error;
+    console.log('Final payment received email sent to:', data.clientEmail);
+    return true;
+  } catch (error) {
+    console.error('Error sending final payment received email:', error);
+    return false;
+  }
+}
+
+// 7. Testimonial Request
+interface TestimonialRequestData {
+  clientName: string;
+  clientEmail: string;
+  creativeName: string;
+  studioName?: string;
+  projectTitle: string;
+  testimonialUrl: string;
+}
+export async function sendTestimonialRequestEmail(data: TestimonialRequestData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DEV] Testimonial request would go to:', data.clientEmail);
+    return false;
+  }
+  try {
+    const content = `
+      <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">How Was Your Experience?</h2>
+      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #4b5563; font-size: 15px;">I hope you're loving your <strong>"${data.projectTitle}"</strong>!</p>
+      <p style="color: #4b5563; font-size: 15px;">Would you mind sharing your experience? It'll only take 2 minutes.</p>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${data.testimonialUrl}" style="${buttonStyle}">Share Your Experience</a>
+      </div>
+      <p style="color: #9ca3af; font-size: 13px;">Your feedback helps me improve and helps others find my work. Thank you!</p>
+      <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+    `;
+    const { error } = await resend.emails.send({
+      from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: 'How Was Your Experience?',
+      html: getEmailTemplate(content, 'Testimonial Request'),
+    });
+    if (error) throw error;
+    console.log('Testimonial request sent to:', data.clientEmail);
+    return true;
+  } catch (error) {
+    console.error('Error sending testimonial request:', error);
+    return false;
+  }
+}
+
+// 8. Payment Received Notification (To Creative)
+interface PaymentReceivedNotificationData {
+  creativeEmail: string;
+  clientName: string;
+  projectTitle: string;
+  amount: number;
+  type: 'deposit' | 'final';
+  dashboardUrl: string;
+}
+export async function sendPaymentReceivedNotification(data: PaymentReceivedNotificationData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DEV] Payment notification to creative:', data.creativeEmail, data.type, data.amount);
+    return false;
+  }
+  try {
+    const typeLabel = data.type === 'deposit' ? 'Deposit' : 'Final';
+    const content = `
+      <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">${typeLabel} Payment Received!</h2>
+      <p style="color: #4b5563; font-size: 15px;"><strong>${data.clientName}</strong> paid the ${data.type} payment of <strong>$${data.amount.toFixed(2)}</strong>.</p>
+      <p style="color: #4b5563; font-size: 15px;">Project: <strong>"${data.projectTitle}"</strong></p>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${data.dashboardUrl}" style="${buttonStyle}">View Dashboard</a>
+      </div>
+    `;
+    const { error } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: data.creativeEmail,
+      subject: `Payment Received: ${data.clientName} — $${data.amount.toFixed(2)}`,
+      html: getEmailTemplate(content, 'Payment Received'),
+    });
+    if (error) throw error;
+    console.log('Payment notification sent to creative:', data.creativeEmail);
+    return true;
+  } catch (error) {
+    console.error('Error sending payment notification:', error);
+    return false;
+  }
+}
+
+// 9. Follow-up Sequence Email (generic wrapper)
+interface SequenceEmailData {
+  clientEmail: string;
+  clientName: string;
+  studioName: string;
+  subject: string;
+  body: string;
+  portalUrl?: string;
+}
+export async function sendSequenceEmail(data: SequenceEmailData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DEV] Sequence email would go to:', data.clientEmail, 'Subject:', data.subject);
+    return false;
+  }
+  try {
+    const content = `
+      <div style="color: #4b5563; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${data.body}</div>
+      ${data.portalUrl ? `
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${data.portalUrl}" style="${buttonStyle}">View Your Quote</a>
+      </div>` : ''}
+    `;
+    const { error } = await resend.emails.send({
+      from: `${data.studioName} <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: data.subject,
+      html: getEmailTemplate(content, data.subject),
+    });
+    if (error) throw error;
+    console.log('Sequence email sent to:', data.clientEmail, 'Subject:', data.subject);
+    return true;
+  } catch (error) {
+    console.error('Error sending sequence email:', error);
     return false;
   }
 }

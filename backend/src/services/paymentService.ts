@@ -1,5 +1,12 @@
 import { stripe } from '../lib/stripe';
 import prisma from '../lib/prisma';
+import {
+  sendDepositPaymentEmail,
+  sendDepositReceivedEmail,
+  sendFinalPaymentEmail,
+  sendFinalPaymentReceivedEmail,
+  sendPaymentReceivedNotification,
+} from './email';
 
 export const paymentService = {
   /**
@@ -59,6 +66,20 @@ export const paymentService = {
     });
 
     console.log(`[Pay] Deposit checkout created: $${depositAmount} for income ${incomeId}`);
+
+    // Send deposit payment request email to client
+    const creativeName = `${income.user?.firstName || ''} ${income.user?.lastName || ''}`.trim() || 'Studio';
+    sendDepositPaymentEmail({
+      clientName: income.lead.clientName,
+      clientEmail: income.lead.clientEmail,
+      creativeName,
+      studioName: income.user?.studioName || undefined,
+      projectTitle: income.lead.projectTitle,
+      totalAmount: Number(income.amount),
+      depositAmount,
+      paymentUrl: session.url || '',
+    }).catch(e => console.error('[Pay] Deposit payment email failed:', e));
+
     return { url: session.url, sessionId: session.id, depositAmount };
   },
 
@@ -116,6 +137,19 @@ export const paymentService = {
     });
 
     console.log(`[Pay] Final checkout created: $${finalAmount} for income ${incomeId}`);
+
+    // Send final payment request email to client
+    const creativeName = `${income.user?.firstName || ''} ${income.user?.lastName || ''}`.trim() || 'Studio';
+    sendFinalPaymentEmail({
+      clientName: income.lead.clientName,
+      clientEmail: income.lead.clientEmail,
+      creativeName,
+      studioName: income.user?.studioName || undefined,
+      projectTitle: income.lead.projectTitle,
+      finalAmount,
+      paymentUrl: session.url || '',
+    }).catch(e => console.error('[Pay] Final payment email failed:', e));
+
     return { url: session.url, sessionId: session.id, finalAmount };
   },
 
@@ -162,6 +196,35 @@ export const paymentService = {
           });
         }
         console.log(`[Pay] Deposit marked PAID for income ${incomeId}`);
+
+        // Send deposit received email to client + notification to creative
+        const depositIncome = await prisma.income.findUnique({
+          where: { id: incomeId },
+          include: { lead: true, user: true },
+        });
+        if (depositIncome?.lead && depositIncome?.user) {
+          const portalUrl = depositIncome.lead.portalToken
+            ? `${process.env.FRONTEND_URL}/portal/${depositIncome.lead.portalToken}`
+            : undefined;
+          const creativeName = `${depositIncome.user.firstName || ''} ${depositIncome.user.lastName || ''}`.trim();
+          sendDepositReceivedEmail({
+            clientName: depositIncome.lead.clientName,
+            clientEmail: depositIncome.lead.clientEmail,
+            creativeName,
+            studioName: depositIncome.user.studioName || undefined,
+            projectTitle: depositIncome.lead.projectTitle,
+            depositAmount: (session.amount_total || 0) / 100,
+            portalUrl,
+          }).catch(e => console.error('[Pay] Deposit received email failed:', e));
+          sendPaymentReceivedNotification({
+            creativeEmail: depositIncome.user.email,
+            clientName: depositIncome.lead.clientName,
+            projectTitle: depositIncome.lead.projectTitle,
+            amount: (session.amount_total || 0) / 100,
+            type: 'deposit',
+            dashboardUrl: `${process.env.FRONTEND_URL}/dashboard`,
+          }).catch(e => console.error('[Pay] Deposit notification to creative failed:', e));
+        }
       } else if (paymentType === 'final' && !income.finalPaid) {
         await prisma.income.update({
           where: { id: incomeId },
@@ -185,6 +248,31 @@ export const paymentService = {
           });
         }
         console.log(`[Pay] Final payment marked PAID_IN_FULL for income ${incomeId}`);
+
+        // Send final payment received email to client + notification to creative
+        const finalIncome = await prisma.income.findUnique({
+          where: { id: incomeId },
+          include: { lead: true, user: true },
+        });
+        if (finalIncome?.lead && finalIncome?.user) {
+          const creativeName = `${finalIncome.user.firstName || ''} ${finalIncome.user.lastName || ''}`.trim();
+          sendFinalPaymentReceivedEmail({
+            clientName: finalIncome.lead.clientName,
+            clientEmail: finalIncome.lead.clientEmail,
+            creativeName,
+            studioName: finalIncome.user.studioName || undefined,
+            projectTitle: finalIncome.lead.projectTitle,
+            amount: (session.amount_total || 0) / 100,
+          }).catch(e => console.error('[Pay] Final payment received email failed:', e));
+          sendPaymentReceivedNotification({
+            creativeEmail: finalIncome.user.email,
+            clientName: finalIncome.lead.clientName,
+            projectTitle: finalIncome.lead.projectTitle,
+            amount: (session.amount_total || 0) / 100,
+            type: 'final',
+            dashboardUrl: `${process.env.FRONTEND_URL}/dashboard`,
+          }).catch(e => console.error('[Pay] Final notification to creative failed:', e));
+        }
       }
     }
 
