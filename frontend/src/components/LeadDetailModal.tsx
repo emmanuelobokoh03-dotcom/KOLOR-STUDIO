@@ -44,6 +44,7 @@ import {
   MailPlus,
   Package,
   ScrollText,
+  Flag,
   Star as StarIcon
 } from 'lucide-react'
 import QuotesTab from './QuotesTab'
@@ -51,6 +52,7 @@ import EmailComposerModal from './EmailComposerModal'
 import BookingModal from './BookingModal'
 import DeliverablesTab from './DeliverablesTab'
 import ContractsTab from './ContractsTab'
+import ProjectTimeline from './ProjectTimeline'
 import { 
   trackFileUploaded, 
   trackFileDownloaded, 
@@ -160,7 +162,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [newNote, setNewNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
-  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables' | 'contracts' | 'messages'>('activity');
+  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables' | 'contracts' | 'messages' | 'timeline'>('activity');
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -551,6 +553,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
           <div className="flex border-b border-[#333] flex-shrink-0 overflow-x-auto scrollbar-hide">
             {([
               { key: 'activity' as const, icon: History, label: 'Activity' },
+              { key: 'timeline' as const, icon: Flag, label: 'Timeline' },
               { key: 'contracts' as const, icon: ScrollText, label: 'Contracts' },
               { key: 'quotes' as const, icon: Receipt, label: 'Quotes' },
               { key: 'files' as const, icon: Paperclip, label: 'Files', badge: files.length },
@@ -854,6 +857,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                     </div>
                   )}
                 </div>
+              </div>
+            ) : activeTab === 'timeline' ? (
+              <div className="p-4 md:p-6">
+                <ProjectTimeline leadId={lead.id} editable={true} authToken={localStorage.getItem('token') || undefined} />
               </div>
             ) : activeTab === 'quotes' ? (
               <QuotesTab 

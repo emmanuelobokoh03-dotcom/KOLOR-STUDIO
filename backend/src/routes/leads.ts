@@ -865,4 +865,127 @@ router.post('/:id/send-email', authMiddleware, async (req: AuthRequest, res: Res
   }
 });
 
+// ==========================================
+// MILESTONE ENDPOINTS
+// ==========================================
+
+// GET /api/leads/:id/milestones - Get timeline & milestones for a lead
+router.get('/:id/milestones', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const leadId = req.params.id as string;
+    const lead = await prisma.lead.findFirst({
+      where: { id: leadId, assignedToId: req.userId! },
+      include: {
+        milestones: { orderBy: [{ order: 'asc' }, { dueDate: 'asc' }] },
+      },
+    });
+    if (!lead) { res.status(404).json({ error: 'Lead not found' }); return; }
+    res.json({
+      shootingDate: lead.shootingDate,
+      editingDeadline: lead.editingDeadline,
+      deliveryDate: lead.deliveryDate,
+      milestones: lead.milestones,
+    });
+  } catch (error) {
+    console.error('Get milestones error:', error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+// POST /api/leads/:id/milestones - Create milestone
+router.post('/:id/milestones', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const leadId = req.params.id as string;
+    const lead = await prisma.lead.findFirst({ where: { id: leadId, assignedToId: req.userId! } });
+    if (!lead) { res.status(404).json({ error: 'Lead not found' }); return; }
+
+    const { name, description, dueDate, order } = req.body;
+    if (!name || !dueDate) { res.status(400).json({ error: 'Name and dueDate are required' }); return; }
+
+    const milestone = await prisma.projectMilestone.create({
+      data: { leadId: lead.id, name, description: description || null, dueDate: new Date(dueDate), order: order ?? 0 },
+    });
+
+    await logActivity(lead.id, req.userId!, 'NOTE_ADDED', `Milestone added: "${name}"`);
+    res.status(201).json({ milestone });
+  } catch (error) {
+    console.error('Create milestone error:', error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+// PATCH /api/leads/milestones/:milestoneId - Update milestone
+router.patch('/milestones/:milestoneId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const milestoneId = req.params.milestoneId as string;
+    const ms = await prisma.projectMilestone.findUnique({
+      where: { id: milestoneId },
+      include: { lead: { select: { assignedToId: true, id: true } } },
+    });
+    if (!ms || ms.lead.assignedToId !== req.userId) { res.status(404).json({ error: 'Milestone not found' }); return; }
+
+    const { name, description, dueDate, completed, order } = req.body;
+    const updated = await prisma.projectMilestone.update({
+      where: { id: milestoneId },
+      data: {
+        ...(name !== undefined && { name }),
+        ...(description !== undefined && { description }),
+        ...(dueDate !== undefined && { dueDate: new Date(dueDate) }),
+        ...(order !== undefined && { order }),
+        ...(completed !== undefined && { completed, completedAt: completed ? new Date() : null }),
+      },
+    });
+
+    if (completed !== undefined) {
+      await logActivity(ms.lead.id, req.userId!, 'NOTE_ADDED', `Milestone ${completed ? 'completed' : 'reopened'}: "${updated.name}"`);
+    }
+    res.json({ milestone: updated });
+  } catch (error) {
+    console.error('Update milestone error:', error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+// DELETE /api/leads/milestones/:milestoneId - Delete milestone
+router.delete('/milestones/:milestoneId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const milestoneId = req.params.milestoneId as string;
+    const ms = await prisma.projectMilestone.findUnique({
+      where: { id: milestoneId },
+      include: { lead: { select: { assignedToId: true } } },
+    });
+    if (!ms || ms.lead.assignedToId !== req.userId) { res.status(404).json({ error: 'Milestone not found' }); return; }
+
+    await prisma.projectMilestone.delete({ where: { id: milestoneId } });
+    res.json({ message: 'Milestone deleted' });
+  } catch (error) {
+    console.error('Delete milestone error:', error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+// PATCH /api/leads/:id/timeline - Update timeline key dates
+router.patch('/:id/timeline', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const leadId = req.params.id as string;
+    const lead = await prisma.lead.findFirst({ where: { id: leadId, assignedToId: req.userId! } });
+    if (!lead) { res.status(404).json({ error: 'Lead not found' }); return; }
+
+    const { shootingDate, editingDeadline, deliveryDate } = req.body;
+    const updated = await prisma.lead.update({
+      where: { id: lead.id },
+      data: {
+        ...(shootingDate !== undefined && { shootingDate: shootingDate ? new Date(shootingDate) : null }),
+        ...(editingDeadline !== undefined && { editingDeadline: editingDeadline ? new Date(editingDeadline) : null }),
+        ...(deliveryDate !== undefined && { deliveryDate: deliveryDate ? new Date(deliveryDate) : null }),
+      },
+      select: { shootingDate: true, editingDeadline: true, deliveryDate: true },
+    });
+    res.json(updated);
+  } catch (error) {
+    console.error('Update timeline error:', error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
 export default router;

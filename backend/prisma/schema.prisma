@@ -195,6 +195,11 @@ model Lead {
   customFields    Json?       // Flexible custom fields
   isDemoData      Boolean     @default(false)
   
+  // Timeline dates
+  shootingDate    DateTime?
+  editingDeadline DateTime?
+  deliveryDate    DateTime?
+  
   // Timestamps
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -212,6 +217,7 @@ model Lead {
   interactions    Interaction[]
   incomeRecords   Income[]
   testimonials    Testimonial[]
+  milestones      ProjectMilestone[]
   
   @@map("leads")
   @@index([status])
@@ -220,6 +226,24 @@ model Lead {
   @@index([projectType])
   @@index([pipelineStatus])
   @@index([nextFollowUpAt])
+}
+
+model ProjectMilestone {
+  id          String    @id @default(uuid())
+  leadId      String
+  name        String
+  description String?
+  dueDate     DateTime
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+
+  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("project_milestones")
+  @@index([leadId])
+  @@index([dueDate])
 }
 
 enum ServiceType {

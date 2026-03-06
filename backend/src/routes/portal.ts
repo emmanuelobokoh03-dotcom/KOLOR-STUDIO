@@ -397,6 +397,31 @@ router.post('/:token/messages', async (req: Request, res: Response): Promise<voi
   }
 });
 
+// GET /api/portal/:token/timeline - Get timeline for client (public)
+router.get('/:token/timeline', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const lead = await prisma.lead.findUnique({
+      where: { portalToken: String(req.params.token) },
+      select: {
+        shootingDate: true,
+        editingDeadline: true,
+        deliveryDate: true,
+        milestones: { orderBy: [{ order: 'asc' }, { dueDate: 'asc' }] },
+      },
+    });
+    if (!lead) { res.status(404).json({ error: 'Portal not found' }); return; }
+    res.json({
+      shootingDate: lead.shootingDate,
+      editingDeadline: lead.editingDeadline,
+      deliveryDate: lead.deliveryDate,
+      milestones: lead.milestones,
+    });
+  } catch (error) {
+    console.error('Portal timeline error:', error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
 // POST /api/portal/:token/upload - Client uploads files (public)
 router.post('/:token/upload', clientUpload.array('files', 5), async (req: Request, res: Response): Promise<void> => {
   try {

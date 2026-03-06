@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ClientPortalMessages from '../components/ClientPortalMessages';
 import ClientFileUpload from '../components/ClientFileUpload';
+import ProjectTimeline from '../components/ProjectTimeline';
 import { 
   Sparkles, 
   CheckCircle, 
@@ -448,6 +449,11 @@ export default function ClientPortal() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Project Timeline */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6" data-testid="portal-timeline-section">
+          <ProjectTimeline token={token || ''} editable={false} />
         </div>
 
         {/* Contracts Section */}
