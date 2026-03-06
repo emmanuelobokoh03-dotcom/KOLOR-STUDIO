@@ -244,6 +244,12 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Note**: Stripe key is Emergent proxy test key; real Stripe key needed for production. Endpoints handle errors gracefully (503)
 - **Testing**: 100% pass (17/17 backend, frontend verified, iteration_42.json)
 
+### Security Hotfix: CORS + Rate Limiting (DONE - March 6, 2026)
+- **CORS**: Environment-specific origin whitelist. Production: `kolorstudio.app` + Vercel preview. Dev: localhost + Emergent preview/cluster URLs. Blocks unauthorized origins with console warnings
+- **Rate Limiting**: 5 tiers — General API (100/hr), Auth (10/hr), Email verification (3/hr), File uploads (20/hr), Portal (50/hr). All skip in development, active in production. 429 responses with user-friendly messages. Webhook routes excluded
+- **Files**: `/backend/src/middleware/rateLimiter.ts` (new), `/backend/src/server.ts` (updated)
+- **Testing**: All 7 endpoint categories verified (200/401/404 correct responses)
+
 ## Upcoming Autopilot Features (Beta Launch)
 - **(P0)** Day 10: Auto-Responses + Auto Delivery Workflow
 - **(P0)** Day 11: Email Notification Templates (Resend integration)
