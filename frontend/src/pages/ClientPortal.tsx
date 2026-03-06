@@ -113,9 +113,22 @@ export default function ClientPortal() {
   const [signing, setSigning] = useState<string | null>(null);
   const [signSuccess, setSignSuccess] = useState<string | null>(null);
   const [signError, setSignError] = useState<string | null>(null);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => {
     fetchPortalData();
+    // Check for payment success in URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setPaymentSuccess(true);
+      // Clean URL
+      window.history.replaceState({}, '', window.location.pathname);
+      // Poll session status if available
+      const sessionId = params.get('session_id');
+      if (sessionId) {
+        pollPaymentStatus(sessionId);
+      }
+    }
   }, [token]);
 
   const fetchPortalData = async () => {
@@ -137,6 +150,18 @@ export default function ClientPortal() {
       setError('Unable to connect. Please try again later.');
     }
     setLoading(false);
+  };
+
+  const pollPaymentStatus = async (sessionId: string, attempts = 0) => {
+    if (attempts >= 5) return;
+    try {
+      const res = await fetch(`${API_URL}/api/payments/session/${sessionId}/status`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.payment_status === 'paid') return; // Done
+      }
+    } catch {}
+    setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), 2000);
   };
 
   const formatDate = (dateString: string) => {
@@ -271,6 +296,20 @@ export default function ClientPortal() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+        {/* Payment Success Banner */}
+        {paymentSuccess && (
+          <div className="rounded-2xl p-6 bg-gradient-to-r from-emerald-500 to-green-500 text-white" data-testid="payment-success-banner">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">Payment Successful!</h3>
+                <p className="text-sm opacity-90">Thank you! Your payment has been received. You'll receive a confirmation shortly.</p>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Status Message */}
         {!data.status.isLost && (
           <div className={`rounded-2xl p-6 ${

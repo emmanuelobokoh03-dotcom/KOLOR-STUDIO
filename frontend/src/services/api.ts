@@ -1338,5 +1338,58 @@ export const contractsApi = {
   },
 };
 
+// ===== PAYMENTS API =====
+export const paymentsApi = {
+  createDepositCheckout: async (incomeId: string) => {
+    const originUrl = window.location.origin;
+    return request<{ url: string; sessionId: string; depositAmount: number }>(`/api/payments/${incomeId}/deposit`, {
+      method: 'POST',
+      body: JSON.stringify({ originUrl }),
+    });
+  },
+  createFinalCheckout: async (incomeId: string) => {
+    const originUrl = window.location.origin;
+    return request<{ url: string; sessionId: string; finalAmount: number }>(`/api/payments/${incomeId}/final`, {
+      method: 'POST',
+      body: JSON.stringify({ originUrl }),
+    });
+  },
+  getStatus: async (incomeId: string) => {
+    return request<{
+      status: string;
+      amount: number;
+      depositAmount: number | null;
+      depositPaid: boolean;
+      depositPaidAt: string | null;
+      finalAmount: number | null;
+      finalPaid: boolean;
+      finalPaidAt: string | null;
+      paymentMethod: string | null;
+    }>(`/api/payments/${incomeId}/status`);
+  },
+  checkSession: async (sessionId: string) => {
+    return request<{
+      status: string;
+      payment_status: string;
+      amount_total: number;
+      currency: string;
+    }>(`/api/payments/session/${sessionId}/status`);
+  },
+  getByQuote: async (quoteId: string) => {
+    return request<{
+      incomeId: string;
+      status: string;
+      amount: number;
+      depositAmount: number | null;
+      depositPaid: boolean;
+      depositPaidAt: string | null;
+      finalAmount: number | null;
+      finalPaid: boolean;
+      finalPaidAt: string | null;
+      paymentMethod: string | null;
+    }>(`/api/payments/by-quote/${quoteId}`);
+  },
+};
 
-export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi, contractsApi };
+
+export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi, contractsApi, paymentsApi };

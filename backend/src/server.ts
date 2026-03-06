@@ -20,6 +20,8 @@ import contractsRoutes from './routes/contracts';
 import crmRoutes from './routes/crm';
 import testimonialRoutes from './routes/testimonials';
 import sequencesRoutes from './routes/sequences';
+import webhookRoutes from './routes/webhooks';
+import paymentRoutes from './routes/payments';
 import { processSequences } from './services/sequenceEngine';
 import { ensureBucketExists } from './services/storage';
 
@@ -52,6 +54,9 @@ app.use(cors({
   ],
   credentials: true,
 }));
+
+// Stripe webhooks need raw body BEFORE JSON parsing
+app.use('/api/webhooks', express.raw({ type: 'application/json' }), webhookRoutes);
 
 // Body parsing
 app.use(express.json());
@@ -107,6 +112,7 @@ app.use('/api', contractsRoutes); // Deliverables: /api/leads/:leadId/deliverabl
 app.use('/api/crm', crmRoutes); // CRM: /api/crm/*
 app.use('/api/testimonials', testimonialRoutes); // Testimonials: /api/testimonials/*
 app.use('/api/sequences', sequencesRoutes); // Email sequences: /api/sequences/*
+app.use('/api/payments', paymentRoutes); // Payments: /api/payments/*
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {

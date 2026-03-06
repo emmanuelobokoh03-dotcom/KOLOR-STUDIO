@@ -3,6 +3,8 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendQuoteEmail, sendQuoteAcceptedNotification, sendQuoteDeclinedNotification } from '../services/email';
 import { generateQuotePDF } from '../services/pdf.service';
 import { enrollLead, stopSequencesForLead } from '../services/sequenceEngine';
+import { paymentService } from '../services/paymentService';
+import { stripe } from '../lib/stripe';
 
 const router = Router();
 import prisma from '../lib/prisma';
@@ -732,8 +734,9 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
     });
 
     // Auto-create income record
+    let createdIncome: any = null;
     try {
-      await prisma.income.create({
+      createdIncome = await prisma.income.create({
         data: {
           userId: quote.createdById,
           leadId: quote.leadId,
@@ -748,6 +751,14 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
       });
     } catch (incomeError) {
       console.error('Failed to create income record:', incomeError);
+    }
+
+    // Auto-create deposit payment link (non-blocking)
+    if (createdIncome && stripe) {
+      const frontendUrl = process.env.FRONTEND_URL || '';
+      paymentService.createDepositCheckout(createdIncome.id, frontendUrl)
+        .then(result => console.log(`[Pay] Auto-deposit link for quote ${quote.quoteNumber}: ${result.url}`))
+        .catch(e => console.error('[Pay] Auto-deposit link failed:', e));
     }
 
     // Log interaction

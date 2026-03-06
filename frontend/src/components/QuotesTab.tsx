@@ -22,11 +22,13 @@ import {
   QUOTE_STATUS_LABELS, 
   QUOTE_STATUS_COLORS,
   quotesApi,
-  authApi
+  authApi,
+  paymentsApi
 } from '../services/api'
 import { formatCurrency, getMergedCurrencySettings, CurrencySettings } from '../utils/currency'
 import QuoteBuilderModal from './QuoteBuilderModal'
 import EmailComposer from './EmailComposer'
+import PaymentTracker from './PaymentTracker'
 import { 
   trackQuoteCreated, 
   trackQuoteSent, 
@@ -52,6 +54,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
   const [emailComposerQuote, setEmailComposerQuote] = useState<Quote | null>(null);
   const [userName, setUserName] = useState('');
   const [studioName, setStudioName] = useState('');
+  const [incomeMap, setIncomeMap] = useState<Record<string, string>>({}); // quoteId -> incomeId
 
   useEffect(() => {
     fetchQuotes();
@@ -63,6 +66,14 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
     const result = await quotesApi.getByLead(lead.id);
     if (result.data?.quotes) {
       setQuotes(result.data.quotes);
+      // Fetch income IDs for accepted quotes (for payment tracker)
+      const accepted = result.data.quotes.filter(q => q.status === 'ACCEPTED');
+      const map: Record<string, string> = {};
+      await Promise.all(accepted.map(async (q) => {
+        const payRes = await paymentsApi.getByQuote(q.id);
+        if (payRes.data?.incomeId) map[q.id] = payRes.data.incomeId;
+      }));
+      setIncomeMap(map);
     }
     setLoading(false);
   };
@@ -269,6 +280,13 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                     <div className="mt-2 text-sm text-green-400">
                       Accepted on {formatDate(quote.acceptedAt)}
                     </div>
+                  )}
+                  {quote.status === 'ACCEPTED' && incomeMap[quote.id] && (
+                    <PaymentTracker
+                      incomeId={incomeMap[quote.id]}
+                      totalAmount={quote.total}
+                      currencySymbol={getQuoteCurrencySettings(quote).currencySymbol}
+                    />
                   )}
                   {quote.status === 'DECLINED' && quote.declinedAt && (
                     <div className="mt-2 text-sm text-red-400">
