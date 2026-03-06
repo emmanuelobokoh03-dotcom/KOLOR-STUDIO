@@ -232,8 +232,19 @@ A full-stack CRM application for creative professionals (photographers, designer
 - `POST /api/portal/:token/upload` - Client file upload (public)
 - `GET /api/portal/:token/files` - Client uploaded files list (public)
 
+### Day 9: Auto Payment Collection - Stripe Integration (DONE - March 6, 2026)
+- **Stripe SDK** integrated with `sk_test_emergent` key (Emergent proxy test key)
+- **Payment Service**: `paymentService.ts` — creates Stripe checkout sessions for deposit (30%) and final (70%) payments
+- **Database**: Income model updated with `stripeSessionId`, `depositAmount`, `depositPaid`, `depositPaidAt`, `finalAmount`, `finalPaid`, `finalPaidAt`, `paymentMethod` fields; added `DEPOSIT_RECEIVED`, `PAID_IN_FULL`, `OVERDUE` status enums
+- **API Endpoints**: `POST /api/payments/:id/deposit`, `POST /api/payments/:id/final`, `GET /api/payments/:id/status`, `GET /api/payments/by-quote/:quoteId`, `GET /api/payments/session/:sessionId/status`
+- **Webhook**: `POST /api/webhooks/stripe` — signature-verified, mounted before body parser for raw body access
+- **Auto-trigger**: Quote acceptance auto-creates deposit payment link
+- **Frontend**: `PaymentTracker` component in QuotesTab for accepted quotes; payment success banner in ClientPortal
+- **Prisma Singleton**: Fixed 20+ PrismaClient instances → shared singleton at `/backend/src/lib/prisma.ts`
+- **Note**: Stripe key is Emergent proxy test key; real Stripe key needed for production. Endpoints handle errors gracefully (503)
+- **Testing**: 100% pass (17/17 backend, frontend verified, iteration_42.json)
+
 ## Upcoming Autopilot Features (Beta Launch)
-- **(P0)** Day 9: Auto Payment Collection (Stripe Integration)
 - **(P0)** Day 10: Auto-Responses + Auto Delivery Workflow
 - **(P0)** Day 11: Email Notification Templates (Resend integration)
 
