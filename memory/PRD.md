@@ -157,6 +157,15 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Frontend ContractsTab**: Send to Client button on DRAFT contracts opens EmailComposer; accepts `lead` prop for email context
 - **Testing**: 100% backend (12/12), 95% frontend (iteration_37.json)
 
+### Demo Project + Onboarding — Phase 7 Part 4 (DONE - March 6, 2026)
+- **Backend createDemoProject.ts**: Auto-creates demo lead (Sarah Johnson), quote, activity, and interaction on new user signup
+- **Schema**: Added `isDemoData Boolean @default(false)` to Lead model
+- **Auth integration**: Demo project created asynchronously after signup (non-blocking, fire-and-forget)
+- **Frontend DemoProjectBanner**: Gradient banner on dashboard showing welcome message, pointing to demo lead
+- **Features**: Dismiss banner (X), delete demo project button, auto-hides when no demo lead exists
+- **Bug fixed**: Unique quoteNumber constraint — now uses `Q-DEMO-{shortId}` per user
+- **Testing**: 100% backend (12/12), 100% frontend (iteration_38.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
