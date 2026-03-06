@@ -1,0 +1,57 @@
+{
+  "summary": "Demo Project feature (Phase 7, Part 4) tested. CRITICAL BUG FOUND AND FIXED: Quote creation was failing due to unique constraint on quoteNumber ('Q-DEMO-001'). Fixed by making quote number unique per user ('Q-DEMO-{shortId}'). After fix: 12/12 backend tests pass, all UI tests pass.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_demo_project.py",
+    "/app/test_reports/pytest/demo_project_tests.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "FIXED: createDemoProject.ts was using hardcoded 'Q-DEMO-001' for quoteNumber which violated unique constraint. Changed to 'Q-DEMO-{shortId}' where shortId is first 8 chars of userId."
+  ],
+  "updated_files": [
+    "/app/kolor-studio-v2/backend/src/scripts/createDemoProject.ts",
+    "/app/backend/tests/test_demo_project.py"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "100% - All demo banner features verified"
+  },
+  "test_credentials": "New users: auto-generated emails like demo-banner-test-{timestamp}@test.com, password=TestDemo123!",
+  "seed_data_creation": "Demo project automatically creates: 1 lead (Sarah Johnson), 1 quote (Q-DEMO-{shortId}), 1 activity (QUOTE_SENT), 1 interaction (EMAIL_SENT)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Demo project feature is working correctly. New user signup creates a demo lead with isDemoData=true, a demo quote with unique number Q-DEMO-{shortId}, and related activity/interaction. The DemoProjectBanner shows on dashboard when isDemoData lead exists. Banner has dismiss (X) and delete buttons. Existing users do NOT see the demo banner since their leads don't have isDemoData=true.",
+  "features_tested": {
+    "backend_apis": {
+      "POST /api/auth/signup": "PASSED - Creates demo project asynchronously",
+      "GET /api/leads": "PASSED - Returns isDemoData field",
+      "GET /api/leads/:id/quotes": "PASSED - Returns demo quote with Q-DEMO-{shortId}",
+      "GET /api/leads/:id/activities": "PASSED - Returns QUOTE_SENT activity",
+      "DELETE /api/leads/:id": "PASSED - Can delete demo lead"
+    },
+    "frontend_ui": {
+      "DemoProjectBanner visibility": "PASSED - Shows for new users with demo data",
+      "DemoProjectBanner NOT shown for existing users": "PASSED",
+      "DemoProjectBanner content": "PASSED - Shows 'Welcome! We created a sample project for you'",
+      "DemoProjectBanner highlights Sarah Johnson (Demo)": "PASSED",
+      "Delete demo button (data-testid='delete-demo-btn')": "PASSED - Present and visible",
+      "Dismiss banner button (data-testid='dismiss-demo-banner')": "PASSED - Present and visible"
+    }
+  },
+  "bug_fixed": {
+    "issue": "Demo quote creation failing with Prisma unique constraint error on quoteNumber",
+    "root_cause": "createDemoProject.ts used hardcoded 'Q-DEMO-001' which violates unique constraint when second user signs up",
+    "fix_applied": "Changed quoteNumber to 'Q-DEMO-{shortId}' where shortId = userId.slice(0,8).toUpperCase()",
+    "file_modified": "/app/kolor-studio-v2/backend/src/scripts/createDemoProject.ts",
+    "verified": true
+  }
+}
