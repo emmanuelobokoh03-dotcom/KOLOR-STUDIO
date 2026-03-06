@@ -276,6 +276,13 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **11+ email types**: Auto-response, deposit request, deposit received, final payment request, final payment received, payment notification (creative), delivery, testimonial, contract sent, contract agreed, quote sent, quote accepted/declined, sequence follow-up
 - **Testing**: 100% backend (16/16 tests, iteration_45.json)
 
+### RLS Security Hotfix: 4 Tables (DONE - March 6, 2026)
+- **Problem**: 4 tables created in Phase 7 had no Row-Level Security policies: email_sequences, email_sequence_steps, sequence_enrollments, project_milestones
+- **Layer 1 — Database RLS**: Enabled RLS + created 16 policies (4 per table: SELECT, INSERT, UPDATE, DELETE) using `auth.uid()` checks. Protects against direct Supabase dashboard/API access
+- **Layer 2 — Application Guards**: Audited all routes — confirmed all CRUD operations in `sequences.ts` and `leads.ts` (milestones) already enforce ownership via `userId: req.userId!` or `assignedToId: req.userId!`
+- **Architecture note**: Prisma connects as postgres superuser (bypasses RLS), so application-level guards are the real enforcement. RLS adds defense-in-depth against direct DB access
+- **Testing**: 100% backend (14/14 tests, iteration_46.json)
+
 ## Autopilot System Complete
 - All Day 9-12 autopilot core features are complete. Full automated workflow: Lead → Auto-response → Quote → Contract → Payment → Delivery → Testimonial — all with live email notifications via Resend. Beta launch ready.
 
