@@ -1,10 +1,9 @@
 import { Router, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { generateCRMAlerts, getRevenueStats, calculateNextFollowUp } from '../services/crm';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // GET /api/crm/alerts - Get CRM alerts for current user
 router.get('/alerts', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {

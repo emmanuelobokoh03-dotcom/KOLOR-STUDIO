@@ -1,12 +1,11 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { z } from 'zod';
 import multer from 'multer';
 import { createClient } from '@supabase/supabase-js';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // Multer for logo upload (memory storage, 2MB limit)
 const logoUpload = multer({

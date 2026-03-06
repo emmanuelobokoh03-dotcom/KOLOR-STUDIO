@@ -8,7 +8,7 @@ import requests
 import os
 import time
 
-BASE_URL = "https://kolor-messaging.preview.emergentagent.com"
+BASE_URL = "https://autopilot-portal-1.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

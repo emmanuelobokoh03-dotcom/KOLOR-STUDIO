@@ -1,12 +1,11 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendQuoteEmail, sendQuoteAcceptedNotification, sendQuoteDeclinedNotification } from '../services/email';
 import { generateQuotePDF } from '../services/pdf.service';
 import { enrollLead, stopSequencesForLead } from '../services/sequenceEngine';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // Helper to generate quote number
 async function generateQuoteNumber(): Promise<string> {

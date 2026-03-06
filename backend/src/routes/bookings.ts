@@ -1,11 +1,10 @@
 import { Router, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { logActivity } from './activities';
 import { sendBookingConfirmationEmail } from '../services/email';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // GET /api/bookings - Get all bookings for authenticated user
 router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {

@@ -1,9 +1,8 @@
 import { Router, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 const VALID_INDUSTRIES = ['PHOTOGRAPHY', 'VIDEOGRAPHY', 'GRAPHIC_DESIGN', 'WEB_DESIGN', 'ILLUSTRATION', 'FINE_ART', 'SCULPTURE', 'BRANDING', 'CONTENT_CREATION', 'OTHER'];
 const VALID_PROJECT_TYPES = ['SERVICE', 'COMMISSION', 'PROJECT', 'PRODUCT_SALE'];

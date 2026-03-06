@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
 import { addDays, subDays, differenceInDays, isPast, formatDistanceToNow, startOfMonth, startOfYear, subMonths } from 'date-fns';
 
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 export const calculateNextFollowUp = (lead: any): Date | null => {
   const now = new Date();

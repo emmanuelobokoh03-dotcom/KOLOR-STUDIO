@@ -1,9 +1,9 @@
 import { Router, Response } from 'express';
-import { PrismaClient, ActivityType } from '@prisma/client';
+import { ActivityType } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // GET /api/leads/:leadId/activities - Get activity timeline for a lead
 router.get('/:leadId/activities', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {

@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import multer from 'multer';
 import path from 'path';
 import { uploadFile, formatFileSize, getFileCategory } from '../services/storage';
@@ -7,7 +6,7 @@ import { logActivity } from './activities';
 import { stopSequencesForLead } from '../services/sequenceEngine';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // Allowed file extensions for client uploads
 const ALLOWED_EXTENSIONS = new Set([

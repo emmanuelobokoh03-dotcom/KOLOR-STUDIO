@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
@@ -8,9 +7,9 @@ import { sendPasswordResetEmail, sendVerificationEmail } from '../services/email
 import { seedTemplatesForUser } from '../seeds/systemTemplates';
 import { createDemoProject } from '../scripts/createDemoProject';
 import { seedDefaultSequences } from '../scripts/seedSequences';
+import prisma from '../lib/prisma';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // In-memory rate limiting for forgot-password requests
 const forgotPasswordAttempts: Map<string, { count: number; resetTime: number }> = new Map();
@@ -99,12 +98,6 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
       console.error('Failed to send verification email on signup:', e);
     }
 
-    // Create demo project (non-blocking)
-    createDemoProject(user.id).catch(e => console.error('Demo project creation failed:', e));
-
-    // Seed default email sequences (non-blocking)
-    seedDefaultSequences(user.id).catch(e => console.error('Sequence seed failed:', e));
-
     res.status(201).json({
       message: 'Account created successfully',
       user
@@ -140,6 +133,10 @@ router.post('/onboarding', authMiddleware, async (req: AuthRequest, res: Respons
 
     // Seed workflow templates for this industry
     const templates = await seedTemplatesForUser(userId, primaryIndustry);
+
+    // Create industry-specific demo project and email sequences (non-blocking)
+    createDemoProject(userId, primaryIndustry as any).catch(e => console.error('Demo project creation failed:', e));
+    seedDefaultSequences(userId, primaryIndustry as any).catch(e => console.error('Sequence seed failed:', e));
 
     res.json({
       message: 'Onboarding complete',

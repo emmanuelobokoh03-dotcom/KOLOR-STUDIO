@@ -1,9 +1,9 @@
 import { Router, Response } from 'express';
-import { PrismaClient, LeadStatus } from '@prisma/client';
+import { LeadStatus } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // Helper to get start of month
 function getStartOfMonth(date: Date): Date {

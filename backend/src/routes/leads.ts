@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotification, sendPortalLinkEmail } from '../services/email';
 import { logActivity } from './activities';
@@ -7,7 +6,7 @@ import { uploadFile, ensureBucketExists } from '../services/storage';
 import multer from 'multer';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB
 
 // POST /api/leads/upload-cover - Upload cover image for a lead

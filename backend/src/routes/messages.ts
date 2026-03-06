@@ -1,8 +1,7 @@
 import { Router, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 const router = Router();
 
 // GET /api/leads/:leadId/messages - Get all messages for a lead (authenticated)

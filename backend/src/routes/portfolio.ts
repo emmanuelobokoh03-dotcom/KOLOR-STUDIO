@@ -1,11 +1,11 @@
 import { Router, Response } from 'express';
-import { PrismaClient, PortfolioCategory } from '@prisma/client';
+import { PortfolioCategory } from '@prisma/client';
 import multer from 'multer';
 import { createClient } from '@supabase/supabase-js';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // Supabase client for storage
 const SUPABASE_URL = process.env.SUPABASE_URL;

@@ -1,11 +1,10 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { logActivity } from './activities';
 import { sendContractSentEmail, sendContractAgreedNotification } from '../services/email';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // =====================
 // CONTRACT TEMPLATES
@@ -318,7 +317,7 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
     });
 
     const studioName = contract.lead.assignedTo?.studioName || `${contract.lead.assignedTo?.firstName} ${contract.lead.assignedTo?.lastName}`;
-    const portalUrl = `${process.env.FRONTEND_URL || 'https://kolor-messaging.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
+    const portalUrl = `${process.env.FRONTEND_URL || 'https://autopilot-portal-1.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
 
     await sendContractSentEmail({
       clientName: contract.lead.clientName,

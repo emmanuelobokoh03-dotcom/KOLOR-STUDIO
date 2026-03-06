@@ -1,6 +1,6 @@
-import { PrismaClient, SequenceTrigger } from '@prisma/client';
+import { SequenceTrigger } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 function addDays(date: Date, days: number): Date {
   const result = new Date(date);

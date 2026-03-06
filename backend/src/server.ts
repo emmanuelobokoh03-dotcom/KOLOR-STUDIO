@@ -48,7 +48,7 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5173',
     'http://localhost:3000',
-    'https://kolor-messaging.preview.emergentagent.com'
+    'https://autopilot-portal-1.preview.emergentagent.com'
   ],
   credentials: true,
 }));

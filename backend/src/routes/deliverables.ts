@@ -1,9 +1,8 @@
 import { Router, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 const VALID_DELIVERABLE_TYPES = ['DIGITAL_FILES', 'PHYSICAL_ART', 'PRINTS', 'SERVICE', 'WEBSITE', 'MIXED'];
 const VALID_STATUSES = ['PENDING', 'IN_PROGRESS', 'READY', 'DELIVERED', 'SHIPPED'];
