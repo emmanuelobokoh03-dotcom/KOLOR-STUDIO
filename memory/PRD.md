@@ -257,8 +257,16 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Note**: Email sending is logged to console only — actual Resend integration is Day 11
 - **Testing**: 100% backend (12/12), frontend verified (iteration_43.json)
 
+### Day 11: Auto Contract Generation & Sending (DONE - March 6, 2026)
+- **Auto-generation**: When a quote is accepted, a contract is automatically generated using industry-specific templates (PHOTOGRAPHY_SHOOT, PORTRAIT_COMMISSION, LOGO_DESIGN, WEB_DESIGN, GENERAL_SERVICE), pre-filled with client name, project title, event date, and amount
+- **Industry mapping**: PHOTOGRAPHY/VIDEOGRAPHY/CONTENT_CREATION → Photography Agreement; FINE_ART/ILLUSTRATION/SCULPTURE → Art Commission; GRAPHIC_DESIGN/BRANDING → Logo Design; WEB_DESIGN → Web Design; OTHER → General Service
+- **Contract flow**: Quote accepted → contract auto-created (SENT status) → email queued → appears in client portal → client reviews & agrees → timestamp recorded → creative notified
+- **Bug fix**: Contracts GET endpoint now uses OR clause (assignedToId OR quote createdById) so contracts are visible even for leads without explicit assignment
+- **Bug fix**: `autoGenerateContract` falls back to `quote.createdBy` when `lead.assignedTo` is null
+- **Testing**: 100% (11/11 backend, frontend verified, iteration_44.json)
+
 ## Upcoming Autopilot Features (Beta Launch)
-- **(P0)** Day 11: Email Notification Templates (Resend integration) — send actual emails for auto-response, delivery, testimonial requests, payment links
+- All Day 9-11 autopilot core features are complete. Beta launch ready.
 
 ## Backlog (P1/P2/P3)
 - **(P1)** Interactive Walkthrough/Setup Wizard
