@@ -816,9 +816,10 @@ export const quotesApi = {
   },
 
   // Send quote to client
-  send: async (quoteId: string) => {
+  send: async (quoteId: string, emailData?: { subject: string; message: string }) => {
     return request<{ message: string; quote: Quote }>(`/api/quotes/${quoteId}/send`, {
       method: 'POST',
+      body: emailData ? JSON.stringify(emailData) : undefined,
     });
   },
 
@@ -1322,9 +1323,10 @@ export const contractsApi = {
       method: 'DELETE',
     });
   },
-  send: async (id: string) => {
+  send: async (id: string, emailData?: { subject: string; message: string }) => {
     return request<{ contract: Contract }>(`/api/contracts/${id}/send`, {
       method: 'POST',
+      body: emailData ? JSON.stringify(emailData) : undefined,
     });
   },
   agree: async (id: string, portalToken: string) => {

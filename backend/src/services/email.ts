@@ -802,6 +802,8 @@ interface QuoteEmailData {
   currencySymbol?: string;
   currencyPosition?: string;
   studioName: string;
+  customSubject?: string;
+  customMessage?: string;
 }
 
 export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
@@ -825,6 +827,18 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
     day: 'numeric' 
   });
 
+  // Build the message section based on whether custom message was provided
+  const messageSection = data.customMessage
+    ? `<div style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7; white-space: pre-wrap;">${data.customMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>`
+    : `<p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+      Hi ${firstName},
+    </p>
+    
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+      We've prepared a quote for your project <strong>"${data.projectTitle}"</strong>. 
+      Click the button below to view the full details and accept the quote.
+    </p>`;
+
   const content = `
     <div style="text-align: center; margin-bottom: 32px;">
       <span style="font-size: 48px;">📋</span>
@@ -834,14 +848,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
       Your Quote is Ready!
     </h1>
     
-    <p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-      Hi ${firstName},
-    </p>
-    
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-      We've prepared a quote for your project <strong>"${data.projectTitle}"</strong>. 
-      Click the button below to view the full details and accept the quote.
-    </p>
+    ${messageSection}
     
     <!-- Quote Summary Box -->
     <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); border-radius: 12px; margin-bottom: 24px;">
@@ -894,7 +901,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.clientEmail],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
-      subject: `Quote from KOLOR STUDIO - ${data.projectTitle}`,
+      subject: data.customSubject || `Quote from KOLOR STUDIO - ${data.projectTitle}`,
       html: getEmailTemplate(content, 'Your Quote'),
     });
 
@@ -1397,6 +1404,8 @@ interface ContractSentEmailData {
   contractTitle: string;
   studioName: string;
   portalUrl: string;
+  customSubject?: string;
+  customMessage?: string;
 }
 
 export async function sendContractSentEmail(data: ContractSentEmailData): Promise<boolean> {
@@ -1406,10 +1415,21 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
       return true;
     }
 
+    const firstName = data.clientName.split(' ')[0];
+
+    // Build custom message section or default
+    const messageHtml = data.customMessage
+      ? `<div style="color: #a3a3a3; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${data.customMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>`
+      : `<p style="color: #fafafa; font-size: 16px; line-height: 1.6;">Hi ${firstName},</p>
+            <p style="color: #a3a3a3; font-size: 14px; line-height: 1.6;">
+              An agreement for your project <strong style="color: #fafafa;">"${data.projectTitle}"</strong> is ready for your review. 
+              Please review the terms and sign the agreement using the link below.
+            </p>`;
+
     const { data: emailData } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: data.clientEmail,
-      subject: `Agreement for ${data.projectTitle} - ${data.studioName}`,
+      subject: data.customSubject || `Agreement for ${data.projectTitle} - ${data.studioName}`,
       html: `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f0f0f; padding: 0;">
           <div style="background: linear-gradient(135deg, #7c3aed, #9333ea); padding: 32px; text-align: center;">
@@ -1417,11 +1437,7 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
             <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 14px;">${data.studioName}</p>
           </div>
           <div style="padding: 32px; background: #1a1a1a;">
-            <p style="color: #fafafa; font-size: 16px; line-height: 1.6;">Hi ${data.clientName.split(' ')[0]},</p>
-            <p style="color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-              An agreement for your project <strong style="color: #fafafa;">"${data.projectTitle}"</strong> is ready for your review. 
-              Please review the terms and sign the agreement using the link below.
-            </p>
+            ${messageHtml}
             <div style="margin: 24px 0; text-align: center;">
               <a href="${data.portalUrl}" 
                  style="display: inline-block; padding: 14px 32px; background: #7c3aed; color: white; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 14px;">

@@ -868,7 +868,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 <DeliverablesTab leadId={lead.id} />
               </div>
             ) : activeTab === 'contracts' ? (
-              <ContractsTab leadId={lead.id} onContractSigned={() => onCelebrate?.('first_contract', 'firstContract')} />
+              <ContractsTab leadId={lead.id} lead={lead} onContractSigned={() => onCelebrate?.('first_contract', 'firstContract')} />
             ) : activeTab === 'messages' ? (
               <div className="p-4 md:p-6 flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-[400px]" data-testid="messages-thread">

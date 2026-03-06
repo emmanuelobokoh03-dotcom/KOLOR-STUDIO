@@ -427,6 +427,7 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
   try {
     const quoteId = req.params.quoteId as string;
     const userId = req.userId!;
+    const { subject: customSubject, message: customMessage } = req.body || {};
 
     const quote = await prisma.quote.findFirst({
       where: { id: quoteId, createdById: userId },
@@ -482,7 +483,9 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
         currency: quote.currency || undefined,
         currencySymbol: quote.currencySymbol || undefined,
         currencyPosition: quote.currencyPosition || undefined,
-        studioName: (quote as any).createdBy.studioName || `${(quote as any).createdBy.firstName}'s Studio`
+        studioName: (quote as any).createdBy.studioName || `${(quote as any).createdBy.firstName}'s Studio`,
+        customSubject: customSubject || undefined,
+        customMessage: customMessage || undefined,
       });
       console.log(`Quote email sent to ${(quote as any).lead.clientEmail}`);
     } catch (emailError) {

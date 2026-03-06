@@ -290,6 +290,7 @@ router.delete('/contracts/:id', authMiddleware, async (req: AuthRequest, res: Re
 router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const id = req.params.id as string;
+    const { subject: customSubject, message: customMessage } = req.body || {};
     const contract = await prisma.contract.findUnique({
       where: { id },
       include: {
@@ -326,6 +327,8 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
       contractTitle: contract.title,
       studioName: studioName || 'Studio',
       portalUrl,
+      customSubject: customSubject || undefined,
+      customMessage: customMessage || undefined,
     });
 
     await logActivity(contract.lead.id, req.userId!, 'CONTRACT_SIGNED', `Contract "${contract.title}" sent to ${contract.lead.clientEmail}`);

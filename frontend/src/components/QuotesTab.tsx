@@ -26,6 +26,7 @@ import {
 } from '../services/api'
 import { formatCurrency, getMergedCurrencySettings, CurrencySettings } from '../utils/currency'
 import QuoteBuilderModal from './QuoteBuilderModal'
+import EmailComposer from './EmailComposer'
 import { 
   trackQuoteCreated, 
   trackQuoteSent, 
@@ -48,6 +49,9 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [userCurrencySettings, setUserCurrencySettings] = useState<Partial<CurrencySettings>>({});
+  const [emailComposerQuote, setEmailComposerQuote] = useState<Quote | null>(null);
+  const [userName, setUserName] = useState('');
+  const [studioName, setStudioName] = useState('');
 
   useEffect(() => {
     fetchQuotes();
@@ -72,6 +76,8 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
         currencyPosition: result.data.user.currencyPosition as 'BEFORE' | 'AFTER',
         numberFormat: result.data.user.numberFormat as any,
       });
+      setUserName(`${result.data.user.firstName} ${result.data.user.lastName}`.trim());
+      setStudioName(result.data.user.studioName || '');
     }
   };
 
@@ -85,20 +91,22 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
     });
   };
 
-  const handleSendQuote = async (quoteId: string) => {
-    setSendingId(quoteId);
-    const result = await quotesApi.send(quoteId);
+  const handleSendQuoteClick = (quote: Quote) => {
+    setEmailComposerQuote(quote);
+  };
+
+  const handleEmailSend = async (subject: string, message: string) => {
+    if (!emailComposerQuote) return;
+    setSendingId(emailComposerQuote.id);
+    const result = await quotesApi.send(emailComposerQuote.id, { subject, message });
     setSendingId(null);
 
     if (result.error) {
-      alert(result.message || 'Failed to send quote');
-      return;
+      throw new Error(result.message || 'Failed to send quote');
     }
 
-    const quote = quotes.find(q => q.id === quoteId);
-    if (quote) {
-      trackQuoteSent(quote.total);
-    }
+    trackQuoteSent(emailComposerQuote.total);
+    setEmailComposerQuote(null);
     fetchQuotes();
     onQuoteUpdate?.();
     onQuoteSent?.();
@@ -286,9 +294,10 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                         <Edit3 className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleSendQuote(quote.id)}
+                        onClick={() => handleSendQuoteClick(quote)}
                         disabled={sendingId === quote.id}
                         className="flex items-center gap-2 px-3 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition text-sm font-medium disabled:opacity-50"
+                        data-testid={`send-quote-${quote.id}`}
                       >
                         {sendingId === quote.id ? (
                           <Loader2 className="w-4 h-4 animate-spin" />
@@ -363,6 +372,15 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                         >
                           <FileText className="w-4 h-4" /> Duplicate
                         </button>
+                        {(quote.status === 'SENT' || quote.status === 'VIEWED') && (
+                          <button
+                            onClick={() => { setMenuOpenId(null); handleSendQuoteClick(quote); }}
+                            className="w-full px-4 py-2 text-left text-sm hover:bg-dark-card-hover text-gray-300 flex items-center gap-2"
+                            data-testid={`resend-quote-${quote.id}`}
+                          >
+                            <Send className="w-4 h-4" /> Resend
+                          </button>
+                        )}
                         {quote.status === 'DRAFT' && (
                           <button
                             onClick={() => handleDeleteQuote(quote.id)}
@@ -396,6 +414,20 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
           onClose={() => { setShowBuilder(false); setEditingQuote(null); }}
           onSaved={handleQuoteSaved}
           onSent={handleQuoteSaved}
+        />
+      )}
+
+      {/* Email Composer Modal */}
+      {emailComposerQuote && (
+        <EmailComposer
+          type="quote"
+          recipientName={lead.clientName}
+          recipientEmail={lead.clientEmail}
+          projectTitle={lead.projectTitle}
+          userName={userName}
+          studioName={studioName}
+          onSend={handleEmailSend}
+          onCancel={() => setEmailComposerQuote(null)}
         />
       )}
     </div>

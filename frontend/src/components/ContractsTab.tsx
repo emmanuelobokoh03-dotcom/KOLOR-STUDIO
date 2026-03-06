@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { InlineHint } from './InlineHint'
 import {
+  Lead,
   Contract,
   ContractStatus,
   ContractType,
@@ -8,6 +9,7 @@ import {
   CONTRACT_TYPE_LABELS,
   CONTRACT_STATUS_LABELS,
   contractsApi,
+  authApi,
 } from '../services/api'
 import {
   Plus,
@@ -29,9 +31,11 @@ import {
   FileEdit,
   ChevronDown,
 } from 'lucide-react'
+import EmailComposer from './EmailComposer'
 
 interface ContractsTabProps {
   leadId: string;
+  lead?: Lead;
   onContractSigned?: () => void;
 }
 
@@ -51,7 +55,7 @@ const TEMPLATE_ICONS: Record<string, React.ElementType> = {
   CUSTOM: FileEdit,
 };
 
-export default function ContractsTab({ leadId, onContractSigned }: ContractsTabProps) {
+export default function ContractsTab({ leadId, lead, onContractSigned }: ContractsTabProps) {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [templates, setTemplates] = useState<ContractTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,10 +68,14 @@ export default function ContractsTab({ leadId, onContractSigned }: ContractsTabP
   const [sending, setSending] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [expandedContract, setExpandedContract] = useState<string | null>(null);
+  const [emailComposerContract, setEmailComposerContract] = useState<Contract | null>(null);
+  const [userName, setUserName] = useState('');
+  const [studioName, setStudioName] = useState('');
 
   useEffect(() => {
     fetchContracts();
     fetchTemplates();
+    fetchUserInfo();
   }, [leadId]);
 
   const fetchContracts = async () => {
@@ -86,6 +94,14 @@ export default function ContractsTab({ leadId, onContractSigned }: ContractsTabP
   const fetchTemplates = async () => {
     const result = await contractsApi.getTemplates();
     if (result.data?.templates) setTemplates(result.data.templates);
+  };
+
+  const fetchUserInfo = async () => {
+    const result = await authApi.getMe();
+    if (result.data?.user) {
+      setUserName(`${result.data.user.firstName} ${result.data.user.lastName}`.trim());
+      setStudioName(result.data.user.studioName || '');
+    }
   };
 
   const handleCreateFromTemplate = async (templateType: string) => {
@@ -120,7 +136,16 @@ export default function ContractsTab({ leadId, onContractSigned }: ContractsTabP
     }
   };
 
-  const handleSend = async (contractId: string) => {
+  const handleSendClick = (contract: Contract) => {
+    if (lead) {
+      setEmailComposerContract(contract);
+    } else {
+      // Fallback: send without email composer if lead not available
+      handleSendDirect(contract.id);
+    }
+  };
+
+  const handleSendDirect = async (contractId: string) => {
     setSending(contractId);
     const result = await contractsApi.send(contractId);
     setSending(null);
@@ -129,6 +154,22 @@ export default function ContractsTab({ leadId, onContractSigned }: ContractsTabP
     } else {
       setError(result.message || 'Failed to send contract');
     }
+  };
+
+  const handleEmailSend = async (subject: string, message: string) => {
+    if (!emailComposerContract) return;
+    setSending(emailComposerContract.id);
+    const result = await contractsApi.send(emailComposerContract.id, { subject, message });
+    setSending(null);
+
+    if (result.error) {
+      throw new Error(result.message || 'Failed to send contract');
+    }
+
+    if (result.data?.contract) {
+      setContracts(contracts.map(c => c.id === emailComposerContract.id ? result.data!.contract : c));
+    }
+    setEmailComposerContract(null);
   };
 
   const handleDelete = async (contractId: string) => {
@@ -398,7 +439,7 @@ export default function ContractsTab({ leadId, onContractSigned }: ContractsTabP
                       )}
                       {contract.status !== 'AGREED' && (
                         <button
-                          onClick={(e) => { e.stopPropagation(); handleSend(contract.id); }}
+                          onClick={(e) => { e.stopPropagation(); handleSendClick(contract); }}
                           disabled={sending === contract.id}
                           className="flex items-center gap-1.5 px-4 py-2 bg-brand-primary text-white rounded-xl text-sm font-medium hover:bg-brand-primary disabled:opacity-50 ml-auto touch-target"
                           data-testid={`send-contract-${contract.id}`}
@@ -422,6 +463,20 @@ export default function ContractsTab({ leadId, onContractSigned }: ContractsTabP
             );
           })}
         </div>
+      )}
+
+      {/* Email Composer Modal */}
+      {emailComposerContract && lead && (
+        <EmailComposer
+          type="contract"
+          recipientName={lead.clientName}
+          recipientEmail={lead.clientEmail}
+          projectTitle={lead.projectTitle}
+          userName={userName}
+          studioName={studioName}
+          onSend={handleEmailSend}
+          onCancel={() => setEmailComposerContract(null)}
+        />
       )}
     </div>
   );
