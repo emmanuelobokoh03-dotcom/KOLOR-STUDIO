@@ -149,7 +149,17 @@ function fillTemplate(template: string, data: Record<string, string>): string {
 router.get('/leads/:leadId/contracts', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const leadId = req.params.leadId as string;
-    const lead = await prisma.lead.findFirst({ where: { id: leadId, assignedToId: req.userId } });
+    const userId = req.userId as string;
+    // Check if user owns the lead (via assignedTo or via quote creation)
+    const lead = await prisma.lead.findFirst({
+      where: {
+        id: leadId,
+        OR: [
+          { assignedToId: userId },
+          { quotes: { some: { createdById: userId } } },
+        ],
+      },
+    });
     if (!lead) { res.status(404).json({ error: 'Lead not found' }); return; }
 
     const contracts = await prisma.contract.findMany({
@@ -170,7 +180,7 @@ router.post('/leads/:leadId/contracts', authMiddleware, async (req: AuthRequest,
     const { templateType, title, content } = req.body;
 
     const lead = await prisma.lead.findFirst({
-      where: { id: leadId, assignedToId: req.userId },
+      where: { id: leadId, assignedToId: req.userId as string },
       include: { assignedTo: { select: { studioName: true, firstName: true, lastName: true } } },
     });
     if (!lead) { res.status(404).json({ error: 'Lead not found' }); return; }
@@ -201,7 +211,7 @@ router.post('/leads/:leadId/contracts', authMiddleware, async (req: AuthRequest,
       },
     });
 
-    await logActivity(leadId, req.userId!, 'NOTE_ADDED', `Contract created: "${contract.title}" (Draft)`);
+    await logActivity(leadId, req.userId as string, 'NOTE_ADDED', `Contract created: "${contract.title}" (Draft)`);
     res.status(201).json({ contract });
   } catch (error) {
     console.error('Error creating contract:', error);
@@ -221,7 +231,7 @@ router.get('/contracts/:id', authMiddleware, async (req: AuthRequest, res: Respo
       where: { id },
       include: { lead: { select: { assignedToId: true } } },
     });
-    if (!contract || contract.lead.assignedToId !== req.userId) {
+    if (!contract || contract.lead.assignedToId !== (req.userId as string)) {
       res.status(404).json({ error: 'Contract not found' });
       return;
     }
@@ -241,7 +251,7 @@ router.patch('/contracts/:id', authMiddleware, async (req: AuthRequest, res: Res
       where: { id },
       include: { lead: { select: { assignedToId: true } } },
     });
-    if (!contract || contract.lead.assignedToId !== req.userId) {
+    if (!contract || contract.lead.assignedToId !== (req.userId as string)) {
       res.status(404).json({ error: 'Contract not found' });
       return;
     }
@@ -269,7 +279,7 @@ router.delete('/contracts/:id', authMiddleware, async (req: AuthRequest, res: Re
       where: { id },
       include: { lead: { select: { assignedToId: true } } },
     });
-    if (!contract || contract.lead.assignedToId !== req.userId) {
+    if (!contract || contract.lead.assignedToId !== (req.userId as string)) {
       res.status(404).json({ error: 'Contract not found' });
       return;
     }
@@ -302,7 +312,7 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
         },
       },
     });
-    if (!contract || contract.lead.assignedToId !== req.userId) {
+    if (!contract || contract.lead.assignedToId !== (req.userId as string)) {
       res.status(404).json({ error: 'Contract not found' });
       return;
     }
@@ -330,7 +340,7 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
       customMessage: customMessage || undefined,
     });
 
-    await logActivity(contract.lead.id, req.userId!, 'CONTRACT_SIGNED', `Contract "${contract.title}" sent to ${contract.lead.clientEmail}`);
+    await logActivity(contract.lead.id, req.userId as string, 'CONTRACT_SIGNED', `Contract "${contract.title}" sent to ${contract.lead.clientEmail}`);
     res.json({ contract: updated });
   } catch (error) {
     console.error('Error sending contract:', error);
