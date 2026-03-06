@@ -175,6 +175,16 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Visual states**: Completed (green checkmark), overdue (red clock), today (amber), upcoming (neutral circle)
 - **Testing**: 100% backend (16/16), 100% frontend (iteration_39.json)
 
+### Auto Follow-Up Email Sequences — Autopilot Core (DONE - March 6, 2026)
+- **Schema**: EmailSequence, EmailSequenceStep, SequenceEnrollment models + SequenceTrigger, EnrollmentStatus enums
+- **Sequence Engine**: enrollLead(), stopSequencesForLead(), processSequences() with variable replacement ({clientName}, {firstName}, {projectTitle}, {userName}, {studioName})
+- **Backend APIs**: Full CRUD for sequences (/api/sequences), steps (/api/sequences/:id/steps, /api/sequences/steps/:stepId), manual enrollment/stop
+- **Auto-triggers**: QUOTE_SENT enrolls lead in matching sequences; quote accept and portal message auto-stop active enrollments
+- **Cron processor**: Runs every hour (initial run at startup+15s), processes due emails, advances steps, marks complete
+- **Default seed**: "Quote Follow-Up" sequence (Day 3, 7, 10) seeded on new user signup
+- **Email sending**: Currently logged to console (Resend integration planned for email templates phase)
+- **Testing**: 100% backend (27/27), all triggers verified (iteration_40.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
