@@ -317,7 +317,7 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
     });
 
     const studioName = contract.lead.assignedTo?.studioName || `${contract.lead.assignedTo?.firstName} ${contract.lead.assignedTo?.lastName}`;
-    const portalUrl = `${process.env.FRONTEND_URL || 'https://kolor-growth-engine.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
+    const portalUrl = `${process.env.FRONTEND_URL || 'https://kolor-messaging.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
 
     await sendContractSentEmail({
       clientName: contract.lead.clientName,

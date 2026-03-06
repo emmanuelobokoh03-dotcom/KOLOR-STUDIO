@@ -6,6 +6,7 @@ import authRoutes from './routes/auth';
 import leadsRoutes from './routes/leads';
 import activitiesRoutes from './routes/activities';
 import filesRoutes from './routes/files';
+import messageRoutes from './routes/messages';
 import portalRoutes from './routes/portal';
 import quotesRoutes from './routes/quotes';
 import settingsRoutes from './routes/settings';
@@ -45,7 +46,7 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5173',
     'http://localhost:3000',
-    'https://kolor-growth-engine.preview.emergentagent.com'
+    'https://kolor-messaging.preview.emergentagent.com'
   ],
   credentials: true,
 }));
@@ -88,6 +89,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadsRoutes);
 app.use('/api/leads', activitiesRoutes); // Activities: /api/leads/:id/activities
 app.use('/api/leads', filesRoutes); // Files: /api/leads/:id/files
+app.use('/api/leads', messageRoutes); // Messages: /api/leads/:id/messages
 app.use('/api/files', filesRoutes); // Also handle /api/files/:id routes
 app.use('/api/portal', portalRoutes); // Public portal access
 app.use('/api/leads', quotesRoutes); // Quotes: /api/leads/:leadId/quotes

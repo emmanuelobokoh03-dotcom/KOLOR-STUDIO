@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import ClientPortalMessages from '../components/ClientPortalMessages';
+import ClientFileUpload from '../components/ClientFileUpload';
 import { 
   Sparkles, 
   CheckCircle, 
@@ -67,6 +69,7 @@ interface PortalData {
     url: string;
     sharedAt?: string;
     uploadedAt: string;
+    uploadedBy?: 'client' | 'creative';
   }>;
   contracts: PortalContract[];
   contact: {
@@ -606,7 +609,7 @@ export default function ClientPortal() {
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100" data-testid="shared-files-section">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Paperclip className="w-5 h-5 text-brand-primary" />
-              Shared Files
+              Project Files
             </h3>
             <div className="space-y-3">
               {data.files.map((file) => (
@@ -620,10 +623,18 @@ export default function ClientPortal() {
                       <FileText className="w-5 h-5 text-brand-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 truncate">{file.name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-gray-900 truncate">{file.name}</p>
+                        {file.uploadedBy === 'client' && (
+                          <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-semibold rounded-full border border-blue-100 flex-shrink-0" data-testid={`client-badge-${file.id}`}>
+                            You uploaded
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-gray-500">
                         {formatFileSize(file.size)}
-                        {file.sharedAt && ` \u00b7 Shared ${formatTimeAgo(file.sharedAt)}`}
+                        {file.sharedAt && file.uploadedBy !== 'client' && ` \u00b7 Shared ${formatTimeAgo(file.sharedAt)}`}
+                        {file.uploadedBy === 'client' && ` \u00b7 Uploaded ${formatTimeAgo(file.uploadedAt)}`}
                       </p>
                     </div>
                   </div>
@@ -642,6 +653,18 @@ export default function ClientPortal() {
             </div>
           </div>
         )}
+
+        {/* Client File Upload */}
+        <ClientFileUpload 
+          token={token || ''} 
+          onUploadComplete={() => fetchPortalData()} 
+        />
+
+        {/* Messaging */}
+        <ClientPortalMessages 
+          token={token || ''} 
+          studioName={data.contact?.name || 'Studio'} 
+        />
 
         {/* Contact Section */}
         <div className="bg-gradient-to-r from-brand-primary to-brand-primary rounded-2xl p-6 text-white">

@@ -1,8 +1,47 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import multer from 'multer';
+import path from 'path';
+import { uploadFile, formatFileSize, getFileCategory } from '../services/storage';
+import { logActivity } from './activities';
 
 const router = Router();
 const prisma = new PrismaClient();
+
+// Allowed file extensions for client uploads
+const ALLOWED_EXTENSIONS = new Set([
+  '.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic',
+  '.pdf', '.doc', '.docx', '.txt',
+  '.ai', '.psd', '.sketch', '.fig',
+  '.mp4', '.mov',
+  '.zip',
+]);
+
+// Blocked file extensions (security)
+const BLOCKED_EXTENSIONS = new Set([
+  '.exe', '.dmg', '.app', '.sh', '.bat', '.js', '.cmd', '.msi', '.com',
+]);
+
+// Multer config for client file uploads
+const clientUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB max per file
+    files: 5, // Max 5 files per request
+  },
+  fileFilter: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (BLOCKED_EXTENSIONS.has(ext)) {
+      cb(new Error(`File type ${ext} is not allowed for security reasons`));
+      return;
+    }
+    if (ALLOWED_EXTENSIONS.has(ext)) {
+      cb(null, true);
+      return;
+    }
+    cb(new Error(`File type ${ext} is not supported`));
+  },
+});
 
 // Status labels for client display
 const STATUS_LABELS: Record<string, string> = {
@@ -75,7 +114,7 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
           take: 20, // Last 20 activities
         },
         files: {
-          where: { sharedWithClient: true },
+          where: { OR: [{ sharedWithClient: true }, { uploadedBy: 'client' }] },
           orderBy: { createdAt: 'desc' },
           take: 50,
         },
@@ -134,7 +173,7 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
       createdAt: activity.createdAt,
     }));
 
-    // Format files for client view (only shared files)
+    // Format files for client view (shared + client-uploaded)
     const clientFiles = (lead.files || []).map((file: any) => ({
       id: file.id,
       name: file.originalName,
@@ -143,6 +182,7 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
       url: file.url,
       sharedAt: file.sharedAt,
       uploadedAt: file.createdAt,
+      uploadedBy: file.uploadedBy === 'client' ? 'client' : 'creative',
     }));
 
     // Build sanitized response (no internal data)
@@ -256,7 +296,7 @@ router.get('/:token/files/:fileId/download', async (req: Request, res: Response)
       where: {
         id: String(fileId),
         leadId: lead.id,
-        sharedWithClient: true,
+        OR: [{ sharedWithClient: true }, { uploadedBy: 'client' }],
       },
     });
 
@@ -279,6 +319,216 @@ router.get('/:token/files/:fileId/download', async (req: Request, res: Response)
   } catch (error) {
     console.error('Portal file download error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to download file' });
+  }
+});
+
+// GET /api/portal/:token/messages - Get messages (public, for client)
+router.get('/:token/messages', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const lead = await prisma.lead.findUnique({
+      where: { portalToken: String(req.params.token) },
+    });
+
+    if (!lead) {
+      res.status(404).json({ error: 'Portal not found' });
+      return;
+    }
+
+    const messages = await prisma.message.findMany({
+      where: { leadId: lead.id },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    res.json({
+      messages: messages.map(m => ({
+        id: m.id,
+        content: m.content,
+        from: m.isFromClient ? 'CLIENT' : 'CREATIVE',
+        read: m.isRead,
+        createdAt: m.createdAt.toISOString(),
+      })),
+    });
+  } catch (error) {
+    console.error('Portal get messages error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to fetch messages' });
+  }
+});
+
+// POST /api/portal/:token/messages - Send message (public, client sends)
+router.post('/:token/messages', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { content } = req.body;
+
+    if (!content || !content.trim()) {
+      res.status(400).json({ error: 'Message content is required' });
+      return;
+    }
+
+    const lead = await prisma.lead.findUnique({
+      where: { portalToken: String(req.params.token) },
+    });
+
+    if (!lead) {
+      res.status(404).json({ error: 'Portal not found' });
+      return;
+    }
+
+    const message = await prisma.message.create({
+      data: {
+        leadId: lead.id,
+        content: content.trim(),
+        isFromClient: true,
+        isRead: false,
+      },
+    });
+
+    res.json({
+      message: {
+        id: message.id,
+        content: message.content,
+        from: 'CLIENT',
+        read: message.isRead,
+        createdAt: message.createdAt.toISOString(),
+      },
+    });
+  } catch (error) {
+    console.error('Portal send message error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to send message' });
+  }
+});
+
+// POST /api/portal/:token/upload - Client uploads files (public)
+router.post('/:token/upload', clientUpload.array('files', 5), async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { token } = req.params;
+    const files = req.files as Express.Multer.File[];
+
+    if (!files || files.length === 0) {
+      res.status(400).json({ error: 'No files uploaded' });
+      return;
+    }
+
+    const lead = await prisma.lead.findUnique({
+      where: { portalToken: String(token) },
+      include: { assignedTo: { select: { id: true } } },
+    });
+
+    if (!lead) {
+      res.status(404).json({ error: 'Portal not found' });
+      return;
+    }
+
+    const uploadedFiles = [];
+    const errors = [];
+
+    for (const file of files) {
+      try {
+        // Upload to Supabase Storage via existing service
+        const result = await uploadFile(
+          file.buffer,
+          file.originalname,
+          file.mimetype,
+          lead.id
+        );
+
+        if (!result) {
+          errors.push({ filename: file.originalname, error: 'Upload failed' });
+          continue;
+        }
+
+        // Create file record in database
+        const fileRecord = await prisma.file.create({
+          data: {
+            filename: result.path.split('/').pop() || file.originalname,
+            originalName: file.originalname,
+            mimeType: file.mimetype,
+            size: file.size,
+            url: result.url,
+            uploadedBy: 'client',
+            leadId: lead.id,
+            sharedWithClient: false,
+          },
+        });
+
+        uploadedFiles.push({
+          id: fileRecord.id,
+          filename: fileRecord.filename,
+          originalName: fileRecord.originalName,
+          mimeType: fileRecord.mimeType,
+          size: fileRecord.size,
+          formattedSize: formatFileSize(fileRecord.size),
+          category: getFileCategory(fileRecord.mimeType),
+          uploadedBy: fileRecord.uploadedBy,
+          createdAt: fileRecord.createdAt,
+        });
+
+        // Log activity
+        await logActivity(
+          lead.id,
+          lead.assignedTo?.id || null,
+          'FILE_UPLOADED',
+          `Client uploaded file: ${file.originalname} (${formatFileSize(file.size)})`,
+          { fileId: fileRecord.id, filename: file.originalname, uploadedBy: 'client' }
+        );
+      } catch (err) {
+        console.error('Client file upload error:', err);
+        errors.push({ filename: file.originalname, error: 'Processing failed' });
+      }
+    }
+
+    if (uploadedFiles.length === 0) {
+      res.status(500).json({
+        error: 'Upload Failed',
+        message: 'Failed to upload any files',
+        errors,
+      });
+      return;
+    }
+
+    res.json({
+      message: `${uploadedFiles.length} file(s) uploaded successfully`,
+      files: uploadedFiles,
+      errors: errors.length > 0 ? errors : undefined,
+    });
+  } catch (error) {
+    console.error('Client file upload error:', error);
+    res.status(500).json({ error: 'Upload failed', message: 'Something went wrong during upload' });
+  }
+});
+
+// GET /api/portal/:token/files - Get files uploaded by client (public)
+router.get('/:token/files', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const lead = await prisma.lead.findUnique({
+      where: { portalToken: String(req.params.token) },
+    });
+
+    if (!lead) {
+      res.status(404).json({ error: 'Portal not found' });
+      return;
+    }
+
+    const files = await prisma.file.findMany({
+      where: {
+        leadId: lead.id,
+        uploadedBy: 'client',
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.json({
+      files: files.map(f => ({
+        id: f.id,
+        name: f.originalName,
+        type: f.mimeType,
+        size: f.size,
+        formattedSize: formatFileSize(f.size),
+        uploadedAt: f.createdAt.toISOString(),
+      })),
+    });
+  } catch (error) {
+    console.error('Portal get files error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to fetch files' });
   }
 });
 

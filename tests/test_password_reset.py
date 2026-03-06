@@ -8,7 +8,7 @@ import os
 import time
 import hashlib
 
-BASE_URL = "https://kolor-growth-engine.preview.emergentagent.com"
+BASE_URL = "https://kolor-messaging.preview.emergentagent.com"
 
 # Test user credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

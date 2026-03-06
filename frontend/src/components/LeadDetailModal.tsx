@@ -38,6 +38,7 @@ import {
   ExternalLink,
   Eye,
   EyeOff,
+  MessageCircle,
   BarChart3,
   Receipt,
   MailPlus,
@@ -159,7 +160,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [newNote, setNewNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
-  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables' | 'contracts'>('activity');
+  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables' | 'contracts' | 'messages'>('activity');
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -173,6 +174,12 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
   const [files, setFiles] = useState<LeadFile[]>([]);
   const [loadingFiles, setLoadingFiles] = useState(true);
   const [uploading, setUploading] = useState(false);
+
+  // Messages state
+  const [messages, setMessages] = useState<Array<{ id: string; content: string; from: 'CLIENT' | 'CREATIVE'; read: boolean; createdAt: string }>>([]);
+  const [loadingMessages, setLoadingMessages] = useState(true);
+  const [newMsg, setNewMsg] = useState('');
+  const [sendingMsg, setSendingMsg] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>('');
 
   const handleRequestTestimonial = async () => {
@@ -207,7 +214,30 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
   useEffect(() => {
     fetchActivities();
     fetchFiles();
+    fetchMessages();
   }, [lead.id]);
+
+  const fetchMessages = async () => {
+    setLoadingMessages(true);
+    try {
+      const result = await leadsApi.getMessages(lead.id);
+      if (result.data?.messages) setMessages(result.data.messages);
+    } catch (e) {
+      console.error('Error fetching messages:', e);
+    }
+    setLoadingMessages(false);
+  };
+
+  const handleSendMessage = async () => {
+    if (!newMsg.trim() || sendingMsg) return;
+    setSendingMsg(true);
+    const result = await leadsApi.sendMessage(lead.id, newMsg.trim());
+    if (result.data?.message) {
+      setNewMsg('');
+      fetchMessages();
+    }
+    setSendingMsg(false);
+  };
 
   const fetchActivities = async () => {
     setLoadingActivities(true);
@@ -524,6 +554,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
               { key: 'contracts' as const, icon: ScrollText, label: 'Contracts' },
               { key: 'quotes' as const, icon: Receipt, label: 'Quotes' },
               { key: 'files' as const, icon: Paperclip, label: 'Files', badge: files.length },
+              { key: 'messages' as const, icon: MessageCircle, label: 'Messages', badge: messages.filter(m => m.from === 'CLIENT' && !m.read).length },
               { key: 'details' as const, icon: User, label: 'Details' },
               { key: 'deliverables' as const, icon: Package, label: 'Deliver.' },
             ]).map(({ key, icon: Icon, label, badge }) => (
@@ -725,6 +756,12 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                             className="group relative aspect-square rounded-xl overflow-hidden border border-[#333] bg-[#0F0F0F] hover:border-brand-primary/50 transition-all duration-200"
                             data-testid={`file-${file.id}`}
                           >
+                            {/* Client upload badge */}
+                            {file.uploadedBy === 'client' && (
+                              <div className="absolute top-2 left-2 z-10 px-1.5 py-0.5 bg-blue-600/80 text-white text-[10px] font-medium rounded-md flex items-center gap-1" data-testid={`client-upload-badge-${file.id}`}>
+                                <Upload className="w-3 h-3" /> Client
+                              </div>
+                            )}
                             {/* Shared badge */}
                             {file.sharedWithClient && (
                               <div className="absolute top-2 right-2 z-10 px-1.5 py-0.5 bg-green-600/80 text-white text-[10px] font-medium rounded-md flex items-center gap-1" data-testid={`shared-badge-${file.id}`}>
@@ -758,6 +795,9 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                               </p>
                               <p className="text-gray-400 text-xs mb-2">
                                 {file.formattedSize}
+                                {file.uploadedBy === 'client' && (
+                                  <span className="ml-1 text-blue-400">&middot; Client Upload</span>
+                                )}
                               </p>
                               {/* Share toggle */}
                               <button
@@ -829,6 +869,55 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
               </div>
             ) : activeTab === 'contracts' ? (
               <ContractsTab leadId={lead.id} onContractSigned={() => onCelebrate?.('first_contract', 'firstContract')} />
+            ) : activeTab === 'messages' ? (
+              <div className="p-4 md:p-6 flex flex-col h-full">
+                <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-[400px]" data-testid="messages-thread">
+                  {loadingMessages ? (
+                    <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-[#666]" /></div>
+                  ) : messages.length === 0 ? (
+                    <div className="text-center py-8">
+                      <MessageCircle className="w-10 h-10 mx-auto mb-3 text-[#333]" />
+                      <p className="text-[#A3A3A3] text-sm mb-1">No messages yet</p>
+                      <p className="text-[#666] text-xs">Send a message to your client via the portal</p>
+                    </div>
+                  ) : (
+                    messages.map(msg => (
+                      <div key={msg.id} className={`flex ${msg.from === 'CREATIVE' ? 'justify-end' : 'justify-start'}`} data-testid={`msg-${msg.id}`}>
+                        <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 ${
+                          msg.from === 'CREATIVE'
+                            ? 'bg-brand-primary text-white rounded-br-md'
+                            : 'bg-[#1A1A1A] text-[#FAFAFA] rounded-bl-md border border-[#333]'
+                        }`}>
+                          <p className="text-sm leading-relaxed">{msg.content}</p>
+                          <p className={`text-[10px] mt-1 ${msg.from === 'CREATIVE' ? 'text-white/60' : 'text-[#666]'}`}>
+                            {msg.from === 'CREATIVE' ? 'You' : lead.clientName} &middot; {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <div className="flex gap-2 pt-3 border-t border-[#333]">
+                  <input
+                    type="text"
+                    value={newMsg}
+                    onChange={e => setNewMsg(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="Type a message..."
+                    className="flex-1 px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-white placeholder-[#666] text-sm focus:outline-none focus:border-brand-primary"
+                    disabled={sendingMsg}
+                    data-testid="creative-message-input"
+                  />
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={sendingMsg || !newMsg.trim()}
+                    className="px-4 py-2.5 bg-brand-primary text-white rounded-xl font-medium text-sm hover:opacity-90 transition disabled:opacity-50 flex items-center gap-2"
+                    data-testid="creative-send-message-btn"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
             ) : (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                 {/* Status & Actions */}

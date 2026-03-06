@@ -208,6 +208,28 @@ export const leadsApi = {
     });
   },
 
+  // Messages
+  getMessages: async (leadId: string) => {
+    return request<{ messages: Array<{ id: string; content: string; from: 'CLIENT' | 'CREATIVE'; read: boolean; createdAt: string }> }>(`/api/leads/${leadId}/messages`);
+  },
+
+  sendMessage: async (leadId: string, content: string) => {
+    return request<{ message: { id: string; content: string; from: string; read: boolean; createdAt: string } }>(`/api/leads/${leadId}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    });
+  },
+
+  markMessagesRead: async (leadId: string) => {
+    return request<{ message: string }>(`/api/leads/${leadId}/messages/read`, {
+      method: 'PATCH',
+    });
+  },
+
+  getUnreadCounts: async () => {
+    return request<{ unreadCounts: Record<string, number> }>('/api/leads/unread-counts/all');
+  },
+
   sendPortalLink: async (leadId: string) => {
     return request<{ message: string; sentTo: string }>(`/api/leads/${leadId}/send-portal-link`, {
       method: 'POST',
