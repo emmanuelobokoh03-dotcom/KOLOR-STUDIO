@@ -166,6 +166,15 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Bug fixed**: Unique quoteNumber constraint — now uses `Q-DEMO-{shortId}` per user
 - **Testing**: 100% backend (12/12), 100% frontend (iteration_38.json)
 
+### Project Timeline & Milestones — Phase 7 Part 5 (DONE - March 6, 2026)
+- **Schema**: Added `shootingDate`, `editingDeadline`, `deliveryDate` to Lead model; new `ProjectMilestone` model with name, description, dueDate, completed, completedAt, order
+- **Backend APIs**: GET/POST /api/leads/:id/milestones, PATCH/DELETE /api/leads/milestones/:id, PATCH /api/leads/:id/timeline, GET /api/portal/:token/timeline (public)
+- **Frontend ProjectTimeline component**: Unified timeline with key dates + custom milestones, sorted by date. Dual-theme (dark for creative dashboard, light for client portal)
+- **Creative dashboard**: Timeline tab in LeadDetailModal with "Add Milestone" form, "Done/Undo" toggle, delete, "Key Date" badges, completion counter (e.g. "1/2 done")
+- **Client portal**: Read-only timeline section, no edit/delete buttons, light-themed card
+- **Visual states**: Completed (green checkmark), overdue (red clock), today (amber), upcoming (neutral circle)
+- **Testing**: 100% backend (16/16), 100% frontend (iteration_39.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
