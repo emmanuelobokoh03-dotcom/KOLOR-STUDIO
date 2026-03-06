@@ -147,6 +147,16 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Frontend LeadDetailModal**: Files tab shows blue "Client" badge on client-uploaded files, hover overlay shows "Client Upload" label
 - **Testing**: 95% backend (18/19), 100% frontend (iteration_36.json)
 
+### Email Message Composer — Phase 7 Part 3 (DONE - March 6, 2026)
+- **EmailComposer component**: Reusable modal for composing personalized emails when sending quotes or contracts
+- **Features**: Pre-filled subject/message with smart defaults, Quick Insert buttons (Client Name, First Name, Project Title, Your Name, Studio Name), Edit/Preview toggle, live email preview
+- **Backend quotes.ts**: POST /api/quotes/:quoteId/send now accepts optional `{subject, message}` in body
+- **Backend contracts.ts**: POST /api/contracts/:id/send now accepts optional `{subject, message}` in body
+- **Backend email.ts**: sendQuoteEmail and sendContractSentEmail support customSubject/customMessage, falling back to defaults
+- **Frontend QuotesTab**: Send button on DRAFT quotes opens EmailComposer; Resend option in '...' menu for SENT/VIEWED quotes
+- **Frontend ContractsTab**: Send to Client button on DRAFT contracts opens EmailComposer; accepts `lead` prop for email context
+- **Testing**: 100% backend (12/12), 95% frontend (iteration_37.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
