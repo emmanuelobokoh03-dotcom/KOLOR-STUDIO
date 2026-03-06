@@ -250,9 +250,15 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Files**: `/backend/src/middleware/rateLimiter.ts` (new), `/backend/src/server.ts` (updated)
 - **Testing**: All 7 endpoint categories verified (200/401/404 correct responses)
 
+### Day 10: Auto-Responses + Auto Delivery (DONE - March 6, 2026)
+- **Auto-Response**: Public lead submissions (`POST /api/leads/submit`) trigger industry-specific auto-response email (Photography/Art/Design messaging). Includes portfolio link, sets 24hr quote expectation. Activity logged as EMAIL_SENT
+- **Mark as Delivered**: `POST /api/leads/:id/mark-delivered` — shares all creative files with client, updates pipelineStatus to COMPLETED, logs activity, queues delivery email, schedules testimonial request (3 days), auto-creates final payment link if deposit was paid
+- **Frontend**: `MarkAsDeliveredButton` component in Files tab — shows "Mark as Delivered" button or "Project Delivered" banner based on pipelineStatus
+- **Note**: Email sending is logged to console only — actual Resend integration is Day 11
+- **Testing**: 100% backend (12/12), frontend verified (iteration_43.json)
+
 ## Upcoming Autopilot Features (Beta Launch)
-- **(P0)** Day 10: Auto-Responses + Auto Delivery Workflow
-- **(P0)** Day 11: Email Notification Templates (Resend integration)
+- **(P0)** Day 11: Email Notification Templates (Resend integration) — send actual emails for auto-response, delivery, testimonial requests, payment links
 
 ## Backlog (P1/P2/P3)
 - **(P1)** Interactive Walkthrough/Setup Wizard
