@@ -72,6 +72,7 @@ model User {
   workflowTemplates WorkflowTemplate[]
   incomes       Income[]
   testimonials  Testimonial[]
+  emailSequences EmailSequence[]
   
   @@map("users")
 }
@@ -218,6 +219,7 @@ model Lead {
   incomeRecords   Income[]
   testimonials    Testimonial[]
   milestones      ProjectMilestone[]
+  enrollments     SequenceEnrollment[]
   
   @@map("leads")
   @@index([status])
@@ -868,4 +870,81 @@ enum TestimonialStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+
+// ── Email Sequences (Autopilot) ──────────────────────
+
+model EmailSequence {
+  id          String              @id @default(uuid())
+  userId      String
+  name        String
+  description String?
+  trigger     SequenceTrigger
+  active      Boolean             @default(true)
+  steps       EmailSequenceStep[]
+  enrollments SequenceEnrollment[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_sequences")
+  @@index([userId])
+  @@index([trigger])
+  @@index([active])
+}
+
+enum SequenceTrigger {
+  QUOTE_SENT
+  CONTRACT_SENT
+  PROJECT_CREATED
+  QUOTE_VIEWED_NO_ACTION
+  LEAD_COLD
+}
+
+model EmailSequenceStep {
+  id         String        @id @default(uuid())
+  sequenceId String
+  order      Int
+  delayDays  Int
+  subject    String
+  body       String        @db.Text
+  createdAt  DateTime      @default(now())
+
+  sequence   EmailSequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+
+  @@map("email_sequence_steps")
+  @@index([sequenceId])
+  @@index([order])
+}
+
+model SequenceEnrollment {
+  id            String           @id @default(uuid())
+  sequenceId    String
+  leadId        String
+  currentStep   Int              @default(0)
+  status        EnrollmentStatus @default(ACTIVE)
+  enrolledAt    DateTime         @default(now())
+  completedAt   DateTime?
+  stoppedAt     DateTime?
+  stoppedReason String?
+  nextEmailAt   DateTime?
+
+  sequence      EmailSequence    @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  lead          Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@unique([sequenceId, leadId])
+  @@map("sequence_enrollments")
+  @@index([sequenceId])
+  @@index([leadId])
+  @@index([status])
+  @@index([nextEmailAt])
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  STOPPED
+  PAUSED
 }

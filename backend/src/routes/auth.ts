@@ -7,6 +7,7 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendPasswordResetEmail, sendVerificationEmail } from '../services/email';
 import { seedTemplatesForUser } from '../seeds/systemTemplates';
 import { createDemoProject } from '../scripts/createDemoProject';
+import { seedDefaultSequences } from '../scripts/seedSequences';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -100,6 +101,9 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
 
     // Create demo project (non-blocking)
     createDemoProject(user.id).catch(e => console.error('Demo project creation failed:', e));
+
+    // Seed default email sequences (non-blocking)
+    seedDefaultSequences(user.id).catch(e => console.error('Sequence seed failed:', e));
 
     res.status(201).json({
       message: 'Account created successfully',

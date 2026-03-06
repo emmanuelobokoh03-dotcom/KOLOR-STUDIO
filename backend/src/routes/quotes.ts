@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendQuoteEmail, sendQuoteAcceptedNotification, sendQuoteDeclinedNotification } from '../services/email';
 import { generateQuotePDF } from '../services/pdf.service';
+import { enrollLead, stopSequencesForLead } from '../services/sequenceEngine';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -517,6 +518,9 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
     }
 
     res.json({ message: 'Quote sent successfully', quote: updatedQuote });
+
+    // Auto-enroll in follow-up sequences (non-blocking)
+    enrollLead(quote.leadId, 'QUOTE_SENT').catch(e => console.error('Sequence enroll error:', e));
   } catch (error) {
     console.error('Send quote error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to send quote' });
@@ -786,6 +790,9 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
     }
 
     res.json({ message: 'Quote accepted successfully! We will be in touch soon.' });
+
+    // Stop follow-up sequences (non-blocking)
+    stopSequencesForLead(quote.leadId, 'Quote accepted').catch(e => console.error('Sequence stop error:', e));
   } catch (error) {
     console.error('Accept quote error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to accept quote' });

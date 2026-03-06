@@ -19,6 +19,8 @@ import deliverablesRoutes from './routes/deliverables';
 import contractsRoutes from './routes/contracts';
 import crmRoutes from './routes/crm';
 import testimonialRoutes from './routes/testimonials';
+import sequencesRoutes from './routes/sequences';
+import { processSequences } from './services/sequenceEngine';
 import { ensureBucketExists } from './services/storage';
 
 // Load environment variables
@@ -104,6 +106,7 @@ app.use('/api', deliverablesRoutes);
 app.use('/api', contractsRoutes); // Deliverables: /api/leads/:leadId/deliverables + /api/deliverables/:id
 app.use('/api/crm', crmRoutes); // CRM: /api/crm/*
 app.use('/api/testimonials', testimonialRoutes); // Testimonials: /api/testimonials/*
+app.use('/api/sequences', sequencesRoutes); // Email sequences: /api/sequences/*
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {
@@ -174,6 +177,15 @@ app.listen(PORT, () => {
 🏥 Health: http://localhost:${PORT}/health
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   `);
+
+  // Start sequence processor — runs every hour, first run after 15s
+  const SEQ_INTERVAL = 60 * 60 * 1000; // 1 hour
+  setTimeout(() => {
+    processSequences().catch(e => console.error('[Seq] Initial run error:', e));
+    setInterval(() => {
+      processSequences().catch(e => console.error('[Seq] Cron error:', e));
+    }, SEQ_INTERVAL);
+  }, 15000);
 });
 
 export default app;

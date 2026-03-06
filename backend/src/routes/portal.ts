@@ -4,6 +4,7 @@ import multer from 'multer';
 import path from 'path';
 import { uploadFile, formatFileSize, getFileCategory } from '../services/storage';
 import { logActivity } from './activities';
+import { stopSequencesForLead } from '../services/sequenceEngine';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -391,6 +392,9 @@ router.post('/:token/messages', async (req: Request, res: Response): Promise<voi
         createdAt: message.createdAt.toISOString(),
       },
     });
+
+    // Client responded — stop follow-up sequences (non-blocking)
+    stopSequencesForLead(lead.id, 'Client responded').catch(e => console.error('Sequence stop error:', e));
   } catch (error) {
     console.error('Portal send message error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to send message' });
