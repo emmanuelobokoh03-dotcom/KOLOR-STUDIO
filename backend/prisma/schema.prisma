@@ -193,6 +193,7 @@ model Lead {
   // Metadata
   tags            String[]    // For custom categorization
   customFields    Json?       // Flexible custom fields
+  isDemoData      Boolean     @default(false)
   
   // Timestamps
   createdAt       DateTime    @default(now())

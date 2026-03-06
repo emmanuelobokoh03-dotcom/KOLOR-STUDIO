@@ -113,6 +113,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
         industry: true,
         deliverableType: true,
         coverImage: true,
+        isDemoData: true,
       }
     });
 

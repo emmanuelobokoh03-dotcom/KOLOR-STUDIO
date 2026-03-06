@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendPasswordResetEmail, sendVerificationEmail } from '../services/email';
 import { seedTemplatesForUser } from '../seeds/systemTemplates';
+import { createDemoProject } from '../scripts/createDemoProject';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -96,6 +97,9 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
     } catch (e) {
       console.error('Failed to send verification email on signup:', e);
     }
+
+    // Create demo project (non-blocking)
+    createDemoProject(user.id).catch(e => console.error('Demo project creation failed:', e));
 
     res.status(201).json({
       message: 'Account created successfully',

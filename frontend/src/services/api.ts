@@ -571,6 +571,7 @@ export interface Lead {
   deliverableType?: DeliverableType;
   workflowData?: any;
   coverImage?: string | null;
+  isDemoData?: boolean;
   createdAt: string;
   updatedAt: string;
 }

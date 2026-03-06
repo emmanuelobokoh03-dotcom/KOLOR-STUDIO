@@ -47,6 +47,7 @@ import { CelebrationModal, checkCelebration, Achievement, achievements } from '.
 import CRMAlerts from '../components/CRMAlerts'
 import RevenueDashboard from '../components/RevenueDashboard'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
+import DemoProjectBanner from '../components/DemoProjectBanner'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
@@ -135,6 +136,7 @@ const Dashboard = () => {
   const [showHelpPanel, setShowHelpPanel] = useState(false)
   const [celebration, setCelebration] = useState<Achievement | null>(null)
   const [showCelebration, setShowCelebration] = useState(false)
+  const [showDemoBanner, setShowDemoBanner] = useState(true)
   const { startTour, tourComplete } = useOnboardingTour()
 
   useEffect(() => {
@@ -454,6 +456,15 @@ const Dashboard = () => {
             </div>
           )}
         </div>
+
+        {/* Demo Project Banner */}
+        {showDemoBanner && leads.some(l => l.isDemoData) && (
+          <DemoProjectBanner
+            demoLeadId={leads.find(l => l.isDemoData)!.id}
+            onDismiss={() => setShowDemoBanner(false)}
+            onDeleted={() => { setShowDemoBanner(false); fetchLeads(); }}
+          />
+        )}
 
         {/* Smart Suggestion */}
         <SmartSuggestion
