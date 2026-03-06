@@ -185,6 +185,14 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Email sending**: Currently logged to console (Resend integration planned for email templates phase)
 - **Testing**: 100% backend (27/27), all triggers verified (iteration_40.json)
 
+### Industry-Specific Content (DONE - March 6, 2026)
+- **Demo projects now tailored by industry**: Photography → "Wedding Photography" (Sarah Johnson), Art → "Custom Portrait Commission" (Marcus Chen), Design → "Brand Identity Package" (Olivia Park)
+- **Email sequences tailored by industry**: Photography → "Quote Follow-Up", Art → "Commission Follow-Up", Design → "Project Follow-Up" — each with 3 industry-appropriate email steps
+- **Industry grouping**: PHOTOGRAPHY/VIDEOGRAPHY/CONTENT_CREATION → Photography, FINE_ART/ILLUSTRATION/SCULPTURE → Art, GRAPHIC_DESIGN/WEB_DESIGN/BRANDING/OTHER → Design
+- **Timing fix**: Demo project & sequence seeding moved from signup to onboarding (POST /api/auth/onboarding), so industry is known before content is generated
+- **Prisma singleton**: Replaced 20+ `new PrismaClient()` instances with shared singleton at `/app/kolor-studio-v2/backend/src/lib/prisma.ts` — fixes intermittent connection pool exhaustion errors
+- **Testing**: 100% backend (7/7 tests, iteration_41.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
@@ -224,7 +232,13 @@ A full-stack CRM application for creative professionals (photographers, designer
 - `POST /api/portal/:token/upload` - Client file upload (public)
 - `GET /api/portal/:token/files` - Client uploaded files list (public)
 
+## Upcoming Autopilot Features (Beta Launch)
+- **(P0)** Day 9: Auto Payment Collection (Stripe Integration)
+- **(P0)** Day 10: Auto-Responses + Auto Delivery Workflow
+- **(P0)** Day 11: Email Notification Templates (Resend integration)
+
 ## Backlog (P1/P2/P3)
+- **(P1)** Interactive Walkthrough/Setup Wizard
 - **(P1)** Referral Tracking System (post-launch Month 2)
 - **(P2)** Batch File Sharing — share multiple files at once
 - **(P2)** Calendar Mobile Enhancement — default agenda view on mobile
