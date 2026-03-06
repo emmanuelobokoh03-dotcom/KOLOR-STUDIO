@@ -136,6 +136,17 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Frontend ClientPortalMessages**: Light-themed iMessage-style chat for portal, 30s polling for new messages
 - **Testing**: 100% pass rate (24/24 tests, iteration_35.json)
 
+### Client File Upload System — Phase 7 Part 2 (DONE - March 6, 2026)
+- **Backend**: POST /api/portal/:token/upload (multipart, max 5 files, 50MB each), GET /api/portal/:token/files (client-uploaded list)
+- **File validation**: Extension-based allow/block lists. Allowed: images, PDFs, docs, design files (.ai, .psd, .sketch, .fig), video (.mp4, .mov), archives (.zip). Blocked: executables (.exe, .dmg, .app), scripts (.sh, .bat, .js)
+- **Storage**: Uses existing Supabase Storage service, files stored with `uploadedBy: 'client'`
+- **Portal GET updated**: Returns client-uploaded files alongside shared files, with `uploadedBy` field
+- **Portal download updated**: Clients can download their own uploaded files and shared files
+- **Frontend ClientFileUpload component**: Drag & drop + click upload, file list with remove, progress state, success animation
+- **Frontend ClientPortal**: "Project Files" section shows all files with "You uploaded" badge for client uploads, Upload Files component below
+- **Frontend LeadDetailModal**: Files tab shows blue "Client" badge on client-uploaded files, hover overlay shows "Client Upload" label
+- **Testing**: 95% backend (18/19), 100% frontend (iteration_36.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/
@@ -170,11 +181,16 @@ A full-stack CRM application for creative professionals (photographers, designer
 - `GET /api/crm/revenue` - Revenue stats
 - `GET/POST /api/testimonials` - Testimonial management
 - `GET /api/testimonials/public/:userId` - Public testimonials
+- `GET/POST /api/leads/:id/messages` - Messages (auth)
+- `GET/POST /api/portal/:token/messages` - Portal messages (public)
+- `POST /api/portal/:token/upload` - Client file upload (public)
+- `GET /api/portal/:token/files` - Client uploaded files list (public)
 
-## Backlog (P2/P3)
-- **(P2)** PWA Functionality - make app installable
-- **(P2)** Client file upload on public inquiry form
-- **(P3)** Referral Tracking System (post-launch Month 2)
+## Backlog (P1/P2/P3)
+- **(P1)** Referral Tracking System (post-launch Month 2)
+- **(P2)** Batch File Sharing — share multiple files at once
+- **(P2)** Calendar Mobile Enhancement — default agenda view on mobile
+- **(P2)** PWA Functionality — make app installable
 - **(P3)** Distinct icons for activity types in timeline
 - **(P3)** "Your Links" section in user settings
 - **(P3)** Keyboard Shortcuts modal
