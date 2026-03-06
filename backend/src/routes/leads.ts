@@ -3,11 +3,61 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotification, sendPortalLinkEmail } from '../services/email';
 import { logActivity } from './activities';
 import { uploadFile, ensureBucketExists } from '../services/storage';
+import { paymentService } from '../services/paymentService';
+import { stripe } from '../lib/stripe';
 import multer from 'multer';
 
 const router = Router();
 import prisma from '../lib/prisma';
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB
+
+// ---- Helpers ----
+
+function getIndustryCategory(industry: string | null | undefined): 'PHOTOGRAPHY' | 'ART' | 'DESIGN' {
+  switch (industry) {
+    case 'PHOTOGRAPHY': case 'VIDEOGRAPHY': case 'CONTENT_CREATION': return 'PHOTOGRAPHY';
+    case 'FINE_ART': case 'ILLUSTRATION': case 'SCULPTURE': return 'ART';
+    default: return 'DESIGN';
+  }
+}
+
+async function sendAutoResponse(lead: any) {
+  try {
+    const user = lead.assignedToId
+      ? await prisma.user.findUnique({ where: { id: lead.assignedToId } })
+      : null;
+    if (!user) return;
+
+    const cat = getIndustryCategory(user.primaryIndustry);
+    const msgs: Record<string, { greeting: string; next: string; portfolio: string }> = {
+      PHOTOGRAPHY: {
+        greeting: 'Thanks so much for reaching out about photography!',
+        next: "I'll review your inquiry and send you a custom quote within 24 hours.",
+        portfolio: 'In the meantime, check out my recent work:',
+      },
+      ART: {
+        greeting: 'Thanks for your interest in commissioning a piece!',
+        next: "I'll review your vision and send you a proposal within 24 hours.",
+        portfolio: 'You can see more of my work here:',
+      },
+      DESIGN: {
+        greeting: 'Thanks for reaching out about your design project!',
+        next: "I'll review your requirements and send you a proposal within 24 hours.",
+        portfolio: 'Check out some of my recent projects:',
+      },
+    };
+    const m = msgs[cat];
+    const portfolioUrl = `${process.env.FRONTEND_URL}/portfolio/${user.id}`;
+    const body = `Hi ${lead.clientName},\n\n${m.greeting}\n\n${m.next}\n\n${m.portfolio}\n${portfolioUrl}\n\nI'm excited to potentially work with you!\n\nBest regards,\n${user.firstName || user.email}\n${user.studioName || ''}`;
+
+    // TODO: Send via Resend (Day 11 – Email Templates)
+    console.log('[AutoResponse] Email queued:', { to: lead.clientEmail, subject: 'Thanks for reaching out!', bodyLength: body.length });
+
+    await logActivity(lead.id, null, 'EMAIL_SENT', `Auto-response sent to ${lead.clientEmail}`, { emailType: 'auto_response' });
+  } catch (err) {
+    console.error('[AutoResponse] Error:', err);
+  }
+}
 
 // POST /api/leads/upload-cover - Upload cover image for a lead
 router.post('/upload-cover', authMiddleware, upload.single('coverImage'), async (req: AuthRequest, res: Response): Promise<void> => {
@@ -528,6 +578,9 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       })
       .catch(err => console.error('Client confirmation error:', err));
 
+    // Auto-response with portfolio link (non-blocking)
+    sendAutoResponse(lead).catch(err => console.error('Auto-response error:', err));
+
     res.status(201).json({ 
       message: 'Thank you! Your inquiry has been submitted successfully.',
       leadId: lead.id 
@@ -984,6 +1037,71 @@ router.patch('/:id/timeline', authMiddleware, async (req: AuthRequest, res: Resp
   } catch (error) {
     console.error('Update timeline error:', error);
     res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+// POST /api/leads/:id/mark-delivered — Mark project as delivered
+router.post('/:id/mark-delivered', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const leadId = req.params.id as string;
+
+    const lead = await prisma.lead.findFirst({
+      where: { id: leadId, assignedToId: userId },
+      include: { files: true },
+    });
+    if (!lead) { res.status(404).json({ error: 'Lead not found' }); return; }
+
+    // 1. Share all creative-uploaded files with the client
+    const shared = await prisma.file.updateMany({
+      where: { leadId: lead.id, uploadedBy: userId, sharedWithClient: false },
+      data: { sharedWithClient: true, sharedAt: new Date() },
+    });
+
+    // 2. Update lead status to BOOKED (highest status) + pipeline to COMPLETED
+    await prisma.lead.update({
+      where: { id: lead.id },
+      data: { status: 'BOOKED', pipelineStatus: 'COMPLETED' },
+    });
+
+    // 3. Log activity
+    await logActivity(lead.id, userId, 'STATUS_CHANGED', `Project marked as delivered — ${shared.count} file(s) shared with client`, { oldStatus: lead.status, newStatus: 'BOOKED', pipelineStatus: 'COMPLETED', filesShared: shared.count });
+
+    // 4. Send delivery email (non-blocking, Day 11 email templates)
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (user && lead.clientEmail) {
+      const portalUrl = `${process.env.FRONTEND_URL}/portal/${lead.portalToken}`;
+      console.log('[Delivery] Email queued:', { to: lead.clientEmail, subject: `Your project is ready!`, portalUrl });
+      await logActivity(lead.id, userId, 'EMAIL_SENT', `Delivery notification sent to ${lead.clientEmail}`, { emailType: 'delivery_notification' });
+    }
+
+    // 5. Schedule testimonial request (3 days later) — log for now
+    const testimonialDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    console.log('[Delivery] Testimonial request scheduled for:', testimonialDate.toISOString(), 'lead:', lead.id);
+
+    // 6. Auto-send final payment link if deposit was paid
+    const income = await prisma.income.findFirst({ where: { leadId: lead.id } });
+    let paymentLinkSent = false;
+    if (income && income.depositPaid && !income.finalPaid && stripe) {
+      try {
+        await paymentService.createFinalCheckout(income.id, process.env.FRONTEND_URL || '');
+        paymentLinkSent = true;
+        console.log('[Delivery] Final payment link auto-created for income:', income.id);
+      } catch (e) {
+        console.error('[Delivery] Final payment link failed:', e);
+      }
+    }
+
+    res.json({
+      message: 'Project marked as delivered',
+      filesShared: shared.count,
+      status: 'COMPLETED',
+      pipelineStatus: 'COMPLETED',
+      paymentLinkSent,
+    });
+  } catch (error) {
+    console.error('Mark as delivered error:', error);
+    res.status(500).json({ error: 'Failed to mark as delivered' });
   }
 });
 

@@ -208,6 +208,12 @@ export const leadsApi = {
     });
   },
 
+  markAsDelivered: async (leadId: string) => {
+    return request<{ message: string; filesShared: number; status: string; paymentLinkSent: boolean }>(`/api/leads/${leadId}/mark-delivered`, {
+      method: 'POST',
+    });
+  },
+
   // Messages
   getMessages: async (leadId: string) => {
     return request<{ messages: Array<{ id: string; content: string; from: 'CLIENT' | 'CREATIVE'; read: boolean; createdAt: string }> }>(`/api/leads/${leadId}/messages`);
@@ -572,6 +578,7 @@ export interface Lead {
   workflowData?: any;
   coverImage?: string | null;
   isDemoData?: boolean;
+  pipelineStatus?: string;
   createdAt: string;
   updatedAt: string;
 }

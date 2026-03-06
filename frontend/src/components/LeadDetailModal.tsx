@@ -53,6 +53,7 @@ import BookingModal from './BookingModal'
 import DeliverablesTab from './DeliverablesTab'
 import ContractsTab from './ContractsTab'
 import ProjectTimeline from './ProjectTimeline'
+import MarkAsDeliveredButton from './MarkAsDeliveredButton'
 import { 
   trackFileUploaded, 
   trackFileDownloaded, 
@@ -678,6 +679,19 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
               </div>
             ) : activeTab === 'files' ? (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+                {/* Mark as Delivered */}
+                <MarkAsDeliveredButton
+                  leadId={lead.id}
+                  leadStatus={lead.status}
+                  pipelineStatus={lead.pipelineStatus}
+                  onSuccess={async () => {
+                    const res = await leadsApi.getOne(lead.id);
+                    if (res.data?.lead) onUpdate(res.data.lead);
+                    fetchFiles();
+                    fetchActivities();
+                  }}
+                />
+
                 {/* Upload Section */}
                 <div 
                   className={`border-2 border-dashed rounded-xl p-6 md:p-8 text-center transition-all duration-200 ${
