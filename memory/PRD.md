@@ -128,6 +128,14 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Mobile verified**: Dashboard, portal, settings all pass at 375px with no horizontal overflow
 - **Test report**: iteration_34.json, pytest: /app/backend/tests/test_kolor_e2e.py
 
+### Client Portal Messaging System — Phase 7 Part 1 (DONE - March 6, 2026)
+- **Database**: Message model with isFromClient, isRead, senderId, leadId relation
+- **Backend**: GET/POST /api/leads/:id/messages (auth), PATCH /api/leads/:id/messages/read, GET /api/leads/unread-counts/all
+- **Portal API**: GET/POST /api/portal/:token/messages (public, for clients)
+- **Frontend LeadDetailModal**: New "Messages" tab with unread badge, dark-themed chat thread, send input
+- **Frontend ClientPortalMessages**: Light-themed iMessage-style chat for portal, 30s polling for new messages
+- **Testing**: 100% pass rate (24/24 tests, iteration_35.json)
+
 ## Architecture
 ```
 /app/kolor-studio-v2/

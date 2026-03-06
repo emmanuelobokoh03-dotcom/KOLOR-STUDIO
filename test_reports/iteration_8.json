@@ -12,7 +12,7 @@
   "passed_tests": [
     "Share Form button visible in dashboard toolbar next to Add Lead",
     "Clicking Share Form button opens the Share Form modal",
-    "Modal displays inquiry form URL (https://kolor-growth-engine.preview.emergentagent.com/inquiry) in copyable input field",
+    "Modal displays inquiry form URL (https://kolor-messaging.preview.emergentagent.com/inquiry) in copyable input field",
     "Copy Link button copies URL to clipboard and shows 'Copied!' feedback",
     "Email Link button is visible and clickable (opens mailto)",
     "Open Form button is visible and opens inquiry form in new tab",
