@@ -23,6 +23,7 @@ import sequencesRoutes from './routes/sequences';
 import webhookRoutes from './routes/webhooks';
 import paymentRoutes from './routes/payments';
 import { processSequences } from './services/sequenceEngine';
+import { apiLimiter, authLimiter, emailLimiter, uploadLimiter, portalLimiter } from './middleware/rateLimiter';
 import { ensureBucketExists } from './services/storage';
 
 // Load environment variables
@@ -45,14 +46,38 @@ const PORT = process.env.PORT || 5000;
 // MIDDLEWARE
 // =====================
 
-// CORS - Allow frontend to communicate with backend
+// CORS — environment-specific origin whitelist
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:5173',
-    'http://localhost:3000',
-    'https://autopilot-portal-1.preview.emergentagent.com'
-  ],
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) return callback(null, true); // allow non-browser (Postman, cURL, webhooks)
+
+    const allowed = process.env.NODE_ENV === 'production'
+      ? [
+          'https://kolorstudio.app',
+          'https://www.kolorstudio.app',
+          'https://kolor-studio.vercel.app',
+          process.env.FRONTEND_URL,
+        ]
+      : [
+          'http://localhost:5173',
+          'http://localhost:3000',
+          'http://127.0.0.1:5173',
+          process.env.FRONTEND_URL,
+        ];
+
+    // Allow preview/cluster origins in non-production
+    const isPreviewOrigin = origin.includes('.preview.emergentagent.com') || origin.includes('.preview.emergentcf.cloud');
+
+    if (allowed.filter(Boolean).includes(origin) || (process.env.NODE_ENV !== 'production' && isPreviewOrigin)) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS] Blocked: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Stripe webhooks need raw body BEFORE JSON parsing
@@ -71,7 +96,7 @@ if (process.env.NODE_ENV === 'development') {
 // ROUTES
 // =====================
 
-// Health check - with /api prefix for Emergent routing
+// Health check — no rate limit
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
@@ -90,6 +115,16 @@ app.get('/health', (_req: Request, res: Response) => {
     environment: process.env.NODE_ENV,
   });
 });
+
+// Rate limiters — applied BEFORE route handlers
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/signup', authLimiter);
+app.use('/api/auth/send-verification', emailLimiter);
+app.use('/api/auth/verify-email', emailLimiter);
+app.use('/api/auth/forgot-password', emailLimiter);
+app.use('/api/files/upload', uploadLimiter);
+app.use('/api/portal', portalLimiter);
+app.use('/api/', apiLimiter); // general limiter last (least restrictive)
 
 // API Routes - all prefixed with /api for K8s ingress routing
 app.use('/api/auth', authRoutes);
