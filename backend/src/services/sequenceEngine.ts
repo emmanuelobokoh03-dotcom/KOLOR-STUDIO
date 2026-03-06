@@ -1,6 +1,7 @@
 import { SequenceTrigger } from '@prisma/client';
 
 import prisma from '../lib/prisma';
+import { sendSequenceEmail } from './email';
 
 function addDays(date: Date, days: number): Date {
   const result = new Date(date);
@@ -103,9 +104,20 @@ export async function processSequences(): Promise<{ sent: number; completed: num
           continue;
         }
 
-        // "Send" the email (log for now; real Resend integration in email templates phase)
+        // Send the follow-up email via Resend
         const subject = replaceVars(step.subject, enrollment.lead);
-        replaceVars(step.body, enrollment.lead); // pre-compute for future email sending
+        const body = replaceVars(step.body, enrollment.lead);
+        const studioName = enrollment.lead.assignedTo?.studioName || enrollment.lead.assignedTo?.firstName || 'Studio';
+        const portalUrl = enrollment.lead.portalToken ? `${process.env.FRONTEND_URL}/portal/${enrollment.lead.portalToken}` : undefined;
+
+        await sendSequenceEmail({
+          clientEmail: enrollment.lead.clientEmail,
+          clientName: enrollment.lead.clientName,
+          studioName,
+          subject,
+          body,
+          portalUrl,
+        });
         console.log(`[Seq] Email → ${enrollment.lead.clientEmail}: "${subject}" (step ${enrollment.currentStep + 1}/${enrollment.sequence.steps.length})`);
 
         // Determine next step timing
