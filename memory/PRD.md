@@ -299,6 +299,15 @@ A full-stack CRM application for creative professionals (photographers, designer
 
 **Also fixed:** Test user password reset, backup files cleaned up, auto-response emails added to manual lead creation
 - Testing: 100% (14/14 tests, iteration_47.json)
+
+### Portal Inquiry + Verification Fixes (DONE - March 7, 2026)
+- **Portal /submit had no assignedToId**: Leads created via `/api/portal/submit` were missing `assignedToId`, making them invisible to all users. Fixed by adding `studioId` param support + fallback to first OWNER user
+- **Portal /submit had no email triggers**: Added auto-response email and owner notification to portal submissions (was a TODO comment)
+- **SubmitInquiry page didn't pass studioId**: Added URL search param `?studio=UUID` support so shared inquiry links correctly associate leads with the right studio
+- **ShareFormModal now includes userId** in generated inquiry URLs
+- **Settings tab contrast**: Improved inactive tab visibility with `bg-dark-card/60 text-[#A3A3A3]` instead of near-invisible `bg-white/10`
+- **Verification email**: Code was already correct; Resend free tier only allows sending to the account owner's exact email address (not +alias variants)
+- Testing: 100% (13/13 tests, iteration_48.json)
 - **Problem**: 4 tables created in Phase 7 had no Row-Level Security policies: email_sequences, email_sequence_steps, sequence_enrollments, project_milestones
 - **Layer 1 — Database RLS**: Enabled RLS + created 16 policies (4 per table: SELECT, INSERT, UPDATE, DELETE) using `auth.uid()` checks. Protects against direct Supabase dashboard/API access
 - **Layer 2 — Application Guards**: Audited all routes — confirmed all CRUD operations in `sequences.ts` and `leads.ts` (milestones) already enforce ownership via `userId: req.userId!` or `assignedToId: req.userId!`
