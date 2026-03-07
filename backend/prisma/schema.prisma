@@ -7,25 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model activities {
-  id          String       @id
+model Activity {
+  id          String       @id @default(cuid())
   type        ActivityType
   description String
   metadata    Json?
   leadId      String
   userId      String?
   createdAt   DateTime     @default(now())
-  leads       leads        @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  users       users?       @relation(fields: [userId], references: [id])
+  lead        Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  user        User?        @relation(fields: [userId], references: [id])
 
   @@index([createdAt])
   @@index([leadId])
+  @@map("activities")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model bookings {
-  id          String        @id
+model Booking {
+  id          String        @id @default(cuid())
   startTime   DateTime
   endTime     DateTime
   duration    Int
@@ -39,20 +38,20 @@ model bookings {
   leadId      String
   createdById String
   createdAt   DateTime      @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime  @updatedAt
   completedAt DateTime?
   cancelledAt DateTime?
-  users       users         @relation(fields: [createdById], references: [id])
-  leads       leads         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  createdBy   User          @relation(fields: [createdById], references: [id])
+  lead        Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
   @@index([startTime])
   @@index([status])
+  @@map("bookings")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model contracts {
-  id             String         @id
+model Contract {
+  id             String         @id @default(cuid())
   leadId         String
   templateType   ContractType
   title          String
@@ -64,16 +63,16 @@ model contracts {
   sentAt         DateTime?
   viewedAt       DateTime?
   createdAt      DateTime       @default(now())
-  updatedAt      DateTime
-  leads          leads          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  updatedAt      DateTime  @updatedAt
+  lead           Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
   @@index([status])
+  @@map("contracts")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model deliverables {
-  id              String            @id
+model Deliverable {
+  id              String            @id @default(cuid())
   name            String
   type            DeliverableType
   status          DeliverableStatus @default(PENDING)
@@ -96,51 +95,51 @@ model deliverables {
   metadata        Json?
   leadId          String
   createdAt       DateTime          @default(now())
-  updatedAt       DateTime
-  leads           leads             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  updatedAt       DateTime  @updatedAt
+  lead            Lead              @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
   @@index([status])
   @@index([type])
+  @@map("deliverables")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model email_sequence_steps {
-  id              String          @id
-  sequenceId      String
-  order           Int
-  delayDays       Int
-  subject         String
-  body            String
-  createdAt       DateTime        @default(now())
-  email_sequences email_sequences @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+model EmailSequenceStep {
+  id         String        @id @default(cuid())
+  sequenceId String
+  order      Int
+  delayDays  Int
+  subject    String
+  body       String
+  createdAt  DateTime      @default(now())
+  sequence   EmailSequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
 
   @@index([order])
   @@index([sequenceId])
+  @@map("email_sequence_steps")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model email_sequences {
-  id                   String                 @id
-  userId               String
-  name                 String
-  description          String?
-  trigger              SequenceTrigger
-  active               Boolean                @default(true)
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime
-  email_sequence_steps email_sequence_steps[]
-  users                users                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sequence_enrollments sequence_enrollments[]
+model EmailSequence {
+  id          String                @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  trigger     SequenceTrigger
+  active      Boolean               @default(true)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime  @updatedAt
+  steps       EmailSequenceStep[]
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollments SequenceEnrollment[]
 
   @@index([active])
   @@index([trigger])
   @@index([userId])
+  @@map("email_sequences")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model files {
-  id               String    @id
+model File {
+  id               String    @id @default(cuid())
   filename         String
   originalName     String
   mimeType         String
@@ -153,14 +152,14 @@ model files {
   lastDownloadedAt DateTime?
   sharedAt         DateTime?
   sharedWithClient Boolean   @default(false)
-  leads            leads     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead             Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
+  @@map("files")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model incomes {
-  id                    String         @id
+model Income {
+  id                    String         @id @default(cuid())
   userId                String
   leadId                String?
   quoteId               String?
@@ -172,7 +171,7 @@ model incomes {
   expectedDate          DateTime?
   receivedDate          DateTime?
   createdAt             DateTime       @default(now())
-  updatedAt             DateTime
+  updatedAt             DateTime  @updatedAt
   depositAmount         Decimal?       @db.Decimal(10, 2)
   depositPaid           Boolean        @default(false)
   depositPaidAt         DateTime?
@@ -182,86 +181,86 @@ model incomes {
   paymentMethod         String?
   stripePaymentIntentId String?
   stripeSessionId       String?
-  leads                 leads?         @relation(fields: [leadId], references: [id])
-  quotes                quotes?        @relation(fields: [quoteId], references: [id])
-  users                 users          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lead                  Lead?          @relation(fields: [leadId], references: [id])
+  quote                 Quote?         @relation(fields: [quoteId], references: [id])
+  user                  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([receivedDate])
   @@index([status])
   @@index([stripeSessionId])
   @@index([userId])
+  @@map("incomes")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model interactions {
-  id        String          @id
+model Interaction {
+  id        String          @id @default(cuid())
   leadId    String
   type      InteractionType
   content   String?
   createdAt DateTime        @default(now())
-  leads     leads           @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead      Lead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([createdAt])
   @@index([leadId])
+  @@map("interactions")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model leads {
-  id                   String                 @id
-  clientName           String
-  clientEmail          String
-  clientPhone          String?
-  clientCompany        String?
-  serviceType          ServiceType
-  projectTitle         String
-  description          String
-  budget               String?
-  timeline             String?
-  eventDate            DateTime?
-  status               LeadStatus             @default(NEW)
-  priority             Priority               @default(MEDIUM)
-  source               LeadSource             @default(WEBSITE)
-  score                Int                    @default(0)
-  estimatedValue       Float?
-  actualValue          Float?
-  assignedToId         String?
-  portalToken          String                 @unique
-  portalViews          Int                    @default(0)
-  lastPortalView       DateTime?
-  tags                 String[]
-  customFields         Json?
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime
-  convertedAt          DateTime?
-  lostAt               DateTime?
-  projectType          ProjectType            @default(SERVICE)
-  industry             IndustryType?
-  deliverableType      DeliverableType        @default(DIGITAL_FILES)
-  workflowData         Json?
-  coverImage           String?
-  crmNotes             String?
-  followUpPriority     Priority               @default(MEDIUM)
-  lastContactedAt      DateTime?
-  leadSource           String?
-  nextFollowUpAt       DateTime?
-  pipelineStatus       PipelineStatus         @default(NEW_INQUIRY)
-  isDemoData           Boolean                @default(false)
-  deliveryDate         DateTime?
-  editingDeadline      DateTime?
-  shootingDate         DateTime?
-  activities           activities[]
-  bookings             bookings[]
-  contracts            contracts[]
-  deliverables         deliverables[]
-  files                files[]
-  incomes              incomes[]
-  interactions         interactions[]
-  users                users?                 @relation(fields: [assignedToId], references: [id])
-  messages             messages[]
-  project_milestones   project_milestones[]
-  quotes               quotes[]
-  sequence_enrollments sequence_enrollments[]
-  testimonials         testimonials[]
+model Lead {
+  id                String                @id @default(cuid())
+  clientName        String
+  clientEmail       String
+  clientPhone       String?
+  clientCompany     String?
+  serviceType       ServiceType
+  projectTitle      String
+  description       String
+  budget            String?
+  timeline          String?
+  eventDate         DateTime?
+  status            LeadStatus            @default(NEW)
+  priority          Priority              @default(MEDIUM)
+  source            LeadSource            @default(WEBSITE)
+  score             Int                   @default(0)
+  estimatedValue    Float?
+  actualValue       Float?
+  assignedToId      String?
+  portalToken       String                @unique @default(cuid())
+  portalViews       Int                   @default(0)
+  lastPortalView    DateTime?
+  tags              String[]
+  customFields      Json?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime  @updatedAt
+  convertedAt       DateTime?
+  lostAt            DateTime?
+  projectType       ProjectType           @default(SERVICE)
+  industry          IndustryType?
+  deliverableType   DeliverableType       @default(DIGITAL_FILES)
+  workflowData      Json?
+  coverImage        String?
+  crmNotes          String?
+  followUpPriority  Priority              @default(MEDIUM)
+  lastContactedAt   DateTime?
+  leadSource        String?
+  nextFollowUpAt    DateTime?
+  pipelineStatus    PipelineStatus        @default(NEW_INQUIRY)
+  isDemoData        Boolean               @default(false)
+  deliveryDate      DateTime?
+  editingDeadline   DateTime?
+  shootingDate      DateTime?
+  assignedTo        User?                 @relation(fields: [assignedToId], references: [id])
+  activities        Activity[]
+  messages          Message[]
+  files             File[]
+  quotes            Quote[]
+  bookings          Booking[]
+  deliverables      Deliverable[]
+  contracts         Contract[]
+  interactions      Interaction[]
+  incomeRecords     Income[]
+  testimonials      Testimonial[]
+  milestones        ProjectMilestone[]
+  enrollments       SequenceEnrollment[]
 
   @@index([assignedToId])
   @@index([createdAt])
@@ -269,27 +268,27 @@ model leads {
   @@index([pipelineStatus])
   @@index([projectType])
   @@index([status])
+  @@map("leads")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model messages {
-  id           String   @id
+model Message {
+  id           String   @id @default(cuid())
   content      String
   isFromClient Boolean  @default(false)
   isRead       Boolean  @default(false)
   leadId       String
   senderId     String?
   createdAt    DateTime @default(now())
-  leads        leads    @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  users        users?   @relation(fields: [senderId], references: [id])
+  lead         Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  sender       User?    @relation(fields: [senderId], references: [id])
 
   @@index([createdAt])
   @@index([leadId])
+  @@map("messages")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model portfolios {
-  id          String            @id
+model Portfolio {
+  id          String            @id @default(cuid())
   userId      String
   title       String
   description String?
@@ -300,17 +299,17 @@ model portfolios {
   featured    Boolean           @default(false)
   order       Int               @default(0)
   createdAt   DateTime          @default(now())
-  updatedAt   DateTime
-  users       users             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt   DateTime  @updatedAt
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([category])
   @@index([featured])
   @@index([userId])
+  @@map("portfolios")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model project_milestones {
-  id          String    @id
+model ProjectMilestone {
+  id          String    @id @default(cuid())
   leadId      String
   name        String
   description String?
@@ -319,15 +318,15 @@ model project_milestones {
   completedAt DateTime?
   order       Int       @default(0)
   createdAt   DateTime  @default(now())
-  leads       leads     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([dueDate])
   @@index([leadId])
+  @@map("project_milestones")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model quote_templates {
-  id           String   @id
+model QuoteTemplate {
+  id           String   @id @default(cuid())
   name         String
   description  String?
   lineItems    Json
@@ -335,15 +334,15 @@ model quote_templates {
   terms        String?
   userId       String
   createdAt    DateTime @default(now())
-  updatedAt    DateTime
-  users        users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt    DateTime  @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@map("quote_templates")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model quotes {
-  id               String      @id
+model Quote {
+  id               String      @id @default(cuid())
   quoteNumber      String      @unique
   lineItems        Json
   subtotal         Float
@@ -354,9 +353,9 @@ model quotes {
   validUntil       DateTime
   terms            String?
   status           QuoteStatus @default(DRAFT)
-  quoteToken       String      @unique
+  quoteToken       String      @unique @default(cuid())
   createdAt        DateTime    @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime  @updatedAt
   sentAt           DateTime?
   viewedAt         DateTime?
   acceptedAt       DateTime?
@@ -368,40 +367,40 @@ model quotes {
   currencyPosition String?
   currencySymbol   String?
   numberFormat     String?
-  incomes          incomes[]
-  users            users       @relation(fields: [createdById], references: [id])
-  leads            leads       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead             Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  createdBy        User        @relation(fields: [createdById], references: [id])
+  incomeRecords    Income[]
 
   @@index([createdAt])
   @@index([leadId])
   @@index([status])
+  @@map("quotes")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model sequence_enrollments {
-  id              String           @id
-  sequenceId      String
-  leadId          String
-  currentStep     Int              @default(0)
-  status          EnrollmentStatus @default(ACTIVE)
-  enrolledAt      DateTime         @default(now())
-  completedAt     DateTime?
-  stoppedAt       DateTime?
-  stoppedReason   String?
-  nextEmailAt     DateTime?
-  leads           leads            @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  email_sequences email_sequences  @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+model SequenceEnrollment {
+  id            String           @id @default(cuid())
+  sequenceId    String
+  leadId        String
+  currentStep   Int              @default(0)
+  status        EnrollmentStatus @default(ACTIVE)
+  enrolledAt    DateTime         @default(now())
+  completedAt   DateTime?
+  stoppedAt     DateTime?
+  stoppedReason String?
+  nextEmailAt   DateTime?
+  lead          Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  sequence      EmailSequence    @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
 
   @@unique([sequenceId, leadId])
   @@index([leadId])
   @@index([nextEmailAt])
   @@index([sequenceId])
   @@index([status])
+  @@map("sequence_enrollments")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model testimonials {
-  id           String            @id
+model Testimonial {
+  id           String            @id @default(cuid())
   userId       String
   leadId       String?
   clientName   String
@@ -415,21 +414,21 @@ model testimonials {
   submittedAt  DateTime?
   approvedAt   DateTime?
   consentGiven Boolean           @default(false)
-  publicToken  String            @unique
+  publicToken  String            @unique @default(cuid())
   createdAt    DateTime          @default(now())
-  updatedAt    DateTime
-  leads        leads?            @relation(fields: [leadId], references: [id])
-  users        users             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt    DateTime  @updatedAt
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lead         Lead?             @relation(fields: [leadId], references: [id])
 
   @@index([featured])
   @@index([publicToken])
   @@index([status])
   @@index([userId])
+  @@map("testimonials")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model users {
-  id                   String               @id
+model User {
+  id                   String               @id @default(cuid())
   email                String               @unique
   password             String
   firstName            String
@@ -444,7 +443,7 @@ model users {
   timezone             String               @default("UTC")
   preferences          Json?
   createdAt            DateTime             @default(now())
-  updatedAt            DateTime
+  updatedAt            DateTime  @updatedAt
   lastLoginAt          DateTime?
   passwordResetExpires DateTime?
   passwordResetToken   String?              @unique
@@ -460,55 +459,57 @@ model users {
   brandPrimaryColor    String               @default("#A855F7")
   verificationSentAt   DateTime?
   verificationToken    String?              @unique
-  activities           activities[]
-  bookings             bookings[]
-  email_sequences      email_sequences[]
-  incomes              incomes[]
-  leads                leads[]
-  messages             messages[]
-  portfolios           portfolios[]
-  quote_templates      quote_templates[]
-  quotes               quotes[]
-  testimonials         testimonials[]
-  workflow_templates   workflow_templates[]
+  leads                Lead[]
+  activities           Activity[]
+  messages             Message[]
+  quotes               Quote[]
+  quoteTemplates       QuoteTemplate[]
+  bookings             Booking[]
+  portfolio            Portfolio[]
+  workflowTemplates    WorkflowTemplate[]
+  incomes              Income[]
+  testimonials         Testimonial[]
+  emailSequences       EmailSequence[]
+
+  @@map("users")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model workflow_stages {
-  id                 String             @id
-  name               String
-  order              Int
-  type               StageType
-  required           Boolean            @default(true)
-  description        String?
-  fieldConfig        Json?
-  templateId         String
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime
-  workflow_templates workflow_templates @relation(fields: [templateId], references: [id], onDelete: Cascade)
+model WorkflowStage {
+  id          String           @id @default(cuid())
+  name        String
+  order       Int
+  type        StageType
+  required    Boolean          @default(true)
+  description String?
+  fieldConfig Json?
+  templateId  String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime  @updatedAt
+  template    WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
   @@index([order])
   @@index([templateId])
+  @@map("workflow_stages")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model workflow_templates {
-  id              String            @id
-  name            String
-  description     String?
-  industry        IndustryType?
-  projectType     ProjectType?
-  isDefault       Boolean           @default(false)
-  isSystem        Boolean           @default(false)
-  userId          String
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime
-  workflow_stages workflow_stages[]
-  users           users             @relation(fields: [userId], references: [id], onDelete: Cascade)
+model WorkflowTemplate {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  industry    IndustryType?
+  projectType ProjectType?
+  isDefault   Boolean        @default(false)
+  isSystem    Boolean        @default(false)
+  userId      String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stages      WorkflowStage[]
 
   @@index([industry])
   @@index([projectType])
   @@index([userId])
+  @@map("workflow_templates")
 }
 
 enum ActivityType {
