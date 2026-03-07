@@ -308,6 +308,12 @@ A full-stack CRM application for creative professionals (photographers, designer
 - **Settings tab contrast**: Improved inactive tab visibility with `bg-dark-card/60 text-[#A3A3A3]` instead of near-invisible `bg-white/10`
 - **Verification email**: Code was already correct; Resend free tier only allows sending to the account owner's exact email address (not +alias variants)
 - Testing: 100% (13/13 tests, iteration_48.json)
+
+### Prisma Schema PascalCase Restoration (DONE - March 7, 2026)
+- **Problem**: `prisma db pull` overwrote the schema with lowercase plural model names (`model users`, `model leads`), causing Prisma client to generate `prisma.users` instead of `prisma.user`. This broke 250+ TypeScript references on deployment.
+- **Fix**: Reconstructed complete schema with PascalCase model names (`model User @@map("users")`), added `@default(cuid())` to all id/token fields, and `@updatedAt` to all updatedAt fields.
+- **Result**: TypeScript build clean (0 errors), all 10+ Prisma model accessors verified working.
+- Testing: 100% (12/12 tests, iteration_49.json)
 - **Problem**: 4 tables created in Phase 7 had no Row-Level Security policies: email_sequences, email_sequence_steps, sequence_enrollments, project_milestones
 - **Layer 1 — Database RLS**: Enabled RLS + created 16 policies (4 per table: SELECT, INSERT, UPDATE, DELETE) using `auth.uid()` checks. Protects against direct Supabase dashboard/API access
 - **Layer 2 — Application Guards**: Audited all routes — confirmed all CRUD operations in `sequences.ts` and `leads.ts` (milestones) already enforce ownership via `userId: req.userId!` or `assignedToId: req.userId!`
