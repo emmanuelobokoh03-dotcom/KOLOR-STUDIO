@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Sparkles, Loader2, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 import { ServiceType, SERVICE_TYPE_LABELS, leadsApi } from '../services/api'
 
@@ -9,6 +9,8 @@ const SERVICE_TYPES: ServiceType[] = [
 ];
 
 const SubmitInquiry = () => {
+  const [searchParams] = useSearchParams()
+  const studioId = searchParams.get('studio') || undefined
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -44,6 +46,7 @@ const SubmitInquiry = () => {
     const result = await leadsApi.submit({
       ...formData,
       source: 'WEBSITE',
+      studioId,
     })
 
     setLoading(false)

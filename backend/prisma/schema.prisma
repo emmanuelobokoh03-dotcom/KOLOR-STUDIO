@@ -1,6 +1,3 @@
-// This is your Prisma schema file
-// Learn more: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,88 +7,599 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// =====================
-// USER & AUTHENTICATION
-// =====================
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model activities {
+  id          String       @id
+  type        ActivityType
+  description String
+  metadata    Json?
+  leadId      String
+  userId      String?
+  createdAt   DateTime     @default(now())
+  leads       leads        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  users       users?       @relation(fields: [userId], references: [id])
 
-model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  password      String
-  firstName     String
-  lastName      String
-  studioName    String?
-  role          UserRole  @default(OWNER)
-  isActive      Boolean   @default(true)
-  emailVerified Boolean   @default(false)
-  verificationToken   String?   @unique
-  verificationSentAt  DateTime?
-  
-  // Profile
-  phone         String?
-  website       String?
-  logo          String?   // URL to logo image
-  timezone      String    @default("UTC")
-  
-  // Industry
-  primaryIndustry IndustryType?
-  
-  // Currency Settings
-  currency        String    @default("USD")       // Currency code (USD, EUR, GBP, etc.)
-  currencySymbol  String    @default("$")         // Symbol ($, €, £, etc.)
-  currencyPosition String   @default("BEFORE")    // BEFORE or AFTER amount
-  numberFormat    String    @default("1,000.00")  // Number format pattern
-  defaultTaxRate  Float     @default(0)           // Default tax rate for quotes (%)
-  
-  // Preferences
-  preferences   Json?     // Store user preferences as JSON
-  
-  // Brand Customization
-  brandPrimaryColor  String   @default("#A855F7")
-  brandAccentColor   String   @default("#EC4899")
-  brandLogoUrl       String?
-  brandFontFamily    String   @default("Inter")
-  
-  // Password Reset
-  passwordResetToken   String?   @unique
+  @@index([createdAt])
+  @@index([leadId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model bookings {
+  id          String        @id
+  startTime   DateTime
+  endTime     DateTime
+  duration    Int
+  allDay      Boolean       @default(false)
+  title       String
+  location    String?
+  notes       String?
+  status      BookingStatus @default(CONFIRMED)
+  color       String?
+  reminders   Json?
+  leadId      String
+  createdById String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime
+  completedAt DateTime?
+  cancelledAt DateTime?
+  users       users         @relation(fields: [createdById], references: [id])
+  leads       leads         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([startTime])
+  @@index([status])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model contracts {
+  id             String         @id
+  leadId         String
+  templateType   ContractType
+  title          String
+  content        String
+  clientAgreed   Boolean        @default(false)
+  clientAgreedAt DateTime?
+  clientIP       String?
+  status         ContractStatus @default(DRAFT)
+  sentAt         DateTime?
+  viewedAt       DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime
+  leads          leads          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([status])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model deliverables {
+  id              String            @id
+  name            String
+  type            DeliverableType
+  status          DeliverableStatus @default(PENDING)
+  description     String?
+  fileUrls        String[]          @default([])
+  dimensions      String?
+  material        String?
+  weight          String?
+  shippingAddress String?
+  shippingMethod  String?
+  trackingNumber  String?
+  shippedAt       DateTime?
+  sessionDate     DateTime?
+  sessionLocation String?
+  sessionDuration Int?
+  sessionNotes    String?
+  dueDate         DateTime?
+  completedAt     DateTime?
+  notes           String?
+  metadata        Json?
+  leadId          String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  leads           leads             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([status])
+  @@index([type])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model email_sequence_steps {
+  id              String          @id
+  sequenceId      String
+  order           Int
+  delayDays       Int
+  subject         String
+  body            String
+  createdAt       DateTime        @default(now())
+  email_sequences email_sequences @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+
+  @@index([order])
+  @@index([sequenceId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model email_sequences {
+  id                   String                 @id
+  userId               String
+  name                 String
+  description          String?
+  trigger              SequenceTrigger
+  active               Boolean                @default(true)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime
+  email_sequence_steps email_sequence_steps[]
+  users                users                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sequence_enrollments sequence_enrollments[]
+
+  @@index([active])
+  @@index([trigger])
+  @@index([userId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model files {
+  id               String    @id
+  filename         String
+  originalName     String
+  mimeType         String
+  size             Int
+  url              String
+  uploadedBy       String?
+  leadId           String
+  createdAt        DateTime  @default(now())
+  downloadCount    Int       @default(0)
+  lastDownloadedAt DateTime?
+  sharedAt         DateTime?
+  sharedWithClient Boolean   @default(false)
+  leads            leads     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model incomes {
+  id                    String         @id
+  userId                String
+  leadId                String?
+  quoteId               String?
+  amount                Decimal
+  currency              String         @default("USD")
+  description           String
+  category              IncomeCategory @default(PROJECT)
+  status                IncomeStatus   @default(EXPECTED)
+  expectedDate          DateTime?
+  receivedDate          DateTime?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime
+  depositAmount         Decimal?       @db.Decimal(10, 2)
+  depositPaid           Boolean        @default(false)
+  depositPaidAt         DateTime?
+  finalAmount           Decimal?       @db.Decimal(10, 2)
+  finalPaid             Boolean        @default(false)
+  finalPaidAt           DateTime?
+  paymentMethod         String?
+  stripePaymentIntentId String?
+  stripeSessionId       String?
+  leads                 leads?         @relation(fields: [leadId], references: [id])
+  quotes                quotes?        @relation(fields: [quoteId], references: [id])
+  users                 users          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([receivedDate])
+  @@index([status])
+  @@index([stripeSessionId])
+  @@index([userId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model interactions {
+  id        String          @id
+  leadId    String
+  type      InteractionType
+  content   String?
+  createdAt DateTime        @default(now())
+  leads     leads           @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([leadId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leads {
+  id                   String                 @id
+  clientName           String
+  clientEmail          String
+  clientPhone          String?
+  clientCompany        String?
+  serviceType          ServiceType
+  projectTitle         String
+  description          String
+  budget               String?
+  timeline             String?
+  eventDate            DateTime?
+  status               LeadStatus             @default(NEW)
+  priority             Priority               @default(MEDIUM)
+  source               LeadSource             @default(WEBSITE)
+  score                Int                    @default(0)
+  estimatedValue       Float?
+  actualValue          Float?
+  assignedToId         String?
+  portalToken          String                 @unique
+  portalViews          Int                    @default(0)
+  lastPortalView       DateTime?
+  tags                 String[]
+  customFields         Json?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime
+  convertedAt          DateTime?
+  lostAt               DateTime?
+  projectType          ProjectType            @default(SERVICE)
+  industry             IndustryType?
+  deliverableType      DeliverableType        @default(DIGITAL_FILES)
+  workflowData         Json?
+  coverImage           String?
+  crmNotes             String?
+  followUpPriority     Priority               @default(MEDIUM)
+  lastContactedAt      DateTime?
+  leadSource           String?
+  nextFollowUpAt       DateTime?
+  pipelineStatus       PipelineStatus         @default(NEW_INQUIRY)
+  isDemoData           Boolean                @default(false)
+  deliveryDate         DateTime?
+  editingDeadline      DateTime?
+  shootingDate         DateTime?
+  activities           activities[]
+  bookings             bookings[]
+  contracts            contracts[]
+  deliverables         deliverables[]
+  files                files[]
+  incomes              incomes[]
+  interactions         interactions[]
+  users                users?                 @relation(fields: [assignedToId], references: [id])
+  messages             messages[]
+  project_milestones   project_milestones[]
+  quotes               quotes[]
+  sequence_enrollments sequence_enrollments[]
+  testimonials         testimonials[]
+
+  @@index([assignedToId])
+  @@index([createdAt])
+  @@index([nextFollowUpAt])
+  @@index([pipelineStatus])
+  @@index([projectType])
+  @@index([status])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model messages {
+  id           String   @id
+  content      String
+  isFromClient Boolean  @default(false)
+  isRead       Boolean  @default(false)
+  leadId       String
+  senderId     String?
+  createdAt    DateTime @default(now())
+  leads        leads    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  users        users?   @relation(fields: [senderId], references: [id])
+
+  @@index([createdAt])
+  @@index([leadId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model portfolios {
+  id          String            @id
+  userId      String
+  title       String
+  description String?
+  imageUrl    String
+  imagePath   String?
+  category    PortfolioCategory
+  tags        String[]          @default([])
+  featured    Boolean           @default(false)
+  order       Int               @default(0)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime
+  users       users             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([category])
+  @@index([featured])
+  @@index([userId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model project_milestones {
+  id          String    @id
+  leadId      String
+  name        String
+  description String?
+  dueDate     DateTime
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  leads       leads     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([dueDate])
+  @@index([leadId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model quote_templates {
+  id           String   @id
+  name         String
+  description  String?
+  lineItems    Json
+  paymentTerms String   @default("DEPOSIT_50")
+  terms        String?
+  userId       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  users        users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model quotes {
+  id               String      @id
+  quoteNumber      String      @unique
+  lineItems        Json
+  subtotal         Float
+  tax              Float       @default(0)
+  taxAmount        Float       @default(0)
+  total            Float
+  paymentTerms     String
+  validUntil       DateTime
+  terms            String?
+  status           QuoteStatus @default(DRAFT)
+  quoteToken       String      @unique
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime
+  sentAt           DateTime?
+  viewedAt         DateTime?
+  acceptedAt       DateTime?
+  declinedAt       DateTime?
+  declineReason    String?
+  leadId           String
+  createdById      String
+  currency         String?
+  currencyPosition String?
+  currencySymbol   String?
+  numberFormat     String?
+  incomes          incomes[]
+  users            users       @relation(fields: [createdById], references: [id])
+  leads            leads       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([leadId])
+  @@index([status])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model sequence_enrollments {
+  id              String           @id
+  sequenceId      String
+  leadId          String
+  currentStep     Int              @default(0)
+  status          EnrollmentStatus @default(ACTIVE)
+  enrolledAt      DateTime         @default(now())
+  completedAt     DateTime?
+  stoppedAt       DateTime?
+  stoppedReason   String?
+  nextEmailAt     DateTime?
+  leads           leads            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  email_sequences email_sequences  @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+
+  @@unique([sequenceId, leadId])
+  @@index([leadId])
+  @@index([nextEmailAt])
+  @@index([sequenceId])
+  @@index([status])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model testimonials {
+  id           String            @id
+  userId       String
+  leadId       String?
+  clientName   String
+  clientEmail  String?
+  rating       Int               @default(0)
+  content      String            @default("")
+  recommend    Boolean           @default(true)
+  status       TestimonialStatus @default(PENDING)
+  featured     Boolean           @default(false)
+  requestedAt  DateTime?
+  submittedAt  DateTime?
+  approvedAt   DateTime?
+  consentGiven Boolean           @default(false)
+  publicToken  String            @unique
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime
+  leads        leads?            @relation(fields: [leadId], references: [id])
+  users        users             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([featured])
+  @@index([publicToken])
+  @@index([status])
+  @@index([userId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model users {
+  id                   String               @id
+  email                String               @unique
+  password             String
+  firstName            String
+  lastName             String
+  studioName           String?
+  role                 UserRole             @default(OWNER)
+  isActive             Boolean              @default(true)
+  emailVerified        Boolean              @default(false)
+  phone                String?
+  website              String?
+  logo                 String?
+  timezone             String               @default("UTC")
+  preferences          Json?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime
+  lastLoginAt          DateTime?
   passwordResetExpires DateTime?
-  
-  // Timestamps
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastLoginAt   DateTime?
-  
-  // Relations
-  leads         Lead[]
-  activities    Activity[]
-  messages      Message[]
-  quotes        Quote[]
-  quoteTemplates QuoteTemplate[]
-  bookings      Booking[]
-  portfolio     Portfolio[]
-  workflowTemplates WorkflowTemplate[]
-  incomes       Income[]
-  testimonials  Testimonial[]
-  emailSequences EmailSequence[]
-  
-  @@map("users")
+  passwordResetToken   String?              @unique
+  currency             String               @default("USD")
+  currencyPosition     String               @default("BEFORE")
+  currencySymbol       String               @default("$")
+  defaultTaxRate       Float                @default(0)
+  numberFormat         String               @default("1,000.00")
+  primaryIndustry      IndustryType?
+  brandAccentColor     String               @default("#EC4899")
+  brandFontFamily      String               @default("Inter")
+  brandLogoUrl         String?
+  brandPrimaryColor    String               @default("#A855F7")
+  verificationSentAt   DateTime?
+  verificationToken    String?              @unique
+  activities           activities[]
+  bookings             bookings[]
+  email_sequences      email_sequences[]
+  incomes              incomes[]
+  leads                leads[]
+  messages             messages[]
+  portfolios           portfolios[]
+  quote_templates      quote_templates[]
+  quotes               quotes[]
+  testimonials         testimonials[]
+  workflow_templates   workflow_templates[]
 }
 
-enum UserRole {
-  OWNER
-  ADMIN
-  MEMBER
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model workflow_stages {
+  id                 String             @id
+  name               String
+  order              Int
+  type               StageType
+  required           Boolean            @default(true)
+  description        String?
+  fieldConfig        Json?
+  templateId         String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime
+  workflow_templates workflow_templates @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([order])
+  @@index([templateId])
 }
 
-// =====================
-// ENUMS — Project & Workflow Types
-// =====================
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model workflow_templates {
+  id              String            @id
+  name            String
+  description     String?
+  industry        IndustryType?
+  projectType     ProjectType?
+  isDefault       Boolean           @default(false)
+  isSystem        Boolean           @default(false)
+  userId          String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  workflow_stages workflow_stages[]
+  users           users             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-enum ProjectType {
-  SERVICE          // Photography session, videography, consulting
-  COMMISSION       // Custom artwork, illustration, sculpture
-  PROJECT          // Web design, branding package, content series
-  PRODUCT_SALE     // Prints, merchandise, digital products
+  @@index([industry])
+  @@index([projectType])
+  @@index([userId])
+}
+
+enum ActivityType {
+  STATUS_CHANGED
+  NOTE_ADDED
+  EMAIL_SENT
+  EMAIL_RECEIVED
+  PHONE_CALL
+  MEETING_SCHEDULED
+  FILE_UPLOADED
+  PROPOSAL_SENT
+  CONTRACT_SIGNED
+  PAYMENT_RECEIVED
+  MESSAGE_SENT
+  PORTAL_VIEWED
+  FILE_DELETED
+  QUOTE_CREATED
+  QUOTE_SENT
+  QUOTE_VIEWED
+  QUOTE_ACCEPTED
+  QUOTE_DECLINED
+  QUOTE_EXPIRED
+  BOOKING_CREATED
+  BOOKING_UPDATED
+  BOOKING_COMPLETED
+  BOOKING_CANCELLED
+}
+
+enum BookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+}
+
+enum ContractStatus {
+  DRAFT
+  SENT
+  VIEWED
+  AGREED
+}
+
+enum ContractType {
+  PHOTOGRAPHY_SHOOT
+  PORTRAIT_COMMISSION
+  LOGO_DESIGN
+  WEB_DESIGN
+  GENERAL_SERVICE
+  CUSTOM
+}
+
+enum DeliverableStatus {
+  PENDING
+  IN_PROGRESS
+  READY
+  DELIVERED
+  SHIPPED
+}
+
+enum DeliverableType {
+  DIGITAL_FILES
+  PHYSICAL_ART
+  PRINTS
+  SERVICE
+  WEBSITE
+  MIXED
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  STOPPED
+  PAUSED
+}
+
+enum IncomeCategory {
+  PROJECT
+  COMMISSION
+  PRODUCT_SALE
+  LICENSING
+  CONSULTATION
+  OTHER
+}
+
+enum IncomeStatus {
+  EXPECTED
+  RECEIVED
+  CANCELLED
+  DEPOSIT_RECEIVED
+  PAID_IN_FULL
+  OVERDUE
 }
 
 enum IndustryType {
@@ -105,665 +613,6 @@ enum IndustryType {
   BRANDING
   CONTENT_CREATION
   OTHER
-}
-
-enum DeliverableType {
-  DIGITAL_FILES    // Photos, videos, design files
-  PHYSICAL_ART     // Paintings, sculptures, installations
-  PRINTS           // Photo prints, art prints, posters
-  SERVICE          // Consulting, coaching, live event
-  WEBSITE          // Web design deliverable
-  MIXED            // Combination of above
-}
-
-enum StageType {
-  DISCOVERY        // Initial consultation, requirements gathering
-  QUOTATION        // Quote/proposal creation and negotiation
-  AGREEMENT        // Contract signing, deposit collection
-  SCHEDULING       // Session/event scheduling
-  CREATION         // Active work (shooting, designing, painting)
-  REVIEW           // Client review, feedback, revisions
-  DELIVERY         // Final delivery of work
-  PAYMENT          // Final payment collection
-  FOLLOWUP         // Post-project follow-up, testimonials
-}
-
-enum DeliverableStatus {
-  PENDING          // Not started
-  IN_PROGRESS      // Currently being worked on
-  READY            // Ready for delivery/review
-  DELIVERED        // Delivered to client
-  SHIPPED          // Physical item shipped
-}
-
-// =====================
-// LEAD MANAGEMENT
-// =====================
-
-model Lead {
-  id              String      @id @default(uuid())
-  
-  // Client Information
-  clientName      String
-  clientEmail     String
-  clientPhone     String?
-  clientCompany   String?
-  
-  // Project Details
-  serviceType     ServiceType
-  projectTitle    String
-  description     String      @db.Text
-  budget          String?     // e.g., "$5,000-$10,000"
-  timeline        String?     // e.g., "Needed by March 2026"
-  eventDate       DateTime?   // For events like weddings
-  
-  // Project Classification (new — all optional/defaulted for backwards compat)
-  projectType     ProjectType     @default(SERVICE)
-  industry        IndustryType?
-  deliverableType DeliverableType @default(DIGITAL_FILES)
-  workflowData    Json?           // Stores workflow stage progress & custom data
-  coverImage      String?         // URL to cover image for visual project cards
-  
-  // Lead Management
-  status          LeadStatus  @default(NEW)
-  priority        Priority    @default(MEDIUM)
-  source          LeadSource  @default(WEBSITE)
-  score           Int         @default(0)  // AI-powered lead score (0-100)
-  
-  // CRM Pipeline
-  pipelineStatus    PipelineStatus  @default(NEW_INQUIRY)
-  lastContactedAt   DateTime?
-  nextFollowUpAt    DateTime?
-  followUpPriority  Priority        @default(MEDIUM)
-  leadSource        String?
-  crmNotes          String?         @db.Text
-  
-  // Value Tracking
-  estimatedValue  Float?      // Estimated project value
-  actualValue     Float?      // Actual booked value
-  
-  // Assignment
-  assignedTo      User?       @relation(fields: [assignedToId], references: [id])
-  assignedToId    String?
-  
-  // Portal Access
-  portalToken     String      @unique @default(uuid())
-  portalViews     Int         @default(0)
-  lastPortalView  DateTime?
-  
-  // Metadata
-  tags            String[]    // For custom categorization
-  customFields    Json?       // Flexible custom fields
-  isDemoData      Boolean     @default(false)
-  
-  // Timeline dates
-  shootingDate    DateTime?
-  editingDeadline DateTime?
-  deliveryDate    DateTime?
-  
-  // Timestamps
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  convertedAt     DateTime?   // When status changed to BOOKED
-  lostAt          DateTime?   // When status changed to LOST
-  
-  // Relations
-  activities      Activity[]
-  messages        Message[]
-  files           File[]
-  quotes          Quote[]
-  bookings        Booking[]
-  deliverables    Deliverable[]
-  contracts       Contract[]
-  interactions    Interaction[]
-  incomeRecords   Income[]
-  testimonials    Testimonial[]
-  milestones      ProjectMilestone[]
-  enrollments     SequenceEnrollment[]
-  
-  @@map("leads")
-  @@index([status])
-  @@index([createdAt])
-  @@index([assignedToId])
-  @@index([projectType])
-  @@index([pipelineStatus])
-  @@index([nextFollowUpAt])
-}
-
-model ProjectMilestone {
-  id          String    @id @default(uuid())
-  leadId      String
-  name        String
-  description String?
-  dueDate     DateTime
-  completed   Boolean   @default(false)
-  completedAt DateTime?
-  order       Int       @default(0)
-  createdAt   DateTime  @default(now())
-
-  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
-
-  @@map("project_milestones")
-  @@index([leadId])
-  @@index([dueDate])
-}
-
-enum ServiceType {
-  PHOTOGRAPHY
-  VIDEOGRAPHY
-  GRAPHIC_DESIGN
-  WEB_DESIGN
-  BRANDING
-  CONTENT_CREATION
-  CONSULTING
-  OTHER
-}
-
-enum LeadStatus {
-  NEW           // Just submitted
-  REVIEWING     // Studio is reviewing
-  CONTACTED     // Initial contact made
-  QUALIFIED     // Qualified as good fit
-  QUOTED        // Proposal/quote sent
-  NEGOTIATING   // In discussion
-  BOOKED        // Won! Project confirmed
-  LOST          // Lost opportunity
-}
-
-enum Priority {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
-}
-
-enum LeadSource {
-  WEBSITE
-  INSTAGRAM
-  FACEBOOK
-  REFERRAL
-  GOOGLE
-  LINKEDIN
-  TIKTOK
-  EMAIL
-  OTHER
-}
-
-enum PipelineStatus {
-  NEW_INQUIRY
-  CONTACTED
-  QUOTED
-  NEGOTIATING
-  BOOKED
-  COMPLETED
-  LOST
-}
-
-// =====================
-// WORKFLOW TEMPLATES
-// =====================
-
-model WorkflowTemplate {
-  id            String        @id @default(uuid())
-  name          String        // e.g., "Wedding Photography Workflow"
-  description   String?       @db.Text
-  industry      IndustryType?
-  projectType   ProjectType?
-  isDefault     Boolean       @default(false)  // Default template for this industry/projectType combo
-  isSystem      Boolean       @default(false)  // System-provided (non-deletable)
-  
-  // Ownership
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String
-  
-  // Timestamps
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  
-  // Relations
-  stages        WorkflowStage[]
-  
-  @@map("workflow_templates")
-  @@index([userId])
-  @@index([industry])
-  @@index([projectType])
-}
-
-// =====================
-// WORKFLOW STAGES
-// =====================
-
-model WorkflowStage {
-  id            String        @id @default(uuid())
-  name          String        // e.g., "Initial Consultation", "Send Quote", "Shoot Day"
-  order         Int           // Display/execution order within template
-  type          StageType     // Category of this stage
-  required      Boolean       @default(true)   // Must complete before advancing
-  description   String?       @db.Text
-  
-  // Field configuration — defines what data to collect at this stage
-  fieldConfig   Json?         // [{fieldName, fieldType, label, required, options}]
-  
-  // Relations
-  template      WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  templateId    String
-  
-  // Timestamps
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  
-  @@map("workflow_stages")
-  @@index([templateId])
-  @@index([order])
-}
-
-// =====================
-// DELIVERABLES
-// =====================
-
-model Deliverable {
-  id            String            @id @default(uuid())
-  
-  // Core
-  name          String            // e.g., "Wedding Album", "Logo Package", "Oil Portrait"
-  type          DeliverableType
-  status        DeliverableStatus @default(PENDING)
-  description   String?           @db.Text
-  
-  // Digital deliverables
-  fileUrls      String[]          @default([])  // URLs to delivered files
-  
-  // Physical deliverables
-  dimensions    String?           // e.g., "24x36 inches"
-  material      String?           // e.g., "Oil on canvas", "Glossy photo paper"
-  weight        String?           // e.g., "2.5 lbs"
-  
-  // Shipping (physical items)
-  shippingAddress   String?       @db.Text
-  shippingMethod    String?
-  trackingNumber    String?
-  shippedAt         DateTime?
-  
-  // Session details (service deliverables)
-  sessionDate       DateTime?
-  sessionLocation   String?
-  sessionDuration   Int?          // minutes
-  sessionNotes      String?       @db.Text
-  
-  // Metadata
-  dueDate       DateTime?
-  completedAt   DateTime?
-  notes         String?       @db.Text
-  metadata      Json?         // Flexible extra data
-  
-  // Relations
-  lead          Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  leadId        String
-  
-  // Timestamps
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  
-  @@map("deliverables")
-  @@index([leadId])
-  @@index([status])
-  @@index([type])
-}
-
-// =====================
-// ACTIVITY LOG
-// =====================
-
-model Activity {
-  id          String        @id @default(uuid())
-  
-  type        ActivityType
-  description String        @db.Text
-  metadata    Json?         // Additional data about the activity
-  
-  // Relations
-  lead        Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  leadId      String
-  
-  user        User?         @relation(fields: [userId], references: [id])
-  userId      String?
-  
-  createdAt   DateTime      @default(now())
-  
-  @@map("activities")
-  @@index([leadId])
-  @@index([createdAt])
-}
-
-enum ActivityType {
-  STATUS_CHANGED
-  NOTE_ADDED
-  EMAIL_SENT
-  EMAIL_RECEIVED
-  PHONE_CALL
-  MEETING_SCHEDULED
-  FILE_UPLOADED
-  FILE_DELETED
-  PROPOSAL_SENT
-  CONTRACT_SIGNED
-  PAYMENT_RECEIVED
-  MESSAGE_SENT
-  PORTAL_VIEWED
-  QUOTE_CREATED
-  QUOTE_SENT
-  QUOTE_VIEWED
-  QUOTE_ACCEPTED
-  QUOTE_DECLINED
-  QUOTE_EXPIRED
-  BOOKING_CREATED
-  BOOKING_UPDATED
-  BOOKING_CANCELLED
-  BOOKING_COMPLETED
-}
-
-// =====================
-// MESSAGING
-// =====================
-
-model Message {
-  id          String    @id @default(uuid())
-  
-  content     String    @db.Text
-  isFromClient Boolean  @default(false)
-  isRead      Boolean   @default(false)
-  
-  // Relations
-  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  leadId      String
-  
-  sender      User?     @relation(fields: [senderId], references: [id])
-  senderId    String?
-  
-  createdAt   DateTime  @default(now())
-  
-  @@map("messages")
-  @@index([leadId])
-  @@index([createdAt])
-}
-
-// =====================
-// FILE MANAGEMENT
-// =====================
-
-model File {
-  id          String    @id @default(uuid())
-  
-  filename    String
-  originalName String
-  mimeType    String
-  size        Int       // in bytes
-  url         String
-  
-  uploadedBy  String?   // "client" or user ID
-  
-  // Relations
-  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  leadId      String
-
-  // File sharing
-  sharedWithClient  Boolean   @default(false)
-  sharedAt          DateTime?
-  downloadCount     Int       @default(0)
-  lastDownloadedAt  DateTime?
-
-  createdAt   DateTime  @default(now())
-  
-  @@map("files")
-  @@index([leadId])
-}
-
-// =====================
-// QUOTES / PROPOSALS
-// =====================
-
-model Quote {
-  id            String      @id @default(uuid())
-  quoteNumber   String      @unique // Auto-generated: Q-2026-001
-  
-  // Line items stored as JSON
-  lineItems     Json        // [{description: string, quantity: number, price: number, total: number}]
-  
-  // Pricing
-  subtotal      Float
-  tax           Float       @default(0) // Percentage (e.g., 10 for 10%)
-  taxAmount     Float       @default(0) // Calculated tax amount
-  total         Float
-  
-  // Currency Override (optional - uses user default if not set)
-  currency        String?     // Override currency code for this quote
-  currencySymbol  String?     // Override currency symbol
-  currencyPosition String?    // Override position (BEFORE/AFTER)
-  numberFormat    String?     // Override number format
-  
-  // Terms
-  paymentTerms  String      // FULL_UPFRONT, DEPOSIT_50, NET_30, NET_60, CUSTOM
-  validUntil    DateTime
-  terms         String?     @db.Text // Terms and conditions
-  
-  // Status tracking
-  status        QuoteStatus @default(DRAFT)
-  quoteToken    String      @unique @default(uuid()) // For client access
-  
-  // Timestamps
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  sentAt        DateTime?
-  viewedAt      DateTime?
-  acceptedAt    DateTime?
-  declinedAt    DateTime?
-  declineReason String?
-  
-  // Relations
-  lead          Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  leadId        String
-  
-  createdBy     User        @relation(fields: [createdById], references: [id])
-  createdById   String
-  
-  incomeRecords Income[]
-  
-  @@map("quotes")
-  @@index([leadId])
-  @@index([status])
-  @@index([createdAt])
-}
-
-enum QuoteStatus {
-  DRAFT
-  SENT
-  VIEWED
-  ACCEPTED
-  DECLINED
-  EXPIRED
-}
-
-// =====================
-// QUOTE TEMPLATES
-// =====================
-
-model QuoteTemplate {
-  id            String   @id @default(uuid())
-  name          String   // Template name (e.g., "Wedding Photography Package")
-  description   String?  // Optional description
-  
-  // Line items stored as JSON (same format as Quote)
-  lineItems     Json     // [{description: string, quantity: number, price: number}]
-  
-  // Default values
-  paymentTerms  String   @default("DEPOSIT_50") // Default payment terms
-  terms         String?  @db.Text              // Default T&C
-  
-  // Ownership
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String
-  
-  // Timestamps
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  @@map("quote_templates")
-  @@index([userId])
-}
-
-
-// =====================
-// BOOKINGS
-// =====================
-
-model Booking {
-  id            String        @id @default(uuid())
-  
-  // Timing
-  startTime     DateTime      // Event start date & time
-  endTime       DateTime      // Event end date & time
-  duration      Int           // Duration in minutes
-  allDay        Boolean       @default(false)
-  
-  // Details
-  title         String        // Booking title (defaults to project title)
-  location      String?       // Event location
-  notes         String?       @db.Text
-  
-  // Status
-  status        BookingStatus @default(CONFIRMED)
-  color         String?       // Custom color for calendar display
-  
-  // Reminders (stored as JSON array)
-  reminders     Json?         // [{type: 'email', before: 24}, {type: 'sms', before: 2}]
-  
-  // Relations
-  lead          Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  leadId        String
-  
-  createdBy     User          @relation(fields: [createdById], references: [id])
-  createdById   String
-  
-  // Timestamps
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  completedAt   DateTime?
-  cancelledAt   DateTime?
-  
-  @@map("bookings")
-  @@index([leadId])
-  @@index([startTime])
-  @@index([status])
-}
-
-enum BookingStatus {
-  CONFIRMED     // Booking is confirmed
-  COMPLETED     // Event has been completed
-  CANCELLED     // Booking was cancelled
-  RESCHEDULED   // Booking was rescheduled (creates new booking)
-}
-
-// =====================
-// PORTFOLIO
-// =====================
-
-model Portfolio {
-  id          String            @id @default(cuid())
-  userId      String
-  title       String
-  description String?           @db.Text
-  imageUrl    String            // Supabase Storage URL
-  imagePath   String?           // Storage path for deletion
-  category    PortfolioCategory
-  tags        String[]          @default([])
-  featured    Boolean           @default(false)
-  order       Int               @default(0)
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-  
-  // Relations
-  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@map("portfolios")
-  @@index([userId])
-  @@index([category])
-  @@index([featured])
-}
-
-enum PortfolioCategory {
-  PHOTOGRAPHY
-  VIDEOGRAPHY
-  GRAPHIC_DESIGN
-  WEB_DESIGN
-  BRANDING
-  CONTENT_CREATION
-  OTHER
-}
-
-
-// =====================
-// CONTRACTS
-// =====================
-
-model Contract {
-  id              String         @id @default(cuid())
-  leadId          String
-  templateType    ContractType
-  title           String
-  content         String         @db.Text
-
-  // Client consent
-  clientAgreed    Boolean        @default(false)
-  clientAgreedAt  DateTime?
-  clientIP        String?
-
-  // Status
-  status          ContractStatus @default(DRAFT)
-  sentAt          DateTime?
-  viewedAt        DateTime?
-
-  // Timestamps
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-
-  lead            Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
-
-  @@map("contracts")
-  @@index([leadId])
-  @@index([status])
-}
-
-enum ContractType {
-  PHOTOGRAPHY_SHOOT
-  PORTRAIT_COMMISSION
-  LOGO_DESIGN
-  WEB_DESIGN
-  GENERAL_SERVICE
-  CUSTOM
-}
-
-enum ContractStatus {
-  DRAFT
-  SENT
-  VIEWED
-  AGREED
-}
-
-// =====================
-// CRM INTERACTIONS
-// =====================
-
-model Interaction {
-  id            String           @id @default(cuid())
-  leadId        String
-  type          InteractionType
-  content       String?          @db.Text
-  createdAt     DateTime         @default(now())
-  
-  lead          Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  
-  @@map("interactions")
-  @@index([leadId])
-  @@index([createdAt])
 }
 
 enum InteractionType {
@@ -781,132 +630,70 @@ enum InteractionType {
   FOLLOW_UP_SCHEDULED
 }
 
-// =====================
-// INCOME TRACKING
-// =====================
-
-model Income {
-  id            String          @id @default(cuid())
-  userId        String
-  leadId        String?
-  quoteId       String?
-  
-  amount        Decimal
-  currency      String          @default("USD")
-  description   String
-  category      IncomeCategory  @default(PROJECT)
-  
-  status        IncomeStatus    @default(EXPECTED)
-  expectedDate  DateTime?
-  receivedDate  DateTime?
-  
-  stripeSessionId        String?
-  stripePaymentIntentId  String?
-  depositAmount          Decimal?  @db.Decimal(10, 2)
-  depositPaid            Boolean   @default(false)
-  depositPaidAt          DateTime?
-  finalAmount            Decimal?  @db.Decimal(10, 2)
-  finalPaid              Boolean   @default(false)
-  finalPaidAt            DateTime?
-  paymentMethod          String?
-  
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  
-  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lead          Lead?           @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  quote         Quote?          @relation(fields: [quoteId], references: [id], onDelete: SetNull)
-  
-  @@map("incomes")
-  @@index([userId])
-  @@index([status])
-  @@index([receivedDate])
-  @@index([stripeSessionId])
-}
-
-enum IncomeCategory {
-  PROJECT
-  COMMISSION
-  PRODUCT_SALE
-  LICENSING
-  CONSULTATION
+enum LeadSource {
+  WEBSITE
+  INSTAGRAM
+  FACEBOOK
+  REFERRAL
+  GOOGLE
+  LINKEDIN
+  TIKTOK
+  EMAIL
   OTHER
 }
 
-enum IncomeStatus {
-  EXPECTED
-  RECEIVED
-  DEPOSIT_RECEIVED
-  PAID_IN_FULL
-  OVERDUE
-  CANCELLED
+enum LeadStatus {
+  NEW
+  REVIEWING
+  CONTACTED
+  QUALIFIED
+  QUOTED
+  NEGOTIATING
+  BOOKED
+  LOST
 }
 
-// =====================
-// TESTIMONIALS
-// =====================
-
-model Testimonial {
-  id              String              @id @default(cuid())
-  userId          String
-  leadId          String?
-  
-  clientName      String
-  clientEmail     String?
-  rating          Int                 @default(0)
-  content         String              @default("") @db.Text
-  recommend       Boolean             @default(true)
-  
-  status          TestimonialStatus   @default(PENDING)
-  featured        Boolean             @default(false)
-  
-  requestedAt     DateTime?
-  submittedAt     DateTime?
-  approvedAt      DateTime?
-  
-  consentGiven    Boolean             @default(false)
-  publicToken     String              @unique @default(cuid())
-  
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  
-  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lead            Lead?               @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  
-  @@map("testimonials")
-  @@index([userId])
-  @@index([status])
-  @@index([featured])
-  @@index([publicToken])
+enum PipelineStatus {
+  NEW_INQUIRY
+  CONTACTED
+  QUOTED
+  NEGOTIATING
+  BOOKED
+  COMPLETED
+  LOST
 }
 
-enum TestimonialStatus {
-  PENDING
-  APPROVED
-  REJECTED
+enum PortfolioCategory {
+  PHOTOGRAPHY
+  VIDEOGRAPHY
+  GRAPHIC_DESIGN
+  WEB_DESIGN
+  BRANDING
+  CONTENT_CREATION
+  OTHER
 }
 
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
 
-// ── Email Sequences (Autopilot) ──────────────────────
+enum ProjectType {
+  SERVICE
+  COMMISSION
+  PROJECT
+  PRODUCT_SALE
+}
 
-model EmailSequence {
-  id          String              @id @default(uuid())
-  userId      String
-  name        String
-  description String?
-  trigger     SequenceTrigger
-  active      Boolean             @default(true)
-  steps       EmailSequenceStep[]
-  enrollments SequenceEnrollment[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-
-  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("email_sequences")
-  @@index([userId])
-  @@index([trigger])
-  @@index([active])
+enum QuoteStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ACCEPTED
+  DECLINED
+  EXPIRED
 }
 
 enum SequenceTrigger {
@@ -917,48 +704,37 @@ enum SequenceTrigger {
   LEAD_COLD
 }
 
-model EmailSequenceStep {
-  id         String        @id @default(uuid())
-  sequenceId String
-  order      Int
-  delayDays  Int
-  subject    String
-  body       String        @db.Text
-  createdAt  DateTime      @default(now())
-
-  sequence   EmailSequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
-
-  @@map("email_sequence_steps")
-  @@index([sequenceId])
-  @@index([order])
+enum ServiceType {
+  PHOTOGRAPHY
+  VIDEOGRAPHY
+  GRAPHIC_DESIGN
+  WEB_DESIGN
+  BRANDING
+  CONTENT_CREATION
+  CONSULTING
+  OTHER
 }
 
-model SequenceEnrollment {
-  id            String           @id @default(uuid())
-  sequenceId    String
-  leadId        String
-  currentStep   Int              @default(0)
-  status        EnrollmentStatus @default(ACTIVE)
-  enrolledAt    DateTime         @default(now())
-  completedAt   DateTime?
-  stoppedAt     DateTime?
-  stoppedReason String?
-  nextEmailAt   DateTime?
-
-  sequence      EmailSequence    @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
-  lead          Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
-
-  @@unique([sequenceId, leadId])
-  @@map("sequence_enrollments")
-  @@index([sequenceId])
-  @@index([leadId])
-  @@index([status])
-  @@index([nextEmailAt])
+enum StageType {
+  DISCOVERY
+  QUOTATION
+  AGREEMENT
+  SCHEDULING
+  CREATION
+  REVIEW
+  DELIVERY
+  PAYMENT
+  FOLLOWUP
 }
 
-enum EnrollmentStatus {
-  ACTIVE
-  COMPLETED
-  STOPPED
-  PAUSED
+enum TestimonialStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  MEMBER
 }

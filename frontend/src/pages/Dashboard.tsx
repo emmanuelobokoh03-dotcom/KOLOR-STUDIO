@@ -907,7 +907,7 @@ const Dashboard = () => {
           }}
         />
       )}
-      {showShareModal && <ShareFormModal onClose={() => setShowShareModal(false)} />}
+      {showShareModal && <ShareFormModal onClose={() => setShowShareModal(false)} userId={user?.id} />}
       {showSettings && (
         <SettingsModal
           onClose={() => setShowSettings(false)}

@@ -575,6 +575,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       budget,
       timeline,
       eventDate,
+      studioId,
     } = req.body;
 
     // Validation
@@ -596,6 +597,20 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Determine who this lead should be assigned to
+    let assignedToId: string | null = studioId || null;
+    if (studioId) {
+      const studioUser = await prisma.user.findUnique({ where: { id: studioId } });
+      if (!studioUser) assignedToId = null;
+    }
+    if (!assignedToId) {
+      const defaultOwner = await prisma.user.findFirst({
+        where: { role: 'OWNER' },
+        orderBy: { createdAt: 'asc' },
+      });
+      if (defaultOwner) assignedToId = defaultOwner.id;
+    }
+
     // Generate portal token
     const portalToken = Math.random().toString(36).substring(2, 15) + 
                        Math.random().toString(36).substring(2, 15);
@@ -615,6 +630,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         status: 'NEW',
         source: 'REFERRAL',
         portalToken,
+        assignedToId,
       },
     });
 
@@ -627,8 +643,28 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       },
     });
 
-    // Send confirmation email to client (optional)
-    // TODO: Integrate with Resend
+    // Send auto-response email to client and notification to owner
+    if (assignedToId) {
+      const owner = await prisma.user.findUnique({ where: { id: assignedToId } });
+      if (owner) {
+        const { sendAutoResponseEmail, sendNewLeadNotification } = await import('../services/email');
+        const creativeName = `${owner.firstName || ''} ${owner.lastName || ''}`.trim() || 'Studio';
+        const portfolioUrl = `${process.env.FRONTEND_URL}/portfolio/${owner.id}`;
+        const message = `Thanks for reaching out about your project!\n\nI'll review your inquiry and send you a custom quote within 24 hours.\n\nCheck out my work: ${portfolioUrl}\n\nI'm excited to potentially work with you!`;
+        sendAutoResponseEmail({
+          clientName,
+          clientEmail,
+          creativeName,
+          studioName: owner.studioName || undefined,
+          message,
+          portalUrl: portfolioUrl,
+        }).catch(e => console.error('[Portal] Auto-response error:', e));
+        sendNewLeadNotification({
+          clientName, clientEmail, clientPhone, serviceType, projectTitle,
+          description: description || '', leadId: lead.id, portalToken,
+        }).catch(e => console.error('[Portal] Owner notification error:', e));
+      }
+    }
 
     res.status(201).json({
       success: true,

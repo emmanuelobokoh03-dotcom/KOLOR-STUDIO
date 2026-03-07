@@ -15,15 +15,16 @@ import { trackPortalLinkShared } from '../utils/analytics'
 
 interface ShareFormModalProps {
   onClose: () => void;
+  userId?: string;
 }
 
-export default function ShareFormModal({ onClose }: ShareFormModalProps) {
+export default function ShareFormModal({ onClose, userId }: ShareFormModalProps) {
   const [copied, setCopied] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const qrRef = useRef<HTMLDivElement>(null);
 
   const baseUrl = window.location.origin;
-  const inquiryUrl = `${baseUrl}/inquiry`;
+  const inquiryUrl = userId ? `${baseUrl}/inquiry?studio=${userId}` : `${baseUrl}/inquiry`;
 
   const handleCopyLink = async () => {
     try {
