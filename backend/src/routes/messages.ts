@@ -126,7 +126,7 @@ router.get('/unread-counts/all', authMiddleware, async (req: AuthRequest, res: R
         isFromClient: true,
         isRead: false,
         lead: {
-          OR: [{ assignedToId: userId }, { assignedToId: null }],
+          assignedToId: userId,
         },
       },
       _count: { id: true },

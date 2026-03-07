@@ -12,7 +12,7 @@ async function verifyLeadAccess(leadId: string, userId: string) {
   return prisma.lead.findFirst({
     where: {
       id: leadId,
-      OR: [{ assignedToId: userId }, { assignedToId: null }]
+      assignedToId: userId
     },
     select: { id: true }
   });
@@ -25,7 +25,7 @@ async function getDeliverableWithAccess(id: string, userId: string) {
   const lead = await prisma.lead.findFirst({
     where: {
       id: deliverable.leadId,
-      OR: [{ assignedToId: userId }, { assignedToId: null }]
+      assignedToId: userId
     },
     select: { id: true, clientName: true, projectTitle: true, assignedToId: true }
   });

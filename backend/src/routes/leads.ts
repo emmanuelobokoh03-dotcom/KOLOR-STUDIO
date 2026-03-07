@@ -103,15 +103,8 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
     const projectType = req.query.projectType as string | undefined;
     const industry = req.query.industry as string | undefined;
     
-    console.log('[GET /leads] userId:', userId);
-    
-    // Show leads assigned to user OR unassigned (inquiry forms)
-    const where: any = { 
-      OR: [
-        { assignedToId: userId },
-        { assignedToId: null }
-      ]
-    };
+    // Only show leads assigned to the authenticated user
+    const where: any = { assignedToId: userId };
     
     if (status && status !== 'ALL') {
       where.status = status;
@@ -135,8 +128,6 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
         ]
       };
     }
-    
-    console.log('[GET /leads] where clause:', JSON.stringify(where, null, 2));
     
     const leads = await prisma.lead.findMany({
       where,
@@ -186,13 +177,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
 router.get('/stats', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId as string;
-    // Include leads assigned to user OR unassigned (inquiry forms)
-    const statsWhere = {
-      OR: [
-        { assignedToId: userId },
-        { assignedToId: null }
-      ]
-    };
+    const statsWhere = { assignedToId: userId };
     
     const [total, byStatus, recentLeads] = await Promise.all([
       prisma.lead.count({ where: statsWhere }),
@@ -243,10 +228,7 @@ router.get('/calendar/events', authMiddleware, async (req: AuthRequest, res: Res
 
     const leads = await prisma.lead.findMany({
       where: { 
-        OR: [
-          { assignedToId: userId },
-          { assignedToId: null }
-        ],
+        assignedToId: userId,
         AND: {
           OR: [
             // Leads with event dates in range
@@ -355,10 +337,7 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response): Prom
     const lead = await prisma.lead.findFirst({
       where: {
         id,
-        OR: [
-          { assignedToId: userId },
-          { assignedToId: null }
-        ]
+        assignedToId: userId
       },
     });
 
@@ -441,6 +420,14 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
       `Lead created manually for ${clientName}`,
       { source: 'manual', serviceType }
     );
+
+    // Send auto-response and notification emails (non-blocking)
+    sendAutoResponse(lead).catch(err => console.error('Auto-response error:', err));
+    sendNewLeadNotification({
+      clientName, clientEmail, clientPhone, clientCompany, serviceType,
+      projectTitle, description, budget, timeline, leadId: lead.id,
+      portalToken: lead.portalToken,
+    }).catch(err => console.error('Owner notification error:', err));
 
     res.status(201).json({ message: 'Lead created successfully', lead });
   } catch (error) {
@@ -606,7 +593,7 @@ router.patch('/:id', authMiddleware, async (req: AuthRequest, res: Response): Pr
 
     // Check ownership
     const existingLead = await prisma.lead.findFirst({
-      where: { id, OR: [{ assignedToId: userId }, { assignedToId: null }] }
+      where: { id, assignedToId: userId }
     });
 
     if (!existingLead) {
@@ -678,14 +665,11 @@ router.patch('/:id/status', authMiddleware, async (req: AuthRequest, res: Respon
       res.status(400).json({ error: 'Validation Error', message: 'Invalid status' });
       return;
     }
-    // Check ownership - allow assigned to user OR unassigned (inquiry forms)
+    // Check ownership
     const existingLead = await prisma.lead.findFirst({
       where: {
         id,
-        OR: [
-          { assignedToId: userId },
-          { assignedToId: null }
-        ]
+        assignedToId: userId
       }
     });
 
@@ -849,14 +833,10 @@ router.post('/:id/send-email', authMiddleware, async (req: AuthRequest, res: Res
     }
 
     // Check ownership and get lead details
-    // Check ownership - allow assigned to user OR unassigned (inquiry forms)
     const lead = await prisma.lead.findFirst({
       where: {
         id: leadId,
-        OR: [
-          { assignedToId: userId },
-          { assignedToId: null }
-        ]
+        assignedToId: userId
       }
     });
 

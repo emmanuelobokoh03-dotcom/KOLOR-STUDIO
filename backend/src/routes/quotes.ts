@@ -222,7 +222,7 @@ router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Res
     console.log("📝 Quote creation data received:", { currency, currencySymbol, currencyPosition, numberFormat });
     // Validate lead exists and belongs to user
     const lead = await prisma.lead.findFirst({
-      where: { id: leadId, OR: [{ assignedToId: userId }, { assignedToId: null }] }
+      where: { id: leadId, assignedToId: userId }
     });
 
     if (!lead) {
@@ -339,7 +339,7 @@ router.get('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Resp
 
     // Validate lead exists and belongs to user
     const lead = await prisma.lead.findFirst({
-      where: { id: leadId, OR: [{ assignedToId: userId }, { assignedToId: null }] }
+      where: { id: leadId, assignedToId: userId }
     });
 
     if (!lead) {

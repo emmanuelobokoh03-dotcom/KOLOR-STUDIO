@@ -14,10 +14,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
 
     const where: any = {
       lead: {
-        OR: [
-          { assignedToId: userId },
-          { assignedToId: null }
-        ]
+        assignedToId: userId
       }
     };
 
@@ -86,10 +83,7 @@ router.get('/calendar', authMiddleware, async (req: AuthRequest, res: Response):
     const bookings = await prisma.booking.findMany({
       where: {
         lead: {
-          OR: [
-            { assignedToId: userId },
-            { assignedToId: null }
-          ]
+          assignedToId: userId
         },
         startTime: {
           gte: startDate,
@@ -203,10 +197,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
     const lead = await prisma.lead.findFirst({
       where: {
         id: leadId,
-        OR: [
-          { assignedToId: userId },
-          { assignedToId: null }
-        ]
+        assignedToId: userId
       }
     });
 

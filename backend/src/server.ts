@@ -1,7 +1,10 @@
+import dotenv from 'dotenv';
+// Load environment variables BEFORE any other imports that read process.env
+dotenv.config();
+
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import leadsRoutes from './routes/leads';
 import activitiesRoutes from './routes/activities';
@@ -26,8 +29,7 @@ import { processSequences } from './services/sequenceEngine';
 import { apiLimiter, authLimiter, emailLimiter, uploadLimiter, portalLimiter } from './middleware/rateLimiter';
 import { ensureBucketExists } from './services/storage';
 
-// Load environment variables
-dotenv.config();
+// dotenv already loaded at the top of this file
 
 // Initialize Supabase storage bucket
 ensureBucketExists().then(success => {
