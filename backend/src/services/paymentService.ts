@@ -7,6 +7,28 @@ import {
   sendPaymentReceivedNotification,
 } from './email';
 
+// Type definitions for Stripe proxy responses
+interface StripeCheckoutSession {
+  url: string;
+  session_id: string;
+}
+
+interface StripeSessionStatus {
+  status: string;
+  payment_status: string;
+  amount_total: number;
+  currency: string;
+  metadata: Record<string, string>;
+}
+
+interface StripeWebhookEvent {
+  event_type: string;
+  event_id: string;
+  session_id: string;
+  payment_status: string;
+  metadata: Record<string, string>;
+}
+
 const STRIPE_PROXY_URL = process.env.STRIPE_PROXY_URL || 'http://localhost:8002';
 
 async function proxyCreateSession(params: {
@@ -37,22 +59,16 @@ async function proxyCreateSession(params: {
     const err = await res.text();
     throw new Error(`Stripe proxy error: ${err}`);
   }
-  return res.json();
+  return await res.json() as StripeCheckoutSession;
 }
 
-async function proxyGetSessionStatus(sessionId: string): Promise<{
-  status: string;
-  payment_status: string;
-  amount_total: number;
-  currency: string;
-  metadata: Record<string, string>;
-}> {
+async function proxyGetSessionStatus(sessionId: string): Promise<StripeSessionStatus> {
   const res = await fetch(`${STRIPE_PROXY_URL}/session-status/${sessionId}`);
   if (!res.ok) {
     const err = await res.text();
     throw new Error(`Stripe proxy error: ${err}`);
   }
-  return res.json();
+  return await res.json() as StripeSessionStatus;
 }
 
 async function isStripeAvailable(): Promise<boolean> {
@@ -338,7 +354,7 @@ export const paymentService = {
         throw new Error(`Webhook proxy error: ${await res.text()}`);
       }
 
-      const event = await res.json();
+      const event = await res.json() as StripeWebhookEvent;
 
       if (event.event_type === 'checkout.session.completed' && event.payment_status === 'paid') {
         await this.checkAndUpdateSessionStatus(event.session_id);
