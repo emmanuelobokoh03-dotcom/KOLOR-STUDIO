@@ -75,7 +75,7 @@ export function BrandThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     applyToDOM(defaults)
     // Only fetch if logged in
-    const token = localStorage.getItem('kolor_token')
+    const token = localStorage.getItem('token')
     if (token) refresh()
   }, [refresh])
 

@@ -1,4 +1,3 @@
-import { stripe } from '../lib/stripe';
 import prisma from '../lib/prisma';
 import {
   sendDepositPaymentEmail,
@@ -8,12 +7,70 @@ import {
   sendPaymentReceivedNotification,
 } from './email';
 
+const STRIPE_PROXY_URL = process.env.STRIPE_PROXY_URL || 'http://localhost:8002';
+
+async function proxyCreateSession(params: {
+  amount: number;
+  currency: string;
+  productName: string;
+  productDescription: string;
+  successUrl: string;
+  cancelUrl: string;
+  customerEmail?: string;
+  metadata?: Record<string, string>;
+}): Promise<{ url: string; session_id: string }> {
+  const res = await fetch(`${STRIPE_PROXY_URL}/create-session`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      amount: params.amount,
+      currency: params.currency,
+      product_name: params.productName,
+      product_description: params.productDescription,
+      success_url: params.successUrl,
+      cancel_url: params.cancelUrl,
+      customer_email: params.customerEmail,
+      metadata: params.metadata,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Stripe proxy error: ${err}`);
+  }
+  return res.json();
+}
+
+async function proxyGetSessionStatus(sessionId: string): Promise<{
+  status: string;
+  payment_status: string;
+  amount_total: number;
+  currency: string;
+  metadata: Record<string, string>;
+}> {
+  const res = await fetch(`${STRIPE_PROXY_URL}/session-status/${sessionId}`);
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Stripe proxy error: ${err}`);
+  }
+  return res.json();
+}
+
+async function isStripeAvailable(): Promise<boolean> {
+  try {
+    const res = await fetch(`${STRIPE_PROXY_URL}/health`, { signal: AbortSignal.timeout(2000) });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export const paymentService = {
   /**
    * Create a Stripe checkout session for deposit payment (30% of quote total)
    */
   async createDepositCheckout(incomeId: string, originUrl: string) {
-    if (!stripe) throw new Error('Stripe not configured');
+    const available = await isStripeAvailable();
+    if (!available) throw new Error('Stripe payment service not available');
 
     const income = await prisma.income.findUnique({
       where: { id: incomeId },
@@ -28,38 +85,27 @@ export const paymentService = {
     const successUrl = `${originUrl}/portal/${portalToken}?payment=success&session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${originUrl}/portal/${portalToken}?payment=cancelled`;
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: (income.currency || 'USD').toLowerCase(),
-            product_data: {
-              name: `Deposit: ${income.description}`,
-              description: `30% deposit for ${income.description}`,
-            },
-            unit_amount: Math.round(depositAmount * 100), // Stripe expects cents
-          },
-          quantity: 1,
-        },
-      ],
-      success_url: successUrl,
-      cancel_url: cancelUrl,
+    const session = await proxyCreateSession({
+      amount: depositAmount,
+      currency: (income.currency || 'USD').toLowerCase(),
+      productName: `Deposit: ${income.description}`,
+      productDescription: `30% deposit for ${income.description}`,
+      successUrl,
+      cancelUrl,
+      customerEmail: income.lead.clientEmail,
       metadata: {
         incomeId: income.id,
         type: 'deposit',
         userId: income.userId,
         leadId: income.leadId || '',
       },
-      customer_email: income.lead.clientEmail,
     });
 
     // Update income with session info
     await prisma.income.update({
       where: { id: incomeId },
       data: {
-        stripeSessionId: session.id,
+        stripeSessionId: session.session_id,
         depositAmount: depositAmount,
         paymentMethod: 'stripe',
       },
@@ -80,14 +126,15 @@ export const paymentService = {
       paymentUrl: session.url || '',
     }).catch(e => console.error('[Pay] Deposit payment email failed:', e));
 
-    return { url: session.url, sessionId: session.id, depositAmount };
+    return { url: session.url, sessionId: session.session_id, depositAmount };
   },
 
   /**
    * Create a Stripe checkout session for final payment (remaining 70%)
    */
   async createFinalCheckout(incomeId: string, originUrl: string) {
-    if (!stripe) throw new Error('Stripe not configured');
+    const available = await isStripeAvailable();
+    if (!available) throw new Error('Stripe payment service not available');
 
     const income = await prisma.income.findUnique({
       where: { id: incomeId },
@@ -102,31 +149,20 @@ export const paymentService = {
     const successUrl = `${originUrl}/portal/${portalToken}?payment=success&session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${originUrl}/portal/${portalToken}?payment=cancelled`;
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: (income.currency || 'USD').toLowerCase(),
-            product_data: {
-              name: `Final Payment: ${income.description}`,
-              description: `Remaining balance for ${income.description}`,
-            },
-            unit_amount: Math.round(finalAmount * 100),
-          },
-          quantity: 1,
-        },
-      ],
-      success_url: successUrl,
-      cancel_url: cancelUrl,
+    const session = await proxyCreateSession({
+      amount: finalAmount,
+      currency: (income.currency || 'USD').toLowerCase(),
+      productName: `Final Payment: ${income.description}`,
+      productDescription: `Remaining balance for ${income.description}`,
+      successUrl,
+      cancelUrl,
+      customerEmail: income.lead.clientEmail,
       metadata: {
         incomeId: income.id,
         type: 'final',
         userId: income.userId,
         leadId: income.leadId || '',
       },
-      customer_email: income.lead.clientEmail,
     });
 
     await prisma.income.update({
@@ -150,28 +186,29 @@ export const paymentService = {
       paymentUrl: session.url || '',
     }).catch(e => console.error('[Pay] Final payment email failed:', e));
 
-    return { url: session.url, sessionId: session.id, finalAmount };
+    return { url: session.url, sessionId: session.session_id, finalAmount };
   },
 
   /**
    * Check the status of a Stripe checkout session and update income accordingly
    */
   async checkAndUpdateSessionStatus(sessionId: string) {
-    if (!stripe) throw new Error('Stripe not configured');
+    const available = await isStripeAvailable();
+    if (!available) throw new Error('Stripe payment service not available');
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    const incomeId = session.metadata?.incomeId;
-    const paymentType = session.metadata?.type;
+    const sessionData = await proxyGetSessionStatus(sessionId);
+    const incomeId = sessionData.metadata?.incomeId;
+    const paymentType = sessionData.metadata?.type;
 
     if (!incomeId) {
       console.error('[Pay] No incomeId in session metadata');
-      return { status: session.status, payment_status: session.payment_status };
+      return { status: sessionData.status, payment_status: sessionData.payment_status };
     }
 
     // Only update if payment succeeded and hasn't been processed yet
-    if (session.payment_status === 'paid') {
+    if (sessionData.payment_status === 'paid') {
       const income = await prisma.income.findUnique({ where: { id: incomeId } });
-      if (!income) return { status: session.status, payment_status: session.payment_status };
+      if (!income) return { status: sessionData.status, payment_status: sessionData.payment_status };
 
       if (paymentType === 'deposit' && !income.depositPaid) {
         await prisma.income.update({
@@ -180,7 +217,6 @@ export const paymentService = {
             depositPaid: true,
             depositPaidAt: new Date(),
             status: 'DEPOSIT_RECEIVED',
-            stripePaymentIntentId: session.payment_intent as string,
           },
         });
 
@@ -191,7 +227,7 @@ export const paymentService = {
               leadId: income.leadId,
               userId: income.userId,
               type: 'PAYMENT_RECEIVED',
-              description: `Deposit payment of $${(session.amount_total || 0) / 100} received via Stripe`,
+              description: `Deposit payment of $${(sessionData.amount_total || 0) / 100} received via Stripe`,
             },
           });
         }
@@ -213,14 +249,14 @@ export const paymentService = {
             creativeName,
             studioName: depositIncome.user.studioName || undefined,
             projectTitle: depositIncome.lead.projectTitle,
-            depositAmount: (session.amount_total || 0) / 100,
+            depositAmount: (sessionData.amount_total || 0) / 100,
             portalUrl,
           }).catch(e => console.error('[Pay] Deposit received email failed:', e));
           sendPaymentReceivedNotification({
             creativeEmail: depositIncome.user.email,
             clientName: depositIncome.lead.clientName,
             projectTitle: depositIncome.lead.projectTitle,
-            amount: (session.amount_total || 0) / 100,
+            amount: (sessionData.amount_total || 0) / 100,
             type: 'deposit',
             dashboardUrl: `${process.env.FRONTEND_URL}/dashboard`,
           }).catch(e => console.error('[Pay] Deposit notification to creative failed:', e));
@@ -233,7 +269,6 @@ export const paymentService = {
             finalPaidAt: new Date(),
             status: 'PAID_IN_FULL',
             receivedDate: new Date(),
-            stripePaymentIntentId: session.payment_intent as string,
           },
         });
 
@@ -243,7 +278,7 @@ export const paymentService = {
               leadId: income.leadId,
               userId: income.userId,
               type: 'PAYMENT_RECEIVED',
-              description: `Final payment of $${(session.amount_total || 0) / 100} received via Stripe — PAID IN FULL`,
+              description: `Final payment of $${(sessionData.amount_total || 0) / 100} received via Stripe — PAID IN FULL`,
             },
           });
         }
@@ -262,13 +297,13 @@ export const paymentService = {
             creativeName,
             studioName: finalIncome.user.studioName || undefined,
             projectTitle: finalIncome.lead.projectTitle,
-            amount: (session.amount_total || 0) / 100,
+            amount: (sessionData.amount_total || 0) / 100,
           }).catch(e => console.error('[Pay] Final payment received email failed:', e));
           sendPaymentReceivedNotification({
             creativeEmail: finalIncome.user.email,
             clientName: finalIncome.lead.clientName,
             projectTitle: finalIncome.lead.projectTitle,
-            amount: (session.amount_total || 0) / 100,
+            amount: (sessionData.amount_total || 0) / 100,
             type: 'final',
             dashboardUrl: `${process.env.FRONTEND_URL}/dashboard`,
           }).catch(e => console.error('[Pay] Final notification to creative failed:', e));
@@ -277,32 +312,42 @@ export const paymentService = {
     }
 
     return {
-      status: session.status,
-      payment_status: session.payment_status,
-      amount_total: session.amount_total,
-      currency: session.currency,
-      metadata: session.metadata,
+      status: sessionData.status,
+      payment_status: sessionData.payment_status,
+      amount_total: sessionData.amount_total,
+      currency: sessionData.currency,
+      metadata: sessionData.metadata,
     };
   },
 
   /**
-   * Handle Stripe webhook event
+   * Handle Stripe webhook event via proxy
    */
-  async handleWebhookEvent(event: any) {
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object;
-        if (session.payment_status === 'paid') {
-          await this.checkAndUpdateSessionStatus(session.id);
-        }
-        break;
+  async handleWebhookEvent(rawBody: Buffer, signature: string) {
+    try {
+      const res = await fetch(`${STRIPE_PROXY_URL}/handle-webhook`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'stripe-signature': signature,
+        },
+        body: rawBody,
+      });
+
+      if (!res.ok) {
+        throw new Error(`Webhook proxy error: ${await res.text()}`);
       }
-      case 'checkout.session.expired': {
-        console.log(`[Pay] Checkout session expired: ${event.data.object.id}`);
-        break;
+
+      const event = await res.json();
+
+      if (event.event_type === 'checkout.session.completed' && event.payment_status === 'paid') {
+        await this.checkAndUpdateSessionStatus(event.session_id);
       }
-      default:
-        console.log(`[Pay] Unhandled event: ${event.type}`);
+
+      return event;
+    } catch (e) {
+      console.error('[Pay] Webhook handling error:', e);
+      throw e;
     }
   },
 };

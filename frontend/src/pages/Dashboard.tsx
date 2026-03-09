@@ -469,13 +469,18 @@ const Dashboard = () => {
         {/* Smart Suggestion */}
         <SmartSuggestion
           leadCount={leads.length}
-          hasQuotes={leads.some(l => (l as any).quotesCount > 0)}
+          hasQuotes={leads.some(l => (l.quotesCount || 0) > 0)}
           hasPortfolio={false}
-          hasContracts={leads.some(l => (l as any).contractsCount > 0)}
+          hasContracts={leads.some(l => (l.contractsCount || 0) > 0)}
           hasStudioName={!!user?.studioName}
           onAction={(action) => {
             if (action === 'open-add-lead') setShowAddModal(true)
-            else if (action === 'view-kanban') handleViewChange('kanban')
+            else if (action === 'view-kanban') {
+              handleViewChange('kanban')
+              setTimeout(() => {
+                document.querySelector('[data-tour="kanban-board"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }, 100)
+            }
             else if (action === 'view-portfolio') handleViewChange('portfolio')
             else if (action === 'open-settings') setShowSettings(true)
             else if (action === 'open-brand-settings') setShowSettings(true)

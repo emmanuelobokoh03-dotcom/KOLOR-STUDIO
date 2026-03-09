@@ -33,6 +33,27 @@ interface PortalContract {
   sentAt?: string;
 }
 
+interface PortalQuote {
+  id: string;
+  quoteNumber: string;
+  lineItems: any[];
+  subtotal: number;
+  tax: number;
+  taxAmount: number;
+  total: number;
+  paymentTerms: string;
+  validUntil: string;
+  terms?: string;
+  status: string;
+  quoteToken: string;
+  sentAt?: string;
+  viewedAt?: string;
+  acceptedAt?: string;
+  currency?: string;
+  currencySymbol?: string;
+  currencyPosition?: string;
+}
+
 interface PortalData {
   project: {
     id: string;
@@ -73,6 +94,7 @@ interface PortalData {
     uploadedBy?: 'client' | 'creative';
   }>;
   contracts: PortalContract[];
+  quotes: PortalQuote[];
   contact: {
     email: string;
     name: string;
@@ -113,6 +135,7 @@ export default function ClientPortal() {
   const [signing, setSigning] = useState<string | null>(null);
   const [signSuccess, setSignSuccess] = useState<string | null>(null);
   const [signError, setSignError] = useState<string | null>(null);
+  const [quoteAccepting, setQuoteAccepting] = useState<string | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => {
@@ -232,6 +255,63 @@ export default function ClientPortal() {
       setSignError('Unable to connect. Please try again.');
     }
     setSigning(null);
+  };
+
+  const handleAcceptQuote = async (quoteToken: string) => {
+    setQuoteAccepting(quoteToken);
+    try {
+      const response = await fetch(`${API_URL}/api/quotes/public/${quoteToken}/accept`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientName: data?.client?.name,
+          clientEmail: data?.client?.email,
+        }),
+      });
+      const result = await response.json();
+      if (response.ok && data) {
+        setData({
+          ...data,
+          quotes: data.quotes.map(q =>
+            q.quoteToken === quoteToken
+              ? { ...q, status: 'ACCEPTED', acceptedAt: new Date().toISOString() }
+              : q
+          ),
+        });
+      }
+    } catch (err) {
+      console.error('Quote accept error:', err);
+    }
+    setQuoteAccepting(null);
+  };
+
+  const handleDeclineQuote = async (quoteToken: string) => {
+    try {
+      const response = await fetch(`${API_URL}/api/quotes/public/${quoteToken}/decline`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: 'Declined via portal' }),
+      });
+      if (response.ok && data) {
+        setData({
+          ...data,
+          quotes: data.quotes.map(q =>
+            q.quoteToken === quoteToken
+              ? { ...q, status: 'DECLINED' }
+              : q
+          ),
+        });
+      }
+    } catch (err) {
+      console.error('Quote decline error:', err);
+    }
+  };
+
+  const formatCurrency = (amount: number, quote?: PortalQuote) => {
+    const symbol = quote?.currencySymbol || '$';
+    const position = quote?.currencyPosition || 'BEFORE';
+    const formatted = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return position === 'BEFORE' ? `${symbol}${formatted}` : `${formatted}${symbol}`;
   };
 
   if (loading) {
@@ -494,6 +574,146 @@ export default function ClientPortal() {
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6" data-testid="portal-timeline-section">
           <ProjectTimeline token={token || ''} editable={false} />
         </div>
+
+        {/* Quotes Section */}
+        {data.quotes && data.quotes.length > 0 && (
+          <div className="space-y-6" data-testid="quotes-section">
+            {data.quotes.map((quote) => {
+              const isAccepted = quote.status === 'ACCEPTED';
+              const isDeclined = quote.status === 'DECLINED';
+              const isExpired = new Date(quote.validUntil) < new Date() && !isAccepted;
+              const items = Array.isArray(quote.lineItems) ? quote.lineItems : [];
+
+              return (
+                <div
+                  key={quote.id}
+                  className={`bg-white rounded-2xl shadow-lg border overflow-hidden ${
+                    isAccepted ? 'border-green-200' : isDeclined ? 'border-red-200' : 'border-brand-primary/20'
+                  }`}
+                  data-testid={`portal-quote-${quote.id}`}
+                >
+                  {/* Quote Header */}
+                  <div className={`px-6 py-4 flex items-center gap-3 ${
+                    isAccepted
+                      ? 'bg-gradient-to-r from-green-50 to-emerald-50'
+                      : isDeclined
+                      ? 'bg-gradient-to-r from-red-50 to-pink-50'
+                      : 'bg-gradient-to-r from-brand-primary/5 to-brand-primary/10'
+                  }`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                      isAccepted ? 'bg-green-100' : isDeclined ? 'bg-red-100' : 'bg-brand-primary/10'
+                    }`}>
+                      <FileText className={`w-5 h-5 ${
+                        isAccepted ? 'text-green-600' : isDeclined ? 'text-red-500' : 'text-brand-primary'
+                      }`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base font-semibold text-gray-900">Quote #{quote.quoteNumber}</h3>
+                      <p className="text-sm text-gray-500">
+                        {isAccepted ? 'Quote accepted' : isDeclined ? 'Quote declined' : isExpired ? 'Quote expired' : 'Please review the quote below'}
+                      </p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold flex-shrink-0 ${
+                      isAccepted ? 'bg-green-100 text-green-700'
+                      : isDeclined ? 'bg-red-100 text-red-700'
+                      : isExpired ? 'bg-gray-100 text-gray-600'
+                      : 'bg-brand-primary/10 text-brand-primary'
+                    }`}>
+                      {isAccepted ? 'Accepted' : isDeclined ? 'Declined' : isExpired ? 'Expired' : 'Pending Review'}
+                    </span>
+                  </div>
+
+                  {/* Line Items Table */}
+                  <div className="px-6 py-5 border-t border-gray-100">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-200">
+                          <th className="text-left py-2 text-gray-500 font-medium">Description</th>
+                          <th className="text-right py-2 text-gray-500 font-medium w-16">Qty</th>
+                          <th className="text-right py-2 text-gray-500 font-medium w-24">Rate</th>
+                          <th className="text-right py-2 text-gray-500 font-medium w-24">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {items.map((item: any, idx: number) => (
+                          <tr key={idx} className="border-b border-gray-50">
+                            <td className="py-3 text-gray-800">{item.description}</td>
+                            <td className="py-3 text-right text-gray-600">{item.quantity}</td>
+                            <td className="py-3 text-right text-gray-600">{formatCurrency(item.price || item.rate || 0, quote)}</td>
+                            <td className="py-3 text-right font-medium text-gray-800">{formatCurrency((item.quantity || 1) * (item.price || item.rate || 0), quote)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {/* Totals */}
+                    <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Subtotal</span>
+                        <span>{formatCurrency(quote.subtotal, quote)}</span>
+                      </div>
+                      {quote.taxAmount > 0 && (
+                        <div className="flex justify-between text-sm text-gray-600">
+                          <span>Tax ({quote.tax}%)</span>
+                          <span>{formatCurrency(quote.taxAmount, quote)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-200">
+                        <span>Total</span>
+                        <span>{formatCurrency(quote.total, quote)}</span>
+                      </div>
+                    </div>
+
+                    {quote.terms && (
+                      <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+                        <p className="font-medium text-gray-700 mb-1">Terms & Conditions</p>
+                        <p>{quote.terms}</p>
+                      </div>
+                    )}
+
+                    <p className="text-xs text-gray-400 mt-3">
+                      Valid until {new Date(quote.validUntil).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  </div>
+
+                  {/* Accept/Decline Buttons */}
+                  {!isAccepted && !isDeclined && !isExpired && (
+                    <div className="px-6 py-5 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row gap-3">
+                      <button
+                        onClick={() => handleAcceptQuote(quote.quoteToken)}
+                        disabled={quoteAccepting === quote.quoteToken}
+                        className="flex-1 px-6 py-3 bg-brand-primary text-white rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                        data-testid={`accept-quote-${quote.id}`}
+                      >
+                        {quoteAccepting === quote.quoteToken ? (
+                          <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
+                        ) : (
+                          <><CheckCircle className="w-4 h-4" /> Accept Quote</>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => handleDeclineQuote(quote.quoteToken)}
+                        className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition"
+                        data-testid={`decline-quote-${quote.id}`}
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  )}
+
+                  {isAccepted && (
+                    <div className="px-6 py-4 border-t border-gray-100 bg-green-50">
+                      <div className="flex items-center gap-2 text-green-700">
+                        <CheckCircle className="w-5 h-5" />
+                        <span className="font-semibold">Quote accepted{quote.acceptedAt ? ` on ${new Date(quote.acceptedAt).toLocaleDateString()}` : ''}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Contracts Section */}
         {data.contracts && data.contracts.length > 0 && (

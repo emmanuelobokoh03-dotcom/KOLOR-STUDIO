@@ -579,6 +579,8 @@ export interface Lead {
   coverImage?: string | null;
   isDemoData?: boolean;
   pipelineStatus?: string;
+  quotesCount?: number;
+  contractsCount?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -867,7 +869,7 @@ export const quotesApi = {
   // Download quote as PDF (authenticated - by id)
   downloadPdf: (quoteId: string) => {
     const apiUrl = import.meta.env.VITE_API_URL || '/api';
-    const token = localStorage.getItem('kolor_token');
+    const token = localStorage.getItem('token');
     // Create a temporary link to download with auth
     const link = document.createElement('a');
     link.href = `${apiUrl}/quotes/${quoteId}/pdf`;
@@ -936,7 +938,7 @@ export const settingsApi = {
     });
   },
   uploadBrandLogo: async (formData: FormData) => {
-    const token = localStorage.getItem('kolor_token');
+    const token = localStorage.getItem('token');
     const res = await fetch(`${API_URL}/api/settings/brand/logo`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },

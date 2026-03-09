@@ -5,7 +5,6 @@ import { sendContractSentEmail } from '../services/email';
 import { generateQuotePDF } from '../services/pdf.service';
 import { enrollLead, stopSequencesForLead } from '../services/sequenceEngine';
 import { paymentService } from '../services/paymentService';
-import { stripe } from '../lib/stripe';
 import { logActivity } from './activities';
 
 const router = Router();
@@ -923,7 +922,7 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
     }
 
     // Auto-create deposit payment link (non-blocking)
-    if (createdIncome && stripe) {
+    if (createdIncome) {
       const frontendUrl = process.env.FRONTEND_URL || '';
       paymentService.createDepositCheckout(createdIncome.id, frontendUrl)
         .then(result => console.log(`[Pay] Auto-deposit link for quote ${quote.quoteNumber}: ${result.url}`))

@@ -4,7 +4,6 @@ import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotifi
 import { logActivity } from './activities';
 import { uploadFile, ensureBucketExists } from '../services/storage';
 import { paymentService } from '../services/paymentService';
-import { stripe } from '../lib/stripe';
 import multer from 'multer';
 
 const router = Router();
@@ -160,13 +159,25 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
         deliverableType: true,
         coverImage: true,
         isDemoData: true,
+        _count: {
+          select: {
+            quotes: true,
+            contracts: true,
+          },
+        },
       }
     });
 
-    console.log('[GET /leads] Found', leads.length, 'leads');
-    console.log('[GET /leads] assignedToId breakdown:', leads.map(l => ({ id: l.id.slice(0,8), assignedToId: l.assignedToId, clientName: l.clientName })));
+    // Flatten _count into quotesCount/contractsCount for frontend
+    const leadsWithCounts = leads.map(({ _count, ...lead }) => ({
+      ...lead,
+      quotesCount: _count.quotes,
+      contractsCount: _count.contracts,
+    }));
 
-    res.json({ leads, count: leads.length });
+    console.log('[GET /leads] Found', leadsWithCounts.length, 'leads');
+
+    res.json({ leads: leadsWithCounts, count: leadsWithCounts.length });
   } catch (error) {
     console.error('Get leads error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to fetch leads' });
@@ -1085,7 +1096,7 @@ router.post('/:id/mark-delivered', authMiddleware, async (req: AuthRequest, res:
     // 6. Auto-send final payment link if deposit was paid
     const income = await prisma.income.findFirst({ where: { leadId: lead.id } });
     let paymentLinkSent = false;
-    if (income && income.depositPaid && !income.finalPaid && stripe) {
+    if (income && income.depositPaid && !income.finalPaid) {
       try {
         await paymentService.createFinalCheckout(income.id, process.env.FRONTEND_URL || '');
         paymentLinkSent = true;

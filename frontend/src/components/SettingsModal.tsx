@@ -160,7 +160,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'currency'
                   ? 'bg-dark-card text-white'
-                  : 'bg-dark-card/60 text-[#A3A3A3] hover:text-white hover:bg-dark-card/80'
+                  : 'bg-white/15 text-white/80 hover:text-white hover:bg-white/25'
               }`}
             >
               <DollarSign className="w-4 h-4" />
@@ -171,7 +171,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'brand'
                   ? 'bg-dark-card text-white'
-                  : 'bg-dark-card/60 text-[#A3A3A3] hover:text-white hover:bg-dark-card/80'
+                  : 'bg-white/15 text-white/80 hover:text-white hover:bg-white/25'
               }`}
               data-testid="brand-tab"
             >
@@ -180,10 +180,10 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
             </button>
             <button
               onClick={() => setActiveTab('testimonials')}
-              className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-xl font-medium text-sm transition-all ${
+              className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'testimonials'
                   ? 'bg-dark-card text-white'
-                  : 'bg-dark-card/60 text-[#A3A3A3] hover:text-white hover:bg-dark-card/80'
+                  : 'bg-white/15 text-white/80 hover:text-white hover:bg-white/25'
               }`}
               data-testid="testimonials-tab"
               data-tour="settings-reviews"

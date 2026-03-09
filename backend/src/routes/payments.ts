@@ -2,7 +2,6 @@ import { Router, Request, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import prisma from '../lib/prisma';
 import { paymentService } from '../services/paymentService';
-import { stripe } from '../lib/stripe';
 
 const router = Router();
 
@@ -43,11 +42,6 @@ router.get('/by-quote/:quoteId', authMiddleware, async (req: AuthRequest, res: R
 // GET /api/payments/session/:sessionId/status — Check Stripe session status (for polling after payment)
 router.get('/session/:sessionId/status', async (req: Request, res: Response): Promise<void> => {
   try {
-    if (!stripe) {
-      res.status(503).json({ error: 'Stripe not configured' });
-      return;
-    }
-
     const sessionId = String(req.params.sessionId);
     const result = await paymentService.checkAndUpdateSessionStatus(sessionId);
     res.json(result);
@@ -64,11 +58,6 @@ router.get('/session/:sessionId/status', async (req: Request, res: Response): Pr
 // POST /api/payments/:incomeId/deposit — Create deposit checkout session
 router.post('/:incomeId/deposit', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    if (!stripe) {
-      res.status(503).json({ error: 'Stripe not configured' });
-      return;
-    }
-
     const userId = req.userId as string;
     const incomeId = String(req.params.incomeId);
     const income = await prisma.income.findUnique({ where: { id: incomeId } });
@@ -99,11 +88,6 @@ router.post('/:incomeId/deposit', authMiddleware, async (req: AuthRequest, res: 
 // POST /api/payments/:incomeId/final — Create final payment checkout session
 router.post('/:incomeId/final', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    if (!stripe) {
-      res.status(503).json({ error: 'Stripe not configured' });
-      return;
-    }
-
     const userId = req.userId as string;
     const incomeId = String(req.params.incomeId);
     const income = await prisma.income.findUnique({ where: { id: incomeId } });
