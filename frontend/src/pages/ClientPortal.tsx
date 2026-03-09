@@ -320,9 +320,9 @@ export default function ClientPortal() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-primary/5 via-white to-brand-primary/5 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-brand-primary animate-spin mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 text-purple-600 animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading your project portal...</p>
         </div>
       </div>
@@ -331,7 +331,7 @@ export default function ClientPortal() {
 
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-primary/5 via-white to-brand-primary/5 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-5 md:p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-red-500" />
@@ -340,7 +340,7 @@ export default function ClientPortal() {
           <p className="text-gray-600 mb-6">{error || 'This project portal could not be found.'}</p>
           <p className="text-sm text-gray-500">
             Please check your link or contact us at{' '}
-            <a href="mailto:emmanuelobokoh03@gmail.com" className="text-brand-primary hover:underline">
+            <a href="mailto:emmanuelobokoh03@gmail.com" className="text-purple-600 hover:underline">
               emmanuelobokoh03@gmail.com
             </a>
           </p>
@@ -352,9 +352,9 @@ export default function ClientPortal() {
   const currentStepIndex = STATUS_TO_STEP[data.status.current] ?? 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-primary/5 via-white to-brand-primary/5">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       {/* Header */}
-      <header className="bg-gradient-to-r from-brand-primary to-brand-primary text-white">
+      <header className="bg-gradient-to-r from-[#7c3aed] to-[#9333ea] text-white">
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
@@ -364,10 +364,10 @@ export default function ClientPortal() {
           </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <p className="text-brand-primary-light text-sm">Project Portal</p>
+              <p className="text-purple-200 text-sm">Project Portal</p>
               <h1 className="text-2xl md:text-3xl font-bold">{data.project.title}</h1>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2">
+            <div className="flex items-center gap-2 bg-white/15 rounded-xl px-4 py-2">
               <span className={`w-3 h-3 rounded-full ${
                 data.status.isBooked ? 'bg-green-400' : 
                 data.status.isLost ? 'bg-red-400' : 
@@ -399,16 +399,16 @@ export default function ClientPortal() {
           <div className={`rounded-2xl p-6 ${
             data.status.isBooked 
               ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
-              : 'bg-white shadow-lg border border-gray-100'
+              : 'bg-white shadow-lg border border-gray-200'
           }`}>
             <div className="flex items-start gap-4">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                data.status.isBooked ? 'bg-white/20' : 'bg-brand-primary/10'
+                data.status.isBooked ? 'bg-white/20' : 'bg-purple-100'
               }`}>
                 {data.status.isBooked ? (
                   <CheckCircle className="w-6 h-6" />
                 ) : (
-                  <Clock className={`w-6 h-6 ${data.status.isBooked ? '' : 'text-brand-primary'}`} />
+                  <Clock className={`w-6 h-6 ${data.status.isBooked ? '' : 'text-purple-600'}`} />
                 )}
               </div>
               <div>
@@ -425,7 +425,7 @@ export default function ClientPortal() {
 
         {/* Progress Bar */}
         {!data.status.isLost && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-6">
               Project Progress
             </h3>
@@ -436,7 +436,7 @@ export default function ClientPortal() {
                 {/* Progress Line */}
                 <div className="absolute top-5 left-0 right-0 h-1 bg-gray-200 rounded-full">
                   <div 
-                    className="h-full bg-gradient-to-r from-brand-primary to-brand-primary rounded-full transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-purple-600 to-purple-600 rounded-full transition-all duration-500"
                     style={{ width: `${(currentStepIndex / (STATUS_STEPS.length - 1)) * 100}%` }}
                   />
                 </div>
@@ -450,13 +450,13 @@ export default function ClientPortal() {
                     <div key={step.key} className="flex flex-col items-center relative z-10">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                         isCompleted 
-                          ? 'bg-gradient-to-br from-brand-primary to-brand-primary text-white shadow-lg' 
+                          ? 'bg-gradient-to-br from-purple-600 to-purple-600 text-white shadow-lg' 
                           : 'bg-gray-100 text-gray-400'
-                      } ${isCurrent ? 'ring-4 ring-brand-primary/20' : ''}`}>
+                      } ${isCurrent ? 'ring-4 ring-purple-200' : ''}`}>
                         <Icon className="w-5 h-5" />
                       </div>
                       <span className={`mt-2 text-sm font-medium ${
-                        isCompleted ? 'text-brand-primary' : 'text-gray-400'
+                        isCompleted ? 'text-purple-600' : 'text-gray-400'
                       }`}>
                         {step.label}
                       </span>
@@ -475,11 +475,11 @@ export default function ClientPortal() {
 
                 return (
                   <div key={step.key} className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
-                    isCurrent ? 'bg-brand-primary/5 border border-brand-primary/20' : ''
+                    isCurrent ? 'bg-purple-50 border border-purple-200' : ''
                   }`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       isCompleted 
-                        ? 'bg-gradient-to-br from-brand-primary to-brand-primary text-white' 
+                        ? 'bg-gradient-to-br from-purple-600 to-purple-600 text-white' 
                         : 'bg-gray-100 text-gray-400'
                     }`}>
                       <Icon className="w-4 h-4" />
@@ -490,7 +490,7 @@ export default function ClientPortal() {
                       {step.label}
                     </span>
                     {isCurrent && (
-                      <span className="ml-auto text-xs text-brand-primary font-medium">Current</span>
+                      <span className="ml-auto text-xs text-purple-600 font-medium">Current</span>
                     )}
                     {isCompleted && index < currentStepIndex && (
                       <CheckCircle className="ml-auto w-4 h-4 text-green-500" />
@@ -503,15 +503,15 @@ export default function ClientPortal() {
         )}
 
         {/* Project Details */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
             Project Details
           </h3>
           
           <div className="space-y-4">
             <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-              <div className="w-10 h-10 bg-brand-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-brand-primary" />
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-purple-600" />
               </div>
               <div>
                 <p className="text-sm text-gray-500">Service Type</p>
@@ -562,8 +562,8 @@ export default function ClientPortal() {
               )}
 
               <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                <div className="w-10 h-10 bg-brand-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Calendar className="w-5 h-5 text-brand-primary" />
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Calendar className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Submitted On</p>
@@ -575,7 +575,7 @@ export default function ClientPortal() {
         </div>
 
         {/* Project Timeline */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6" data-testid="portal-timeline-section">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6" data-testid="portal-timeline-section">
           <ProjectTimeline token={token || ''} editable={false} />
         </div>
 
@@ -592,7 +592,7 @@ export default function ClientPortal() {
                 <div
                   key={quote.id}
                   className={`bg-white rounded-2xl shadow-lg border overflow-hidden ${
-                    isAccepted ? 'border-green-200' : isDeclined ? 'border-red-200' : 'border-brand-primary/20'
+                    isAccepted ? 'border-green-200' : isDeclined ? 'border-red-200' : 'border-purple-200'
                   }`}
                   data-testid={`portal-quote-${quote.id}`}
                 >
@@ -602,13 +602,13 @@ export default function ClientPortal() {
                       ? 'bg-gradient-to-r from-green-50 to-emerald-50'
                       : isDeclined
                       ? 'bg-gradient-to-r from-red-50 to-pink-50'
-                      : 'bg-gradient-to-r from-brand-primary/5 to-brand-primary/10'
+                      : 'bg-gradient-to-r from-purple-600/5 to-purple-600/10'
                   }`}>
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                      isAccepted ? 'bg-green-100' : isDeclined ? 'bg-red-100' : 'bg-brand-primary/10'
+                      isAccepted ? 'bg-green-100' : isDeclined ? 'bg-red-100' : 'bg-purple-100'
                     }`}>
                       <FileText className={`w-5 h-5 ${
-                        isAccepted ? 'text-green-600' : isDeclined ? 'text-red-500' : 'text-brand-primary'
+                        isAccepted ? 'text-green-600' : isDeclined ? 'text-red-500' : 'text-purple-600'
                       }`} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -621,7 +621,7 @@ export default function ClientPortal() {
                       isAccepted ? 'bg-green-100 text-green-700'
                       : isDeclined ? 'bg-red-100 text-red-700'
                       : isExpired ? 'bg-gray-100 text-gray-600'
-                      : 'bg-brand-primary/10 text-brand-primary'
+                      : 'bg-purple-100 text-purple-600'
                     }`}>
                       {isAccepted ? 'Accepted' : isDeclined ? 'Declined' : isExpired ? 'Expired' : 'Pending Review'}
                     </span>
@@ -686,7 +686,7 @@ export default function ClientPortal() {
                       <button
                         onClick={() => handleAcceptQuote(quote.quoteToken)}
                         disabled={quoteAccepting === quote.quoteToken}
-                        className="flex-1 px-6 py-3 bg-brand-primary text-white rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-50 flex items-center justify-center gap-2"
                         data-testid={`accept-quote-${quote.id}`}
                       >
                         {quoteAccepting === quote.quoteToken ? (
@@ -730,7 +730,7 @@ export default function ClientPortal() {
                 <div
                   key={contract.id}
                   className={`bg-white rounded-2xl shadow-lg border overflow-hidden transition-all duration-300 ${
-                    isAgreed ? 'border-green-200' : 'border-brand-primary/20'
+                    isAgreed ? 'border-green-200' : 'border-purple-200'
                   }`}
                   data-testid={`portal-contract-${contract.id}`}
                 >
@@ -738,15 +738,15 @@ export default function ClientPortal() {
                   <div className={`px-6 py-4 flex items-center gap-3 ${
                     isAgreed
                       ? 'bg-gradient-to-r from-green-50 to-emerald-50'
-                      : 'bg-gradient-to-r from-brand-primary/5 to-brand-primary/5'
+                      : 'bg-gradient-to-r from-purple-600/5 to-purple-600/5'
                   }`}>
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                      isAgreed ? 'bg-green-100' : 'bg-brand-primary/10'
+                      isAgreed ? 'bg-green-100' : 'bg-purple-100'
                     }`}>
                       {isAgreed ? (
                         <ShieldCheck className={`w-5 h-5 text-green-600`} />
                       ) : (
-                        <ScrollText className={`w-5 h-5 text-brand-primary`} />
+                        <ScrollText className={`w-5 h-5 text-purple-600`} />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -813,7 +813,7 @@ export default function ClientPortal() {
                             type="checkbox"
                             checked={agreedChecked[contract.id] || false}
                             onChange={(e) => setAgreedChecked({ ...agreedChecked, [contract.id]: e.target.checked })}
-                            className="mt-1 w-5 h-5 rounded border-gray-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
+                            className="mt-1 w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500 cursor-pointer"
                             data-testid={`agree-checkbox-${contract.id}`}
                           />
                           <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">
@@ -824,7 +824,7 @@ export default function ClientPortal() {
                         <button
                           onClick={() => handleAgree(contract.id)}
                           disabled={!agreedChecked[contract.id] || signing === contract.id}
-                          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand-primary to-brand-primary text-white rounded-xl font-semibold text-base hover:from-brand-primary-dark hover:to-brand-primary-dark disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-brand-primary/20"
+                          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-purple-600 to-purple-600 text-white rounded-xl font-semibold text-base hover:from-purple-700 hover:to-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-purple-600/20"
                           data-testid={`sign-agreement-btn-${contract.id}`}
                         >
                           {signing === contract.id ? (
@@ -850,7 +850,7 @@ export default function ClientPortal() {
 
         {/* Activity Timeline */}
         {data.timeline.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
               Recent Updates
             </h3>
@@ -861,7 +861,7 @@ export default function ClientPortal() {
               <div className="space-y-4">
                 {data.timeline.map((activity) => (
                   <div key={activity.id} className="relative flex gap-4 pl-2">
-                    <div className="relative z-10 w-5 h-5 rounded-full bg-brand-primary border-4 border-white shadow flex-shrink-0" />
+                    <div className="relative z-10 w-5 h-5 rounded-full bg-purple-600 border-4 border-white shadow flex-shrink-0" />
                     <div className="flex-1 pb-4">
                       <p className="text-gray-700">{activity.description}</p>
                       <p className="text-sm text-gray-400 mt-1">{formatTimeAgo(activity.createdAt)}</p>
@@ -875,21 +875,21 @@ export default function ClientPortal() {
 
         {/* Shared Files Section */}
         {data.files && data.files.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100" data-testid="shared-files-section">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200" data-testid="shared-files-section">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Paperclip className="w-5 h-5 text-brand-primary" />
+              <Paperclip className="w-5 h-5 text-purple-600" />
               Project Files
             </h3>
             <div className="space-y-3">
               {data.files.map((file) => (
                 <div
                   key={file.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-brand-primary/30 transition-colors"
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-purple-300 transition-colors"
                   data-testid={`shared-file-${file.id}`}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="w-10 h-10 bg-brand-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-5 h-5 text-brand-primary" />
+                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <FileText className="w-5 h-5 text-purple-600" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -911,7 +911,7 @@ export default function ClientPortal() {
                     href={`${API_URL}/api/portal/${token}/files/${file.id}/download`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-3 bg-brand-primary text-white rounded-lg text-sm font-medium hover:opacity-90 transition ml-3 whitespace-nowrap"
+                    className="flex items-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition ml-3 whitespace-nowrap"
                     data-testid={`download-file-${file.id}`}
                   >
                     <Download className="w-4 h-4" />
@@ -936,17 +936,17 @@ export default function ClientPortal() {
         />
 
         {/* Contact Section */}
-        <div className="bg-gradient-to-r from-brand-primary to-brand-primary rounded-2xl p-6 text-white">
+        <div className="bg-gradient-to-r from-[#7c3aed] to-[#9333ea] rounded-2xl p-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h3 className="text-lg font-semibold mb-1">Have Questions?</h3>
-              <p className="text-brand-primary-light">
+              <p className="text-purple-200">
                 {data.contact.name} is here to help with your project.
               </p>
             </div>
             <a 
               href={`mailto:${data.contact.email}?subject=Re: ${data.project.title}`}
-              className="inline-flex items-center gap-2 bg-white text-brand-primary px-6 py-3 rounded-xl font-semibold hover:bg-brand-primary/5 transition-colors"
+              className="inline-flex items-center gap-2 bg-white text-purple-700 px-6 py-3 rounded-xl font-semibold hover:bg-purple-50 transition-colors"
             >
               <Mail className="w-5 h-5" />
               Contact Us
@@ -962,11 +962,11 @@ export default function ClientPortal() {
           </div>
           <p>Thank you for choosing us for your creative project.</p>
           <p className="mt-2">
-            <Link to="/" className="text-brand-primary hover:underline">Visit our website</Link>
+            <Link to="/" className="text-purple-600 hover:underline">Visit our website</Link>
           </p>
           <p className="mt-3 text-xs text-gray-500" data-testid="powered-by-badge">
             Powered by{' '}
-            <Link to="/" className="text-brand-primary hover:text-brand-primary-light transition">
+            <Link to="/" className="text-purple-600 hover:text-purple-400 transition">
               KOLOR STUDIO
             </Link>
           </p>

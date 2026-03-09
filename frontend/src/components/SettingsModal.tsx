@@ -9,7 +9,8 @@ import {
   Globe,
   Percent,
   Palette,
-  MessageSquare
+  MessageSquare,
+  RotateCcw
 } from 'lucide-react'
 import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 import { formatCurrency, NUMBER_FORMAT_OPTIONS } from '../utils/currency'
@@ -19,11 +20,12 @@ import TestimonialsManagement from './TestimonialsManagement'
 interface SettingsModalProps {
   onClose: () => void;
   onSettingsUpdate?: (settings: UserSettings) => void;
+  onRestartTutorial?: () => void;
 }
 
 type SettingsTab = 'currency' | 'brand' | 'testimonials';
 
-export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsModalProps) {
+export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTutorial }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>('currency')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -390,6 +392,20 @@ export default function SettingsModal({ onClose, onSettingsUpdate }: SettingsMod
             {saved ? 'Saved!' : 'Save Settings'}
           </button>
         </div>
+        )}
+
+        {/* Restart Tutorial */}
+        {onRestartTutorial && (
+          <div className="px-6 pb-4 border-t border-dark-border pt-4 flex-shrink-0">
+            <button
+              onClick={() => { onRestartTutorial(); onClose(); }}
+              className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-colors"
+              data-testid="restart-tutorial-btn"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Restart Setup Tutorial
+            </button>
+          </div>
         )}
       </div>
     </div>

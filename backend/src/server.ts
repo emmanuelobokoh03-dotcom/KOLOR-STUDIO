@@ -28,6 +28,10 @@ import paymentRoutes from './routes/payments';
 import { processSequences } from './services/sequenceEngine';
 import { apiLimiter, authLimiter, emailLimiter, uploadLimiter, portalLimiter } from './middleware/rateLimiter';
 import { ensureBucketExists } from './services/storage';
+import digestRoutes from './routes/digest';
+import cron from 'node-cron';
+import { generateDigestForUser, getAllUsersForDigest } from './services/digestService';
+import { sendWeeklyDigestEmail } from './services/email';
 
 // dotenv already loaded at the top of this file
 
@@ -150,6 +154,7 @@ app.use('/api/crm', crmRoutes); // CRM: /api/crm/*
 app.use('/api/testimonials', testimonialRoutes); // Testimonials: /api/testimonials/*
 app.use('/api/sequences', sequencesRoutes); // Email sequences: /api/sequences/*
 app.use('/api/payments', paymentRoutes); // Payments: /api/payments/*
+app.use('/api/digest', digestRoutes); // Digest: /api/digest/*
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {
@@ -229,6 +234,30 @@ app.listen(PORT, () => {
       processSequences().catch(e => console.error('[Seq] Cron error:', e));
     }, SEQ_INTERVAL);
   }, 15000);
+
+  // Weekly digest cron — every Monday at 9:00 AM
+  cron.schedule('0 9 * * 1', async () => {
+    console.log('[DIGEST CRON] Running weekly digest...');
+    try {
+      const userIds = await getAllUsersForDigest();
+      let sent = 0;
+      let skipped = 0;
+      for (const userId of userIds) {
+        const digest = await generateDigestForUser(userId);
+        if (!digest) continue;
+        if (!digest.hasActivity && digest.nextActions.length === 0) {
+          skipped++;
+          continue;
+        }
+        const ok = await sendWeeklyDigestEmail(digest);
+        if (ok) sent++;
+      }
+      console.log(`[DIGEST CRON] Done: ${sent} sent, ${skipped} skipped (no activity)`);
+    } catch (error) {
+      console.error('[DIGEST CRON] Error:', error);
+    }
+  });
+  console.log('📧 Weekly digest cron scheduled (Mondays 9 AM)');
 });
 
 export default app;

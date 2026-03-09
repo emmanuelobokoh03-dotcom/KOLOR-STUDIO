@@ -9,7 +9,7 @@ import requests
 import os
 from datetime import datetime, timedelta
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://autopilot-portal-2.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://studio-wizard-4.preview.emergentagent.com')
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"
 TEST_PASSWORD = "successful26#"
 

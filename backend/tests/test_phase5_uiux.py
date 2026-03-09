@@ -11,7 +11,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = "https://autopilot-portal-2.preview.emergentagent.com"
+BASE_URL = "https://studio-wizard-4.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

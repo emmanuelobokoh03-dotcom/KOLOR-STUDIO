@@ -12,11 +12,33 @@ interface BrandThemeContextValue extends BrandTheme {
   refresh: () => Promise<void>
 }
 
+const CACHE_KEY = 'kolor_brand_theme'
+
 const defaults: BrandTheme = {
   primaryColor: '#A855F7',
   accentColor: '#EC4899',
   fontFamily: 'Inter',
   logoUrl: null,
+}
+
+function loadCached(): BrandTheme {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      // Validate hex colors
+      if (parsed.primaryColor && /^#[0-9A-Fa-f]{6}$/.test(parsed.primaryColor)) {
+        return { ...defaults, ...parsed }
+      }
+    }
+  } catch {}
+  return defaults
+}
+
+function saveCache(theme: BrandTheme) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(theme))
+  } catch {}
 }
 
 const BrandThemeContext = createContext<BrandThemeContextValue>({
@@ -55,7 +77,8 @@ function applyToDOM(theme: BrandTheme) {
 }
 
 export function BrandThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<BrandTheme>(defaults)
+  // Initialize from cache for instant render
+  const [theme, setTheme] = useState<BrandTheme>(loadCached)
 
   const refresh = useCallback(async () => {
     const res = await settingsApi.getBrand()
@@ -68,13 +91,14 @@ export function BrandThemeProvider({ children }: { children: ReactNode }) {
       }
       setTheme(t)
       applyToDOM(t)
+      saveCache(t)
     }
   }, [])
 
-  // Apply defaults on mount, then fetch user brand
+  // Apply cached theme immediately on mount, then fetch from API
   useEffect(() => {
-    applyToDOM(defaults)
-    // Only fetch if logged in
+    const cached = loadCached()
+    applyToDOM(cached)
     const token = localStorage.getItem('token')
     if (token) refresh()
   }, [refresh])

@@ -42,6 +42,7 @@ import MobileBottomNav from '../components/MobileBottomNav'
 import HelpPanel, { HelpButton } from '../components/HelpPanel'
 import { PhotographyWidgets, FineArtWidgets, DesignWidgets } from '../components/IndustryWidgets'
 import { useOnboardingTour } from '../components/OnboardingTour'
+import OnboardingWizard, { useOnboardingWizard } from '../components/OnboardingWizard'
 import { SmartSuggestion } from '../components/SmartSuggestion'
 import { CelebrationModal, checkCelebration, Achievement, achievements } from '../components/CelebrationModal'
 import CRMAlerts from '../components/CRMAlerts'
@@ -139,6 +140,7 @@ const Dashboard = () => {
   const [showCelebration, setShowCelebration] = useState(false)
   const [showDemoBanner, setShowDemoBanner] = useState(true)
   const { startTour, tourComplete } = useOnboardingTour()
+  const { showWizard, setShowWizard, resetWizard } = useOnboardingWizard(leads.length)
 
   useEffect(() => {
     const init = async () => {
@@ -311,6 +313,11 @@ const Dashboard = () => {
     <div className="min-h-screen bg-[#0F0F0F]">
       <AnnouncementBanner />
       <EmailVerificationBanner user={user} />
+
+      {/* Onboarding Wizard for new users */}
+      {showWizard && (
+        <OnboardingWizard onComplete={() => setShowWizard(false)} />
+      )}
 
       {/* Header */}
       <header className="bg-[#1A1A1A] border-b border-[#333] sticky top-0 z-40">
@@ -934,6 +941,7 @@ const Dashboard = () => {
               });
             }
           }}
+          onRestartTutorial={resetWizard}
         />
       )}
       {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}

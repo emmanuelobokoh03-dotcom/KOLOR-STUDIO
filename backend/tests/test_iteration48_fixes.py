@@ -16,7 +16,7 @@ import os
 import time
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://autopilot-portal-2.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://studio-wizard-4.preview.emergentagent.com').rstrip('/')
 
 # Test credentials
 USER1_EMAIL = "emmanuelobokoh03@gmail.com"

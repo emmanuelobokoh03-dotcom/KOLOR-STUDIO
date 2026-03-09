@@ -107,7 +107,7 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
     return false;
   }
 
-  const dashboardUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
+  const dashboardUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
 
   const content = `
@@ -256,7 +256,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   }
 
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
   const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null;
 
   const content = `
@@ -439,7 +439,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -535,7 +535,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -630,7 +630,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
   const resetUrl = `${baseUrl}/reset-password/${data.resetToken}`;
 
   const content = `
@@ -724,7 +724,7 @@ export async function sendVerificationEmail(data: VerificationEmailData): Promis
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
   const verifyUrl = `${baseUrl}/verify-email/${data.verificationToken}`;
 
   const content = `
@@ -813,7 +813,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
   // Link to portal if portalToken is available, otherwise fallback to public quote page
   const quoteUrl = data.portalToken
     ? `${baseUrl}/portal/${data.portalToken}`
@@ -941,7 +941,7 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const sym = data.currencySymbol || '$';
   const formattedTotal = `${sym}${data.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -1042,7 +1042,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -2051,6 +2051,180 @@ export async function sendWorkProgressNotification(data: {
     return true;
   } catch (error) {
     console.error('[WORK NOTIFICATION] Failed:', error);
+    return false;
+  }
+}
+
+
+
+// =====================
+// WEEKLY DIGEST EMAIL
+// =====================
+import type { DigestData } from './digestService';
+
+export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean> {
+  if (!resend) {
+    console.log('[DIGEST] Resend not configured, skipping digest email');
+    return false;
+  }
+
+  const { stats, nextActions, topClients, period, userName, studioName } = digest;
+  const sym = stats.currencySymbol;
+  const startStr = period.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const endStr = period.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const baseUrl = process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com';
+
+  // Build stat cards
+  const statCards = [
+    { label: 'New Leads', value: stats.newLeads, color: '#6366f1', icon: 'inbox' },
+    { label: 'Quotes Sent', value: stats.quoteSent, color: '#a855f7', icon: 'send' },
+    { label: 'Accepted', value: stats.quotesAccepted, color: '#10b981', icon: 'check' },
+    { label: 'Contracts Signed', value: stats.contractsSigned, color: '#059669', icon: 'file-check' },
+    { label: 'Deposits Received', value: stats.depositsReceived, color: '#f59e0b', icon: 'dollar' },
+  ];
+
+  const statCardsHtml = statCards.map(s => `
+    <td style="width: 33%; padding: 8px;">
+      <div style="background: ${s.color}10; border: 1px solid ${s.color}30; border-radius: 12px; padding: 16px; text-align: center;">
+        <div style="font-size: 28px; font-weight: 700; color: ${s.color};">${s.value}</div>
+        <div style="font-size: 12px; color: #6b7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${s.label}</div>
+      </div>
+    </td>
+  `).join('');
+
+  // Chunk stat cards into rows of 3
+  const row1 = statCardsHtml.slice(0, statCards.length <= 3 ? undefined : undefined);
+
+  const nextActionsHtml = nextActions.length > 0
+    ? nextActions.map(a => `
+      <tr>
+        <td style="padding: 10px 16px; border-bottom: 1px solid #f3f4f6;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="color: #374151; font-size: 14px;">${a.label}</td>
+              <td align="right" style="font-weight: 700; color: #7c3aed; font-size: 14px;">${a.count}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    `).join('')
+    : `<tr><td style="padding: 16px; color: #10b981; font-size: 14px; text-align: center;">All caught up! No pending actions this week.</td></tr>`;
+
+  const topClientsHtml = topClients.length > 0
+    ? topClients.map((c, i) => `
+      <tr>
+        <td style="padding: 8px 16px; border-bottom: 1px solid #f3f4f6;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="color: #374151; font-size: 14px;">${i + 1}. ${c.name}</td>
+              <td align="right" style="font-weight: 700; color: #059669; font-size: 14px;">${sym}${c.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    `).join('')
+    : '';
+
+  const revenueSection = stats.totalRevenue > 0
+    ? `
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0;">
+      <tr>
+        <td style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); border-radius: 12px; padding: 24px; text-align: center;">
+          <p style="margin: 0 0 4px 0; font-size: 12px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">Revenue This Week</p>
+          <p style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff;">${sym}${stats.totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        </td>
+      </tr>
+    </table>`
+    : '';
+
+  const content = `
+    <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
+      Weekly Autopilot Digest
+    </h1>
+    <p style="margin: 0 0 4px 0; font-size: 14px; color: #9ca3af;">
+      ${startStr} — ${endStr}
+    </p>
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.6;">
+      Hi ${userName}, here's how your pipeline performed this week at <strong style="color: #7c3aed;">${studioName}</strong>.
+    </p>
+
+    ${revenueSection}
+
+    <!-- Stat Cards -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
+      <tr>${statCards.slice(0, 3).map(s => `
+        <td style="width: 33%; padding: 4px;">
+          <div style="background: ${s.color}10; border: 1px solid ${s.color}30; border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: ${s.color};">${s.value}</div>
+            <div style="font-size: 11px; color: #6b7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${s.label}</div>
+          </div>
+        </td>
+      `).join('')}</tr>
+      <tr>${statCards.slice(3).map(s => `
+        <td style="width: 33%; padding: 4px;">
+          <div style="background: ${s.color}10; border: 1px solid ${s.color}30; border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: ${s.color};">${s.value}</div>
+            <div style="font-size: 11px; color: #6b7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${s.label}</div>
+          </div>
+        </td>
+      `).join('')}<td style="width: 33%; padding: 4px;"></td></tr>
+    </table>
+
+    <!-- Next Actions -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: #fafafa; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
+      <tr>
+        <td style="padding: 14px 16px; background: #7c3aed; color: white; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+          Action Items
+        </td>
+      </tr>
+      ${nextActionsHtml}
+    </table>
+
+    ${topClientsHtml ? `
+    <!-- Top Clients -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: #fafafa; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
+      <tr>
+        <td style="padding: 14px 16px; background: #059669; color: white; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+          Top Clients This Week
+        </td>
+      </tr>
+      ${topClientsHtml}
+    </table>` : ''}
+
+    <!-- CTA -->
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center" style="padding: 8px 0 24px;">
+          <a href="${baseUrl}/dashboard" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+            Open Dashboard
+          </a>
+        </td>
+      </tr>
+    </table>
+
+    <p style="margin: 0; font-size: 12px; color: #9ca3af; text-align: center; line-height: 1.6;">
+      This is your weekly autopilot digest from KOLOR STUDIO.<br>
+      To adjust email preferences, visit your <a href="${baseUrl}/dashboard" style="color: #7c3aed; text-decoration: underline;">dashboard settings</a>.
+    </p>
+  `;
+
+  try {
+    const { data: emailData, error } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: [digest.userEmail],
+      subject: `Your Weekly Pipeline Report — ${startStr} to ${endStr}`,
+      html: getEmailTemplate(content, 'Weekly Autopilot Digest'),
+    });
+
+    if (error) {
+      console.error('[DIGEST] Failed to send:', error);
+      return false;
+    }
+
+    console.log('[DIGEST] Sent to:', digest.userEmail, 'ID:', emailData?.id);
+    return true;
+  } catch (error) {
+    console.error('[DIGEST] Error:', error);
     return false;
   }
 }
