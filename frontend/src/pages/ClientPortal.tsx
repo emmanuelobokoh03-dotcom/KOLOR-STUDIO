@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import ClientPortalMessages from '../components/ClientPortalMessages';
 import ClientFileUpload from '../components/ClientFileUpload';
 import ProjectTimeline from '../components/ProjectTimeline';
+import { toast } from 'sonner';
 import { 
   Sparkles, 
   CheckCircle, 
@@ -278,6 +279,9 @@ export default function ClientPortal() {
               : q
           ),
         });
+        toast.success('Quote Accepted! Your contract is on the way!', { duration: 5000 });
+      } else {
+        toast.error(result.message || 'Failed to accept quote');
       }
     } catch (err) {
       console.error('Quote accept error:', err);

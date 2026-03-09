@@ -299,7 +299,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
                       {d.sessionLocation && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{d.sessionLocation}</span>}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                  <div className="flex items-center gap-1 flex-shrink-0">
                     {next && (
                       <button
                         onClick={() => handleStatusAdvance(d)}
@@ -311,7 +311,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
                         {next.label}
                       </button>
                     )}
-                    <button onClick={() => handleDelete(d.id)} className="p-1.5 text-gray-500 hover:text-red-400 rounded-lg hover:bg-red-900/20" data-testid={`deliverable-delete-${d.id}`}>
+                    <button onClick={() => handleDelete(d.id)} className="p-1.5 text-gray-500 hover:text-red-400 rounded-lg hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition" data-testid={`deliverable-delete-${d.id}`}>
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>

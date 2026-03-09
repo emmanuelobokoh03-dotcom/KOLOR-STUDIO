@@ -798,6 +798,7 @@ interface QuoteEmailData {
   total: number;
   validUntil: Date;
   quoteToken: string;
+  portalToken?: string;
   currency?: string;
   currencySymbol?: string;
   currencyPosition?: string;
@@ -813,7 +814,10 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
   }
 
   const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
-  const quoteUrl = `${baseUrl}/quotes/${data.quoteToken}`;
+  // Link to portal if portalToken is available, otherwise fallback to public quote page
+  const quoteUrl = data.portalToken
+    ? `${baseUrl}/portal/${data.portalToken}`
+    : `${baseUrl}/quote/${data.quoteToken}`;
   const firstName = data.clientName.split(' ')[0];
   // Format currency based on quote settings
   const currencySymbol = data.currencySymbol || '$';
@@ -927,6 +931,8 @@ interface QuoteAcceptedData {
   quoteNumber: string;
   total: number;
   leadId: string;
+  currencySymbol?: string;
+  currency?: string;
 }
 
 export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Promise<boolean> {
@@ -937,7 +943,8 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
 
   const baseUrl = process.env.FRONTEND_URL || 'https://autopilot-portal-2.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
-  const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  const sym = data.currencySymbol || '$';
+  const formattedTotal = `${sym}${data.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const content = `
     <div style="text-align: center; margin-bottom: 32px;">
@@ -971,12 +978,12 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
     </table>
     
     <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-      <strong>Next Steps:</strong>
+      <strong>What happens next:</strong>
     </p>
     <ul style="margin: 0 0 24px 0; padding-left: 24px; color: #4b5563; line-height: 1.8;">
-      <li>Reach out to the client to finalize details</li>
-      <li>Schedule a kick-off call or meeting</li>
-      <li>Send contract and payment instructions</li>
+      <li>A contract has been automatically generated and sent to your client</li>
+      <li>Once signed, a deposit payment link will be created</li>
+      <li>Track everything from your dashboard</li>
     </ul>
     
     <!-- Dashboard CTA -->

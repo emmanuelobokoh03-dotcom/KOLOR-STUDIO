@@ -17,6 +17,7 @@ import VerifyEmail from './pages/VerifyEmail'
 import IndustryOnboarding from './components/IndustryOnboarding'
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
+import { Toaster } from 'sonner'
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/terms" element={<TermsOfService />} />
       </Routes>
       <CookieConsent />
+      <Toaster theme="dark" position="top-center" richColors />
       <Analytics />
     </Router>
     </BrandThemeProvider>

@@ -119,6 +119,7 @@ function fillContractTemplate(template: string, data: Record<string, string>): s
 /** Auto-generate and send a contract when a quote is accepted */
 async function autoGenerateContract(quoteId: string): Promise<void> {
   try {
+    console.log(`[AUTOPILOT] Auto-generating contract for quote: ${quoteId}`);
     const quote = await prisma.quote.findUnique({
       where: { id: quoteId },
       include: {
@@ -128,7 +129,10 @@ async function autoGenerateContract(quoteId: string): Promise<void> {
         createdBy: { select: { id: true, studioName: true, firstName: true, lastName: true, primaryIndustry: true, email: true } },
       },
     });
-    if (!quote || !quote.lead) return;
+    if (!quote || !quote.lead) {
+      console.error(`[AUTOPILOT] Quote ${quoteId} or lead not found`);
+      return;
+    }
 
     const lead = quote.lead;
     const user = lead.assignedTo || quote.createdBy;
@@ -136,14 +140,18 @@ async function autoGenerateContract(quoteId: string): Promise<void> {
     const contractType = INDUSTRY_TO_CONTRACT_TYPE[industry] || 'GENERAL_SERVICE';
     const template = CONTRACT_TEMPLATES_INLINE[contractType] || CONTRACT_TEMPLATES_INLINE.GENERAL_SERVICE;
 
+    console.log(`[AUTOPILOT] Using template "${contractType}" for industry "${industry}"`);
+
     const studioName = user?.studioName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Studio';
+    const currencySymbol = quote.currencySymbol || '$';
+    const formattedValue = quote.total ? `${currencySymbol}${Number(quote.total).toLocaleString()}` : 'To be agreed';
     const filledContent = fillContractTemplate(template.content, {
       clientName: lead.clientName,
       projectTitle: lead.projectTitle,
       eventDate: lead.eventDate
         ? new Date(lead.eventDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
         : 'To be determined',
-      estimatedValue: quote.total ? `$${Number(quote.total).toLocaleString()}` : 'To be agreed',
+      estimatedValue: formattedValue,
       studioName,
     });
 
@@ -158,6 +166,8 @@ async function autoGenerateContract(quoteId: string): Promise<void> {
       },
     });
 
+    console.log(`[AUTOPILOT] Contract created: ${contract.id} - "${contract.title}"`);
+
     // Send contract email to client
     const portalUrl = `${process.env.FRONTEND_URL || ''}/portal/${lead.portalToken}`;
     sendContractSentEmail({
@@ -167,13 +177,15 @@ async function autoGenerateContract(quoteId: string): Promise<void> {
       contractTitle: contract.title,
       studioName,
       portalUrl,
-    }).catch(e => console.error('[Contract] Email send failed:', e));
+    }).then(() => console.log(`[AUTOPILOT] Contract email sent to ${lead.clientEmail}`))
+      .catch(e => console.error('[AUTOPILOT] Contract email send failed:', e));
 
     await logActivity(lead.id, quote.createdById, 'CONTRACT_SIGNED', `Contract auto-generated and sent: "${contract.title}"`);
 
-    console.log(`[Contract] Auto-generated "${contract.title}" for lead ${lead.clientName}`);
+    console.log(`[AUTOPILOT] Complete: "${contract.title}" for lead ${lead.clientName}`);
   } catch (error) {
-    console.error('[Contract] Auto-generation failed:', error);
+    console.error('[AUTOPILOT] Contract auto-generation FAILED:', error);
+    throw error;
   }
 }
 
@@ -650,6 +662,7 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
         total: quote.total,
         validUntil: quote.validUntil,
         quoteToken: quote.quoteToken,
+        portalToken: (quote as any).lead.portalToken || undefined,
         currency: quote.currency || undefined,
         currencySymbol: quote.currencySymbol || undefined,
         currencyPosition: quote.currencyPosition || undefined,
@@ -932,13 +945,17 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
     // Auto-generate contract from industry template (non-blocking)
     autoGenerateContract(quote.id).catch(e => console.error('[Contract] Auto-gen error:', e));
 
+    // Use quote's currency settings
+    const currSymbol = quote.currencySymbol || '$';
+    const formattedTotal = `${currSymbol}${quote.total.toLocaleString()}`;
+
     // Log interaction
     try {
       await prisma.interaction.create({
         data: {
           leadId: quote.leadId,
           type: 'QUOTE_ACCEPTED',
-          content: `Quote ${quote.quoteNumber} accepted - $${quote.total.toLocaleString()}`
+          content: `Quote ${quote.quoteNumber} accepted - ${formattedTotal}`
         }
       });
     } catch (interactionError) {
@@ -949,7 +966,7 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
     await prisma.activity.create({
       data: {
         type: 'QUOTE_ACCEPTED',
-        description: `Quote ${quote.quoteNumber} accepted ($${quote.total.toLocaleString()})`,
+        description: `Quote ${quote.quoteNumber} accepted (${formattedTotal})`,
         leadId: quote.leadId,
         metadata: { quoteId: quote.id, quoteNumber: quote.quoteNumber, total: quote.total }
       }
@@ -964,7 +981,9 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
         projectTitle: (quote as any).lead.projectTitle,
         quoteNumber: quote.quoteNumber,
         total: quote.total,
-        leadId: quote.leadId
+        leadId: quote.leadId,
+        currencySymbol: quote.currencySymbol || '$',
+        currency: quote.currency || 'USD',
       });
     } catch (emailError) {
       console.error('Failed to send quote accepted notification:', emailError);
