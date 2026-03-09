@@ -333,4 +333,82 @@ router.get('/pipeline-by-status', authMiddleware, async (req: AuthRequest, res: 
   }
 });
 
+// GET /api/analytics/revenue-pipeline — Autopilot revenue stages
+router.get('/revenue-pipeline', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+
+    const leads = await prisma.lead.findMany({
+      where: { assignedToId: userId, isDemoData: { not: true } },
+      select: {
+        id: true,
+        clientName: true,
+        projectTitle: true,
+        status: true,
+        quotes: {
+          select: { id: true, status: true, total: true, currency: true, currencySymbol: true },
+          orderBy: { createdAt: 'desc' as const },
+          take: 1,
+        },
+        contracts: {
+          select: { id: true, status: true },
+          orderBy: { createdAt: 'desc' as const },
+          take: 1,
+        },
+        incomeRecords: {
+          select: { id: true, amount: true, status: true, depositPaid: true, finalPaid: true },
+          orderBy: { createdAt: 'desc' as const },
+          take: 1,
+        },
+      },
+    });
+
+    const pipeline = {
+      quoteSent: { count: 0, value: 0, clients: [] as { name: string; value: number }[] },
+      contractSigned: { count: 0, value: 0, clients: [] as { name: string; value: number }[] },
+      depositPaid: { count: 0, value: 0, clients: [] as { name: string; value: number }[] },
+      inProgress: { count: 0, value: 0, clients: [] as { name: string; value: number }[] },
+      paidInFull: { count: 0, value: 0, clients: [] as { name: string; value: number }[] },
+    };
+
+    for (const lead of leads) {
+      const quote = lead.quotes[0];
+      const contract = lead.contracts[0];
+      const income = lead.incomeRecords[0];
+      const value = Number(quote?.total || income?.amount || 0);
+
+      if (income?.finalPaid) {
+        pipeline.paidInFull.count++;
+        pipeline.paidInFull.value += value;
+        pipeline.paidInFull.clients.push({ name: lead.clientName, value });
+      } else if (income?.depositPaid) {
+        pipeline.depositPaid.count++;
+        pipeline.depositPaid.value += value;
+        pipeline.depositPaid.clients.push({ name: lead.clientName, value });
+      } else if (contract && contract.status === 'AGREED') {
+        pipeline.contractSigned.count++;
+        pipeline.contractSigned.value += value;
+        pipeline.contractSigned.clients.push({ name: lead.clientName, value });
+      } else if (quote && (quote.status === 'ACCEPTED' || quote.status === 'SENT' || quote.status === 'VIEWED')) {
+        pipeline.quoteSent.count++;
+        pipeline.quoteSent.value += value;
+        pipeline.quoteSent.clients.push({ name: lead.clientName, value });
+      }
+    }
+
+    // Get user's currency setting
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { currencySymbol: true },
+    });
+    const currencySymbol = user?.currencySymbol || '$';
+
+    const totalValue = Object.values(pipeline).reduce((s, stage) => s + stage.value, 0);
+    res.json({ pipeline, totalValue, currencySymbol });
+  } catch (error) {
+    console.error('Revenue pipeline error:', error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
 export default router;

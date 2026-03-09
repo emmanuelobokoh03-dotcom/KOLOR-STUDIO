@@ -646,7 +646,7 @@ export default function QuoteBuilderModal({
                             currencyPosition: currencyOverride.currencyPosition || 'BEFORE'
                           });
                         }}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
+                        className="w-full px-3 py-2 bg-[#1a1a2e] border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                         data-testid="currency-override-select"
                       >
                         <option value="">Select currency...</option>
@@ -665,7 +665,7 @@ export default function QuoteBuilderModal({
                           ...currencyOverride,
                           currencyPosition: e.target.value as 'BEFORE' | 'AFTER'
                         })}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
+                        className="w-full px-3 py-2 bg-[#1a1a2e] border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                       >
                         <option value="BEFORE">Before ({currencyOverride.currencySymbol || '$'}100)</option>
                         <option value="AFTER">After (100{currencyOverride.currencySymbol || '$'})</option>
@@ -690,7 +690,7 @@ export default function QuoteBuilderModal({
               <select
                 value={paymentTerms}
                 onChange={(e) => setPaymentTerms(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
+                className="w-full px-3 py-2 bg-[#1a1a2e] border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                 data-testid="payment-terms-select"
               >
                 {PAYMENT_TERMS_OPTIONS.map(option => (

@@ -46,6 +46,7 @@ import { SmartSuggestion } from '../components/SmartSuggestion'
 import { CelebrationModal, checkCelebration, Achievement, achievements } from '../components/CelebrationModal'
 import CRMAlerts from '../components/CRMAlerts'
 import RevenueDashboard from '../components/RevenueDashboard'
+import RevenuePipelineWidget from '../components/RevenuePipelineWidget'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import DemoProjectBanner from '../components/DemoProjectBanner'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
@@ -486,6 +487,11 @@ const Dashboard = () => {
             else if (action === 'open-brand-settings') setShowSettings(true)
           }}
         />
+
+        {/* Revenue Pipeline Widget */}
+        <div className="mb-4 md:mb-6">
+          <RevenuePipelineWidget />
+        </div>
 
         {/* CRM Alerts + Revenue Dashboard */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">

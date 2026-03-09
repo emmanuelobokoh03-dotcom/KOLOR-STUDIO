@@ -54,13 +54,19 @@ router.post('/:leadId/messages', authMiddleware, async (req: AuthRequest, res: R
 
     const lead = await prisma.lead.findUnique({
       where: { id: leadId },
-      select: { assignedToId: true },
+      select: { assignedToId: true, clientEmail: true, clientName: true, projectTitle: true, portalToken: true },
     });
 
     if (!lead || (lead.assignedToId && lead.assignedToId !== userId)) {
       res.status(404).json({ error: 'Lead not found' });
       return;
     }
+
+    // Get creative name for the email
+    const creative = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { firstName: true, lastName: true, studioName: true },
+    });
 
     const message = await prisma.message.create({
       data: {
@@ -81,6 +87,21 @@ router.post('/:leadId/messages', authMiddleware, async (req: AuthRequest, res: R
         createdAt: message.createdAt.toISOString(),
       },
     });
+
+    // Send email notification to client (non-blocking)
+    if (lead.clientEmail) {
+      const creativeName = `${creative?.firstName || ''} ${creative?.lastName || ''}`.trim() || 'Studio';
+      import('../services/email').then(({ sendClientMessageNotification }) => {
+        sendClientMessageNotification({
+          to: lead.clientEmail,
+          from: creativeName,
+          messagePreview: content.trim(),
+          portalUrl: `${process.env.FRONTEND_URL || ''}/portal/${lead.portalToken || ''}`,
+          creativeName,
+          studioName: creative?.studioName || undefined,
+        }).catch(e => console.error('[MESSAGE NOTIFICATION] Error:', e));
+      });
+    }
   } catch (error) {
     console.error('Send message error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to send message' });

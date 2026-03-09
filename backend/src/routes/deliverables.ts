@@ -209,6 +209,33 @@ router.patch('/deliverables/:id/status', authMiddleware, async (req: AuthRequest
 
     const deliverable = await prisma.deliverable.update({ where: { id }, data });
 
+    // Send work progress notification to client for key status changes
+    const NOTIFY_STATUSES = ['IN_PROGRESS', 'READY', 'DELIVERED', 'SHIPPED'];
+    if (NOTIFY_STATUSES.includes(status)) {
+      prisma.lead.findUnique({
+        where: { id: existing.leadId },
+        select: { clientEmail: true, clientName: true, portalToken: true, assignedToId: true, projectTitle: true },
+      }).then(async (lead) => {
+        if (lead?.clientEmail && lead.assignedToId) {
+          const creative = await prisma.user.findUnique({
+            where: { id: lead.assignedToId },
+            select: { firstName: true, lastName: true, studioName: true },
+          });
+          const creativeName = `${creative?.firstName || ''} ${creative?.lastName || ''}`.trim() || 'Studio';
+          const { sendWorkProgressNotification } = await import('../services/email');
+          await sendWorkProgressNotification({
+            to: lead.clientEmail,
+            clientName: lead.clientName,
+            deliverableName: existing.name,
+            status,
+            creativeName,
+            studioName: creative?.studioName || undefined,
+            portalUrl: `${process.env.FRONTEND_URL || ''}/portal/${lead.portalToken || ''}`,
+          });
+        }
+      }).catch(e => console.error('[WORK NOTIFICATION] Error:', e));
+    }
+
     // Auto-request testimonial when deliverable is marked DELIVERED
     if (status === 'DELIVERED') {
       try {

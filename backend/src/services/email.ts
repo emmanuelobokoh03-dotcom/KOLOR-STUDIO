@@ -1907,3 +1907,150 @@ export async function sendSequenceEmail(data: SequenceEmailData): Promise<boolea
     return false;
   }
 }
+
+
+// ==================== MESSAGE & WORK PROGRESS NOTIFICATIONS ====================
+
+export async function sendNewMessageNotification(data: {
+  to: string;
+  from: string;
+  messagePreview: string;
+  dashboardUrl: string;
+  clientName: string;
+  projectTitle: string;
+}): Promise<boolean> {
+  if (!resend) {
+    console.log('[EMAIL] Would send message notification to:', data.to);
+    return false;
+  }
+  try {
+    const preview = data.messagePreview.length > 150 ? data.messagePreview.substring(0, 150) + '...' : data.messagePreview;
+    const content = `
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span style="font-size: 48px;">💬</span>
+      </div>
+      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1f2937; text-align: center;">New Message from ${data.from}</h2>
+      <p style="text-align: center; color: #6b7280; margin-bottom: 24px;">Regarding: ${data.projectTitle}</p>
+      <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;">
+        <p style="margin: 0; color: #374151; font-style: italic; line-height: 1.6;">"${preview}"</p>
+      </div>
+      <div style="text-align: center; margin-top: 28px;">
+        <a href="${data.dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+          View & Reply
+        </a>
+      </div>
+      <p style="text-align: center; color: #9ca3af; font-size: 14px; margin-top: 20px;">Reply quickly to keep your clients engaged!</p>
+    `;
+    const { error } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: data.to,
+      subject: `New Message from ${data.from}`,
+      html: getEmailTemplate(content, `New Message from ${data.from}`),
+    });
+    if (error) throw error;
+    console.log('[MESSAGE NOTIFICATION] Email sent to creative:', data.to);
+    return true;
+  } catch (error) {
+    console.error('[MESSAGE NOTIFICATION] Failed:', error);
+    return false;
+  }
+}
+
+export async function sendClientMessageNotification(data: {
+  to: string;
+  from: string;
+  messagePreview: string;
+  portalUrl: string;
+  creativeName: string;
+  studioName?: string;
+}): Promise<boolean> {
+  if (!resend) {
+    console.log('[EMAIL] Would send client message notification to:', data.to);
+    return false;
+  }
+  try {
+    const preview = data.messagePreview.length > 150 ? data.messagePreview.substring(0, 150) + '...' : data.messagePreview;
+    const content = `
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span style="font-size: 48px;">💬</span>
+      </div>
+      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1f2937; text-align: center;">New Message from ${data.creativeName}</h2>
+      <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;">
+        <p style="margin: 0; color: #374151; font-style: italic; line-height: 1.6;">"${preview}"</p>
+      </div>
+      <div style="text-align: center; margin-top: 28px;">
+        <a href="${data.portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+          Open Portal & Reply
+        </a>
+      </div>
+    `;
+    const senderName = data.studioName || data.creativeName;
+    const { error } = await resend.emails.send({
+      from: `${senderName} <${SENDER_EMAIL}>`,
+      to: data.to,
+      subject: `${data.creativeName} sent you a message`,
+      html: getEmailTemplate(content, `Message from ${data.creativeName}`),
+    });
+    if (error) throw error;
+    console.log('[MESSAGE NOTIFICATION] Email sent to client:', data.to);
+    return true;
+  } catch (error) {
+    console.error('[MESSAGE NOTIFICATION] Failed:', error);
+    return false;
+  }
+}
+
+export async function sendWorkProgressNotification(data: {
+  to: string;
+  clientName: string;
+  deliverableName: string;
+  status: string;
+  creativeName: string;
+  studioName?: string;
+  portalUrl: string;
+}): Promise<boolean> {
+  if (!resend) {
+    console.log('[EMAIL] Would send work progress notification to:', data.to);
+    return false;
+  }
+  try {
+    const statusConfig: Record<string, { title: string; message: string; color: string }> = {
+      IN_PROGRESS: { title: 'Work Started', message: 'has started working on', color: '#3b82f6' },
+      READY: { title: 'Ready for Review', message: 'has completed work on', color: '#f59e0b' },
+      DELIVERED: { title: 'Delivered', message: 'has delivered', color: '#10b981' },
+      SHIPPED: { title: 'Shipped', message: 'has shipped', color: '#10b981' },
+    };
+    const cfg = statusConfig[data.status] || statusConfig.IN_PROGRESS;
+
+    const content = `
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span style="font-size: 48px;">${data.status === 'DELIVERED' || data.status === 'SHIPPED' ? '✅' : '🚀'}</span>
+      </div>
+      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1f2937; text-align: center;">${cfg.title}</h2>
+      <p style="text-align: center; color: #6b7280; margin-bottom: 24px;">Hi ${data.clientName},</p>
+      <div style="background: ${cfg.color}10; border-left: 4px solid ${cfg.color}; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+        <h3 style="margin: 0 0 8px 0; color: #1f2937;">${data.deliverableName}</h3>
+        <p style="margin: 0; color: #6b7280;">${data.creativeName} ${cfg.message} your deliverable.</p>
+      </div>
+      <div style="text-align: center; margin-top: 28px;">
+        <a href="${data.portalUrl}" style="display: inline-block; background: ${cfg.color}; color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+          View in Portal
+        </a>
+      </div>
+      <p style="text-align: center; color: #9ca3af; font-size: 14px; margin-top: 20px;">Track all project updates in your client portal.</p>
+    `;
+    const senderName = data.studioName || data.creativeName;
+    const { error } = await resend.emails.send({
+      from: `${senderName} <${SENDER_EMAIL}>`,
+      to: data.to,
+      subject: `${cfg.title}: ${data.deliverableName}`,
+      html: getEmailTemplate(content, cfg.title),
+    });
+    if (error) throw error;
+    console.log('[WORK NOTIFICATION] Email sent to client:', data.to);
+    return true;
+  } catch (error) {
+    console.error('[WORK NOTIFICATION] Failed:', error);
+    return false;
+  }
+}

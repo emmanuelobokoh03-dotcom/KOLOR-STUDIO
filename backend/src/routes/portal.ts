@@ -417,6 +417,25 @@ router.post('/:token/messages', async (req: Request, res: Response): Promise<voi
       },
     });
 
+    // Send email notification to creative (non-blocking)
+    if (lead.assignedToId) {
+      prisma.user.findUnique({ where: { id: lead.assignedToId }, select: { email: true, firstName: true } })
+        .then(async (creative) => {
+          if (creative) {
+            const { sendNewMessageNotification } = await import('../services/email');
+            await sendNewMessageNotification({
+              to: creative.email,
+              from: lead.clientName,
+              messagePreview: content.trim(),
+              dashboardUrl: `${process.env.FRONTEND_URL || ''}/dashboard`,
+              clientName: lead.clientName,
+              projectTitle: lead.projectTitle,
+            });
+          }
+        })
+        .catch(e => console.error('[MESSAGE NOTIFICATION] Error:', e));
+    }
+
     // Client responded — stop follow-up sequences (non-blocking)
     stopSequencesForLead(lead.id, 'Client responded').catch(e => console.error('Sequence stop error:', e));
   } catch (error) {
