@@ -1,99 +1,56 @@
 # KOLOR STUDIO - Product Requirements Document
 
 ## Original Problem Statement
-Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals. The AUTOPILOT phase automates the entire client workflow from inquiry to final payment and feedback.
+Build a comprehensive full-stack CRM ("KOLOR STUDIO") for creative professionals. The system automates the client workflow from inquiry to payment using an "Autopilot" pipeline.
 
-## Architecture
-- **Frontend**: React + Vite + TypeScript + Tailwind CSS + Sonner (toasts)
-- **Backend**: Node.js + Express + TypeScript + Prisma ORM
-- **Database**: PostgreSQL on Supabase with RLS policies
-- **Payment**: Dual-mode Stripe (direct SDK for production, Emergent proxy for preview)
-- **Email**: Resend integration with 15+ email templates
-- **Analytics**: Revenue pipeline tracking
-
-## AUTOPILOT Flow (Complete & Working)
-1. Client submits inquiry → Auto-response email
-2. Creative sends quote → Quote email with portal link
-3. Client views quote in portal → Status updated to VIEWED
-4. Client accepts quote → Auto-contract generated + sent + deposit payment link
-5. Client signs contract → Deposit payment email sent
-6. Client pays deposit → Confirmation emails
-7. Creative starts work → Progress notification to client
-8. Creative delivers → Final payment link
-9. Client pays final → Paid in full confirmation
-10. Message notifications → Both directions (client↔creative)
+## Core Architecture
+- **Frontend:** React + TypeScript + Vite + Tailwind CSS + Shadcn UI
+- **Backend:** Node.js + Express + TypeScript + Prisma ORM
+- **Database:** PostgreSQL (Supabase)
+- **Storage:** Supabase Storage
+- **Email:** Resend
+- **Payments:** Stripe (dual-mode: SDK + Python proxy fallback)
+- **Hosting:** Preview on Emergent Platform
 
 ## What's Been Implemented
 
-### Core Features (Complete)
-- Authentication and user management
-- KanbanBoard for lead/project pipeline
-- Lead CRUD with cover images, drag-and-drop status changes
-- Quote creation, sending, viewing, acceptance/decline
-- Auto-contract generation on quote acceptance
-- Client Portal with quotes, contracts, files, messages
-- File uploads and deliverables management
-- Revenue dashboard and analytics
-- Revenue Pipeline Widget (autopilot stages)
-- Settings (currency, brand, testimonials)
-- Public portfolio and inquiry form
-- Cron-based email follow-up sequences
-- Smart suggestions/onboarding banners
-- Demo project for new users
+### Phase 1: Core CRM (Complete)
+- User auth (register/login/JWT)
+- Lead management with Kanban board
+- Client portal with unique links
+- Messaging system (client<->creative)
 
-### Notification System (Complete)
-- Message notifications: Client → Creative (via portal)
-- Message notifications: Creative → Client (via dashboard)
-- Work progress notifications: Status changes to client
-- Quote emails: Link to portal instead of broken /quotes/ path
-- Contract auto-sent email: After auto-contract generation
-- Deposit payment email: After Stripe checkout creation
-- Quote acceptance notification: To studio owner
+### Phase 2: Autopilot Pipeline (Complete)
+- Quote creation, sending, and acceptance
+- Automatic contract generation on quote acceptance
+- Automatic email notifications on key events
+- Stripe payment integration (deposit collection)
+- Revenue pipeline dashboard widget
 
-### Bug Fixes History
-**Session 3 (March 9, 2026):**
-- P0: Message notifications both directions (3 new email functions)
-- P0: Work progress notifications for deliverable status changes
-- P1: Quote modal selector visibility (bg-dark-card → proper dark theme)
-- P2: Revenue Pipeline Widget added to dashboard
-- P2: Revenue pipeline API endpoint (/api/analytics/revenue-pipeline)
+### Phase 3: Pre-Beta Polish (Complete — March 9, 2026)
+- **Weekly Autopilot Digest Email:** Cron job (Mondays 9 AM) sends pipeline stats, revenue, action items. Skips if no activity. Preview/manual trigger at `/api/digest/preview` and `/api/digest/send`.
+- **Interactive Walkthrough/Setup Wizard:** 5-step OnboardingWizard component for new users (0 leads). Skippable, completion saved to localStorage. "Restart Tutorial" option in Settings.
+- **Color Branding Persistence:** BrandThemeContext caches to localStorage for instant load. API saves/loads brand colors via `/api/settings/brand`.
+- **Portal Background Readability:** Fixed purple colors (#7c3aed, #9333ea) replace dynamic brand-primary for reliable WCAG AA contrast. Neutral slate/white background, visible card borders.
 
-**Session 2 (March 9, 2026):**
-- P0: Auto-contract generation verified + comprehensive logging
-- P0: Stripe dual-mode (SDK for production, proxy for preview)
-- P0: Quote email portal link fixed
-- P1: Celebration toast in portal
-- P1: Currency settings used instead of hardcoded $
-- P1: Start Work button visibility fixed
-- P1: Settings tabs contrast improved
+## Key Test Accounts
+- Test user: test@test.com / Test123456!
+- Test Portal: /portal/gbi5z98i5sgz5txo6stgtb
 
-**Session 1 (Earlier):**
-- Data isolation vulnerability patched (10+ routes)
-- Email sending fixed (dotenv placement)
-- Prisma schema restored (PascalCase + @@map)
-- RLS policies applied to all tables
-- Build errors resolved (250+ TypeScript errors)
-
-## Key Technical Notes
-- **DO NOT RUN `prisma db pull`** — breaks PascalCase model names
-- Stripe proxy runs on port 8002 (Python FastAPI, supervisor-managed)
-- Backend needs supervisor restart for changes (no hot reload)
-- All backend routes prefixed with /api
-- Dual-mode payment: STRIPE_API_KEY or STRIPE_SECRET_KEY checked
+## API URL
+- https://studio-wizard-4.preview.emergentagent.com
 
 ## Prioritized Backlog
 
-### P1 (Upcoming)
-- Interactive Walkthrough/Setup Wizard
-- Color branding persistence across sessions
-- Portal background color improvements (client-facing readability)
+### P2 — Future Tasks
+- Client Onboarding Email Drip (automated email sequence for new clients)
+- Sequences Dashboard UI (creatives build/manage email follow-up sequences)
+- Project Timeline Modal (enhance existing timeline functionality)
+- Verify Revenue Analytics accuracy
+- Verify Portal Views Analytics
 
-### P2 (Future)
-- Client Onboarding Email Drip
-- Sequences Dashboard UI
-- Portal analytics tracking (page views, time spent)
-
-## Test Credentials
-- Test account: test@test.com / Test123456!
-- Demo Portal: /portal/cmmidu5bw000ka2vcjcug5sw1
-- Test EM Portal: /portal/gbi5z98i5sgz5txo6stgtb
+### P3 — Nice to Have
+- Mobile-responsive optimization pass
+- Dark mode for client portal
+- File sharing in client portal
+- Client feedback/rating system
