@@ -20,43 +20,41 @@ Build a comprehensive full-stack CRM ("KOLOR STUDIO") for creative professionals
 - Quote creation/sending/acceptance, Auto contract generation, Email notifications, Stripe payments, Revenue pipeline widget
 
 ### Phase 3: Pre-Beta Polish (Complete — March 9, 2026)
-- Weekly Autopilot Digest Email (cron + preview API)
-- Interactive Walkthrough/Setup Wizard (5-step OnboardingWizard)
-- Color Branding Persistence (localStorage cache + API)
-- Portal Background Readability (WCAG AA fixed purple colors)
+- Weekly Autopilot Digest Email, Interactive Walkthrough, Color Branding Persistence, Portal Readability
 
 ### Phase 4: P2 Features (Complete — March 10, 2026)
-- **Client Onboarding Email Drip:** 3-step automated sequence (Welcome → Portal Guide → Update Reminder). Triggers on contract signing. Cron processes every 6 hours. DB model: ClientOnboardingEnrollment.
-- **Sequences Dashboard UI:** Card-based dashboard as new "Sequences" view mode in Dashboard. Shows 2 built-in sequences with stats, toggle, detail modal with sequence flow visualization and email preview. Custom sequences "Coming Soon" placeholder.
+- **Client Onboarding Email Drip:** 3-step automated sequence (Welcome → Portal Guide → Update Reminder) on contract signing. Cron every 6h.
+- **Sequences Dashboard UI:** "Sequences" view mode in Dashboard showing built-in sequences with stats, toggle, detail modal, email preview.
+- **Quote Follow-Up Sequence:** 3-step automated conversion booster (Day 3: Gentle Reminder, Day 7: Answer Questions, Day 10: Final Follow-Up). Triggers on quote sent, stops on accept/decline/client message. Cron every 6h.
 
-### Deployment Fixes (March 10, 2026)
-- Added `app.set('trust proxy', true)` for Railway
-- Removed unused TypeScript variables blocking build
+### Deployment Fixes
+- Trust proxy for Railway, unused TypeScript variable fixes, ViewMode type fix for MobileBottomNav
 
 ## Key Test Accounts
 - Test user: test@test.com / Test123456!
 - Test Portal: /portal/gbi5z98i5sgz5txo6stgtb
 
-## API URL
-- https://studio-wizard-4.preview.emergentagent.com
+## API Endpoints (Phase 4)
+- `GET /api/sequences/dashboard` — Built-in sequences with real enrollment data
+- `GET /api/sequences/dashboard/stats` — Overview stats (2 active, emails/week, enrolled)
+- `PATCH /api/sequences/dashboard/:id/toggle` — Toggle sequence
+- `GET /api/sequences/:seqId/enrollments` — Enrolled clients
+- `GET /api/sequences/:seqId/steps/:stepNumber/preview` — Email HTML preview
 
-## New API Endpoints (Phase 4)
-- `GET /api/sequences/dashboard` — List built-in sequences with stats
-- `GET /api/sequences/dashboard/stats` — Overview stats (total, active, emails this week, enrolled)
-- `PATCH /api/sequences/dashboard/:id/toggle` — Toggle sequence active/inactive
-- `GET /api/sequences/:seqId/enrollments` — List enrolled clients for a sequence
-- `GET /api/sequences/:seqId/steps/:stepNumber/preview` — Preview email HTML
+## Cron Jobs
+1. **Weekly Digest** — Mondays 9 AM (pipeline stats email)
+2. **Client Onboarding** — Every 6h (3-step post-contract drip)
+3. **Quote Follow-Up** — Every 6h (3-step unanswered quote drip)
 
 ## Prioritized Backlog
 
-### P2 — Remaining Tasks
-- **(P2) Analytics Verification** — Verify revenue analytics accuracy and portal views tracking
-- **(P2) Quote Follow-Up Sequence** — Implement the actual quote follow-up email drip (currently shows as "Paused" placeholder in Sequences Dashboard)
-- **(P2) Project Timeline Modal** — Enhance existing timeline functionality
+### P2 — Remaining
+- Analytics Verification — Verify revenue analytics accuracy, portal views tracking
+- Project Timeline Modal enhancements
 
-### P3 — Future Tasks
-- Client Onboarding Email Drip enhancements (unsubscribe, A/B testing)
+### P3 — Future
 - Custom Sequence Builder (visual flow editor)
+- Email open rate tracking
 - Mobile-responsive optimization pass
 - Dark mode for client portal
 - File sharing in client portal
