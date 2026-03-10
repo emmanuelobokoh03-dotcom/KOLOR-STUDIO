@@ -48,6 +48,9 @@ ensureBucketExists().then(success => {
 const app: Express = express();
 const PORT = process.env.PORT || 5000;
 
+// Enable trust proxy - required for Railway/production proxy headers
+app.set('trust proxy', true);
+
 // =====================
 // MIDDLEWARE
 // =====================

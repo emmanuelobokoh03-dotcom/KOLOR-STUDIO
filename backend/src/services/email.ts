@@ -2083,17 +2083,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
     { label: 'Deposits Received', value: stats.depositsReceived, color: '#f59e0b', icon: 'dollar' },
   ];
 
-  const statCardsHtml = statCards.map(s => `
-    <td style="width: 33%; padding: 8px;">
-      <div style="background: ${s.color}10; border: 1px solid ${s.color}30; border-radius: 12px; padding: 16px; text-align: center;">
-        <div style="font-size: 28px; font-weight: 700; color: ${s.color};">${s.value}</div>
-        <div style="font-size: 12px; color: #6b7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${s.label}</div>
-      </div>
-    </td>
-  `).join('');
-
   // Chunk stat cards into rows of 3
-  const row1 = statCardsHtml.slice(0, statCards.length <= 3 ? undefined : undefined);
 
   const nextActionsHtml = nextActions.length > 0
     ? nextActions.map(a => `
