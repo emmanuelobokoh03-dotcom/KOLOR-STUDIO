@@ -14,7 +14,7 @@ import requests
 import time
 import uuid
 
-BASE_URL = "https://studio-wizard-4.preview.emergentagent.com"
+BASE_URL = "https://crm-sequences-hub.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

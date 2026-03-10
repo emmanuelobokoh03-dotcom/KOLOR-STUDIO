@@ -53,7 +53,7 @@ router.get('/dashboard', authMiddleware, async (req: AuthRequest, res: Response)
         stats: {
           enrolled: followUpEnrollments.length,
           completed: followUpEnrollments.filter(e => e.completed).length,
-          active: followUpEnrollments.filter(e => !e.completed).length,
+          active: followUpEnrollments.filter(e => !e.completed && !e.stoppedAt).length,
         },
       },
     ];
@@ -78,7 +78,8 @@ router.get('/dashboard/stats', authMiddleware, async (req: AuthRequest, res: Res
       where: { quote: { lead: { assignedToId: userId } } },
     });
 
-    const onboardingEmailsWeek = await prisma.clientOnboardingEnrollment.count({
+    // Count individual emails sent this week (each emailNSentAt is one email)
+    const onboardingEnrollmentsWeek = await prisma.clientOnboardingEnrollment.findMany({
       where: {
         lead: { assignedToId: userId },
         OR: [
@@ -87,8 +88,16 @@ router.get('/dashboard/stats', authMiddleware, async (req: AuthRequest, res: Res
           { email3SentAt: { gte: weekAgo } },
         ],
       },
+      select: { email1SentAt: true, email2SentAt: true, email3SentAt: true },
     });
-    const followUpEmailsWeek = await prisma.quoteFollowUpEnrollment.count({
+    let onboardingEmailCount = 0;
+    for (const e of onboardingEnrollmentsWeek) {
+      if (e.email1SentAt && e.email1SentAt >= weekAgo) onboardingEmailCount++;
+      if (e.email2SentAt && e.email2SentAt >= weekAgo) onboardingEmailCount++;
+      if (e.email3SentAt && e.email3SentAt >= weekAgo) onboardingEmailCount++;
+    }
+
+    const followUpEnrollmentsWeek = await prisma.quoteFollowUpEnrollment.findMany({
       where: {
         quote: { lead: { assignedToId: userId } },
         OR: [
@@ -97,12 +106,22 @@ router.get('/dashboard/stats', authMiddleware, async (req: AuthRequest, res: Res
           { email3SentAt: { gte: weekAgo } },
         ],
       },
+      select: { email1SentAt: true, email2SentAt: true, email3SentAt: true },
     });
+    let followUpEmailCount = 0;
+    for (const e of followUpEnrollmentsWeek) {
+      if (e.email1SentAt && e.email1SentAt >= weekAgo) followUpEmailCount++;
+      if (e.email2SentAt && e.email2SentAt >= weekAgo) followUpEmailCount++;
+      if (e.email3SentAt && e.email3SentAt >= weekAgo) followUpEmailCount++;
+    }
+
+    // Both built-in sequences are always active (no toggle persistence yet)
+    const activeSequences = 2;
 
     res.json({
       totalSequences: 2,
-      activeSequences: 2,
-      emailsSentThisWeek: onboardingEmailsWeek + followUpEmailsWeek,
+      activeSequences,
+      emailsSentThisWeek: onboardingEmailCount + followUpEmailCount,
       totalEnrolled: onboardingEnrolled + followUpEnrolled,
     });
   } catch (error) {

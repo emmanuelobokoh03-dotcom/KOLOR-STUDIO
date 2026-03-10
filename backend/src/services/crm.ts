@@ -139,24 +139,29 @@ export const getRevenueStats = async (userId: string) => {
   const yearStart = startOfYear(now);
   const lastMonthStart = subMonths(monthStart, 1);
 
+  // Received revenue includes RECEIVED, PAID_IN_FULL statuses
+  const receivedStatuses = ['RECEIVED', 'PAID_IN_FULL'] as const;
+  // Pending revenue includes EXPECTED, DEPOSIT_RECEIVED, OVERDUE statuses
+  const pendingStatuses = ['EXPECTED', 'DEPOSIT_RECEIVED', 'OVERDUE'] as const;
+
   const thisMonth = await prisma.income.aggregate({
-    where: { userId, status: 'RECEIVED', receivedDate: { gte: monthStart } },
+    where: { userId, status: { in: [...receivedStatuses] }, receivedDate: { gte: monthStart } },
     _sum: { amount: true },
     _count: true
   });
 
   const lastMonth = await prisma.income.aggregate({
-    where: { userId, status: 'RECEIVED', receivedDate: { gte: lastMonthStart, lt: monthStart } },
+    where: { userId, status: { in: [...receivedStatuses] }, receivedDate: { gte: lastMonthStart, lt: monthStart } },
     _sum: { amount: true }
   });
 
   const ytd = await prisma.income.aggregate({
-    where: { userId, status: 'RECEIVED', receivedDate: { gte: yearStart } },
+    where: { userId, status: { in: [...receivedStatuses] }, receivedDate: { gte: yearStart } },
     _sum: { amount: true }
   });
 
   const expected = await prisma.income.aggregate({
-    where: { userId, status: 'EXPECTED' },
+    where: { userId, status: { in: [...pendingStatuses] } },
     _sum: { amount: true },
     _count: true
   });
@@ -191,7 +196,7 @@ async function getMonthlyTrend(userId: string, months: number) {
     const result = await prisma.income.aggregate({
       where: {
         userId,
-        status: 'RECEIVED',
+        status: { in: ['RECEIVED', 'PAID_IN_FULL'] },
         receivedDate: { gte: start, lt: end }
       },
       _sum: { amount: true }

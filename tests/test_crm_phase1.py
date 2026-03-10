@@ -7,7 +7,7 @@ import requests
 import os
 from datetime import datetime, timedelta
 
-BASE_URL = "https://studio-wizard-4.preview.emergentagent.com"
+BASE_URL = "https://crm-sequences-hub.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

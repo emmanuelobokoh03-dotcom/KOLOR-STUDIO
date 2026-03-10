@@ -328,7 +328,7 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
     });
 
     const studioName = contract.lead.assignedTo?.studioName || `${contract.lead.assignedTo?.firstName} ${contract.lead.assignedTo?.lastName}`;
-    const portalUrl = `${process.env.FRONTEND_URL || 'https://studio-wizard-4.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
+    const portalUrl = `${process.env.FRONTEND_URL || 'https://crm-sequences-hub.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
 
     await sendContractSentEmail({
       clientName: contract.lead.clientName,

@@ -377,11 +377,19 @@ router.get('/revenue-pipeline', authMiddleware, async (req: AuthRequest, res: Re
       const income = lead.incomeRecords[0];
       const value = Number(quote?.total || income?.amount || 0);
 
-      if (income?.finalPaid) {
+      // Check both boolean flags and status field for income state
+      const isFinalPaid = income?.finalPaid || income?.status === 'PAID_IN_FULL';
+      const isDepositPaid = income?.depositPaid || income?.status === 'DEPOSIT_RECEIVED';
+
+      if (isFinalPaid) {
         pipeline.paidInFull.count++;
         pipeline.paidInFull.value += value;
         pipeline.paidInFull.clients.push({ name: lead.clientName, value });
-      } else if (income?.depositPaid) {
+      } else if (isDepositPaid && lead.status === 'BOOKED') {
+        pipeline.inProgress.count++;
+        pipeline.inProgress.value += value;
+        pipeline.inProgress.clients.push({ name: lead.clientName, value });
+      } else if (isDepositPaid) {
         pipeline.depositPaid.count++;
         pipeline.depositPaid.value += value;
         pipeline.depositPaid.clients.push({ name: lead.clientName, value });

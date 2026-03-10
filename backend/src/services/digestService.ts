@@ -62,17 +62,27 @@ export async function generateDigestForUser(userId: string): Promise<DigestData 
     },
   });
 
-  // Income/deposits this week
-  const deposits = await prisma.income.findMany({
+  // Income/deposits this week — count deposits received
+  const depositsThisWeek = await prisma.income.findMany({
     where: {
       userId,
       depositPaid: true,
-      updatedAt: { gte: oneWeekAgo },
+      depositPaidAt: { gte: oneWeekAgo },
+    },
+    select: { depositAmount: true },
+  });
+  const depositCount = depositsThisWeek.length;
+
+  // Total revenue this week — all received/paid income
+  const revenueThisWeek = await prisma.income.findMany({
+    where: {
+      userId,
+      status: { in: ['RECEIVED', 'PAID_IN_FULL'] },
+      receivedDate: { gte: oneWeekAgo },
     },
     select: { amount: true },
   });
-  const depositCount = deposits.length;
-  const totalRevenue = deposits.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
+  const totalRevenue = revenueThisWeek.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
 
   // Leads needing follow-up (no activity in 3+ days, not booked/lost)
   const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
