@@ -44,6 +44,7 @@ export async function enrollInOnboarding(leadId: string) {
       creativeName,
       projectType: lead.serviceType || 'Project',
       portalUrl,
+      leadId,
     });
 
     if (sent) {
@@ -96,6 +97,7 @@ export async function processOnboardingSequences() {
         creativeName,
         projectType: e.lead.serviceType || 'Project',
         portalUrl,
+        leadId: e.leadId,
       });
       if (sent) {
         await prisma.clientOnboardingEnrollment.update({
@@ -148,6 +150,7 @@ export async function processOnboardingSequences() {
         projectType: e.lead.serviceType || 'Project',
         portalUrl,
         daysUntilDeadline,
+        leadId: e.leadId,
       });
       if (sent) {
         await prisma.clientOnboardingEnrollment.update({

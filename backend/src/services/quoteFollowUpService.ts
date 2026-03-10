@@ -92,6 +92,7 @@ export async function processQuoteFollowUpSequences() {
         quoteAmount: quote.total,
         currencySymbol: quote.currencySymbol || '$',
         portalUrl,
+        leadId: quote.leadId,
       });
       if (sent) {
         await prisma.quoteFollowUpEnrollment.update({
@@ -142,6 +143,7 @@ export async function processQuoteFollowUpSequences() {
         quoteAmount: quote.total,
         currencySymbol: quote.currencySymbol || '$',
         portalUrl,
+        leadId: quote.leadId,
       });
       if (sent) {
         await prisma.quoteFollowUpEnrollment.update({
@@ -196,6 +198,7 @@ export async function processQuoteFollowUpSequences() {
         currencySymbol: quote.currencySymbol || '$',
         portalUrl,
         expirationDays: daysUntilExpiry,
+        leadId: quote.leadId,
       });
       if (sent) {
         await prisma.quoteFollowUpEnrollment.update({

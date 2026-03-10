@@ -1,5 +1,6 @@
 import { Router, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { getOpenRate, getAverageOpenRate } from '../services/emailTracking';
 
 const router = Router();
 import prisma from '../lib/prisma';
@@ -21,6 +22,18 @@ router.get('/dashboard', authMiddleware, async (req: AuthRequest, res: Response)
       where: { quote: { lead: { assignedToId: userId } } },
     });
 
+    // Calculate real open rates from tracking data
+    const [onb1Rate, onb2Rate, onb3Rate, fu1Rate, fu2Rate, fu3Rate, onbAvgRate, fuAvgRate] = await Promise.all([
+      getOpenRate('client-onboarding', 1),
+      getOpenRate('client-onboarding', 2),
+      getOpenRate('client-onboarding', 3),
+      getOpenRate('quote-followup', 1),
+      getOpenRate('quote-followup', 2),
+      getOpenRate('quote-followup', 3),
+      getAverageOpenRate('client-onboarding'),
+      getAverageOpenRate('quote-followup'),
+    ]);
+
     const sequences: any[] = [
       {
         id: 'client-onboarding',
@@ -29,14 +42,15 @@ router.get('/dashboard', authMiddleware, async (req: AuthRequest, res: Response)
         trigger: 'When contract is signed',
         active: true,
         steps: [
-          { stepNumber: 1, name: 'Welcome & What to Expect', delay: 0, subject: "Welcome! Let's Get Started", sentCount: onboardingEnrollments.filter(e => e.email1SentAt).length, openRate: null },
-          { stepNumber: 2, name: 'Portal Guide', delay: 2, subject: 'Quick Guide to Your Client Portal', sentCount: onboardingEnrollments.filter(e => e.email2SentAt).length, openRate: null },
-          { stepNumber: 3, name: 'Project Update Reminder', delay: 7, subject: 'Your Project is Progressing!', sentCount: onboardingEnrollments.filter(e => e.email3SentAt).length, openRate: null },
+          { stepNumber: 1, name: 'Welcome & What to Expect', delay: 0, subject: "Welcome! Let's Get Started", sentCount: onboardingEnrollments.filter(e => e.email1SentAt).length, openRate: onb1Rate },
+          { stepNumber: 2, name: 'Portal Guide', delay: 2, subject: 'Quick Guide to Your Client Portal', sentCount: onboardingEnrollments.filter(e => e.email2SentAt).length, openRate: onb2Rate },
+          { stepNumber: 3, name: 'Project Update Reminder', delay: 7, subject: 'Your Project is Progressing!', sentCount: onboardingEnrollments.filter(e => e.email3SentAt).length, openRate: onb3Rate },
         ],
         stats: {
           enrolled: onboardingEnrollments.length,
           completed: onboardingEnrollments.filter(e => e.completed).length,
           active: onboardingEnrollments.filter(e => !e.completed && !e.stoppedAt).length,
+          averageOpenRate: onbAvgRate,
         },
       },
       {
@@ -46,14 +60,15 @@ router.get('/dashboard', authMiddleware, async (req: AuthRequest, res: Response)
         trigger: 'When quote is sent',
         active: true,
         steps: [
-          { stepNumber: 1, name: 'Gentle Reminder', delay: 3, subject: 'Following up on your quote', sentCount: followUpEnrollments.filter(e => e.email1SentAt).length, openRate: null },
-          { stepNumber: 2, name: 'Answer Questions', delay: 7, subject: 'Any questions about your quote?', sentCount: followUpEnrollments.filter(e => e.email2SentAt).length, openRate: null },
-          { stepNumber: 3, name: 'Final Follow-Up', delay: 10, subject: 'Quote expires soon', sentCount: followUpEnrollments.filter(e => e.email3SentAt).length, openRate: null },
+          { stepNumber: 1, name: 'Gentle Reminder', delay: 3, subject: 'Following up on your quote', sentCount: followUpEnrollments.filter(e => e.email1SentAt).length, openRate: fu1Rate },
+          { stepNumber: 2, name: 'Answer Questions', delay: 7, subject: 'Any questions about your quote?', sentCount: followUpEnrollments.filter(e => e.email2SentAt).length, openRate: fu2Rate },
+          { stepNumber: 3, name: 'Final Follow-Up', delay: 10, subject: 'Quote expires soon', sentCount: followUpEnrollments.filter(e => e.email3SentAt).length, openRate: fu3Rate },
         ],
         stats: {
           enrolled: followUpEnrollments.length,
           completed: followUpEnrollments.filter(e => e.completed).length,
           active: followUpEnrollments.filter(e => !e.completed && !e.stoppedAt).length,
+          averageOpenRate: fuAvgRate,
         },
       },
     ];

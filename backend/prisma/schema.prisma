@@ -262,6 +262,7 @@ model Lead {
   milestones        ProjectMilestone[]
   enrollments       SequenceEnrollment[]
   onboardingEnrollments ClientOnboardingEnrollment[]
+  emailTracking         EmailTracking[]
 
   @@index([assignedToId])
   @@index([createdAt])
@@ -792,4 +793,29 @@ model QuoteFollowUpEnrollment {
   @@index([completed])
   @@index([currentStep])
   @@map("quote_followup_enrollments")
+}
+
+
+model EmailTracking {
+  id              String    @id @default(cuid())
+  trackingId      String    @unique
+  emailType       String
+  sequenceId      String?
+  stepNumber      Int?
+  leadId          String
+  lead            Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  recipientEmail  String
+  sentAt          DateTime  @default(now())
+  opened          Boolean   @default(false)
+  openedAt        DateTime?
+  openCount       Int       @default(0)
+  userAgent       String?
+  ipAddress       String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([trackingId])
+  @@index([leadId])
+  @@index([sequenceId, stepNumber])
+  @@map("email_tracking")
 }

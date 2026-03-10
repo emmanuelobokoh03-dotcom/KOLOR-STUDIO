@@ -19,7 +19,7 @@ interface SequenceData {
   trigger: string
   active: boolean
   steps: SequenceStep[]
-  stats: { enrolled: number; completed: number; active: number }
+  stats: { enrolled: number; completed: number; active: number; averageOpenRate?: number | null }
 }
 
 interface Enrollment {
@@ -140,20 +140,26 @@ function SequenceCard({ seq, onToggle, onViewDetail }: {
               <span className="text-[#FAFAFA] text-xs">
                 Day {step.delay}: {step.name}
               </span>
-              {step.sentCount > 0 && (
-                <span className="ml-auto text-[10px] text-[#666]">{step.sentCount} sent</span>
-              )}
+              <span className="ml-auto flex items-center gap-2">
+                {step.openRate != null && (
+                  <span className="text-[10px] text-amber-400 font-medium">{step.openRate}% open</span>
+                )}
+                {step.sentCount > 0 && (
+                  <span className="text-[10px] text-[#666]">{step.sentCount} sent</span>
+                )}
+              </span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3 mb-5">
+      <div className="grid grid-cols-4 gap-3 mb-5">
         {[
           { label: 'Enrolled', value: seq.stats.enrolled, color: 'text-purple-400' },
           { label: 'Completed', value: seq.stats.completed, color: 'text-emerald-400' },
           { label: 'Active', value: seq.stats.active, color: 'text-blue-400' },
+          { label: 'Open Rate', value: seq.stats.averageOpenRate != null ? `${seq.stats.averageOpenRate}%` : '—', color: 'text-amber-400' },
         ].map(({ label, value, color }) => (
           <div key={label} className="text-center">
             <p className={`text-xl font-bold ${color}`}>{value}</p>
@@ -243,6 +249,9 @@ function SequenceDetailModal({ seq, onClose }: { seq: SequenceData; onClose: () 
                       <div className="text-right">
                         <p className="text-lg font-bold text-purple-400">{step.sentCount}</p>
                         <p className="text-[10px] text-[#666]">Sent</p>
+                        {step.openRate != null && (
+                          <p className="text-sm font-semibold text-amber-400 mt-1">{step.openRate}% opened</p>
+                        )}
                       </div>
                     )}
                   </div>

@@ -2231,17 +2231,36 @@ interface OnboardingEmailParams {
   projectType: string;
   portalUrl: string;
   daysUntilDeadline?: number;
+  leadId?: string;
 }
 
 export async function sendClientOnboardingEmail(
   step: 1 | 2 | 3,
   params: OnboardingEmailParams
 ): Promise<boolean> {
-  const { to, clientName, creativeName, projectType, portalUrl, daysUntilDeadline } = params;
+  const { to, clientName, creativeName, projectType, portalUrl, daysUntilDeadline, leadId } = params;
 
   if (!resend) {
     console.log(`[ONBOARDING] Resend not configured, would send step ${step} to:`, to);
     return false;
+  }
+
+  // Create tracking record if leadId available
+  let trackingPixelHtml = '';
+  if (leadId) {
+    try {
+      const { createEmailTracking, getTrackingPixelHtml } = await import('./emailTracking');
+      const trackingId = await createEmailTracking({
+        emailType: `client_onboarding_${step}`,
+        sequenceId: 'client-onboarding',
+        stepNumber: step,
+        leadId,
+        recipientEmail: to,
+      });
+      trackingPixelHtml = getTrackingPixelHtml(trackingId);
+    } catch (err) {
+      console.error('[ONBOARDING] Tracking creation failed:', err);
+    }
   }
 
   const templates: Record<number, { subject: string; content: string }> = {
@@ -2367,11 +2386,16 @@ export async function sendClientOnboardingEmail(
   const stepLabels = { 1: 'Welcome', 2: 'Portal Guide', 3: 'Update Reminder' };
 
   try {
+    let html = getEmailTemplate(template.content, `Client Onboarding: ${stepLabels[step]}`);
+    // Inject tracking pixel before closing </body>
+    if (trackingPixelHtml) {
+      html = html.replace('</body>', `${trackingPixelHtml}</body>`);
+    }
     const { data: emailData, error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [to],
       subject: template.subject,
-      html: getEmailTemplate(template.content, `Client Onboarding: ${stepLabels[step]}`),
+      html,
     });
 
     if (error) {
@@ -2401,18 +2425,37 @@ interface QuoteFollowUpParams {
   currencySymbol: string;
   portalUrl: string;
   expirationDays?: number;
+  leadId?: string;
 }
 
 export async function sendQuoteFollowUpEmail(
   step: 1 | 2 | 3,
   params: QuoteFollowUpParams
 ): Promise<boolean> {
-  const { to, clientName, creativeName, projectType, quoteAmount, currencySymbol, portalUrl, expirationDays } = params;
+  const { to, clientName, creativeName, projectType, quoteAmount, currencySymbol, portalUrl, expirationDays, leadId } = params;
   const formattedAmount = `${currencySymbol}${quoteAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   if (!resend) {
     console.log(`[QUOTE FOLLOWUP] Resend not configured, would send step ${step} to:`, to);
     return false;
+  }
+
+  // Create tracking record if leadId available
+  let trackingPixelHtml = '';
+  if (leadId) {
+    try {
+      const { createEmailTracking, getTrackingPixelHtml } = await import('./emailTracking');
+      const trackingId = await createEmailTracking({
+        emailType: `quote_followup_${step}`,
+        sequenceId: 'quote-followup',
+        stepNumber: step,
+        leadId,
+        recipientEmail: to,
+      });
+      trackingPixelHtml = getTrackingPixelHtml(trackingId);
+    } catch (err) {
+      console.error('[QUOTE FOLLOWUP] Tracking creation failed:', err);
+    }
   }
 
   const templates: Record<number, { subject: string; content: string }> = {
@@ -2503,11 +2546,15 @@ export async function sendQuoteFollowUpEmail(
   const stepLabels: Record<number, string> = { 1: 'Gentle Reminder', 2: 'Answer Questions', 3: 'Final Follow-Up' };
 
   try {
+    let html = getEmailTemplate(template.content, `Quote Follow-Up: ${stepLabels[step]}`);
+    if (trackingPixelHtml) {
+      html = html.replace('</body>', `${trackingPixelHtml}</body>`);
+    }
     const { data: emailData, error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [to],
       subject: template.subject,
-      html: getEmailTemplate(template.content, `Quote Follow-Up: ${stepLabels[step]}`),
+      html,
     });
 
     if (error) {
