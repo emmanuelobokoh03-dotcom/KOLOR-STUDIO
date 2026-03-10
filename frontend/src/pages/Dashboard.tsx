@@ -48,11 +48,12 @@ import { CelebrationModal, checkCelebration, Achievement, achievements } from '.
 import CRMAlerts from '../components/CRMAlerts'
 import RevenueDashboard from '../components/RevenueDashboard'
 import RevenuePipelineWidget from '../components/RevenuePipelineWidget'
+import SequencesDashboard from './SequencesDashboard'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import DemoProjectBanner from '../components/DemoProjectBanner'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 
-type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
+type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
 
 const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
   NEW: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
@@ -407,6 +408,7 @@ const Dashboard = () => {
                 { mode: 'analytics' as ViewMode, icon: BarChart3, label: 'Analytics' },
                 { mode: 'calendar' as ViewMode, icon: CalendarDays, label: 'Calendar' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
+                { mode: 'sequences' as ViewMode, icon: Mail, label: 'Sequences' },
               ]).map(({ mode, icon: Icon, label }) => (
                 <button
                   key={mode}
@@ -610,6 +612,7 @@ const Dashboard = () => {
                 { mode: 'analytics' as ViewMode, icon: BarChart3, title: 'Analytics' },
                 { mode: 'calendar' as ViewMode, icon: CalendarDays, title: 'Calendar' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, title: 'Portfolio' },
+                { mode: 'sequences' as ViewMode, icon: Mail, title: 'Sequences' },
               ]).map(({ mode, icon: Icon, title }) => (
                 <button
                   key={mode}
@@ -767,7 +770,9 @@ const Dashboard = () => {
         </div>
 
         {/* Content */}
-        {viewMode === 'analytics' ? (
+        {viewMode === 'sequences' ? (
+          <SequencesDashboard />
+        ) : viewMode === 'analytics' ? (
           <AnalyticsDashboard user={user} onFilterByStatus={handleFilterByStatus} />
         ) : viewMode === 'calendar' ? (
           <CalendarViewNew 

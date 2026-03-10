@@ -4,7 +4,279 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 const router = Router();
 import prisma from '../lib/prisma';
 
-// GET /api/sequences - List all sequences for user
+// ── Dashboard endpoints (must be BEFORE /:id routes) ─────
+
+// GET /api/sequences/dashboard - Get all sequences for dashboard view
+router.get('/dashboard', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId!;
+
+    // Get client onboarding enrollment stats
+    const onboardingEnrollments = await prisma.clientOnboardingEnrollment.findMany({
+      where: { lead: { assignedToId: userId } },
+    });
+
+    const sequences: any[] = [
+      {
+        id: 'client-onboarding',
+        name: 'Client Onboarding',
+        type: 'built-in' as const,
+        trigger: 'When contract is signed',
+        active: true, // Always active for now
+        steps: [
+          { stepNumber: 1, name: 'Welcome & What to Expect', delay: 0, subject: "Welcome! Let's Get Started", sentCount: onboardingEnrollments.filter(e => e.email1SentAt).length, openRate: null },
+          { stepNumber: 2, name: 'Portal Guide', delay: 2, subject: 'Quick Guide to Your Client Portal', sentCount: onboardingEnrollments.filter(e => e.email2SentAt).length, openRate: null },
+          { stepNumber: 3, name: 'Project Update Reminder', delay: 7, subject: 'Your Project is Progressing!', sentCount: onboardingEnrollments.filter(e => e.email3SentAt).length, openRate: null },
+        ],
+        stats: {
+          enrolled: onboardingEnrollments.length,
+          completed: onboardingEnrollments.filter(e => e.completed).length,
+          active: onboardingEnrollments.filter(e => !e.completed && !e.stoppedAt).length,
+        },
+      },
+      {
+        id: 'quote-followup',
+        name: 'Quote Follow-Up',
+        type: 'built-in' as const,
+        trigger: 'When quote is sent',
+        active: false,
+        steps: [
+          { stepNumber: 1, name: 'Gentle Reminder', delay: 3, subject: 'Following up on your quote', sentCount: 0, openRate: null },
+          { stepNumber: 2, name: 'Answer Questions', delay: 7, subject: 'Any questions about your quote?', sentCount: 0, openRate: null },
+          { stepNumber: 3, name: 'Final Follow-Up', delay: 10, subject: 'Last chance — quote expires soon', sentCount: 0, openRate: null },
+        ],
+        stats: { enrolled: 0, completed: 0, active: 0 },
+      },
+    ];
+
+    res.json({ sequences });
+  } catch (error) {
+    console.error('[SEQUENCES DASHBOARD] Error:', error);
+    res.status(500).json({ error: 'Failed to load sequences' });
+  }
+});
+
+// GET /api/sequences/dashboard/stats
+router.get('/dashboard/stats', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId!;
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    const totalEnrolled = await prisma.clientOnboardingEnrollment.count({
+      where: { lead: { assignedToId: userId } },
+    });
+
+    const emailsSentThisWeek = await prisma.clientOnboardingEnrollment.count({
+      where: {
+        lead: { assignedToId: userId },
+        OR: [
+          { email1SentAt: { gte: weekAgo } },
+          { email2SentAt: { gte: weekAgo } },
+          { email3SentAt: { gte: weekAgo } },
+        ],
+      },
+    });
+
+    res.json({
+      totalSequences: 2,
+      activeSequences: 1,
+      emailsSentThisWeek,
+      totalEnrolled,
+    });
+  } catch (error) {
+    console.error('[SEQUENCES STATS] Error:', error);
+    res.status(500).json({ error: 'Failed to load stats' });
+  }
+});
+
+// PATCH /api/sequences/dashboard/:id/toggle
+router.patch('/dashboard/:id/toggle', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { active } = req.body;
+
+    if (id === 'client-onboarding') {
+      // For now, just acknowledge — actual toggle logic can be added when preferences are stored
+      console.log(`[SEQUENCES] Client onboarding toggled to: ${active}`);
+      res.json({ success: true });
+    } else {
+      res.status(400).json({ error: 'Sequence not found or cannot be toggled' });
+    }
+  } catch (error) {
+    console.error('[SEQUENCES TOGGLE] Error:', error);
+    res.status(500).json({ error: 'Failed to toggle sequence' });
+  }
+});
+
+// GET /api/sequences/:id/enrollments — for detail modal
+router.get('/:seqId/enrollments', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId!;
+    const { seqId } = req.params;
+
+    if (seqId === 'client-onboarding') {
+      const enrollments = await prisma.clientOnboardingEnrollment.findMany({
+        where: { lead: { assignedToId: userId } },
+        include: { lead: { select: { clientName: true } } },
+        orderBy: { enrolledAt: 'desc' },
+        take: 50,
+      });
+
+      const formatted = enrollments.map(e => {
+        let nextEmailDate: string | null = null;
+        if (!e.completed && !e.stoppedAt) {
+          if (e.currentStep === 1 && e.email1SentAt) {
+            nextEmailDate = new Date(e.email1SentAt.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString();
+          } else if (e.currentStep === 2 && e.enrolledAt) {
+            nextEmailDate = new Date(e.enrolledAt.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+          }
+        }
+        return {
+          id: e.id,
+          clientName: e.lead.clientName,
+          enrolledAt: e.enrolledAt.toISOString(),
+          currentStep: e.currentStep,
+          nextEmailDate,
+          completed: e.completed,
+        };
+      });
+
+      res.json({ enrollments: formatted });
+    } else if (seqId === 'quote-followup') {
+      res.json({ enrollments: [] });
+    } else {
+      // Custom sequence enrollments
+      const seqId = req.params.seqId as string;
+      const enrollments = await prisma.sequenceEnrollment.findMany({
+        where: { sequenceId: seqId },
+        include: { lead: { select: { clientName: true, assignedToId: true } } },
+        orderBy: { enrolledAt: 'desc' },
+        take: 50,
+      });
+      const filtered = enrollments.filter(e => e.lead.assignedToId === userId);
+      res.json({
+        enrollments: filtered.map(e => ({
+          id: e.id,
+          clientName: e.lead.clientName,
+          enrolledAt: e.enrolledAt.toISOString(),
+          currentStep: e.currentStep,
+          nextEmailDate: e.nextEmailAt?.toISOString() || null,
+          completed: e.status === 'COMPLETED',
+        })),
+      });
+    }
+  } catch (error) {
+    console.error('[SEQUENCES ENROLLMENTS] Error:', error);
+    res.status(500).json({ error: 'Failed to load enrollments' });
+  }
+});
+
+// GET /api/sequences/:seqId/steps/:stepNumber/preview
+router.get('/:seqId/steps/:stepNumber/preview', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { seqId } = req.params;
+    const stepNum = parseInt(req.params.stepNumber as string, 10) as 1 | 2 | 3;
+
+    if (seqId === 'client-onboarding' && [1, 2, 3].includes(stepNum)) {
+      const user = await prisma.user.findUnique({ where: { id: req.userId! }, select: { firstName: true, studioName: true } });
+      const creativeName = user?.studioName || user?.firstName || 'Your Studio';
+
+      const previews: Record<number, { subject: string; html: string }> = {
+        1: {
+          subject: "Welcome! Let's Get Started on Your Project",
+          html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; padding: 32px 24px; border-radius: 12px 12px 0 0; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px;">Welcome to Your Project!</h1>
+            </div>
+            <div style="padding: 24px; background: white;">
+              <p style="color: #374151; font-size: 15px;">Hi [Client Name],</p>
+              <p style="color: #374151; font-size: 15px;">I'm excited to work with you on your project. Here's what to expect:</p>
+              <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 16px; margin: 16px 0; border-radius: 6px;">
+                <ul style="margin: 0; padding-left: 18px; color: #4b5563; line-height: 1.8;">
+                  <li>I'll start working right away</li>
+                  <li>Updates through your client portal</li>
+                  <li>Message me anytime with questions</li>
+                  <li>Notification when files are ready</li>
+                </ul>
+              </div>
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="#" style="display: inline-block; background: #7c3aed; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Open Your Portal →</a>
+              </div>
+              <p style="color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; padding-top: 16px;">Questions? Just reply!<br><strong>${creativeName}</strong></p>
+            </div></div>`,
+        },
+        2: {
+          subject: 'Quick Guide to Your Client Portal',
+          html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 32px 24px; border-radius: 12px 12px 0 0; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px;">Your Client Portal Guide</h1>
+            </div>
+            <div style="padding: 24px; background: white;">
+              <p style="color: #374151; font-size: 15px;">Hi [Client Name],</p>
+              <p style="color: #374151; font-size: 15px;">Your client portal has everything you need:</p>
+              <div style="margin: 16px 0;">
+                <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 12px; margin-bottom: 8px; border-radius: 6px;">
+                  <strong style="color: #1e40af;">Send Messages</strong><br><span style="color: #475569; font-size: 13px;">Ask questions, share ideas anytime</span>
+                </div>
+                <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 12px; margin-bottom: 8px; border-radius: 6px;">
+                  <strong style="color: #065f46;">View Files</strong><br><span style="color: #475569; font-size: 13px;">Download files when ready</span>
+                </div>
+                <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; margin-bottom: 8px; border-radius: 6px;">
+                  <strong style="color: #92400e;">Track Progress</strong><br><span style="color: #475569; font-size: 13px;">See timeline and milestones</span>
+                </div>
+                <div style="background: #fce7f3; border-left: 4px solid #ec4899; padding: 12px; border-radius: 6px;">
+                  <strong style="color: #9f1239;">Manage Payments</strong><br><span style="color: #475569; font-size: 13px;">View invoices and history</span>
+                </div>
+              </div>
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="#" style="display: inline-block; background: #3b82f6; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Explore Your Portal →</a>
+              </div>
+              <p style="color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; padding-top: 16px;">Need help? I'm here!<br><strong>${creativeName}</strong></p>
+            </div></div>`,
+        },
+        3: {
+          subject: 'Your Project is Progressing!',
+          html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 32px 24px; border-radius: 12px 12px 0 0; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px;">Your Project is Underway!</h1>
+            </div>
+            <div style="padding: 24px; background: white;">
+              <p style="color: #374151; font-size: 15px;">Hi [Client Name],</p>
+              <p style="color: #374151; font-size: 15px;">Great news! Work on your project is progressing well.</p>
+              <div style="background: #ecfdf5; border: 2px solid #10b981; padding: 20px; margin: 16px 0; border-radius: 12px; text-align: center;">
+                <p style="margin: 0; color: #065f46; font-size: 16px; font-weight: 600;">On track for timely delivery!</p>
+              </div>
+              <p style="color: #374151;"><strong>What you can do:</strong></p>
+              <ul style="color: #4b5563; line-height: 1.8; padding-left: 20px;">
+                <li>Check portal for updates</li>
+                <li>Send me a message</li>
+                <li>Review shared files</li>
+                <li>Stay tuned for delivery!</li>
+              </ul>
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="#" style="display: inline-block; background: #10b981; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Check Status →</a>
+              </div>
+              <p style="color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; padding-top: 16px;">Thank you!<br><strong>${creativeName}</strong></p>
+            </div></div>`,
+        },
+      };
+
+      const preview = previews[stepNum];
+      if (preview) {
+        res.json(preview);
+      } else {
+        res.status(404).json({ error: 'Step not found' });
+      }
+    } else {
+      res.status(404).json({ error: 'Preview not available for this sequence' });
+    }
+  } catch (error) {
+    console.error('[SEQUENCES PREVIEW] Error:', error);
+    res.status(500).json({ error: 'Failed to generate preview' });
+  }
+});
+
+// ── Original CRUD endpoints ──────────────────────────────
 router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const sequences = await prisma.emailSequence.findMany({
