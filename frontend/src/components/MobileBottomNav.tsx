@@ -1,6 +1,6 @@
 import { LayoutGrid, CalendarDays, Briefcase, Settings } from 'lucide-react'
 
-type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio';
+type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
 
 interface MobileBottomNavProps {
   viewMode: ViewMode;
