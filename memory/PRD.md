@@ -10,28 +10,28 @@ Build a comprehensive full-stack CRM ("KOLOR STUDIO") for creative professionals
 - **Storage:** Supabase Storage
 - **Email:** Resend
 - **Payments:** Stripe (dual-mode: SDK + Python proxy fallback)
-- **Hosting:** Preview on Emergent Platform
 
 ## What's Been Implemented
 
 ### Phase 1: Core CRM (Complete)
-- User auth (register/login/JWT)
-- Lead management with Kanban board
-- Client portal with unique links
-- Messaging system (client<->creative)
+- User auth, Lead management with Kanban board, Client portal, Messaging system
 
 ### Phase 2: Autopilot Pipeline (Complete)
-- Quote creation, sending, and acceptance
-- Automatic contract generation on quote acceptance
-- Automatic email notifications on key events
-- Stripe payment integration (deposit collection)
-- Revenue pipeline dashboard widget
+- Quote creation/sending/acceptance, Auto contract generation, Email notifications, Stripe payments, Revenue pipeline widget
 
 ### Phase 3: Pre-Beta Polish (Complete — March 9, 2026)
-- **Weekly Autopilot Digest Email:** Cron job (Mondays 9 AM) sends pipeline stats, revenue, action items. Skips if no activity. Preview/manual trigger at `/api/digest/preview` and `/api/digest/send`.
-- **Interactive Walkthrough/Setup Wizard:** 5-step OnboardingWizard component for new users (0 leads). Skippable, completion saved to localStorage. "Restart Tutorial" option in Settings.
-- **Color Branding Persistence:** BrandThemeContext caches to localStorage for instant load. API saves/loads brand colors via `/api/settings/brand`.
-- **Portal Background Readability:** Fixed purple colors (#7c3aed, #9333ea) replace dynamic brand-primary for reliable WCAG AA contrast. Neutral slate/white background, visible card borders.
+- Weekly Autopilot Digest Email (cron + preview API)
+- Interactive Walkthrough/Setup Wizard (5-step OnboardingWizard)
+- Color Branding Persistence (localStorage cache + API)
+- Portal Background Readability (WCAG AA fixed purple colors)
+
+### Phase 4: P2 Features (Complete — March 10, 2026)
+- **Client Onboarding Email Drip:** 3-step automated sequence (Welcome → Portal Guide → Update Reminder). Triggers on contract signing. Cron processes every 6 hours. DB model: ClientOnboardingEnrollment.
+- **Sequences Dashboard UI:** Card-based dashboard as new "Sequences" view mode in Dashboard. Shows 2 built-in sequences with stats, toggle, detail modal with sequence flow visualization and email preview. Custom sequences "Coming Soon" placeholder.
+
+### Deployment Fixes (March 10, 2026)
+- Added `app.set('trust proxy', true)` for Railway
+- Removed unused TypeScript variables blocking build
 
 ## Key Test Accounts
 - Test user: test@test.com / Test123456!
@@ -40,16 +40,23 @@ Build a comprehensive full-stack CRM ("KOLOR STUDIO") for creative professionals
 ## API URL
 - https://studio-wizard-4.preview.emergentagent.com
 
+## New API Endpoints (Phase 4)
+- `GET /api/sequences/dashboard` — List built-in sequences with stats
+- `GET /api/sequences/dashboard/stats` — Overview stats (total, active, emails this week, enrolled)
+- `PATCH /api/sequences/dashboard/:id/toggle` — Toggle sequence active/inactive
+- `GET /api/sequences/:seqId/enrollments` — List enrolled clients for a sequence
+- `GET /api/sequences/:seqId/steps/:stepNumber/preview` — Preview email HTML
+
 ## Prioritized Backlog
 
-### P2 — Future Tasks
-- Client Onboarding Email Drip (automated email sequence for new clients)
-- Sequences Dashboard UI (creatives build/manage email follow-up sequences)
-- Project Timeline Modal (enhance existing timeline functionality)
-- Verify Revenue Analytics accuracy
-- Verify Portal Views Analytics
+### P2 — Remaining Tasks
+- **(P2) Analytics Verification** — Verify revenue analytics accuracy and portal views tracking
+- **(P2) Quote Follow-Up Sequence** — Implement the actual quote follow-up email drip (currently shows as "Paused" placeholder in Sequences Dashboard)
+- **(P2) Project Timeline Modal** — Enhance existing timeline functionality
 
-### P3 — Nice to Have
+### P3 — Future Tasks
+- Client Onboarding Email Drip enhancements (unsubscribe, A/B testing)
+- Custom Sequence Builder (visual flow editor)
 - Mobile-responsive optimization pass
 - Dark mode for client portal
 - File sharing in client portal
