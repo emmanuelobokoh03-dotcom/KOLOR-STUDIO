@@ -261,6 +261,7 @@ model Lead {
   testimonials      Testimonial[]
   milestones        ProjectMilestone[]
   enrollments       SequenceEnrollment[]
+  onboardingEnrollments ClientOnboardingEnrollment[]
 
   @@index([assignedToId])
   @@index([createdAt])
@@ -738,4 +739,30 @@ enum UserRole {
   OWNER
   ADMIN
   MEMBER
+}
+
+
+model ClientOnboardingEnrollment {
+  id           String    @id @default(cuid())
+  leadId       String
+  lead         Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  enrolledAt   DateTime  @default(now())
+  currentStep  Int       @default(1)
+  completed    Boolean   @default(false)
+
+  email1SentAt DateTime?
+  email2SentAt DateTime?
+  email3SentAt DateTime?
+
+  stoppedAt    DateTime?
+  stopReason   String?
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([leadId])
+  @@index([completed])
+  @@index([currentStep])
+  @@map("client_onboarding_enrollments")
 }

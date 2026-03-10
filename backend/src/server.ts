@@ -32,6 +32,7 @@ import digestRoutes from './routes/digest';
 import cron from 'node-cron';
 import { generateDigestForUser, getAllUsersForDigest } from './services/digestService';
 import { sendWeeklyDigestEmail } from './services/email';
+import { processOnboardingSequences } from './services/onboardingService';
 
 // dotenv already loaded at the top of this file
 
@@ -261,6 +262,16 @@ app.listen(PORT, () => {
     }
   });
   console.log('📧 Weekly digest cron scheduled (Mondays 9 AM)');
+
+  // Client onboarding sequence processor — runs every 6 hours
+  const ONBOARDING_INTERVAL = 6 * 60 * 60 * 1000;
+  setTimeout(() => {
+    processOnboardingSequences().catch(e => console.error('[Onboarding] Initial run error:', e));
+    setInterval(() => {
+      processOnboardingSequences().catch(e => console.error('[Onboarding] Cron error:', e));
+    }, ONBOARDING_INTERVAL);
+  }, 20000);
+  console.log('📨 Client onboarding processor scheduled (every 6 hours)');
 });
 
 export default app;

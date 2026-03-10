@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { logActivity } from './activities';
 import { sendContractSentEmail, sendContractAgreedNotification } from '../services/email';
+import { enrollInOnboarding } from '../services/onboardingService';
 
 const router = Router();
 import prisma from '../lib/prisma';
@@ -413,6 +414,14 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
     }
 
     await logActivity(contract.lead.id, null, 'CONTRACT_SIGNED', `Client ${contract.lead.clientName} signed: "${contract.title}"`);
+
+    // Enroll client in onboarding drip sequence
+    try {
+      await enrollInOnboarding(contract.lead.id);
+    } catch (err) {
+      console.error('[CONTRACT] Failed to enroll in onboarding:', err);
+    }
+
     res.json({ contract: { id: updated.id, status: updated.status, clientAgreedAt: updated.clientAgreedAt } });
   } catch (error) {
     console.error('Error processing agreement:', error);

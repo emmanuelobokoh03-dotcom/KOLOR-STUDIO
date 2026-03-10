@@ -2218,3 +2218,170 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
     return false;
   }
 }
+
+
+// =====================
+// CLIENT ONBOARDING DRIP EMAILS
+// =====================
+
+interface OnboardingEmailParams {
+  to: string;
+  clientName: string;
+  creativeName: string;
+  projectType: string;
+  portalUrl: string;
+  daysUntilDeadline?: number;
+}
+
+export async function sendClientOnboardingEmail(
+  step: 1 | 2 | 3,
+  params: OnboardingEmailParams
+): Promise<boolean> {
+  const { to, clientName, creativeName, projectType, portalUrl, daysUntilDeadline } = params;
+
+  if (!resend) {
+    console.log(`[ONBOARDING] Resend not configured, would send step ${step} to:`, to);
+    return false;
+  }
+
+  const templates: Record<number, { subject: string; content: string }> = {
+    1: {
+      subject: `Welcome! Let's Get Started on Your ${projectType}`,
+      content: `
+        <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1f2937;">
+          Welcome to Your Project!
+        </h1>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          I'm excited to work with you on your <strong>${projectType}</strong>.
+          Here's what to expect over the coming days:
+        </p>
+        <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 20px; margin: 24px 0; border-radius: 8px;">
+          <h3 style="margin: 0 0 12px 0; color: #1f2937; font-size: 16px;">What Happens Next</h3>
+          <ul style="margin: 0; padding-left: 20px; color: #4b5563; line-height: 2;">
+            <li>I'll start working on your project right away</li>
+            <li>You'll receive updates through your client portal</li>
+            <li>Feel free to message me anytime with questions</li>
+            <li>I'll notify you when files are ready for review</li>
+          </ul>
+        </div>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          Track everything in your personal client portal:
+        </p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="center" style="padding: 16px 0;">
+              <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+                Open Your Portal
+              </a>
+            </td>
+          </tr>
+        </table>
+        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          Questions? Just reply to this email!<br><strong>${creativeName}</strong>
+        </p>
+      `,
+    },
+    2: {
+      subject: 'Quick Guide to Your Client Portal',
+      content: `
+        <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1f2937;">
+          Your Client Portal Guide
+        </h1>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          Quick tip: your client portal is where everything lives! Here's what you can do:
+        </p>
+        <div style="margin: 24px 0;">
+          <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 16px; margin-bottom: 12px; border-radius: 6px;">
+            <h4 style="margin: 0 0 6px 0; color: #1e40af; font-size: 15px;">Send Messages</h4>
+            <p style="margin: 0; color: #475569; font-size: 14px;">Ask questions, share ideas, or request changes anytime</p>
+          </div>
+          <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 16px; margin-bottom: 12px; border-radius: 6px;">
+            <h4 style="margin: 0 0 6px 0; color: #065f46; font-size: 15px;">View Files</h4>
+            <p style="margin: 0; color: #475569; font-size: 14px;">Download your files as soon as they're ready</p>
+          </div>
+          <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin-bottom: 12px; border-radius: 6px;">
+            <h4 style="margin: 0 0 6px 0; color: #92400e; font-size: 15px;">Track Progress</h4>
+            <p style="margin: 0; color: #475569; font-size: 14px;">See your project timeline and upcoming milestones</p>
+          </div>
+          <div style="background: #fce7f3; border-left: 4px solid #ec4899; padding: 16px; border-radius: 6px;">
+            <h4 style="margin: 0 0 6px 0; color: #9f1239; font-size: 15px;">Manage Payments</h4>
+            <p style="margin: 0; color: #475569; font-size: 14px;">View invoices and payment history in one place</p>
+          </div>
+        </div>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="center" style="padding: 16px 0;">
+              <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+                Explore Your Portal
+              </a>
+            </td>
+          </tr>
+        </table>
+        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          Need help navigating? I'm just an email away!<br><strong>${creativeName}</strong>
+        </p>
+      `,
+    },
+    3: {
+      subject: `Your ${projectType} is Progressing!`,
+      content: `
+        <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1f2937;">
+          Your Project is Underway!
+        </h1>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          Great news! Work on your <strong>${projectType}</strong> is progressing well.
+        </p>
+        <div style="background: #ecfdf5; border: 2px solid #10b981; padding: 24px; margin: 24px 0; border-radius: 12px; text-align: center;">
+          ${daysUntilDeadline
+            ? `<p style="margin: 0; color: #065f46; font-size: 18px; font-weight: 600;">${daysUntilDeadline} days until delivery</p>`
+            : `<p style="margin: 0; color: #065f46; font-size: 18px; font-weight: 600;">On track for timely delivery!</p>`
+          }
+        </div>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;"><strong>What you can do:</strong></p>
+        <ul style="color: #4b5563; line-height: 2; padding-left: 24px;">
+          <li>Check your portal for work-in-progress updates</li>
+          <li>Send me a message if you have questions or ideas</li>
+          <li>Review any files I've shared for feedback</li>
+          <li>Stay tuned for the final delivery notification!</li>
+        </ul>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="center" style="padding: 16px 0;">
+              <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+                Check Project Status
+              </a>
+            </td>
+          </tr>
+        </table>
+        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          Thank you for your trust!<br><strong>${creativeName}</strong>
+        </p>
+      `,
+    },
+  };
+
+  const template = templates[step];
+  const stepLabels = { 1: 'Welcome', 2: 'Portal Guide', 3: 'Update Reminder' };
+
+  try {
+    const { data: emailData, error } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: [to],
+      subject: template.subject,
+      html: getEmailTemplate(template.content, `Client Onboarding: ${stepLabels[step]}`),
+    });
+
+    if (error) {
+      console.error(`[ONBOARDING] Step ${step} failed:`, error);
+      return false;
+    }
+    console.log(`[ONBOARDING] Step ${step} sent to ${to}, ID: ${emailData?.id}`);
+    return true;
+  } catch (error) {
+    console.error(`[ONBOARDING] Step ${step} error:`, error);
+    return false;
+  }
+}
