@@ -1,5 +1,5 @@
 import prisma from '../lib/prisma';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export async function createEmailTracking({
   emailType,
@@ -14,7 +14,7 @@ export async function createEmailTracking({
   leadId: string;
   recipientEmail: string;
 }): Promise<string> {
-  const trackingId = uuidv4();
+  const trackingId = randomUUID();
 
   await prisma.emailTracking.create({
     data: {
