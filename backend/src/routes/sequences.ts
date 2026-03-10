@@ -16,13 +16,18 @@ router.get('/dashboard', authMiddleware, async (req: AuthRequest, res: Response)
       where: { lead: { assignedToId: userId } },
     });
 
+    // Get quote follow-up enrollment stats
+    const followUpEnrollments = await prisma.quoteFollowUpEnrollment.findMany({
+      where: { quote: { lead: { assignedToId: userId } } },
+    });
+
     const sequences: any[] = [
       {
         id: 'client-onboarding',
         name: 'Client Onboarding',
         type: 'built-in' as const,
         trigger: 'When contract is signed',
-        active: true, // Always active for now
+        active: true,
         steps: [
           { stepNumber: 1, name: 'Welcome & What to Expect', delay: 0, subject: "Welcome! Let's Get Started", sentCount: onboardingEnrollments.filter(e => e.email1SentAt).length, openRate: null },
           { stepNumber: 2, name: 'Portal Guide', delay: 2, subject: 'Quick Guide to Your Client Portal', sentCount: onboardingEnrollments.filter(e => e.email2SentAt).length, openRate: null },
@@ -39,13 +44,17 @@ router.get('/dashboard', authMiddleware, async (req: AuthRequest, res: Response)
         name: 'Quote Follow-Up',
         type: 'built-in' as const,
         trigger: 'When quote is sent',
-        active: false,
+        active: true,
         steps: [
-          { stepNumber: 1, name: 'Gentle Reminder', delay: 3, subject: 'Following up on your quote', sentCount: 0, openRate: null },
-          { stepNumber: 2, name: 'Answer Questions', delay: 7, subject: 'Any questions about your quote?', sentCount: 0, openRate: null },
-          { stepNumber: 3, name: 'Final Follow-Up', delay: 10, subject: 'Last chance — quote expires soon', sentCount: 0, openRate: null },
+          { stepNumber: 1, name: 'Gentle Reminder', delay: 3, subject: 'Following up on your quote', sentCount: followUpEnrollments.filter(e => e.email1SentAt).length, openRate: null },
+          { stepNumber: 2, name: 'Answer Questions', delay: 7, subject: 'Any questions about your quote?', sentCount: followUpEnrollments.filter(e => e.email2SentAt).length, openRate: null },
+          { stepNumber: 3, name: 'Final Follow-Up', delay: 10, subject: 'Quote expires soon', sentCount: followUpEnrollments.filter(e => e.email3SentAt).length, openRate: null },
         ],
-        stats: { enrolled: 0, completed: 0, active: 0 },
+        stats: {
+          enrolled: followUpEnrollments.length,
+          completed: followUpEnrollments.filter(e => e.completed).length,
+          active: followUpEnrollments.filter(e => !e.completed).length,
+        },
       },
     ];
 
@@ -62,13 +71,26 @@ router.get('/dashboard/stats', authMiddleware, async (req: AuthRequest, res: Res
     const userId = req.userId!;
     const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const totalEnrolled = await prisma.clientOnboardingEnrollment.count({
+    const onboardingEnrolled = await prisma.clientOnboardingEnrollment.count({
       where: { lead: { assignedToId: userId } },
     });
+    const followUpEnrolled = await prisma.quoteFollowUpEnrollment.count({
+      where: { quote: { lead: { assignedToId: userId } } },
+    });
 
-    const emailsSentThisWeek = await prisma.clientOnboardingEnrollment.count({
+    const onboardingEmailsWeek = await prisma.clientOnboardingEnrollment.count({
       where: {
         lead: { assignedToId: userId },
+        OR: [
+          { email1SentAt: { gte: weekAgo } },
+          { email2SentAt: { gte: weekAgo } },
+          { email3SentAt: { gte: weekAgo } },
+        ],
+      },
+    });
+    const followUpEmailsWeek = await prisma.quoteFollowUpEnrollment.count({
+      where: {
+        quote: { lead: { assignedToId: userId } },
         OR: [
           { email1SentAt: { gte: weekAgo } },
           { email2SentAt: { gte: weekAgo } },
@@ -79,9 +101,9 @@ router.get('/dashboard/stats', authMiddleware, async (req: AuthRequest, res: Res
 
     res.json({
       totalSequences: 2,
-      activeSequences: 1,
-      emailsSentThisWeek,
-      totalEnrolled,
+      activeSequences: 2,
+      emailsSentThisWeek: onboardingEmailsWeek + followUpEmailsWeek,
+      totalEnrolled: onboardingEnrolled + followUpEnrolled,
     });
   } catch (error) {
     console.error('[SEQUENCES STATS] Error:', error);
@@ -143,7 +165,33 @@ router.get('/:seqId/enrollments', authMiddleware, async (req: AuthRequest, res: 
 
       res.json({ enrollments: formatted });
     } else if (seqId === 'quote-followup') {
-      res.json({ enrollments: [] });
+      const enrollments = await prisma.quoteFollowUpEnrollment.findMany({
+        where: { quote: { lead: { assignedToId: userId } } },
+        include: { quote: { include: { lead: { select: { clientName: true } } } } },
+        orderBy: { enrolledAt: 'desc' },
+        take: 50,
+      });
+      const formatted = enrollments.map(e => {
+        let nextEmailDate: string | null = null;
+        if (!e.completed && !e.stoppedAt) {
+          if (e.currentStep === 0) {
+            nextEmailDate = new Date(e.enrolledAt.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+          } else if (e.currentStep === 1 && e.email1SentAt) {
+            nextEmailDate = new Date(e.email1SentAt.getTime() + 4 * 24 * 60 * 60 * 1000).toISOString();
+          } else if (e.currentStep === 2 && e.email2SentAt) {
+            nextEmailDate = new Date(e.email2SentAt.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+          }
+        }
+        return {
+          id: e.id,
+          clientName: e.quote.lead.clientName,
+          enrolledAt: e.enrolledAt.toISOString(),
+          currentStep: e.currentStep,
+          nextEmailDate,
+          completed: e.completed,
+        };
+      });
+      res.json({ enrollments: formatted });
     } else {
       // Custom sequence enrollments
       const seqId = req.params.seqId as string;
@@ -264,6 +312,68 @@ router.get('/:seqId/steps/:stepNumber/preview', authMiddleware, async (req: Auth
       const preview = previews[stepNum];
       if (preview) {
         res.json(preview);
+      } else {
+        res.status(404).json({ error: 'Step not found' });
+      }
+    } else if (seqId === 'quote-followup' && [1, 2, 3].includes(stepNum)) {
+      const user = await prisma.user.findUnique({ where: { id: req.userId! }, select: { firstName: true, studioName: true, currencySymbol: true } });
+      const creativeName = user?.studioName || user?.firstName || 'Your Studio';
+      const sym = user?.currencySymbol || '$';
+
+      const qpreviews: Record<number, { subject: string; html: string }> = {
+        1: {
+          subject: 'Following up on your quote',
+          html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 32px 24px; border-radius: 12px 12px 0 0; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px;">Just Following Up</h1></div>
+            <div style="padding: 24px; background: white;">
+              <p style="color: #374151;">Hi [Client Name],</p>
+              <p style="color: #374151;">I wanted to follow up on the quote I sent for your project.</p>
+              <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 16px; margin: 16px 0; border-radius: 6px;">
+                <p style="margin: 0; color: #1e40af; font-size: 20px; font-weight: 700;">${sym}2,500.00</p>
+                <p style="margin: 4px 0 0; color: #475569; font-size: 13px;">Sample Quote Amount</p></div>
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="#" style="display: inline-block; background: #3b82f6; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Review Your Quote</a></div>
+              <p style="color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; padding-top: 16px;"><strong>${creativeName}</strong></p>
+            </div></div>`,
+        },
+        2: {
+          subject: 'Any questions about your quote?',
+          html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 32px 24px; border-radius: 12px 12px 0 0; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px;">Any Questions?</h1></div>
+            <div style="padding: 24px; background: white;">
+              <p style="color: #374151;">Hi [Client Name],</p>
+              <p style="color: #374151;">I haven't heard back about your quote yet.</p>
+              <div style="background: #faf5ff; border-left: 4px solid #8b5cf6; padding: 16px; margin: 16px 0; border-radius: 6px;">
+                <strong style="color: #6b21a8;">Common Questions:</strong>
+                <ul style="color: #4b5563; padding-left: 18px; line-height: 1.8;"><li>Can the timeline be adjusted?</li><li>Are payment plans available?</li><li>What's included?</li></ul></div>
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="#" style="display: inline-block; background: #8b5cf6; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">View Quote & Ask Questions</a></div>
+              <p style="color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; padding-top: 16px;"><strong>${creativeName}</strong></p>
+            </div></div>`,
+        },
+        3: {
+          subject: 'Your quote expires soon',
+          html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 32px 24px; border-radius: 12px 12px 0 0; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px;">Final Follow-Up</h1></div>
+            <div style="padding: 24px; background: white;">
+              <p style="color: #374151;">Hi [Client Name],</p>
+              <p style="color: #374151;">This is my final follow-up regarding your project quote.</p>
+              <div style="background: #fffbeb; border: 2px solid #f59e0b; padding: 20px; margin: 16px 0; border-radius: 12px; text-align: center;">
+                <p style="margin: 0; color: #92400e; font-size: 16px; font-weight: 600;">Quote expires in 7 days</p>
+                <p style="margin: 8px 0 0; color: #78350f; font-size: 13px;">${sym}2,500.00 for Sample Project</p></div>
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="#" style="display: inline-block; background: #f59e0b; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Accept Quote Now</a></div>
+              <p style="color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; padding-top: 16px;"><strong>${creativeName}</strong></p>
+            </div></div>`,
+        },
+      };
+
+      const qpreview = qpreviews[stepNum];
+      if (qpreview) {
+        res.json(qpreview);
       } else {
         res.status(404).json({ error: 'Step not found' });
       }

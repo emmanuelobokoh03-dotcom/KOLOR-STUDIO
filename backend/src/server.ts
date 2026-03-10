@@ -33,6 +33,7 @@ import cron from 'node-cron';
 import { generateDigestForUser, getAllUsersForDigest } from './services/digestService';
 import { sendWeeklyDigestEmail } from './services/email';
 import { processOnboardingSequences } from './services/onboardingService';
+import { processQuoteFollowUpSequences } from './services/quoteFollowUpService';
 
 // dotenv already loaded at the top of this file
 
@@ -272,6 +273,16 @@ app.listen(PORT, () => {
     }, ONBOARDING_INTERVAL);
   }, 20000);
   console.log('📨 Client onboarding processor scheduled (every 6 hours)');
+
+  // Quote follow-up sequence processor — runs every 6 hours
+  const FOLLOWUP_INTERVAL = 6 * 60 * 60 * 1000;
+  setTimeout(() => {
+    processQuoteFollowUpSequences().catch(e => console.error('[QuoteFollowUp] Initial run error:', e));
+    setInterval(() => {
+      processQuoteFollowUpSequences().catch(e => console.error('[QuoteFollowUp] Cron error:', e));
+    }, FOLLOWUP_INTERVAL);
+  }, 25000);
+  console.log('💰 Quote follow-up processor scheduled (every 6 hours)');
 });
 
 export default app;

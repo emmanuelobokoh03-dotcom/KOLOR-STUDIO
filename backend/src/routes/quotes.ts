@@ -6,6 +6,7 @@ import { generateQuotePDF } from '../services/pdf.service';
 import { enrollLead, stopSequencesForLead } from '../services/sequenceEngine';
 import { paymentService } from '../services/paymentService';
 import { logActivity } from './activities';
+import { enrollInQuoteFollowUp, stopQuoteFollowUp } from '../services/quoteFollowUpService';
 
 const router = Router();
 import prisma from '../lib/prisma';
@@ -703,6 +704,7 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
 
     // Auto-enroll in follow-up sequences (non-blocking)
     enrollLead(quote.leadId, 'QUOTE_SENT').catch(e => console.error('Sequence enroll error:', e));
+    enrollInQuoteFollowUp(updatedQuote.id).catch(e => console.error('Quote follow-up enroll error:', e));
   } catch (error) {
     console.error('Send quote error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to send quote' });
@@ -993,6 +995,7 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
 
     // Stop follow-up sequences (non-blocking)
     stopSequencesForLead(quote.leadId, 'Quote accepted').catch(e => console.error('Sequence stop error:', e));
+    stopQuoteFollowUp(quote.id, 'quote_accepted').catch(e => console.error('Quote follow-up stop error:', e));
   } catch (error) {
     console.error('Accept quote error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to accept quote' });
@@ -1072,6 +1075,9 @@ router.post('/public/:quoteToken/decline', async (req: Request, res: Response): 
     }
 
     res.json({ message: 'Quote declined. Thank you for letting us know.' });
+
+    // Stop follow-up sequence (non-blocking)
+    stopQuoteFollowUp(quote.id, 'quote_declined').catch(e => console.error('Quote follow-up stop error:', e));
   } catch (error) {
     console.error('Decline quote error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to decline quote' });

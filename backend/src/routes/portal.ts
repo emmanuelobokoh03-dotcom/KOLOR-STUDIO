@@ -4,6 +4,7 @@ import path from 'path';
 import { uploadFile, formatFileSize, getFileCategory } from '../services/storage';
 import { logActivity } from './activities';
 import { stopSequencesForLead } from '../services/sequenceEngine';
+import { stopQuoteFollowUp } from '../services/quoteFollowUpService';
 
 const router = Router();
 import prisma from '../lib/prisma';
@@ -438,6 +439,13 @@ router.post('/:token/messages', async (req: Request, res: Response): Promise<voi
 
     // Client responded — stop follow-up sequences (non-blocking)
     stopSequencesForLead(lead.id, 'Client responded').catch(e => console.error('Sequence stop error:', e));
+
+    // Stop quote follow-up if any active SENT quotes
+    prisma.quote.findFirst({ where: { leadId: lead.id, status: 'SENT' }, select: { id: true } })
+      .then(sentQuote => {
+        if (sentQuote) stopQuoteFollowUp(sentQuote.id, 'client_responded').catch(e => console.error('Quote follow-up stop error:', e));
+      })
+      .catch(e => console.error('Quote follow-up lookup error:', e));
   } catch (error) {
     console.error('Portal send message error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to send message' });

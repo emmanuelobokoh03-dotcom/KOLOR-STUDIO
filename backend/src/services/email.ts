@@ -2385,3 +2385,139 @@ export async function sendClientOnboardingEmail(
     return false;
   }
 }
+
+
+
+// =====================
+// QUOTE FOLLOW-UP EMAILS
+// =====================
+
+interface QuoteFollowUpParams {
+  to: string;
+  clientName: string;
+  creativeName: string;
+  projectType: string;
+  quoteAmount: number;
+  currencySymbol: string;
+  portalUrl: string;
+  expirationDays?: number;
+}
+
+export async function sendQuoteFollowUpEmail(
+  step: 1 | 2 | 3,
+  params: QuoteFollowUpParams
+): Promise<boolean> {
+  const { to, clientName, creativeName, projectType, quoteAmount, currencySymbol, portalUrl, expirationDays } = params;
+  const formattedAmount = `${currencySymbol}${quoteAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+  if (!resend) {
+    console.log(`[QUOTE FOLLOWUP] Resend not configured, would send step ${step} to:`, to);
+    return false;
+  }
+
+  const templates: Record<number, { subject: string; content: string }> = {
+    1: {
+      subject: `Following up on your ${projectType} quote`,
+      content: `
+        <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1f2937;">Just Following Up</h1>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          I wanted to follow up on the quote I sent you for your <strong>${projectType}</strong>.
+        </p>
+        <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 20px; margin: 24px 0; border-radius: 8px;">
+          <p style="margin: 0; color: #1e40af; font-size: 20px; font-weight: 700;">${formattedAmount}</p>
+          <p style="margin: 4px 0 0 0; color: #475569; font-size: 14px;">Investment for ${projectType}</p>
+        </div>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          I'm excited about the possibility of working together! If you have any questions or need clarification, I'm here to help.
+        </p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr><td align="center" style="padding: 16px 0;">
+            <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">Review Your Quote</a>
+          </td></tr>
+        </table>
+        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          Looking forward to hearing from you!<br><strong>${creativeName}</strong>
+        </p>
+      `,
+    },
+    2: {
+      subject: `Any questions about your ${projectType}?`,
+      content: `
+        <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1f2937;">Any Questions?</h1>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          I haven't heard back about your <strong>${projectType}</strong> quote yet, and I wanted to check in.
+        </p>
+        <div style="background: #faf5ff; border-left: 4px solid #8b5cf6; padding: 20px; margin: 24px 0; border-radius: 8px;">
+          <h3 style="margin: 0 0 12px 0; color: #6b21a8; font-size: 15px;">Common Questions:</h3>
+          <ul style="margin: 0; padding-left: 20px; color: #4b5563; line-height: 2;">
+            <li>Can the timeline be adjusted?</li>
+            <li>Are payment plans available?</li>
+            <li>What's included in the price?</li>
+            <li>Can we customize the package?</li>
+          </ul>
+        </div>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          If you have any concerns, I'm happy to discuss! Reply to this email or send me a message through your portal.
+        </p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr><td align="center" style="padding: 16px 0;">
+            <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">View Quote & Ask Questions</a>
+          </td></tr>
+        </table>
+        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          No pressure — just want to make sure you have everything you need!<br><strong>${creativeName}</strong>
+        </p>
+      `,
+    },
+    3: {
+      subject: `Your ${projectType} quote expires soon`,
+      content: `
+        <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1f2937;">Final Follow-Up</h1>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          This is my final follow-up regarding your <strong>${projectType}</strong> quote.
+        </p>
+        <div style="background: #fffbeb; border: 2px solid #f59e0b; padding: 24px; margin: 24px 0; border-radius: 12px; text-align: center;">
+          <p style="margin: 0; color: #92400e; font-size: 18px; font-weight: 600;">Quote expires in ${expirationDays || 7} days</p>
+          <p style="margin: 8px 0 0 0; color: #78350f; font-size: 14px;">${formattedAmount} for ${projectType}</p>
+        </div>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+          I'd love to work with you, but I understand if the timing isn't right. If you're interested, let me know soon so I can reserve your spot!
+        </p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr><td align="center" style="padding: 16px 0;">
+            <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">Accept Quote Now</a>
+          </td></tr>
+          <tr><td align="center"><p style="margin: 0; color: #6b7280; font-size: 13px;">Or reply to let me know if you need more time</p></td></tr>
+        </table>
+        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          Either way, I appreciate you considering me for your project!<br><strong>${creativeName}</strong>
+        </p>
+      `,
+    },
+  };
+
+  const template = templates[step];
+  const stepLabels: Record<number, string> = { 1: 'Gentle Reminder', 2: 'Answer Questions', 3: 'Final Follow-Up' };
+
+  try {
+    const { data: emailData, error } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: [to],
+      subject: template.subject,
+      html: getEmailTemplate(template.content, `Quote Follow-Up: ${stepLabels[step]}`),
+    });
+
+    if (error) {
+      console.error(`[QUOTE FOLLOWUP] Step ${step} failed:`, error);
+      return false;
+    }
+    console.log(`[QUOTE FOLLOWUP] Step ${step} sent to ${to}, ID: ${emailData?.id}`);
+    return true;
+  } catch (error) {
+    console.error(`[QUOTE FOLLOWUP] Step ${step} error:`, error);
+    return false;
+  }
+}
