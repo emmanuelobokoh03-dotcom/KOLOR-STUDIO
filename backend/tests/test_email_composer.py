@@ -7,7 +7,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://studio-wizard-4.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://crm-sequences-hub.preview.emergentagent.com')
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"
 TEST_PASSWORD = "successful26#"
 LEAD_ID_COKESPICE = "6bc704c4-8030-42e2-be8a-8f7ed4035709"
