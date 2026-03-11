@@ -149,11 +149,11 @@ router.get('/dashboard/stats', authMiddleware, async (req: AuthRequest, res: Res
 router.patch('/dashboard/:id/toggle', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const { active } = req.body;
+    const { active: _active } = req.body;
 
     if (id === 'client-onboarding') {
       // For now, just acknowledge — actual toggle logic can be added when preferences are stored
-      console.log(`[SEQUENCES] Client onboarding toggled to: ${active}`);
+
       res.json({ success: true });
     } else {
       res.status(400).json({ error: 'Sequence not found or cannot be toggled' });

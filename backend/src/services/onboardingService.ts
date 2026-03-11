@@ -2,7 +2,6 @@ import prisma from '../lib/prisma';
 import { sendClientOnboardingEmail } from './email';
 
 export async function enrollInOnboarding(leadId: string) {
-  console.log('[ONBOARDING] Enrolling lead:', leadId);
 
   const lead = await prisma.lead.findUnique({
     where: { id: leadId },
@@ -21,7 +20,6 @@ export async function enrollInOnboarding(leadId: string) {
     where: { leadId },
   });
   if (existing) {
-    console.log('[ONBOARDING] Already enrolled:', leadId);
     return existing;
   }
 
@@ -52,7 +50,6 @@ export async function enrollInOnboarding(leadId: string) {
         where: { id: enrollment.id },
         data: { email1SentAt: new Date() },
       });
-      console.log('[ONBOARDING] Email 1 sent for lead:', leadId);
     }
   } catch (error) {
     console.error('[ONBOARDING] Failed to send email 1:', error);
@@ -62,7 +59,6 @@ export async function enrollInOnboarding(leadId: string) {
 }
 
 export async function processOnboardingSequences() {
-  console.log('[ONBOARDING] Processing sequences...');
   const now = new Date();
   let processed = 0;
 
@@ -105,7 +101,6 @@ export async function processOnboardingSequences() {
           data: { currentStep: 2, email2SentAt: new Date() },
         });
         processed++;
-        console.log('[ONBOARDING] Email 2 sent for lead:', e.leadId);
       }
     } catch (error) {
       console.error('[ONBOARDING] Failed email 2 for lead:', e.leadId, error);
@@ -158,12 +153,11 @@ export async function processOnboardingSequences() {
           data: { currentStep: 3, email3SentAt: new Date(), completed: true },
         });
         processed++;
-        console.log('[ONBOARDING] Email 3 sent (complete) for lead:', e.leadId);
       }
     } catch (error) {
       console.error('[ONBOARDING] Failed email 3 for lead:', e.leadId, error);
     }
   }
 
-  console.log(`[ONBOARDING] Processed ${processed} emails (${readyForStep2.length} step2, ${readyForStep3.length} step3)`);
+
 }

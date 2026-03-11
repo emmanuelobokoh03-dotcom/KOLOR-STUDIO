@@ -4,6 +4,7 @@ import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotifi
 import { logActivity } from './activities';
 import { uploadFile, ensureBucketExists } from '../services/storage';
 import { paymentService } from '../services/paymentService';
+import { logAudit, AUDIT_ACTIONS } from '../services/auditService';
 import multer from 'multer';
 
 const router = Router();
@@ -174,8 +175,6 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
       quotesCount: _count.quotes,
       contractsCount: _count.contracts,
     }));
-
-    console.log('[GET /leads] Found', leadsWithCounts.length, 'leads');
 
     res.json({ leads: leadsWithCounts, count: leadsWithCounts.length });
   } catch (error) {
@@ -818,6 +817,16 @@ router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response): P
 
     await prisma.lead.delete({ where: { id } });
 
+    // Audit log
+    await logAudit({
+      userId,
+      action: AUDIT_ACTIONS.DELETE_LEAD,
+      entity: 'Lead',
+      entityId: id,
+      metadata: { clientName: existingLead.clientName, projectTitle: existingLead.projectTitle },
+      req,
+    });
+
     res.json({ message: 'Lead deleted successfully' });
   } catch (error) {
     console.error('Delete lead error:', error);
@@ -1100,7 +1109,7 @@ router.post('/:id/mark-delivered', authMiddleware, async (req: AuthRequest, res:
       try {
         await paymentService.createFinalCheckout(income.id, process.env.FRONTEND_URL || '');
         paymentLinkSent = true;
-        console.log('[Delivery] Final payment link auto-created for income:', income.id);
+
       } catch (e) {
         console.error('[Delivery] Final payment link failed:', e);
       }

@@ -120,7 +120,6 @@ function fillContractTemplate(template: string, data: Record<string, string>): s
 /** Auto-generate and send a contract when a quote is accepted */
 async function autoGenerateContract(quoteId: string): Promise<void> {
   try {
-    console.log(`[AUTOPILOT] Auto-generating contract for quote: ${quoteId}`);
     const quote = await prisma.quote.findUnique({
       where: { id: quoteId },
       include: {
@@ -140,8 +139,6 @@ async function autoGenerateContract(quoteId: string): Promise<void> {
     const industry = user?.primaryIndustry || 'PHOTOGRAPHY';
     const contractType = INDUSTRY_TO_CONTRACT_TYPE[industry] || 'GENERAL_SERVICE';
     const template = CONTRACT_TEMPLATES_INLINE[contractType] || CONTRACT_TEMPLATES_INLINE.GENERAL_SERVICE;
-
-    console.log(`[AUTOPILOT] Using template "${contractType}" for industry "${industry}"`);
 
     const studioName = user?.studioName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Studio';
     const currencySymbol = quote.currencySymbol || '$';
@@ -167,8 +164,6 @@ async function autoGenerateContract(quoteId: string): Promise<void> {
       },
     });
 
-    console.log(`[AUTOPILOT] Contract created: ${contract.id} - "${contract.title}"`);
-
     // Send contract email to client
     const portalUrl = `${process.env.FRONTEND_URL || ''}/portal/${lead.portalToken}`;
     sendContractSentEmail({
@@ -178,12 +173,9 @@ async function autoGenerateContract(quoteId: string): Promise<void> {
       contractTitle: contract.title,
       studioName,
       portalUrl,
-    }).then(() => console.log(`[AUTOPILOT] Contract email sent to ${lead.clientEmail}`))
-      .catch(e => console.error('[AUTOPILOT] Contract email send failed:', e));
+    }).catch(e => console.error('[AUTOPILOT] Contract email send failed:', e));
 
     await logActivity(lead.id, quote.createdById, 'CONTRACT_SIGNED', `Contract auto-generated and sent: "${contract.title}"`);
-
-    console.log(`[AUTOPILOT] Complete: "${contract.title}" for lead ${lead.clientName}`);
   } catch (error) {
     console.error('[AUTOPILOT] Contract auto-generation FAILED:', error);
     throw error;
@@ -231,7 +223,7 @@ router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Res
     const userId = req.userId!;
     const { lineItems, tax, paymentTerms, validUntil, terms, currency, currencySymbol, currencyPosition, numberFormat } = req.body;
 
-    console.log("📝 Quote creation data received:", { currency, currencySymbol, currencyPosition, numberFormat });
+
     // Validate lead exists and belongs to user
     const lead = await prisma.lead.findFirst({
       where: { id: leadId, assignedToId: userId }
@@ -598,6 +590,17 @@ router.delete('/:quoteId', authMiddleware, async (req: AuthRequest, res: Respons
       }
     });
 
+    // Audit log
+    const { logAudit, AUDIT_ACTIONS } = await import('../services/auditService');
+    await logAudit({
+      userId,
+      action: AUDIT_ACTIONS.QUOTE_DELETED,
+      entity: 'Quote',
+      entityId: quoteId,
+      metadata: { quoteNumber: quote.quoteNumber, leadId: quote.leadId },
+      req,
+    });
+
     res.json({ message: 'Quote deleted successfully' });
   } catch (error) {
     console.error('Delete quote error:', error);
@@ -654,7 +657,7 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
 
     // Send email to client
     try {
-    console.log("📧 Full quote object:", JSON.stringify({ id: quote.id, currency: quote.currency, currencySymbol: quote.currencySymbol, currencyPosition: quote.currencyPosition, total: quote.total }, null, 2));
+
       await sendQuoteEmail({
         clientName: (quote as any).lead.clientName,
         clientEmail: (quote as any).lead.clientEmail,
@@ -671,7 +674,7 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
         customSubject: customSubject || undefined,
         customMessage: customMessage || undefined,
       });
-      console.log(`Quote email sent to ${(quote as any).lead.clientEmail}`);
+
     } catch (emailError) {
       console.error('Failed to send quote email:', emailError);
       // Don't fail the request, just log it
@@ -940,7 +943,7 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
     if (createdIncome) {
       const frontendUrl = process.env.FRONTEND_URL || '';
       paymentService.createDepositCheckout(createdIncome.id, frontendUrl)
-        .then(result => console.log(`[Pay] Auto-deposit link for quote ${quote.quoteNumber}: ${result.url}`))
+        .then(() => {})
         .catch(e => console.error('[Pay] Auto-deposit link failed:', e));
     }
 

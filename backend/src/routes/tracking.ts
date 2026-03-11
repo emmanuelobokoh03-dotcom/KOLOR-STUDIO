@@ -41,7 +41,7 @@ router.get('/open/:trackingId', async (req: Request, res: Response): Promise<voi
         },
       });
 
-      console.log(`[TRACKING] Email opened: ${trackingId} (count: ${tracking.openCount + 1})`);
+
     }
 
     res.set(PIXEL_HEADERS).send(PIXEL_BUFFER);

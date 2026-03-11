@@ -273,13 +273,6 @@ export default function QuoteBuilderModal({
     };
 
     // Debug: log currency data being sent
-    console.log('[QuoteBuilder] Saving quote with currency:', {
-      useCurrencyOverride,
-      currencyOverride,
-      dataCurrency: data.currency,
-      dataCurrencySymbol: data.currencySymbol
-    });
-
     const result = existingQuote
       ? await quotesApi.update(existingQuote.id, data)
       : await quotesApi.create(lead.id, data);

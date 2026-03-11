@@ -355,7 +355,7 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
           firstName: user.firstName,
           resetToken: resetToken
         });
-        console.log(`Password reset email sent to ${user.email}`);
+
       } catch (emailError) {
         console.error('Failed to send password reset email:', emailError);
         // Don't fail the request, but log the error
@@ -398,6 +398,16 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
       return;
     }
 
+    // Reject common weak passwords
+    const weakPasswords = ['password', '12345678', 'qwerty123', 'password123', 'abcdefgh', '11111111', 'password1'];
+    if (weakPasswords.includes(password.toLowerCase())) {
+      res.status(400).json({
+        error: 'Validation Error',
+        message: 'Password is too common. Please choose a stronger password.'
+      });
+      return;
+    }
+
     // Hash the provided token to match against stored hash
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
@@ -419,6 +429,16 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
       return;
     }
 
+    // Check if new password matches current password
+    const sameAsCurrent = await bcrypt.compare(password, user.password);
+    if (sameAsCurrent) {
+      res.status(400).json({
+        error: 'Validation Error',
+        message: 'New password cannot be the same as your current password'
+      });
+      return;
+    }
+
     // Hash new password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -433,7 +453,18 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
       }
     });
 
-    console.log(`Password successfully reset for ${user.email}`);
+    // Audit log
+    const { logAudit, AUDIT_ACTIONS } = await import('../services/auditService');
+    await logAudit({
+      userId: user.id,
+      action: AUDIT_ACTIONS.PASSWORD_RESET,
+      entity: 'User',
+      entityId: user.id,
+      metadata: { resetAt: new Date().toISOString() },
+      req,
+    });
+
+
 
     res.json({
       message: 'Password has been reset successfully. You can now log in with your new password.'

@@ -2,7 +2,6 @@ import prisma from '../lib/prisma';
 import { sendQuoteFollowUpEmail } from './email';
 
 export async function enrollInQuoteFollowUp(quoteId: string) {
-  console.log('[QUOTE FOLLOWUP] Enrolling quote:', quoteId);
 
   const quote = await prisma.quote.findUnique({
     where: { id: quoteId },
@@ -16,14 +15,12 @@ export async function enrollInQuoteFollowUp(quoteId: string) {
 
   // Only enroll if quote is in SENT status
   if (quote.status !== 'SENT') {
-    console.log('[QUOTE FOLLOWUP] Quote not SENT, skipping:', quote.status);
     return null;
   }
 
   // Check if already enrolled
   const existing = await prisma.quoteFollowUpEnrollment.findUnique({ where: { quoteId } });
   if (existing) {
-    console.log('[QUOTE FOLLOWUP] Already enrolled:', quoteId);
     return existing;
   }
 
@@ -31,7 +28,6 @@ export async function enrollInQuoteFollowUp(quoteId: string) {
     data: { quoteId, currentStep: 0 },
   });
 
-  console.log('[QUOTE FOLLOWUP] Enrolled — first email in 3 days. Quote:', quoteId);
   return enrollment;
 }
 
@@ -47,12 +43,10 @@ export async function stopQuoteFollowUp(
     data: { completed: true, stoppedAt: new Date(), stopReason: reason },
   });
 
-  console.log('[QUOTE FOLLOWUP] Stopped for quote:', quoteId, 'reason:', reason);
   return enrollment;
 }
 
 export async function processQuoteFollowUpSequences() {
-  console.log('[QUOTE FOLLOWUP] Processing sequences...');
   const now = new Date();
   let processed = 0;
 
@@ -100,7 +94,6 @@ export async function processQuoteFollowUpSequences() {
           data: { currentStep: 1, email1SentAt: new Date() },
         });
         processed++;
-        console.log('[QUOTE FOLLOWUP] Email 1 sent for quote:', quote.id);
       }
     } catch (err) {
       console.error('[QUOTE FOLLOWUP] Email 1 failed:', err);
@@ -151,7 +144,6 @@ export async function processQuoteFollowUpSequences() {
           data: { currentStep: 2, email2SentAt: new Date() },
         });
         processed++;
-        console.log('[QUOTE FOLLOWUP] Email 2 sent for quote:', quote.id);
       }
     } catch (err) {
       console.error('[QUOTE FOLLOWUP] Email 2 failed:', err);
@@ -206,12 +198,11 @@ export async function processQuoteFollowUpSequences() {
           data: { currentStep: 3, email3SentAt: new Date(), completed: true, stopReason: 'completed' },
         });
         processed++;
-        console.log('[QUOTE FOLLOWUP] Email 3 sent (complete) for quote:', quote.id);
       }
     } catch (err) {
       console.error('[QUOTE FOLLOWUP] Email 3 failed:', err);
     }
   }
 
-  console.log(`[QUOTE FOLLOWUP] Processed ${processed} emails (${readyForStep1.length} s1, ${readyForStep2.length} s2, ${readyForStep3.length} s3)`);
+
 }

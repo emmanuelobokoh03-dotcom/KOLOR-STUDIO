@@ -35,6 +35,7 @@ import { sendWeeklyDigestEmail } from './services/email';
 import { processOnboardingSequences } from './services/onboardingService';
 import { processQuoteFollowUpSequences } from './services/quoteFollowUpService';
 import trackingRoutes from './routes/tracking';
+import userRoutes from './routes/user';
 
 // dotenv already loaded at the top of this file
 
@@ -162,6 +163,7 @@ app.use('/api/sequences', sequencesRoutes); // Email sequences: /api/sequences/*
 app.use('/api/payments', paymentRoutes); // Payments: /api/payments/*
 app.use('/api/digest', digestRoutes); // Digest: /api/digest/*
 app.use('/api/track', trackingRoutes); // Email tracking: /api/track/* (public, no auth)
+app.use('/api/user', userRoutes); // User account: /api/user/* (GDPR delete)
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {

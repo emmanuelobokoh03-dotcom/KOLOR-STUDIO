@@ -49,7 +49,7 @@ export async function enrollLead(leadId: string, trigger: SequenceTrigger): Prom
       await prisma.sequenceEnrollment.create({
         data: { sequenceId: seq.id, leadId, nextEmailAt },
       });
-      console.log(`[Seq] Enrolled "${lead.clientName}" in "${seq.name}" (next: ${nextEmailAt?.toISOString() ?? 'none'})`);
+
     }
   } catch (error) {
     console.error('[Seq] Enroll error:', error);
@@ -66,7 +66,7 @@ export async function stopSequencesForLead(leadId: string, reason: string): Prom
       data: { status: 'STOPPED', stoppedReason: reason, stoppedAt: new Date(), nextEmailAt: null },
     });
     if (result.count > 0) {
-      console.log(`[Seq] Stopped ${result.count} sequence(s) for lead ${leadId}: ${reason}`);
+
     }
   } catch (error) {
     console.error('[Seq] Stop error:', error);
@@ -88,7 +88,7 @@ export async function processSequences(): Promise<{ sent: number; completed: num
     });
 
     if (due.length === 0) return stats;
-    console.log(`[Seq] Processing ${due.length} due enrollment(s)…`);
+
 
     for (const enrollment of due) {
       try {
@@ -118,7 +118,7 @@ export async function processSequences(): Promise<{ sent: number; completed: num
           body,
           portalUrl,
         });
-        console.log(`[Seq] Email → ${enrollment.lead.clientEmail}: "${subject}" (step ${enrollment.currentStep + 1}/${enrollment.sequence.steps.length})`);
+
 
         // Determine next step timing
         const nextStep = enrollment.sequence.steps[enrollment.currentStep + 1];

@@ -249,6 +249,17 @@ router.delete('/:fileId', authMiddleware, async (req: AuthRequest, res: Response
       { deletedFileId: fileId, filename: file.originalName }
     );
 
+    // Audit log
+    const { logAudit, AUDIT_ACTIONS } = await import('../services/auditService');
+    await logAudit({
+      userId,
+      action: AUDIT_ACTIONS.FILE_DELETED,
+      entity: 'File',
+      entityId: fileId,
+      metadata: { filename: file.originalName, leadId: file.lead.id },
+      req,
+    });
+
     res.json({ message: 'File deleted successfully' });
   } catch (error) {
     console.error('Delete file error:', error);

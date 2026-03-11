@@ -126,7 +126,7 @@ export async function generateQuotePDF(quote: QuoteWithRelations): Promise<Buffe
             logoLoaded = true;
           }
         } catch (e) {
-          console.log('Failed to load logo:', e);
+          console.error('Failed to load logo:', e);
         }
       }
 

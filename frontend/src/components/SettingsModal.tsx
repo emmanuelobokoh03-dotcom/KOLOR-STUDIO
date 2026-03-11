@@ -10,12 +10,15 @@ import {
   Percent,
   Palette,
   ChatText,
-  ArrowCounterClockwise
+  ArrowCounterClockwise,
+  Warning,
+  UserCircleMinus,
 } from '@phosphor-icons/react'
 import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 import { formatCurrency, NUMBER_FORMAT_OPTIONS } from '../utils/currency'
 import BrandSettings from './BrandSettings'
 import TestimonialsManagement from './TestimonialsManagement'
+import AccountDangerZone from './AccountDangerZone'
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -23,7 +26,7 @@ interface SettingsModalProps {
   onRestartTutorial?: () => void;
 }
 
-type SettingsTab = 'currency' | 'brand' | 'testimonials';
+type SettingsTab = 'currency' | 'brand' | 'testimonials' | 'account';
 
 export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTutorial }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>('currency')
@@ -193,6 +196,18 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               <ChatText className="w-4 h-4" />
               Reviews
             </button>
+            <button
+              onClick={() => setActiveTab('account')}
+              className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
+                activeTab === 'account'
+                  ? 'bg-white text-text-primary'
+                  : 'bg-white/20 text-white/90 hover:text-white hover:bg-white/30'
+              }`}
+              data-testid="account-tab"
+            >
+              <UserCircleMinus className="w-4 h-4" />
+              Account
+            </button>
           </div>
         </div>
 
@@ -202,6 +217,8 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
             <BrandSettings />
           ) : activeTab === 'testimonials' ? (
             <TestimonialsManagement />
+          ) : activeTab === 'account' ? (
+            <AccountDangerZone />
           ) : (
             <div className="space-y-6">
               {error && (

@@ -28,7 +28,7 @@ export async function createEmailTracking({
     },
   });
 
-  console.log(`[TRACKING] Created: ${emailType} → ${recipientEmail} (${trackingId})`);
+
   return trackingId;
 }
 

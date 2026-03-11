@@ -103,7 +103,7 @@ const getEmailTemplate = (content: string, title: string) => `
 // Send notification email to studio owner
 export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> {
   if (!resend || !OWNER_EMAIL) {
-    console.log('Resend not configured or owner email missing, skipping notification');
+
     return false;
   }
 
@@ -228,7 +228,7 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
   `;
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [OWNER_EMAIL],
       subject: `New Lead: ${lead.projectTitle} - ${lead.clientName}`,
@@ -240,7 +240,6 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
       return false;
     }
 
-    console.log('Owner notification email sent successfully:', data?.id);
     return true;
   } catch (error) {
     console.error('Failed to send owner notification:', error);
@@ -251,7 +250,7 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
 // Send confirmation email to client
 export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping client confirmation');
+
     return false;
   }
 
@@ -355,7 +354,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   `;
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [lead.clientEmail],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
@@ -368,7 +367,6 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
       return false;
     }
 
-    console.log('Client confirmation email sent successfully:', data?.id);
     return true;
   } catch (error) {
     console.error('Failed to send client confirmation:', error);
@@ -427,7 +425,7 @@ interface StatusChangeData {
 // Send status change notification to client
 export async function sendStatusChangeNotification(data: StatusChangeData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping status notification');
+
     return false;
   }
 
@@ -435,7 +433,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
   
   // Only send for statuses we have messages for (skip NEW, LOST, etc.)
   if (!statusConfig) {
-    console.log(`No client notification configured for status: ${data.newStatus}`);
+
     return false;
   }
 
@@ -500,7 +498,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
   `;
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.clientEmail],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
@@ -513,7 +511,6 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
       return false;
     }
 
-    console.log('Status notification email sent successfully:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Failed to send status notification:', error);
@@ -531,7 +528,7 @@ interface PortalLinkData {
 // Send portal link email to client
 export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping portal link email');
+
     return false;
   }
 
@@ -596,7 +593,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
   `;
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.clientEmail],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
@@ -609,7 +606,6 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
       return false;
     }
 
-    console.log('Portal link email sent successfully:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Failed to send portal link email:', error);
@@ -626,7 +622,7 @@ interface PasswordResetData {
 
 export async function sendPasswordResetEmail(data: PasswordResetData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping password reset email');
+
     return false;
   }
 
@@ -691,7 +687,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
   `;
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.email],
       subject: 'Reset your KOLOR STUDIO password',
@@ -703,7 +699,6 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
       return false;
     }
 
-    console.log('Password reset email sent successfully:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Failed to send password reset email:', error);
@@ -720,7 +715,7 @@ interface VerificationEmailData {
 
 export async function sendVerificationEmail(data: VerificationEmailData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping verification email');
+
     return false;
   }
 
@@ -769,7 +764,7 @@ export async function sendVerificationEmail(data: VerificationEmailData): Promis
   `;
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.email],
       subject: 'Verify your KOLOR STUDIO email',
@@ -781,7 +776,6 @@ export async function sendVerificationEmail(data: VerificationEmailData): Promis
       return false;
     }
 
-    console.log('Verification email sent successfully:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Failed to send verification email:', error);
@@ -809,7 +803,7 @@ interface QuoteEmailData {
 
 export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping quote email');
+
     return false;
   }
 
@@ -905,7 +899,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
   `;
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.clientEmail],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
@@ -918,7 +912,6 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
       return false;
     }
 
-    console.log('Quote email sent successfully:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Failed to send quote email:', error);
@@ -941,7 +934,7 @@ interface QuoteAcceptedData {
 
 export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping quote accepted notification');
+
     return false;
   }
 
@@ -1008,7 +1001,7 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
   `;
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.ownerEmail],
       subject: `🎉 ${data.clientName} accepted your quote! (${formattedTotal})`,
@@ -1020,7 +1013,6 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
       return false;
     }
 
-    console.log('Quote accepted notification sent successfully:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Failed to send quote accepted notification:', error);
@@ -1042,7 +1034,7 @@ interface QuoteDeclinedData {
 
 export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping quote declined notification');
+
     return false;
   }
 
@@ -1118,7 +1110,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
   `;
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.ownerEmail],
       subject: `${data.clientName} declined your quote`,
@@ -1130,7 +1122,6 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
       return false;
     }
 
-    console.log('Quote declined notification sent successfully:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Failed to send quote declined notification:', error);
@@ -1152,7 +1143,7 @@ interface CustomEmailData {
 
 export async function sendCustomEmail(data: CustomEmailData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping custom email');
+
     throw new Error('Email service not configured');
   }
 
@@ -1174,7 +1165,7 @@ export async function sendCustomEmail(data: CustomEmailData): Promise<boolean> {
   const bccAddresses = data.bcc ? data.bcc.split(',').map(e => e.trim()).filter(Boolean) : [];
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `${data.fromName || 'KOLOR STUDIO'} <${SENDER_EMAIL}>`,
       to: toAddresses,
       cc: ccAddresses.length > 0 ? ccAddresses : undefined,
@@ -1189,7 +1180,6 @@ export async function sendCustomEmail(data: CustomEmailData): Promise<boolean> {
       throw new Error(error.message || 'Failed to send email');
     }
 
-    console.log('Custom email sent successfully:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Failed to send custom email:', error);
@@ -1242,7 +1232,7 @@ function formatBookingDate(date: Date): string {
 // Send booking confirmation email to client
 export async function sendBookingConfirmationEmail(data: BookingEmailData): Promise<boolean> {
   if (!resend) {
-    console.log('Resend not configured, skipping booking confirmation email');
+
     return false;
   }
 
@@ -1382,7 +1372,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
   `;
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: SENDER_EMAIL,
       to: data.clientEmail,
       subject: `Booking Confirmed - ${data.projectTitle}`,
@@ -1394,7 +1384,6 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
       return false;
     }
 
-    console.log('Booking confirmation email sent to:', data.clientEmail, 'ID:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Error sending booking confirmation email:', error);
@@ -1422,7 +1411,6 @@ interface ContractSentEmailData {
 export async function sendContractSentEmail(data: ContractSentEmailData): Promise<boolean> {
   try {
     if (!resend) {
-      console.log('[DEV] Contract sent email would go to:', data.clientEmail);
       return true;
     }
 
@@ -1437,7 +1425,7 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
               Please review the terms and sign the agreement using the link below.
             </p>`;
 
-    const { data: emailData } = await resend.emails.send({
+    await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: data.clientEmail,
       subject: data.customSubject || `Agreement for ${data.projectTitle} - ${data.studioName}`,
@@ -1469,7 +1457,6 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
       `,
     });
 
-    console.log('Contract sent email sent to:', data.clientEmail, 'ID:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Error sending contract email:', error);
@@ -1490,7 +1477,6 @@ interface ContractAgreedData {
 export async function sendContractAgreedNotification(data: ContractAgreedData): Promise<boolean> {
   try {
     if (!resend) {
-      console.log('[DEV] Contract agreed notification would go to:', data.ownerEmail);
       return true;
     }
 
@@ -1499,7 +1485,7 @@ export async function sendContractAgreedNotification(data: ContractAgreedData): 
       hour: '2-digit', minute: '2-digit', timeZoneName: 'short',
     });
 
-    const { data: emailData } = await resend.emails.send({
+    await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: data.ownerEmail,
       subject: `Client signed agreement for ${data.projectTitle}`,
@@ -1530,7 +1516,6 @@ export async function sendContractAgreedNotification(data: ContractAgreedData): 
       `,
     });
 
-    console.log('Contract agreed notification sent to:', data.ownerEmail, 'ID:', emailData?.id);
     return true;
   } catch (error) {
     console.error('Error sending contract agreed notification:', error);
@@ -1557,7 +1542,7 @@ interface AutoResponseData {
 }
 export async function sendAutoResponseEmail(data: AutoResponseData): Promise<boolean> {
   if (!resend) {
-    console.log('[DEV] Auto-response email would go to:', data.clientEmail);
+
     return false;
   }
   try {
@@ -1579,7 +1564,6 @@ export async function sendAutoResponseEmail(data: AutoResponseData): Promise<boo
       html: getEmailTemplate(content, 'Thanks for reaching out!'),
     });
     if (error) throw error;
-    console.log('Auto-response sent to:', data.clientEmail);
     return true;
   } catch (error) {
     console.error('Error sending auto-response:', error);
@@ -1600,7 +1584,7 @@ interface DepositPaymentData {
 }
 export async function sendDepositPaymentEmail(data: DepositPaymentData): Promise<boolean> {
   if (!resend) {
-    console.log('[DEV] Deposit payment email would go to:', data.clientEmail, 'Amount:', data.depositAmount);
+
     return false;
   }
   try {
@@ -1624,7 +1608,6 @@ export async function sendDepositPaymentEmail(data: DepositPaymentData): Promise
       html: getEmailTemplate(content, 'Deposit Payment'),
     });
     if (error) throw error;
-    console.log('Deposit payment email sent to:', data.clientEmail);
     return true;
   } catch (error) {
     console.error('Error sending deposit payment email:', error);
@@ -1644,7 +1627,7 @@ interface DepositReceivedData {
 }
 export async function sendDepositReceivedEmail(data: DepositReceivedData): Promise<boolean> {
   if (!resend) {
-    console.log('[DEV] Deposit received email would go to:', data.clientEmail);
+
     return false;
   }
   try {
@@ -1666,7 +1649,6 @@ export async function sendDepositReceivedEmail(data: DepositReceivedData): Promi
       html: getEmailTemplate(content, 'Booking Confirmed'),
     });
     if (error) throw error;
-    console.log('Deposit received email sent to:', data.clientEmail);
     return true;
   } catch (error) {
     console.error('Error sending deposit received email:', error);
@@ -1685,7 +1667,7 @@ interface DeliveryNotificationData {
 }
 export async function sendDeliveryNotificationEmail(data: DeliveryNotificationData): Promise<boolean> {
   if (!resend) {
-    console.log('[DEV] Delivery notification would go to:', data.clientEmail);
+
     return false;
   }
   try {
@@ -1706,7 +1688,6 @@ export async function sendDeliveryNotificationEmail(data: DeliveryNotificationDa
       html: getEmailTemplate(content, 'Files Ready'),
     });
     if (error) throw error;
-    console.log('Delivery notification sent to:', data.clientEmail);
     return true;
   } catch (error) {
     console.error('Error sending delivery notification:', error);
@@ -1726,7 +1707,7 @@ interface FinalPaymentData {
 }
 export async function sendFinalPaymentEmail(data: FinalPaymentData): Promise<boolean> {
   if (!resend) {
-    console.log('[DEV] Final payment email would go to:', data.clientEmail, 'Amount:', data.finalAmount);
+
     return false;
   }
   try {
@@ -1750,7 +1731,6 @@ export async function sendFinalPaymentEmail(data: FinalPaymentData): Promise<boo
       html: getEmailTemplate(content, 'Final Payment'),
     });
     if (error) throw error;
-    console.log('Final payment email sent to:', data.clientEmail);
     return true;
   } catch (error) {
     console.error('Error sending final payment email:', error);
@@ -1769,7 +1749,7 @@ interface FinalPaymentReceivedData {
 }
 export async function sendFinalPaymentReceivedEmail(data: FinalPaymentReceivedData): Promise<boolean> {
   if (!resend) {
-    console.log('[DEV] Final payment received email would go to:', data.clientEmail);
+
     return false;
   }
   try {
@@ -1787,7 +1767,6 @@ export async function sendFinalPaymentReceivedEmail(data: FinalPaymentReceivedDa
       html: getEmailTemplate(content, 'Payment Received'),
     });
     if (error) throw error;
-    console.log('Final payment received email sent to:', data.clientEmail);
     return true;
   } catch (error) {
     console.error('Error sending final payment received email:', error);
@@ -1806,7 +1785,7 @@ interface TestimonialRequestData {
 }
 export async function sendTestimonialRequestEmail(data: TestimonialRequestData): Promise<boolean> {
   if (!resend) {
-    console.log('[DEV] Testimonial request would go to:', data.clientEmail);
+
     return false;
   }
   try {
@@ -1828,7 +1807,6 @@ export async function sendTestimonialRequestEmail(data: TestimonialRequestData):
       html: getEmailTemplate(content, 'Testimonial Request'),
     });
     if (error) throw error;
-    console.log('Testimonial request sent to:', data.clientEmail);
     return true;
   } catch (error) {
     console.error('Error sending testimonial request:', error);
@@ -1847,7 +1825,7 @@ interface PaymentReceivedNotificationData {
 }
 export async function sendPaymentReceivedNotification(data: PaymentReceivedNotificationData): Promise<boolean> {
   if (!resend) {
-    console.log('[DEV] Payment notification to creative:', data.creativeEmail, data.type, data.amount);
+
     return false;
   }
   try {
@@ -1867,7 +1845,6 @@ export async function sendPaymentReceivedNotification(data: PaymentReceivedNotif
       html: getEmailTemplate(content, 'Payment Received'),
     });
     if (error) throw error;
-    console.log('Payment notification sent to creative:', data.creativeEmail);
     return true;
   } catch (error) {
     console.error('Error sending payment notification:', error);
@@ -1886,7 +1863,7 @@ interface SequenceEmailData {
 }
 export async function sendSequenceEmail(data: SequenceEmailData): Promise<boolean> {
   if (!resend) {
-    console.log('[DEV] Sequence email would go to:', data.clientEmail, 'Subject:', data.subject);
+
     return false;
   }
   try {
@@ -1904,7 +1881,6 @@ export async function sendSequenceEmail(data: SequenceEmailData): Promise<boolea
       html: getEmailTemplate(content, data.subject),
     });
     if (error) throw error;
-    console.log('Sequence email sent to:', data.clientEmail, 'Subject:', data.subject);
     return true;
   } catch (error) {
     console.error('Error sending sequence email:', error);
@@ -1924,7 +1900,6 @@ export async function sendNewMessageNotification(data: {
   projectTitle: string;
 }): Promise<boolean> {
   if (!resend) {
-    console.log('[EMAIL] Would send message notification to:', data.to);
     return false;
   }
   try {
@@ -1952,7 +1927,6 @@ export async function sendNewMessageNotification(data: {
       html: getEmailTemplate(content, `New Message from ${data.from}`),
     });
     if (error) throw error;
-    console.log('[MESSAGE NOTIFICATION] Email sent to creative:', data.to);
     return true;
   } catch (error) {
     console.error('[MESSAGE NOTIFICATION] Failed:', error);
@@ -1969,7 +1943,6 @@ export async function sendClientMessageNotification(data: {
   studioName?: string;
 }): Promise<boolean> {
   if (!resend) {
-    console.log('[EMAIL] Would send client message notification to:', data.to);
     return false;
   }
   try {
@@ -1996,7 +1969,6 @@ export async function sendClientMessageNotification(data: {
       html: getEmailTemplate(content, `Message from ${data.creativeName}`),
     });
     if (error) throw error;
-    console.log('[MESSAGE NOTIFICATION] Email sent to client:', data.to);
     return true;
   } catch (error) {
     console.error('[MESSAGE NOTIFICATION] Failed:', error);
@@ -2014,7 +1986,6 @@ export async function sendWorkProgressNotification(data: {
   portalUrl: string;
 }): Promise<boolean> {
   if (!resend) {
-    console.log('[EMAIL] Would send work progress notification to:', data.to);
     return false;
   }
   try {
@@ -2051,7 +2022,6 @@ export async function sendWorkProgressNotification(data: {
       html: getEmailTemplate(content, cfg.title),
     });
     if (error) throw error;
-    console.log('[WORK NOTIFICATION] Email sent to client:', data.to);
     return true;
   } catch (error) {
     console.error('[WORK NOTIFICATION] Failed:', error);
@@ -2068,7 +2038,6 @@ import type { DigestData } from './digestService';
 
 export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean> {
   if (!resend) {
-    console.log('[DIGEST] Resend not configured, skipping digest email');
     return false;
   }
 
@@ -2203,7 +2172,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
   `;
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [digest.userEmail],
       subject: `Your Weekly Pipeline Report — ${startStr} to ${endStr}`,
@@ -2215,7 +2184,6 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
       return false;
     }
 
-    console.log('[DIGEST] Sent to:', digest.userEmail, 'ID:', emailData?.id);
     return true;
   } catch (error) {
     console.error('[DIGEST] Error:', error);
@@ -2245,7 +2213,7 @@ export async function sendClientOnboardingEmail(
   const { to, clientName, creativeName, projectType, portalUrl, daysUntilDeadline, leadId } = params;
 
   if (!resend) {
-    console.log(`[ONBOARDING] Resend not configured, would send step ${step} to:`, to);
+
     return false;
   }
 
@@ -2395,7 +2363,7 @@ export async function sendClientOnboardingEmail(
     if (trackingPixelHtml) {
       html = html.replace('</body>', `${trackingPixelHtml}</body>`);
     }
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [to],
       subject: template.subject,
@@ -2406,7 +2374,7 @@ export async function sendClientOnboardingEmail(
       console.error(`[ONBOARDING] Step ${step} failed:`, error);
       return false;
     }
-    console.log(`[ONBOARDING] Step ${step} sent to ${to}, ID: ${emailData?.id}`);
+
     return true;
   } catch (error) {
     console.error(`[ONBOARDING] Step ${step} error:`, error);
@@ -2440,7 +2408,7 @@ export async function sendQuoteFollowUpEmail(
   const formattedAmount = `${currencySymbol}${quoteAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   if (!resend) {
-    console.log(`[QUOTE FOLLOWUP] Resend not configured, would send step ${step} to:`, to);
+
     return false;
   }
 
@@ -2554,7 +2522,7 @@ export async function sendQuoteFollowUpEmail(
     if (trackingPixelHtml) {
       html = html.replace('</body>', `${trackingPixelHtml}</body>`);
     }
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [to],
       subject: template.subject,
@@ -2565,7 +2533,7 @@ export async function sendQuoteFollowUpEmail(
       console.error(`[QUOTE FOLLOWUP] Step ${step} failed:`, error);
       return false;
     }
-    console.log(`[QUOTE FOLLOWUP] Step ${step} sent to ${to}, ID: ${emailData?.id}`);
+
     return true;
   } catch (error) {
     console.error(`[QUOTE FOLLOWUP] Step ${step} error:`, error);

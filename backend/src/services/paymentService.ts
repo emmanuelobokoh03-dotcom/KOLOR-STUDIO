@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import prisma from '../lib/prisma';
+import { logAudit, AUDIT_ACTIONS } from './auditService';
 import {
   sendDepositPaymentEmail,
   sendDepositReceivedEmail,
@@ -38,9 +39,7 @@ const STRIPE_PROXY_URL = process.env.STRIPE_PROXY_URL || 'http://localhost:8002'
 let stripe: Stripe | null = null;
 if (useDirectSDK) {
   stripe = new Stripe(STRIPE_API_KEY, { typescript: true });
-  console.log('[Pay] Using direct Stripe SDK');
 } else {
-  console.log('[Pay] Using Stripe proxy (emergent key)');
 }
 
 // ---- Direct SDK helpers ----
@@ -188,7 +187,7 @@ export const paymentService = {
       },
     });
 
-    console.log(`[Pay] Deposit checkout created: ${depositAmount} for income ${incomeId}`);
+
 
     const creativeName = `${income.user?.firstName || ''} ${income.user?.lastName || ''}`.trim() || 'Studio';
     sendDepositPaymentEmail({
@@ -243,7 +242,7 @@ export const paymentService = {
       data: { finalAmount },
     });
 
-    console.log(`[Pay] Final checkout created: ${finalAmount} for income ${incomeId}`);
+
 
     const creativeName = `${income.user?.firstName || ''} ${income.user?.lastName || ''}`.trim() || 'Studio';
     sendFinalPaymentEmail({
@@ -288,7 +287,16 @@ export const paymentService = {
             },
           });
         }
-        console.log(`[Pay] Deposit marked PAID for income ${incomeId}`);
+    
+
+        // Audit log for deposit payment
+        await logAudit({
+          userId: income.userId,
+          action: AUDIT_ACTIONS.PAYMENT_RECEIVED,
+          entity: 'Income',
+          entityId: incomeId,
+          metadata: { type: 'deposit', amount: (sessionData.amount_total || 0) / 100, leadId: income.leadId },
+        });
 
         const depositIncome = await prisma.income.findUnique({
           where: { id: incomeId },
@@ -332,7 +340,16 @@ export const paymentService = {
             },
           });
         }
-        console.log(`[Pay] Final payment marked PAID_IN_FULL for income ${incomeId}`);
+    
+
+        // Audit log for final payment
+        await logAudit({
+          userId: income.userId,
+          action: AUDIT_ACTIONS.PAYMENT_RECEIVED,
+          entity: 'Income',
+          entityId: incomeId,
+          metadata: { type: 'final', amount: (sessionData.amount_total || 0) / 100, leadId: income.leadId },
+        });
 
         const finalIncome = await prisma.income.findUnique({
           where: { id: incomeId },

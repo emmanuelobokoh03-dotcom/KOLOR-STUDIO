@@ -473,8 +473,27 @@ model User {
   incomes              Income[]
   testimonials         Testimonial[]
   emailSequences       EmailSequence[]
+  auditLogs            AuditLog[]
 
   @@map("users")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String
+  entity    String
+  entityId  String
+  metadata  Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
 }
 
 model WorkflowStage {
