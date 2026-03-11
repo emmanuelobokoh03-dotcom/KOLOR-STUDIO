@@ -21,19 +21,28 @@ Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals
 ```
 /app/kolor-studio-v2/
 ├── backend/
-│   ├── prisma/schema.prisma
+│   ├── prisma/schema.prisma         # AuditLog model added
 │   └── src/
-│       ├── routes/ (auth, crm, analytics, sequences, tracking, etc.)
-│       ├── services/ (email, digest, onboarding, quoteFollowUp, emailTracking)
-│       ├── middleware/ (auth)
-│       └── server.ts
+│       ├── routes/
+│       │   ├── auth.ts              # Password reset hardened
+│       │   ├── leads.ts             # Audit log on delete
+│       │   ├── user.ts              # NEW: GDPR account deletion
+│       │   └── ...
+│       ├── services/
+│       │   ├── auditService.ts      # NEW: Audit logging service
+│       │   ├── email.ts             # Console.logs cleaned
+│       │   └── ...
+│       └── server.ts                # User routes registered
 └── frontend/
     └── src/
-        ├── components/ (40+ components including EmptyState, StatusBadge)
-        ├── pages/ (15+ pages)
-        ├── services/api.ts
-        ├── contexts/BrandThemeContext.tsx
-        └── utils/ (analytics, currency)
+        ├── components/
+        │   ├── AccountDangerZone.tsx # NEW: GDPR delete UI
+        │   ├── SettingsModal.tsx     # Account tab added
+        │   └── ...
+        ├── pages/
+        │   ├── LandingPage.tsx       # Rewritten (6 sections)
+        │   └── ...
+        └── ...
 ```
 
 ## Design System (Visual Identity)
@@ -44,96 +53,86 @@ Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals
 - **Workflow Status**: Amber (quote) → Indigo (contract) → Blue (deposit) → Cyan (progress) → Green (complete)
 - **Semantic**: Success (#10B981), Warning (#F59E0B), Error (#EF4444), Info (#3B82F6)
 
-### Gradients
-- Brand: purple-500 → purple-400 → purple-300 (CTAs, heroes)
-- Creative: purple → cyan → green (pipeline progression)
-- Hero: dark-900 → purple-500 (landing pages)
-
-### Elevation System
-- elevation-1: Subtle (default cards)
-- elevation-2: Hover (interactive cards)
-- elevation-3: Elevated (modals, important)
-
-### Icon Weight Hierarchy
-- `fill`: Active/selected states
-- `duotone`: Stat cards, empty states, decorative
-- `bold`: Primary CTAs
-- `regular`: Default navigation
-
-## Completed Features
+## Completed Features (All Sessions)
 - Full CRM pipeline (leads, kanban, list view)
 - Quote builder with templates, PDF export, public quote pages
-- Contract management
-- Deliverables tracking
+- Contract management, Deliverables tracking
 - Client portal with messaging
 - Calendar views (month, week, day, agenda)
 - Email composer with CC/BCC
-- Brand settings with live preview
-- Portfolio management and public portfolio
+- Brand settings with live preview, Portfolio management
 - Revenue dashboard and analytics
 - Email sequences (onboarding drip, quote follow-up)
-- Sequences dashboard with open rate tracking
-- Email open tracking via 1x1 pixel
-- Weekly digest emails
+- Email open tracking via 1x1 pixel, Weekly digest emails
 - Interactive onboarding wizard and tours
 - Mobile responsive with bottom nav
 - Cookie consent, privacy policy, terms of service
 - Industry-specific onboarding and widgets
-- CRM alerts and smart suggestions
-- Testimonials management
+- CRM alerts, smart suggestions, testimonials management
 - Settings modal with currency configuration
 - QR code sharing for inquiry forms
 
 ## Recently Completed (March 2026)
-- **P0: Fixed Broken Frontend Build** — Resolved 1200+ TypeScript errors from corrupted icon migration
-- **P1: Completed Phosphor Icon Migration** — Strategic weight hierarchy applied
-- **Complete Visual Redesign** — Dark-to-light theme transformation:
-  - New Tailwind config with complete color system
-  - All 580+ hardcoded dark colors replaced with design tokens
-  - Light, sophisticated theme (not dark/techy)
-  - Workflow status colors (amber→indigo→blue→cyan→green)
-  - Brand gradient CTA buttons
-  - Elevation shadow system
-  - Updated email templates with brand voice
-  - New EmptyState and StatusBadge components
-- **P0: Landing Page Rewrite (DONE)** — Complete 6-section rewrite:
-  - Hero: Full-screen gradient with brand positioning headline
-  - Problem: Contrarian positioning with 3 pain-point cards (Phosphor icons)
-  - Solution: 4 feature cards with workflow-colored icons and tags
-  - How It Works: 3-step creative gradient progression timeline
-  - Pricing: 3-tier (Free/Pro/Studio) with gradient Pro card + BETA SPECIAL badge
-  - Final CTA: Gradient section with signup call-to-action
-  - Mobile responsive, Framer Motion animations, all CTAs link to /signup
-  - **Tested: 44/44 frontend tests passed (100%)**
+### Icon Migration & Build Fix
+- Fixed 1200+ TypeScript errors from corrupted icon migration
+- Completed Phosphor icon migration with strategic weight hierarchy
+
+### Complete Visual Redesign (Dark → Light)
+- New Tailwind config with complete color/gradient/shadow design token system
+- All 580+ hardcoded dark colors replaced with design tokens
+- Updated email templates with brand voice
+- New EmptyState, StatusBadge, Button components
+
+### Landing Page Rewrite (P0) ✅
+- 6-section layout: Hero, Problem, Solution, How It Works, Pricing, Final CTA
+- Framer Motion animations, Phosphor icons, mobile responsive
+- **Tested: 44/44 frontend tests passed (100%)**
+
+### Security Audit (P1) ✅
+- **Audit Logging System**: AuditLog Prisma model + auditService.ts
+  - Logs: DELETE_LEAD, PAYMENT_RECEIVED, ACCOUNT_DELETED, PASSWORD_RESET, QUOTE_DELETED, FILE_DELETED
+  - Captures userId, action, entity, entityId, metadata, ipAddress, userAgent
+- **GDPR Account Deletion**: DELETE /api/user/account
+  - Password verification required, audit log before cascade delete
+  - Account tab in Settings modal with Danger Zone UI
+- **Console.log Cleanup**: Removed ~115 debug console.logs from production paths
+  - Only server startup logs and console.error remain
+- **NPM Audit Fix**: Backend 0 vulnerabilities, frontend 2 moderate (react-quill dev dep)
+- **Password Reset Hardening**:
+  - Minimum 8 characters, common password rejection, same-password prevention
+  - Audit logging on successful reset
+- **Tested: 8/8 backend + 11/11 frontend tests passed (100%)**
 
 ## Upcoming Tasks (Priority Order)
-1. **(P1) Security Audit:**
-   - Add audit logs for critical actions (deletions, payments)
-   - GDPR-compliant account deletion flow
-   - Remove `console.log` from production code
-   - Run `npm audit fix`
-   - Harden password reset mechanism
-
-2. **(P2) Polish & Mobile:**
+1. **(P2) Polish & Mobile:**
    - Thorough mobile responsiveness review across all pages
    - Refine loading/error/empty states
    - Add subtle CSS animations and transitions
 
-3. **(P3) Domain & Launch Prep:**
+2. **(P3) Domain & Launch Prep:**
    - Configure production domains (kolorstudio.app, api.kolorstudio.app)
    - Set up SPF/DKIM for email (Resend)
 
-4. **(Backlog - Post-Beta) Visual Sequence Builder:**
+3. **(Backlog - Post-Beta) Visual Sequence Builder:**
    - Drag-and-drop email automation sequence builder
 
-## Test Credentials
-- Email: `test@test.com`
-- Password: `password`
+## Key DB Schema
+- **User**: id, email, password, firstName, lastName, studioName, role, preferences, ...
+- **Lead**: id, clientName, clientEmail, serviceType, projectTitle, status, ...
+- **Quote**: id, quoteNumber, total, status, leadId, ...
+- **Contract**: id, title, content, status, leadId, ...
+- **AuditLog**: id, userId, action, entity, entityId, metadata, ipAddress, userAgent, createdAt
 
 ## Key API Endpoints
 - `POST /api/auth/signup` — Register
 - `POST /api/auth/login` — Login
+- `POST /api/auth/reset-password` — Reset password (hardened)
 - `GET /api/leads` — Get all leads
+- `DELETE /api/leads/:id` — Delete lead (audit logged)
+- `DELETE /api/user/account` — GDPR account deletion
 - `GET /api/analytics/dashboard` — Dashboard stats
 - `GET /api/sequences` — Email sequences
-- `GET /track/open/:trackingId` — Email open tracking pixel
+
+## Test Credentials
+- Email: `security@test.com`
+- Password: `TestPass123!`
