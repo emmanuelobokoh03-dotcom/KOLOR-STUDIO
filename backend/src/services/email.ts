@@ -107,7 +107,7 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
     return false;
   }
 
-  const dashboardUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const dashboardUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
 
   const content = `
@@ -256,7 +256,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   }
 
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
   const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null;
 
   const content = `
@@ -439,7 +439,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -535,7 +535,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -630,7 +630,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
   const resetUrl = `${baseUrl}/reset-password/${data.resetToken}`;
 
   const content = `
@@ -724,7 +724,7 @@ export async function sendVerificationEmail(data: VerificationEmailData): Promis
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
   const verifyUrl = `${baseUrl}/verify-email/${data.verificationToken}`;
 
   const content = `
@@ -813,7 +813,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
   // Link to portal if portalToken is available, otherwise fallback to public quote page
   const quoteUrl = data.portalToken
     ? `${baseUrl}/portal/${data.portalToken}`
@@ -945,7 +945,7 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const sym = data.currencySymbol || '$';
   const formattedTotal = `${sym}${data.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -1046,7 +1046,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -2076,7 +2076,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
   const sym = stats.currencySymbol;
   const startStr = period.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const endStr = period.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const baseUrl = process.env.FRONTEND_URL || 'https://crm-for-creatives.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://landing-redesign-32.preview.emergentagent.com';
 
   // Build stat cards
   const statCards = [

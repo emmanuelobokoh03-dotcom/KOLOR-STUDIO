@@ -1,511 +1,478 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   Sparkle,
-  SquaresFour,
-  ChatCircle,
-  ChartBar,
+  FileText,
+  PencilSimple,
+  CurrencyDollar,
+  CheckCircle,
   ArrowRight,
-  Check,
-  Lock,
-  Cloud,
-  Star,
-  CaretDown,
-  CaretUp,
-  X as XIcon,
-  Envelope,
-  Quotes,
-  Globe,
-  Lightning
+  Heartbeat,
+  EnvelopeSimple,
+  ChartBar,
 } from '@phosphor-icons/react'
 import Footer from '../components/Footer'
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, duration: 0.5, ease: 'easeOut' },
+  }),
+}
+
 const LandingPage = () => {
-  const [email, setEmail] = useState('')
-  const [emailSubmitted, setEmailSubmitted] = useState(false)
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
-
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (email) {
-      // In production, this would call an API
-      setEmailSubmitted(true)
-      setEmail('')
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-light-50">
+    <div className="min-h-screen bg-light-50" data-testid="landing-page">
       {/* Navigation */}
-      <nav className="container mx-auto px-6 py-6">
-        <div className="flex items-center justify-between">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center space-x-2"
-          >
-            <Sparkle className="w-8 h-8 text-brand-primary" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
-              KOLOR STUDIO
-            </span>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center space-x-4"
-          >
-            <Link 
-              to="/login" 
-              className="text-text-secondary hover:text-text-primary transition-colors"
+      <nav className="absolute top-0 left-0 right-0 z-20" data-testid="landing-nav">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
+              <Sparkle weight="fill" className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-lg font-bold text-white">KOLOR STUDIO</span>
+          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              to="/login"
+              className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+              data-testid="nav-login-link"
             >
               Login
             </Link>
-            <Link 
+            <Link
               to="/signup"
-              className="bg-brand-primary text-white px-6 py-2 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-brand-primary-dark/40"
+              className="bg-white text-purple-600 px-5 py-2 rounded-lg text-sm font-semibold hover:bg-white/90 transition-all shadow-lg"
+              data-testid="nav-signup-link"
             >
               Get Started
             </Link>
-          </motion.div>
+          </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="max-w-4xl mx-auto text-center">
+      {/* ─── SECTION 1: HERO ─── */}
+      <section
+        className="relative min-h-screen flex items-center justify-center bg-gradient-hero overflow-hidden"
+        data-testid="hero-section"
+      >
+        {/* Decorative blobs */}
+        <div className="absolute top-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl" />
+
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight"
+            data-testid="hero-headline"
+          >
+            Your CRM Should Work
+            <br />
+            <span className="bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">
+              Harder Than You Do
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-lg sm:text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto"
+            data-testid="hero-subheadline"
+          >
+            Autopilot quotes, contracts, and payments for photographers, artists, and designers.
+            <br className="hidden sm:block" />
+            So you can focus on creating, not chasing.
+          </motion.p>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <span className="inline-block px-4 py-2 bg-purple-100 text-purple-600 rounded-full text-sm font-medium mb-6 border border-purple-200">
-              The CRM that doesn't feel like a CRM
-            </span>
+            <Link
+              to="/signup"
+              className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg shadow-elevation-3 hover:scale-105 transition-all inline-flex items-center gap-2"
+              data-testid="hero-cta-primary"
+            >
+              Start Free Trial <ArrowRight weight="bold" className="w-5 h-5" />
+            </Link>
+            <a
+              href="#how-it-works"
+              className="border-2 border-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/10 transition-all"
+              data-testid="hero-cta-secondary"
+            >
+              See How It Works
+            </a>
           </motion.div>
-          
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-6xl md:text-7xl font-bold mb-6 leading-tight text-text-primary"
-          >
-            Turn{' '}
-            <span className="bg-gradient-to-r from-purple-500 to-purple-400 bg-clip-text text-transparent">
-              creativity
-            </span>
-            {' '}into revenue
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-xl text-text-secondary mb-10 leading-relaxed"
-          >
-            Built for creative professionals — photographers, videographers, designers, illustrators, and visual artists.
-            <br />
-            Manage leads, impress clients, and grow your creative business.
-          </motion.p>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex flex-col items-center"
-          >
-            <div className="flex items-center justify-center space-x-4 mb-4">
-              <Link
-                to="/signup"
-                className="bg-brand-primary text-white px-8 py-4 rounded-xl hover:bg-brand-primary transition-all shadow-xl shadow-purple-200 hover:shadow-2xl hover:shadow-brand-primary-dark/40 flex items-center space-x-2 text-lg font-semibold"
-              >
-                <span>Start Managing Leads in 2 Minutes</span>
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <button className="border-2 border-light-200 text-text-secondary px-8 py-4 rounded-xl hover:border-gray-500 hover:bg-white transition-all text-lg font-semibold">
-                Watch demo
-              </button>
-            </div>
-            <p className="text-sm text-text-secondary mb-2">
-              Join 200+ photographers, videographers, and designers who've ditched spreadsheets
-            </p>
-          </motion.div>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-sm text-text-tertiary mt-4 flex items-center justify-center gap-4"
+            transition={{ delay: 0.6 }}
+            className="text-white/60 text-sm mt-8"
           >
-            <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-400" /> Free forever</span>
-            <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-400" /> No credit card required</span>
-            <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-400" /> 2-minute setup</span>
+            Join 1,000+ creatives who stopped chasing clients
           </motion.p>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <FeatureCard
-            icon={<SquaresFour className="w-6 h-6" />}
-            title="Visual Pipeline"
-            description="Drag-and-drop Kanban board that shows your entire business at a glance. Move leads from inquiry to booking with satisfaction."
-            delay={0.1}
-          />
-          <FeatureCard
-            icon={<ChatCircle className="w-6 h-6" />}
-            title="Client Portal"
-            description="Branded client experience that makes you look like a million-dollar studio. Real-time updates and seamless communication."
-            delay={0.2}
-          />
-          <FeatureCard
-            icon={<ChartBar className="w-6 h-6" />}
-            title="Smart Analytics"
-            description="See pipeline value, conversion rates, and revenue trends. Know which services print money and which need work."
-            delay={0.3}
-          />
+      {/* ─── SECTION 2: PROBLEM ─── */}
+      <section className="py-20 md:py-24 bg-light-50" data-testid="problem-section">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.h2
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0}
+            className="text-3xl sm:text-4xl font-bold text-text-primary mb-6"
+          >
+            You Didn't Become a Creative to Do Admin
+          </motion.h2>
+
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={1}
+            className="text-lg sm:text-xl text-text-secondary mb-12 max-w-2xl mx-auto"
+          >
+            But you're spending 20+ hours a week on quotes, follow-ups, contracts,
+            and payment reminders instead of your craft.
+          </motion.p>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <PainCard
+              icon={<Heartbeat weight="duotone" className="w-8 h-8 text-red-500" />}
+              bg="bg-red-50"
+              title="Chasing Payments"
+              desc="Manually reminding clients to pay invoices"
+              index={2}
+            />
+            <PainCard
+              icon={<EnvelopeSimple weight="duotone" className="w-8 h-8 text-amber-500" />}
+              bg="bg-amber-50"
+              title="Endless Follow-Ups"
+              desc='Writing the same "just checking in" emails'
+              index={3}
+            />
+            <PainCard
+              icon={<ChartBar weight="duotone" className="w-8 h-8 text-blue-500" />}
+              bg="bg-blue-50"
+              title="Spreadsheet Hell"
+              desc="Tracking everything manually in Google Sheets"
+              index={4}
+            />
+          </div>
+
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={5}
+            className="text-xl sm:text-2xl font-bold text-text-primary"
+          >
+            There's a better way.
+          </motion.p>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+      {/* ─── SECTION 3: SOLUTION ─── */}
+      <section
+        className="py-20 md:py-24 bg-gradient-to-br from-purple-50/50 to-cyan-50/50"
+        data-testid="solution-section"
+      >
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <motion.h2
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={0}
+              className="text-3xl sm:text-4xl font-bold text-text-primary mb-4"
+            >
+              Complete Autopilot from Inquiry to Payment
+            </motion.h2>
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={1}
+              className="text-lg sm:text-xl text-text-secondary"
+            >
+              Your CRM handles everything while you create
+            </motion.p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <FeatureCard
+              icon={<FileText weight="duotone" className="w-8 h-8 text-[#F59E0B]" />}
+              iconBg="from-amber-100 to-amber-200"
+              title="Instant Professional Quotes"
+              desc="Send beautiful, branded quotes in seconds. Your CRM follows up automatically if clients don't respond."
+              tags={[
+                { label: '3-email sequence', color: 'bg-amber-100 text-amber-700' },
+                { label: 'Auto follow-up', color: 'bg-purple-100 text-purple-700' },
+              ]}
+              index={0}
+            />
+            <FeatureCard
+              icon={<PencilSimple weight="duotone" className="w-8 h-8 text-[#6366F1]" />}
+              iconBg="from-indigo-100 to-indigo-200"
+              title="Digital Contracts That Sign Themselves"
+              desc="Clients sign online in 30 seconds. No printing, scanning, or chasing signatures."
+              tags={[
+                { label: 'E-signature', color: 'bg-indigo-100 text-indigo-700' },
+                { label: 'Auto-send', color: 'bg-purple-100 text-purple-700' },
+              ]}
+              index={1}
+            />
+            <FeatureCard
+              icon={<CurrencyDollar weight="duotone" className="w-8 h-8 text-[#06B6D4]" />}
+              iconBg="from-cyan-100 to-cyan-200"
+              title="Payments on Autopilot"
+              desc="Stripe integration handles deposits and final payments. Get paid faster without asking."
+              tags={[
+                { label: 'Stripe powered', color: 'bg-cyan-100 text-cyan-700' },
+                { label: 'Auto-reminders', color: 'bg-purple-100 text-purple-700' },
+              ]}
+              index={2}
+            />
+            <FeatureCard
+              icon={<CheckCircle weight="duotone" className="w-8 h-8 text-[#10B981]" />}
+              iconBg="from-green-100 to-green-200"
+              title="Client Portals They'll Love"
+              desc="Beautiful branded portals where clients view quotes, sign contracts, and make payments. No back-and-forth emails."
+              tags={[
+                { label: 'Your branding', color: 'bg-green-100 text-green-700' },
+                { label: 'Mobile-friendly', color: 'bg-purple-100 text-purple-700' },
+              ]}
+              index={3}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 4: HOW IT WORKS ─── */}
+      <section className="py-20 md:py-24 bg-light-50" id="how-it-works" data-testid="how-it-works-section">
+        <div className="max-w-5xl mx-auto px-6">
+          <motion.h2
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-xl p-12 border border-light-200"
+            custom={0}
+            className="text-3xl sm:text-4xl font-bold text-text-primary text-center mb-16"
           >
-            <h2 className="text-3xl font-bold mb-8 text-center text-text-primary">
-              Why creatives love KOLOR STUDIO
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <Benefit text="No more losing leads in email chaos" />
-              <Benefit text="Clients think you're way more professional" />
-              <Benefit text="Pays for itself with one extra booking" />
-              <Benefit text="Actually enjoy managing your business" />
+            From Inquiry to Payment in 3 Clicks
+          </motion.h2>
+
+          <div className="relative">
+            {/* Progress line */}
+            <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-creative rounded-full hidden md:block" />
+
+            <div className="space-y-10 md:space-y-12 relative">
+              <Step
+                num={1}
+                color="bg-purple-500"
+                title="Create Quote"
+                desc="Add line items, set pricing. Your CRM generates a beautiful quote and client portal."
+                index={1}
+              />
+              <Step
+                num={2}
+                color="bg-[#06B6D4]"
+                title="Autopilot Takes Over"
+                desc="Follow-up emails, contract sending, payment reminders — all automatic. You do nothing."
+                index={2}
+              />
+              <Step
+                num={3}
+                color="bg-[#10B981]"
+                title="Get Paid, Start Creating"
+                desc="Client signs, pays deposit, you get notification. Focus on your craft, not admin."
+                index={3}
+              />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 5: PRICING ─── */}
+      <section
+        className="py-20 md:py-24 bg-gradient-to-br from-purple-50/50 to-cyan-50/50"
+        data-testid="pricing-section"
+      >
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <motion.h2
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={0}
+              className="text-3xl sm:text-4xl font-bold text-text-primary mb-4"
+            >
+              Simple Pricing for Creatives
+            </motion.h2>
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={1}
+              className="text-lg sm:text-xl text-text-secondary"
+            >
+              First 20 beta users get FREE FOREVER
+            </motion.p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Free */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={2}
+              className="bg-white rounded-2xl p-8 border-2 border-light-200 shadow-elevation-1"
+              data-testid="pricing-free"
+            >
+              <h3 className="text-2xl font-bold text-text-primary mb-2">Free</h3>
+              <p className="text-text-secondary mb-6">For trying it out</p>
+              <p className="text-5xl font-bold text-text-primary mb-6">$0</p>
+              <ul className="space-y-3 mb-8 text-text-secondary">
+                <PricingItem text="3 active projects" />
+                <PricingItem text="Basic autopilot" />
+                <PricingItem text="Client portals" />
+              </ul>
+              <Link
+                to="/signup"
+                className="block w-full py-3 border-2 border-light-200 rounded-xl font-semibold text-text-primary hover:bg-light-100 transition-colors text-center"
+                data-testid="pricing-free-cta"
+              >
+                Start Free
+              </Link>
+            </motion.div>
+
+            {/* Pro */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={3}
+              className="bg-gradient-brand text-white rounded-2xl p-8 shadow-elevation-3 relative"
+              data-testid="pricing-pro"
+            >
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#10B981] text-white text-sm font-bold rounded-full whitespace-nowrap">
+                BETA SPECIAL
+              </div>
+              <h3 className="text-2xl font-bold mb-2">Pro</h3>
+              <p className="text-white/80 mb-6">For serious creatives</p>
+              <p className="text-5xl font-bold mb-2">$29</p>
+              <p className="text-white/80 mb-6">per month</p>
+              <ul className="space-y-3 mb-8">
+                <PricingItemWhite text="Unlimited projects" />
+                <PricingItemWhite text="Full autopilot sequences" />
+                <PricingItemWhite text="Custom branding" />
+                <PricingItemWhite text="Priority support" />
+              </ul>
+              <Link
+                to="/signup"
+                className="block w-full py-3 bg-white text-purple-600 rounded-xl font-semibold hover:shadow-elevation-3 transition-all text-center"
+                data-testid="pricing-pro-cta"
+              >
+                Start Free Trial <span aria-hidden>→</span>
+              </Link>
+            </motion.div>
+
+            {/* Studio */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={4}
+              className="bg-white rounded-2xl p-8 border-2 border-light-200 shadow-elevation-1"
+              data-testid="pricing-studio"
+            >
+              <h3 className="text-2xl font-bold text-text-primary mb-2">Studio</h3>
+              <p className="text-text-secondary mb-6">For growing studios</p>
+              <p className="text-5xl font-bold text-text-primary mb-6">$79</p>
+              <ul className="space-y-3 mb-8 text-text-secondary">
+                <PricingItem text="Everything in Pro" />
+                <PricingItem text="Team collaboration" />
+                <PricingItem text="Advanced analytics" />
+                <PricingItem text="White label option" />
+              </ul>
+              <Link
+                to="/signup"
+                className="block w-full py-3 border-2 border-light-200 rounded-xl font-semibold text-text-primary hover:bg-light-100 transition-colors text-center"
+                data-testid="pricing-studio-cta"
+              >
+                Contact Sales
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 6: FINAL CTA ─── */}
+      <section className="py-20 md:py-24 bg-gradient-hero" data-testid="final-cta-section">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.h2
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0}
+            className="text-4xl sm:text-5xl font-bold text-white mb-6"
+          >
+            Stop Chasing. Start Creating.
+          </motion.h2>
+
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={1}
+            className="text-lg sm:text-xl text-white/90 mb-12"
+          >
+            Join 1,000+ photographers, artists, and designers who let their CRM work harder than they do.
+          </motion.p>
+
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={2}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          >
+            <Link
+              to="/signup"
+              className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg shadow-elevation-3 hover:scale-105 transition-all inline-flex items-center gap-2"
+              data-testid="final-cta-button"
+            >
+              Start Free Trial <ArrowRight weight="bold" className="w-5 h-5" />
+            </Link>
+            <p className="text-white/60 text-sm">
+              No credit card required &bull; First 20 users FREE FOREVER
+            </p>
           </motion.div>
         </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="container mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <span className="inline-block px-4 py-2 bg-purple-50 text-purple-600 rounded-full text-sm font-medium mb-4 border border-purple-200">
-            Trusted by Creative Professionals Worldwide
-          </span>
-          <h2 className="text-4xl font-bold text-text-primary mb-4">What our users say</h2>
-          <p className="text-text-secondary max-w-2xl mx-auto">
-            Don't just take our word for it — hear from creative professionals who've transformed their business
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <TestimonialCard
-            quote="KOLOR STUDIO transformed how I manage my photography business. The client portal alone has helped me book 3x more projects!"
-            author="Sarah Chen"
-            role="Wedding Photographer"
-            location="Los Angeles, CA"
-            initials="SC"
-            rating={5}
-            delay={0.1}
-          />
-          <TestimonialCard
-            quote="Finally, a CRM that doesn't feel overwhelming. I set it up in 10 minutes and sent my first quote the same day."
-            author="Marcus Williams"
-            role="Videographer & Content Creator"
-            location="Miami, FL"
-            initials="MW"
-            rating={5}
-            delay={0.2}
-          />
-          <TestimonialCard
-            quote="My clients love the professional portal. It makes me look like a much bigger studio than I am!"
-            author="Emma Rodriguez"
-            role="Brand Designer"
-            location="London, UK"
-            initials="ER"
-            rating={5}
-            delay={0.3}
-          />
-        </div>
-
-        {/* Stats Row */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-16"
-        >
-          <div className="text-center">
-            <p className="text-3xl font-bold text-text-primary">200+</p>
-            <p className="text-sm text-text-secondary">Creative Professionals</p>
-          </div>
-          <div className="text-center">
-            <p className="text-3xl font-bold text-text-primary">1,000+</p>
-            <p className="text-sm text-text-secondary">Quotes Sent</p>
-          </div>
-          <div className="text-center">
-            <p className="text-3xl font-bold text-purple-600">₦500K+</p>
-            <p className="text-sm text-text-secondary">Revenue Managed</p>
-          </div>
-          <div className="text-center">
-            <p className="text-3xl font-bold text-green-400">98%</p>
-            <p className="text-sm text-text-secondary">User Satisfaction</p>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Comparison Table */}
-      <section className="container mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-4xl font-bold text-text-primary mb-4">
-            KOLOR STUDIO vs. The Old Way
-          </h2>
-          <p className="text-text-secondary max-w-2xl mx-auto">
-            Stop wasting time with spreadsheets, scattered emails, and manual follow-ups
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto"
-        >
-          <div className="bg-white rounded-2xl border border-light-200 overflow-hidden">
-            <div className="overflow-x-auto">
-            <div className="min-w-[600px]">
-            <div className="grid grid-cols-3 bg-light-100 border-b border-light-200">
-              <div className="p-4 text-text-secondary text-sm font-medium">Task</div>
-              <div className="p-4 text-center text-text-secondary text-sm font-medium border-x border-light-200">Spreadsheets</div>
-              <div className="p-4 text-center text-purple-600 text-sm font-medium bg-purple-50">KOLOR STUDIO</div>
-            </div>
-            
-            <ComparisonRow 
-              task="Track leads & status" 
-              old="Manual entry, easy to forget" 
-              newWay="Visual Kanban, drag & drop" 
-            />
-            <ComparisonRow 
-              task="Send professional quotes" 
-              old="Word docs, inconsistent format" 
-              newWay="Templates, PDF export, e-sign" 
-            />
-            <ComparisonRow 
-              task="Client communication" 
-              old="Buried in email inbox" 
-              newWay="Branded portal, real-time updates" 
-            />
-            <ComparisonRow 
-              task="Track revenue" 
-              old="Formulas, prone to errors" 
-              newWay="Automatic analytics dashboard" 
-            />
-            <ComparisonRow 
-              task="Follow-up reminders" 
-              old="Calendar reminders, easy to miss" 
-              newWay="Built-in activity timeline" 
-            />
-            <ComparisonRow 
-              task="Time to create quote" 
-              old="30-60 minutes" 
-              newWay="Under 5 minutes" 
-              isLast
-            />
-            </div>
-            </div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Trust & Security Section */}
-      <section className="container mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-5xl mx-auto"
-        >
-          <div className="text-center mb-12">
-            <span className="inline-block px-4 py-2 bg-green-900/30 text-green-300 rounded-full text-sm font-medium mb-4 border border-green-700/30">
-              Built for Security & Reliability
-            </span>
-            <h2 className="text-4xl font-bold text-text-primary mb-4">Your data is safe with us</h2>
-            <p className="text-text-secondary max-w-2xl mx-auto">
-              We take security seriously. Your client data is protected with the same standards used by banks.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <TrustCard
-              icon={<Lock className="w-6 h-6" />}
-              title="256-bit Encryption"
-              description="Your data is secured with bank-level 256-bit SSL/TLS encryption"
-            />
-            <TrustCard
-              icon={<Globe className="w-6 h-6" />}
-              title="GDPR Compliant"
-              description="We follow strict data protection standards and privacy regulations"
-            />
-            <TrustCard
-              icon={<Cloud className="w-6 h-6" />}
-              title="Daily Backups"
-              description="Automated daily backups ensure you never lose your client data"
-            />
-          </div>
-        </motion.div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="container mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-4xl font-bold text-text-primary mb-4">Frequently Asked Questions</h2>
-          <p className="text-text-secondary max-w-2xl mx-auto">
-            Got questions? We've got answers.
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-3xl mx-auto space-y-4"
-        >
-          <FAQItem
-            question="Do I need a credit card to start?"
-            answer="No! The free tier is free forever. No credit card required to sign up."
-            isOpen={openFaq === 0}
-            onClick={() => setOpenFaq(openFaq === 0 ? null : 0)}
-          />
-          <FAQItem
-            question="Can I import my existing leads?"
-            answer="Yes! You can manually add leads or contact us for help with bulk imports."
-            isOpen={openFaq === 1}
-            onClick={() => setOpenFaq(openFaq === 1 ? null : 1)}
-          />
-          <FAQItem
-            question="What happens to my data if I cancel?"
-            answer="You own your data. Export it anytime. We keep it for 30 days after cancellation, then it's permanently deleted."
-            isOpen={openFaq === 2}
-            onClick={() => setOpenFaq(openFaq === 2 ? null : 2)}
-          />
-          <FAQItem
-            question="Do you offer refunds?"
-            answer="Yes! 30-day money-back guarantee on all paid plans, no questions asked."
-            isOpen={openFaq === 3}
-            onClick={() => setOpenFaq(openFaq === 3 ? null : 3)}
-          />
-          <FAQItem
-            question="Is my client data secure?"
-            answer="Absolutely. We use bank-level encryption, daily backups, and SOC 2 compliant hosting."
-            isOpen={openFaq === 4}
-            onClick={() => setOpenFaq(openFaq === 4 ? null : 4)}
-          />
-          <FAQItem
-            question="Can my clients access the portal on mobile?"
-            answer="Yes! The client portal works beautifully on all devices - desktop, tablet, and phone."
-            isOpen={openFaq === 5}
-            onClick={() => setOpenFaq(openFaq === 5 ? null : 5)}
-          />
-          <FAQItem
-            question="What currencies do you support?"
-            answer="We support 10 currencies including USD, EUR, GBP, NGN, and more. You can also customize your currency symbol."
-            isOpen={openFaq === 6}
-            onClick={() => setOpenFaq(openFaq === 6 ? null : 6)}
-          />
-          <FAQItem
-            question="How is KOLOR different from HoneyBook?"
-            answer="KOLOR is built specifically for solo creatives who want simplicity. We're easier to use, faster to set up, and more affordable."
-            isOpen={openFaq === 7}
-            onClick={() => setOpenFaq(openFaq === 7 ? null : 7)}
-          />
-        </motion.div>
-      </section>
-
-      {/* Email Capture Section */}
-      <section className="container mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-2xl mx-auto bg-white rounded-2xl p-10 border border-light-200 text-center"
-        >
-          <Envelope weight="duotone" className="w-10 h-10 text-purple-600 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-text-primary mb-2">Get Lead Management Tips & Updates</h3>
-          <p className="text-text-secondary mb-6">
-            Join 500+ creatives getting weekly tips on booking more clients and growing their business.
-          </p>
-          
-          {emailSubmitted ? (
-            <div className="flex items-center justify-center gap-2 text-green-600 bg-green-50 py-3 px-4 rounded-lg border border-green-200">
-              <Check className="w-5 h-5" />
-              <span>Thanks! Check your email to confirm your subscription.</span>
-            </div>
-          ) : (
-            <>
-              <form onSubmit={handleEmailSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-3">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  className="flex-1 px-4 py-3 bg-light-100 border border-light-200 rounded-lg text-text-primary placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2.5 sm:px-6 sm:py-3 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium "
-                >
-                  Subscribe
-                </button>
-              </form>
-              <p className="text-xs text-text-tertiary">No spam. Unsubscribe anytime. We respect your inbox.</p>
-            </>
-          )}
-        </motion.div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="container mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto bg-gradient-brand rounded-2xl shadow-2xl p-12 text-center text-white"
-        >
-          <Sparkle weight="duotone" className="w-12 h-12 mx-auto mb-6" />
-          <h2 className="text-4xl font-bold mb-4">
-            Ready to elevate your creative business?
-          </h2>
-          <p className="text-xl mb-8 text-white/80">
-            Join photographers, videographers, designers, illustrators, and visual artists who are in control.
-          </p>
-          <Link
-            to="/signup"
-            className="inline-block bg-white text-brand-primary px-8 py-4 rounded-xl hover:bg-gray-100 transition-all shadow-xl text-lg font-semibold"
-          >
-            Start your free account
-          </Link>
-        </motion.div>
       </section>
 
       {/* Footer */}
@@ -514,161 +481,134 @@ const LandingPage = () => {
   )
 }
 
-// Feature Card Component
-interface FeatureCardProps {
+/* ─── Sub-components ─── */
+
+function PainCard({
+  icon,
+  bg,
+  title,
+  desc,
+  index,
+}: {
   icon: React.ReactNode
+  bg: string
   title: string
-  description: string
-  delay: number
-}
-
-const FeatureCard = ({ icon, title, description, delay }: FeatureCardProps) => {
+  desc: string
+  index: number
+}) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
       viewport={{ once: true }}
-      transition={{ delay }}
-      className="bg-white p-8 rounded-2xl shadow-lg border border-light-200 hover:border-purple-300 hover:shadow-xl hover:shadow-brand-primary-dark/20 transition-all"
+      custom={index}
+      className="bg-white rounded-xl p-6 border border-light-200 shadow-elevation-1"
+      data-testid={`pain-card-${index}`}
     >
-      <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4">
-        {icon}
-      </div>
-      <h3 className="text-xl font-bold mb-3 text-text-primary">{title}</h3>
-      <p className="text-text-secondary leading-relaxed">{description}</p>
-    </motion.div>
-  )
-}
-
-// Benefit Component
-const Benefit = ({ text }: { text: string }) => {
-  return (
-    <div className="flex items-start space-x-3">
-      <div className="flex-shrink-0 w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mt-0.5">
-        <Check className="w-4 h-4 text-purple-600" />
-      </div>
-      <p className="text-text-secondary">{text}</p>
-    </div>
-  )
-}
-
-// Testimonial Card Component
-interface TestimonialCardProps {
-  quote: string
-  author: string
-  role: string
-  location: string
-  initials: string
-  rating: number
-  delay: number
-}
-
-const TestimonialCard = ({ quote, author, role, location, initials, rating, delay }: TestimonialCardProps) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay }}
-      className="bg-white p-6 rounded-2xl border border-light-200 hover:border-brand-primary/30 transition-all"
-    >
-      <div className="flex gap-1 mb-4">
-        {[...Array(rating)].map((_, i) => (
-          <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-        ))}
-      </div>
-      <Quotes className="w-8 h-8 text-brand-primary/30 mb-2" />
-      <p className="text-text-secondary mb-4 italic">"{quote}"</p>
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center text-white font-semibold text-sm">
-          {initials}
-        </div>
-        <div>
-          <p className="font-semibold text-text-primary">{author}</p>
-          <p className="text-sm text-text-tertiary">{role}</p>
-          <p className="text-xs text-gray-600">{location}</p>
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
-// Comparison Row Component
-interface ComparisonRowProps {
-  task: string
-  old: string
-  newWay: string
-  isLast?: boolean
-}
-
-const ComparisonRow = ({ task, old, newWay, isLast = false }: ComparisonRowProps) => {
-  return (
-    <div className={`grid grid-cols-3 ${!isLast ? 'border-b border-light-200' : ''}`}>
-      <div className="p-4 text-text-primary text-sm">{task}</div>
-      <div className="p-4 text-center text-text-tertiary text-sm border-x border-light-200 flex items-center justify-center gap-2">
-        <XIcon className="w-4 h-4 text-red-400 flex-shrink-0" />
-        <span>{old}</span>
-      </div>
-      <div className="p-4 text-center text-sm bg-purple-50 flex items-center justify-center gap-2">
-        <Check className="w-4 h-4 text-green-400 flex-shrink-0" />
-        <span className="text-purple-600">{newWay}</span>
-      </div>
-    </div>
-  )
-}
-
-// Trust Card Component
-interface TrustCardProps {
-  icon: React.ReactNode
-  title: string
-  description: string
-}
-
-const TrustCard = ({ icon, title, description }: TrustCardProps) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="bg-white p-6 rounded-xl border border-light-200 text-center"
-    >
-      <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600 mx-auto mb-4 border border-green-200">
+      <div className={`w-14 h-14 ${bg} rounded-xl flex items-center justify-center mb-4 mx-auto`}>
         {icon}
       </div>
       <h3 className="font-semibold text-text-primary mb-2">{title}</h3>
-      <p className="text-sm text-text-secondary">{description}</p>
+      <p className="text-text-secondary text-sm">{desc}</p>
     </motion.div>
   )
 }
 
-// FAQ Item Component
-interface FAQItemProps {
-  question: string
-  answer: string
-  isOpen: boolean
-  onClick: () => void
+function FeatureCard({
+  icon,
+  iconBg,
+  title,
+  desc,
+  tags,
+  index,
+}: {
+  icon: React.ReactNode
+  iconBg: string
+  title: string
+  desc: string
+  tags: { label: string; color: string }[]
+  index: number
+}) {
+  return (
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      custom={index}
+      className="bg-white rounded-2xl p-8 shadow-elevation-2 hover:shadow-elevation-3 transition-shadow"
+      data-testid={`feature-card-${index}`}
+    >
+      <div
+        className={`w-16 h-16 bg-gradient-to-br ${iconBg} rounded-xl flex items-center justify-center mb-6`}
+      >
+        {icon}
+      </div>
+      <h3 className="text-xl sm:text-2xl font-bold text-text-primary mb-3">{title}</h3>
+      <p className="text-text-secondary mb-4">{desc}</p>
+      <div className="flex flex-wrap items-center gap-2 text-sm">
+        {tags.map((t) => (
+          <span key={t.label} className={`px-2 py-1 ${t.color} rounded-full text-xs font-medium`}>
+            {t.label}
+          </span>
+        ))}
+      </div>
+    </motion.div>
+  )
 }
 
-const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => {
+function Step({
+  num,
+  color,
+  title,
+  desc,
+  index,
+}: {
+  num: number
+  color: string
+  title: string
+  desc: string
+  index: number
+}) {
   return (
-    <div className="bg-white rounded-xl border border-light-200 overflow-hidden">
-      <button
-        onClick={onClick}
-        className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-light-100 transition"
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      custom={index}
+      className="flex gap-6 items-start"
+      data-testid={`step-${num}`}
+    >
+      <div
+        className={`w-16 h-16 ${color} rounded-full flex items-center justify-center text-white font-bold text-xl shadow-elevation-2 relative z-10 flex-shrink-0`}
       >
-        <span className="font-medium text-text-primary">{question}</span>
-        {isOpen ? (
-          <CaretUp className="w-5 h-5 text-purple-600" />
-        ) : (
-          <CaretDown className="w-5 h-5 text-text-tertiary" />
-        )}
-      </button>
-      {isOpen && (
-        <div className="px-6 pb-4">
-          <p className="text-text-secondary leading-relaxed">{answer}</p>
-        </div>
-      )}
-    </div>
+        {num}
+      </div>
+      <div className="flex-1 bg-white rounded-xl p-6 shadow-elevation-1">
+        <h3 className="text-lg sm:text-xl font-bold text-text-primary mb-2">{title}</h3>
+        <p className="text-text-secondary">{desc}</p>
+      </div>
+    </motion.div>
+  )
+}
+
+function PricingItem({ text }: { text: string }) {
+  return (
+    <li className="flex items-start gap-2">
+      <CheckCircle weight="fill" className="w-5 h-5 text-[#10B981] flex-shrink-0 mt-0.5" />
+      <span>{text}</span>
+    </li>
+  )
+}
+
+function PricingItemWhite({ text }: { text: string }) {
+  return (
+    <li className="flex items-start gap-2">
+      <CheckCircle weight="fill" className="w-5 h-5 flex-shrink-0 mt-0.5" />
+      <span>{text}</span>
+    </li>
   )
 }
 

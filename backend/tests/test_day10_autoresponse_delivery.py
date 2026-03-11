@@ -9,7 +9,7 @@ import os
 import time
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://crm-for-creatives.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://landing-redesign-32.preview.emergentagent.com')
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"
