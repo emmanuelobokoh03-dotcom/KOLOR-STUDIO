@@ -96,13 +96,38 @@ Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals
   - Elevation shadow system
   - Updated email templates with brand voice
   - New EmptyState and StatusBadge components
+- **P0: Landing Page Rewrite (DONE)** — Complete 6-section rewrite:
+  - Hero: Full-screen gradient with brand positioning headline
+  - Problem: Contrarian positioning with 3 pain-point cards (Phosphor icons)
+  - Solution: 4 feature cards with workflow-colored icons and tags
+  - How It Works: 3-step creative gradient progression timeline
+  - Pricing: 3-tier (Free/Pro/Studio) with gradient Pro card + BETA SPECIAL badge
+  - Final CTA: Gradient section with signup call-to-action
+  - Mobile responsive, Framer Motion animations, all CTAs link to /signup
+  - **Tested: 44/44 frontend tests passed (100%)**
 
-## Upcoming Tasks (P2)
-- **UI for Custom Sequences**: Allow creatives to build and manage their own email follow-up sequences
-- **Project Timeline Modal**: Enhance the functionality of the existing timeline modal
+## Upcoming Tasks (Priority Order)
+1. **(P1) Security Audit:**
+   - Add audit logs for critical actions (deletions, payments)
+   - GDPR-compliant account deletion flow
+   - Remove `console.log` from production code
+   - Run `npm audit fix`
+   - Harden password reset mechanism
+
+2. **(P2) Polish & Mobile:**
+   - Thorough mobile responsiveness review across all pages
+   - Refine loading/error/empty states
+   - Add subtle CSS animations and transitions
+
+3. **(P3) Domain & Launch Prep:**
+   - Configure production domains (kolorstudio.app, api.kolorstudio.app)
+   - Set up SPF/DKIM for email (Resend)
+
+4. **(Backlog - Post-Beta) Visual Sequence Builder:**
+   - Drag-and-drop email automation sequence builder
 
 ## Test Credentials
-- Email: `test-user-a@test.com`
+- Email: `test@test.com`
 - Password: `password`
 
 ## Key API Endpoints
