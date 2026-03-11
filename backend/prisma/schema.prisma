@@ -16,7 +16,7 @@ model Activity {
   userId      String?
   createdAt   DateTime     @default(now())
   lead        Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  user        User?        @relation(fields: [userId], references: [id])
+  user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
   @@index([leadId])
@@ -41,7 +41,7 @@ model Booking {
   updatedAt   DateTime  @updatedAt
   completedAt DateTime?
   cancelledAt DateTime?
-  createdBy   User          @relation(fields: [createdById], references: [id])
+  createdBy   User          @relation(fields: [createdById], references: [id], onDelete: Cascade)
   lead        Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
@@ -248,7 +248,7 @@ model Lead {
   deliveryDate      DateTime?
   editingDeadline   DateTime?
   shootingDate      DateTime?
-  assignedTo        User?                 @relation(fields: [assignedToId], references: [id])
+  assignedTo        User?                 @relation(fields: [assignedToId], references: [id], onDelete: Cascade)
   activities        Activity[]
   messages          Message[]
   files             File[]
@@ -282,7 +282,7 @@ model Message {
   senderId     String?
   createdAt    DateTime @default(now())
   lead         Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  sender       User?    @relation(fields: [senderId], references: [id])
+  sender       User?    @relation(fields: [senderId], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
   @@index([leadId])
@@ -370,7 +370,7 @@ model Quote {
   currencySymbol   String?
   numberFormat     String?
   lead             Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  createdBy        User        @relation(fields: [createdById], references: [id])
+  createdBy        User        @relation(fields: [createdById], references: [id], onDelete: Cascade)
   incomeRecords    Income[]
   followUpEnrollment QuoteFollowUpEnrollment?
 
