@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Send, MessageCircle, Loader2 } from 'lucide-react'
+import { PaperPlaneTilt, ChatCircle, SpinnerGap } from '@phosphor-icons/react'
 
 interface Message {
   id: string
@@ -84,7 +84,7 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
       <div className="px-5 md:px-6 py-4 border-b border-gray-100 bg-gray-50">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-brand-primary/10 flex items-center justify-center">
-            <MessageCircle className="w-5 h-5 text-brand-primary" />
+            <ChatCircle className="w-5 h-5 text-brand-primary" />
           </div>
           <div>
             <h3 className="text-base font-semibold text-gray-900">Messages</h3>
@@ -97,11 +97,11 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
       <div className="p-4 md:p-6 space-y-3 max-h-80 overflow-y-auto bg-white" data-testid="portal-messages-list">
         {loading ? (
           <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+            <SpinnerGap className="w-6 h-6 animate-spin text-gray-400" />
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center py-8">
-            <MessageCircle className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+            <ChatCircle weight="duotone" className="w-10 h-10 mx-auto mb-3 text-gray-300" />
             <p className="text-gray-500 text-sm mb-1">No messages yet</p>
             <p className="text-gray-400 text-xs">Send a message to start the conversation!</p>
           </div>
@@ -150,7 +150,7 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
             className="px-4 py-2.5 bg-brand-primary text-white rounded-xl font-medium text-sm hover:opacity-90 transition disabled:opacity-50 flex items-center gap-2"
             data-testid="portal-send-message-btn"
           >
-            <Send className="w-4 h-4" />
+            <PaperPlaneTilt weight="bold" className="w-4 h-4" />
             <span className="hidden sm:inline">{sending ? 'Sending...' : 'Send'}</span>
           </button>
         </div>

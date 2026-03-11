@@ -8,45 +8,45 @@ import {
   SERVICE_TYPE_LABELS,
   leadsApi 
 } from '../services/api'
-import { 
-  X, 
-  User, 
-  Mail, 
+import {
+  X,
+  User,
+  Envelope,
   Phone,
-  Building2,
-  Calendar, 
-  DollarSign,
+  Building,
+  CalendarBlank,
+  CurrencyDollar,
   Clock,
   FileText,
-  Save,
-  Loader2,
-  MessageSquare,
-  ArrowRightLeft,
-  Send,
+  FloppyDisk,
+  SpinnerGap,
+  ChatText,
+  ArrowsLeftRight,
+  PaperPlaneTilt,
   CheckCircle,
-  StickyNote,
-  History,
-  Upload,
+  Note,
+  ClockCounterClockwise,
+  UploadSimple,
   File,
   Image,
-  FileSpreadsheet,
-  Trash2,
-  Download,
+  Table,
+  Trash,
+  DownloadSimple,
   Paperclip,
   Link,
   Copy,
-  ExternalLink,
+  ArrowSquareOut,
   Eye,
-  EyeOff,
-  MessageCircle,
-  BarChart3,
+  EyeSlash,
+  ChatCircle,
+  ChartBar,
   Receipt,
-  MailPlus,
+  EnvelopeSimple,
   Package,
-  ScrollText,
+  Scroll,
   Flag,
   Star as StarIcon
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import QuotesTab from './QuotesTab'
 import EmailComposerModal from './EmailComposerModal'
 import BookingModal from './BookingModal'
@@ -83,17 +83,17 @@ const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
 };
 
 const ACTIVITY_ICONS: Record<string, React.ElementType> = {
-  NOTE_ADDED: StickyNote,
-  STATUS_CHANGED: ArrowRightLeft,
-  EMAIL_SENT: Send,
-  EMAIL_RECEIVED: Mail,
+  NOTE_ADDED: Note,
+  STATUS_CHANGED: ArrowsLeftRight,
+  EMAIL_SENT: PaperPlaneTilt,
+  EMAIL_RECEIVED: Envelope,
   CALL_MADE: Phone,
   CALL_RECEIVED: Phone,
-  MEETING_SCHEDULED: Calendar,
+  MEETING_SCHEDULED: CalendarBlank,
   MEETING_COMPLETED: CheckCircle,
-  FILE_UPLOADED: Upload,
-  QUOTE_SENT: DollarSign,
-  PAYMENT_RECEIVED: DollarSign,
+  FILE_UPLOADED: UploadSimple,
+  QUOTE_SENT: CurrencyDollar,
+  PAYMENT_RECEIVED: CurrencyDollar,
   CONTRACT_SIGNED: FileText,
 };
 
@@ -116,7 +116,7 @@ const FILE_ICONS: Record<string, React.ElementType> = {
   image: Image,
   pdf: FileText,
   document: FileText,
-  spreadsheet: FileSpreadsheet,
+  spreadsheet: Table,
   text: FileText,
   file: File,
 };
@@ -504,7 +504,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   data-testid="create-booking-btn"
                   title="Create Booking"
                 >
-                  <Calendar className="w-4 h-4" />
+                  <CalendarBlank className="w-4 h-4" />
                   <span className="hidden md:inline">Book</span>
                 </button>
                 <button 
@@ -513,7 +513,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   data-testid="email-client-btn"
                   title="Email Client"
                 >
-                  <MailPlus className="w-4 h-4" />
+                  <EnvelopeSimple className="w-4 h-4" />
                   <span className="hidden md:inline">Email</span>
                 </button>
                 <button 
@@ -539,13 +539,13 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 onClick={() => setShowBookingModal(true)}
                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white/20 rounded-xl text-sm font-medium touch-target"
               >
-                <Calendar className="w-4 h-4" /> Book
+                <CalendarBlank className="w-4 h-4" /> Book
               </button>
               <button 
                 onClick={() => setShowEmailComposer(true)}
                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white/20 rounded-xl text-sm font-medium touch-target"
               >
-                <MailPlus className="w-4 h-4" /> Email
+                <EnvelopeSimple className="w-4 h-4" /> Email
               </button>
             </div>
           </div>
@@ -553,12 +553,12 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
           {/* Tab Navigation */}
           <div className="flex border-b border-[#333] flex-shrink-0 overflow-x-auto scrollbar-hide">
             {([
-              { key: 'activity' as const, icon: History, label: 'Activity' },
+              { key: 'activity' as const, icon: ClockCounterClockwise, label: 'Activity' },
               { key: 'timeline' as const, icon: Flag, label: 'Timeline' },
-              { key: 'contracts' as const, icon: ScrollText, label: 'Contracts' },
+              { key: 'contracts' as const, icon: Scroll, label: 'Contracts' },
               { key: 'quotes' as const, icon: Receipt, label: 'Quotes' },
               { key: 'files' as const, icon: Paperclip, label: 'Files', badge: files.length },
-              { key: 'messages' as const, icon: MessageCircle, label: 'Messages', badge: messages.filter(m => m.from === 'CLIENT' && !m.read).length },
+              { key: 'messages' as const, icon: ChatCircle, label: 'Messages', badge: messages.filter(m => m.from === 'CLIENT' && !m.read).length },
               { key: 'details' as const, icon: User, label: 'Details' },
               { key: 'deliverables' as const, icon: Package, label: 'Deliver.' },
             ]).map(({ key, icon: Icon, label, badge }) => (
@@ -592,7 +592,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 {/* Add Note */}
                 <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 border border-[#333]">
                   <h3 className="text-sm font-semibold text-[#A3A3A3] mb-3 flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4" />
+                    <ChatText className="w-4 h-4" />
                     Add Note
                   </h3>
                   <textarea
@@ -610,7 +610,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                       className="px-4 py-2.5 bg-brand-primary text-white rounded-xl text-sm font-medium hover:bg-brand-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
                       data-testid="save-note-button"
                     >
-                      {addingNote ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                      {addingNote ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
                       Save Note
                     </button>
                   </div>
@@ -619,8 +619,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 {/* Activity Timeline */}
                 <div>
                   <h3 className="text-sm font-semibold text-[#A3A3A3] mb-4 flex items-center gap-2">
-                    <History className="w-4 h-4" />
-                    Activity History
+                    <ClockCounterClockwise className="w-4 h-4" />
+                    Activity ClockCounterClockwise
                   </h3>
 
                   {loadingActivities ? (
@@ -641,7 +641,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                       <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-[#333]" />
                       <div className="space-y-4">
                         {activities.map((activity) => {
-                          const Icon = ACTIVITY_ICONS[activity.type] || StickyNote;
+                          const Icon = ACTIVITY_ICONS[activity.type] || Note;
                           const colorClass = ACTIVITY_COLORS[activity.type] || 'bg-gray-800/50 text-gray-400';
 
                           return (
@@ -716,13 +716,13 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   
                   {uploading ? (
                     <div className="py-4">
-                      <Loader2 className="w-10 h-10 text-brand-primary animate-spin mx-auto mb-3" />
+                      <SpinnerGap weight="duotone" className="w-10 h-10 text-brand-primary animate-spin mx-auto mb-3" />
                       <p className="text-sm text-[#A3A3A3]">{uploadProgress}</p>
                     </div>
                   ) : (
                     <>
                       <div className="p-4 bg-[#1A1A1A] rounded-xl inline-block mb-3 border border-[#333]">
-                        <Upload className="w-8 h-8 text-[#A3A3A3]" />
+                        <UploadSimple weight="duotone" className="w-8 h-8 text-[#A3A3A3]" />
                       </div>
                       <p className="text-[#A3A3A3] mb-2">
                         Drag and drop files here, or{' '}
@@ -754,7 +754,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                       <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4CE;</div>
                       <h3 className="text-lg md:text-xl font-semibold text-[#FAFAFA] mb-2">No files uploaded yet</h3>
                       <p className="text-sm text-[#A3A3A3] max-w-md mb-1 leading-relaxed">
-                        Upload contracts, references, or deliverables to keep everything organized with your client.
+                        UploadSimple contracts, references, or deliverables to keep everything organized with your client.
                       </p>
                       <p className="text-xs text-gray-500 mt-3 max-w-sm">
                         <strong>Pro tip:</strong> Share files with your client by toggling "Share with client" on each file.
@@ -776,7 +776,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                             {/* Client upload badge */}
                             {file.uploadedBy === 'client' && (
                               <div className="absolute top-2 left-2 z-10 px-1.5 py-0.5 bg-blue-600/80 text-white text-[10px] font-medium rounded-md flex items-center gap-1" data-testid={`client-upload-badge-${file.id}`}>
-                                <Upload className="w-3 h-3" /> Client
+                                <UploadSimple className="w-3 h-3" /> Client
                               </div>
                             )}
                             {/* Shared badge */}
@@ -826,7 +826,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                                 }`}
                                 data-testid={`share-toggle-${file.id}`}
                               >
-                                {file.sharedWithClient ? <><Eye className="w-3 h-3" /> Shared</> : <><EyeOff className="w-3 h-3" /> Private</>}
+                                {file.sharedWithClient ? <><Eye className="w-3 h-3" /> Shared</> : <><EyeSlash className="w-3 h-3" /> Private</>}
                               </button>
                               <div className="flex items-center gap-2">
                                 <button
@@ -835,7 +835,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                                   title="Download"
                                   data-testid={`download-${file.id}`}
                                 >
-                                  <Download className="w-4 h-4" />
+                                  <DownloadSimple weight="bold" className="w-4 h-4" />
                                 </button>
                                 
                                 {deleteConfirm === file.id ? (
@@ -860,7 +860,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                                     title="Delete"
                                     data-testid={`delete-${file.id}`}
                                   >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash className="w-4 h-4" />
                                   </button>
                                 )}
                               </div>
@@ -894,10 +894,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
               <div className="p-4 md:p-6 flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-[400px]" data-testid="messages-thread">
                   {loadingMessages ? (
-                    <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-[#666]" /></div>
+                    <div className="flex justify-center py-8"><SpinnerGap className="w-5 h-5 animate-spin text-[#666]" /></div>
                   ) : messages.length === 0 ? (
                     <div className="text-center py-8">
-                      <MessageCircle className="w-10 h-10 mx-auto mb-3 text-[#333]" />
+                      <ChatCircle weight="duotone" className="w-10 h-10 mx-auto mb-3 text-[#333]" />
                       <p className="text-[#A3A3A3] text-sm mb-1">No messages yet</p>
                       <p className="text-[#666] text-xs">Send a message to your client via the portal</p>
                     </div>
@@ -935,7 +935,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                     className="px-4 py-2.5 bg-brand-primary text-white rounded-xl font-medium text-sm hover:opacity-90 transition disabled:opacity-50 flex items-center gap-2"
                     data-testid="creative-send-message-btn"
                   >
-                    <Send className="w-4 h-4" />
+                    <PaperPlaneTilt weight="bold" className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -974,7 +974,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                         disabled={saving}
                         className="px-4 py-2 bg-brand-primary text-white rounded-xl text-sm hover:bg-brand-primary flex items-center gap-2 transition-all duration-200"
                       >
-                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                        {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
                         Save
                       </button>
                     </div>
@@ -1003,7 +1003,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                       </div>
                     </div>
                     <div className="flex items-center gap-3 p-3 md:p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
-                      <Mail className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                      <Envelope className="w-5 h-5 text-gray-500 flex-shrink-0" />
                       <div>
                         <p className="text-xs text-gray-500">Email</p>
                         <a href={`mailto:${lead.clientEmail}`} className="font-medium text-brand-primary-light hover:underline">
@@ -1022,7 +1022,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                     )}
                     {lead.clientCompany && (
                       <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
-                        <Building2 className="w-5 h-5 text-gray-500" />
+                        <Building className="w-5 h-5 text-gray-500" />
                         <div>
                           <p className="text-xs text-gray-500">Company</p>
                           <p className="font-medium text-[#FAFAFA]">{lead.clientCompany}</p>
@@ -1044,7 +1044,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     {(editing || lead.budget) && (
                       <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
-                        <DollarSign className="w-5 h-5 text-gray-500" />
+                        <CurrencyDollar className="w-5 h-5 text-gray-500" />
                         <div className="flex-1">
                           <p className="text-xs text-gray-500">Budget</p>
                           {editing ? (
@@ -1082,7 +1082,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                     )}
                     {lead.eventDate && (
                       <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
-                        <Calendar className="w-5 h-5 text-gray-500" />
+                        <CalendarBlank className="w-5 h-5 text-gray-500" />
                         <div>
                           <p className="text-xs text-gray-500">Event Date</p>
                           <p className="font-medium text-[#FAFAFA]">{formatDate(lead.eventDate)}</p>
@@ -1091,7 +1091,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                     )}
                     {(editing || lead.estimatedValue) && (
                       <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
-                        <DollarSign className="w-5 h-5 text-green-500" />
+                        <CurrencyDollar className="w-5 h-5 text-green-500" />
                         <div className="flex-1">
                           <p className="text-xs text-gray-500">Estimated Value</p>
                           {editing ? (
@@ -1117,7 +1117,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 {portalUrl && (
                   <div>
                     <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-[#FAFAFA]">
-                      <BarChart3 className="w-5 h-5 text-brand-primary-light" />
+                      <ChartBar className="w-5 h-5 text-brand-primary-light" />
                       Client Portal
                     </h3>
                     <div className="rounded-xl border border-[#333] bg-[#0F0F0F] p-3 mb-4">
@@ -1161,7 +1161,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                           className="px-3 py-1.5 bg-brand-primary text-white rounded-xl text-sm font-medium flex items-center gap-1.5 hover:bg-brand-primary transition-all duration-200"
                           data-testid="open-portal-btn"
                         >
-                          <ExternalLink className="w-4 h-4" />
+                          <ArrowSquareOut className="w-4 h-4" />
                           Open
                         </a>
                       </div>
@@ -1204,7 +1204,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                           className="flex-1 px-4 py-2.5 border border-[#333] rounded-xl text-sm font-medium text-[#A3A3A3] hover:bg-[#262626] flex items-center justify-center gap-2 transition-all duration-200"
                           data-testid="email-portal-link-btn"
                         >
-                          <Mail className="w-4 h-4" /> Email via App
+                          <Envelope className="w-4 h-4" /> Email via App
                         </button>
                       </div>
                       <button
@@ -1218,11 +1218,11 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                         data-testid="send-portal-link-btn"
                       >
                         {sendingPortalLink ? (
-                          <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
+                          <><SpinnerGap className="w-4 h-4 animate-spin" /> Sending...</>
                         ) : portalLinkSent ? (
                           <><CheckCircle className="w-4 h-4" /> Sent to {lead.clientEmail}</>
                         ) : (
-                          <><Send className="w-4 h-4" /> Send Portal Link to Client</>
+                          <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> Send Portal Link to Client</>
                         )}
                       </button>
                     </div>

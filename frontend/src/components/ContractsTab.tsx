@@ -14,23 +14,22 @@ import {
 import {
   Plus,
   FileText,
-  Send,
+  PaperPlaneTilt,
   CheckCircle,
-  Edit3,
-  Trash2,
-  Loader2,
-  AlertCircle,
+  PencilSimple,
+  Trash,
+  SpinnerGap,
+  WarningCircle,
   Clock,
   Eye,
   X,
   Camera,
   Palette,
-  PenTool,
+  PenNib,
   Globe,
   Briefcase,
-  FileEdit,
-  ChevronDown,
-} from 'lucide-react'
+  CaretDown
+} from '@phosphor-icons/react'
 import EmailComposer from './EmailComposer'
 
 interface ContractsTabProps {
@@ -49,10 +48,10 @@ const STATUS_STYLES: Record<ContractStatus, string> = {
 const TEMPLATE_ICONS: Record<string, React.ElementType> = {
   PHOTOGRAPHY_SHOOT: Camera,
   PORTRAIT_COMMISSION: Palette,
-  LOGO_DESIGN: PenTool,
+  LOGO_DESIGN: PenNib,
   WEB_DESIGN: Globe,
   GENERAL_SERVICE: Briefcase,
-  CUSTOM: FileEdit,
+  CUSTOM: FileText,
 };
 
 export default function ContractsTab({ leadId, lead, onContractSigned }: ContractsTabProps) {
@@ -240,7 +239,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
             className="px-5 py-2.5 bg-brand-primary text-white rounded-xl font-medium hover:bg-brand-primary disabled:opacity-50 flex items-center gap-2 touch-target"
             data-testid="save-contract-btn"
           >
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+            {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
             Save Contract
           </button>
         </div>
@@ -252,7 +251,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
     <div className="p-4 md:p-6 space-y-4 md:space-y-6">
       {error && (
         <div className="p-3 bg-red-900/30 border border-red-700/50 rounded-xl flex items-center gap-2 text-red-400 text-sm animate-fade-in">
-          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <WarningCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
           <button onClick={() => setError('')} className="ml-auto p-1"><X className="w-3.5 h-3.5" /></button>
         </div>
@@ -269,7 +268,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
           className="flex items-center gap-1.5 px-3 md:px-4 py-2 bg-brand-primary text-white rounded-xl text-sm font-medium hover:bg-brand-primary touch-target"
           data-testid="new-contract-btn"
         >
-          <Plus className="w-4 h-4" /> New Contract
+          <Plus weight="bold" className="w-4 h-4" /> New Contract
         </button>
       </div>
 
@@ -309,7 +308,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
           </div>
           {creating && (
             <div className="flex items-center justify-center gap-2 mt-4 text-sm text-brand-primary-light">
-              <Loader2 className="w-4 h-4 animate-spin" /> Creating contract...
+              <SpinnerGap className="w-4 h-4 animate-spin" /> Creating contract...
             </div>
           )}
         </div>
@@ -380,7 +379,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                       {CONTRACT_TYPE_LABELS[contract.templateType]} &middot; Created {formatDate(contract.createdAt)}
                     </p>
                   </div>
-                  <ChevronDown className={`w-4 h-4 text-[#A3A3A3] transition-transform duration-200 flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+                  <CaretDown className={`w-4 h-4 text-[#A3A3A3] transition-transform duration-200 flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
                 </div>
 
                 {/* Expanded content */}
@@ -390,7 +389,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                     <div className="px-3 md:px-4 py-3 bg-[#1A1A1A] space-y-1.5">
                       {contract.sentAt && (
                         <div className="flex items-center gap-2 text-xs text-[#A3A3A3]">
-                          <Send className="w-3.5 h-3.5 text-blue-400" />
+                          <PaperPlaneTilt className="w-3.5 h-3.5 text-blue-400" />
                           Sent on {formatDate(contract.sentAt)}
                         </div>
                       )}
@@ -426,14 +425,14 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                             className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#A3A3A3] hover:bg-[#262626] rounded-xl font-medium touch-target"
                             data-testid={`edit-contract-${contract.id}`}
                           >
-                            <Edit3 className="w-4 h-4" /> Edit
+                            <PencilSimple className="w-4 h-4" /> Edit
                           </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDelete(contract.id); }}
                             className="flex items-center gap-1.5 px-3 py-2 text-sm text-red-400 hover:bg-red-900/30 rounded-xl font-medium touch-target"
                             data-testid={`delete-contract-${contract.id}`}
                           >
-                            <Trash2 className="w-4 h-4" /> Delete
+                            <Trash className="w-4 h-4" /> Delete
                           </button>
                         </>
                       )}
@@ -445,9 +444,9 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                           data-testid={`send-contract-${contract.id}`}
                         >
                           {sending === contract.id ? (
-                            <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
+                            <><SpinnerGap className="w-4 h-4 animate-spin" /> Sending...</>
                           ) : (
-                            <><Send className="w-4 h-4" /> {contract.status === 'DRAFT' ? 'Send to Client' : 'Resend'}</>
+                            <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> {contract.status === 'DRAFT' ? 'Send to Client' : 'Resend'}</>
                           )}
                         </button>
                       )}

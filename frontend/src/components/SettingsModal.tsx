@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react'
 import {
-  X, 
-  Settings, 
-  DollarSign, 
-  Loader2, 
-  Save,
+  X,
+  GearSix,
+  CurrencyDollar,
+  SpinnerGap,
+  FloppyDisk,
   Check,
   Globe,
   Percent,
   Palette,
-  MessageSquare,
-  RotateCcw
-} from 'lucide-react'
+  ChatText,
+  ArrowCounterClockwise
+} from '@phosphor-icons/react'
 import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 import { formatCurrency, NUMBER_FORMAT_OPTIONS } from '../utils/currency'
 import BrandSettings from './BrandSettings'
@@ -122,7 +122,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
     return (
       <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div className="bg-dark-card rounded-2xl p-6 md:p-8">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
+          <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
         </div>
       </div>
     )
@@ -141,7 +141,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
         <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-4 md:p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Settings className="w-5 h-5 md:w-6 md:h-6" />
+              <GearSix weight="duotone" className="w-5 h-5 md:w-6 md:h-6" />
               <div>
                 <h2 className="text-xl font-bold">Settings</h2>
                 <p className="text-brand-primary-light text-sm">Manage your preferences</p>
@@ -165,7 +165,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
                   : 'bg-white/15 text-white/80 hover:text-white hover:bg-white/25'
               }`}
             >
-              <DollarSign className="w-4 h-4" />
+              <CurrencyDollar weight="duotone" className="w-4 h-4" />
               Currency
             </button>
             <button
@@ -190,7 +190,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               data-testid="testimonials-tab"
               data-tour="settings-reviews"
             >
-              <MessageSquare className="w-4 h-4" />
+              <ChatText className="w-4 h-4" />
               Reviews
             </button>
           </div>
@@ -264,7 +264,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
           {/* Symbol Position */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-              <DollarSign className="w-4 h-4 text-brand-primary-light" />
+              <CurrencyDollar className="w-4 h-4 text-brand-primary-light" />
               Symbol Position
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -383,11 +383,11 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
             data-testid="save-settings-btn"
           >
             {saving ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <SpinnerGap className="w-4 h-4 animate-spin" />
             ) : saved ? (
               <Check className="w-4 h-4" />
             ) : (
-              <Save className="w-4 h-4" />
+              <FloppyDisk className="w-4 h-4" />
             )}
             {saved ? 'Saved!' : 'Save Settings'}
           </button>
@@ -402,7 +402,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-colors"
               data-testid="restart-tutorial-btn"
             >
-              <RotateCcw className="w-4 h-4" />
+              <ArrowCounterClockwise className="w-4 h-4" />
               Restart Setup Tutorial
             </button>
           </div>

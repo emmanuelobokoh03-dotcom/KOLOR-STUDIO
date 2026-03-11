@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { CreditCard, CheckCircle, Clock, Loader2, ExternalLink, AlertCircle } from 'lucide-react'
+import { CreditCard, CheckCircle, Clock, SpinnerGap, ArrowSquareOut, WarningCircle } from '@phosphor-icons/react'
 import { paymentsApi } from '../services/api'
 
 interface PaymentTrackerProps {
@@ -117,9 +117,9 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
               data-testid="send-deposit-btn"
             >
               {actionLoading === 'deposit' ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
+                <SpinnerGap className="w-3 h-3 animate-spin" />
               ) : (
-                <ExternalLink className="w-3 h-3" />
+                <ArrowSquareOut className="w-3 h-3" />
               )}
               Collect Deposit
             </button>
@@ -162,9 +162,9 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
               data-testid="send-final-btn"
             >
               {actionLoading === 'final' ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
+                <SpinnerGap className="w-3 h-3 animate-spin" />
               ) : (
-                <ExternalLink className="w-3 h-3" />
+                <ArrowSquareOut className="w-3 h-3" />
               )}
               Collect Final
             </button>
@@ -180,7 +180,7 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
 
       {error && (
         <div className="mt-2 flex items-center gap-1.5 text-[10px] text-red-400">
-          <AlertCircle className="w-3 h-3" />
+          <WarningCircle className="w-3 h-3" />
           {error}
         </div>
       )}

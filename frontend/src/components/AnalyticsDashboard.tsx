@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react'
 import {
-  TrendingUp,
-  Calendar,
-  DollarSign,
-  Target,
+  TrendUp,
+  CalendarBlank,
+  CurrencyDollar,
+  Crosshair,
   Clock,
   Users,
   Trophy,
-  BarChart3,
-  RefreshCw,
-  Loader2,
+  ChartBar,
+  ArrowsClockwise,
+  SpinnerGap,
   ArrowUpRight,
   ArrowDownRight,
   Minus
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import {
   BarChart,
   Bar,
@@ -98,7 +98,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
+        <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
       </div>
     )
   }
@@ -106,7 +106,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
   if (!dashboard) {
     return (
       <div className="text-center py-12 text-gray-400">
-        <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
+        <ChartBar weight="duotone" className="w-12 h-12 mx-auto mb-4 opacity-50" />
         <p>Unable to load analytics. Please try again.</p>
       </div>
     )
@@ -128,7 +128,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
           className="flex items-center gap-2 px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-300 hover:bg-dark-card-hover transition disabled:opacity-50"
           data-testid="refresh-analytics"
         >
-          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+          <ArrowsClockwise className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
           Refresh
         </button>
       </div>
@@ -139,7 +139,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         <div className="bg-gradient-to-br from-brand-primary-dark/40 to-brand-primary-dark/40 rounded-xl p-5 border border-brand-primary-dark/30" data-testid="card-pipeline">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-brand-primary/30 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-brand-primary-light" />
+              <TrendUp className="w-5 h-5 text-brand-primary-light" />
             </div>
           </div>
           <p className="text-sm text-brand-primary-light mb-1">Pipeline Value</p>
@@ -153,7 +153,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         <div className="bg-dark-card rounded-xl p-5 border border-dark-border" data-testid="card-this-month">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-emerald-900/30 rounded-lg">
-              <Calendar className="w-5 h-5 text-emerald-400" />
+              <CalendarBlank className="w-5 h-5 text-emerald-400" />
             </div>
             {dashboard.overview.bookedThisMonth.changePercent !== 0 && (
               <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getChangeIndicator(dashboard.overview.bookedThisMonth.changePercent).bg} ${getChangeIndicator(dashboard.overview.bookedThisMonth.changePercent).color}`}>
@@ -178,7 +178,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         <div className="bg-dark-card rounded-xl p-5 border border-dark-border" data-testid="card-ytd">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-blue-900/30 rounded-lg">
-              <BarChart3 className="w-5 h-5 text-blue-400" />
+              <ChartBar className="w-5 h-5 text-blue-400" />
             </div>
           </div>
           <p className="text-sm text-gray-400 mb-1">Year to Date</p>
@@ -194,7 +194,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         <div className="bg-dark-card rounded-xl p-5 border border-dark-border" data-testid="card-conversion">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-amber-900/30 rounded-lg">
-              <Target className="w-5 h-5 text-amber-400" />
+              <Crosshair className="w-5 h-5 text-amber-400" />
             </div>
           </div>
           <p className="text-sm text-gray-400 mb-1">Conversion Rate</p>
@@ -209,7 +209,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
           <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-4 h-4 text-brand-primary-light" />
+            <CurrencyDollar className="w-4 h-4 text-brand-primary-light" />
             <span className="text-xs text-gray-400">Avg Deal Size</span>
           </div>
           <p className="text-xl font-bold text-white">
@@ -275,7 +275,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
                     borderRadius: '8px',
                     color: '#fff',
                   }}
-                  formatter={(value: number | undefined) => value !== undefined ? [formatCurrency(value, currencySettings), 'Revenue'] : ['—', 'Revenue']}
+                  formatter={((value: number | undefined) => value !== undefined ? [formatCurrency(value, currencySettings), 'Revenue'] : ['—', 'Revenue']) as any}
                   labelStyle={{ color: '#9ca3af' }}
                 />
                 <Bar dataKey="revenue" radius={[4, 4, 0, 0]}>

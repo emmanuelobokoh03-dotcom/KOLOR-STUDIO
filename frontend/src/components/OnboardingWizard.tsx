@@ -1,11 +1,21 @@
 import { useState, useEffect } from 'react'
-import { X, ArrowRight, ArrowLeft, Sparkles, UserPlus, FileText, Palette, CheckCircle, SkipForward } from 'lucide-react'
+import {
+  X,
+  ArrowRight,
+  ArrowLeft,
+  Sparkle,
+  UserPlus,
+  FileText,
+  Palette,
+  CheckCircle,
+  SkipForward
+} from '@phosphor-icons/react'
 
 interface WizardStep {
   id: string
   title: string
   description: string
-  icon: typeof Sparkles
+  icon: typeof Sparkle
   tip: string
   tourElement?: string // data-tour selector to highlight after wizard closes
 }
@@ -15,7 +25,7 @@ const WIZARD_STEPS: WizardStep[] = [
     id: 'welcome',
     title: 'Welcome to KOLOR STUDIO',
     description: 'Your creative business command center. This quick setup will show you how to get your first client through the door in under 5 minutes.',
-    icon: Sparkles,
+    icon: Sparkle,
     tip: 'KOLOR STUDIO automates quotes, contracts, payments, and follow-ups — so you can focus on creating.',
   },
   {
@@ -28,8 +38,8 @@ const WIZARD_STEPS: WizardStep[] = [
   },
   {
     id: 'send-quote',
-    title: 'Send a Quote',
-    description: 'Open any lead card and click "Create Quote" to build a professional proposal. Set your line items, tax, and payment terms — then send it with one click.',
+    title: 'Send a Quotes',
+    description: 'Open any lead card and click "Create Quotes" to build a professional proposal. Set your line items, tax, and payment terms — then send it with one click.',
     icon: FileText,
     tip: 'Autopilot kicks in here: when your client accepts a quote, KOLOR automatically generates a contract and sends it for signing.',
     tourElement: '[data-tour="kanban-board"]',

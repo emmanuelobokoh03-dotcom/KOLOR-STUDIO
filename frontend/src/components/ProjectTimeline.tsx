@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Calendar, CheckCircle2, Circle, Clock, Plus, Trash2, Loader2, GripVertical, Flag } from 'lucide-react';
+import {
+  CalendarBlank,
+  CheckCircle,
+  Circle,
+  Clock,
+  Plus,
+  Trash,
+  SpinnerGap,
+  DotsSixVertical,
+  Flag
+} from '@phosphor-icons/react';
 import { format, isPast, isFuture, isToday } from 'date-fns';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -123,7 +133,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
   allItems.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
   // ── Render ───────────────────────────────────────────
-  if (loading) return <div className="flex items-center justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-brand-primary" /></div>;
+  if (loading) return <div className="flex items-center justify-center py-10"><SpinnerGap className="w-6 h-6 animate-spin text-brand-primary" /></div>;
 
   const emptyTextCls = isPortal ? 'text-gray-400' : 'text-[#A3A3A3]';
   const headingCls = isPortal ? 'text-gray-900' : 'text-[#FAFAFA]';
@@ -132,7 +142,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
   if (allItems.length === 0 && !editable) {
     return (
       <div className={`text-center py-10 ${emptyTextCls}`} data-testid="timeline-empty">
-        <Calendar className="w-10 h-10 mx-auto mb-2 opacity-40" />
+        <CalendarBlank weight="duotone" className="w-10 h-10 mx-auto mb-2 opacity-40" />
         <p className="font-medium">No timeline set yet</p>
         <p className="text-sm mt-1 opacity-70">Your creative will set key dates and milestones soon</p>
       </div>
@@ -144,7 +154,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <Calendar className={`w-5 h-5 ${isPortal ? 'text-brand-primary' : 'text-brand-primary-light'}`} />
+          <CalendarBlank className={`w-5 h-5 ${isPortal ? 'text-brand-primary' : 'text-brand-primary-light'}`} />
           <h3 className={`font-semibold ${headingCls}`}>Project Timeline</h3>
           {allItems.length > 0 && (
             <span className={`text-xs px-2 py-0.5 rounded-full ${isPortal ? 'bg-gray-100 text-gray-500' : 'bg-[#333] text-[#A3A3A3]'}`}>
@@ -158,7 +168,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
             className="flex items-center gap-1.5 text-xs font-medium text-brand-primary-light hover:text-brand-primary transition-colors"
             data-testid="add-milestone-btn"
           >
-            <Plus className="w-4 h-4" /> Add Milestone
+            <Plus weight="bold" className="w-4 h-4" /> Add Milestone
           </button>
         )}
       </div>
@@ -193,7 +203,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
             <button onClick={addMilestone} disabled={saving || !newName.trim() || !newDate}
               className="flex items-center gap-1.5 px-4 py-1.5 bg-brand-primary text-white rounded-lg text-xs font-medium hover:opacity-90 disabled:opacity-40 transition-all"
               data-testid="save-milestone-btn">
-              {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />} Add
+              {saving ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />} Add
             </button>
           </div>
         </div>
@@ -202,7 +212,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
       {/* Empty state for editable with no items */}
       {allItems.length === 0 && editable && !showAdd && (
         <div className="text-center py-8 text-[#A3A3A3]" data-testid="timeline-empty-editable">
-          <Flag className="w-10 h-10 mx-auto mb-2 opacity-40" />
+          <Flag weight="duotone" className="w-10 h-10 mx-auto mb-2 opacity-40" />
           <p className="text-sm">No milestones yet</p>
           <p className="text-xs mt-1 opacity-70">Add milestones to track project progress</p>
         </div>
@@ -224,7 +234,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
                 <div key={item.id} className="relative pl-10" data-testid={`milestone-${item.id}`}>
                   {/* Dot */}
                   <div className={`absolute left-0 top-3.5 w-[30px] h-[30px] rounded-full flex items-center justify-center border-2 ${s.dot}`}>
-                    {status === 'completed' ? <CheckCircle2 className={`w-4 h-4 ${s.icon}`} /> :
+                    {status === 'completed' ? <CheckCircle className={`w-4 h-4 ${s.icon}`} /> :
                      status === 'overdue' ? <Clock className={`w-4 h-4 ${s.icon}`} /> :
                      status === 'today' ? <Clock className={`w-4 h-4 ${s.icon}`} /> :
                      <Circle className={`w-4 h-4 ${s.icon}`} />}
@@ -269,14 +279,14 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
                             }`}
                             data-testid={`toggle-milestone-${item.id}`}
                           >
-                            {togglingId === item.id ? <Loader2 className="w-3 h-3 animate-spin" /> : item.completed ? 'Undo' : 'Done'}
+                            {togglingId === item.id ? <SpinnerGap className="w-3 h-3 animate-spin" /> : item.completed ? 'Undo' : 'Done'}
                           </button>
                           <button
                             onClick={() => deleteMilestone(item.id)}
                             className="p-1 text-[#666] hover:text-red-400 transition-colors"
                             data-testid={`delete-milestone-${item.id}`}
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       )}

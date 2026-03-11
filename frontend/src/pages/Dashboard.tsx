@@ -1,30 +1,29 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { 
-  Sparkles, 
-  LogOut, 
-  Plus, 
-  LayoutGrid, 
-  List,
-  Search,
-  RefreshCw,
+import {
+  Sparkle,
+  SignOut,
+  Plus,
+  SquaresFour,
+  List as ListIcon,
+  MagnifyingGlass,
+  ArrowsClockwise,
   Users,
-  TrendingUp,
-  DollarSign,
-  Calendar,
-  Link2,
+  TrendUp,
+  CurrencyDollar,
+  CalendarBlank,
+  Link as LinkIcon,
   Copy,
-  Mail,
-  Target,
-  Settings,
-  BarChart3,
-  CalendarDays,
+  Envelope,
+  Crosshair,
+  GearSix,
+  ChartBar,
+  CalendarDots,
   X,
   Briefcase,
-  Menu,
-  Filter,
-  ChevronDown
-} from 'lucide-react'
+  Funnel,
+  CaretDown
+} from '@phosphor-icons/react'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS } from '../services/api'
 import KanbanBoard from '../components/KanbanBoard'
 import LeadDetailModal from '../components/LeadDetailModal'
@@ -330,7 +329,7 @@ const Dashboard = () => {
               className="p-2 text-[#A3A3A3] hover:text-white hover:bg-[#262626] rounded-xl transition-all duration-200 lg:hidden touch-target"
               data-testid="mobile-menu-button"
             >
-              <Menu className="w-5 h-5" />
+              <ListIcon className="w-5 h-5" />
             </button>
             <button
               onClick={() => { setViewMode('kanban'); setStatusFilter(null); }}
@@ -340,7 +339,7 @@ const Dashboard = () => {
               {user?.brandLogoUrl ? (
                 <img src={user.brandLogoUrl} alt="" className="w-6 h-6 md:w-8 md:h-8 rounded-lg object-contain" />
               ) : (
-                <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-brand-primary group-hover:brightness-110 transition-colors duration-200" />
+                <Sparkle className="w-6 h-6 md:w-8 md:h-8 text-brand-primary group-hover:brightness-110 transition-colors duration-200" />
               )}
               <span className="text-lg md:text-xl font-bold text-brand-primary font-brand">
                 {user?.studioName || 'KOLOR STUDIO'}
@@ -359,7 +358,7 @@ const Dashboard = () => {
                 data-testid="settings-button"
                 title="Settings"
               >
-                <Settings className="w-5 h-5" />
+                <GearSix className="w-5 h-5" />
               </button>
             </div>
             <button
@@ -367,14 +366,14 @@ const Dashboard = () => {
               className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 text-[#A3A3A3] hover:text-white hover:bg-[#262626] rounded-xl transition-all duration-200 touch-target"
               data-testid="logout-button"
             >
-              <LogOut className="w-4 h-4" />
+              <SignOut className="w-4 h-4" />
               <span className="hidden md:inline text-sm font-medium">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Slide-out Menu */}
+      {/* Mobile Slide-out List */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden" data-testid="mobile-sidebar">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
@@ -382,7 +381,7 @@ const Dashboard = () => {
             {/* Sidebar Header */}
             <div className="flex items-center justify-between p-4 border-b border-[#333]">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-6 h-6 text-brand-primary" />
+                <Sparkle className="w-6 h-6 text-brand-primary" />
                 <span className="font-bold text-lg bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
                   KOLOR STUDIO
                 </span>
@@ -403,12 +402,12 @@ const Dashboard = () => {
             {/* Nav items */}
             <div className="flex-1 overflow-y-auto py-2">
               {([
-                { mode: 'kanban' as ViewMode, icon: LayoutGrid, label: 'Pipeline' },
-                { mode: 'list' as ViewMode, icon: List, label: 'List View' },
-                { mode: 'analytics' as ViewMode, icon: BarChart3, label: 'Analytics' },
-                { mode: 'calendar' as ViewMode, icon: CalendarDays, label: 'Calendar' },
+                { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Pipeline' },
+                { mode: 'list' as ViewMode, icon: ListIcon, label: 'List View' },
+                { mode: 'analytics' as ViewMode, icon: ChartBar, label: 'Analytics' },
+                { mode: 'calendar' as ViewMode, icon: CalendarDots, label: 'Calendar' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
-                { mode: 'sequences' as ViewMode, icon: Mail, label: 'Sequences' },
+                { mode: 'sequences' as ViewMode, icon: Envelope, label: 'Sequences' },
               ]).map(({ mode, icon: Icon, label }) => (
                 <button
                   key={mode}
@@ -420,7 +419,7 @@ const Dashboard = () => {
                   }`}
                   data-testid={`sidebar-${mode}`}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-5 h-5" />
                   {label}
                 </button>
               ))}
@@ -431,13 +430,13 @@ const Dashboard = () => {
                 onClick={() => { setShowSettings(true); setMobileMenuOpen(false); }}
                 className="w-full flex items-center gap-3 px-3 py-3 text-sm text-[#A3A3A3] hover:bg-[#262626] rounded-xl transition-all duration-200 touch-target"
               >
-                <Settings className="w-5 h-5" /> Settings
+                <GearSix weight="regular" className="w-5 h-5" /> Settings
               </button>
               <button
                 onClick={() => { setShowFeedback(true); setMobileMenuOpen(false); }}
                 className="w-full flex items-center gap-3 px-3 py-3 text-sm text-[#A3A3A3] hover:bg-[#262626] rounded-xl transition-all duration-200 touch-target"
               >
-                <Mail className="w-5 h-5" /> Feedback
+                <Envelope className="w-5 h-5" /> Feedback
               </button>
             </div>
           </div>
@@ -539,9 +538,9 @@ const Dashboard = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
           {([
             { key: null, label: 'Total Leads', count: stats?.total || 0, icon: Users, iconBg: 'bg-brand-primary-dark/50 border-brand-primary-dark/50', iconColor: 'text-brand-primary-light', testId: 'stat-total-leads' },
-            { key: 'NEW', label: 'New Leads', count: stats?.statusCounts?.NEW || 0, icon: TrendingUp, iconBg: 'bg-brand-primary-dark/50 border-brand-primary-dark/50', iconColor: 'text-brand-primary-light', testId: 'stat-new-leads' },
-            { key: 'QUOTED', label: 'Quoted', count: stats?.statusCounts?.QUOTED || 0, icon: Calendar, iconBg: 'bg-brand-accent-dark/50 border-brand-accent-dark/50', iconColor: 'text-brand-accent-light', testId: 'stat-quoted' },
-            { key: 'BOOKED', label: 'Booked', count: stats?.statusCounts?.BOOKED || 0, icon: DollarSign, iconBg: 'bg-emerald-900/50 border-emerald-700/50', iconColor: 'text-emerald-400', testId: 'stat-booked' },
+            { key: 'NEW', label: 'New Leads', count: stats?.statusCounts?.NEW || 0, icon: TrendUp, iconBg: 'bg-brand-primary-dark/50 border-brand-primary-dark/50', iconColor: 'text-brand-primary-light', testId: 'stat-new-leads' },
+            { key: 'QUOTED', label: 'Quoted', count: stats?.statusCounts?.QUOTED || 0, icon: CalendarBlank, iconBg: 'bg-brand-accent-dark/50 border-brand-accent-dark/50', iconColor: 'text-brand-accent-light', testId: 'stat-quoted' },
+            { key: 'BOOKED', label: 'Booked', count: stats?.statusCounts?.BOOKED || 0, icon: CurrencyDollar, iconBg: 'bg-emerald-900/50 border-emerald-700/50', iconColor: 'text-emerald-400', testId: 'stat-booked' },
           ]).map(({ key, label, count, icon: Icon, iconBg, iconColor, testId }) => (
             <div
               key={testId}
@@ -553,7 +552,7 @@ const Dashboard = () => {
             >
               <div className="flex items-center gap-3 md:gap-4">
                 <div className={`p-2 md:p-3 ${iconBg} rounded-xl border group-hover:scale-110 transition-all duration-200`}>
-                  <Icon className={`w-4 h-4 md:w-5 md:h-5 ${iconColor}`} />
+                  <Icon weight="duotone" className={`w-4 h-4 md:w-5 md:h-5 ${iconColor}`} />
                 </div>
                 <div>
                   <p className="text-xl md:text-2xl font-bold text-[#FAFAFA]">{count}</p>
@@ -569,7 +568,7 @@ const Dashboard = () => {
           {/* Mobile toolbar */}
           <div className="flex items-center gap-2 md:gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 type="text"
                 placeholder="Search leads..."
@@ -588,7 +587,7 @@ const Dashboard = () => {
               }`}
               data-testid="mobile-filter-toggle"
             >
-              <Filter className="w-4 h-4" />
+              <Funnel className="w-4 h-4" />
               {activeFilterCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                   {activeFilterCount}
@@ -601,18 +600,18 @@ const Dashboard = () => {
               className="p-2.5 hover:bg-[#262626] rounded-xl transition-all duration-200 touch-target hidden md:flex"
               disabled={refreshing}
             >
-              <RefreshCw className={`w-5 h-5 text-[#A3A3A3] ${refreshing ? 'animate-spin' : ''}`} />
+              <ArrowsClockwise className={`w-5 h-5 text-[#A3A3A3] ${refreshing ? 'animate-spin' : ''}`} />
             </button>
 
             {/* Desktop view toggles */}
             <div className="hidden md:flex bg-[#0F0F0F] rounded-xl p-1 border border-[#333]">
               {([
-                { mode: 'kanban' as ViewMode, icon: LayoutGrid, title: 'Pipeline View' },
-                { mode: 'list' as ViewMode, icon: List, title: 'List View' },
-                { mode: 'analytics' as ViewMode, icon: BarChart3, title: 'Analytics' },
-                { mode: 'calendar' as ViewMode, icon: CalendarDays, title: 'Calendar' },
+                { mode: 'kanban' as ViewMode, icon: SquaresFour, title: 'Pipeline View' },
+                { mode: 'list' as ViewMode, icon: ListIcon, title: 'List View' },
+                { mode: 'analytics' as ViewMode, icon: ChartBar, title: 'Analytics' },
+                { mode: 'calendar' as ViewMode, icon: CalendarDots, title: 'Calendar' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, title: 'Portfolio' },
-                { mode: 'sequences' as ViewMode, icon: Mail, title: 'Sequences' },
+                { mode: 'sequences' as ViewMode, icon: Envelope, title: 'Sequences' },
               ]).map(({ mode, icon: Icon, title }) => (
                 <button
                   key={mode}
@@ -622,7 +621,7 @@ const Dashboard = () => {
                   data-tour={mode === 'portfolio' ? 'view-portfolio' : mode === 'calendar' ? 'view-calendar' : undefined}
                   title={title}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-4 h-4" />
                 </button>
               ))}
             </div>
@@ -656,7 +655,7 @@ const Dashboard = () => {
               className="hidden md:flex items-center gap-2 px-4 py-2.5 border border-brand-primary text-brand-primary-light rounded-xl hover:bg-brand-primary-dark/30 transition-all duration-200 font-medium text-sm"
               data-testid="share-form-button"
             >
-              <Link2 className="w-4 h-4" />
+              <LinkIcon className="w-4 h-4" />
               <span className="hidden lg:inline">Share Form</span>
             </button>
             <button
@@ -665,7 +664,7 @@ const Dashboard = () => {
               data-testid="add-lead-button"
               data-tour="add-lead"
             >
-              <Plus className="w-4 h-4" />
+              <Plus weight="bold" className="w-4 h-4" />
               <span className="hidden sm:inline">Add Lead</span>
             </button>
           </div>
@@ -732,7 +731,7 @@ const Dashboard = () => {
                   className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-brand-primary text-brand-primary-light rounded-xl text-sm font-medium touch-target"
                   data-testid="mobile-share-form"
                 >
-                  <Link2 className="w-4 h-4" /> Share Form
+                  <LinkIcon className="w-4 h-4" /> Share Form
                 </button>
               </div>
             </div>
@@ -825,7 +824,7 @@ const Dashboard = () => {
                     className="flex-1 px-3 py-2.5 border border-[#333] text-[#A3A3A3] rounded-xl hover:bg-[#262626] text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
                     data-testid="empty-email-link"
                   >
-                    <Mail className="w-4 h-4 text-brand-primary-light" />
+                    <Envelope className="w-4 h-4 text-brand-primary-light" />
                     <span className="hidden sm:inline">Email Link</span>
                   </button>
                   <button
@@ -833,7 +832,7 @@ const Dashboard = () => {
                     className="flex-1 px-3 py-2.5 border border-[#333] text-[#A3A3A3] rounded-xl hover:bg-[#262626] text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
                     data-testid="empty-more-options"
                   >
-                    <Link2 className="w-4 h-4 text-brand-primary-light" />
+                    <LinkIcon className="w-4 h-4 text-brand-primary-light" />
                     <span className="hidden sm:inline">More Options</span>
                   </button>
                 </div>

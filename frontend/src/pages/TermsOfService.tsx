@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, FileText, Shield, CreditCard, AlertTriangle, Scale, Mail } from 'lucide-react'
+import { ArrowLeft, FileText, Shield, CreditCard, Warning, Scales, Envelope } from '@phosphor-icons/react'
 
 export default function TermsOfService() {
   return (
@@ -57,7 +57,7 @@ export default function TermsOfService() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-brand-primary-light mt-1">•</span>
-                Quote and proposal generation
+                Quotes and proposal generation
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-brand-primary-light mt-1">•</span>
@@ -284,7 +284,7 @@ export default function TermsOfService() {
         {/* 8. Prohibited Uses */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <Warning className="w-5 h-5 text-red-400" />
             8. Prohibited Uses
           </h2>
 
@@ -377,7 +377,7 @@ export default function TermsOfService() {
         {/* 11. Limitation of Liability */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Scale className="w-5 h-5 text-brand-primary-light" />
+            <Scales className="w-5 h-5 text-brand-primary-light" />
             11. Limitation of Liability
           </h2>
 
@@ -484,7 +484,7 @@ export default function TermsOfService() {
         {/* 15. Contact Information */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-brand-primary-light" />
+            <Envelope className="w-5 h-5 text-brand-primary-light" />
             15. Contact Information
           </h2>
 

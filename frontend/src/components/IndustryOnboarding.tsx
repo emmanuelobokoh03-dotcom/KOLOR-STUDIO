@@ -2,21 +2,33 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IndustryType, INDUSTRY_TYPE_LABELS, authApi } from '../services/api'
 import {
-  Camera, Film, PenTool, Globe, Brush, Palette, Scissors, Megaphone, FileImage, Layers,
-  Loader2, CheckCircle, ArrowRight, Sparkles
-} from 'lucide-react'
+  Camera,
+  FilmStrip,
+  PenNib,
+  Globe,
+  PaintBrush,
+  Palette,
+  Scissors,
+  Megaphone,
+  FileImage,
+  Stack,
+  SpinnerGap,
+  CheckCircle,
+  ArrowRight,
+  Sparkle
+} from '@phosphor-icons/react'
 
 const INDUSTRY_CONFIG: { type: IndustryType; icon: React.ElementType; gradient: string; desc: string }[] = [
   { type: 'PHOTOGRAPHY', icon: Camera, gradient: 'from-brand-primary to-brand-primary-dark', desc: 'Portraits, weddings, events, commercial' },
-  { type: 'VIDEOGRAPHY', icon: Film, gradient: 'from-blue-600 to-indigo-700', desc: 'Films, events, brand content, reels' },
-  { type: 'GRAPHIC_DESIGN', icon: PenTool, gradient: 'from-pink-600 to-rose-700', desc: 'Logos, branding, print, digital design' },
+  { type: 'VIDEOGRAPHY', icon: FilmStrip, gradient: 'from-blue-600 to-indigo-700', desc: 'Films, events, brand content, reels' },
+  { type: 'GRAPHIC_DESIGN', icon: PenNib, gradient: 'from-pink-600 to-rose-700', desc: 'Logos, branding, print, digital design' },
   { type: 'WEB_DESIGN', icon: Globe, gradient: 'from-cyan-600 to-teal-700', desc: 'Websites, apps, UX/UI, digital products' },
-  { type: 'ILLUSTRATION', icon: Brush, gradient: 'from-amber-600 to-orange-700', desc: 'Book covers, editorial, character design' },
+  { type: 'ILLUSTRATION', icon: PaintBrush, gradient: 'from-amber-600 to-orange-700', desc: 'Book covers, editorial, character design' },
   { type: 'FINE_ART', icon: Palette, gradient: 'from-emerald-600 to-green-700', desc: 'Paintings, portraits, mixed media' },
   { type: 'SCULPTURE', icon: Scissors, gradient: 'from-stone-600 to-stone-700', desc: 'Sculptures, installations, 3D work' },
   { type: 'BRANDING', icon: Megaphone, gradient: 'from-brand-accent to-pink-700', desc: 'Brand strategy, identity, campaigns' },
   { type: 'CONTENT_CREATION', icon: FileImage, gradient: 'from-sky-600 to-blue-700', desc: 'Social media, blogs, podcasts' },
-  { type: 'OTHER', icon: Layers, gradient: 'from-gray-600 to-gray-700', desc: 'Other creative disciplines' },
+  { type: 'OTHER', icon: Stack, gradient: 'from-gray-600 to-gray-700', desc: 'Other creative disciplines' },
 ]
 
 export default function IndustryOnboarding() {
@@ -74,7 +86,7 @@ export default function IndustryOnboarding() {
       <div className="min-h-screen bg-dark-bg flex items-center justify-center p-6">
         <div className="text-center max-w-md mx-auto animate-fadeIn">
           <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-900/30">
-            <CheckCircle className="w-10 h-10 text-white" />
+            <CheckCircle weight="duotone" className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-3">You're all set!</h1>
           <p className="text-lg text-gray-400 mb-2">
@@ -84,7 +96,7 @@ export default function IndustryOnboarding() {
             We've created your "<span className="text-brand-primary-light">{templateName}</span>" workflow template
           </p>
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <SpinnerGap className="w-4 h-4 animate-spin" />
             Taking you to your dashboard...
           </div>
         </div>
@@ -97,7 +109,7 @@ export default function IndustryOnboarding() {
       {/* Header */}
       <div className="text-center pt-16 pb-8 px-6">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <Sparkles className="w-6 h-6 text-brand-primary-light" />
+          <Sparkle className="w-6 h-6 text-brand-primary-light" />
           <span className="text-sm font-medium text-brand-primary-light tracking-wider uppercase">Welcome to Kolor Studio</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
@@ -171,7 +183,7 @@ export default function IndustryOnboarding() {
             data-testid="onboarding-continue"
           >
             {loading ? (
-              <><Loader2 className="w-5 h-5 animate-spin" /> Setting up...</>
+              <><SpinnerGap className="w-5 h-5 animate-spin" /> Setting up...</>
             ) : (
               <>Continue <ArrowRight className="w-5 h-5" /></>
             )}

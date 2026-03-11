@@ -1,4 +1,4 @@
-import { LayoutGrid, CalendarDays, Briefcase, Settings } from 'lucide-react'
+import { SquaresFour, CalendarDots, Briefcase, GearSix } from '@phosphor-icons/react'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
 
@@ -9,10 +9,10 @@ interface MobileBottomNavProps {
 }
 
 const NAV_ITEMS: { mode: ViewMode | 'settings'; icon: React.ElementType; label: string }[] = [
-  { mode: 'kanban', icon: LayoutGrid, label: 'Dashboard' },
-  { mode: 'calendar', icon: CalendarDays, label: 'Calendar' },
+  { mode: 'kanban', icon: SquaresFour, label: 'Dashboard' },
+  { mode: 'calendar', icon: CalendarDots, label: 'Calendar' },
   { mode: 'portfolio', icon: Briefcase, label: 'Portfolio' },
-  { mode: 'settings', icon: Settings, label: 'Settings' },
+  { mode: 'settings', icon: GearSix, label: 'Settings' },
 ];
 
 export default function MobileBottomNav({ viewMode, onViewChange, onOpenSettings }: MobileBottomNavProps) {
@@ -37,7 +37,7 @@ export default function MobileBottomNav({ viewMode, onViewChange, onOpenSettings
               }`}
               data-testid={`bottom-nav-${mode}`}
             >
-              <Icon className="w-5 h-5" />
+              <Icon weight={isActive ? 'fill' : 'regular'} className="w-5 h-5" />
               <span className="text-[10px] font-medium">{label}</span>
             </button>
           );

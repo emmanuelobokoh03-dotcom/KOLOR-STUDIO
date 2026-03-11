@@ -1,10 +1,24 @@
 import { useState, useEffect } from 'react'
 import {
-  Camera, Clock, CalendarDays, MapPin, DollarSign,
-  Palette, Package, Truck, ArrowRight,
-  PenTool, MessageSquare, CheckCircle, FileText,
-  Loader2, Plus, Eye, ChevronRight, Sparkles,
-} from 'lucide-react'
+  Camera,
+  Clock,
+  CalendarDots,
+  MapPin,
+  CurrencyDollar,
+  Palette,
+  Package,
+  Truck,
+  ArrowRight,
+  PenNib,
+  ChatText,
+  CheckCircle,
+  FileText,
+  SpinnerGap,
+  Plus,
+  Eye,
+  CaretRight,
+  Sparkle
+} from '@phosphor-icons/react'
 import {
   bookingsApi, leadsApi, quotesApi,
   Booking, Lead, LeadStatus,
@@ -47,7 +61,7 @@ const WidgetHeader = ({ icon: Icon, title, iconColor = 'text-brand-primary-light
         onClick={action.onClick}
         className="text-xs text-brand-primary-light hover:text-brand-primary-light font-medium flex items-center gap-1 transition-colors"
       >
-        {action.label} <ChevronRight className="w-3 h-3" />
+        {action.label} <CaretRight className="w-3 h-3" />
       </button>
     )}
   </div>
@@ -59,7 +73,7 @@ const EmptyWidget = ({ message }: { message: string }) => (
 
 const LoadingDots = () => (
   <div className="flex items-center justify-center py-6">
-    <Loader2 className="w-5 h-5 text-brand-primary-light animate-spin" />
+    <SpinnerGap className="w-5 h-5 text-brand-primary-light animate-spin" />
   </div>
 )
 
@@ -132,7 +146,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[#FAFAFA] truncate">{b.title}</p>
                   <div className="flex items-center gap-2 text-xs text-[#A3A3A3]">
-                    <CalendarDays className="w-3 h-3" />
+                    <CalendarDots className="w-3 h-3" />
                     <span>{formatRelativeDate(b.startTime)}</span>
                     <span className="text-gray-600">|</span>
                     <Clock className="w-3 h-3" />
@@ -164,7 +178,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
       {/* Active Projects */}
       <WidgetCard>
         <WidgetHeader
-          icon={Sparkles}
+          icon={Sparkle}
           title="Active Projects"
           iconColor="text-brand-primary-light"
         />
@@ -307,7 +321,7 @@ export function FineArtWidgets({ onLeadClick, onAddLead }: FineArtWidgetsProps) 
           {pendingQuotes > 0 && (
             <div className="pt-3 border-t border-[#333]">
               <div className="flex items-center gap-2 text-xs">
-                <DollarSign className="w-3.5 h-3.5 text-brand-accent-light" />
+                <CurrencyDollar className="w-3.5 h-3.5 text-brand-accent-light" />
                 <span className="text-brand-accent-light font-medium">{pendingQuotes} pending quote{pendingQuotes > 1 ? 's' : ''}</span>
               </div>
             </div>
@@ -367,7 +381,7 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
       {/* Projects by Phase */}
       <WidgetCard className="md:col-span-2">
         <WidgetHeader
-          icon={PenTool}
+          icon={PenNib}
           title="Projects by Phase"
           iconColor="text-indigo-400"
           action={{ label: 'New Project', onClick: onAddLead }}
@@ -416,7 +430,7 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
       {/* Approvals & Status */}
       <WidgetCard>
         <WidgetHeader
-          icon={MessageSquare}
+          icon={ChatText}
           title="Awaiting Action"
           iconColor="text-brand-accent-light"
         />

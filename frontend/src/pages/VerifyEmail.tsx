@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
+import { CheckCircle, XCircle, SpinnerGap } from '@phosphor-icons/react'
 import { authApi } from '../services/api'
 
 export default function VerifyEmail() {
@@ -35,7 +35,7 @@ export default function VerifyEmail() {
       <div className="max-w-md w-full text-center">
         {status === 'loading' && (
           <>
-            <Loader2 className="w-16 h-16 mx-auto mb-4 text-brand-primary animate-spin" />
+            <SpinnerGap weight="duotone" className="w-16 h-16 mx-auto mb-4 text-brand-primary animate-spin" />
             <h2 className="text-2xl font-bold text-[#FAFAFA] mb-2">Verifying Email...</h2>
             <p className="text-[#A3A3A3]">Please wait while we verify your email address.</p>
           </>
@@ -43,7 +43,7 @@ export default function VerifyEmail() {
 
         {status === 'success' && (
           <div data-testid="verify-success">
-            <CheckCircle className="w-16 h-16 mx-auto mb-4 text-green-400" />
+            <CheckCircle weight="duotone" className="w-16 h-16 mx-auto mb-4 text-green-400" />
             <h2 className="text-2xl font-bold text-[#FAFAFA] mb-2">Email Verified!</h2>
             <p className="text-[#A3A3A3] mb-6">{message}</p>
             <p className="text-sm text-[#666]">Redirecting to dashboard...</p>
@@ -52,7 +52,7 @@ export default function VerifyEmail() {
 
         {status === 'error' && (
           <div data-testid="verify-error">
-            <XCircle className="w-16 h-16 mx-auto mb-4 text-red-400" />
+            <XCircle weight="duotone" className="w-16 h-16 mx-auto mb-4 text-red-400" />
             <h2 className="text-2xl font-bold text-[#FAFAFA] mb-2">Verification Failed</h2>
             <p className="text-[#A3A3A3] mb-6">{message}</p>
             <button

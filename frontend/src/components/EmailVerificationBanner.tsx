@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Mail, Loader2 } from 'lucide-react'
+import { X, Envelope, SpinnerGap } from '@phosphor-icons/react'
 import { authApi, User } from '../services/api'
 
 interface EmailVerificationBannerProps {
@@ -37,7 +37,7 @@ export default function EmailVerificationBanner({ user }: EmailVerificationBanne
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-3">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <Mail className="w-5 h-5 text-yellow-400 flex-shrink-0" />
+            <Envelope className="w-5 h-5 text-yellow-400 flex-shrink-0" />
             <p className="text-sm text-neutral-200 truncate">
               <strong>Verify your email</strong> to unlock all features and secure your account.
             </p>
@@ -50,7 +50,7 @@ export default function EmailVerificationBanner({ user }: EmailVerificationBanne
               data-testid="resend-verification-btn"
             >
               {sending ? (
-                <span className="flex items-center gap-1"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending...</span>
+                <span className="flex items-center gap-1"><SpinnerGap className="w-3.5 h-3.5 animate-spin" /> Sending...</span>
               ) : sent ? 'Sent!' : 'Resend Email'}
             </button>
             <button

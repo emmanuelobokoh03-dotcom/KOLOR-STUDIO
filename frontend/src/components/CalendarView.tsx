@@ -1,27 +1,27 @@
 import { useState, useEffect, useMemo } from 'react'
 import {
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
+  CaretLeft,
+  CaretRight,
+  SpinnerGap,
   Camera,
   Video,
   Palette,
   Globe,
-  Sparkles,
+  Sparkle,
   FileText,
-  MessageSquare,
+  ChatText,
   Package,
-  Calendar as CalendarIcon,
-  RefreshCw,
+  CalendarBlank as CalendarIcon,
+  ArrowsClockwise,
   List,
-  CalendarDays,
+  CalendarDots,
   Clock,
   MapPin,
-  Filter,
+  Funnel,
   Eye,
-  EyeOff,
+  EyeSlash,
   Plus
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import { leadsApi, CalendarEvent, User, ServiceType, SERVICE_TYPE_LABELS } from '../services/api'
 import { formatCurrency, CurrencySettings } from '../utils/currency'
 
@@ -49,9 +49,9 @@ const SERVICE_ICONS: Record<ServiceType, React.ReactNode> = {
   VIDEOGRAPHY: <Video className="w-3 h-3" />,
   GRAPHIC_DESIGN: <Palette className="w-3 h-3" />,
   WEB_DESIGN: <Globe className="w-3 h-3" />,
-  BRANDING: <Sparkles className="w-3 h-3" />,
+  BRANDING: <Sparkle className="w-3 h-3" />,
   CONTENT_CREATION: <FileText className="w-3 h-3" />,
-  CONSULTING: <MessageSquare className="w-3 h-3" />,
+  CONSULTING: <ChatText className="w-3 h-3" />,
   OTHER: <Package className="w-3 h-3" />,
 };
 
@@ -327,7 +327,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             }`}
             data-testid="upcoming-toggle"
           >
-            {showUpcomingOnly ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+            {showUpcomingOnly ? <Eye className="w-4 h-4" /> : <EyeSlash className="w-4 h-4" />}
             <span className="hidden sm:inline">{showUpcomingOnly ? 'Upcoming' : 'All'}</span>
           </button>
           
@@ -341,7 +341,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
               data-testid="view-month"
               title="Month View"
             >
-              <CalendarDays className="w-4 h-4" />
+              <CalendarDots className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewType('week')}
@@ -381,7 +381,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             title="Refresh"
             data-testid="calendar-refresh"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <ArrowsClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </div>
@@ -394,7 +394,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             className="p-2 hover:bg-dark-card-hover rounded-lg transition text-gray-400 hover:text-white"
             data-testid="calendar-prev"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <CaretLeft className="w-5 h-5" />
           </button>
           
           <div className="flex items-center gap-4">
@@ -417,7 +417,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             className="p-2 hover:bg-dark-card-hover rounded-lg transition text-gray-400 hover:text-white"
             data-testid="calendar-next"
           >
-            <ChevronRight className="w-5 h-5" />
+            <CaretRight className="w-5 h-5" />
           </button>
         </div>
       )}
@@ -435,7 +435,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       {/* Calendar Content */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
+          <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
         </div>
       ) : hasNoBookings ? (
         /* Empty State */
@@ -571,7 +571,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         <div className="bg-dark-card rounded-xl border border-dark-border p-4 sm:p-6">
           {dayEvents.length === 0 ? (
             <div className="text-center py-12">
-              <CalendarIcon className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+              <CalendarIcon weight="duotone" className="w-12 h-12 text-gray-600 mx-auto mb-4" />
               <p className="text-gray-400">No events scheduled for this day</p>
             </div>
           ) : (
@@ -618,7 +618,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
           
           {agendaEvents.length === 0 ? (
             <div className="text-center py-12">
-              <List className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+              <List weight="duotone" className="w-12 h-12 text-gray-600 mx-auto mb-4" />
               <p className="text-gray-400">No upcoming events in the next 30 days</p>
             </div>
           ) : (
@@ -664,7 +664,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
           <div className="flex items-center gap-2 mb-2">
-            <CalendarDays className="w-4 h-4 text-brand-primary-light" />
+            <CalendarDots className="w-4 h-4 text-brand-primary-light" />
             <span className="text-sm text-gray-400">Total Bookings</span>
           </div>
           <p className="text-2xl font-bold text-white" data-testid="total-bookings">

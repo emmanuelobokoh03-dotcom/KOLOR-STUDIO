@@ -1,5 +1,15 @@
 import { useState } from 'react'
-import { Image as ImageIcon, FileText, Layout, Check, ChevronRight, Star, Calendar, Clock, Mail } from 'lucide-react'
+import {
+  Image as Image,
+  FileText,
+  Layout,
+  Check,
+  CaretRight,
+  Star,
+  CalendarBlank,
+  Clock,
+  Envelope
+} from '@phosphor-icons/react'
 
 interface BrandPreviewProps {
   primary: string
@@ -58,7 +68,7 @@ function PortfolioPreview({ primary, accent, font, logoUrl }: BrandPreviewProps)
             className={`${item.h} rounded-md relative group cursor-pointer overflow-hidden`}
             style={{ background: item.color }}
           >
-            <ImageIcon className="w-4 h-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ color: `${primary}40` }} />
+            <Image className="w-4 h-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ color: `${primary}40` }} />
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5" style={{ background: `linear-gradient(transparent 40%, ${primary}CC)` }}>
               <span className="text-white text-[7px] font-medium">Project {i + 1}</span>
             </div>
@@ -101,7 +111,7 @@ function QuotePreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
           )}
           <div>
             <span className="font-bold text-[10px] block leading-tight" style={{ fontFamily: font, color: '#111' }}>Your Studio</span>
-            <span className="text-[7px] text-gray-400">Professional Quote</span>
+            <span className="text-[7px] text-gray-400">Professional Quotes</span>
           </div>
         </div>
         <div className="text-[8px] px-2 py-0.5 rounded-full font-medium" style={{ background: `${accent}15`, color: accent }}>
@@ -109,7 +119,7 @@ function QuotePreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
         </div>
       </div>
 
-      {/* Quote Content */}
+      {/* Quotes Content */}
       <div className="px-4 py-3">
         <h4 className="text-[11px] font-bold mb-2" style={{ fontFamily: font, color: '#111' }}>Brand Photography Package</h4>
         
@@ -138,7 +148,7 @@ function QuotePreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
       {/* Actions */}
       <div className="px-4 pb-3 flex gap-1.5">
         <button className="flex-1 py-1.5 rounded-md text-white text-[9px] font-semibold" style={{ background: primary }}>
-          Accept Quote
+          Accept Quotes
         </button>
         <button className="flex-1 py-1.5 rounded-md text-[9px] font-semibold border" style={{ borderColor: `${accent}40`, color: accent }}>
           Message
@@ -204,17 +214,17 @@ function PortalPreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
               <span className="text-[8px] font-medium text-gray-800 block">View Contract</span>
               <span className="text-[7px] text-gray-400">Signed on Mar 1</span>
             </div>
-            <ChevronRight className="w-3 h-3 text-gray-300" />
+            <CaretRight className="w-3 h-3 text-gray-300" />
           </div>
           <div className="flex items-center gap-2 p-2 rounded-md border border-gray-100 group cursor-pointer hover:border-gray-200">
             <div className="w-6 h-6 rounded flex items-center justify-center" style={{ background: `${accent}10` }}>
-              <Calendar className="w-3 h-3" style={{ color: accent }} />
+              <CalendarBlank className="w-3 h-3" style={{ color: accent }} />
             </div>
             <div className="flex-1 min-w-0">
               <span className="text-[8px] font-medium text-gray-800 block">Upcoming Session</span>
               <span className="text-[7px] text-gray-400">Mar 15, 2:00 PM</span>
             </div>
-            <ChevronRight className="w-3 h-3 text-gray-300" />
+            <CaretRight className="w-3 h-3 text-gray-300" />
           </div>
         </div>
       </div>
@@ -222,7 +232,7 @@ function PortalPreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
       {/* Footer Action */}
       <div className="px-4 pb-3">
         <button className="w-full py-1.5 rounded-md text-white text-[9px] font-semibold flex items-center justify-center gap-1" style={{ background: primary }}>
-          <Mail className="w-3 h-3" /> Contact Studio
+          <Envelope className="w-3 h-3" /> Contact Studio
         </button>
       </div>
     </div>
@@ -233,8 +243,8 @@ export default function BrandPreview({ primary, accent, font, logoUrl }: BrandPr
   const [activeTab, setActiveTab] = useState<PreviewTab>('portfolio')
 
   const tabs: { key: PreviewTab; label: string; icon: React.ElementType }[] = [
-    { key: 'portfolio', label: 'Portfolio', icon: ImageIcon },
-    { key: 'quote', label: 'Quote', icon: FileText },
+    { key: 'portfolio', label: 'Portfolio', icon: Image },
+    { key: 'quote', label: 'Quotes', icon: FileText },
     { key: 'portal', label: 'Portal', icon: Layout },
   ]
 

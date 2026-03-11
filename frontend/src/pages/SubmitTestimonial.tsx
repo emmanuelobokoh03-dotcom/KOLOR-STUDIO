@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { Star as StarIcon, Send, Check, Heart, Sparkles } from 'lucide-react'
+import { Star as StarIcon, PaperPlaneTilt, Check, Heart, Sparkle } from '@phosphor-icons/react'
 
 interface TestimonialRequest {
   id: string
@@ -77,7 +77,7 @@ export default function SubmitTestimonial() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">
         <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: `${primary}15` }}>
-          <Heart className="w-10 h-10" style={{ color: primary }} />
+          <Heart weight="duotone" className="w-10 h-10" style={{ color: primary }} />
         </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-3">Thank You!</h1>
         <p className="text-gray-600 mb-2">Your testimonial has been submitted and is being reviewed.</p>
@@ -99,7 +99,7 @@ export default function SubmitTestimonial() {
             <img src={request.user.brandLogoUrl} alt="" className="h-12 w-12 rounded-xl mx-auto mb-4 object-contain" />
           ) : (
             <div className="h-12 w-12 rounded-xl mx-auto mb-4 flex items-center justify-center" style={{ background: primary }}>
-              <Sparkles className="w-6 h-6 text-white" />
+              <Sparkle className="w-6 h-6 text-white" />
             </div>
           )}
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Share Your Experience</h1>
@@ -211,7 +211,7 @@ export default function SubmitTestimonial() {
             {submitting ? (
               <div className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
             ) : (
-              <><Send className="w-4 h-4" /> Submit Testimonial</>
+              <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> Submit Testimonial</>
             )}
           </button>
         </div>

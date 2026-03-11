@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  Loader2,
-  AlertCircle,
-  Mail,
+import {
+  CheckCircle,
+  XCircle,
+  Clock,
+  SpinnerGap,
+  WarningCircle,
+  Envelope,
   Phone,
-  Calendar,
-  Download
-} from 'lucide-react'
+  CalendarBlank,
+  DownloadSimple
+} from '@phosphor-icons/react'
 import { quotesApi, Quote, PAYMENT_TERMS_OPTIONS } from '../services/api'
 import { formatCurrency, CurrencySettings, getMergedCurrencySettings } from '../utils/currency'
 import { trackQuoteViewed, trackQuoteAccepted, trackQuoteDeclined } from '../utils/analytics'
@@ -136,7 +136,7 @@ export default function PublicQuote() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-brand-primary mx-auto mb-4" />
+          <SpinnerGap weight="duotone" className="w-12 h-12 animate-spin text-brand-primary mx-auto mb-4" />
           <p className="text-gray-600">Loading quote...</p>
         </div>
       </div>
@@ -147,7 +147,7 @@ export default function PublicQuote() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
-          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <WarningCircle weight="duotone" className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Quote Not Found</h1>
           <p className="text-gray-600 mb-6">
             This quote may have been deleted or the link is invalid.
@@ -215,7 +215,7 @@ export default function PublicQuote() {
                   className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white text-sm font-medium transition"
                   data-testid="download-pdf-btn"
                 >
-                  <Download className="w-4 h-4" />
+                  <DownloadSimple weight="bold" className="w-4 h-4" />
                   Download PDF
                 </button>
                 <div className={`px-4 py-2 rounded-full text-sm font-semibold ${
@@ -305,7 +305,7 @@ export default function PublicQuote() {
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="bg-brand-primary/5 rounded-xl p-4">
                 <div className="flex items-center gap-2 text-brand-primary mb-2">
-                  <Calendar className="w-4 h-4" />
+                  <CalendarBlank className="w-4 h-4" />
                   <span className="text-xs uppercase tracking-wide font-medium">Payment Terms</span>
                 </div>
                 <p className="text-gray-900 font-medium">{paymentTermsLabel}</p>
@@ -342,7 +342,7 @@ export default function PublicQuote() {
                       href={`mailto:${quote.createdBy.email}`}
                       className="flex items-center gap-2 text-brand-primary hover:text-brand-primary-dark"
                     >
-                      <Mail className="w-4 h-4" />
+                      <Envelope className="w-4 h-4" />
                       {quote.createdBy.email}
                     </a>
                   )}
@@ -374,7 +374,7 @@ export default function PublicQuote() {
                   data-testid="accept-quote-btn"
                 >
                   {accepting ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <SpinnerGap className="w-5 h-5 animate-spin" />
                   ) : (
                     <CheckCircle className="w-5 h-5" />
                   )}
@@ -395,7 +395,7 @@ export default function PublicQuote() {
           {/* Expired Notice */}
           {isExpired && quote.status !== 'ACCEPTED' && quote.status !== 'DECLINED' && (
             <div className="bg-red-50 p-6 border-t border-red-100 text-center">
-              <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
+              <WarningCircle weight="duotone" className="w-8 h-8 text-red-500 mx-auto mb-2" />
               <p className="text-red-700 font-medium">This quote has expired</p>
               <p className="text-red-600 text-sm mt-1">
                 Please contact the studio for an updated quote.
@@ -440,7 +440,7 @@ export default function PublicQuote() {
                 data-testid="confirm-decline-btn"
               >
                 {declining ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <SpinnerGap className="w-4 h-4 animate-spin" />
                 ) : (
                   <XCircle className="w-4 h-4" />
                 )}

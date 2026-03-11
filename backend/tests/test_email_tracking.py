@@ -17,7 +17,7 @@ import requests
 import os
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://crm-sequences-hub.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://crm-for-creatives.preview.emergentagent.com').rstrip('/')
 
 # Test credentials
 TEST_EMAIL = "analytics-test@test.com"

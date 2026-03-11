@@ -2,10 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { settingsApi } from '../services/api'
 import { useBrandTheme } from '../contexts/BrandThemeContext'
-import {
-  Palette, Type, Upload, Trash2, RotateCcw, Save,
-  Loader2, Check, X,
-} from 'lucide-react'
+import { Palette, TextT, UploadSimple, Trash, ArrowCounterClockwise, FloppyDisk, SpinnerGap, Check, X } from '@phosphor-icons/react'
 import BrandPreview from './BrandPreview'
 import EmailSignatureGenerator from './EmailSignatureGenerator'
 
@@ -187,7 +184,7 @@ export default function BrandSettings() {
       {/* Font Family */}
       <div>
         <label className="text-sm font-medium text-[#A3A3A3] mb-2 flex items-center gap-1.5">
-          <Type className="w-3.5 h-3.5" /> Font Family
+          <TextT className="w-3.5 h-3.5" /> Font Family
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {FONT_OPTIONS.map(f => (
@@ -213,7 +210,7 @@ export default function BrandSettings() {
       {/* Logo Upload */}
       <div>
         <label className="text-sm font-medium text-[#A3A3A3] mb-2 flex items-center gap-1.5">
-          <Upload className="w-3.5 h-3.5" /> Studio Logo
+          <UploadSimple className="w-3.5 h-3.5" /> Studio Logo
         </label>
         <div className="flex items-center gap-4">
           {logoUrl ? (
@@ -234,9 +231,9 @@ export default function BrandSettings() {
               data-testid="upload-logo-area"
             >
               {uploading ? (
-                <Loader2 className="w-5 h-5 text-[#A3A3A3] animate-spin" />
+                <SpinnerGap className="w-5 h-5 text-[#A3A3A3] animate-spin" />
               ) : (
-                <Upload className="w-5 h-5 text-[#A3A3A3]" />
+                <UploadSimple weight="bold" className="w-5 h-5 text-[#A3A3A3]" />
               )}
             </div>
           )}
@@ -269,7 +266,7 @@ export default function BrandSettings() {
           style={{ background: hasChanges ? primary : undefined }}
           data-testid="save-brand-btn"
         >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+          {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <FloppyDisk className="w-4 h-4" />}
           {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Brand'}
         </button>
         <button
@@ -277,7 +274,7 @@ export default function BrandSettings() {
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#333] text-[#A3A3A3] hover:text-[#FAFAFA] hover:border-[#444] transition-colors text-sm font-medium"
           data-testid="reset-brand-btn"
         >
-          <RotateCcw className="w-4 h-4" />
+          <ArrowCounterClockwise className="w-4 h-4" />
           Reset
         </button>
       </div>

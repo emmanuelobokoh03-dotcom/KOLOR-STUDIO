@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react'
 import { InlineHint } from './InlineHint'
-import { 
-  FileText, 
-  Plus, 
-  Send, 
-  Eye, 
-  Trash2, 
-  Copy, 
-  Edit3,
-  Loader2,
+import {
+  FileText,
+  Plus,
+  PaperPlaneTilt,
+  Eye,
+  Trash,
+  Copy,
+  PencilSimple,
+  SpinnerGap,
   CheckCircle,
   XCircle,
   Clock,
-  ExternalLink,
-  MoreHorizontal,
-  Download
-} from 'lucide-react'
+  ArrowSquareOut,
+  DotsThree,
+  DownloadSimple
+} from '@phosphor-icons/react'
 import { 
   Lead,
   Quote, 
@@ -35,13 +35,13 @@ import {
   trackQuoteDuplicated
 } from '../utils/analytics'
 
-interface QuotesTabProps {
+interface QuoteTabProps {
   lead: Lead;
   onQuoteUpdate?: () => void;
   onQuoteSent?: () => void;
 }
 
-export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTabProps) {
+export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTabProps) {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
   const [showBuilder, setShowBuilder] = useState(false);
@@ -187,7 +187,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
       case 'ACCEPTED': return <CheckCircle className="w-4 h-4 text-green-400" />;
       case 'DECLINED': return <XCircle className="w-4 h-4 text-red-400" />;
       case 'VIEWED': return <Eye className="w-4 h-4 text-brand-primary-light" />;
-      case 'SENT': return <Send className="w-4 h-4 text-blue-400" />;
+      case 'SENT': return <PaperPlaneTilt weight="bold" className="w-4 h-4 text-blue-400" />;
       case 'EXPIRED': return <Clock className="w-4 h-4 text-orange-400" />;
       default: return <FileText className="w-4 h-4 text-gray-400" />;
     }
@@ -196,7 +196,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
   if (loading) {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-brand-primary" />
+        <SpinnerGap className="w-6 h-6 animate-spin text-brand-primary" />
       </div>
     );
   }
@@ -214,8 +214,8 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
           className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium text-sm"
           data-testid="create-quote-btn"
         >
-          <Plus className="w-4 h-4" />
-          Create Quote
+          <Plus weight="bold" className="w-4 h-4" />
+          Create Quotes
         </button>
       </div>
 
@@ -239,7 +239,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
             data-testid="quotes-empty-cta"
           >
             <FileText className="w-5 h-5" />
-            Create Quote
+            Create Quotes
           </button>
           <p className="text-xs text-gray-500 mt-4 max-w-sm">
             <strong>Pro tip:</strong> Use quote templates to save time on similar projects.
@@ -256,7 +256,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
               data-testid={`quote-card-${quote.id}`}
             >
               <div className="flex items-start justify-between">
-                {/* Quote Info */}
+                {/* Quotes Info */}
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     {getStatusIcon(quote.status)}
@@ -309,7 +309,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                         className="p-2 text-gray-400 hover:text-brand-primary-light hover:bg-brand-primary-dark/30 rounded-lg transition"
                         title="Edit"
                       >
-                        <Edit3 className="w-4 h-4" />
+                        <PencilSimple className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleSendQuoteClick(quote)}
@@ -318,9 +318,9 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                         data-testid={`send-quote-${quote.id}`}
                       >
                         {sendingId === quote.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <SpinnerGap className="w-4 h-4 animate-spin" />
                         ) : (
-                          <Send className="w-4 h-4" />
+                          <PaperPlaneTilt weight="bold" className="w-4 h-4" />
                         )}
                         Send
                       </button>
@@ -350,13 +350,13 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                     </button>
                   )}
 
-                  {/* More Menu */}
+                  {/* More List */}
                   <div className="relative">
                     <button
                       onClick={() => setMenuOpenId(menuOpenId === quote.id ? null : quote.id)}
                       className="p-2 text-gray-400 hover:bg-dark-card-hover rounded-lg transition"
                     >
-                      <MoreHorizontal className="w-4 h-4" />
+                      <DotsThree className="w-4 h-4" />
                     </button>
                     
                     {menuOpenId === quote.id && (
@@ -367,7 +367,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                           rel="noopener noreferrer"
                           className="w-full px-4 py-2 text-left text-sm hover:bg-dark-card-hover text-gray-300 flex items-center gap-2"
                         >
-                          <ExternalLink className="w-4 h-4" /> View Quote
+                          <ArrowSquareOut className="w-4 h-4" /> View Quotes
                         </a>
                         <button
                           onClick={() => {
@@ -376,7 +376,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                           }}
                           className="w-full px-4 py-2 text-left text-sm hover:bg-dark-card-hover text-gray-300 flex items-center gap-2"
                         >
-                          <Download className="w-4 h-4" /> Download PDF
+                          <DownloadSimple weight="bold" className="w-4 h-4" /> Download PDF
                         </button>
                         <button
                           onClick={() => handleCopyLink(quote)}
@@ -396,7 +396,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                             className="w-full px-4 py-2 text-left text-sm hover:bg-dark-card-hover text-gray-300 flex items-center gap-2"
                             data-testid={`resend-quote-${quote.id}`}
                           >
-                            <Send className="w-4 h-4" /> Resend
+                            <PaperPlaneTilt weight="bold" className="w-4 h-4" /> Resend
                           </button>
                         )}
                         {quote.status === 'DRAFT' && (
@@ -406,9 +406,9 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
                             className="w-full px-4 py-2 text-left text-sm hover:bg-red-900/30 text-red-400 flex items-center gap-2"
                           >
                             {deletingId === quote.id ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <SpinnerGap className="w-4 h-4 animate-spin" />
                             ) : (
-                              <Trash2 className="w-4 h-4" />
+                              <Trash className="w-4 h-4" />
                             )}
                             Delete
                           </button>
@@ -423,7 +423,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuotesTa
         </div>
       )}
 
-      {/* Quote Builder Modal */}
+      {/* Quotes Builder Modal */}
       {showBuilder && (
         <QuoteBuilderModal
           lead={lead}

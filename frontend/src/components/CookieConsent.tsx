@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Cookie, X } from 'lucide-react'
+import { Cookie, X } from '@phosphor-icons/react'
 
 export default function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false)

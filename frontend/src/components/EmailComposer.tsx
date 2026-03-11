@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Mail, Eye, Send, X, Loader2, Edit3 } from 'lucide-react';
+import { Envelope, Eye, PaperPlaneTilt, X, SpinnerGap, PencilSimple } from '@phosphor-icons/react';
 
 interface EmailComposerProps {
   type: 'quote' | 'contract';
@@ -87,11 +87,11 @@ export default function EmailComposer({
         <div className="px-6 py-4 border-b border-[#333] flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-brand-primary/20 rounded-lg flex items-center justify-center">
-              <Mail className="w-5 h-5 text-brand-primary-light" />
+              <Envelope className="w-5 h-5 text-brand-primary-light" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-[#FAFAFA]" data-testid="email-composer-title">
-                {type === 'quote' ? 'Send Quote' : 'Send Contract'}
+                {type === 'quote' ? 'Send Quotes' : 'Send Contract'}
               </h2>
               <p className="text-xs text-[#A3A3A3]">Customize your message to {firstName}</p>
             </div>
@@ -114,7 +114,7 @@ export default function EmailComposer({
               className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#A3A3A3] border border-[#333] rounded-lg hover:bg-[#333] transition-colors"
               data-testid="email-preview-toggle"
             >
-              {showPreview ? <><Edit3 className="w-3.5 h-3.5" /> Edit</> : <><Eye className="w-3.5 h-3.5" /> Preview</>}
+              {showPreview ? <><PencilSimple className="w-3.5 h-3.5" /> Edit</> : <><Eye className="w-3.5 h-3.5" /> Preview</>}
             </button>
           </div>
 
@@ -136,7 +136,7 @@ export default function EmailComposer({
                     className="inline-block px-6 py-3 text-white text-sm font-semibold rounded-lg"
                     style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
                   >
-                    {type === 'quote' ? 'View Quote Details' : 'Review & Sign Agreement'}
+                    {type === 'quote' ? 'View Quotes Details' : 'Review & Sign Agreement'}
                   </div>
                 </div>
               </div>
@@ -226,9 +226,9 @@ export default function EmailComposer({
             data-testid="email-send-btn"
           >
             {sending ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
+              <><SpinnerGap className="w-4 h-4 animate-spin" /> Sending...</>
             ) : (
-              <><Send className="w-4 h-4" /> Send {type === 'quote' ? 'Quote' : 'Contract'}</>
+              <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> PaperPlaneTilt {type === 'quote' ? 'Quotes' : 'Contract'}</>
             )}
           </button>
         </div>

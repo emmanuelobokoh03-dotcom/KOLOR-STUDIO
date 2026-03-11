@@ -3,12 +3,12 @@ import {
   X,
   Bug,
   Lightbulb,
-  MessageSquare,
-  Send,
-  Loader2,
+  ChatText,
+  PaperPlaneTilt,
+  SpinnerGap,
   CheckCircle,
-  AlertCircle
-} from 'lucide-react'
+  WarningCircle
+} from '@phosphor-icons/react'
 
 interface FeedbackModalProps {
   onClose: () => void;
@@ -19,8 +19,8 @@ type FeedbackType = 'bug' | 'feature' | 'general' | 'other';
 const FEEDBACK_TYPES: { type: FeedbackType; label: string; icon: React.ElementType; color: string }[] = [
   { type: 'bug', label: 'Bug Report', icon: Bug, color: 'red' },
   { type: 'feature', label: 'Feature Request', icon: Lightbulb, color: 'violet' },
-  { type: 'general', label: 'General Feedback', icon: MessageSquare, color: 'blue' },
-  { type: 'other', label: 'Other', icon: AlertCircle, color: 'gray' },
+  { type: 'general', label: 'General Feedback', icon: ChatText, color: 'blue' },
+  { type: 'other', label: 'Other', icon: WarningCircle, color: 'gray' },
 ]
 
 export default function FeedbackModal({ onClose }: FeedbackModalProps) {
@@ -78,7 +78,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-700/30">
-            <CheckCircle className="w-8 h-8 text-green-400" />
+            <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
           </div>
           <h3 className="text-xl font-semibold text-white mb-2">Thank You!</h3>
           <p className="text-gray-400 mb-6">
@@ -122,7 +122,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
           {error && (
             <div className="p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -236,7 +236,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
             className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
             data-testid="submit-feedback-btn"
           >
-            {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            {sending ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <PaperPlaneTilt weight="bold" className="w-4 h-4" />}
             Submit Feedback
           </button>
         </div>

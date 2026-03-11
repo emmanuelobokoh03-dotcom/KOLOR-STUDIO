@@ -4,22 +4,22 @@ import ClientPortalMessages from '../components/ClientPortalMessages';
 import ClientFileUpload from '../components/ClientFileUpload';
 import ProjectTimeline from '../components/ProjectTimeline';
 import { toast } from 'sonner';
-import { 
-  Sparkles, 
-  CheckCircle, 
-  Clock, 
-  Mail, 
-  Calendar, 
-  DollarSign, 
-  FileText, 
-  MessageCircle,
-  Loader2,
-  AlertCircle,
-  ScrollText,
+import {
+  Sparkle,
+  CheckCircle,
+  Clock,
+  Envelope,
+  CalendarBlank,
+  CurrencyDollar,
+  FileText,
+  ChatCircle,
+  SpinnerGap,
+  WarningCircle,
+  Scroll,
   ShieldCheck,
-  Download,
+  DownloadSimple,
   Paperclip
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { trackPortalViewed } from '../utils/analytics';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -108,8 +108,8 @@ interface PortalData {
 
 // Status steps for progress bar
 const STATUS_STEPS = [
-  { key: 'NEW', label: 'Received', icon: Mail },
-  { key: 'CONTACTED', label: 'In Contact', icon: MessageCircle },
+  { key: 'NEW', label: 'Received', icon: Envelope },
+  { key: 'CONTACTED', label: 'In Contact', icon: ChatCircle },
   { key: 'QUOTED', label: 'Quoted', icon: FileText },
   { key: 'NEGOTIATING', label: 'Finalizing', icon: Clock },
   { key: 'BOOKED', label: 'Confirmed', icon: CheckCircle },
@@ -279,12 +279,12 @@ export default function ClientPortal() {
               : q
           ),
         });
-        toast.success('Quote Accepted! Your contract is on the way!', { duration: 5000 });
+        toast.success('Quotes Accepted! Your contract is on the way!', { duration: 5000 });
       } else {
         toast.error(result.message || 'Failed to accept quote');
       }
     } catch (err) {
-      console.error('Quote accept error:', err);
+      console.error('Quotes accept error:', err);
     }
     setQuoteAccepting(null);
   };
@@ -307,7 +307,7 @@ export default function ClientPortal() {
         });
       }
     } catch (err) {
-      console.error('Quote decline error:', err);
+      console.error('Quotes decline error:', err);
     }
   };
 
@@ -322,7 +322,7 @@ export default function ClientPortal() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-purple-600 animate-spin mx-auto mb-4" />
+          <SpinnerGap weight="duotone" className="w-12 h-12 text-purple-600 animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading your project portal...</p>
         </div>
       </div>
@@ -334,7 +334,7 @@ export default function ClientPortal() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-5 md:p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-8 h-8 text-red-500" />
+            <WarningCircle weight="duotone" className="w-8 h-8 text-red-500" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Portal Not Found</h1>
           <p className="text-gray-600 mb-6">{error || 'This project portal could not be found.'}</p>
@@ -358,7 +358,7 @@ export default function ClientPortal() {
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-              <Sparkles className="w-6 h-6" />
+              <Sparkle className="w-6 h-6" />
             </div>
             <span className="text-xl font-bold tracking-tight">KOLOR STUDIO</span>
           </div>
@@ -511,7 +511,7 @@ export default function ClientPortal() {
           <div className="space-y-4">
             <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
               <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-purple-600" />
+                <Sparkle className="w-5 h-5 text-purple-600" />
               </div>
               <div>
                 <p className="text-sm text-gray-500">Service Type</p>
@@ -528,7 +528,7 @@ export default function ClientPortal() {
               {data.project.budget && (
                 <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
                   <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <DollarSign className="w-5 h-5 text-green-600" />
+                    <CurrencyDollar className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Budget Range</p>
@@ -552,7 +552,7 @@ export default function ClientPortal() {
               {data.project.eventDate && (
                 <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
                   <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-5 h-5 text-orange-600" />
+                    <CalendarBlank className="w-5 h-5 text-orange-600" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Event Date</p>
@@ -563,7 +563,7 @@ export default function ClientPortal() {
 
               <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
                 <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Calendar className="w-5 h-5 text-purple-600" />
+                  <CalendarBlank className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Submitted On</p>
@@ -596,7 +596,7 @@ export default function ClientPortal() {
                   }`}
                   data-testid={`portal-quote-${quote.id}`}
                 >
-                  {/* Quote Header */}
+                  {/* Quotes Header */}
                   <div className={`px-6 py-4 flex items-center gap-3 ${
                     isAccepted
                       ? 'bg-gradient-to-r from-green-50 to-emerald-50'
@@ -612,9 +612,9 @@ export default function ClientPortal() {
                       }`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-semibold text-gray-900">Quote #{quote.quoteNumber}</h3>
+                      <h3 className="text-base font-semibold text-gray-900">Quotes #{quote.quoteNumber}</h3>
                       <p className="text-sm text-gray-500">
-                        {isAccepted ? 'Quote accepted' : isDeclined ? 'Quote declined' : isExpired ? 'Quote expired' : 'Please review the quote below'}
+                        {isAccepted ? 'Quotes accepted' : isDeclined ? 'Quotes declined' : isExpired ? 'Quotes expired' : 'Please review the quote below'}
                       </p>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold flex-shrink-0 ${
@@ -690,9 +690,9 @@ export default function ClientPortal() {
                         data-testid={`accept-quote-${quote.id}`}
                       >
                         {quoteAccepting === quote.quoteToken ? (
-                          <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
+                          <><SpinnerGap className="w-4 h-4 animate-spin" /> Processing...</>
                         ) : (
-                          <><CheckCircle className="w-4 h-4" /> Accept Quote</>
+                          <><CheckCircle className="w-4 h-4" /> Accept Quotes</>
                         )}
                       </button>
                       <button
@@ -709,7 +709,7 @@ export default function ClientPortal() {
                     <div className="px-6 py-4 border-t border-gray-100 bg-green-50">
                       <div className="flex items-center gap-2 text-green-700">
                         <CheckCircle className="w-5 h-5" />
-                        <span className="font-semibold">Quote accepted{quote.acceptedAt ? ` on ${new Date(quote.acceptedAt).toLocaleDateString()}` : ''}</span>
+                        <span className="font-semibold">Quotes accepted{quote.acceptedAt ? ` on ${new Date(quote.acceptedAt).toLocaleDateString()}` : ''}</span>
                       </div>
                     </div>
                   )}
@@ -746,7 +746,7 @@ export default function ClientPortal() {
                       {isAgreed ? (
                         <ShieldCheck className={`w-5 h-5 text-green-600`} />
                       ) : (
-                        <ScrollText className={`w-5 h-5 text-purple-600`} />
+                        <Scroll className={`w-5 h-5 text-purple-600`} />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -803,7 +803,7 @@ export default function ClientPortal() {
                       <div className="space-y-4">
                         {signError && (
                           <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm" data-testid="sign-error">
-                            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                            <WarningCircle className="w-4 h-4 flex-shrink-0" />
                             {signError}
                           </div>
                         )}
@@ -829,7 +829,7 @@ export default function ClientPortal() {
                         >
                           {signing === contract.id ? (
                             <>
-                              <Loader2 className="w-5 h-5 animate-spin" />
+                              <SpinnerGap className="w-5 h-5 animate-spin" />
                               Signing Agreement...
                             </>
                           ) : (
@@ -914,7 +914,7 @@ export default function ClientPortal() {
                     className="flex items-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition ml-3 whitespace-nowrap"
                     data-testid={`download-file-${file.id}`}
                   >
-                    <Download className="w-4 h-4" />
+                    <DownloadSimple weight="bold" className="w-4 h-4" />
                     Download
                   </a>
                 </div>
@@ -948,7 +948,7 @@ export default function ClientPortal() {
               href={`mailto:${data.contact.email}?subject=Re: ${data.project.title}`}
               className="inline-flex items-center gap-2 bg-white text-purple-700 px-6 py-3 rounded-xl font-semibold hover:bg-purple-50 transition-colors"
             >
-              <Mail className="w-5 h-5" />
+              <Envelope className="w-5 h-5" />
               Contact Us
             </a>
           </div>
@@ -957,7 +957,7 @@ export default function ClientPortal() {
         {/* Footer */}
         <footer className="text-center text-gray-400 text-sm py-8">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkles className="w-4 h-4" />
+            <Sparkle className="w-4 h-4" />
             <span className="font-semibold text-gray-500">KOLOR STUDIO</span>
           </div>
           <p>Thank you for choosing us for your creative project.</p>

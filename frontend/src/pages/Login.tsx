@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Sparkles, Loader2, AlertCircle } from 'lucide-react'
+import { Sparkle, SpinnerGap, WarningCircle } from '@phosphor-icons/react'
 import { authApi } from '../services/api'
 import { trackLogin } from '../utils/analytics'
 
@@ -56,7 +56,7 @@ const Login = () => {
       <div className="max-w-md w-full animate-fade-in">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-3 mb-6 group">
-            <Sparkles className="w-8 h-8 text-brand-primary group-hover:text-brand-primary-light transition-colors duration-200" />
+            <Sparkle className="w-8 h-8 text-brand-primary group-hover:text-brand-primary-light transition-colors duration-200" />
             <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
@@ -68,7 +68,7 @@ const Login = () => {
         <div className="bg-[#1A1A1A] rounded-2xl shadow-2xl p-8 border border-[#333]">
           {error && (
             <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-xl flex items-center gap-3 text-red-400 animate-fade-in" data-testid="login-error">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -122,7 +122,7 @@ const Login = () => {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <SpinnerGap className="w-5 h-5 animate-spin" />
                   Signing in...
                 </>
               ) : (

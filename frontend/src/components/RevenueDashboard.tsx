@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { DollarSign, TrendingUp, TrendingDown, Target, ArrowUpRight, Calendar } from 'lucide-react'
+import { CurrencyDollar, TrendUp, TrendDown, Crosshair, ArrowUpRight, CalendarBlank } from '@phosphor-icons/react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 
 interface RevenueStats {
@@ -64,7 +64,7 @@ export default function RevenueDashboard() {
       <div className="px-5 py-4 flex items-center justify-between border-b border-[#262626]">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-            <DollarSign className="w-4.5 h-4.5 text-emerald-400" />
+            <CurrencyDollar weight="duotone" className="w-4.5 h-4.5 text-emerald-400" />
           </div>
           <div>
             <h3 className="text-sm font-semibold text-[#FAFAFA]">Revenue Overview</h3>
@@ -82,7 +82,7 @@ export default function RevenueDashboard() {
               <span className="text-[10px] font-medium text-[#888] uppercase tracking-wider">This Month</span>
               {stats.monthOverMonth !== 0 && (
                 <span className={`flex items-center gap-0.5 text-[10px] font-semibold ${stats.monthOverMonth > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                  {stats.monthOverMonth > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                  {stats.monthOverMonth > 0 ? <TrendUp className="w-3 h-3" /> : <TrendDown className="w-3 h-3" />}
                   {Math.abs(stats.monthOverMonth)}%
                 </span>
               )}
@@ -95,7 +95,7 @@ export default function RevenueDashboard() {
           <div className="bg-[#0F0F0F] rounded-xl p-3 border border-[#262626]">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] font-medium text-[#888] uppercase tracking-wider">Year to Date</span>
-              <Calendar className="w-3 h-3 text-[#666]" />
+              <CalendarBlank className="w-3 h-3 text-[#666]" />
             </div>
             <p className="text-lg font-bold text-[#FAFAFA]" data-testid="revenue-ytd">{formatCurrency(stats.ytd)}</p>
             <p className="text-[10px] text-[#666]">of {formatCurrency(stats.yearGoal)} goal</p>
@@ -115,7 +115,7 @@ export default function RevenueDashboard() {
           <div className="bg-[#0F0F0F] rounded-xl p-3 border border-[#262626]">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] font-medium text-[#888] uppercase tracking-wider">Goal</span>
-              <Target className="w-3 h-3 text-[#666]" />
+              <Crosshair className="w-3 h-3 text-[#666]" />
             </div>
             <p className="text-lg font-bold text-[#FAFAFA]" data-testid="revenue-goal">{stats.goalProgress}%</p>
             <div className="w-full h-1.5 bg-[#333] rounded-full mt-1">

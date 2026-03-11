@@ -1,5 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Star as StarIcon, Check, X, Sparkles, MessageSquare, ThumbsUp, ThumbsDown, Award, Clock, Loader2, Send } from 'lucide-react'
+import {
+  Star as StarIcon,
+  Check,
+  X,
+  Sparkle,
+  ChatText,
+  ThumbsUp,
+  ThumbsDown,
+  Trophy,
+  Clock,
+  SpinnerGap,
+  PaperPlaneTilt
+} from '@phosphor-icons/react'
 
 interface Testimonial {
   id: string
@@ -105,10 +117,10 @@ export default function TestimonialsManagement() {
 
       {/* Testimonials List */}
       {loading ? (
-        <div className="text-center py-12 text-[#666]"><Loader2 className="w-5 h-5 animate-spin mx-auto" /></div>
+        <div className="text-center py-12 text-[#666]"><SpinnerGap className="w-5 h-5 animate-spin mx-auto" /></div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12">
-          <MessageSquare className="w-10 h-10 text-[#333] mx-auto mb-3" />
+          <ChatText weight="duotone" className="w-10 h-10 text-[#333] mx-auto mb-3" />
           <p className="text-sm text-[#888]">
             {filter === 'ALL' ? 'No testimonials yet. Request one from a completed project!' : `No ${filter.toLowerCase()} testimonials.`}
           </p>
@@ -173,7 +185,7 @@ export default function TestimonialsManagement() {
                       title={t.featured ? 'Unfeature' : 'Feature'}
                       data-testid={`feature-${t.id}`}
                     >
-                      <Award className="w-3.5 h-3.5" />
+                      <Trophy className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
@@ -208,7 +220,7 @@ export default function TestimonialsManagement() {
                   className="mt-2 text-xs text-brand-primary hover:text-brand-primary-light transition-colors flex items-center gap-1"
                   data-testid={`copy-link-${t.id}`}
                 >
-                  <Send className="w-3 h-3" /> Copy submission link
+                  <PaperPlaneTilt className="w-3 h-3" /> Copy submission link
                 </button>
               )}
             </div>

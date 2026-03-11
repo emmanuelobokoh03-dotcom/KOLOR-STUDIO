@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { CheckCircle, AlertTriangle, XCircle, Loader2 } from 'lucide-react'
+import { CheckCircle, Warning, XCircle, SpinnerGap } from '@phosphor-icons/react'
 
 type SystemStatus = 'operational' | 'degraded' | 'outage' | 'checking';
 
@@ -44,7 +44,7 @@ export default function StatusIndicator({ showLabel = true }: StatusIndicatorPro
       label: 'All Systems Operational'
     },
     degraded: {
-      icon: AlertTriangle,
+      icon: Warning,
       color: 'text-yellow-400',
       bgColor: 'bg-yellow-400',
       label: 'Partial Outage'
@@ -56,7 +56,7 @@ export default function StatusIndicator({ showLabel = true }: StatusIndicatorPro
       label: 'System Outage'
     },
     checking: {
-      icon: Loader2,
+      icon: SpinnerGap,
       color: 'text-gray-400',
       bgColor: 'bg-gray-400',
       label: 'Checking Status...'
@@ -73,7 +73,7 @@ export default function StatusIndicator({ showLabel = true }: StatusIndicatorPro
           <div className={`absolute inset-0 w-2 h-2 rounded-full ${config.bgColor} animate-ping opacity-75`} />
         )}
         {status === 'checking' && (
-          <Loader2 className={`w-3 h-3 ${config.color} animate-spin absolute -top-0.5 -left-0.5`} />
+          <SpinnerGap className={`w-3 h-3 ${config.color} animate-spin absolute -top-0.5 -left-0.5`} />
         )}
       </div>
       {showLabel && (

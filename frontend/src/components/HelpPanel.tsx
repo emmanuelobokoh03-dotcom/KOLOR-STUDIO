@@ -1,37 +1,47 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  HelpCircle, X, FileText, Calendar, Upload, ScrollText,
-  ChevronDown, Mail, RefreshCw, TrendingUp, Star, Paperclip
-} from 'lucide-react'
+  Question,
+  X,
+  FileText,
+  CalendarBlank,
+  UploadSimple,
+  Scroll,
+  CaretDown,
+  Envelope,
+  ArrowsClockwise,
+  TrendUp,
+  Star,
+  Paperclip
+} from '@phosphor-icons/react'
 
 const quickStartItems = [
   {
     icon: FileText,
-    title: 'Create Your First Quote',
+    title: 'Create Your First Quotes',
     description: 'Send professional pricing to clients',
     color: 'text-brand-accent-light bg-brand-accent-dark/30 border-brand-accent-dark/30',
   },
   {
-    icon: Calendar,
+    icon: CalendarBlank,
     title: 'Set Up a Booking',
     description: 'Schedule shoots and meetings',
     color: 'text-blue-400 bg-blue-900/30 border-blue-700/30',
   },
   {
-    icon: Upload,
+    icon: UploadSimple,
     title: 'Upload Portfolio Work',
     description: 'Showcase your best pieces',
     color: 'text-brand-primary-light bg-brand-primary-dark/30 border-brand-primary-dark/30',
   },
   {
-    icon: ScrollText,
+    icon: Scroll,
     title: 'Send a Contract',
     description: 'Protect yourself legally',
     color: 'text-emerald-400 bg-emerald-900/30 border-emerald-700/30',
   },
   {
-    icon: TrendingUp,
+    icon: TrendUp,
     title: 'Track Your Income',
     description: 'See earnings and tax estimates automatically',
     color: 'text-amber-400 bg-amber-900/30 border-amber-700/30',
@@ -43,7 +53,7 @@ const quickStartItems = [
     color: 'text-yellow-400 bg-yellow-900/30 border-yellow-700/30',
   },
   {
-    icon: Mail,
+    icon: Envelope,
     title: 'Email Signature',
     description: 'Market your portfolio in every email',
     color: 'text-cyan-400 bg-cyan-900/30 border-cyan-700/30',
@@ -103,7 +113,7 @@ function FAQ({ question, answer }: { question: string; answer: string }) {
         <span className="text-sm text-[#CCCCCC] group-hover:text-[#FAFAFA] transition-colors pr-4">
           {question}
         </span>
-        <ChevronDown className={`w-4 h-4 text-gray-500 flex-shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        <CaretDown className={`w-4 h-4 text-gray-500 flex-shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
       <AnimatePresence>
         {open && (
@@ -154,7 +164,7 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
             <div className="flex items-center justify-between p-5 border-b border-[#262626] flex-shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-brand-primary-dark/40 border border-brand-primary-dark/30 flex items-center justify-center">
-                  <HelpCircle className="w-4 h-4 text-brand-primary-light" />
+                  <Question className="w-4 h-4 text-brand-primary-light" />
                 </div>
                 <h3 className="text-lg font-semibold text-[#FAFAFA]">Need Help?</h3>
               </div>
@@ -241,7 +251,7 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
                   className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-brand-primary-light hover:bg-brand-primary-dark/20 transition-colors text-sm font-medium"
                   data-testid="help-restart-tour"
                 >
-                  <RefreshCw className="w-4 h-4" />
+                  <ArrowsClockwise className="w-4 h-4" />
                   Restart Tutorial
                 </button>
               )}
@@ -250,7 +260,7 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
                 className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl border border-[#333] text-[#A3A3A3] hover:text-[#FAFAFA] hover:border-[#444] transition-colors text-sm font-medium"
                 data-testid="help-contact-support"
               >
-                <Mail className="w-4 h-4" />
+                <Envelope className="w-4 h-4" />
                 Contact Support
               </a>
             </div>
@@ -270,7 +280,7 @@ export function HelpButton({ onClick }: { onClick: () => void }) {
       aria-label="Open help panel"
       data-testid="help-button"
     >
-      <HelpCircle className="w-5 h-5" />
+      <Question className="w-5 h-5" />
     </button>
   )
 }

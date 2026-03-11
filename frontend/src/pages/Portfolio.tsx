@@ -1,20 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import {
-  Upload,
+  UploadSimple,
   X,
   Star,
   Pencil,
-  Trash2,
-  Loader2,
-  Image as ImageIcon,
+  Trash,
+  SpinnerGap,
+  Image as Image,
   Plus,
-  AlertCircle,
+  WarningCircle,
   Check,
   Copy,
-  ExternalLink,
-  Link2,
+  ArrowSquareOut,
+  Link,
   Eye
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import { 
   portfolioApi, 
   PortfolioItem, 
@@ -240,7 +240,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
           <div className="flex flex-wrap items-center gap-3">
             {/* Public URL */}
             <div className="flex items-center gap-2 px-3 py-2 bg-slate-800 rounded-lg border border-slate-600">
-              <Link2 className="w-4 h-4 text-gray-400" />
+              <Link className="w-4 h-4 text-gray-400" />
               <span className="text-sm text-gray-300 truncate max-w-[200px]">
                 {publicUrl.replace('https://', '').replace('http://', '')}
               </span>
@@ -268,7 +268,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
               className="flex items-center gap-2 px-4 py-2 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition text-sm font-medium"
               data-testid="add-portfolio-btn"
             >
-              <Plus className="w-4 h-4" />
+              <Plus weight="bold" className="w-4 h-4" />
               Add Work
             </button>
           </div>
@@ -281,7 +281,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
       {/* Error */}
       {error && (
         <div className="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-red-300 text-sm">
-          <AlertCircle className="w-4 h-4" />
+          <WarningCircle className="w-4 h-4" />
           {error}
         </div>
       )}
@@ -289,7 +289,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
       {/* Loading */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-primary-light" />
+          <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary-light" />
         </div>
       ) : items.length === 0 ? (
         /* Empty State */
@@ -297,15 +297,15 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
           <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F5BC;&#xFE0F;</div>
           <h3 className="text-xl md:text-2xl font-semibold text-white mb-2 md:mb-3">Showcase your best work</h3>
           <p className="text-sm md:text-base text-gray-400 max-w-md mb-5 md:mb-6 leading-relaxed">
-            Upload 5-10 of your favorite pieces to create a stunning portfolio that attracts dream clients.
+            UploadSimple 5-10 of your favorite pieces to create a stunning portfolio that attracts dream clients.
           </p>
           <button
             onClick={handleAddNew}
             className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary hover:bg-brand-primary text-white rounded-xl transition font-medium"
             data-testid="portfolio-empty-cta"
           >
-            <Upload className="w-5 h-5" />
-            Upload Your First Piece
+            <UploadSimple weight="bold" className="w-5 h-5" />
+            UploadSimple Your First Piece
           </button>
           <p className="text-xs text-gray-500 mt-4 max-w-sm">
             <strong>Pro tip:</strong> Quality over quantity! Choose work that represents your unique style.
@@ -358,7 +358,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
                     className="p-2 bg-red-500/30 hover:bg-red-500/50 rounded-lg transition"
                     title="Delete"
                   >
-                    <Trash2 className="w-5 h-5 text-red-300" />
+                    <Trash className="w-5 h-5 text-red-300" />
                   </button>
                 </div>
               </div>
@@ -403,7 +403,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
               {/* Error */}
               {modalError && (
                 <div className="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-red-300 text-sm">
-                  <AlertCircle className="w-4 h-4" />
+                  <WarningCircle className="w-4 h-4" />
                   {modalError}
                 </div>
               )}
@@ -443,7 +443,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
                     </div>
                   ) : (
                     <>
-                      <Upload className="w-8 h-8 text-gray-500 mx-auto mb-2" />
+                      <UploadSimple weight="duotone" className="w-8 h-8 text-gray-500 mx-auto mb-2" />
                       <p className="text-sm text-gray-400">
                         Drag & drop or click to upload
                       </p>
@@ -550,7 +550,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
               >
                 {saving ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <SpinnerGap className="w-4 h-4 animate-spin" />
                     Saving...
                   </>
                 ) : (

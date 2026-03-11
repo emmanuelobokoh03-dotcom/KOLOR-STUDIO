@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react'
-import { AlertTriangle, Clock, Phone, Mail, Flame, Snowflake, ChevronRight, Bell, RefreshCw } from 'lucide-react'
+import {
+  Warning,
+  Clock,
+  Phone,
+  Envelope,
+  Flame,
+  Snowflake,
+  CaretRight,
+  Bell,
+  ArrowsClockwise
+} from '@phosphor-icons/react'
 
 interface CRMAlert {
   id: string
@@ -18,7 +28,7 @@ interface CRMApiResponse {
 
 const ALERT_CONFIG: Record<string, { icon: React.ElementType; colorClass: string; bgClass: string }> = {
   FOLLOW_UP: { icon: Clock, colorClass: 'text-amber-400', bgClass: 'bg-amber-400/10' },
-  NEW_LEAD: { icon: AlertTriangle, colorClass: 'text-red-400', bgClass: 'bg-red-400/10' },
+  NEW_LEAD: { icon: Warning, colorClass: 'text-red-400', bgClass: 'bg-red-400/10' },
   HOT_LEAD: { icon: Flame, colorClass: 'text-orange-400', bgClass: 'bg-orange-400/10' },
   COLD_LEAD: { icon: Snowflake, colorClass: 'text-blue-400', bgClass: 'bg-blue-400/10' },
 }
@@ -74,7 +84,7 @@ export default function CRMAlerts({ onLeadClick }: { onLeadClick?: (leadId: stri
           </div>
         </div>
         <button onClick={fetchAlerts} className="p-2 rounded-lg hover:bg-[#262626] transition-colors" data-testid="refresh-alerts">
-          <RefreshCw className={`w-4 h-4 text-[#666] ${loading ? 'animate-spin' : ''}`} />
+          <ArrowsClockwise className={`w-4 h-4 text-[#666] ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
 
@@ -112,7 +122,7 @@ export default function CRMAlerts({ onLeadClick }: { onLeadClick?: (leadId: stri
                   </div>
                   <p className="text-xs text-[#888] truncate">{alert.message}</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-[#444] group-hover:text-[#888] transition-colors flex-shrink-0" />
+                <CaretRight className="w-4 h-4 text-[#444] group-hover:text-[#888] transition-colors flex-shrink-0" />
               </div>
             )
           })

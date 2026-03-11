@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ArrowRight } from 'lucide-react'
+import { X, ArrowRight } from '@phosphor-icons/react'
 
 interface SmartSuggestionProps {
   leadCount: number
@@ -47,7 +47,7 @@ export function SmartSuggestion({
       id: 'send-quote',
       condition: leadCount > 0 && !hasQuotes,
       emoji: '\u{1F4B0}',
-      title: 'Ready to Send a Quote?',
+      title: 'Ready to Send a Quotes?',
       message: 'You have projects but no quotes yet. Send your first quote to lock in work!',
       cta: 'View Projects',
       action: 'view-kanban',

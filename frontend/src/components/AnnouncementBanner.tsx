@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { X, Megaphone, Sparkles, PartyPopper } from 'lucide-react'
+import { X, Megaphone, Sparkle, Confetti } from '@phosphor-icons/react'
 
 interface Announcement {
   id: string;
@@ -53,9 +53,9 @@ export default function AnnouncementBanner() {
 
   const typeIcons = {
     info: Megaphone,
-    success: Sparkles,
+    success: Sparkle,
     warning: Megaphone,
-    celebration: PartyPopper,
+    celebration: Confetti,
   }
 
   const Icon = typeIcons[announcement.type]

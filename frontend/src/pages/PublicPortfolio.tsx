@@ -1,15 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import {
-  Loader2,
-  Star,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Mail,
-  ExternalLink,
-  Sparkles
-} from 'lucide-react'
+import { SpinnerGap, Star, X, CaretLeft, CaretRight, Envelope, ArrowSquareOut, Sparkle } from '@phosphor-icons/react'
 import { 
   portfolioApi, 
   PortfolioItem, 
@@ -119,7 +110,7 @@ export default function PublicPortfolio() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-brand-primary-light" />
+        <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary-light" />
       </div>
     )
   }
@@ -156,7 +147,7 @@ export default function PublicPortfolio() {
             {/* Studio Logo/Name */}
             <div className="flex items-center justify-center gap-2 mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-primary rounded-xl flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+                <Sparkle className="w-5 h-5 text-white" />
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
@@ -339,7 +330,7 @@ export default function PublicPortfolio() {
                 href={`mailto:contact@example.com`}
                 className="flex items-center gap-2 px-4 py-2 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition text-sm font-medium"
               >
-                <Mail className="w-4 h-4" />
+                <Envelope className="w-4 h-4" />
                 Get in Touch
               </a>
             </div>
@@ -367,7 +358,7 @@ export default function PublicPortfolio() {
               onClick={(e) => { e.stopPropagation(); prevImage(); }}
               className="absolute left-4 p-3 bg-white/10 hover:bg-white/20 rounded-full transition text-white"
             >
-              <ChevronLeft className="w-6 h-6" />
+              <CaretLeft className="w-6 h-6" />
             </button>
           )}
           
@@ -422,7 +413,7 @@ export default function PublicPortfolio() {
               onClick={(e) => { e.stopPropagation(); nextImage(); }}
               className="absolute right-4 p-3 bg-white/10 hover:bg-white/20 rounded-full transition text-white"
             >
-              <ChevronRight className="w-6 h-6" />
+              <CaretRight className="w-6 h-6" />
             </button>
           )}
         </div>

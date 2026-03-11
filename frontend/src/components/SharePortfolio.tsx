@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Copy, Check, Share2, Mail, MessageCircle, Download } from 'lucide-react'
+import { Copy, Check, ShareNetwork, Envelope, ChatCircle, DownloadSimple } from '@phosphor-icons/react'
 import QRCode from 'qrcode'
 import { authApi } from '../services/api'
 
@@ -53,11 +53,11 @@ export default function SharePortfolio() {
     <div className="bg-gradient-to-br from-brand-primary/10 to-brand-accent/10 border border-brand-primary/30 rounded-2xl p-5" data-testid="share-portfolio">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-9 h-9 rounded-xl bg-brand-primary/10 flex items-center justify-center">
-          <Share2 className="w-4.5 h-4.5 text-brand-primary" />
+          <ShareNetwork className="w-4.5 h-4.5 text-brand-primary" />
         </div>
         <div>
           <h3 className="text-sm font-semibold text-[#FAFAFA]">Share Your Portfolio</h3>
-          <p className="text-xs text-[#888]">Send this link to potential clients</p>
+          <p className="text-xs text-[#888]">Share this link to potential clients</p>
         </div>
       </div>
 
@@ -86,14 +86,14 @@ export default function SharePortfolio() {
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#333] text-xs text-[#CCC] hover:text-[#FAFAFA] hover:border-[#444] transition-colors"
           data-testid="share-email"
         >
-          <Mail className="w-3.5 h-3.5" /> Email
+          <Envelope className="w-3.5 h-3.5" /> Email
         </button>
         <button
           onClick={shareViaSMS}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#333] text-xs text-[#CCC] hover:text-[#FAFAFA] hover:border-[#444] transition-colors"
           data-testid="share-sms"
         >
-          <MessageCircle className="w-3.5 h-3.5" /> Text
+          <ChatCircle className="w-3.5 h-3.5" /> Text
         </button>
       </div>
 
@@ -112,7 +112,7 @@ export default function SharePortfolio() {
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#333] text-xs text-[#CCC] hover:text-[#FAFAFA] hover:border-[#444] transition-colors"
                 data-testid="download-qr"
               >
-                <Download className="w-3.5 h-3.5" /> Download QR Code
+                <DownloadSimple className="w-3.5 h-3.5" /> DownloadSimple QR Code
               </button>
             </div>
           </div>

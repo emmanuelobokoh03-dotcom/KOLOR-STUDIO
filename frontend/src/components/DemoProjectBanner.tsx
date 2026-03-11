@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, X, Trash2, Loader2 } from 'lucide-react';
+import { Sparkle, X, Trash, SpinnerGap } from '@phosphor-icons/react';
 import { leadsApi } from '../services/api';
 
 interface DemoProjectBannerProps {
@@ -31,7 +31,7 @@ export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted }: 
     >
       <div className="flex items-start gap-3 md:gap-4">
         <div className="w-9 h-9 bg-brand-primary/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-          <Sparkles className="w-5 h-5 text-brand-primary-light" />
+          <Sparkle className="w-5 h-5 text-brand-primary-light" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-brand-primary-light text-sm md:text-base mb-1">
@@ -47,7 +47,7 @@ export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted }: 
             className="inline-flex items-center gap-1.5 text-xs font-medium text-[#A3A3A3] hover:text-red-400 transition-colors disabled:opacity-50"
             data-testid="delete-demo-btn"
           >
-            {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+            {deleting ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <Trash className="w-3.5 h-3.5" />}
             {deleting ? 'Deleting...' : 'Remove demo project'}
           </button>
         </div>

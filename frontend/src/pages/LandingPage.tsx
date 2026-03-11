@@ -1,24 +1,24 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { 
-  Sparkles, 
-  LayoutDashboard, 
-  MessageCircle, 
-  BarChart3,
+import {
+  Sparkle,
+  SquaresFour,
+  ChatCircle,
+  ChartBar,
   ArrowRight,
   Check,
   Lock,
   Cloud,
   Star,
-  ChevronDown,
-  ChevronUp,
+  CaretDown,
+  CaretUp,
   X as XIcon,
-  Mail,
-  Quote,
+  Envelope,
+  Quotes,
   Globe,
-  Zap
-} from 'lucide-react'
+  Lightning
+} from '@phosphor-icons/react'
 import Footer from '../components/Footer'
 
 const LandingPage = () => {
@@ -45,7 +45,7 @@ const LandingPage = () => {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center space-x-2"
           >
-            <Sparkles className="w-8 h-8 text-brand-primary" />
+            <Sparkle className="w-8 h-8 text-brand-primary" />
             <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
@@ -149,19 +149,19 @@ const LandingPage = () => {
       <section className="container mx-auto px-6 py-20">
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <FeatureCard
-            icon={<LayoutDashboard className="w-6 h-6" />}
+            icon={<SquaresFour className="w-6 h-6" />}
             title="Visual Pipeline"
             description="Drag-and-drop Kanban board that shows your entire business at a glance. Move leads from inquiry to booking with satisfaction."
             delay={0.1}
           />
           <FeatureCard
-            icon={<MessageCircle className="w-6 h-6" />}
+            icon={<ChatCircle className="w-6 h-6" />}
             title="Client Portal"
             description="Branded client experience that makes you look like a million-dollar studio. Real-time updates and seamless communication."
             delay={0.2}
           />
           <FeatureCard
-            icon={<BarChart3 className="w-6 h-6" />}
+            icon={<ChartBar className="w-6 h-6" />}
             title="Smart Analytics"
             description="See pipeline value, conversion rates, and revenue trends. Know which services print money and which need work."
             delay={0.3}
@@ -449,7 +449,7 @@ const LandingPage = () => {
           viewport={{ once: true }}
           className="max-w-2xl mx-auto bg-dark-card rounded-2xl p-10 border border-dark-border text-center"
         >
-          <Mail className="w-10 h-10 text-brand-primary-light mx-auto mb-4" />
+          <Envelope weight="duotone" className="w-10 h-10 text-brand-primary-light mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-white mb-2">Get Lead Management Tips & Updates</h3>
           <p className="text-gray-400 mb-6">
             Join 500+ creatives getting weekly tips on booking more clients and growing their business.
@@ -492,7 +492,7 @@ const LandingPage = () => {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto bg-gradient-to-r from-brand-primary to-brand-primary rounded-2xl shadow-2xl p-12 text-center text-white"
         >
-          <Sparkles className="w-12 h-12 mx-auto mb-6" />
+          <Sparkle weight="duotone" className="w-12 h-12 mx-auto mb-6" />
           <h2 className="text-4xl font-bold mb-4">
             Ready to elevate your creative business?
           </h2>
@@ -577,7 +577,7 @@ const TestimonialCard = ({ quote, author, role, location, initials, rating, dela
           <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
         ))}
       </div>
-      <Quote className="w-8 h-8 text-brand-primary/30 mb-2" />
+      <Quotes className="w-8 h-8 text-brand-primary/30 mb-2" />
       <p className="text-gray-300 mb-4 italic">"{quote}"</p>
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center text-white font-semibold text-sm">
@@ -658,9 +658,9 @@ const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => {
       >
         <span className="font-medium text-white">{question}</span>
         {isOpen ? (
-          <ChevronUp className="w-5 h-5 text-brand-primary-light" />
+          <CaretUp className="w-5 h-5 text-brand-primary-light" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-gray-500" />
+          <CaretDown className="w-5 h-5 text-gray-500" />
         )}
       </button>
       {isOpen && (

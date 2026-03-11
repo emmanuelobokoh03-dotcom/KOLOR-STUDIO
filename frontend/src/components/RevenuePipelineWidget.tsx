@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Loader2, TrendingUp } from 'lucide-react';
+import { SpinnerGap, TrendUp } from '@phosphor-icons/react';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -18,7 +18,7 @@ interface PipelineData {
 }
 
 const STAGES = [
-  { key: 'quoteSent', name: 'Quote Sent', icon: '📋', bg: 'bg-blue-500', text: 'text-blue-400' },
+  { key: 'quoteSent', name: 'Quotes Sent', icon: '📋', bg: 'bg-blue-500', text: 'text-blue-400' },
   { key: 'contractSigned', name: 'Contract', icon: '✍️', bg: 'bg-purple-500', text: 'text-purple-400' },
   { key: 'depositPaid', name: 'Deposit Paid', icon: '💰', bg: 'bg-green-500', text: 'text-green-400' },
   { key: 'inProgress', name: 'In Progress', icon: '🚀', bg: 'bg-orange-500', text: 'text-orange-400' },
@@ -49,7 +49,7 @@ export default function RevenuePipelineWidget() {
   if (loading) {
     return (
       <div className="bg-dark-card border border-dark-border rounded-xl p-6 flex items-center justify-center h-40">
-        <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+        <SpinnerGap className="w-5 h-5 animate-spin text-gray-400" />
       </div>
     );
   }
@@ -62,7 +62,7 @@ export default function RevenuePipelineWidget() {
     <div className="bg-dark-card border border-dark-border rounded-xl p-5" data-testid="revenue-pipeline-widget">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-brand-primary-light" />
+          <TrendUp weight="duotone" className="w-5 h-5 text-brand-primary-light" />
           <h3 className="text-base font-semibold text-white">Revenue Pipeline</h3>
         </div>
         <span className="text-xs text-gray-500">Autopilot Tracker</span>

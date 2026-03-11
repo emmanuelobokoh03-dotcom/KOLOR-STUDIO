@@ -1,11 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import {
-  HelpCircle,
-  BookOpen,
-  Mail,
-  ChevronDown,
-  MessageSquare
-} from 'lucide-react'
+import { Question, BookOpen, Envelope, CaretDown, ChatText } from '@phosphor-icons/react'
 
 interface HelpMenuProps {
   onOpenFeedback: () => void;
@@ -42,9 +36,9 @@ export default function HelpMenu({ onOpenFeedback }: HelpMenuProps) {
         data-testid="help-menu-button"
         title="Help & Support"
       >
-        <HelpCircle className="w-5 h-5" />
+        <Question className="w-5 h-5" />
         <span className="hidden sm:inline text-sm">Help</span>
-        <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <CaretDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
@@ -56,7 +50,7 @@ export default function HelpMenu({ onOpenFeedback }: HelpMenuProps) {
             data-testid="email-support-link"
           >
             <div className="w-8 h-8 rounded-lg bg-green-900/30 flex items-center justify-center border border-green-700/30">
-              <Mail className="w-4 h-4 text-green-400" />
+              <Envelope className="w-4 h-4 text-green-400" />
             </div>
             <div>
               <p className="text-sm font-medium text-white">Email Support</p>
@@ -86,7 +80,7 @@ export default function HelpMenu({ onOpenFeedback }: HelpMenuProps) {
             data-testid="send-feedback-btn"
           >
             <div className="w-8 h-8 rounded-lg bg-brand-primary-dark/30 flex items-center justify-center border border-brand-primary-dark/30">
-              <MessageSquare className="w-4 h-4 text-brand-primary-light" />
+              <ChatText className="w-4 h-4 text-brand-primary-light" />
             </div>
             <div>
               <p className="text-sm font-medium text-white">Send Feedback</p>

@@ -7,18 +7,18 @@ import {
   PROJECT_TYPE_LABELS,
   ProjectType,
 } from '../services/api'
-import { 
-  GripVertical, 
-  User, 
-  Calendar, 
-  DollarSign,
-  MoreHorizontal,
-  Trash2,
+import {
+  DotsSixVertical,
+  User,
+  CalendarBlank,
+  CurrencyDollar,
+  DotsThree,
+  Trash,
   Eye,
-  ImageIcon,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react'
+  Image,
+  CaretLeft,
+  CaretRight
+} from '@phosphor-icons/react'
 import { trackLeadStatusChanged, trackLeadDeleted } from '../utils/analytics'
 
 interface KanbanBoardProps {
@@ -106,7 +106,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
         </div>
       ) : (
         <div className="relative h-20 md:h-24 bg-gradient-to-br from-brand-primary-dark/30 to-brand-primary-dark/20 flex items-center justify-center cursor-pointer overflow-hidden" onClick={() => onLeadClick(lead)}>
-          <ImageIcon className="w-7 h-7 md:w-8 md:h-8 text-brand-primary/30" />
+          <Image className="w-7 h-7 md:w-8 md:h-8 text-brand-primary/30" />
           <div className="absolute bottom-2 left-3 right-3">
             <span className="text-xs px-2 py-0.5 bg-brand-primary-dark/80 backdrop-blur-sm text-brand-primary-light rounded-full border border-brand-primary-dark/50">
               {SERVICE_TYPE_LABELS[lead.serviceType]}
@@ -119,7 +119,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
       <div className="p-3 md:p-4">
         <div className="flex items-start justify-between mb-1.5 md:mb-2">
           <div className="flex items-center gap-1.5 flex-wrap">
-            <GripVertical className="w-3.5 h-3.5 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden md:block" />
+            <DotsSixVertical className="w-3.5 h-3.5 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden md:block" />
             {lead.projectType && lead.projectType !== 'SERVICE' && (
               <span className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 bg-blue-900/50 text-blue-300 rounded-full border border-blue-700/50">
                 {PROJECT_TYPE_LABELS[lead.projectType as ProjectType] || lead.projectType}
@@ -131,7 +131,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
               onClick={(e) => { e.stopPropagation(); setMenuOpen(menuOpen === lead.id ? null : lead.id); }}
               className="p-1.5 hover:bg-[#262626] rounded-lg transition-all duration-200 touch-target md:opacity-0 md:group-hover:opacity-100"
             >
-              <MoreHorizontal className="w-4 h-4 text-[#A3A3A3]" />
+              <DotsThree className="w-4 h-4 text-[#A3A3A3]" />
             </button>
             {menuOpen === lead.id && (
               <div className="absolute right-0 top-8 bg-[#1A1A1A] rounded-xl shadow-xl border border-[#333] py-1 z-10 min-w-[120px] animate-fade-in">
@@ -145,7 +145,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
                   onClick={(e) => { e.stopPropagation(); handleDelete(lead.id); }}
                   className="w-full px-3 py-2.5 text-left text-sm hover:bg-red-900/30 text-red-400 flex items-center gap-2 touch-target"
                 >
-                  <Trash2 className="w-4 h-4" /> Delete
+                  <Trash className="w-4 h-4" /> Delete
                 </button>
               </div>
             )}
@@ -163,12 +163,12 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           </div>
           {lead.budget && (
             <div className="flex items-center gap-2">
-              <DollarSign className="w-3.5 h-3.5 flex-shrink-0" />
+              <CurrencyDollar className="w-3.5 h-3.5 flex-shrink-0" />
               <span className="text-green-400 font-medium">{lead.budget}</span>
             </div>
           )}
           <div className="flex items-center gap-2">
-            <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
+            <CalendarBlank className="w-3.5 h-3.5 flex-shrink-0" />
             <span>{formatDate(lead.createdAt)}</span>
           </div>
         </div>
@@ -187,7 +187,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
             className="p-2 text-[#A3A3A3] disabled:opacity-30 touch-target"
             data-testid="kanban-prev-column"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <CaretLeft className="w-5 h-5" />
           </button>
           <div className="flex-1 flex gap-1.5 overflow-x-auto scrollbar-hide py-1">
             {KANBAN_COLUMNS.map((status, idx) => {
@@ -218,7 +218,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
             className="p-2 text-[#A3A3A3] disabled:opacity-30 touch-target"
             data-testid="kanban-next-column"
           >
-            <ChevronRight className="w-5 h-5" />
+            <CaretRight className="w-5 h-5" />
           </button>
         </div>
       </div>

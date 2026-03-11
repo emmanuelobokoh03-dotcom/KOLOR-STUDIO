@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Sparkles, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
+import { Sparkle, SpinnerGap, WarningCircle, CheckCircle } from '@phosphor-icons/react'
 import { authApi } from '../services/api'
 import { trackSignup } from '../utils/analytics'
 
@@ -75,7 +75,7 @@ const Signup = () => {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Sparkles className="w-8 h-8 text-brand-primary" />
+            <Sparkle className="w-8 h-8 text-brand-primary" />
             <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
@@ -87,7 +87,7 @@ const Signup = () => {
         <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
           {error && (
             <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400" data-testid="signup-error">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -185,7 +185,7 @@ const Signup = () => {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <SpinnerGap className="w-5 h-5 animate-spin" />
                   Creating account...
                 </>
               ) : (

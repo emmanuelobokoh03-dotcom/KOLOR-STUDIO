@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react'
 import {
   X,
-  Calendar,
+  CalendarBlank,
   Clock,
   MapPin,
   FileText,
-  Loader2,
-  AlertCircle,
+  SpinnerGap,
+  WarningCircle,
   Check,
-  Trash2,
+  Trash,
   CheckCircle,
   XCircle,
   Users
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import { Lead, Booking, CreateBookingData, bookingsApi, leadsApi, ServiceType } from '../services/api'
 
 interface BookingModalProps {
@@ -284,7 +284,7 @@ export default function BookingModal({
         <div className="flex items-center justify-between p-4 border-b border-dark-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-brand-primary-dark/50 rounded-xl flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-brand-primary-light" />
+              <CalendarBlank className="w-5 h-5 text-brand-primary-light" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-white">
@@ -310,7 +310,7 @@ export default function BookingModal({
           {/* Error/Success Messages */}
           {error && (
             <div className="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-red-300 text-sm">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <WarningCircle className="w-4 h-4 flex-shrink-0" />
               {error}
             </div>
           )}
@@ -331,7 +331,7 @@ export default function BookingModal({
                 <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 {loadingLeads ? (
                   <div className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-gray-400 text-sm flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <SpinnerGap className="w-4 h-4 animate-spin" />
                     Loading leads...
                   </div>
                 ) : availableLeads.length === 0 ? (
@@ -533,7 +533,7 @@ export default function BookingModal({
                 className="p-2 text-red-400 hover:bg-red-900/30 rounded-lg transition"
                 title="Delete booking"
               >
-                <Trash2 className="w-5 h-5" />
+                <Trash className="w-5 h-5" />
               </button>
             )}
             <button
@@ -551,7 +551,7 @@ export default function BookingModal({
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <SpinnerGap className="w-4 h-4 animate-spin" />
                   Saving...
                 </>
               ) : success ? (
@@ -561,7 +561,7 @@ export default function BookingModal({
                 </>
               ) : (
                 <>
-                  <Calendar className="w-4 h-4" />
+                  <CalendarBlank className="w-4 h-4" />
                   {existingBooking ? 'Update Booking' : 'Create Booking'}
                 </>
               )}

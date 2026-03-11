@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Shield, Lock, Database, Mail, Globe, User, FileText, Trash2 } from 'lucide-react'
+import { ArrowLeft, Shield, Lock, Database, Envelope, Globe, User, FileText, Trash } from '@phosphor-icons/react'
 
 export default function PrivacyPolicy() {
   return (
@@ -331,7 +331,7 @@ export default function PrivacyPolicy() {
         {/* Data Retention */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Trash2 className="w-5 h-5 text-brand-primary-light" />
+            <Trash className="w-5 h-5 text-brand-primary-light" />
             Data Retention
           </h2>
 
@@ -386,7 +386,7 @@ export default function PrivacyPolicy() {
         {/* Contact Us */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-brand-primary-light" />
+            <Envelope className="w-5 h-5 text-brand-primary-light" />
             Contact Us
           </h2>
 

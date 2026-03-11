@@ -8,10 +8,26 @@ import {
   deliverablesApi,
 } from '../services/api'
 import {
-  Plus, Loader2, Trash2, X, Save,
-  FileImage, Palette, Printer, Wrench, Layout, Package,
-  Clock, CheckCircle, Truck, AlertCircle, ArrowRight, MapPin, Calendar, Ruler
-} from 'lucide-react'
+  Plus,
+  SpinnerGap,
+  Trash,
+  X,
+  FloppyDisk,
+  FileImage,
+  Palette,
+  Printer,
+  Wrench,
+  Layout,
+  Package,
+  Clock,
+  CheckCircle,
+  Truck,
+  WarningCircle,
+  ArrowRight,
+  MapPin,
+  CalendarBlank,
+  Ruler
+} from '@phosphor-icons/react'
 
 interface DeliverablesTabProps {
   leadId: string;
@@ -45,8 +61,8 @@ const STATUS_COLORS: Record<DeliverableStatus, string> = {
 
 const STATUS_ICONS: Record<DeliverableStatus, React.ElementType> = {
   PENDING: Clock,
-  IN_PROGRESS: Loader2,
-  READY: AlertCircle,
+  IN_PROGRESS: SpinnerGap,
+  READY: WarningCircle,
   DELIVERED: CheckCircle,
   SHIPPED: Truck,
 };
@@ -154,7 +170,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
   const inputClass = "w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-white placeholder-gray-500 text-sm";
 
   if (loading) {
-    return <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-brand-primary-light" /></div>;
+    return <div className="flex items-center justify-center py-12"><SpinnerGap className="w-6 h-6 animate-spin text-brand-primary-light" /></div>;
   }
 
   return (
@@ -167,7 +183,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
           className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary text-white text-sm rounded-lg hover:bg-brand-primary transition"
           data-testid="add-deliverable-btn"
         >
-          <Plus className="w-4 h-4" /> Add Deliverable
+          <Plus weight="bold" className="w-4 h-4" /> Add Deliverable
         </button>
       </div>
 
@@ -244,7 +260,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
           <div className="flex justify-end gap-2 pt-2">
             <button onClick={() => { setShowForm(false); setEditingId(null); }} className="px-4 py-1.5 text-sm text-gray-400 hover:text-gray-200">Cancel</button>
             <button onClick={handleSubmit} disabled={saving || !form.name.trim()} className="flex items-center gap-1.5 px-4 py-1.5 bg-brand-primary text-white text-sm rounded-lg hover:bg-brand-primary disabled:opacity-50" data-testid="deliverable-save">
-              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+              {saving ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk className="w-3.5 h-3.5" />}
               {editingId ? 'Update' : 'Create'}
             </button>
           </div>
@@ -264,7 +280,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
             className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-white rounded-xl hover:bg-brand-primary transition font-medium"
             data-testid="deliverables-empty-cta"
           >
-            <Plus className="w-5 h-5" />
+            <Plus weight="bold" className="w-5 h-5" />
             Add Deliverable
           </button>
           <p className="text-xs text-gray-500 mt-4 max-w-sm">
@@ -294,7 +310,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
                     </div>
                     {d.description && <p className="text-xs text-gray-500 mt-1 truncate">{d.description}</p>}
                     <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500">
-                      {d.dueDate && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />Due {new Date(d.dueDate).toLocaleDateString()}</span>}
+                      {d.dueDate && <span className="flex items-center gap-1"><CalendarBlank className="w-3 h-3" />Due {new Date(d.dueDate).toLocaleDateString()}</span>}
                       {d.dimensions && <span className="flex items-center gap-1"><Ruler className="w-3 h-3" />{d.dimensions}</span>}
                       {d.sessionLocation && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{d.sessionLocation}</span>}
                     </div>
@@ -307,12 +323,12 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
                         className="flex items-center gap-1 px-2 py-1 bg-brand-primary/20 text-brand-primary-light text-xs rounded-lg hover:bg-brand-primary/30 disabled:opacity-50"
                         data-testid={`deliverable-advance-${d.id}`}
                       >
-                        {updatingStatus === d.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <ArrowRight className="w-3 h-3" />}
+                        {updatingStatus === d.id ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <ArrowRight className="w-3 h-3" />}
                         {next.label}
                       </button>
                     )}
                     <button onClick={() => handleDelete(d.id)} className="p-1.5 text-gray-500 hover:text-red-400 rounded-lg hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition" data-testid={`deliverable-delete-${d.id}`}>
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>

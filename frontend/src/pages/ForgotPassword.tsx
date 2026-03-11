@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, Loader2, AlertCircle, CheckCircle, ArrowLeft, Mail } from 'lucide-react'
+import { Sparkle, SpinnerGap, WarningCircle, CheckCircle, ArrowLeft, Envelope } from '@phosphor-icons/react'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -64,7 +64,7 @@ const ForgotPassword = () => {
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-              <Sparkles className="w-8 h-8 text-brand-primary" />
+              <Sparkle className="w-8 h-8 text-brand-primary" />
               <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
                 KOLOR STUDIO
               </span>
@@ -74,7 +74,7 @@ const ForgotPassword = () => {
           <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
-                <CheckCircle className="w-8 h-8 text-green-400" />
+                <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
               </div>
               <h1 className="text-2xl font-bold mb-3 text-white" data-testid="success-title">Check your email</h1>
               <p className="text-gray-400 mb-6">
@@ -103,7 +103,7 @@ const ForgotPassword = () => {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Sparkles className="w-8 h-8 text-brand-primary" />
+            <Sparkle className="w-8 h-8 text-brand-primary" />
             <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
@@ -115,7 +115,7 @@ const ForgotPassword = () => {
         <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
           {error && (
             <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400" data-testid="forgot-password-error">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -126,7 +126,7 @@ const ForgotPassword = () => {
                 Email address
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Envelope className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <input
                   type="email"
                   value={email}
@@ -149,7 +149,7 @@ const ForgotPassword = () => {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <SpinnerGap className="w-5 h-5 animate-spin" />
                   Sending...
                 </>
               ) : (

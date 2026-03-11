@@ -5,22 +5,22 @@ import { format, parse, startOfWeek, getDay, addMonths, subMonths } from 'date-f
 import { enUS } from 'date-fns/locale'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import {
-  Loader2,
+  SpinnerGap,
   Camera,
   Video,
   Palette,
   Globe,
-  Sparkles,
+  Sparkle,
   FileText,
-  MessageSquare,
+  ChatText,
   Package,
   Plus,
-  RefreshCw,
-  Filter
-} from 'lucide-react'
+  ArrowsClockwise,
+  Funnel
+} from '@phosphor-icons/react'
 
 // Cast to work around React 18 types issue
-const Calendar = BigCalendar as React.ComponentType<CalendarProps<CalendarBookingEvent, object>>
+const CalendarComponent = BigCalendar as React.ComponentType<CalendarProps<CalendarBookingEvent, object>>
 
 import { 
   bookingsApi, 
@@ -64,9 +64,9 @@ const SERVICE_ICONS: Record<ServiceType, React.ReactNode> = {
   VIDEOGRAPHY: <Video className="w-3 h-3" />,
   GRAPHIC_DESIGN: <Palette className="w-3 h-3" />,
   WEB_DESIGN: <Globe className="w-3 h-3" />,
-  BRANDING: <Sparkles className="w-3 h-3" />,
+  BRANDING: <Sparkle className="w-3 h-3" />,
   CONTENT_CREATION: <FileText className="w-3 h-3" />,
-  CONSULTING: <MessageSquare className="w-3 h-3" />,
+  CONSULTING: <ChatText className="w-3 h-3" />,
   OTHER: <Package className="w-3 h-3" />,
 }
 
@@ -207,7 +207,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       <div className="flex items-center gap-2">
         {/* Service Filter */}
         <div className="relative">
-          <Filter className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <Funnel className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <select
             value={serviceFilter}
             onChange={(e) => setServiceFilter(e.target.value as ServiceType | 'all')}
@@ -243,7 +243,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
           disabled={loading}
           className="p-1.5 bg-slate-800 border border-slate-600 rounded-lg hover:bg-dark-card transition text-gray-300 disabled:opacity-50"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          <ArrowsClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
         
         {/* Add Booking */}
@@ -256,7 +256,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
           }}
           className="flex items-center gap-2 px-3 py-1.5 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition text-sm font-medium"
         >
-          <Plus className="w-4 h-4" />
+          <Plus weight="bold" className="w-4 h-4" />
           New Booking
         </button>
       </div>
@@ -312,10 +312,10 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         <div className="min-w-[600px] h-full">
         {loading && events.length === 0 ? (
           <div className="h-full flex items-center justify-center">
-            <Loader2 className="w-8 h-8 animate-spin text-brand-primary-light" />
+            <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary-light" />
           </div>
         ) : (
-          <Calendar
+          <CalendarComponent
             localizer={localizer}
             events={filteredEvents}
             startAccessor="start"

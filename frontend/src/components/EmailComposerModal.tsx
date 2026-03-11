@@ -1,16 +1,16 @@
 import { useState, useRef } from 'react'
 import {
   X,
-  Send,
-  Loader2,
-  AlertCircle,
-  ChevronDown,
-  ChevronUp,
+  PaperPlaneTilt,
+  SpinnerGap,
+  WarningCircle,
+  CaretDown,
+  CaretUp,
   Check,
   User,
   FileText,
   Link
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import { Lead, leadsApi } from '../services/api'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
@@ -126,7 +126,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
           onClick={(e) => e.stopPropagation()}
         >
           <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-700/30">
-            <Check className="w-8 h-8 text-green-400" />
+            <Check weight="duotone" className="w-8 h-8 text-green-400" />
           </div>
           <h3 className="text-xl font-semibold text-white mb-2">Email Sent!</h3>
           <p className="text-gray-400">
@@ -171,7 +171,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {error && (
             <div className="p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -189,7 +189,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
             onClick={() => setShowCc(!showCc)}
             className="flex items-center gap-1 text-sm text-brand-primary-light hover:text-brand-primary-light transition"
           >
-            {showCc ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            {showCc ? <CaretUp className="w-4 h-4" /> : <CaretDown className="w-4 h-4" />}
             {showCc ? 'Hide CC/BCC' : 'Add CC/BCC'}
           </button>
 
@@ -253,7 +253,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
               Project Title
             </button>
             <button
-              onClick={() => insertSnippet(`https://crm-sequences-hub.preview.emergentagent.com/portal/${lead.portalToken}`)}
+              onClick={() => insertSnippet(`https://crm-for-creatives.preview.emergentagent.com/portal/${lead.portalToken}`)}
               className="flex items-center gap-1 px-2 py-1 bg-dark-bg-secondary border border-dark-border rounded text-xs text-gray-400 hover:text-white hover:border-brand-primary transition"
               title="Insert client portal link"
             >
@@ -294,7 +294,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
             className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
             data-testid="send-email-btn"
           >
-            {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            {sending ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <PaperPlaneTilt weight="bold" className="w-4 h-4" />}
             Send Email
           </button>
         </div>

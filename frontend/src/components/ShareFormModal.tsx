@@ -1,16 +1,16 @@
 import { useState, useRef } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { 
-  X, 
-  Link2, 
-  Copy, 
-  Check, 
-  Mail, 
-  ExternalLink, 
-  Download,
+import {
+  X,
+  Link,
+  Copy,
+  Check,
+  Envelope,
+  ArrowSquareOut,
+  DownloadSimple,
   Lightbulb,
-  Share2
-} from 'lucide-react'
+  ShareNetwork
+} from '@phosphor-icons/react'
 import { trackPortalLinkShared } from '../utils/analytics'
 
 interface ShareFormModalProps {
@@ -121,7 +121,7 @@ Looking forward to working with you!`
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                <Share2 className="w-5 h-5" />
+                <ShareNetwork className="w-5 h-5" />
               </div>
               <div>
                 <h2 className="text-xl font-bold">Share Your Inquiry Form</h2>
@@ -143,7 +143,7 @@ Looking forward to working with you!`
           {/* Section 1: The Link */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-              <Link2 className="w-4 h-4 text-brand-primary-light" />
+              <Link className="w-4 h-4 text-brand-primary-light" />
               Your Inquiry Form URL
             </label>
             <div className="flex gap-2">
@@ -189,7 +189,7 @@ Looking forward to working with you!`
                 className="flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 hover:border-brand-primary/50 hover:bg-dark-card-hover transition font-medium text-sm"
                 data-testid="email-link-btn"
               >
-                <Mail className="w-4 h-4 text-brand-primary-light" />
+                <Envelope className="w-4 h-4 text-brand-primary-light" />
                 Email Link
               </button>
               <button
@@ -197,7 +197,7 @@ Looking forward to working with you!`
                 className="flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 hover:border-brand-primary/50 hover:bg-dark-card-hover transition font-medium text-sm"
                 data-testid="open-form-btn"
               >
-                <ExternalLink className="w-4 h-4 text-brand-primary-light" />
+                <ArrowSquareOut className="w-4 h-4 text-brand-primary-light" />
                 Open Form
               </button>
             </div>
@@ -227,7 +227,7 @@ Looking forward to working with you!`
                   className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium text-sm"
                   data-testid="download-qr-btn"
                 >
-                  <Download className="w-4 h-4" />
+                  <DownloadSimple weight="bold" className="w-4 h-4" />
                   Download QR Code
                 </button>
                 <p className="text-xs text-gray-500 mt-3 text-center">
@@ -246,7 +246,7 @@ Looking forward to working with you!`
               <div>
                 <h4 className="font-medium text-gray-200 mb-2">Pro Tips</h4>
                 <ul className="text-sm text-gray-400 space-y-1.5">
-                  <li>• Add this link to your Instagram bio</li>
+                  <li>• Add this link to your InstagramLogo bio</li>
                   <li>• Include it in your email signature</li>
                   <li>• Share it on your website's contact page</li>
                   <li>• Print the QR code on your business cards</li>

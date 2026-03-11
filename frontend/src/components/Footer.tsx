@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Sparkles, Instagram, Twitter, Linkedin } from 'lucide-react'
+import { Sparkle, InstagramLogo, XLogo, LinkedinLogo } from '@phosphor-icons/react'
 import StatusIndicator from './StatusIndicator'
 
 export default function Footer() {
@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-primary rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+                <Sparkle className="w-5 h-5 text-white" />
               </div>
               <span className="text-lg font-bold text-white">KOLOR STUDIO</span>
             </Link>
@@ -105,7 +105,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-dark-bg-secondary rounded-lg flex items-center justify-center text-gray-500 hover:text-brand-primary-light hover:bg-brand-primary-dark/30 transition"
               >
-                <Instagram className="w-4 h-4" />
+                <InstagramLogo className="w-4 h-4" />
               </a>
               <a 
                 href="https://twitter.com" 
@@ -113,7 +113,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-dark-bg-secondary rounded-lg flex items-center justify-center text-gray-500 hover:text-brand-primary-light hover:bg-brand-primary-dark/30 transition"
               >
-                <Twitter className="w-4 h-4" />
+                <XLogo className="w-4 h-4" />
               </a>
               <a 
                 href="https://linkedin.com" 
@@ -121,7 +121,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-dark-bg-secondary rounded-lg flex items-center justify-center text-gray-500 hover:text-brand-primary-light hover:bg-brand-primary-dark/30 transition"
               >
-                <Linkedin className="w-4 h-4" />
+                <LinkedinLogo className="w-4 h-4" />
               </a>
             </div>
           </div>

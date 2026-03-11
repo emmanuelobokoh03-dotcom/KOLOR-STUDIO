@@ -11,7 +11,7 @@ from datetime import datetime
 import uuid
 
 class KolorStudioAPITester:
-    def __init__(self, base_url="https://crm-sequences-hub.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://crm-for-creatives.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.tests_run = 0

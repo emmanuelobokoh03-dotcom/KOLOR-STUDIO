@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import {
-  Upload,
+  UploadSimple,
   X,
   Star,
   Pencil,
-  Trash2,
-  Loader2,
-  Image as ImageIcon,
+  Trash,
+  SpinnerGap,
+  Image as Image,
   Plus,
-  AlertCircle,
+  WarningCircle,
   Check,
-  GripVertical
-} from 'lucide-react'
+  DotsSixVertical
+} from '@phosphor-icons/react'
 import { 
   portfolioApi, 
   PortfolioItem, 
@@ -213,7 +213,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
           className="flex items-center gap-2 px-4 py-2 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition text-sm font-medium"
           data-testid="add-portfolio-btn"
         >
-          <Plus className="w-4 h-4" />
+          <Plus weight="bold" className="w-4 h-4" />
           Add Work
         </button>
       </div>
@@ -221,7 +221,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
       {/* Error */}
       {error && (
         <div className="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-red-300 text-sm">
-          <AlertCircle className="w-4 h-4" />
+          <WarningCircle className="w-4 h-4" />
           {error}
         </div>
       )}
@@ -229,24 +229,24 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
       {/* Loading */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-primary-light" />
+          <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary-light" />
         </div>
       ) : items.length === 0 ? (
         /* Empty State */
         <div className="text-center py-16 bg-slate-800/50 rounded-2xl border border-slate-700">
           <div className="w-16 h-16 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <ImageIcon className="w-8 h-8 text-gray-400" />
+            <Image weight="duotone" className="w-8 h-8 text-gray-400" />
           </div>
           <h3 className="text-lg font-semibold text-white mb-2">No Portfolio Items Yet</h3>
           <p className="text-gray-400 mb-6 max-w-md mx-auto">
-            Upload your best work to showcase your skills and impress potential clients.
+            UploadSimple your best work to showcase your skills and impress potential clients.
           </p>
           <button
             onClick={handleAddNew}
             className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition font-medium"
           >
-            <Upload className="w-5 h-5" />
-            Upload Your First Work
+            <UploadSimple weight="bold" className="w-5 h-5" />
+            UploadSimple Your First Work
           </button>
         </div>
       ) : (
@@ -296,7 +296,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                     className="p-2 bg-red-500/30 hover:bg-red-500/50 rounded-lg transition"
                     title="Delete"
                   >
-                    <Trash2 className="w-5 h-5 text-red-300" />
+                    <Trash className="w-5 h-5 text-red-300" />
                   </button>
                 </div>
               </div>
@@ -341,7 +341,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
               {/* Error */}
               {modalError && (
                 <div className="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-red-300 text-sm">
-                  <AlertCircle className="w-4 h-4" />
+                  <WarningCircle className="w-4 h-4" />
                   {modalError}
                 </div>
               )}
@@ -381,7 +381,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                     </div>
                   ) : (
                     <>
-                      <Upload className="w-8 h-8 text-gray-500 mx-auto mb-2" />
+                      <UploadSimple weight="duotone" className="w-8 h-8 text-gray-500 mx-auto mb-2" />
                       <p className="text-sm text-gray-400">
                         Drag & drop or click to upload
                       </p>
@@ -488,7 +488,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
               >
                 {saving ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <SpinnerGap className="w-4 h-4 animate-spin" />
                     Saving...
                   </>
                 ) : (

@@ -13,12 +13,31 @@ import {
   CreateLeadData,
   leadsApi 
 } from '../services/api'
-import { 
-  X, Loader2, AlertCircle, CheckCircle,
-  Camera, Briefcase, Palette, ShoppingBag,
-  Monitor, PenTool, Brush, Megaphone, Scissors, Globe, Package, FileImage, Printer, Wrench, Layout, Layers,
-  Upload, ImageIcon, Trash2
-} from 'lucide-react'
+import {
+  X,
+  SpinnerGap,
+  WarningCircle,
+  CheckCircle,
+  Camera,
+  Briefcase,
+  Palette,
+  ShoppingBag,
+  Monitor,
+  PenNib,
+  PaintBrush,
+  Megaphone,
+  Scissors,
+  Globe,
+  Package,
+  FileImage,
+  Printer,
+  Wrench,
+  Layout,
+  Stack,
+  UploadSimple,
+  Image,
+  Trash
+} from '@phosphor-icons/react'
 import { trackLeadCreated } from '../utils/analytics'
 
 interface AddLeadModalProps {
@@ -46,14 +65,14 @@ const PROJECT_TYPE_CONFIG: { type: ProjectType; icon: React.ElementType; desc: s
 const INDUSTRY_ICONS: Record<IndustryType, React.ElementType> = {
   PHOTOGRAPHY: Camera,
   VIDEOGRAPHY: Monitor,
-  GRAPHIC_DESIGN: PenTool,
+  GRAPHIC_DESIGN: PenNib,
   WEB_DESIGN: Globe,
-  ILLUSTRATION: Brush,
+  ILLUSTRATION: PaintBrush,
   FINE_ART: Palette,
   SCULPTURE: Scissors,
   BRANDING: Megaphone,
   CONTENT_CREATION: FileImage,
-  OTHER: Layers,
+  OTHER: Stack,
 };
 
 const DELIVERABLE_CONFIG: { type: DeliverableType; icon: React.ElementType; color: string }[] = [
@@ -186,7 +205,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
         <div className="p-4 md:p-6 overflow-y-auto flex-1 md:max-h-[70vh]">
           {error && (
             <div className="mb-5 p-4 bg-red-900/30 border border-red-700/50 rounded-xl flex items-center gap-3 text-red-400 animate-fade-in">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -229,7 +248,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       onClick={removeCoverImage}
                       className="px-4 py-2 bg-red-600/80 backdrop-blur-sm text-white rounded-xl text-sm font-medium hover:bg-red-500 transition-all duration-200"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -241,7 +260,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                   data-testid="cover-image-upload-btn"
                 >
                   <div className="p-3 bg-[#262626] rounded-xl">
-                    <ImageIcon className="w-6 h-6 text-[#A3A3A3]" />
+                    <Image className="w-6 h-6 text-[#A3A3A3]" />
                   </div>
                   <span className="text-sm text-[#A3A3A3]">Click to upload a cover image</span>
                   <span className="text-xs text-gray-600">JPG, PNG, WebP up to 10MB</span>
@@ -310,7 +329,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
               <div className="space-y-3 md:space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div>
-                    <label className={labelClass}>Service Type *</label>
+                    <label className={labelClass}>Service TextT *</label>
                     <select name="serviceType" value={formData.serviceType} onChange={handleChange} className={inputClass} data-testid="add-lead-service-type">
                       {SERVICE_TYPES.map((type) => (
                         <option key={type} value={type}>{SERVICE_TYPE_LABELS[type]}</option>
@@ -434,7 +453,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <SpinnerGap className="w-4 h-4 animate-spin" />
                     {uploadingCover ? 'Uploading image...' : 'Creating...'}
                   </>
                 ) : 'Create Lead'}

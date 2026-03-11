@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Upload, FileText, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { UploadSimple, FileText, X, CheckCircle, WarningCircle, SpinnerGap } from '@phosphor-icons/react';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -128,10 +128,10 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6" data-testid="client-file-upload">
       <div className="flex items-center gap-3 mb-5">
         <div className="w-10 h-10 bg-brand-primary/10 rounded-xl flex items-center justify-center">
-          <Upload className="w-5 h-5 text-brand-primary" />
+          <UploadSimple weight="bold" className="w-5 h-5 text-brand-primary" />
         </div>
         <div>
-          <h3 className="text-base font-semibold text-gray-900">Upload Files</h3>
+          <h3 className="text-base font-semibold text-gray-900">UploadSimple Files</h3>
           <p className="text-sm text-gray-500">
             Share reference images, signed contracts, or other files
           </p>
@@ -141,7 +141,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
       {uploaded ? (
         <div className="text-center py-8" data-testid="upload-success">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <CheckCircle className="w-8 h-8 text-green-500" />
+            <CheckCircle weight="duotone" className="w-8 h-8 text-green-500" />
           </div>
           <p className="text-lg font-semibold text-green-700 mb-1">Files Uploaded!</p>
           <p className="text-sm text-gray-500">
@@ -176,7 +176,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
               data-testid="client-dropzone"
             >
               <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <Upload className="w-6 h-6 text-gray-400" />
+                <UploadSimple className="w-6 h-6 text-gray-400" />
               </div>
               <p className="font-medium text-gray-700 mb-1">
                 Click to upload or drag & drop
@@ -234,13 +234,13 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
                 >
                   {uploading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <SpinnerGap className="w-4 h-4 animate-spin" />
                       Uploading...
                     </>
                   ) : (
                     <>
-                      <Upload className="w-4 h-4" />
-                      Upload {files.length} File{files.length > 1 ? 's' : ''}
+                      <UploadSimple weight="bold" className="w-4 h-4" />
+                      UploadSimple {files.length} File{files.length > 1 ? 's' : ''}
                     </>
                   )}
                 </button>
@@ -251,7 +251,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
           {/* Error message */}
           {error && (
             <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-xl flex items-start gap-2" data-testid="upload-error">
-              <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+              <WarningCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-red-600">{error}</p>
             </div>
           )}

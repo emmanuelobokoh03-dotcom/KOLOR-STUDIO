@@ -1,5 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Mail, ChevronDown, X, Play, Pause, Eye, Users, Zap, Loader2, MailCheck, TrendingUp, Inbox } from 'lucide-react'
+import {
+  Envelope,
+  CaretDown,
+  X,
+  Play,
+  Pause,
+  Eye,
+  Users,
+  Lightning,
+  SpinnerGap,
+  EnvelopeOpen,
+  TrendUp,
+  Tray
+} from '@phosphor-icons/react'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -50,9 +63,9 @@ function request(path: string, opts?: RequestInit) {
 function StatsBar({ stats, loading }: { stats: StatsData | null; loading: boolean }) {
   const items = stats
     ? [
-        { label: 'Total Sequences', value: stats.totalSequences, icon: Inbox, color: 'text-blue-400 bg-blue-500/10' },
-        { label: 'Active', value: stats.activeSequences, icon: Zap, color: 'text-emerald-400 bg-emerald-500/10' },
-        { label: 'Emails This Week', value: stats.emailsSentThisWeek, icon: MailCheck, color: 'text-purple-400 bg-purple-500/10' },
+        { label: 'Total Sequences', value: stats.totalSequences, icon: Tray, color: 'text-blue-400 bg-blue-500/10' },
+        { label: 'Active', value: stats.activeSequences, icon: Lightning, color: 'text-emerald-400 bg-emerald-500/10' },
+        { label: 'Emails This Week', value: stats.emailsSentThisWeek, icon: EnvelopeOpen, color: 'text-purple-400 bg-purple-500/10' },
         { label: 'Clients Enrolled', value: stats.totalEnrolled, icon: Users, color: 'text-amber-400 bg-amber-500/10' },
       ]
     : []
@@ -76,7 +89,7 @@ function StatsBar({ stats, loading }: { stats: StatsData | null; loading: boolea
         <div key={label} className="bg-[#1A1A1A] rounded-xl border border-[#333] p-5">
           <div className="flex items-center gap-2.5 mb-2">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${color}`}>
-              <Icon className="w-4 h-4" />
+              <Icon weight="duotone" className="w-4 h-4" />
             </div>
             <span className="text-xs text-[#A3A3A3] font-medium uppercase tracking-wider">{label}</span>
           </div>
@@ -188,7 +201,7 @@ function SequenceCard({ seq, onToggle, onViewDetail }: {
           }`}
           data-testid={`toggle-${seq.id}`}
         >
-          {toggling ? <Loader2 className="w-4 h-4 animate-spin" /> : seq.active ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          {toggling ? <SpinnerGap className="w-4 h-4 animate-spin" /> : seq.active ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
           {toggling ? '...' : seq.active ? 'Pause' : 'Activate'}
         </button>
       </div>
@@ -268,7 +281,7 @@ function SequenceDetailModal({ seq, onClose }: { seq: SequenceData; onClose: () 
                 </div>
                 {i < seq.steps.length - 1 && (
                   <div className="flex justify-center py-1.5">
-                    <ChevronDown className="w-5 h-5 text-[#444]" />
+                    <CaretDown className="w-5 h-5 text-[#444]" />
                   </div>
                 )}
               </div>
@@ -283,7 +296,7 @@ function SequenceDetailModal({ seq, onClose }: { seq: SequenceData; onClose: () 
           </h3>
           {loadingEnrollments ? (
             <div className="flex justify-center py-8">
-              <Loader2 className="w-6 h-6 text-purple-400 animate-spin" />
+              <SpinnerGap className="w-6 h-6 text-purple-400 animate-spin" />
             </div>
           ) : enrollments.length === 0 ? (
             <div className="text-center py-8">
@@ -400,7 +413,7 @@ export default function SequencesDashboard() {
       {/* Custom Sequences — Coming Soon */}
       <div className="mt-10 bg-[#1A1A1A] border-2 border-dashed border-[#333] rounded-xl p-10 text-center">
         <div className="w-14 h-14 bg-purple-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-          <TrendingUp className="w-7 h-7 text-purple-400" />
+          <TrendUp className="w-7 h-7 text-purple-400" />
         </div>
         <h3 className="text-lg font-semibold text-[#FAFAFA] mb-2">Custom Sequences</h3>
         <p className="text-sm text-[#A3A3A3] max-w-md mx-auto mb-5">

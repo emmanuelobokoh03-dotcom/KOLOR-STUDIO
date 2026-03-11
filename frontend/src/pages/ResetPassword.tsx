@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { Sparkles, Loader2, AlertCircle, CheckCircle, Eye, EyeOff, Lock, ArrowLeft } from 'lucide-react'
+import { Sparkle, SpinnerGap, WarningCircle, CheckCircle, Eye, EyeSlash, Lock, ArrowLeft } from '@phosphor-icons/react'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -99,7 +99,7 @@ const ResetPassword = () => {
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-              <Sparkles className="w-8 h-8 text-brand-primary" />
+              <Sparkle className="w-8 h-8 text-brand-primary" />
               <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
                 KOLOR STUDIO
               </span>
@@ -109,14 +109,14 @@ const ResetPassword = () => {
           <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
-                <CheckCircle className="w-8 h-8 text-green-400" />
+                <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
               </div>
               <h1 className="text-2xl font-bold mb-3 text-white" data-testid="reset-success-title">Password reset successful!</h1>
               <p className="text-gray-400 mb-6">
                 Your password has been changed successfully. Redirecting you to the login page...
               </p>
               <div className="flex items-center justify-center gap-2 text-brand-primary-light">
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <SpinnerGap className="w-4 h-4 animate-spin" />
                 <span className="text-sm">Redirecting...</span>
               </div>
             </div>
@@ -131,7 +131,7 @@ const ResetPassword = () => {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Sparkles className="w-8 h-8 text-brand-primary" />
+            <Sparkle className="w-8 h-8 text-brand-primary" />
             <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
@@ -143,7 +143,7 @@ const ResetPassword = () => {
         <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
           {error && (
             <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400" data-testid="reset-password-error">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -171,7 +171,7 @@ const ResetPassword = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               
@@ -239,7 +239,7 @@ const ResetPassword = () => {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
                 >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showConfirmPassword ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {confirmPassword && confirmPassword !== password && (
@@ -261,7 +261,7 @@ const ResetPassword = () => {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <SpinnerGap className="w-5 h-5 animate-spin" />
                   Resetting...
                 </>
               ) : (

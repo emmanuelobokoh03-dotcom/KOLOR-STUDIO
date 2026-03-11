@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Copy, Check, Mail } from 'lucide-react'
+import { Copy, Check, Envelope } from '@phosphor-icons/react'
 import { useBrandTheme } from '../contexts/BrandThemeContext'
 import { authApi } from '../services/api'
 
@@ -51,7 +51,7 @@ export default function EmailSignatureGenerator() {
     <div data-testid="email-signature-generator">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-9 h-9 rounded-xl bg-brand-primary/10 flex items-center justify-center">
-          <Mail className="w-4.5 h-4.5 text-brand-primary" />
+          <Envelope className="w-4.5 h-4.5 text-brand-primary" />
         </div>
         <div>
           <h3 className="text-sm font-semibold text-[#FAFAFA]">Email Signature</h3>
@@ -78,7 +78,7 @@ export default function EmailSignatureGenerator() {
         <ol className="text-xs text-[#888] space-y-1 list-decimal list-inside">
           <li>Click "Copy Signature" above</li>
           <li><strong className="text-[#A3A3A3]">Gmail:</strong> Settings → General → Signature → Paste</li>
-          <li><strong className="text-[#A3A3A3]">Outlook:</strong> File → Options → Mail → Signatures → Paste</li>
+          <li><strong className="text-[#A3A3A3]">Outlook:</strong> File → Options → Envelope → Signatures → Paste</li>
           <li><strong className="text-[#A3A3A3]">Apple Mail:</strong> Preferences → Signatures → Paste</li>
         </ol>
       </div>

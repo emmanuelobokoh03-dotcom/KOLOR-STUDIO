@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
+import { Sparkle } from '@phosphor-icons/react'
 import Confetti from 'react-confetti'
 
 export interface Achievement {
@@ -17,12 +17,12 @@ export const achievements: Record<string, Achievement> = {
   },
   firstQuote: {
     emoji: '\u{1F4B0}',
-    title: 'First Quote Sent!',
+    title: 'First Quotes Sent!',
     message: 'Great work on sending your first professional quote.',
   },
   quoteAccepted: {
     emoji: '\u{1F389}',
-    title: 'Quote Accepted!',
+    title: 'Quotes Accepted!',
     message: 'Time to create a contract and get to work!',
   },
   portfolioPublished: {
@@ -89,9 +89,9 @@ export function CelebrationModal({ achievement, show, onClose }: CelebrationModa
           >
             <div className="text-6xl md:text-7xl mb-4 animate-bounce select-none">{achievement.emoji}</div>
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-yellow-400" />
+              <Sparkle className="w-5 h-5 text-yellow-400" />
               <h2 className="text-2xl md:text-3xl font-bold text-[#FAFAFA]">{achievement.title}</h2>
-              <Sparkles className="w-5 h-5 text-yellow-400" />
+              <Sparkle className="w-5 h-5 text-yellow-400" />
             </div>
             <p className="text-brand-primary-light text-base md:text-lg mb-6">{achievement.message}</p>
             <button

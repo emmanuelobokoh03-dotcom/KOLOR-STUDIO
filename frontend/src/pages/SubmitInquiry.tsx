@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Sparkles, Loader2, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
+import { Sparkle, SpinnerGap, WarningCircle, CheckCircle, ArrowLeft } from '@phosphor-icons/react'
 import { ServiceType, SERVICE_TYPE_LABELS, leadsApi } from '../services/api'
 
 const SERVICE_TYPES: ServiceType[] = [
@@ -65,7 +65,7 @@ const SubmitInquiry = () => {
         <div className="max-w-md w-full text-center">
           <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
             <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
-              <CheckCircle className="w-8 h-8 text-green-400" />
+              <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
             </div>
             <h1 className="text-2xl font-bold mb-4 text-white">Thank You!</h1>
             <p className="text-gray-400 mb-6">
@@ -90,7 +90,7 @@ const SubmitInquiry = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Sparkles className="w-8 h-8 text-brand-primary" />
+            <Sparkle className="w-8 h-8 text-brand-primary" />
             <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
@@ -103,7 +103,7 @@ const SubmitInquiry = () => {
         <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
           {error && (
             <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -176,7 +176,7 @@ const SubmitInquiry = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Service Type *
+                    Service TextT *
                   </label>
                   <select
                     name="serviceType"
@@ -266,7 +266,7 @@ const SubmitInquiry = () => {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <SpinnerGap className="w-5 h-5 animate-spin" />
                   Submitting...
                 </>
               ) : (

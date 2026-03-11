@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react'
-import { 
-  X, 
-  Plus, 
-  Trash2, 
-  Loader2, 
-  AlertCircle,
-  Save,
-  Send,
+import {
+  X,
+  Plus,
+  Trash,
+  SpinnerGap,
+  WarningCircle,
+  FloppyDisk,
+  PaperPlaneTilt,
   Eye,
-  DollarSign,
+  CurrencyDollar,
   Globe,
-  ChevronDown,
+  CaretDown,
   FileText,
   Check,
-  Download
-} from 'lucide-react'
+  DownloadSimple
+} from '@phosphor-icons/react'
 import { 
   Lead, 
   Quote,
@@ -409,7 +409,7 @@ export default function QuoteBuilderModal({
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {error && (
             <div className="p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -430,16 +430,16 @@ export default function QuoteBuilderModal({
                 className="flex items-center gap-2 px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-sm text-gray-300 hover:bg-dark-card-hover transition"
                 data-testid="load-template-btn"
               >
-                <Download className="w-4 h-4" />
+                <DownloadSimple weight="bold" className="w-4 h-4" />
                 Load Template
-                <ChevronDown className={`w-3 h-3 transition ${showTemplateDropdown ? 'rotate-180' : ''}`} />
+                <CaretDown className={`w-3 h-3 transition ${showTemplateDropdown ? 'rotate-180' : ''}`} />
               </button>
               
               {showTemplateDropdown && (
                 <div className="absolute top-full left-0 mt-1 w-64 bg-dark-card border border-dark-border rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
                   {loadingTemplates ? (
                     <div className="p-4 text-center text-gray-400">
-                      <Loader2 className="w-5 h-5 animate-spin mx-auto" />
+                      <SpinnerGap className="w-5 h-5 animate-spin mx-auto" />
                     </div>
                   ) : templates.length === 0 ? (
                     <div className="p-4 text-center text-gray-500 text-sm">
@@ -492,7 +492,7 @@ export default function QuoteBuilderModal({
           {/* Line Items */}
           <div>
             <h3 className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-brand-primary-light" />
+              <CurrencyDollar className="w-4 h-4 text-brand-primary-light" />
               Line Items
             </h3>
             
@@ -547,7 +547,7 @@ export default function QuoteBuilderModal({
                         disabled={lineItems.length === 1}
                         className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-900/30 rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -560,7 +560,7 @@ export default function QuoteBuilderModal({
               className="mt-3 flex items-center gap-2 px-4 py-2 text-brand-primary-light hover:bg-brand-primary-dark/30 rounded-lg transition text-sm font-medium"
               data-testid="add-line-item"
             >
-              <Plus className="w-4 h-4" />
+              <Plus weight="bold" className="w-4 h-4" />
               Add Line Item
             </button>
           </div>
@@ -613,7 +613,7 @@ export default function QuoteBuilderModal({
                   ({effectiveCurrency.currency} - {effectiveCurrency.currencySymbol})
                 </span>
               </span>
-              <ChevronDown className={`w-4 h-4 transition ${showCurrencyOptions ? 'rotate-180' : ''}`} />
+              <CaretDown className={`w-4 h-4 transition ${showCurrencyOptions ? 'rotate-180' : ''}`} />
             </button>
 
             {showCurrencyOptions && (
@@ -740,7 +740,7 @@ export default function QuoteBuilderModal({
               className="flex items-center gap-2 px-4 py-2 border border-dark-border text-gray-300 rounded-lg hover:bg-dark-card-hover transition font-medium disabled:opacity-50"
               data-testid="save-draft-btn"
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              {loading ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
               Save Draft
             </button>
             <button
@@ -757,7 +757,7 @@ export default function QuoteBuilderModal({
               className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
               data-testid="send-quote-btn"
             >
-              {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              {sending ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <PaperPlaneTilt weight="bold" className="w-4 h-4" />}
               Send to Client
             </button>
           </div>
@@ -835,7 +835,7 @@ export default function QuoteBuilderModal({
                 className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
                 data-testid="confirm-save-template-btn"
               >
-                {savingTemplate ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {savingTemplate ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
                 Save Template
               </button>
             </div>
@@ -989,7 +989,7 @@ function QuotePreview({
             disabled={sending}
             className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
           >
-            {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            {sending ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <PaperPlaneTilt weight="bold" className="w-4 h-4" />}
             Send to Client
           </button>
         </div>
