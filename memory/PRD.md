@@ -1,84 +1,85 @@
-# KOLOR STUDIO - Product Requirements Document
+# KOLOR STUDIO — Product Requirements Document
 
 ## Original Problem Statement
-Build a comprehensive full-stack CRM ("KOLOR STUDIO") for creative professionals. The system automates the client workflow from inquiry to payment using an "Autopilot" pipeline.
+Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals (photographers, videographers, designers, illustrators, visual artists). The platform manages leads, quotes, contracts, payments, client portals, and automated email sequences.
 
-## Core Architecture
-- **Frontend:** React + TypeScript + Vite + Tailwind CSS + Shadcn UI
-- **Backend:** Node.js + Express + TypeScript + Prisma ORM
-- **Database:** PostgreSQL (Supabase)
-- **Storage:** Supabase Storage
-- **Email:** Resend
-- **Payments:** Stripe (dual-mode: SDK + Python proxy fallback)
+## Tech Stack
+- **Frontend**: React 18 + TypeScript + Vite + Tailwind CSS + shadcn/ui
+- **Backend**: Node.js + Express + TypeScript + Prisma ORM
+- **Database**: Supabase (PostgreSQL)
+- **Icons**: `@phosphor-icons/react` (app-level), `lucide-react` (shadcn/ui internal only)
+- **Email**: Resend
+- **Payments**: Stripe
+- **Analytics**: Vercel Analytics
+- **Tours**: Driver.js
+- **Scheduling**: node-cron
 
-## What's Been Implemented
+## Architecture
+```
+/app/kolor-studio-v2/
+├── backend/
+│   ├── prisma/schema.prisma
+│   └── src/
+│       ├── routes/ (auth, crm, analytics, sequences, tracking, etc.)
+│       ├── services/ (email, digest, onboarding, quoteFollowUp, emailTracking)
+│       ├── middleware/ (auth)
+│       └── server.ts
+└── frontend/
+    └── src/
+        ├── components/ (40+ components)
+        ├── pages/ (15+ pages)
+        ├── services/api.ts
+        ├── contexts/BrandThemeContext.tsx
+        └── utils/ (analytics, currency)
+```
 
-### Phase 1: Core CRM (Complete)
-- User auth, Lead management with Kanban board, Client portal, Messaging system
+## Completed Features
+- Full CRM pipeline (leads, kanban, list view)
+- Quote builder with templates, PDF export, public quote pages
+- Contract management
+- Deliverables tracking
+- Client portal with messaging
+- Calendar views (month, week, day, agenda)
+- Email composer with CC/BCC
+- Brand settings with live preview
+- Portfolio management and public portfolio
+- Revenue dashboard and analytics
+- Email sequences (onboarding drip, quote follow-up)
+- Sequences dashboard with open rate tracking
+- Email open tracking via 1x1 pixel
+- Weekly digest emails
+- Interactive onboarding wizard and tours
+- Mobile responsive with bottom nav
+- Cookie consent, privacy policy, terms of service
+- Industry-specific onboarding and widgets
+- CRM alerts and smart suggestions
+- Testimonials management
+- Settings modal with currency configuration
+- QR code sharing for inquiry forms
 
-### Phase 2: Autopilot Pipeline (Complete)
-- Quote creation/sending/acceptance, Auto contract generation, Email notifications, Stripe payments, Revenue pipeline widget
+## Recently Completed (March 2026)
+- **P0: Fixed Broken Frontend Build** — Resolved 1200+ TypeScript errors caused by corrupted icon migration script. Fixed icon imports, type name corruption, and text content corruption across 40+ files.
+- **P1: Completed Phosphor Icon Migration** — All app-level icons migrated from `lucide-react` to `@phosphor-icons/react` with strategic weight hierarchy: `fill` for active states, `duotone` for stat cards/empty states, `bold` for primary CTAs, `regular` for default.
 
-### Phase 3: Pre-Beta Polish (Complete - March 9, 2026)
-- Weekly Autopilot Digest Email, Interactive Walkthrough, Color Branding Persistence, Portal Readability
+## Upcoming Tasks (P2)
+- **UI for Custom Sequences**: Allow creatives to build and manage their own email follow-up sequences
+- **Project Timeline Modal**: Enhance the functionality of the existing timeline modal
 
-### Phase 4: P2 Features (Complete - March 10, 2026)
-- **Client Onboarding Email Drip:** 3-step automated sequence on contract signing
-- **Sequences Dashboard UI:** View mode showing built-in sequences with stats, toggle, detail modal, email preview
-- **Quote Follow-Up Sequence:** 3-step automated conversion booster with smart-stop triggers
+## Test Credentials
+- Email: `test-user-a@test.com`
+- Password: `password`
 
-### Phase 5: Analytics Verification (Complete - March 10, 2026)
-- **Revenue Analytics Fixed:** `getRevenueStats` now includes PAID_IN_FULL in received revenue, DEPOSIT_RECEIVED/OVERDUE in pending
-- **Revenue Pipeline Fixed:** All 5 stages (quoteSent, contractSigned, depositPaid, inProgress, paidInFull) now populate correctly using both income status field and boolean flags
-- **Sequences Stats Fixed:** Email counting now tracks individual emails (email1/2/3SentAt), not enrollments; active count excludes stopped enrollments
-- **Digest Service Fixed:** totalRevenue now includes RECEIVED + PAID_IN_FULL income, not just deposits
-- **Portal Views:** Verified working (increment + timestamp update)
-- **Milestones CRUD:** Verified working (create, update, delete, portal timeline)
+## Key API Endpoints
+- `POST /api/auth/signup` — Register
+- `POST /api/auth/login` — Login
+- `GET /api/leads` — Get all leads
+- `GET /api/analytics/dashboard` — Dashboard stats
+- `GET /api/sequences` — Email sequences
+- `GET /track/open/:trackingId` — Email open tracking pixel
 
-### Phase 6: Email Open Rate Tracking (Complete - March 10, 2026)
-- **EmailTracking Model:** New database table with trackingId, sequenceId, stepNumber, leadId, opened, openCount, userAgent, ipAddress
-- **Tracking Pixel Endpoint:** `GET /api/track/open/:trackingId` returns 1x1 transparent PNG, logs opens, handles errors gracefully
-- **Email Integration:** All 6 automated email templates (3 onboarding + 3 follow-up) now create tracking records and embed tracking pixels
-- **Real Open Rates:** Sequences Dashboard displays actual open rates per step and average open rate per sequence
-- **Privacy-First:** Only tracks opens via pixel, no click tracking or personal browsing
-
-### Deployment Fixes
-- Trust proxy for Railway, unused TypeScript variable fixes, ViewMode type fix for MobileBottomNav
-
-## Key Test Accounts
-- Test user: test@test.com / Test123456!
-- Analytics test: analytics-test@test.com / Test1234!
-- Test Portal: /portal/gbi5z98i5sgz5txo6stgtb
-
-## API Endpoints (Phase 4)
-- `GET /api/sequences/dashboard` - Built-in sequences with real enrollment data
-- `GET /api/sequences/dashboard/stats` - Overview stats
-- `PATCH /api/sequences/dashboard/:id/toggle` - Toggle sequence
-- `GET /api/sequences/:seqId/enrollments` - Enrolled clients
-- `GET /api/sequences/:seqId/steps/:stepNumber/preview` - Email HTML preview
-
-## Revenue Analytics Endpoints
-- `GET /api/crm/revenue` - Income-based revenue (RECEIVED/PAID_IN_FULL = received, EXPECTED/DEPOSIT_RECEIVED/OVERDUE = pending)
-- `GET /api/analytics/revenue-pipeline` - Lead-based 5-stage pipeline
-- `GET /api/analytics/dashboard` - Lead-based conversion/booking metrics
-- `GET /api/analytics/monthly-trend` - 12-month revenue trend
-- `GET /api/analytics/pipeline-by-status` - Lead status breakdown
-- `GET /api/analytics/lead-sources` - Source performance
-- `GET /api/digest/preview` - Weekly digest preview
-
-## Cron Jobs
-1. **Weekly Digest** - Mondays 9 AM (pipeline stats email)
-2. **Client Onboarding** - Every 6h (3-step post-contract drip)
-3. **Quote Follow-Up** - Every 6h (3-step unanswered quote drip)
-
-## Prioritized Backlog
-
-### P2 - Future
-- UI for Custom Sequences (visual flow editor)
-- Project Timeline Modal enhancements
-
-### P3 - Backlog
-- Mobile-responsive optimization pass
-- Dark mode for client portal
-- File sharing in client portal
-- A/B testing for email sequences
+## Icon Weight Strategy
+- **`fill`**: Active/selected navigation states
+- **`duotone`**: Stat cards, empty states, decorative headers
+- **`bold`**: Primary CTAs (Send, Save, Add, Download)
+- **`regular`**: Default navigation and informational icons
+- **Note**: `lucide-react` kept ONLY for internal shadcn/ui components
