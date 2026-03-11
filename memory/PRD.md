@@ -103,6 +103,12 @@ Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals
   - Audit logging on successful reset
 - **Tested: 8/8 backend + 11/11 frontend tests passed (100%)**
 
+### Bug Fix: Delete Account Cascade (March 2026) ✅
+- **Root cause**: 5 Prisma User relations were missing `onDelete` rules (Activity.user, Booking.createdBy, Lead.assignedTo, Message.sender, Quote.createdBy)
+- **Fix**: Added `onDelete: Cascade` for required relations, `onDelete: SetNull` for optional
+- **Route audit**: All 15+ API routes verified as properly mounted and accessible
+- **Tested: 10/10 backend + 11/11 frontend tests passed (100%)**
+
 ## Upcoming Tasks (Priority Order)
 1. **(P2) Polish & Mobile:**
    - Thorough mobile responsiveness review across all pages
