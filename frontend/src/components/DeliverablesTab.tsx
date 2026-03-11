@@ -43,20 +43,20 @@ const TYPE_ICONS: Record<DeliverableType, React.ElementType> = {
 };
 
 const TYPE_COLORS: Record<DeliverableType, string> = {
-  DIGITAL_FILES: 'bg-blue-900/40 text-blue-400 border-blue-700/40',
-  PHYSICAL_ART: 'bg-amber-900/40 text-amber-400 border-amber-700/40',
-  PRINTS: 'bg-emerald-900/40 text-emerald-400 border-emerald-700/40',
-  SERVICE: 'bg-brand-primary-dark/40 text-brand-primary-light border-brand-primary-dark/40',
+  DIGITAL_FILES: 'bg-blue-50 text-blue-600 border-blue-200',
+  PHYSICAL_ART: 'bg-amber-50 text-amber-700 border-amber-200',
+  PRINTS: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+  SERVICE: 'bg-purple-100 text-purple-600 border-purple-200',
   WEBSITE: 'bg-cyan-900/40 text-cyan-400 border-cyan-700/40',
   MIXED: 'bg-pink-900/40 text-pink-400 border-pink-700/40',
 };
 
 const STATUS_COLORS: Record<DeliverableStatus, string> = {
-  PENDING: 'bg-gray-800/60 text-gray-400 border-gray-700/40',
-  IN_PROGRESS: 'bg-blue-900/40 text-blue-400 border-blue-700/40',
-  READY: 'bg-amber-900/40 text-amber-400 border-amber-700/40',
+  PENDING: 'bg-light-100 text-text-secondary border-light-200',
+  IN_PROGRESS: 'bg-blue-50 text-blue-600 border-blue-200',
+  READY: 'bg-amber-50 text-amber-700 border-amber-200',
   DELIVERED: 'bg-green-900/40 text-green-400 border-green-700/40',
-  SHIPPED: 'bg-brand-primary-dark/40 text-brand-primary-light border-brand-primary-dark/40',
+  SHIPPED: 'bg-purple-100 text-purple-600 border-purple-200',
 };
 
 const STATUS_ICONS: Record<DeliverableStatus, React.ElementType> = {
@@ -167,17 +167,17 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
     fetchDeliverables();
   };
 
-  const inputClass = "w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-white placeholder-gray-500 text-sm";
+  const inputClass = "w-full px-3 py-2 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-text-primary placeholder-gray-400 text-sm";
 
   if (loading) {
-    return <div className="flex items-center justify-center py-12"><SpinnerGap className="w-6 h-6 animate-spin text-brand-primary-light" /></div>;
+    return <div className="flex items-center justify-center py-12"><SpinnerGap className="w-6 h-6 animate-spin text-purple-600" /></div>;
   }
 
   return (
     <div className="space-y-4" data-testid="deliverables-tab">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-400">{deliverables.length} deliverable{deliverables.length !== 1 ? 's' : ''}</div>
+        <div className="text-sm text-text-secondary">{deliverables.length} deliverable{deliverables.length !== 1 ? 's' : ''}</div>
         <button
           onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(true); }}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary text-white text-sm rounded-lg hover:bg-brand-primary transition"
@@ -189,51 +189,51 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
 
       {/* Create/Edit Form */}
       {showForm && (
-        <div className="p-4 bg-dark-bg-secondary rounded-xl border border-dark-border space-y-3" data-testid="deliverable-form">
+        <div className="p-4 bg-light-100 rounded-xl border border-light-200 space-y-3" data-testid="deliverable-form">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-white">{editingId ? 'Edit' : 'New'} Deliverable</h4>
-            <button onClick={() => { setShowForm(false); setEditingId(null); }} className="text-gray-500 hover:text-gray-300"><X className="w-4 h-4" /></button>
+            <h4 className="text-sm font-semibold text-text-primary">{editingId ? 'Edit' : 'New'} Deliverable</h4>
+            <button onClick={() => { setShowForm(false); setEditingId(null); }} className="text-text-tertiary hover:text-text-secondary"><X className="w-4 h-4" /></button>
           </div>
           <div className="grid md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1">Name *</label>
+              <label className="block text-xs font-medium text-text-secondary mb-1">Name *</label>
               <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass} placeholder="Wedding Photo Album" data-testid="deliverable-name" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1">Type</label>
+              <label className="block text-xs font-medium text-text-secondary mb-1">Type</label>
               <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as DeliverableType })} className={inputClass} data-testid="deliverable-type">
                 {Object.entries(DELIVERABLE_TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1">Description</label>
+            <label className="block text-xs font-medium text-text-secondary mb-1">Description</label>
             <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={inputClass + ' resize-none'} rows={2} placeholder="Details about this deliverable..." />
           </div>
           <div className="grid md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1">Due Date</label>
+              <label className="block text-xs font-medium text-text-secondary mb-1">Due Date</label>
               <input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} className={inputClass} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-1">Notes</label>
+              <label className="block text-xs font-medium text-text-secondary mb-1">Notes</label>
               <input value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className={inputClass} placeholder="Internal notes..." />
             </div>
           </div>
 
           {/* Conditional: Physical */}
           {(form.type === 'PHYSICAL_ART' || form.type === 'PRINTS') && (
-            <div className="grid md:grid-cols-3 gap-3 p-3 bg-amber-900/10 border border-amber-800/20 rounded-lg">
+            <div className="grid md:grid-cols-3 gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
               <div>
-                <label className="block text-xs font-medium text-amber-400 mb-1">Dimensions</label>
+                <label className="block text-xs font-medium text-amber-700 mb-1">Dimensions</label>
                 <input value={form.dimensions} onChange={(e) => setForm({ ...form, dimensions: e.target.value })} className={inputClass} placeholder="24x36 in" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-amber-400 mb-1">Material</label>
+                <label className="block text-xs font-medium text-amber-700 mb-1">Material</label>
                 <input value={form.material} onChange={(e) => setForm({ ...form, material: e.target.value })} className={inputClass} placeholder="Oil on canvas" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-amber-400 mb-1">Weight</label>
+                <label className="block text-xs font-medium text-amber-700 mb-1">Weight</label>
                 <input value={form.weight} onChange={(e) => setForm({ ...form, weight: e.target.value })} className={inputClass} placeholder="2.5 lbs" />
               </div>
             </div>
@@ -241,24 +241,24 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
 
           {/* Conditional: Service */}
           {form.type === 'SERVICE' && (
-            <div className="grid md:grid-cols-3 gap-3 p-3 bg-brand-primary-dark/10 border border-brand-primary-dark/20 rounded-lg">
+            <div className="grid md:grid-cols-3 gap-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
               <div>
-                <label className="block text-xs font-medium text-brand-primary-light mb-1">Session Date</label>
+                <label className="block text-xs font-medium text-purple-600 mb-1">Session Date</label>
                 <input type="date" value={form.sessionDate} onChange={(e) => setForm({ ...form, sessionDate: e.target.value })} className={inputClass} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-brand-primary-light mb-1">Location</label>
+                <label className="block text-xs font-medium text-purple-600 mb-1">Location</label>
                 <input value={form.sessionLocation} onChange={(e) => setForm({ ...form, sessionLocation: e.target.value })} className={inputClass} placeholder="Studio A" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-brand-primary-light mb-1">Duration (min)</label>
+                <label className="block text-xs font-medium text-purple-600 mb-1">Duration (min)</label>
                 <input type="number" value={form.sessionDuration} onChange={(e) => setForm({ ...form, sessionDuration: e.target.value })} className={inputClass} placeholder="120" />
               </div>
             </div>
           )}
 
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => { setShowForm(false); setEditingId(null); }} className="px-4 py-1.5 text-sm text-gray-400 hover:text-gray-200">Cancel</button>
+            <button onClick={() => { setShowForm(false); setEditingId(null); }} className="px-4 py-1.5 text-sm text-text-secondary hover:text-gray-200">Cancel</button>
             <button onClick={handleSubmit} disabled={saving || !form.name.trim()} className="flex items-center gap-1.5 px-4 py-1.5 bg-brand-primary text-white text-sm rounded-lg hover:bg-brand-primary disabled:opacity-50" data-testid="deliverable-save">
               {saving ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk className="w-3.5 h-3.5" />}
               {editingId ? 'Update' : 'Create'}
@@ -271,8 +271,8 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
       {deliverables.length === 0 && !showForm ? (
         <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="deliverables-empty-state">
           <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F381;</div>
-          <h3 className="text-lg md:text-xl font-semibold text-[#FAFAFA] mb-2">Track what you'll deliver</h3>
-          <p className="text-sm text-[#A3A3A3] max-w-md mb-5 leading-relaxed">
+          <h3 className="text-lg md:text-xl font-semibold text-text-primary mb-2">Track what you'll deliver</h3>
+          <p className="text-sm text-text-secondary max-w-md mb-5 leading-relaxed">
             Add deliverables to show your client exactly what they'll receive and when.
           </p>
           <button
@@ -283,7 +283,7 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
             <Plus weight="bold" className="w-5 h-5" />
             Add Deliverable
           </button>
-          <p className="text-xs text-gray-500 mt-4 max-w-sm">
+          <p className="text-xs text-text-tertiary mt-4 max-w-sm">
             <strong>Pro tip:</strong> Update deliverable status to keep clients informed of your progress.
           </p>
         </div>
@@ -294,22 +294,22 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
             const StatusIcon = STATUS_ICONS[d.status] || Clock;
             const next = NEXT_STATUS[d.status];
             return (
-              <div key={d.id} className="p-3 bg-dark-bg-secondary rounded-xl border border-dark-border hover:border-gray-600 transition group" data-testid={`deliverable-item-${d.id}`}>
+              <div key={d.id} className="p-3 bg-light-100 rounded-xl border border-light-200 hover:border-gray-600 transition group" data-testid={`deliverable-item-${d.id}`}>
                 <div className="flex items-start gap-3">
                   <div className={`p-2 rounded-lg border ${TYPE_COLORS[d.type]}`}>
                     <TypeIcon className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-medium text-white cursor-pointer hover:text-brand-primary-light" onClick={() => handleEdit(d)}>{d.name}</span>
+                      <span className="text-sm font-medium text-text-primary cursor-pointer hover:text-purple-600" onClick={() => handleEdit(d)}>{d.name}</span>
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs border ${STATUS_COLORS[d.status]}`}>
                         <StatusIcon className={`w-3 h-3 ${d.status === 'IN_PROGRESS' ? 'animate-spin' : ''}`} />
                         {DELIVERABLE_STATUS_LABELS[d.status]}
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-xs border ${TYPE_COLORS[d.type]}`}>{DELIVERABLE_TYPE_LABELS[d.type]}</span>
                     </div>
-                    {d.description && <p className="text-xs text-gray-500 mt-1 truncate">{d.description}</p>}
-                    <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500">
+                    {d.description && <p className="text-xs text-text-tertiary mt-1 truncate">{d.description}</p>}
+                    <div className="flex items-center gap-3 mt-1.5 text-xs text-text-tertiary">
                       {d.dueDate && <span className="flex items-center gap-1"><CalendarBlank className="w-3 h-3" />Due {new Date(d.dueDate).toLocaleDateString()}</span>}
                       {d.dimensions && <span className="flex items-center gap-1"><Ruler className="w-3 h-3" />{d.dimensions}</span>}
                       {d.sessionLocation && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{d.sessionLocation}</span>}
@@ -320,14 +320,14 @@ export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
                       <button
                         onClick={() => handleStatusAdvance(d)}
                         disabled={updatingStatus === d.id}
-                        className="flex items-center gap-1 px-2 py-1 bg-brand-primary/20 text-brand-primary-light text-xs rounded-lg hover:bg-brand-primary/30 disabled:opacity-50"
+                        className="flex items-center gap-1 px-2 py-1 bg-brand-primary/20 text-purple-600 text-xs rounded-lg hover:bg-brand-primary/30 disabled:opacity-50"
                         data-testid={`deliverable-advance-${d.id}`}
                       >
                         {updatingStatus === d.id ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <ArrowRight className="w-3 h-3" />}
                         {next.label}
                       </button>
                     )}
-                    <button onClick={() => handleDelete(d.id)} className="p-1.5 text-gray-500 hover:text-red-400 rounded-lg hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition" data-testid={`deliverable-delete-${d.id}`}>
+                    <button onClick={() => handleDelete(d.id)} className="p-1.5 text-text-tertiary hover:text-red-400 rounded-lg hover:bg-red-50 opacity-0 group-hover:opacity-100 transition" data-testid={`deliverable-delete-${d.id}`}>
                       <Trash className="w-3.5 h-3.5" />
                     </button>
                   </div>

@@ -71,7 +71,7 @@ const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg flex items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-light-50 flex items-center justify-center px-6 py-12">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
@@ -80,13 +80,13 @@ const Signup = () => {
               KOLOR STUDIO
             </span>
           </Link>
-          <h1 className="text-3xl font-bold mb-2 text-white">Start your free account</h1>
-          <p className="text-gray-400">No credit card required • 2-minute setup</p>
+          <h1 className="text-3xl font-bold mb-2 text-text-primary">Start your free account</h1>
+          <p className="text-text-secondary">No credit card required • 2-minute setup</p>
         </div>
 
-        <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400" data-testid="signup-error">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400" data-testid="signup-error">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -102,7 +102,7 @@ const Signup = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-text-secondary mb-2">
                   First Name *
                 </label>
                 <input
@@ -110,13 +110,13 @@ const Signup = () => {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                  className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                   placeholder="John"
                   data-testid="signup-firstname"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-text-secondary mb-2">
                   Last Name *
                 </label>
                 <input
@@ -124,7 +124,7 @@ const Signup = () => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                  className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                   placeholder="Doe"
                   data-testid="signup-lastname"
                 />
@@ -132,7 +132,7 @@ const Signup = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-text-secondary mb-2">
                 Studio Name
               </label>
               <input
@@ -140,14 +140,14 @@ const Signup = () => {
                 name="studioName"
                 value={formData.studioName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                 placeholder="Your Creative Studio"
                 data-testid="signup-studioname"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-text-secondary mb-2">
                 Email *
               </label>
               <input
@@ -155,14 +155,14 @@ const Signup = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                 placeholder="you@example.com"
                 data-testid="signup-email"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-text-secondary mb-2">
                 Password *
               </label>
               <input
@@ -170,17 +170,17 @@ const Signup = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                 placeholder="••••••••"
                 data-testid="signup-password"
               />
-              <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+              <p className="text-xs text-text-tertiary mt-1">Minimum 6 characters</p>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-brand-primary-dark/30 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               data-testid="signup-submit"
             >
               {loading ? (
@@ -195,22 +195,22 @@ const Signup = () => {
           </form>
 
           <div className="mt-4 text-center">
-            <p className="text-xs text-gray-500" data-testid="signup-legal-agreement">
+            <p className="text-xs text-text-tertiary" data-testid="signup-legal-agreement">
               By signing up, you agree to our{' '}
-              <Link to="/terms" className="text-brand-primary-light hover:text-brand-primary-light underline">
+              <Link to="/terms" className="text-purple-600 hover:text-purple-600 underline">
                 Terms of Service
               </Link>
               {' '}and{' '}
-              <Link to="/privacy" className="text-brand-primary-light hover:text-brand-primary-light underline">
+              <Link to="/privacy" className="text-purple-600 hover:text-purple-600 underline">
                 Privacy Policy
               </Link>
             </p>
           </div>
 
           <div className="mt-4 text-center">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-text-secondary">
               Already have an account?{' '}
-              <Link to="/login" className="text-brand-primary-light hover:text-brand-primary-light font-semibold">
+              <Link to="/login" className="text-purple-600 hover:text-purple-600 font-semibold">
                 Sign in
               </Link>
             </p>

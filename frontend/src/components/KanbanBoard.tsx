@@ -31,14 +31,14 @@ interface KanbanBoardProps {
 const KANBAN_COLUMNS: LeadStatus[] = ['NEW', 'CONTACTED', 'QUOTED', 'NEGOTIATING', 'BOOKED'];
 
 const COLUMN_COLORS: Record<LeadStatus, { bg: string; border: string; header: string }> = {
-  NEW: { bg: 'bg-brand-primary-dark/20', border: 'border-brand-primary-dark/40', header: 'bg-brand-primary' },
-  REVIEWING: { bg: 'bg-brand-primary-dark/20', border: 'border-brand-primary-dark/40', header: 'bg-brand-primary' },
-  CONTACTED: { bg: 'bg-brand-primary-dark/20', border: 'border-brand-primary-dark/40', header: 'bg-brand-primary' },
+  NEW: { bg: 'bg-purple-50', border: 'border-purple-200', header: 'bg-brand-primary' },
+  REVIEWING: { bg: 'bg-purple-50', border: 'border-purple-200', header: 'bg-brand-primary' },
+  CONTACTED: { bg: 'bg-purple-50', border: 'border-purple-200', header: 'bg-brand-primary' },
   QUALIFIED: { bg: 'bg-indigo-950/20', border: 'border-indigo-800/40', header: 'bg-indigo-500' },
-  QUOTED: { bg: 'bg-brand-accent-dark/20', border: 'border-brand-accent-dark/40', header: 'bg-brand-accent' },
+  QUOTED: { bg: 'bg-brand-accent-dark/20', border: 'border-pink-200', header: 'bg-brand-accent' },
   NEGOTIATING: { bg: 'bg-blue-950/20', border: 'border-blue-800/40', header: 'bg-blue-500' },
   BOOKED: { bg: 'bg-emerald-950/20', border: 'border-emerald-800/40', header: 'bg-emerald-500' },
-  LOST: { bg: 'bg-slate-950/20', border: 'border-slate-700/40', header: 'bg-slate-500' },
+  LOST: { bg: 'bg-slate-950/20', border: 'border-light-200/40', header: 'bg-slate-500' },
 };
 
 export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLeadDelete }: KanbanBoardProps) {
@@ -88,7 +88,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
       key={lead.id}
       draggable
       onDragStart={(e) => handleDragStart(e, lead)}
-      className={`bg-[#1A1A1A] rounded-xl border border-[#333] overflow-hidden cursor-grab active:cursor-grabbing hover:border-brand-primary/50 hover:shadow-lg hover:shadow-brand-primary/5 transition-all duration-200 group ${
+      className={`bg-light-50 rounded-xl border border-light-200 overflow-hidden cursor-grab active:cursor-grabbing hover:border-purple-300 hover:shadow-lg hover:shadow-brand-primary/5 transition-all duration-200 group ${
         draggedLead?.id === lead.id ? 'opacity-50 scale-95' : ''
       }`}
       data-testid={`lead-card-${lead.id}`}
@@ -108,7 +108,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
         <div className="relative h-20 md:h-24 bg-gradient-to-br from-brand-primary-dark/30 to-brand-primary-dark/20 flex items-center justify-center cursor-pointer overflow-hidden" onClick={() => onLeadClick(lead)}>
           <Image className="w-7 h-7 md:w-8 md:h-8 text-brand-primary/30" />
           <div className="absolute bottom-2 left-3 right-3">
-            <span className="text-xs px-2 py-0.5 bg-brand-primary-dark/80 backdrop-blur-sm text-brand-primary-light rounded-full border border-brand-primary-dark/50">
+            <span className="text-xs px-2 py-0.5 bg-brand-primary-dark/80 backdrop-blur-sm text-purple-600 rounded-full border border-purple-200">
               {SERVICE_TYPE_LABELS[lead.serviceType]}
             </span>
           </div>
@@ -121,7 +121,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           <div className="flex items-center gap-1.5 flex-wrap">
             <DotsSixVertical className="w-3.5 h-3.5 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden md:block" />
             {lead.projectType && lead.projectType !== 'SERVICE' && (
-              <span className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 bg-blue-900/50 text-blue-300 rounded-full border border-blue-700/50">
+              <span className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
                 {PROJECT_TYPE_LABELS[lead.projectType as ProjectType] || lead.projectType}
               </span>
             )}
@@ -129,21 +129,21 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           <div className="relative">
             <button
               onClick={(e) => { e.stopPropagation(); setMenuOpen(menuOpen === lead.id ? null : lead.id); }}
-              className="p-1.5 hover:bg-[#262626] rounded-lg transition-all duration-200 touch-target md:opacity-0 md:group-hover:opacity-100"
+              className="p-1.5 hover:bg-light-100 rounded-lg transition-all duration-200 touch-target md:opacity-0 md:group-hover:opacity-100"
             >
-              <DotsThree className="w-4 h-4 text-[#A3A3A3]" />
+              <DotsThree className="w-4 h-4 text-text-secondary" />
             </button>
             {menuOpen === lead.id && (
-              <div className="absolute right-0 top-8 bg-[#1A1A1A] rounded-xl shadow-xl border border-[#333] py-1 z-10 min-w-[120px] animate-fade-in">
+              <div className="absolute right-0 top-8 bg-light-50 rounded-xl shadow-xl border border-light-200 py-1 z-10 min-w-[120px] animate-fade-in">
                 <button
                   onClick={(e) => { e.stopPropagation(); onLeadClick(lead); setMenuOpen(null); }}
-                  className="w-full px-3 py-2.5 text-left text-sm hover:bg-[#262626] text-[#A3A3A3] flex items-center gap-2 touch-target"
+                  className="w-full px-3 py-2.5 text-left text-sm hover:bg-light-100 text-text-secondary flex items-center gap-2 touch-target"
                 >
                   <Eye className="w-4 h-4" /> View
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); handleDelete(lead.id); }}
-                  className="w-full px-3 py-2.5 text-left text-sm hover:bg-red-900/30 text-red-400 flex items-center gap-2 touch-target"
+                  className="w-full px-3 py-2.5 text-left text-sm hover:bg-red-50 text-red-400 flex items-center gap-2 touch-target"
                 >
                   <Trash className="w-4 h-4" /> Delete
                 </button>
@@ -152,11 +152,11 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           </div>
         </div>
 
-        <h4 className="font-semibold text-[#FAFAFA] mb-2 md:mb-3 cursor-pointer hover:text-brand-primary-light transition-colors duration-200 text-sm leading-snug line-clamp-2" onClick={() => onLeadClick(lead)}>
+        <h4 className="font-semibold text-text-primary mb-2 md:mb-3 cursor-pointer hover:text-purple-600 transition-colors duration-200 text-sm leading-snug line-clamp-2" onClick={() => onLeadClick(lead)}>
           {lead.projectTitle}
         </h4>
 
-        <div className="space-y-1 md:space-y-1.5 text-xs md:text-sm text-[#A3A3A3]">
+        <div className="space-y-1 md:space-y-1.5 text-xs md:text-sm text-text-secondary">
           <div className="flex items-center gap-2">
             <User className="w-3.5 h-3.5 flex-shrink-0" />
             <span className="truncate">{lead.clientName}</span>
@@ -184,7 +184,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           <button
             onClick={() => setMobileColumn(Math.max(0, mobileColumn - 1))}
             disabled={mobileColumn === 0}
-            className="p-2 text-[#A3A3A3] disabled:opacity-30 touch-target"
+            className="p-2 text-text-secondary disabled:opacity-30 touch-target"
             data-testid="kanban-prev-column"
           >
             <CaretLeft className="w-5 h-5" />
@@ -200,12 +200,12 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
                   className={`flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 touch-target ${
                     mobileColumn === idx
                       ? `${colors.header} text-white shadow-lg`
-                      : 'bg-[#1A1A1A] text-[#A3A3A3] border border-[#333]'
+                      : 'bg-light-50 text-text-secondary border border-light-200'
                   }`}
                   data-testid={`mobile-tab-${status.toLowerCase()}`}
                 >
                   {LEAD_STATUS_LABELS[status]}
-                  <span className={`ml-1.5 ${mobileColumn === idx ? 'bg-white/20' : 'bg-[#333]'} px-1.5 py-0.5 rounded-full text-[10px]`}>
+                  <span className={`ml-1.5 ${mobileColumn === idx ? 'bg-white/20' : 'bg-light-200'} px-1.5 py-0.5 rounded-full text-[10px]`}>
                     {count}
                   </span>
                 </button>
@@ -215,7 +215,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           <button
             onClick={() => setMobileColumn(Math.min(KANBAN_COLUMNS.length - 1, mobileColumn + 1))}
             disabled={mobileColumn === KANBAN_COLUMNS.length - 1}
-            className="p-2 text-[#A3A3A3] disabled:opacity-30 touch-target"
+            className="p-2 text-text-secondary disabled:opacity-30 touch-target"
             data-testid="kanban-next-column"
           >
             <CaretRight className="w-5 h-5" />

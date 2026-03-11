@@ -85,8 +85,8 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
 
   const getChangeIndicator = (change: number) => {
     if (change > 0) return { icon: ArrowUpRight, color: 'text-green-400', bg: 'bg-green-900/30' }
-    if (change < 0) return { icon: ArrowDownRight, color: 'text-red-400', bg: 'bg-red-900/30' }
-    return { icon: Minus, color: 'text-gray-400', bg: 'bg-gray-800' }
+    if (change < 0) return { icon: ArrowDownRight, color: 'text-red-400', bg: 'bg-red-50' }
+    return { icon: Minus, color: 'text-text-secondary', bg: 'bg-light-100' }
   }
 
   const getConversionRateColor = (rate: number) => {
@@ -105,7 +105,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
 
   if (!dashboard) {
     return (
-      <div className="text-center py-12 text-gray-400">
+      <div className="text-center py-12 text-text-secondary">
         <ChartBar weight="duotone" className="w-12 h-12 mx-auto mb-4 opacity-50" />
         <p>Unable to load analytics. Please try again.</p>
       </div>
@@ -117,15 +117,15 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Revenue Analytics</h2>
-          <p className="text-gray-400 text-sm mt-1">
+          <h2 className="text-2xl font-bold text-text-primary">Revenue Analytics</h2>
+          <p className="text-text-secondary text-sm mt-1">
             Track your business performance and revenue trends
           </p>
         </div>
         <button
           onClick={handleRefresh}
           disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-300 hover:bg-dark-card-hover transition disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-light-200 rounded-lg text-text-secondary hover:bg-light-100 transition disabled:opacity-50"
           data-testid="refresh-analytics"
         >
           <ArrowsClockwise className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
@@ -136,24 +136,24 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       {/* Revenue Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Pipeline Value */}
-        <div className="bg-gradient-to-br from-brand-primary-dark/40 to-brand-primary-dark/40 rounded-xl p-5 border border-brand-primary-dark/30" data-testid="card-pipeline">
+        <div className="bg-gradient-to-br from-brand-primary-dark/40 to-brand-primary-dark/40 rounded-xl p-5 border border-purple-200" data-testid="card-pipeline">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-brand-primary/30 rounded-lg">
-              <TrendUp className="w-5 h-5 text-brand-primary-light" />
+              <TrendUp className="w-5 h-5 text-purple-600" />
             </div>
           </div>
-          <p className="text-sm text-brand-primary-light mb-1">Pipeline Value</p>
-          <p className="text-3xl font-bold text-white">
+          <p className="text-sm text-purple-600 mb-1">Pipeline Value</p>
+          <p className="text-3xl font-bold text-purple-700">
             {formatCurrency(dashboard.overview.pipelineValue, currencySettings)}
           </p>
-          <p className="text-xs text-brand-primary-light mt-2">Total potential revenue</p>
+          <p className="text-xs text-purple-600 mt-2">Total potential revenue</p>
         </div>
 
         {/* Booked This Month */}
-        <div className="bg-dark-card rounded-xl p-5 border border-dark-border" data-testid="card-this-month">
+        <div className="bg-white rounded-xl p-5 border border-light-200" data-testid="card-this-month">
           <div className="flex items-center justify-between mb-3">
-            <div className="p-2 bg-emerald-900/30 rounded-lg">
-              <CalendarBlank className="w-5 h-5 text-emerald-400" />
+            <div className="p-2 bg-emerald-50 rounded-lg">
+              <CalendarBlank className="w-5 h-5 text-emerald-600" />
             </div>
             {dashboard.overview.bookedThisMonth.changePercent !== 0 && (
               <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getChangeIndicator(dashboard.overview.bookedThisMonth.changePercent).bg} ${getChangeIndicator(dashboard.overview.bookedThisMonth.changePercent).color}`}>
@@ -165,82 +165,82 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
               </div>
             )}
           </div>
-          <p className="text-sm text-gray-400 mb-1">Booked This Month</p>
-          <p className="text-3xl font-bold text-white">
+          <p className="text-sm text-text-secondary mb-1">Booked This Month</p>
+          <p className="text-3xl font-bold text-text-primary">
             {formatCurrency(dashboard.overview.bookedThisMonth.value, currencySettings)}
           </p>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-text-tertiary mt-2">
             {dashboard.overview.bookedThisMonth.count} booking{dashboard.overview.bookedThisMonth.count !== 1 ? 's' : ''} in {dashboard.overview.bookedThisMonth.monthName}
           </p>
         </div>
 
         {/* Year to Date */}
-        <div className="bg-dark-card rounded-xl p-5 border border-dark-border" data-testid="card-ytd">
+        <div className="bg-white rounded-xl p-5 border border-light-200" data-testid="card-ytd">
           <div className="flex items-center justify-between mb-3">
-            <div className="p-2 bg-blue-900/30 rounded-lg">
-              <ChartBar className="w-5 h-5 text-blue-400" />
+            <div className="p-2 bg-blue-50 rounded-lg">
+              <ChartBar className="w-5 h-5 text-blue-600" />
             </div>
           </div>
-          <p className="text-sm text-gray-400 mb-1">Year to Date</p>
-          <p className="text-3xl font-bold text-white">
+          <p className="text-sm text-text-secondary mb-1">Year to Date</p>
+          <p className="text-3xl font-bold text-text-primary">
             {formatCurrency(dashboard.overview.bookedThisYear.value, currencySettings)}
           </p>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-text-tertiary mt-2">
             {dashboard.overview.bookedThisYear.count} booking{dashboard.overview.bookedThisYear.count !== 1 ? 's' : ''} in {dashboard.overview.bookedThisYear.year}
           </p>
         </div>
 
         {/* Conversion Rate */}
-        <div className="bg-dark-card rounded-xl p-5 border border-dark-border" data-testid="card-conversion">
+        <div className="bg-white rounded-xl p-5 border border-light-200" data-testid="card-conversion">
           <div className="flex items-center justify-between mb-3">
-            <div className="p-2 bg-amber-900/30 rounded-lg">
-              <Crosshair className="w-5 h-5 text-amber-400" />
+            <div className="p-2 bg-amber-50 rounded-lg">
+              <Crosshair className="w-5 h-5 text-amber-700" />
             </div>
           </div>
-          <p className="text-sm text-gray-400 mb-1">Conversion Rate</p>
+          <p className="text-sm text-text-secondary mb-1">Conversion Rate</p>
           <p className={`text-3xl font-bold ${getConversionRateColor(dashboard.overview.conversionRate)}`}>
             {dashboard.overview.conversionRate}%
           </p>
-          <p className="text-xs text-gray-500 mt-2">Inquiry to booking</p>
+          <p className="text-xs text-text-tertiary mt-2">Inquiry to booking</p>
         </div>
       </div>
 
       {/* Business Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
+        <div className="bg-light-100 rounded-xl p-4 border border-light-200">
           <div className="flex items-center gap-2 mb-2">
-            <CurrencyDollar className="w-4 h-4 text-brand-primary-light" />
-            <span className="text-xs text-gray-400">Avg Deal Size</span>
+            <CurrencyDollar className="w-4 h-4 text-purple-600" />
+            <span className="text-xs text-text-secondary">Avg Deal Size</span>
           </div>
-          <p className="text-xl font-bold text-white">
+          <p className="text-xl font-bold text-text-primary">
             {formatCurrency(dashboard.metrics.avgDealSize, currencySettings)}
           </p>
         </div>
 
-        <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
+        <div className="bg-light-100 rounded-xl p-4 border border-light-200">
           <div className="flex items-center gap-2 mb-2">
-            <Clock className="w-4 h-4 text-brand-primary-light" />
-            <span className="text-xs text-gray-400">Avg Time to Close</span>
+            <Clock className="w-4 h-4 text-purple-600" />
+            <span className="text-xs text-text-secondary">Avg Time to Close</span>
           </div>
-          <p className="text-xl font-bold text-white">
+          <p className="text-xl font-bold text-text-primary">
             {dashboard.metrics.avgTimeToClose} days
           </p>
         </div>
 
-        <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
+        <div className="bg-light-100 rounded-xl p-4 border border-light-200">
           <div className="flex items-center gap-2 mb-2">
-            <Users className="w-4 h-4 text-brand-primary-light" />
-            <span className="text-xs text-gray-400">Active Leads</span>
+            <Users className="w-4 h-4 text-purple-600" />
+            <span className="text-xs text-text-secondary">Active Leads</span>
           </div>
-          <p className="text-xl font-bold text-white">
+          <p className="text-xl font-bold text-text-primary">
             {dashboard.metrics.activeLeads}
           </p>
         </div>
 
-        <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
+        <div className="bg-light-100 rounded-xl p-4 border border-light-200">
           <div className="flex items-center gap-2 mb-2">
-            <Trophy className="w-4 h-4 text-brand-primary-light" />
-            <span className="text-xs text-gray-400">Win Rate</span>
+            <Trophy className="w-4 h-4 text-purple-600" />
+            <span className="text-xs text-text-secondary">Win Rate</span>
           </div>
           <p className={`text-xl font-bold ${getConversionRateColor(dashboard.metrics.winRate)}`}>
             {dashboard.metrics.winRate}%
@@ -249,8 +249,8 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       </div>
 
       {/* Monthly Revenue Trend Chart */}
-      <div className="bg-dark-card rounded-xl p-6 border border-dark-border">
-        <h3 className="text-lg font-semibold text-white mb-4">Revenue Trend</h3>
+      <div className="bg-white rounded-xl p-6 border border-light-200">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">Revenue Trend</h3>
         {monthlyTrend.length > 0 ? (
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -290,7 +290,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="h-[300px] flex items-center justify-center text-gray-500">
+          <div className="h-[300px] flex items-center justify-center text-text-tertiary">
             <p>No booking data available yet</p>
           </div>
         )}
@@ -299,26 +299,26 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       {/* Bottom Section: Lead Sources & Pipeline */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Lead Source Performance */}
-        <div className="bg-dark-card rounded-xl p-6 border border-dark-border">
-          <h3 className="text-lg font-semibold text-white mb-4">Lead Source Performance</h3>
+        <div className="bg-white rounded-xl p-6 border border-light-200">
+          <h3 className="text-lg font-semibold text-text-primary mb-4">Lead Source Performance</h3>
           {leadSources.length > 0 ? (
             <div className="space-y-3">
               {leadSources.map((source) => (
-                <div key={source.source} className="bg-dark-bg-secondary rounded-lg p-4">
+                <div key={source.source} className="bg-light-100 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium text-white">{source.sourceLabel}</span>
+                    <span className="font-medium text-text-primary">{source.sourceLabel}</span>
                     <span className={`text-sm font-semibold ${getConversionRateColor(source.conversionRate)}`}>
                       {source.conversionRate}% conversion
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-sm text-gray-400">
+                  <div className="flex items-center justify-between text-sm text-text-secondary">
                     <span>{source.totalLeads} leads • {source.bookedLeads} booked</span>
-                    <span className="text-brand-primary-light">
+                    <span className="text-purple-600">
                       {formatCurrency(source.revenue, currencySettings)}
                     </span>
                   </div>
                   {/* Progress bar */}
-                  <div className="mt-2 h-1.5 bg-dark-border rounded-full overflow-hidden">
+                  <div className="mt-2 h-1.5 bg-light-200 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-brand-primary to-brand-primary rounded-full"
                       style={{ width: `${Math.min(source.conversionRate, 100)}%` }}
@@ -328,18 +328,18 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-text-tertiary">
               <p>No lead source data available</p>
             </div>
           )}
         </div>
 
         {/* Pipeline by Stage */}
-        <div className="bg-dark-card rounded-xl p-6 border border-dark-border">
+        <div className="bg-white rounded-xl p-6 border border-light-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-white">Pipeline by Stage</h3>
+            <h3 className="text-lg font-semibold text-text-primary">Pipeline by Stage</h3>
             {onFilterByStatus && (
-              <span className="text-xs text-gray-500">Click to filter</span>
+              <span className="text-xs text-text-tertiary">Click to filter</span>
             )}
           </div>
           {pipeline.length > 0 ? (
@@ -347,7 +347,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
               {pipeline.filter(p => p.count > 0 || ['NEW', 'BOOKED'].includes(p.status)).map((stage) => (
                 <div 
                   key={stage.status} 
-                  className={`flex items-center gap-4 ${onFilterByStatus ? 'cursor-pointer hover:bg-dark-card-hover rounded-lg p-2 -mx-2 transition' : ''}`}
+                  className={`flex items-center gap-4 ${onFilterByStatus ? 'cursor-pointer hover:bg-light-100 rounded-lg p-2 -mx-2 transition' : ''}`}
                   onClick={() => onFilterByStatus?.(stage.status)}
                   data-testid={`pipeline-stage-${stage.status.toLowerCase()}`}
                 >
@@ -357,11 +357,11 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-white">{stage.label}</span>
-                      <span className="text-sm text-gray-400">{stage.count} leads</span>
+                      <span className="text-sm font-medium text-text-primary">{stage.label}</span>
+                      <span className="text-sm text-text-secondary">{stage.count} leads</span>
                     </div>
                     <div className="flex items-center justify-between mt-1">
-                      <div className="flex-1 h-1.5 bg-dark-border rounded-full overflow-hidden mr-4">
+                      <div className="flex-1 h-1.5 bg-light-200 rounded-full overflow-hidden mr-4">
                         <div 
                           className="h-full rounded-full"
                           style={{ 
@@ -370,7 +370,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
                           }}
                         />
                       </div>
-                      <span className="text-sm text-brand-primary-light whitespace-nowrap">
+                      <span className="text-sm text-purple-600 whitespace-nowrap">
                         {formatCurrency(stage.value, currencySettings)}
                       </span>
                     </div>
@@ -379,7 +379,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-text-tertiary">
               <p>No pipeline data available</p>
             </div>
           )}
@@ -387,7 +387,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       </div>
 
       {/* Last Updated */}
-      <div className="text-center text-xs text-gray-500">
+      <div className="text-center text-xs text-text-tertiary">
         Last updated: {new Date(dashboard.updatedAt).toLocaleString()}
       </div>
     </div>

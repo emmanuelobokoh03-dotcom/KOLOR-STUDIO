@@ -60,7 +60,7 @@ const ForgotPassword = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-dark-bg flex items-center justify-center px-6">
+      <div className="min-h-screen bg-light-50 flex items-center justify-center px-6">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex items-center space-x-2 mb-6">
@@ -71,21 +71,21 @@ const ForgotPassword = () => {
             </Link>
           </div>
 
-          <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
                 <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
               </div>
-              <h1 className="text-2xl font-bold mb-3 text-white" data-testid="success-title">Check your email</h1>
-              <p className="text-gray-400 mb-6">
-                If an account exists with <strong className="text-white">{email}</strong>, you'll receive a password reset link shortly.
+              <h1 className="text-2xl font-bold mb-3 text-text-primary" data-testid="success-title">Check your email</h1>
+              <p className="text-text-secondary mb-6">
+                If an account exists with <strong className="text-text-primary">{email}</strong>, you'll receive a password reset link shortly.
               </p>
-              <p className="text-sm text-gray-500 mb-6">
+              <p className="text-sm text-text-tertiary mb-6">
                 The link will expire in 1 hour. If you don't see the email, check your spam folder.
               </p>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 text-brand-primary-light hover:text-brand-primary-light font-semibold"
+                className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-600 font-semibold"
                 data-testid="back-to-login"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -99,7 +99,7 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg flex items-center justify-center px-6">
+    <div className="min-h-screen bg-light-50 flex items-center justify-center px-6">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
@@ -108,13 +108,13 @@ const ForgotPassword = () => {
               KOLOR STUDIO
             </span>
           </Link>
-          <h1 className="text-3xl font-bold mb-2 text-white">Forgot password?</h1>
-          <p className="text-gray-400">No worries, we'll send you reset instructions</p>
+          <h1 className="text-3xl font-bold mb-2 text-text-primary">Forgot password?</h1>
+          <p className="text-text-secondary">No worries, we'll send you reset instructions</p>
         </div>
 
-        <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400" data-testid="forgot-password-error">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400" data-testid="forgot-password-error">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -122,11 +122,11 @@ const ForgotPassword = () => {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-text-secondary mb-2">
                 Email address
               </label>
               <div className="relative">
-                <Envelope className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Envelope className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-tertiary" />
                 <input
                   type="email"
                   value={email}
@@ -134,7 +134,7 @@ const ForgotPassword = () => {
                     setEmail(e.target.value)
                     setError('')
                   }}
-                  className="w-full pl-12 pr-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                  className="w-full pl-12 pr-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                   placeholder="you@example.com"
                   data-testid="forgot-password-email"
                 />
@@ -144,7 +144,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-brand-primary-dark/30 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               data-testid="forgot-password-submit"
             >
               {loading ? (
@@ -161,7 +161,7 @@ const ForgotPassword = () => {
           <div className="mt-6 text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-brand-primary-light transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-purple-600 transition-colors"
               data-testid="back-to-login-link"
             >
               <ArrowLeft className="w-4 h-4" />

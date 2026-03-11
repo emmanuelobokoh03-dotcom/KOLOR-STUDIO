@@ -43,7 +43,7 @@ function PortfolioPreview({ primary, accent, font, logoUrl }: BrandPreviewProps)
           )}
           <span className="font-bold text-[11px]" style={{ fontFamily: font, color: '#111' }}>Your Studio</span>
         </div>
-        <div className="flex gap-3 text-[9px] font-medium text-gray-500">
+        <div className="flex gap-3 text-[9px] font-medium text-text-tertiary">
           <span style={{ color: primary, borderBottom: `1.5px solid ${primary}`, paddingBottom: 1 }}>Work</span>
           <span>About</span>
           <span>Contact</span>
@@ -53,7 +53,7 @@ function PortfolioPreview({ primary, accent, font, logoUrl }: BrandPreviewProps)
       {/* Hero */}
       <div className="px-4 py-4 text-center">
         <h3 className="text-sm font-bold mb-1" style={{ fontFamily: font, color: '#111' }}>Creative Portfolio</h3>
-        <p className="text-[9px] text-gray-500">Showcasing exceptional visual storytelling</p>
+        <p className="text-[9px] text-text-tertiary">Showcasing exceptional visual storytelling</p>
       </div>
 
       {/* Gallery Grid */}
@@ -111,7 +111,7 @@ function QuotePreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
           )}
           <div>
             <span className="font-bold text-[10px] block leading-tight" style={{ fontFamily: font, color: '#111' }}>Your Studio</span>
-            <span className="text-[7px] text-gray-400">Professional Quotes</span>
+            <span className="text-[7px] text-text-secondary">Professional Quotes</span>
           </div>
         </div>
         <div className="text-[8px] px-2 py-0.5 rounded-full font-medium" style={{ background: `${accent}15`, color: accent }}>
@@ -212,9 +212,9 @@ function PortalPreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
             </div>
             <div className="flex-1 min-w-0">
               <span className="text-[8px] font-medium text-gray-800 block">View Contract</span>
-              <span className="text-[7px] text-gray-400">Signed on Mar 1</span>
+              <span className="text-[7px] text-text-secondary">Signed on Mar 1</span>
             </div>
-            <CaretRight className="w-3 h-3 text-gray-300" />
+            <CaretRight className="w-3 h-3 text-text-secondary" />
           </div>
           <div className="flex items-center gap-2 p-2 rounded-md border border-gray-100 group cursor-pointer hover:border-gray-200">
             <div className="w-6 h-6 rounded flex items-center justify-center" style={{ background: `${accent}10` }}>
@@ -222,9 +222,9 @@ function PortalPreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
             </div>
             <div className="flex-1 min-w-0">
               <span className="text-[8px] font-medium text-gray-800 block">Upcoming Session</span>
-              <span className="text-[7px] text-gray-400">Mar 15, 2:00 PM</span>
+              <span className="text-[7px] text-text-secondary">Mar 15, 2:00 PM</span>
             </div>
-            <CaretRight className="w-3 h-3 text-gray-300" />
+            <CaretRight className="w-3 h-3 text-text-secondary" />
           </div>
         </div>
       </div>
@@ -251,15 +251,15 @@ export default function BrandPreview({ primary, accent, font, logoUrl }: BrandPr
   return (
     <div className="flex flex-col h-full" data-testid="brand-preview-panel">
       {/* Tab Bar */}
-      <div className="flex gap-1 mb-3 p-1 bg-[#0F0F0F] rounded-lg">
+      <div className="flex gap-1 mb-3 p-1 bg-white rounded-lg">
         {tabs.map(t => (
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
             className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${
               activeTab === t.key
-                ? 'bg-[#1A1A1A] text-white shadow-sm'
-                : 'text-[#A3A3A3] hover:text-white'
+                ? 'bg-light-50 text-white shadow-sm'
+                : 'text-text-secondary hover:text-text-primary'
             }`}
             style={activeTab === t.key ? { boxShadow: `0 0 0 1px ${primary}30` } : undefined}
             data-testid={`preview-tab-${t.key}`}
@@ -273,11 +273,11 @@ export default function BrandPreview({ primary, accent, font, logoUrl }: BrandPr
       {/* Label */}
       <div className="flex items-center gap-1.5 mb-2">
         <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: primary }} />
-        <span className="text-[10px] text-[#666] font-medium uppercase tracking-wider">Live Preview</span>
+        <span className="text-[10px] text-text-tertiary font-medium uppercase tracking-wider">Live Preview</span>
       </div>
 
       {/* Preview Panel */}
-      <div className="flex-1 rounded-xl border border-[#333] overflow-hidden bg-[#0A0A0A] p-2 min-h-0">
+      <div className="flex-1 rounded-xl border border-light-200 overflow-hidden bg-white p-2 min-h-0">
         <div className="h-full overflow-auto rounded-lg">
           {activeTab === 'portfolio' && <PortfolioPreview primary={primary} accent={accent} font={font} logoUrl={logoUrl} />}
           {activeTab === 'quote' && <QuotePreview primary={primary} accent={accent} font={font} logoUrl={logoUrl} />}

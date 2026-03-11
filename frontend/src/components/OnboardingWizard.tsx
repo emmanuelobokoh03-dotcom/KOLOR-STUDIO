@@ -91,9 +91,9 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleSkip} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-lg bg-[#1A1A1A] rounded-2xl border border-[#333] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+      <div className="relative w-full max-w-lg bg-light-50 rounded-2xl border border-light-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
         {/* Progress bar */}
-        <div className="h-1 bg-[#333]">
+        <div className="h-1 bg-light-200">
           <div
             className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
@@ -102,12 +102,12 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-5 pb-2">
-          <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <span className="text-xs font-medium text-text-tertiary uppercase tracking-wider">
             Step {step + 1} of {WIZARD_STEPS.length}
           </span>
           <button
             onClick={handleSkip}
-            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-300 transition-colors"
+            className="flex items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors"
             data-testid="wizard-skip-btn"
           >
             <SkipForward className="w-3.5 h-3.5" />
@@ -121,12 +121,12 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
               <Icon className="w-7 h-7 text-purple-400" />
             </div>
-            <h2 className="text-xl font-bold text-white leading-tight" data-testid="wizard-step-title">
+            <h2 className="text-xl font-bold text-text-primary leading-tight" data-testid="wizard-step-title">
               {currentStep.title}
             </h2>
           </div>
 
-          <p className="text-gray-300 text-[15px] leading-relaxed mb-5">
+          <p className="text-text-secondary text-[15px] leading-relaxed mb-5">
             {currentStep.description}
           </p>
 
@@ -143,7 +143,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
           <button
             onClick={() => setStep(s => s - 1)}
             disabled={isFirst}
-            className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-text-secondary hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             data-testid="wizard-back-btn"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -178,7 +178,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               key={i}
               onClick={() => setStep(i)}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                i === step ? 'w-6 bg-purple-500' : i < step ? 'bg-purple-500/50' : 'bg-[#444]'
+                i === step ? 'w-6 bg-purple-500' : i < step ? 'bg-purple-500/50' : 'bg-light-200'
               }`}
               data-testid={`wizard-dot-${i}`}
             />

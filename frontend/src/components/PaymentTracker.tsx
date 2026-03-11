@@ -70,12 +70,12 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
   const finalPaid = status?.finalPaid
 
   return (
-    <div className="mt-3 bg-[#0F0F0F] rounded-xl border border-[#262626] p-3" data-testid="payment-tracker">
+    <div className="mt-3 bg-white rounded-xl border border-light-200 p-3" data-testid="payment-tracker">
       <div className="flex items-center gap-2 mb-3">
-        <CreditCard className="w-4 h-4 text-emerald-400" />
-        <span className="text-xs font-semibold text-[#FAFAFA] uppercase tracking-wider">Payment Collection</span>
+        <CreditCard className="w-4 h-4 text-emerald-600" />
+        <span className="text-xs font-semibold text-text-primary uppercase tracking-wider">Payment Collection</span>
         {finalPaid && (
-          <span className="ml-auto text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
+          <span className="ml-auto text-[10px] font-bold text-emerald-600 bg-emerald-400/10 px-2 py-0.5 rounded-full">
             PAID IN FULL
           </span>
         )}
@@ -87,22 +87,22 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
         <div className={`flex items-center justify-between p-2.5 rounded-lg border ${
           depositPaid
             ? 'border-emerald-500/30 bg-emerald-500/5'
-            : 'border-[#333] bg-[#1A1A1A]'
+            : 'border-light-200 bg-light-50'
         }`}>
           <div className="flex items-center gap-2.5">
             {depositPaid ? (
-              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+              <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
             ) : (
-              <Clock className="w-4 h-4 text-amber-400 shrink-0" />
+              <Clock className="w-4 h-4 text-amber-700 shrink-0" />
             )}
             <div>
-              <p className="text-xs font-medium text-[#FAFAFA]">
+              <p className="text-xs font-medium text-text-primary">
                 Deposit (30%)
               </p>
-              <p className="text-[10px] text-[#888]">
+              <p className="text-[10px] text-text-secondary">
                 {currencySymbol}{depositAmt.toLocaleString()}
                 {depositPaid && status?.depositPaidAt && (
-                  <span className="text-emerald-400 ml-1">
+                  <span className="text-emerald-600 ml-1">
                     Paid {new Date(status.depositPaidAt).toLocaleDateString()}
                   </span>
                 )}
@@ -131,23 +131,23 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
           finalPaid
             ? 'border-emerald-500/30 bg-emerald-500/5'
             : depositPaid
-              ? 'border-[#333] bg-[#1A1A1A]'
-              : 'border-[#222] bg-[#151515] opacity-50'
+              ? 'border-light-200 bg-light-50'
+              : 'border-light-200 bg-white opacity-50'
         }`}>
           <div className="flex items-center gap-2.5">
             {finalPaid ? (
-              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+              <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
             ) : (
-              <Clock className="w-4 h-4 text-[#666] shrink-0" />
+              <Clock className="w-4 h-4 text-text-tertiary shrink-0" />
             )}
             <div>
-              <p className="text-xs font-medium text-[#FAFAFA]">
+              <p className="text-xs font-medium text-text-primary">
                 Final Payment (70%)
               </p>
-              <p className="text-[10px] text-[#888]">
+              <p className="text-[10px] text-text-secondary">
                 {currencySymbol}{finalAmt.toLocaleString()}
                 {finalPaid && status?.finalPaidAt && (
-                  <span className="text-emerald-400 ml-1">
+                  <span className="text-emerald-600 ml-1">
                     Paid {new Date(status.finalPaidAt).toLocaleDateString()}
                   </span>
                 )}
@@ -173,9 +173,9 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
       </div>
 
       {/* Total */}
-      <div className="mt-2 pt-2 border-t border-[#262626] flex items-center justify-between">
-        <span className="text-[10px] text-[#888]">Total project value</span>
-        <span className="text-xs font-bold text-[#FAFAFA]">{currencySymbol}{totalAmount.toLocaleString()}</span>
+      <div className="mt-2 pt-2 border-t border-light-200 flex items-center justify-between">
+        <span className="text-[10px] text-text-secondary">Total project value</span>
+        <span className="text-xs font-bold text-text-primary">{currencySymbol}{totalAmount.toLocaleString()}</span>
       </div>
 
       {error && (

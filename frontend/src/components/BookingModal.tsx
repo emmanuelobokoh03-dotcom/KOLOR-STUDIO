@@ -279,19 +279,19 @@ export default function BookingModal({
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-dark-card rounded-2xl w-full max-w-lg border border-dark-border shadow-2xl">
+      <div className="bg-white rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-dark-border">
+        <div className="flex items-center justify-between p-4 border-b border-light-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-primary-dark/50 rounded-xl flex items-center justify-center">
-              <CalendarBlank className="w-5 h-5 text-brand-primary-light" />
+            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+              <CalendarBlank className="w-5 h-5 text-purple-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">
+              <h2 className="text-lg font-semibold text-text-primary">
                 {existingBooking ? 'Edit Booking' : 'Create Booking'}
               </h2>
               {leadInfo && (
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-text-secondary">
                   {leadInfo.clientName} • {leadInfo.projectTitle}
                 </p>
               )}
@@ -299,7 +299,7 @@ export default function BookingModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-dark-bg-secondary rounded-lg transition text-gray-400 hover:text-white"
+            className="p-2 hover:bg-light-100 rounded-lg transition text-text-secondary hover:text-text-primary"
           >
             <X className="w-5 h-5" />
           </button>
@@ -309,7 +309,7 @@ export default function BookingModal({
         <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
           {/* Error/Success Messages */}
           {error && (
-            <div className="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-red-300 text-sm">
+            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
               <WarningCircle className="w-4 h-4 flex-shrink-0" />
               {error}
             </div>
@@ -324,25 +324,25 @@ export default function BookingModal({
           {/* Lead Selector (only show if no lead was passed and not editing) */}
           {!lead && !existingBooking && (
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">
+              <label className="text-xs text-text-tertiary mb-1 block">
                 Select Lead <span className="text-red-400">*</span>
               </label>
               <div className="relative">
-                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
                 {loadingLeads ? (
-                  <div className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-gray-400 text-sm flex items-center gap-2">
+                  <div className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-secondary text-sm flex items-center gap-2">
                     <SpinnerGap className="w-4 h-4 animate-spin" />
                     Loading leads...
                   </div>
                 ) : availableLeads.length === 0 ? (
-                  <div className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-gray-400 text-sm">
+                  <div className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-secondary text-sm">
                     No leads available. Create a lead first, then book it.
                   </div>
                 ) : (
                   <select
                     value={selectedLeadId}
                     onChange={(e) => setSelectedLeadId(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary appearance-none cursor-pointer"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary appearance-none cursor-pointer"
                     data-testid="booking-lead-select"
                   >
                     <option value="">Choose a lead...</option>
@@ -355,7 +355,7 @@ export default function BookingModal({
                 )}
               </div>
               {availableLeads.length > 0 && (
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-text-tertiary mt-1">
                   Showing leads in Qualified, Quoted, Negotiating, or Booked status
                 </p>
               )}
@@ -364,25 +364,25 @@ export default function BookingModal({
 
           {/* Title */}
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Event Title</label>
+            <label className="text-xs text-text-tertiary mb-1 block">Event Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Wedding Photography Shoot"
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+              className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
               data-testid="booking-title-input"
             />
           </div>
 
           {/* Date */}
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Date</label>
+            <label className="text-xs text-text-tertiary mb-1 block">Date</label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+              className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
               data-testid="booking-date-input"
             />
           </div>
@@ -394,9 +394,9 @@ export default function BookingModal({
               id="allDay"
               checked={allDay}
               onChange={(e) => setAllDay(e.target.checked)}
-              className="w-4 h-4 rounded border-dark-border bg-dark-bg-secondary text-brand-primary focus:ring-brand-primary"
+              className="w-4 h-4 rounded border-light-200 bg-light-100 text-brand-primary focus:ring-purple-500"
             />
-            <label htmlFor="allDay" className="text-sm text-gray-300">
+            <label htmlFor="allDay" className="text-sm text-text-secondary">
               All day event
             </label>
           </div>
@@ -405,27 +405,27 @@ export default function BookingModal({
           {!allDay && (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-gray-500 mb-1 block">Start Time</label>
+                <label className="text-xs text-text-tertiary mb-1 block">Start Time</label>
                 <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
                   <input
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                     data-testid="booking-start-time"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-xs text-gray-500 mb-1 block">End Time</label>
+                <label className="text-xs text-text-tertiary mb-1 block">End Time</label>
                 <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
                   <input
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                     data-testid="booking-end-time"
                   />
                 </div>
@@ -435,22 +435,22 @@ export default function BookingModal({
 
           {/* Duration Display */}
           {!allDay && getDuration() > 0 && (
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-text-tertiary">
               Duration: {Math.floor(getDuration() / 60)}h {getDuration() % 60}m
             </p>
           )}
 
           {/* Location */}
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Location (optional)</label>
+            <label className="text-xs text-text-tertiary mb-1 block">Location (optional)</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g., Studio A, 123 Main St"
-                className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+                className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                 data-testid="booking-location-input"
               />
             </div>
@@ -458,15 +458,15 @@ export default function BookingModal({
 
           {/* Notes */}
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Notes (optional)</label>
+            <label className="text-xs text-text-tertiary mb-1 block">Notes (optional)</label>
             <div className="relative">
-              <FileText className="absolute left-3 top-3 w-4 h-4 text-gray-500" />
+              <FileText className="absolute left-3 top-3 w-4 h-4 text-text-tertiary" />
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any additional details..."
                 rows={3}
-                className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary resize-none"
+                className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none"
                 data-testid="booking-notes-input"
               />
             </div>
@@ -474,7 +474,7 @@ export default function BookingModal({
 
           {/* Color Picker */}
           <div>
-            <label className="text-xs text-gray-500 mb-2 block">Calendar Color</label>
+            <label className="text-xs text-text-tertiary mb-2 block">Calendar Color</label>
             <div className="flex gap-2 flex-wrap">
               {Object.entries(SERVICE_COLORS).map(([name, c]) => (
                 <button
@@ -501,7 +501,7 @@ export default function BookingModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-dark-border space-y-3">
+        <div className="p-4 border-t border-light-200 space-y-3">
           {/* Status actions for existing bookings */}
           {existingBooking && existingBooking.status === 'CONFIRMED' && (
             <div className="flex gap-2">
@@ -516,7 +516,7 @@ export default function BookingModal({
               <button
                 onClick={handleCancel}
                 disabled={loading}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-900/50 text-red-300 rounded-lg hover:bg-red-900/70 transition text-sm font-medium disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-900/50 text-red-700 rounded-lg hover:bg-red-900/70 transition text-sm font-medium disabled:opacity-50"
               >
                 <XCircle className="w-4 h-4" />
                 Cancel
@@ -530,7 +530,7 @@ export default function BookingModal({
               <button
                 onClick={handleDelete}
                 disabled={loading}
-                className="p-2 text-red-400 hover:bg-red-900/30 rounded-lg transition"
+                className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition"
                 title="Delete booking"
               >
                 <Trash className="w-5 h-5" />
@@ -539,7 +539,7 @@ export default function BookingModal({
             <button
               onClick={onClose}
               disabled={loading}
-              className="flex-1 px-4 py-2 border border-dark-border text-gray-300 rounded-lg hover:bg-dark-bg-secondary transition text-sm font-medium"
+              className="flex-1 px-4 py-2 border border-light-200 text-text-secondary rounded-lg hover:bg-light-100 transition text-sm font-medium"
             >
               Cancel
             </button>

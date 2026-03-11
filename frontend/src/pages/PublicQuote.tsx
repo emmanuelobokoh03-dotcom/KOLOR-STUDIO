@@ -205,7 +205,7 @@ export default function PublicQuote() {
                 <h1 className="text-2xl md:text-3xl font-bold mb-1">
                   {quote.createdBy?.studioName || 'Quote'}
                 </h1>
-                <p className="text-brand-primary-light font-mono text-sm">
+                <p className="text-purple-600 font-mono text-sm">
                   Quote #{quote.quoteNumber}
                 </p>
               </div>
@@ -239,12 +239,12 @@ export default function PublicQuote() {
             {/* Client & Project Info */}
             <div className="grid md:grid-cols-2 gap-6 mb-8 pb-6 border-b border-gray-100">
               <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Prepared For</p>
+                <p className="text-xs text-text-tertiary uppercase tracking-wide mb-2">Prepared For</p>
                 <p className="text-lg font-semibold text-gray-900">{quote.lead?.clientName}</p>
                 <p className="text-gray-600">{quote.lead?.clientEmail}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Project</p>
+                <p className="text-xs text-text-tertiary uppercase tracking-wide mb-2">Project</p>
                 <p className="text-lg font-semibold text-gray-900">{quote.lead?.projectTitle}</p>
                 {quote.lead?.serviceType && (
                   <p className="text-gray-600 capitalize">{quote.lead.serviceType.replace('_', ' ').toLowerCase()}</p>
@@ -259,10 +259,10 @@ export default function PublicQuote() {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Description</th>
-                      <th className="text-center py-3 px-4 text-sm font-medium text-gray-500 w-20">Qty</th>
-                      <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 w-28">Price</th>
-                      <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 w-28">Total</th>
+                      <th className="text-left py-3 px-4 text-sm font-medium text-text-tertiary">Description</th>
+                      <th className="text-center py-3 px-4 text-sm font-medium text-text-tertiary w-20">Qty</th>
+                      <th className="text-right py-3 px-4 text-sm font-medium text-text-tertiary w-28">Price</th>
+                      <th className="text-right py-3 px-4 text-sm font-medium text-text-tertiary w-28">Total</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -335,7 +335,7 @@ export default function PublicQuote() {
             {/* Studio Contact */}
             {quote.createdBy && (
               <div className="border-t border-gray-100 pt-6">
-                <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">Questions? Contact us</p>
+                <p className="text-xs text-text-tertiary uppercase tracking-wide mb-3">Questions? Contact us</p>
                 <div className="flex flex-wrap gap-4 text-sm">
                   {quote.createdBy.email && (
                     <a 
@@ -405,7 +405,7 @@ export default function PublicQuote() {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-6 text-gray-500 text-sm">
+        <div className="text-center mt-6 text-text-tertiary text-sm">
           Powered by <span className="font-semibold text-brand-primary">KOLOR STUDIO</span>
         </div>
       </div>
@@ -423,7 +423,7 @@ export default function PublicQuote() {
               onChange={(e) => setDeclineReason(e.target.value)}
               placeholder="Reason for declining (optional)"
               rows={3}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-brand-primary resize-none mb-4"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none mb-4"
               data-testid="decline-reason-input"
             />
             <div className="flex gap-3">

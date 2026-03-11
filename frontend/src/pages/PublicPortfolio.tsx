@@ -110,7 +110,7 @@ export default function PublicPortfolio() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary-light" />
+        <SpinnerGap className="w-8 h-8 animate-spin text-purple-600" />
       </div>
     )
   }
@@ -120,11 +120,11 @@ export default function PublicPortfolio() {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-            <X className="w-8 h-8 text-gray-500" />
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+            <X className="w-8 h-8 text-text-tertiary" />
           </div>
-          <h1 className="text-xl font-bold text-white mb-2">Portfolio Not Found</h1>
-          <p className="text-gray-400 mb-6">{error}</p>
+          <h1 className="text-xl font-bold text-text-primary mb-2">Portfolio Not Found</h1>
+          <p className="text-text-secondary mb-6">{error}</p>
           <Link
             to="/"
             className="inline-flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition"
@@ -154,9 +154,9 @@ export default function PublicPortfolio() {
               {userInfo?.studioName || userInfo?.name || 'Portfolio'}
             </h1>
             {userInfo?.studioName && userInfo?.name && (
-              <p className="text-gray-400">by {userInfo.name}</p>
+              <p className="text-text-secondary">by {userInfo.name}</p>
             )}
-            <p className="text-gray-500 mt-4 max-w-xl mx-auto">
+            <p className="text-text-tertiary mt-4 max-w-xl mx-auto">
               Explore our creative work and projects
             </p>
           </div>
@@ -174,7 +174,7 @@ export default function PublicPortfolio() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                   activeCategory === 'ALL'
                     ? 'bg-brand-primary text-white'
-                    : 'bg-slate-800 text-gray-300 hover:bg-slate-700'
+                    : 'bg-white text-text-secondary hover:bg-light-100'
                 }`}
               >
                 All
@@ -188,7 +188,7 @@ export default function PublicPortfolio() {
                   className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                     activeCategory === cat
                       ? 'bg-brand-primary text-white'
-                      : 'bg-slate-800 text-gray-300 hover:bg-slate-700'
+                      : 'bg-white text-text-secondary hover:bg-light-100'
                   }`}
                 >
                   {PORTFOLIO_CATEGORY_LABELS[cat]}
@@ -196,7 +196,7 @@ export default function PublicPortfolio() {
               ))}
               
               {/* Divider */}
-              <div className="w-px h-6 bg-slate-700 mx-2 hidden sm:block" />
+              <div className="w-px h-6 bg-light-100 mx-2 hidden sm:block" />
               
               {/* Featured Toggle */}
               <button
@@ -204,7 +204,7 @@ export default function PublicPortfolio() {
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition ${
                   showFeaturedOnly
                     ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
-                    : 'bg-slate-800 text-gray-300 hover:bg-slate-700'
+                    : 'bg-white text-text-secondary hover:bg-light-100'
                 }`}
               >
                 <Star className={`w-4 h-4 ${showFeaturedOnly ? 'fill-current' : ''}`} />
@@ -219,13 +219,13 @@ export default function PublicPortfolio() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {filteredItems.length === 0 ? (
           <div className="text-center py-16">
-            <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Star className="w-8 h-8 text-gray-500" />
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+              <Star className="w-8 h-8 text-text-tertiary" />
             </div>
             <h2 className="text-xl font-semibold text-white mb-2">
               {items.length === 0 ? 'Portfolio is Empty' : 'No Items Match Filters'}
             </h2>
-            <p className="text-gray-400">
+            <p className="text-text-secondary">
               {items.length === 0 
                 ? 'Check back later for creative work samples' 
                 : 'Try adjusting your filter selection'}
@@ -236,7 +236,7 @@ export default function PublicPortfolio() {
             {filteredItems.map((item, index) => (
               <div
                 key={item.id}
-                className="group relative bg-slate-900 rounded-xl overflow-hidden cursor-pointer border border-slate-800 hover:border-brand-primary/50 transition-all hover:shadow-lg hover:shadow-brand-primary/10"
+                className="group relative bg-slate-900 rounded-xl overflow-hidden cursor-pointer border border-slate-800 hover:border-purple-300 transition-all hover:shadow-lg hover:shadow-brand-primary/10"
                 onClick={() => openLightbox(index)}
               >
                 {/* Image */}
@@ -260,7 +260,7 @@ export default function PublicPortfolio() {
                 {/* Hover Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                   <h3 className="text-white font-semibold text-lg">{item.title}</h3>
-                  <p className="text-brand-primary-light text-sm mt-1">
+                  <p className="text-purple-600 text-sm mt-1">
                     {PORTFOLIO_CATEGORY_LABELS[item.category]}
                   </p>
                 </div>
@@ -268,7 +268,7 @@ export default function PublicPortfolio() {
                 {/* Bottom Info (always visible) */}
                 <div className="p-4 bg-slate-900">
                   <h3 className="text-white font-medium truncate">{item.title}</h3>
-                  <span className="text-xs text-brand-primary-light">
+                  <span className="text-xs text-purple-600">
                     {PORTFOLIO_CATEGORY_LABELS[item.category]}
                   </span>
                 </div>
@@ -283,26 +283,26 @@ export default function PublicPortfolio() {
         <section className="py-16 px-4" data-testid="portfolio-testimonials">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-[#FAFAFA] mb-3">What Clients Say</h2>
+              <h2 className="text-3xl font-bold text-text-primary mb-3">What Clients Say</h2>
               <div className="flex items-center justify-center gap-2 mb-2">
                 {[1,2,3,4,5].map(s => {
                   const avg = testimonials.reduce((a: number, t: any) => a + t.rating, 0) / testimonials.length
                   return <Star key={s} className="w-5 h-5" fill={s <= Math.round(avg) ? '#FBBF24' : 'none'} stroke={s <= Math.round(avg) ? '#FBBF24' : '#555'} strokeWidth={1.5} />
                 })}
               </div>
-              <p className="text-sm text-[#888]">Based on {testimonials.length} review{testimonials.length !== 1 ? 's' : ''}</p>
+              <p className="text-sm text-text-secondary">Based on {testimonials.length} review{testimonials.length !== 1 ? 's' : ''}</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {testimonials.slice(0, 6).map((t: any) => (
-                <div key={t.id} className="bg-[#1A1A1A] rounded-xl p-6 border border-[#262626] hover:border-brand-primary/30 transition-colors">
+                <div key={t.id} className="bg-light-50 rounded-xl p-6 border border-light-200 hover:border-brand-primary/30 transition-colors">
                   <div className="flex items-center gap-1 mb-3">
                     {[1,2,3,4,5].map(s => (
                       <Star key={s} className="w-4 h-4" fill={s <= t.rating ? '#FBBF24' : 'none'} stroke={s <= t.rating ? '#FBBF24' : '#555'} strokeWidth={1.5} />
                     ))}
                   </div>
-                  <p className="text-[#CCC] mb-4 italic leading-relaxed text-sm">"{t.content}"</p>
-                  <p className="text-xs text-[#888]">— {t.clientName}</p>
+                  <p className="text-text-secondary mb-4 italic leading-relaxed text-sm">"{t.content}"</p>
+                  <p className="text-xs text-text-secondary">— {t.clientName}</p>
                   {t.featured && (
                     <span className="inline-block mt-2 px-2 py-1 bg-brand-primary/20 text-brand-primary text-[10px] rounded font-medium">
                       Featured Review
@@ -319,9 +319,9 @@ export default function PublicPortfolio() {
       <footer className="border-t border-slate-800 mt-12">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-gray-500 text-sm" data-testid="powered-by-badge">
+            <p className="text-text-tertiary text-sm" data-testid="powered-by-badge">
               Powered by{' '}
-              <Link to="/" className="text-brand-primary-light hover:text-brand-primary-light transition">
+              <Link to="/" className="text-purple-600 hover:text-purple-600 transition">
                 KOLOR STUDIO
               </Link>
             </p>
@@ -347,7 +347,7 @@ export default function PublicPortfolio() {
           {/* Close Button */}
           <button
             onClick={closeLightbox}
-            className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition z-10"
+            className="absolute top-4 right-4 p-2 text-white/70 hover:text-text-primary transition z-10"
           >
             <X className="w-8 h-8" />
           </button>
@@ -377,10 +377,10 @@ export default function PublicPortfolio() {
             <div className="text-center mt-4">
               <h2 className="text-xl font-semibold text-white">{currentItem.title}</h2>
               {currentItem.description && (
-                <p className="text-gray-400 mt-2 max-w-2xl mx-auto">{currentItem.description}</p>
+                <p className="text-text-secondary mt-2 max-w-2xl mx-auto">{currentItem.description}</p>
               )}
               <div className="flex items-center justify-center gap-2 mt-3">
-                <span className="px-3 py-1 bg-brand-primary/20 text-brand-primary-light rounded-full text-sm">
+                <span className="px-3 py-1 bg-brand-primary/20 text-purple-600 rounded-full text-sm">
                   {PORTFOLIO_CATEGORY_LABELS[currentItem.category]}
                 </span>
                 {currentItem.featured && (
@@ -393,7 +393,7 @@ export default function PublicPortfolio() {
               {currentItem.tags.length > 0 && (
                 <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
                   {currentItem.tags.map((tag, i) => (
-                    <span key={i} className="px-2 py-1 bg-slate-800 text-gray-400 rounded text-xs">
+                    <span key={i} className="px-2 py-1 bg-white text-text-secondary rounded text-xs">
                       #{tag}
                     </span>
                   ))}
@@ -402,7 +402,7 @@ export default function PublicPortfolio() {
             </div>
             
             {/* Image Counter */}
-            <p className="text-center text-gray-500 text-sm mt-4">
+            <p className="text-center text-text-tertiary text-sm mt-4">
               {lightboxIndex + 1} / {filteredItems.length}
             </p>
           </div>

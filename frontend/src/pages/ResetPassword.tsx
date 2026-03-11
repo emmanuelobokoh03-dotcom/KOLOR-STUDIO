@@ -95,7 +95,7 @@ const ResetPassword = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-dark-bg flex items-center justify-center px-6">
+      <div className="min-h-screen bg-light-50 flex items-center justify-center px-6">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex items-center space-x-2 mb-6">
@@ -106,16 +106,16 @@ const ResetPassword = () => {
             </Link>
           </div>
 
-          <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
                 <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
               </div>
-              <h1 className="text-2xl font-bold mb-3 text-white" data-testid="reset-success-title">Password reset successful!</h1>
-              <p className="text-gray-400 mb-6">
+              <h1 className="text-2xl font-bold mb-3 text-text-primary" data-testid="reset-success-title">Password reset successful!</h1>
+              <p className="text-text-secondary mb-6">
                 Your password has been changed successfully. Redirecting you to the login page...
               </p>
-              <div className="flex items-center justify-center gap-2 text-brand-primary-light">
+              <div className="flex items-center justify-center gap-2 text-purple-600">
                 <SpinnerGap className="w-4 h-4 animate-spin" />
                 <span className="text-sm">Redirecting...</span>
               </div>
@@ -127,7 +127,7 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg flex items-center justify-center px-6">
+    <div className="min-h-screen bg-light-50 flex items-center justify-center px-6">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
@@ -136,13 +136,13 @@ const ResetPassword = () => {
               KOLOR STUDIO
             </span>
           </Link>
-          <h1 className="text-3xl font-bold mb-2 text-white">Create new password</h1>
-          <p className="text-gray-400">Your new password must be at least 8 characters</p>
+          <h1 className="text-3xl font-bold mb-2 text-text-primary">Create new password</h1>
+          <p className="text-text-secondary">Your new password must be at least 8 characters</p>
         </div>
 
-        <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400" data-testid="reset-password-error">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400" data-testid="reset-password-error">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -150,11 +150,11 @@ const ResetPassword = () => {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-text-secondary mb-2">
                 New password
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-tertiary" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
@@ -162,14 +162,14 @@ const ResetPassword = () => {
                     setPassword(e.target.value)
                     setError('')
                   }}
-                  className="w-full pl-12 pr-12 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                  className="w-full pl-12 pr-12 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                   placeholder="Enter new password"
                   data-testid="reset-password-input"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-secondary"
                 >
                   {showPassword ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -186,7 +186,7 @@ const ResetPassword = () => {
                           className={`h-1.5 flex-1 rounded-full transition-all ${
                             level <= passwordStrength.score
                               ? passwordStrength.color
-                              : 'bg-dark-border'
+                              : 'bg-light-200'
                           }`}
                         />
                       ))}
@@ -204,7 +204,7 @@ const ResetPassword = () => {
                       {passwordStrength.label}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-text-tertiary">
                     Use 8+ characters with a mix of letters, numbers & symbols
                   </p>
                 </div>
@@ -212,11 +212,11 @@ const ResetPassword = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-text-secondary mb-2">
                 Confirm password
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-tertiary" />
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={confirmPassword}
@@ -224,12 +224,12 @@ const ResetPassword = () => {
                     setConfirmPassword(e.target.value)
                     setError('')
                   }}
-                  className={`w-full pl-12 pr-12 py-3 bg-dark-bg-secondary border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500 ${
+                  className={`w-full pl-12 pr-12 py-3 bg-light-100 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400 ${
                     confirmPassword && confirmPassword !== password
                       ? 'border-red-500/50'
                       : confirmPassword && confirmPassword === password
                       ? 'border-green-500/50'
-                      : 'border-dark-border'
+                      : 'border-light-200'
                   }`}
                   placeholder="Confirm new password"
                   data-testid="reset-confirm-password-input"
@@ -237,7 +237,7 @@ const ResetPassword = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-secondary"
                 >
                   {showConfirmPassword ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -256,7 +256,7 @@ const ResetPassword = () => {
             <button
               type="submit"
               disabled={loading || !token}
-              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-brand-primary-dark/30 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               data-testid="reset-password-submit"
             >
               {loading ? (
@@ -273,7 +273,7 @@ const ResetPassword = () => {
           <div className="mt-6 text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-brand-primary-light transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-purple-600 transition-colors"
               data-testid="back-to-login-from-reset"
             >
               <ArrowLeft className="w-4 h-4" />

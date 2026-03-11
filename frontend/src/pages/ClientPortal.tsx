@@ -338,7 +338,7 @@ export default function ClientPortal() {
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Portal Not Found</h1>
           <p className="text-gray-600 mb-6">{error || 'This project portal could not be found.'}</p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-tertiary">
             Please check your link or contact us at{' '}
             <a href="mailto:emmanuelobokoh03@gmail.com" className="text-purple-600 hover:underline">
               emmanuelobokoh03@gmail.com
@@ -426,7 +426,7 @@ export default function ClientPortal() {
         {/* Progress Bar */}
         {!data.status.isLost && (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-6">
+            <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wide mb-6">
               Project Progress
             </h3>
             
@@ -451,12 +451,12 @@ export default function ClientPortal() {
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                         isCompleted 
                           ? 'bg-gradient-to-br from-purple-600 to-purple-600 text-white shadow-lg' 
-                          : 'bg-gray-100 text-gray-400'
+                          : 'bg-gray-100 text-text-secondary'
                       } ${isCurrent ? 'ring-4 ring-purple-200' : ''}`}>
                         <Icon className="w-5 h-5" />
                       </div>
                       <span className={`mt-2 text-sm font-medium ${
-                        isCompleted ? 'text-purple-600' : 'text-gray-400'
+                        isCompleted ? 'text-purple-600' : 'text-text-secondary'
                       }`}>
                         {step.label}
                       </span>
@@ -480,12 +480,12 @@ export default function ClientPortal() {
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       isCompleted 
                         ? 'bg-gradient-to-br from-purple-600 to-purple-600 text-white' 
-                        : 'bg-gray-100 text-gray-400'
+                        : 'bg-gray-100 text-text-secondary'
                     }`}>
                       <Icon className="w-4 h-4" />
                     </div>
                     <span className={`text-sm font-medium ${
-                      isCompleted ? 'text-gray-900' : 'text-gray-400'
+                      isCompleted ? 'text-gray-900' : 'text-text-secondary'
                     }`}>
                       {step.label}
                     </span>
@@ -504,7 +504,7 @@ export default function ClientPortal() {
 
         {/* Project Details */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
+          <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wide mb-4">
             Project Details
           </h3>
           
@@ -514,13 +514,13 @@ export default function ClientPortal() {
                 <Sparkle className="w-5 h-5 text-purple-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Service Type</p>
+                <p className="text-sm text-text-tertiary">Service Type</p>
                 <p className="font-semibold text-gray-900">{data.project.serviceType}</p>
               </div>
             </div>
 
             <div className="p-4 bg-gray-50 rounded-xl">
-              <p className="text-sm text-gray-500 mb-2">Project Description</p>
+              <p className="text-sm text-text-tertiary mb-2">Project Description</p>
               <p className="text-gray-700 whitespace-pre-wrap">{data.project.description}</p>
             </div>
 
@@ -531,7 +531,7 @@ export default function ClientPortal() {
                     <CurrencyDollar className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Budget Range</p>
+                    <p className="text-sm text-text-tertiary">Budget Range</p>
                     <p className="font-semibold text-gray-900">{data.project.budget}</p>
                   </div>
                 </div>
@@ -543,7 +543,7 @@ export default function ClientPortal() {
                     <Clock className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Timeline</p>
+                    <p className="text-sm text-text-tertiary">Timeline</p>
                     <p className="font-semibold text-gray-900">{data.project.timeline}</p>
                   </div>
                 </div>
@@ -555,7 +555,7 @@ export default function ClientPortal() {
                     <CalendarBlank className="w-5 h-5 text-orange-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Event Date</p>
+                    <p className="text-sm text-text-tertiary">Event Date</p>
                     <p className="font-semibold text-gray-900">{formatDate(data.project.eventDate)}</p>
                   </div>
                 </div>
@@ -566,7 +566,7 @@ export default function ClientPortal() {
                   <CalendarBlank className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Submitted On</p>
+                  <p className="text-sm text-text-tertiary">Submitted On</p>
                   <p className="font-semibold text-gray-900">{formatDate(data.project.submittedAt)}</p>
                 </div>
               </div>
@@ -613,7 +613,7 @@ export default function ClientPortal() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-base font-semibold text-gray-900">Quotes #{quote.quoteNumber}</h3>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-text-tertiary">
                         {isAccepted ? 'Quotes accepted' : isDeclined ? 'Quotes declined' : isExpired ? 'Quotes expired' : 'Please review the quote below'}
                       </p>
                     </div>
@@ -632,10 +632,10 @@ export default function ClientPortal() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-gray-200">
-                          <th className="text-left py-2 text-gray-500 font-medium">Description</th>
-                          <th className="text-right py-2 text-gray-500 font-medium w-16">Qty</th>
-                          <th className="text-right py-2 text-gray-500 font-medium w-24">Rate</th>
-                          <th className="text-right py-2 text-gray-500 font-medium w-24">Amount</th>
+                          <th className="text-left py-2 text-text-tertiary font-medium">Description</th>
+                          <th className="text-right py-2 text-text-tertiary font-medium w-16">Qty</th>
+                          <th className="text-right py-2 text-text-tertiary font-medium w-24">Rate</th>
+                          <th className="text-right py-2 text-text-tertiary font-medium w-24">Amount</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -675,7 +675,7 @@ export default function ClientPortal() {
                       </div>
                     )}
 
-                    <p className="text-xs text-gray-400 mt-3">
+                    <p className="text-xs text-text-secondary mt-3">
                       Valid until {new Date(quote.validUntil).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                     </p>
                   </div>
@@ -751,7 +751,7 @@ export default function ClientPortal() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-base font-semibold text-gray-900">{contract.title}</h3>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-text-tertiary">
                         {isAgreed ? 'Agreement signed' : 'Please review and sign below'}
                       </p>
                     </div>
@@ -851,7 +851,7 @@ export default function ClientPortal() {
         {/* Activity Timeline */}
         {data.timeline.length > 0 && (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
+            <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wide mb-4">
               Recent Updates
             </h3>
             
@@ -864,7 +864,7 @@ export default function ClientPortal() {
                     <div className="relative z-10 w-5 h-5 rounded-full bg-purple-600 border-4 border-white shadow flex-shrink-0" />
                     <div className="flex-1 pb-4">
                       <p className="text-gray-700">{activity.description}</p>
-                      <p className="text-sm text-gray-400 mt-1">{formatTimeAgo(activity.createdAt)}</p>
+                      <p className="text-sm text-text-secondary mt-1">{formatTimeAgo(activity.createdAt)}</p>
                     </div>
                   </div>
                 ))}
@@ -900,7 +900,7 @@ export default function ClientPortal() {
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-text-tertiary">
                         {formatFileSize(file.size)}
                         {file.sharedAt && file.uploadedBy !== 'client' && ` \u00b7 Shared ${formatTimeAgo(file.sharedAt)}`}
                         {file.uploadedBy === 'client' && ` \u00b7 Uploaded ${formatTimeAgo(file.uploadedAt)}`}
@@ -955,16 +955,16 @@ export default function ClientPortal() {
         </div>
 
         {/* Footer */}
-        <footer className="text-center text-gray-400 text-sm py-8">
+        <footer className="text-center text-text-secondary text-sm py-8">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Sparkle className="w-4 h-4" />
-            <span className="font-semibold text-gray-500">KOLOR STUDIO</span>
+            <span className="font-semibold text-text-tertiary">KOLOR STUDIO</span>
           </div>
           <p>Thank you for choosing us for your creative project.</p>
           <p className="mt-2">
             <Link to="/" className="text-purple-600 hover:underline">Visit our website</Link>
           </p>
-          <p className="mt-3 text-xs text-gray-500" data-testid="powered-by-badge">
+          <p className="mt-3 text-xs text-text-tertiary" data-testid="powered-by-badge">
             Powered by{' '}
             <Link to="/" className="text-purple-600 hover:text-purple-400 transition">
               KOLOR STUDIO

@@ -181,37 +181,37 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
 
   // Custom toolbar
   const CustomToolbar = ({ label, onNavigate, onView }: any) => (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-dark-border">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-light-200">
       <div className="flex items-center gap-2">
         <button
           onClick={() => onNavigate('TODAY')}
-          className="px-3 py-1.5 text-sm bg-slate-800 border border-slate-600 rounded-lg hover:bg-dark-card transition text-gray-300"
+          className="px-3 py-1.5 text-sm bg-white border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary"
         >
           Today
         </button>
         <button
           onClick={() => onNavigate('PREV')}
-          className="p-1.5 bg-slate-800 border border-slate-600 rounded-lg hover:bg-dark-card transition text-gray-300"
+          className="p-1.5 bg-white border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary"
         >
           ←
         </button>
         <button
           onClick={() => onNavigate('NEXT')}
-          className="p-1.5 bg-slate-800 border border-slate-600 rounded-lg hover:bg-dark-card transition text-gray-300"
+          className="p-1.5 bg-white border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary"
         >
           →
         </button>
-        <h2 className="text-lg font-semibold text-white ml-2">{label}</h2>
+        <h2 className="text-lg font-semibold text-text-primary ml-2">{label}</h2>
       </div>
       
       <div className="flex items-center gap-2">
         {/* Service Filter */}
         <div className="relative">
-          <Funnel className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <Funnel className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
           <select
             value={serviceFilter}
             onChange={(e) => setServiceFilter(e.target.value as ServiceType | 'all')}
-            className="pl-8 pr-3 py-1.5 text-sm bg-slate-800 border border-slate-600 rounded-lg text-gray-300 focus:ring-2 focus:ring-brand-primary"
+            className="pl-8 pr-3 py-1.5 text-sm bg-white border border-light-200 rounded-lg text-text-secondary focus:ring-2 focus:ring-purple-500"
           >
             <option value="all">All Services</option>
             {Object.entries(SERVICE_TYPE_LABELS).map(([value, label]) => (
@@ -221,7 +221,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
         
         {/* View buttons */}
-        <div className="flex bg-slate-800 border border-slate-600 rounded-lg overflow-hidden">
+        <div className="flex bg-white border border-light-200 rounded-lg overflow-hidden">
           {['month', 'week', 'day', 'agenda'].map((v) => (
             <button
               key={v}
@@ -229,7 +229,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
               className={`px-3 py-1.5 text-sm capitalize transition ${
                 view === v 
                   ? 'bg-brand-primary text-white' 
-                  : 'text-gray-400 hover:text-white hover:bg-dark-card'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-white'
               }`}
             >
               {v}
@@ -241,7 +241,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         <button
           onClick={() => fetchEvents()}
           disabled={loading}
-          className="p-1.5 bg-slate-800 border border-slate-600 rounded-lg hover:bg-dark-card transition text-gray-300 disabled:opacity-50"
+          className="p-1.5 bg-white border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary disabled:opacity-50"
         >
           <ArrowsClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
@@ -287,32 +287,32 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
     <div className="h-full flex flex-col" data-testid="calendar-view">
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <div className="bg-dark-card border border-dark-border rounded-xl p-4">
-          <p className="text-xs text-gray-500 mb-1">Total Bookings</p>
-          <p className="text-2xl font-bold text-white">{stats.total}</p>
+        <div className="bg-white border border-light-200 rounded-xl p-4">
+          <p className="text-xs text-text-tertiary mb-1">Total Bookings</p>
+          <p className="text-2xl font-bold text-text-primary">{stats.total}</p>
         </div>
-        <div className="bg-dark-card border border-dark-border rounded-xl p-4">
-          <p className="text-xs text-gray-500 mb-1">Upcoming</p>
-          <p className="text-2xl font-bold text-brand-primary-light">{stats.upcoming}</p>
+        <div className="bg-white border border-light-200 rounded-xl p-4">
+          <p className="text-xs text-text-tertiary mb-1">Upcoming</p>
+          <p className="text-2xl font-bold text-purple-600">{stats.upcoming}</p>
         </div>
-        <div className="bg-dark-card border border-dark-border rounded-xl p-4">
-          <p className="text-xs text-gray-500 mb-1">Completed</p>
+        <div className="bg-white border border-light-200 rounded-xl p-4">
+          <p className="text-xs text-text-tertiary mb-1">Completed</p>
           <p className="text-2xl font-bold text-green-400">{stats.completed}</p>
         </div>
-        <div className="bg-dark-card border border-dark-border rounded-xl p-4">
-          <p className="text-xs text-gray-500 mb-1">Total Value</p>
-          <p className="text-2xl font-bold text-white">
+        <div className="bg-white border border-light-200 rounded-xl p-4">
+          <p className="text-xs text-text-tertiary mb-1">Total Value</p>
+          <p className="text-2xl font-bold text-text-primary">
             {user?.currencySymbol || '$'}{stats.totalValue.toLocaleString()}
           </p>
         </div>
       </div>
 
       {/* Calendar */}
-      <div className="flex-1 bg-dark-card border border-dark-border rounded-xl p-2 md:p-4 min-h-[600px] overflow-x-auto">
+      <div className="flex-1 bg-white border border-light-200 rounded-xl p-2 md:p-4 min-h-[600px] overflow-x-auto">
         <div className="min-w-[600px] h-full">
         {loading && events.length === 0 ? (
           <div className="h-full flex items-center justify-center">
-            <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary-light" />
+            <SpinnerGap className="w-8 h-8 animate-spin text-purple-600" />
           </div>
         ) : (
           <CalendarComponent
@@ -342,14 +342,14 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
 
       {/* Service Legend */}
       <div className="mt-4 flex flex-wrap gap-3 items-center">
-        <span className="text-xs text-gray-500">Legend:</span>
+        <span className="text-xs text-text-tertiary">Legend:</span>
         {Object.entries(SERVICE_TYPE_LABELS).map(([key, label]) => (
           <div key={key} className="flex items-center gap-1.5">
             <div 
               className="w-3 h-3 rounded"
               style={{ backgroundColor: SERVICE_COLORS[key as ServiceType] }}
             />
-            <span className="text-xs text-gray-400">{label}</span>
+            <span className="text-xs text-text-secondary">{label}</span>
           </div>
         ))}
       </div>

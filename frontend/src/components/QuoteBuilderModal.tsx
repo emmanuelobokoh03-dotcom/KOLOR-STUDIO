@@ -381,7 +381,7 @@ export default function QuoteBuilderModal({
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div 
-        className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden border border-dark-border flex flex-col"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
         onClick={(e) => e.stopPropagation()}
         data-testid="quote-builder-modal"
       >
@@ -392,7 +392,7 @@ export default function QuoteBuilderModal({
               <h2 className="text-xl font-bold">
                 {existingQuote ? 'Edit Quote' : 'Create Quote'}
               </h2>
-              <p className="text-brand-primary-light text-sm mt-1">
+              <p className="text-purple-600 text-sm mt-1">
                 For {lead.clientName} • {lead.projectTitle}
               </p>
             </div>
@@ -408,7 +408,7 @@ export default function QuoteBuilderModal({
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {error && (
-            <div className="p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -427,7 +427,7 @@ export default function QuoteBuilderModal({
             <div className="relative">
               <button
                 onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
-                className="flex items-center gap-2 px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-sm text-gray-300 hover:bg-dark-card-hover transition"
+                className="flex items-center gap-2 px-4 py-2 bg-light-100 border border-light-200 rounded-lg text-sm text-text-secondary hover:bg-light-100 transition"
                 data-testid="load-template-btn"
               >
                 <DownloadSimple weight="bold" className="w-4 h-4" />
@@ -436,13 +436,13 @@ export default function QuoteBuilderModal({
               </button>
               
               {showTemplateDropdown && (
-                <div className="absolute top-full left-0 mt-1 w-64 bg-dark-card border border-dark-border rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
+                <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-light-200 rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
                   {loadingTemplates ? (
-                    <div className="p-4 text-center text-gray-400">
+                    <div className="p-4 text-center text-text-secondary">
                       <SpinnerGap className="w-5 h-5 animate-spin mx-auto" />
                     </div>
                   ) : templates.length === 0 ? (
-                    <div className="p-4 text-center text-gray-500 text-sm">
+                    <div className="p-4 text-center text-text-tertiary text-sm">
                       No templates saved yet
                     </div>
                   ) : (
@@ -450,15 +450,15 @@ export default function QuoteBuilderModal({
                       <button
                         key={template.id}
                         onClick={() => loadTemplate(template)}
-                        className="w-full text-left px-4 py-3 hover:bg-dark-card-hover border-b border-dark-border last:border-b-0 transition"
+                        className="w-full text-left px-4 py-3 hover:bg-light-100 border-b border-light-200 last:border-b-0 transition"
                         data-testid={`template-option-${template.id}`}
                       >
                         <div className="flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-brand-primary-light flex-shrink-0" />
+                          <FileText className="w-4 h-4 text-purple-600 flex-shrink-0" />
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-white truncate">{template.name}</p>
+                            <p className="text-sm font-medium text-text-primary truncate">{template.name}</p>
                             {template.description && (
-                              <p className="text-xs text-gray-500 truncate">{template.description}</p>
+                              <p className="text-xs text-text-tertiary truncate">{template.description}</p>
                             )}
                             <p className="text-xs text-gray-600">
                               {(template.lineItems as QuoteTemplateLineItem[]).length} item{(template.lineItems as QuoteTemplateLineItem[]).length !== 1 ? 's' : ''}
@@ -475,7 +475,7 @@ export default function QuoteBuilderModal({
             {/* Save as Template Button */}
             <button
               onClick={() => setShowSaveTemplateModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-sm text-gray-300 hover:bg-dark-card-hover transition"
+              className="flex items-center gap-2 px-4 py-2 bg-light-100 border border-light-200 rounded-lg text-sm text-text-secondary hover:bg-light-100 transition"
               data-testid="save-template-btn"
             >
               <FileText className="w-4 h-4" />
@@ -483,7 +483,7 @@ export default function QuoteBuilderModal({
             </button>
 
             {loadedTemplateName && (
-              <span className="text-xs text-brand-primary-light bg-brand-primary-dark/30 px-2 py-1 rounded">
+              <span className="text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded">
                 Using: {loadedTemplateName}
               </span>
             )}
@@ -491,53 +491,53 @@ export default function QuoteBuilderModal({
 
           {/* Line Items */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
-              <CurrencyDollar className="w-4 h-4 text-brand-primary-light" />
+            <h3 className="text-sm font-semibold text-text-secondary mb-3 flex items-center gap-2">
+              <CurrencyDollar className="w-4 h-4 text-purple-600" />
               Line Items
             </h3>
             
             <div className="space-y-3">
               {lineItems.map((item, index) => (
-                <div key={index} className="bg-dark-bg-secondary rounded-lg p-4 border border-dark-border">
+                <div key={index} className="bg-light-100 rounded-lg p-4 border border-light-200">
                   <div className="grid grid-cols-12 gap-3 items-end">
                     <div className="col-span-5">
-                      <label className="text-xs text-gray-500 mb-1 block">Description</label>
+                      <label className="text-xs text-text-tertiary mb-1 block">Description</label>
                       <input
                         type="text"
                         value={item.description}
                         onChange={(e) => updateLineItem(index, 'description', e.target.value)}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                        className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         placeholder="Service description"
                         data-testid={`line-item-description-${index}`}
                       />
                     </div>
                     <div className="col-span-2">
-                      <label className="text-xs text-gray-500 mb-1 block">Qty</label>
+                      <label className="text-xs text-text-tertiary mb-1 block">Qty</label>
                       <input
                         type="number"
                         min="1"
                         value={item.quantity}
                         onChange={(e) => updateLineItem(index, 'quantity', e.target.value)}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                        className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         data-testid={`line-item-quantity-${index}`}
                       />
                     </div>
                     <div className="col-span-2">
-                      <label className="text-xs text-gray-500 mb-1 block">Price</label>
+                      <label className="text-xs text-text-tertiary mb-1 block">Price</label>
                       <input
                         type="number"
                         min="0"
                         step="0.01"
                         value={item.price || ''}
                         onChange={(e) => updateLineItem(index, 'price', e.target.value)}
-                        className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                        className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         placeholder="0.00"
                         data-testid={`line-item-price-${index}`}
                       />
                     </div>
                     <div className="col-span-2">
-                      <label className="text-xs text-gray-500 mb-1 block">Total</label>
-                      <div className="px-3 py-2 bg-dark-card/50 border border-dark-border rounded-lg text-gray-400 text-sm">
+                      <label className="text-xs text-text-tertiary mb-1 block">Total</label>
+                      <div className="px-3 py-2 bg-white/50 border border-light-200 rounded-lg text-text-secondary text-sm">
                         {formatCurrency(item.quantity * item.price, effectiveCurrency)}
                       </div>
                     </div>
@@ -545,7 +545,7 @@ export default function QuoteBuilderModal({
                       <button
                         onClick={() => removeLineItem(index)}
                         disabled={lineItems.length === 1}
-                        className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-900/30 rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-2 text-text-tertiary hover:text-red-400 hover:bg-red-50 rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed"
                       >
                         <Trash className="w-4 h-4" />
                       </button>
@@ -557,7 +557,7 @@ export default function QuoteBuilderModal({
 
             <button
               onClick={addLineItem}
-              className="mt-3 flex items-center gap-2 px-4 py-2 text-brand-primary-light hover:bg-brand-primary-dark/30 rounded-lg transition text-sm font-medium"
+              className="mt-3 flex items-center gap-2 px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-lg transition text-sm font-medium"
               data-testid="add-line-item"
             >
               <Plus weight="bold" className="w-4 h-4" />
@@ -566,15 +566,15 @@ export default function QuoteBuilderModal({
           </div>
 
           {/* Totals */}
-          <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
+          <div className="bg-light-100 rounded-xl p-4 border border-light-200">
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Subtotal</span>
-                <span className="text-white font-medium">{formatCurrency(subtotal, effectiveCurrency)}</span>
+                <span className="text-text-secondary">Subtotal</span>
+                <span className="text-text-primary font-medium">{formatCurrency(subtotal, effectiveCurrency)}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-400">Tax</span>
+                  <span className="text-text-secondary">Tax</span>
                   <input
                     type="number"
                     min="0"
@@ -582,17 +582,17 @@ export default function QuoteBuilderModal({
                     step="0.1"
                     value={tax || ''}
                     onChange={(e) => setTax(Number(e.target.value) || 0)}
-                    className="w-16 px-2 py-1 bg-dark-card border border-dark-border rounded text-white text-sm focus:ring-2 focus:ring-brand-primary"
+                    className="w-16 px-2 py-1 bg-white border border-light-200 rounded text-text-primary text-sm focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                     data-testid="tax-input"
                   />
-                  <span className="text-gray-400">%</span>
+                  <span className="text-text-secondary">%</span>
                 </div>
-                <span className="text-white">{formatCurrency(taxAmount, effectiveCurrency)}</span>
+                <span className="text-text-primary">{formatCurrency(taxAmount, effectiveCurrency)}</span>
               </div>
-              <div className="pt-3 border-t border-dark-border flex justify-between">
-                <span className="text-lg font-semibold text-white">Total</span>
-                <span className="text-2xl font-bold text-brand-primary-light" data-testid="quote-total">
+              <div className="pt-3 border-t border-light-200 flex justify-between">
+                <span className="text-lg font-semibold text-text-primary">Total</span>
+                <span className="text-2xl font-bold text-purple-600" data-testid="quote-total">
                   {formatCurrency(total, effectiveCurrency)}
                 </span>
               </div>
@@ -600,16 +600,16 @@ export default function QuoteBuilderModal({
           </div>
 
           {/* Currency Override Section */}
-          <div className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border">
+          <div className="bg-light-100 rounded-xl p-4 border border-light-200">
             <button
               type="button"
               onClick={() => setShowCurrencyOptions(!showCurrencyOptions)}
-              className="w-full flex items-center justify-between text-sm text-gray-400 hover:text-gray-300"
+              className="w-full flex items-center justify-between text-sm text-text-secondary hover:text-text-secondary"
             >
               <span className="flex items-center gap-2">
                 <Globe className="w-4 h-4" />
                 Currency Settings
-                <span className="text-xs text-brand-primary-light">
+                <span className="text-xs text-purple-600">
                   ({effectiveCurrency.currency} - {effectiveCurrency.currencySymbol})
                 </span>
               </span>
@@ -617,16 +617,16 @@ export default function QuoteBuilderModal({
             </button>
 
             {showCurrencyOptions && (
-              <div className="mt-4 space-y-4 pt-4 border-t border-dark-border">
+              <div className="mt-4 space-y-4 pt-4 border-t border-light-200">
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     id="useCurrencyOverride"
                     checked={useCurrencyOverride}
                     onChange={(e) => setUseCurrencyOverride(e.target.checked)}
-                    className="w-4 h-4 rounded border-dark-border bg-dark-bg-secondary text-brand-primary focus:ring-brand-primary"
+                    className="w-4 h-4 rounded border-light-200 bg-light-100 text-brand-primary focus:ring-purple-500"
                   />
-                  <label htmlFor="useCurrencyOverride" className="text-sm text-gray-300">
+                  <label htmlFor="useCurrencyOverride" className="text-sm text-text-secondary">
                     Use different currency for this quote
                   </label>
                 </div>
@@ -634,7 +634,7 @@ export default function QuoteBuilderModal({
                 {useCurrencyOverride && (
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs text-gray-500 mb-1 block">Currency</label>
+                      <label className="text-xs text-text-tertiary mb-1 block">Currency</label>
                       <select
                         value={currencyOverride.currency || ''}
                         onChange={(e) => {
@@ -646,7 +646,7 @@ export default function QuoteBuilderModal({
                             currencyPosition: currencyOverride.currencyPosition || 'BEFORE'
                           });
                         }}
-                        className="w-full px-3 py-2 bg-[#1a1a2e] border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                        className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 [&>option]:bg-white [&>option]:text-text-primary"
                         data-testid="currency-override-select"
                       >
                         <option value="">Select currency...</option>
@@ -658,14 +658,14 @@ export default function QuoteBuilderModal({
                       </select>
                     </div>
                     <div>
-                      <label className="text-xs text-gray-500 mb-1 block">Position</label>
+                      <label className="text-xs text-text-tertiary mb-1 block">Position</label>
                       <select
                         value={currencyOverride.currencyPosition || 'BEFORE'}
                         onChange={(e) => setCurrencyOverride({
                           ...currencyOverride,
                           currencyPosition: e.target.value as 'BEFORE' | 'AFTER'
                         })}
-                        className="w-full px-3 py-2 bg-[#1a1a2e] border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                        className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 [&>option]:bg-white [&>option]:text-text-primary"
                       >
                         <option value="BEFORE">Before ({currencyOverride.currencySymbol || '$'}100)</option>
                         <option value="AFTER">After (100{currencyOverride.currencySymbol || '$'})</option>
@@ -674,7 +674,7 @@ export default function QuoteBuilderModal({
                   </div>
                 )}
 
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-text-tertiary">
                   {useCurrencyOverride 
                     ? 'This quote will use a different currency than your default settings.'
                     : 'Using your default currency settings from profile.'}
@@ -686,11 +686,11 @@ export default function QuoteBuilderModal({
           {/* Terms */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Payment Terms</label>
+              <label className="text-xs text-text-tertiary mb-1 block">Payment Terms</label>
               <select
                 value={paymentTerms}
                 onChange={(e) => setPaymentTerms(e.target.value)}
-                className="w-full px-3 py-2 bg-[#1a1a2e] border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500"
                 data-testid="payment-terms-select"
               >
                 {PAYMENT_TERMS_OPTIONS.map(option => (
@@ -701,24 +701,24 @@ export default function QuoteBuilderModal({
               </select>
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Valid Until</label>
+              <label className="text-xs text-text-tertiary mb-1 block">Valid Until</label>
               <input
                 type="date"
                 value={validUntil}
                 onChange={(e) => setValidUntil(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
+                className="w-full px-3 py-2 bg-light-100 border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500"
                 data-testid="valid-until-input"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Terms & Conditions</label>
+            <label className="text-xs text-text-tertiary mb-1 block">Terms & Conditions</label>
             <textarea
               value={terms}
               onChange={(e) => setTerms(e.target.value)}
               rows={5}
-              className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary resize-none"
+              className="w-full px-3 py-2 bg-light-100 border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 resize-none"
               placeholder="Enter terms and conditions..."
               data-testid="terms-input"
             />
@@ -726,10 +726,10 @@ export default function QuoteBuilderModal({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-dark-border flex items-center justify-between gap-3 flex-shrink-0">
+        <div className="p-6 border-t border-light-200 flex items-center justify-between gap-3 flex-shrink-0">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-400 hover:bg-dark-card-hover rounded-lg transition"
+            className="px-4 py-2 text-text-secondary hover:bg-light-100 rounded-lg transition"
           >
             Cancel
           </button>
@@ -737,7 +737,7 @@ export default function QuoteBuilderModal({
             <button
               onClick={handleSave}
               disabled={loading}
-              className="flex items-center gap-2 px-4 py-2 border border-dark-border text-gray-300 rounded-lg hover:bg-dark-card-hover transition font-medium disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 border border-light-200 text-text-secondary rounded-lg hover:bg-light-100 transition font-medium disabled:opacity-50"
               data-testid="save-draft-btn"
             >
               {loading ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
@@ -745,7 +745,7 @@ export default function QuoteBuilderModal({
             </button>
             <button
               onClick={() => setShowPreview(true)}
-              className="flex items-center gap-2 px-4 py-2 border border-brand-primary text-brand-primary-light rounded-lg hover:bg-brand-primary-dark/30 transition font-medium"
+              className="flex items-center gap-2 px-4 py-2 border border-brand-primary text-purple-600 rounded-lg hover:bg-purple-50 transition font-medium"
               data-testid="preview-btn"
             >
               <Eye className="w-4 h-4" />
@@ -771,28 +771,28 @@ export default function QuoteBuilderModal({
           onClick={() => setShowSaveTemplateModal(false)}
         >
           <div 
-            className="bg-dark-card rounded-xl shadow-2xl w-full max-w-md border border-dark-border p-6"
+            className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-light-200 p-6"
             onClick={(e) => e.stopPropagation()}
             data-testid="save-template-modal"
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-white">Save as Template</h3>
+              <h3 className="text-lg font-semibold text-text-primary">Save as Template</h3>
               <button 
                 onClick={() => setShowSaveTemplateModal(false)}
-                className="p-1 hover:bg-dark-card-hover rounded transition"
+                className="p-1 hover:bg-light-100 rounded transition"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-5 h-5 text-text-secondary" />
               </button>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Template Name *</label>
+                <label className="text-sm text-text-secondary mb-1 block">Template Name *</label>
                 <input
                   type="text"
                   value={templateName}
                   onChange={(e) => setTemplateName(e.target.value)}
-                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary"
+                  className="w-full px-3 py-2 bg-light-100 border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500"
                   placeholder="e.g., Wedding Photography Package"
                   maxLength={100}
                   data-testid="template-name-input"
@@ -800,11 +800,11 @@ export default function QuoteBuilderModal({
               </div>
 
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Description (optional)</label>
+                <label className="text-sm text-text-secondary mb-1 block">Description (optional)</label>
                 <textarea
                   value={templateDescription}
                   onChange={(e) => setTemplateDescription(e.target.value)}
-                  className="w-full px-3 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary resize-none"
+                  className="w-full px-3 py-2 bg-light-100 border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 resize-none"
                   placeholder="Brief description of this template..."
                   rows={2}
                   maxLength={500}
@@ -812,9 +812,9 @@ export default function QuoteBuilderModal({
                 />
               </div>
 
-              <div className="bg-dark-bg-secondary rounded-lg p-3 border border-dark-border">
-                <p className="text-xs text-gray-500 mb-2">This template will include:</p>
-                <ul className="text-xs text-gray-400 space-y-1">
+              <div className="bg-light-100 rounded-lg p-3 border border-light-200">
+                <p className="text-xs text-text-tertiary mb-2">This template will include:</p>
+                <ul className="text-xs text-text-secondary space-y-1">
                   <li>• {lineItems.length} line item{lineItems.length !== 1 ? 's' : ''}</li>
                   <li>• Payment terms: {PAYMENT_TERMS_OPTIONS.find(o => o.value === paymentTerms)?.label}</li>
                   {terms && <li>• Terms & conditions</li>}
@@ -825,7 +825,7 @@ export default function QuoteBuilderModal({
             <div className="flex items-center justify-end gap-3 mt-6">
               <button
                 onClick={() => setShowSaveTemplateModal(false)}
-                className="px-4 py-2 text-gray-400 hover:bg-dark-card-hover rounded-lg transition"
+                className="px-4 py-2 text-text-secondary hover:bg-light-100 rounded-lg transition"
               >
                 Cancel
               </button>
@@ -898,7 +898,7 @@ function QuotePreview({
             <div className="flex items-center gap-3">
               <span className="text-2xl font-bold">KOLOR STUDIO</span>
             </div>
-            <div className="text-right text-sm text-brand-primary-light">
+            <div className="text-right text-sm text-purple-600">
               <p>Preview Mode</p>
               <p className="text-xs">This is what your client will see</p>
             </div>
@@ -908,7 +908,7 @@ function QuotePreview({
         {/* Preview Content */}
         <div className="flex-1 overflow-y-auto p-6">
           <div className="mb-6">
-            <p className="text-sm text-gray-500 mb-1">QUOTE FOR</p>
+            <p className="text-sm text-text-tertiary mb-1">QUOTE FOR</p>
             <h2 className="text-xl font-bold text-gray-900">{lead.projectTitle}</h2>
             <p className="text-gray-600">{lead.clientName}</p>
           </div>
@@ -917,10 +917,10 @@ function QuotePreview({
           <table className="w-full mb-6">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left py-2 text-sm font-medium text-gray-500">Description</th>
-                <th className="text-center py-2 text-sm font-medium text-gray-500 w-20">Qty</th>
-                <th className="text-right py-2 text-sm font-medium text-gray-500 w-24">Price</th>
-                <th className="text-right py-2 text-sm font-medium text-gray-500 w-24">Total</th>
+                <th className="text-left py-2 text-sm font-medium text-text-tertiary">Description</th>
+                <th className="text-center py-2 text-sm font-medium text-text-tertiary w-20">Qty</th>
+                <th className="text-right py-2 text-sm font-medium text-text-tertiary w-24">Price</th>
+                <th className="text-right py-2 text-sm font-medium text-text-tertiary w-24">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -959,17 +959,17 @@ function QuotePreview({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs text-gray-500 mb-1">PAYMENT TERMS</p>
+                <p className="text-xs text-text-tertiary mb-1">PAYMENT TERMS</p>
                 <p className="text-gray-900 font-medium">{paymentTermsLabel}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 mb-1">VALID UNTIL</p>
+                <p className="text-xs text-text-tertiary mb-1">VALID UNTIL</p>
                 <p className="text-gray-900 font-medium">{formatDate(validUntil)}</p>
               </div>
             </div>
             {terms && (
               <div>
-                <p className="text-xs text-gray-500 mb-1">TERMS & CONDITIONS</p>
+                <p className="text-xs text-text-tertiary mb-1">TERMS & CONDITIONS</p>
                 <p className="text-sm text-gray-600 whitespace-pre-wrap">{terms}</p>
               </div>
             )}

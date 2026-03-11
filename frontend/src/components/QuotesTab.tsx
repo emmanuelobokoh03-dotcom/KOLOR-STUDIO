@@ -186,10 +186,10 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
     switch (status) {
       case 'ACCEPTED': return <CheckCircle className="w-4 h-4 text-green-400" />;
       case 'DECLINED': return <XCircle className="w-4 h-4 text-red-400" />;
-      case 'VIEWED': return <Eye className="w-4 h-4 text-brand-primary-light" />;
-      case 'SENT': return <PaperPlaneTilt weight="bold" className="w-4 h-4 text-blue-400" />;
+      case 'VIEWED': return <Eye className="w-4 h-4 text-purple-600" />;
+      case 'SENT': return <PaperPlaneTilt weight="bold" className="w-4 h-4 text-blue-600" />;
       case 'EXPIRED': return <Clock className="w-4 h-4 text-orange-400" />;
-      default: return <FileText className="w-4 h-4 text-gray-400" />;
+      default: return <FileText className="w-4 h-4 text-text-secondary" />;
     }
   };
 
@@ -205,8 +205,8 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
     <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
-          <FileText className="w-4 h-4 text-brand-primary-light" />
+        <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
+          <FileText className="w-4 h-4 text-purple-600" />
           Quotes ({quotes.length})
         </h3>
         <button
@@ -229,8 +229,8 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
       {quotes.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 md:py-20 px-6 text-center" data-testid="quotes-empty-state">
           <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4B0;</div>
-          <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-2 md:mb-3">No quotes yet</h3>
-          <p className="text-sm md:text-base text-[#A3A3A3] max-w-md mb-5 md:mb-6 leading-relaxed">
+          <h3 className="text-xl md:text-2xl font-semibold text-text-primary mb-2 md:mb-3">No quotes yet</h3>
+          <p className="text-sm md:text-base text-text-secondary max-w-md mb-5 md:mb-6 leading-relaxed">
             Send a professional quote to lock in this project and get paid what you're worth.
           </p>
           <button
@@ -241,7 +241,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
             <FileText className="w-5 h-5" />
             Create Quotes
           </button>
-          <p className="text-xs text-gray-500 mt-4 max-w-sm">
+          <p className="text-xs text-text-tertiary mt-4 max-w-sm">
             <strong>Pro tip:</strong> Use quote templates to save time on similar projects.
           </p>
         </div>
@@ -252,7 +252,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
             return (
             <div
               key={quote.id}
-              className="bg-dark-bg-secondary rounded-xl p-4 border border-dark-border hover:border-brand-primary/30 transition"
+              className="bg-light-100 rounded-xl p-4 border border-light-200 hover:border-brand-primary/30 transition"
               data-testid={`quote-card-${quote.id}`}
             >
               <div className="flex items-start justify-between">
@@ -260,17 +260,17 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     {getStatusIcon(quote.status)}
-                    <span className="font-mono text-sm text-gray-400">{quote.quoteNumber}</span>
+                    <span className="font-mono text-sm text-text-secondary">{quote.quoteNumber}</span>
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${QUOTE_STATUS_COLORS[quote.status]}`}>
                       {QUOTE_STATUS_LABELS[quote.status]}
                     </span>
                   </div>
                   
-                  <div className="text-2xl font-bold text-white mb-2">
+                  <div className="text-2xl font-bold text-text-primary mb-2">
                     {formatCurrency(quote.total, currencySettings)}
                   </div>
                   
-                  <div className="flex items-center gap-4 text-sm text-gray-400">
+                  <div className="flex items-center gap-4 text-sm text-text-secondary">
                     <span>Created {formatDate(quote.createdAt)}</span>
                     <span>•</span>
                     <span>Valid until {formatDate(quote.validUntil)}</span>
@@ -292,7 +292,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
                     <div className="mt-2 text-sm text-red-400">
                       Declined on {formatDate(quote.declinedAt)}
                       {quote.declineReason && (
-                        <span className="block text-gray-400 mt-1">
+                        <span className="block text-text-secondary mt-1">
                           Reason: "{quote.declineReason}"
                         </span>
                       )}
@@ -306,7 +306,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
                     <>
                       <button
                         onClick={() => { setEditingQuote(quote); setShowBuilder(true); }}
-                        className="p-2 text-gray-400 hover:text-brand-primary-light hover:bg-brand-primary-dark/30 rounded-lg transition"
+                        className="p-2 text-text-secondary hover:text-purple-600 hover:bg-purple-50 rounded-lg transition"
                         title="Edit"
                       >
                         <PencilSimple className="w-4 h-4" />
@@ -333,7 +333,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
                       className={`flex items-center gap-2 px-3 py-2 rounded-lg transition text-sm font-medium ${
                         copiedId === quote.id
                           ? 'bg-green-600 text-white'
-                          : 'border border-dark-border text-gray-300 hover:bg-dark-card-hover'
+                          : 'border border-light-200 text-text-secondary hover:bg-light-100'
                       }`}
                     >
                       {copiedId === quote.id ? (
@@ -354,18 +354,18 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
                   <div className="relative">
                     <button
                       onClick={() => setMenuOpenId(menuOpenId === quote.id ? null : quote.id)}
-                      className="p-2 text-gray-400 hover:bg-dark-card-hover rounded-lg transition"
+                      className="p-2 text-text-secondary hover:bg-light-100 rounded-lg transition"
                     >
                       <DotsThree className="w-4 h-4" />
                     </button>
                     
                     {menuOpenId === quote.id && (
-                      <div className="absolute right-0 top-10 bg-dark-card rounded-lg shadow-xl border border-dark-border py-1 z-10 min-w-[150px]">
+                      <div className="absolute right-0 top-10 bg-white rounded-lg shadow-xl border border-light-200 py-1 z-10 min-w-[150px]">
                         <a
                           href={`/quote/${quote.quoteToken}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full px-4 py-2 text-left text-sm hover:bg-dark-card-hover text-gray-300 flex items-center gap-2"
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-light-100 text-text-secondary flex items-center gap-2"
                         >
                           <ArrowSquareOut className="w-4 h-4" /> View Quotes
                         </a>
@@ -374,26 +374,26 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
                             quotesApi.downloadPdf(quote.id);
                             setMenuOpenId(null);
                           }}
-                          className="w-full px-4 py-2 text-left text-sm hover:bg-dark-card-hover text-gray-300 flex items-center gap-2"
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-light-100 text-text-secondary flex items-center gap-2"
                         >
                           <DownloadSimple weight="bold" className="w-4 h-4" /> Download PDF
                         </button>
                         <button
                           onClick={() => handleCopyLink(quote)}
-                          className="w-full px-4 py-2 text-left text-sm hover:bg-dark-card-hover text-gray-300 flex items-center gap-2"
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-light-100 text-text-secondary flex items-center gap-2"
                         >
                           <Copy className="w-4 h-4" /> Copy Link
                         </button>
                         <button
                           onClick={() => handleDuplicateQuote(quote.id)}
-                          className="w-full px-4 py-2 text-left text-sm hover:bg-dark-card-hover text-gray-300 flex items-center gap-2"
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-light-100 text-text-secondary flex items-center gap-2"
                         >
                           <FileText className="w-4 h-4" /> Duplicate
                         </button>
                         {(quote.status === 'SENT' || quote.status === 'VIEWED') && (
                           <button
                             onClick={() => { setMenuOpenId(null); handleSendQuoteClick(quote); }}
-                            className="w-full px-4 py-2 text-left text-sm hover:bg-dark-card-hover text-gray-300 flex items-center gap-2"
+                            className="w-full px-4 py-2 text-left text-sm hover:bg-light-100 text-text-secondary flex items-center gap-2"
                             data-testid={`resend-quote-${quote.id}`}
                           >
                             <PaperPlaneTilt weight="bold" className="w-4 h-4" /> Resend
@@ -403,7 +403,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
                           <button
                             onClick={() => handleDeleteQuote(quote.id)}
                             disabled={deletingId === quote.id}
-                            className="w-full px-4 py-2 text-left text-sm hover:bg-red-900/30 text-red-400 flex items-center gap-2"
+                            className="w-full px-4 py-2 text-left text-sm hover:bg-red-50 text-red-400 flex items-center gap-2"
                           >
                             {deletingId === quote.id ? (
                               <SpinnerGap className="w-4 h-4 animate-spin" />

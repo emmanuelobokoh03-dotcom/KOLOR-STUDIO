@@ -55,24 +55,24 @@ import { trackLogout, trackViewChanged } from '../utils/analytics'
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
 
 const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
-  NEW: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
-  REVIEWING: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
-  CONTACTED: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
-  QUALIFIED: 'bg-indigo-900/30 text-indigo-300 border border-indigo-700/50',
-  QUOTED: 'bg-brand-accent-dark/30 text-brand-accent-light border border-brand-accent-dark/50',
-  NEGOTIATING: 'bg-blue-900/30 text-blue-300 border border-blue-700/50',
-  BOOKED: 'bg-emerald-900/30 text-emerald-300 border border-emerald-700/50',
-  LOST: 'bg-slate-900/30 text-slate-400 border border-slate-700/50',
+  NEW: 'bg-blue-50 text-blue-700 border border-blue-200',
+  REVIEWING: 'bg-purple-50 text-purple-700 border border-purple-200',
+  CONTACTED: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+  QUALIFIED: 'bg-violet-50 text-violet-700 border border-violet-200',
+  QUOTED: 'bg-amber-50 text-amber-700 border border-amber-200',
+  NEGOTIATING: 'bg-sky-50 text-sky-700 border border-sky-200',
+  BOOKED: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  LOST: 'bg-gray-100 text-text-tertiary border border-gray-200',
 };
 
 // Skeleton components for loading states
 const StatCardSkeleton = () => (
-  <div className="bg-[#1A1A1A] rounded-xl p-4 md:p-6 border border-[#333] animate-pulse">
+  <div className="bg-light-50 rounded-xl p-4 md:p-6 border border-light-200 animate-pulse">
     <div className="flex items-center gap-3 md:gap-4">
-      <div className="w-10 h-10 md:w-12 md:h-12 bg-[#333] rounded-xl" />
+      <div className="w-10 h-10 md:w-12 md:h-12 bg-light-200 rounded-xl" />
       <div className="space-y-2">
-        <div className="h-6 md:h-7 w-12 md:w-16 bg-[#333] rounded-md" />
-        <div className="h-3 md:h-4 w-16 md:w-24 bg-[#2a2a2a] rounded-md" />
+        <div className="h-6 md:h-7 w-12 md:w-16 bg-light-200 rounded-md" />
+        <div className="h-3 md:h-4 w-16 md:w-24 bg-light-100 rounded-md" />
       </div>
     </div>
   </div>
@@ -81,14 +81,14 @@ const StatCardSkeleton = () => (
 const KanbanSkeleton = () => (
   <div className="space-y-4 md:flex md:gap-5 md:space-y-0 overflow-x-auto pb-4">
     {[1, 2, 3].map((i) => (
-      <div key={i} className="flex-shrink-0 w-full md:w-72 rounded-xl border-2 border-[#333] bg-[#1A1A1A] animate-pulse">
-        <div className="h-12 bg-[#333] rounded-t-lg" />
+      <div key={i} className="flex-shrink-0 w-full md:w-72 rounded-xl border-2 border-light-200 bg-light-50 animate-pulse">
+        <div className="h-12 bg-light-200 rounded-t-lg" />
         <div className="p-4 space-y-4">
           {[1, 2].map((j) => (
-            <div key={j} className="bg-[#1f1f1f] rounded-lg p-4 space-y-3 border border-[#333]">
-              <div className="h-24 md:h-32 bg-[#2a2a2a] rounded-lg" />
-              <div className="h-4 w-3/4 bg-[#333] rounded" />
-              <div className="h-3 w-1/2 bg-[#2a2a2a] rounded" />
+            <div key={j} className="bg-light-50 rounded-lg p-4 space-y-3 border border-light-200">
+              <div className="h-24 md:h-32 bg-light-100 rounded-lg" />
+              <div className="h-4 w-3/4 bg-light-200 rounded" />
+              <div className="h-3 w-1/2 bg-light-100 rounded" />
             </div>
           ))}
         </div>
@@ -286,19 +286,19 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0F0F0F]">
-        <header className="bg-[#1A1A1A] border-b border-[#333] sticky top-0 z-40">
+      <div className="min-h-screen bg-white">
+        <header className="bg-light-50 border-b border-light-200 sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-7 h-7 md:w-8 md:h-8 bg-[#333] rounded-lg animate-pulse" />
-              <div className="w-28 md:w-32 h-6 bg-[#333] rounded-lg animate-pulse" />
+              <div className="w-7 h-7 md:w-8 md:h-8 bg-light-200 rounded-lg animate-pulse" />
+              <div className="w-28 md:w-32 h-6 bg-light-200 rounded-lg animate-pulse" />
             </div>
           </div>
         </header>
         <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8 pb-24 lg:pb-8">
           <div className="space-y-2 animate-pulse">
-            <div className="h-7 md:h-8 w-48 md:w-64 bg-[#333] rounded-lg" />
-            <div className="h-4 md:h-5 w-36 md:w-48 bg-[#2a2a2a] rounded-lg" />
+            <div className="h-7 md:h-8 w-48 md:w-64 bg-light-200 rounded-lg" />
+            <div className="h-4 md:h-5 w-36 md:w-48 bg-light-100 rounded-lg" />
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
             {[1, 2, 3, 4].map(i => <StatCardSkeleton key={i} />)}
@@ -310,7 +310,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F]">
+    <div className="min-h-screen bg-white">
       <AnnouncementBanner />
       <EmailVerificationBanner user={user} />
 
@@ -320,13 +320,13 @@ const Dashboard = () => {
       )}
 
       {/* Header */}
-      <header className="bg-[#1A1A1A] border-b border-[#333] sticky top-0 z-40">
+      <header className="bg-light-50 border-b border-light-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-5 flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3">
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2 text-[#A3A3A3] hover:text-white hover:bg-[#262626] rounded-xl transition-all duration-200 lg:hidden touch-target"
+              className="p-2 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl transition-all duration-200 lg:hidden touch-target"
               data-testid="mobile-menu-button"
             >
               <ListIcon className="w-5 h-5" />
@@ -347,14 +347,14 @@ const Dashboard = () => {
             </button>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
-            <span className="text-sm text-[#A3A3A3] hidden lg:inline" data-testid="user-greeting">
+            <span className="text-sm text-text-secondary hidden lg:inline" data-testid="user-greeting">
               {user?.studioName || `${user?.firstName}'s Studio`}
             </span>
             <div className="hidden lg:flex items-center gap-2">
               <HelpMenu onOpenFeedback={() => setShowFeedback(true)} />
               <button
                 onClick={() => setShowSettings(true)}
-                className="p-2.5 text-[#A3A3A3] hover:text-white hover:bg-[#262626] rounded-xl transition-all duration-200"
+                className="p-2.5 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl transition-all duration-200"
                 data-testid="settings-button"
                 title="Settings"
               >
@@ -363,7 +363,7 @@ const Dashboard = () => {
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 text-[#A3A3A3] hover:text-white hover:bg-[#262626] rounded-xl transition-all duration-200 touch-target"
+              className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
               data-testid="logout-button"
             >
               <SignOut className="w-4 h-4" />
@@ -377,9 +377,9 @@ const Dashboard = () => {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden" data-testid="mobile-sidebar">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#1A1A1A] border-r border-[#333] animate-slide-left flex flex-col">
+          <div className="absolute left-0 top-0 bottom-0 w-72 bg-light-50 border-r border-light-200 animate-slide-left flex flex-col">
             {/* Sidebar Header */}
-            <div className="flex items-center justify-between p-4 border-b border-[#333]">
+            <div className="flex items-center justify-between p-4 border-b border-light-200">
               <div className="flex items-center gap-2">
                 <Sparkle className="w-6 h-6 text-brand-primary" />
                 <span className="font-bold text-lg bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
@@ -388,16 +388,16 @@ const Dashboard = () => {
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-[#A3A3A3] hover:text-white hover:bg-[#262626] rounded-xl touch-target"
+                className="p-2 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl touch-target"
                 data-testid="close-mobile-menu"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             {/* User */}
-            <div className="px-4 py-4 border-b border-[#333]">
-              <p className="text-sm font-medium text-[#FAFAFA]">{user?.firstName} {user?.lastName}</p>
-              <p className="text-xs text-[#A3A3A3] mt-0.5">{user?.studioName || `${user?.firstName}'s Studio`}</p>
+            <div className="px-4 py-4 border-b border-light-200">
+              <p className="text-sm font-medium text-text-primary">{user?.firstName} {user?.lastName}</p>
+              <p className="text-xs text-text-secondary mt-0.5">{user?.studioName || `${user?.firstName}'s Studio`}</p>
             </div>
             {/* Nav items */}
             <div className="flex-1 overflow-y-auto py-2">
@@ -415,7 +415,7 @@ const Dashboard = () => {
                   className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 touch-target ${
                     viewMode === mode
                       ? 'text-brand-primary bg-brand-primary/10 border-r-2 border-brand-primary'
-                      : 'text-[#A3A3A3] hover:bg-[#262626] hover:text-white'
+                      : 'text-text-secondary hover:bg-light-100 hover:text-text-primary'
                   }`}
                   data-testid={`sidebar-${mode}`}
                 >
@@ -425,16 +425,16 @@ const Dashboard = () => {
               ))}
             </div>
             {/* Sidebar Footer */}
-            <div className="p-4 border-t border-[#333] space-y-2">
+            <div className="p-4 border-t border-light-200 space-y-2">
               <button
                 onClick={() => { setShowSettings(true); setMobileMenuOpen(false); }}
-                className="w-full flex items-center gap-3 px-3 py-3 text-sm text-[#A3A3A3] hover:bg-[#262626] rounded-xl transition-all duration-200 touch-target"
+                className="w-full flex items-center gap-3 px-3 py-3 text-sm text-text-secondary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
               >
                 <GearSix weight="regular" className="w-5 h-5" /> Settings
               </button>
               <button
                 onClick={() => { setShowFeedback(true); setMobileMenuOpen(false); }}
-                className="w-full flex items-center gap-3 px-3 py-3 text-sm text-[#A3A3A3] hover:bg-[#262626] rounded-xl transition-all duration-200 touch-target"
+                className="w-full flex items-center gap-3 px-3 py-3 text-sm text-text-secondary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
               >
                 <Envelope className="w-5 h-5" /> Feedback
               </button>
@@ -449,19 +449,19 @@ const Dashboard = () => {
         <div className="mb-4 md:mb-8" data-testid="welcome-section">
           {isFirstLogin ? (
             <div className="animate-fade-in">
-              <h1 className="text-2xl md:text-3xl font-bold text-[#FAFAFA]" data-testid="welcome-first-login">
+              <h1 className="text-2xl md:text-3xl font-bold text-text-primary" data-testid="welcome-first-login">
                 Welcome to KOLOR STUDIO, {user?.firstName}!
               </h1>
-              <p className="text-sm md:text-base text-[#A3A3A3] mt-1 md:mt-2">
+              <p className="text-sm md:text-base text-text-secondary mt-1 md:mt-2">
                 Your creative workspace is ready. Start by adding your first lead or sharing your inquiry form.
               </p>
             </div>
           ) : (
             <div className="animate-fade-in">
-              <h1 className="text-2xl md:text-3xl font-bold text-[#FAFAFA]" data-testid="welcome-back">
+              <h1 className="text-2xl md:text-3xl font-bold text-text-primary" data-testid="welcome-back">
                 {getGreeting()}, {user?.firstName}
               </h1>
-              <p className="text-xs md:text-sm text-[#A3A3A3] mt-1">{formatCurrentDate()}</p>
+              <p className="text-xs md:text-sm text-text-secondary mt-1">{formatCurrentDate()}</p>
             </div>
           )}
         </div>
@@ -537,15 +537,15 @@ const Dashboard = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
           {([
-            { key: null, label: 'Total Leads', count: stats?.total || 0, icon: Users, iconBg: 'bg-brand-primary-dark/50 border-brand-primary-dark/50', iconColor: 'text-brand-primary-light', testId: 'stat-total-leads' },
-            { key: 'NEW', label: 'New Leads', count: stats?.statusCounts?.NEW || 0, icon: TrendUp, iconBg: 'bg-brand-primary-dark/50 border-brand-primary-dark/50', iconColor: 'text-brand-primary-light', testId: 'stat-new-leads' },
-            { key: 'QUOTED', label: 'Quoted', count: stats?.statusCounts?.QUOTED || 0, icon: CalendarBlank, iconBg: 'bg-brand-accent-dark/50 border-brand-accent-dark/50', iconColor: 'text-brand-accent-light', testId: 'stat-quoted' },
-            { key: 'BOOKED', label: 'Booked', count: stats?.statusCounts?.BOOKED || 0, icon: CurrencyDollar, iconBg: 'bg-emerald-900/50 border-emerald-700/50', iconColor: 'text-emerald-400', testId: 'stat-booked' },
+            { key: null, label: 'Total Leads', count: stats?.total || 0, icon: Users, iconBg: 'bg-purple-50 border-purple-200', iconColor: 'text-purple-500', testId: 'stat-total-leads' },
+            { key: 'NEW', label: 'New Leads', count: stats?.statusCounts?.NEW || 0, icon: TrendUp, iconBg: 'bg-blue-50 border-blue-200', iconColor: 'text-blue-500', testId: 'stat-new-leads' },
+            { key: 'QUOTED', label: 'Quoted', count: stats?.statusCounts?.QUOTED || 0, icon: CalendarBlank, iconBg: 'bg-amber-50 border-amber-200', iconColor: 'text-amber-500', testId: 'stat-quoted' },
+            { key: 'BOOKED', label: 'Booked', count: stats?.statusCounts?.BOOKED || 0, icon: CurrencyDollar, iconBg: 'bg-emerald-50 border-emerald-200', iconColor: 'text-emerald-500', testId: 'stat-booked' },
           ]).map(({ key, label, count, icon: Icon, iconBg, iconColor, testId }) => (
             <div
               key={testId}
-              className={`bg-[#1A1A1A] rounded-xl p-4 md:p-6 border cursor-pointer hover:border-brand-primary/50 transition-all duration-200 group hover:shadow-lg hover:shadow-brand-primary/5 active:scale-[0.98] ${
-                statusFilter === key ? `border-brand-primary bg-brand-primary/10` : 'border-[#333]'
+              className={`bg-light-50 rounded-xl p-4 md:p-6 border cursor-pointer hover:border-purple-300 transition-all duration-200 group hover:shadow-lg hover:shadow-brand-primary/5 active:scale-[0.98] ${
+                statusFilter === key ? `border-brand-primary bg-brand-primary/10` : 'border-light-200'
               }`}
               onClick={() => key === null ? clearStatusFilter() : handleFilterByStatus(statusFilter === key ? null : key)}
               data-testid={testId}
@@ -555,8 +555,8 @@ const Dashboard = () => {
                   <Icon weight="duotone" className={`w-4 h-4 md:w-5 md:h-5 ${iconColor}`} />
                 </div>
                 <div>
-                  <p className="text-xl md:text-2xl font-bold text-[#FAFAFA]">{count}</p>
-                  <p className="text-xs md:text-sm text-[#A3A3A3]">{label}</p>
+                  <p className="text-xl md:text-2xl font-bold text-text-primary">{count}</p>
+                  <p className="text-xs md:text-sm text-text-secondary">{label}</p>
                 </div>
               </div>
             </div>
@@ -564,17 +564,17 @@ const Dashboard = () => {
         </div>
 
         {/* Toolbar */}
-        <div className="bg-[#1A1A1A] rounded-xl border border-[#333] p-3 md:p-5 mb-4 md:mb-8">
+        <div className="bg-light-50 rounded-xl border border-light-200 p-3 md:p-5 mb-4 md:mb-8">
           {/* Mobile toolbar */}
           <div className="flex items-center gap-2 md:gap-3">
             <div className="relative flex-1">
-              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
               <input
                 type="text"
                 placeholder="Search leads..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent text-white placeholder-gray-500 transition-all duration-200 text-sm"
+                className="w-full pl-9 pr-3 py-2.5 bg-white border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-text-primary placeholder-gray-400 transition-all duration-200 text-sm"
                 data-testid="search-input"
               />
             </div>
@@ -583,7 +583,7 @@ const Dashboard = () => {
             <button
               onClick={() => setShowMobileFilters(!showMobileFilters)}
               className={`p-2.5 rounded-xl border transition-all duration-200 touch-target md:hidden relative ${
-                activeFilterCount > 0 ? 'border-brand-primary bg-brand-primary-dark/20 text-brand-primary-light' : 'border-[#333] text-[#A3A3A3]'
+                activeFilterCount > 0 ? 'border-brand-primary bg-purple-50 text-purple-600' : 'border-light-200 text-text-secondary'
               }`}
               data-testid="mobile-filter-toggle"
             >
@@ -597,14 +597,14 @@ const Dashboard = () => {
 
             <button
               onClick={handleRefresh}
-              className="p-2.5 hover:bg-[#262626] rounded-xl transition-all duration-200 touch-target hidden md:flex"
+              className="p-2.5 hover:bg-light-100 rounded-xl transition-all duration-200 touch-target hidden md:flex"
               disabled={refreshing}
             >
-              <ArrowsClockwise className={`w-5 h-5 text-[#A3A3A3] ${refreshing ? 'animate-spin' : ''}`} />
+              <ArrowsClockwise className={`w-5 h-5 text-text-secondary ${refreshing ? 'animate-spin' : ''}`} />
             </button>
 
             {/* Desktop view toggles */}
-            <div className="hidden md:flex bg-[#0F0F0F] rounded-xl p-1 border border-[#333]">
+            <div className="hidden md:flex bg-white rounded-xl p-1 border border-light-200">
               {([
                 { mode: 'kanban' as ViewMode, icon: SquaresFour, title: 'Pipeline View' },
                 { mode: 'list' as ViewMode, icon: ListIcon, title: 'List View' },
@@ -616,7 +616,7 @@ const Dashboard = () => {
                 <button
                   key={mode}
                   onClick={() => handleViewChange(mode)}
-                  className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === mode ? 'bg-[#1A1A1A] shadow-sm text-brand-primary' : 'text-[#A3A3A3] hover:text-white'}`}
+                  className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === mode ? 'bg-purple-50 shadow-sm text-purple-500' : 'text-text-secondary hover:text-text-primary'}`}
                   data-testid={`view-${mode}`}
                   data-tour={mode === 'portfolio' ? 'view-portfolio' : mode === 'calendar' ? 'view-calendar' : undefined}
                   title={title}
@@ -630,7 +630,7 @@ const Dashboard = () => {
             <select
               value={projectTypeFilter}
               onChange={(e) => setProjectTypeFilter(e.target.value)}
-              className="hidden md:block px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3] focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all duration-200"
+              className="hidden md:block px-3 py-2.5 bg-white border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
               data-testid="filter-project-type"
             >
               <option value="">All Types</option>
@@ -641,7 +641,7 @@ const Dashboard = () => {
             <select
               value={industryFilter}
               onChange={(e) => setIndustryFilter(e.target.value)}
-              className="hidden lg:block px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3] focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all duration-200"
+              className="hidden lg:block px-3 py-2.5 bg-white border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
               data-testid="filter-industry"
             >
               <option value="">All Industries</option>
@@ -652,7 +652,7 @@ const Dashboard = () => {
 
             <button
               onClick={() => setShowShareModal(true)}
-              className="hidden md:flex items-center gap-2 px-4 py-2.5 border border-brand-primary text-brand-primary-light rounded-xl hover:bg-brand-primary-dark/30 transition-all duration-200 font-medium text-sm"
+              className="hidden md:flex items-center gap-2 px-4 py-2.5 border border-brand-primary text-purple-600 rounded-xl hover:bg-purple-50 transition-all duration-200 font-medium text-sm"
               data-testid="share-form-button"
             >
               <LinkIcon className="w-4 h-4" />
@@ -671,31 +671,31 @@ const Dashboard = () => {
 
           {/* Mobile filters dropdown */}
           {showMobileFilters && (
-            <div className="mt-3 pt-3 border-t border-[#333] space-y-3 md:hidden animate-fade-in">
+            <div className="mt-3 pt-3 border-t border-light-200 space-y-3 md:hidden animate-fade-in">
               {/* Active filter tags */}
               {activeFilterCount > 0 && (
                 <div className="flex items-center gap-2 flex-wrap">
                   {statusFilter && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary-dark/30 border border-brand-primary-dark/50 rounded-lg">
-                      <span className="text-xs text-brand-primary-light font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
-                      <button onClick={clearStatusFilter} className="p-0.5 hover:bg-brand-primary-dark/50 rounded" data-testid="clear-filter">
-                        <X className="w-3 h-3 text-brand-primary-light" />
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 border border-purple-200 rounded-lg">
+                      <span className="text-xs text-purple-700 font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
+                      <button onClick={clearStatusFilter} className="p-0.5 hover:bg-purple-100 rounded" data-testid="clear-filter">
+                        <X className="w-3 h-3 text-purple-500" />
                       </button>
                     </div>
                   )}
                   {projectTypeFilter && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-900/30 border border-blue-700/50 rounded-lg">
-                      <span className="text-xs text-blue-300 font-medium">{PROJECT_TYPE_LABELS[projectTypeFilter as ProjectType]}</span>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">
+                      <span className="text-xs text-blue-700 font-medium">{PROJECT_TYPE_LABELS[projectTypeFilter as ProjectType]}</span>
                       <button onClick={() => setProjectTypeFilter('')} className="p-0.5">
-                        <X className="w-3 h-3 text-blue-400" />
+                        <X className="w-3 h-3 text-blue-500" />
                       </button>
                     </div>
                   )}
                   {industryFilter && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-900/30 border border-amber-700/50 rounded-lg">
-                      <span className="text-xs text-amber-300 font-medium">{INDUSTRY_TYPE_LABELS[industryFilter as IndustryType]}</span>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg">
+                      <span className="text-xs text-amber-700 font-medium">{INDUSTRY_TYPE_LABELS[industryFilter as IndustryType]}</span>
                       <button onClick={() => setIndustryFilter('')} className="p-0.5">
-                        <X className="w-3 h-3 text-amber-400" />
+                        <X className="w-3 h-3 text-amber-500" />
                       </button>
                     </div>
                   )}
@@ -705,7 +705,7 @@ const Dashboard = () => {
                 <select
                   value={projectTypeFilter}
                   onChange={(e) => setProjectTypeFilter(e.target.value)}
-                  className="px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3]"
+                  className="px-3 py-2.5 bg-white border border-light-200 rounded-xl text-sm text-text-secondary"
                   data-testid="mobile-filter-project-type"
                 >
                   <option value="">All Types</option>
@@ -716,7 +716,7 @@ const Dashboard = () => {
                 <select
                   value={industryFilter}
                   onChange={(e) => setIndustryFilter(e.target.value)}
-                  className="px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-[#A3A3A3]"
+                  className="px-3 py-2.5 bg-white border border-light-200 rounded-xl text-sm text-text-secondary"
                   data-testid="mobile-filter-industry"
                 >
                   <option value="">All Industries</option>
@@ -728,7 +728,7 @@ const Dashboard = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-brand-primary text-brand-primary-light rounded-xl text-sm font-medium touch-target"
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-brand-primary text-purple-600 rounded-xl text-sm font-medium touch-target"
                   data-testid="mobile-share-form"
                 >
                   <LinkIcon className="w-4 h-4" /> Share Form
@@ -739,28 +739,28 @@ const Dashboard = () => {
 
           {/* Desktop active filter tags */}
           {activeFilterCount > 0 && (
-            <div className="hidden md:flex items-center gap-2 flex-wrap mt-3 pt-3 border-t border-[#333]">
+            <div className="hidden md:flex items-center gap-2 flex-wrap mt-3 pt-3 border-t border-light-200">
               {statusFilter && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary-dark/30 border border-brand-primary-dark/50 rounded-lg">
-                  <span className="text-xs text-brand-primary-light font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
-                  <button onClick={clearStatusFilter} className="p-0.5 hover:bg-brand-primary-dark/50 rounded" data-testid="clear-filter-desktop">
-                    <X className="w-3.5 h-3.5 text-brand-primary-light" />
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 border border-purple-200 rounded-lg">
+                  <span className="text-xs text-purple-700 font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
+                  <button onClick={clearStatusFilter} className="p-0.5 hover:bg-purple-100 rounded" data-testid="clear-filter-desktop">
+                    <X className="w-3.5 h-3.5 text-purple-500" />
                   </button>
                 </div>
               )}
               {projectTypeFilter && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-900/30 border border-blue-700/50 rounded-lg">
-                  <span className="text-xs text-blue-300 font-medium">{PROJECT_TYPE_LABELS[projectTypeFilter as ProjectType]}</span>
-                  <button onClick={() => setProjectTypeFilter('')} className="p-0.5 hover:bg-blue-800/50 rounded" data-testid="clear-project-type-filter">
-                    <X className="w-3.5 h-3.5 text-blue-400" />
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">
+                  <span className="text-xs text-blue-700 font-medium">{PROJECT_TYPE_LABELS[projectTypeFilter as ProjectType]}</span>
+                  <button onClick={() => setProjectTypeFilter('')} className="p-0.5 hover:bg-blue-100 rounded" data-testid="clear-project-type-filter">
+                    <X className="w-3.5 h-3.5 text-blue-500" />
                   </button>
                 </div>
               )}
               {industryFilter && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-900/30 border border-amber-700/50 rounded-lg">
-                  <span className="text-xs text-amber-300 font-medium">{INDUSTRY_TYPE_LABELS[industryFilter as IndustryType]}</span>
-                  <button onClick={() => setIndustryFilter('')} className="p-0.5 hover:bg-amber-800/50 rounded" data-testid="clear-industry-filter">
-                    <X className="w-3.5 h-3.5 text-amber-400" />
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg">
+                  <span className="text-xs text-amber-700 font-medium">{INDUSTRY_TYPE_LABELS[industryFilter as IndustryType]}</span>
+                  <button onClick={() => setIndustryFilter('')} className="p-0.5 hover:bg-amber-100 rounded" data-testid="clear-industry-filter">
+                    <X className="w-3.5 h-3.5 text-amber-500" />
                   </button>
                 </div>
               )}
@@ -790,20 +790,20 @@ const Dashboard = () => {
         ) : viewMode === 'portfolio' ? (
           <PortfolioPage user={user} />
         ) : filteredLeads.length === 0 && !loading ? (
-          <div className="bg-[#1A1A1A] rounded-xl border border-[#333] p-6 md:p-12">
+          <div className="bg-light-50 rounded-xl border border-light-200 p-6 md:p-12">
             <div className="flex flex-col items-center justify-center py-4 md:py-8 px-4 text-center" data-testid="dashboard-empty-state">
               <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F3A8;</div>
-              <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-2 md:mb-3">Your creative projects start here</h3>
-              <p className="text-sm md:text-base text-[#A3A3A3] max-w-md mb-6 md:mb-8 leading-relaxed">
+              <h3 className="text-xl md:text-2xl font-semibold text-text-primary mb-2 md:mb-3">Your creative projects start here</h3>
+              <p className="text-sm md:text-base text-text-secondary max-w-md mb-6 md:mb-8 leading-relaxed">
                 Create your first project to track communications, send quotes, collect testimonials, share files, and watch your income grow.
               </p>
-              <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 mb-6 md:mb-8 border border-[#333] w-full max-w-md">
+              <div className="bg-white rounded-xl p-4 md:p-5 mb-6 md:mb-8 border border-light-200 w-full max-w-md">
                 <div className="flex items-center gap-2 mb-3 md:mb-4">
                   <input
                     type="text"
                     value={`${window.location.origin}/inquiry`}
                     readOnly
-                    className="flex-1 px-3 md:px-4 py-2.5 bg-[#1A1A1A] border border-[#333] rounded-xl text-[#A3A3A3] text-sm min-w-0"
+                    className="flex-1 px-3 md:px-4 py-2.5 bg-light-50 border border-light-200 rounded-xl text-text-secondary text-sm min-w-0"
                   />
                   <button
                     onClick={() => navigator.clipboard.writeText(`${window.location.origin}/inquiry`)}
@@ -821,18 +821,18 @@ const Dashboard = () => {
                       const body = encodeURIComponent(`Hi,\n\nPlease submit your details through this form:\n\n${window.location.origin}/inquiry\n\nLooking forward to working with you!`);
                       window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
                     }}
-                    className="flex-1 px-3 py-2.5 border border-[#333] text-[#A3A3A3] rounded-xl hover:bg-[#262626] text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
+                    className="flex-1 px-3 py-2.5 border border-light-200 text-text-secondary rounded-xl hover:bg-light-100 text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
                     data-testid="empty-email-link"
                   >
-                    <Envelope className="w-4 h-4 text-brand-primary-light" />
+                    <Envelope className="w-4 h-4 text-purple-600" />
                     <span className="hidden sm:inline">Email Link</span>
                   </button>
                   <button
                     onClick={() => setShowShareModal(true)}
-                    className="flex-1 px-3 py-2.5 border border-[#333] text-[#A3A3A3] rounded-xl hover:bg-[#262626] text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
+                    className="flex-1 px-3 py-2.5 border border-light-200 text-text-secondary rounded-xl hover:bg-light-100 text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
                     data-testid="empty-more-options"
                   >
-                    <LinkIcon className="w-4 h-4 text-brand-primary-light" />
+                    <LinkIcon className="w-4 h-4 text-purple-600" />
                     <span className="hidden sm:inline">More Options</span>
                   </button>
                 </div>
@@ -844,7 +844,7 @@ const Dashboard = () => {
               >
                 Create Your First Project
               </button>
-              <p className="text-xs text-gray-500 mt-4 max-w-sm">
+              <p className="text-xs text-text-tertiary mt-4 max-w-sm">
                 <strong>Pro tip:</strong> Start with a real client project for the best experience. You can always delete it later!
               </p>
             </div>
@@ -860,39 +860,39 @@ const Dashboard = () => {
           </div>
         ) : (
           /* List view with responsive table */
-          <div className="bg-[#1A1A1A] rounded-xl border border-[#333] overflow-hidden">
+          <div className="bg-light-50 rounded-xl border border-light-200 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[500px]">
-                <thead className="bg-[#0F0F0F] border-b border-[#333]">
+                <thead className="bg-white border-b border-light-200">
                   <tr>
-                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Client</th>
-                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Project</th>
-                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Status</th>
-                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider hidden sm:table-cell">Date</th>
+                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Client</th>
+                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Project</th>
+                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
+                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider hidden sm:table-cell">Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#333]">
+                <tbody className="divide-y divide-light-200">
                   {filteredLeads.map((lead) => (
                     <tr 
                       key={lead.id} 
-                      className="hover:bg-[#262626] cursor-pointer transition-all duration-200 active:bg-[#333]"
+                      className="hover:bg-light-100 cursor-pointer transition-all duration-200 active:bg-light-200"
                       onClick={() => setSelectedLead(lead)}
                       data-testid={`lead-row-${lead.id}`}
                     >
                       <td className="px-4 md:px-6 py-3 md:py-5">
-                        <p className="font-medium text-[#FAFAFA] text-sm">{lead.clientName}</p>
-                        <p className="text-xs text-[#A3A3A3] truncate max-w-[120px] md:max-w-none">{lead.clientEmail}</p>
+                        <p className="font-medium text-text-primary text-sm">{lead.clientName}</p>
+                        <p className="text-xs text-text-secondary truncate max-w-[120px] md:max-w-none">{lead.clientEmail}</p>
                       </td>
                       <td className="px-4 md:px-6 py-3 md:py-5">
-                        <p className="font-medium text-[#FAFAFA] text-sm truncate max-w-[120px] md:max-w-none">{lead.projectTitle}</p>
-                        <p className="text-xs text-[#A3A3A3]">{lead.budget || 'No budget'}</p>
+                        <p className="font-medium text-text-primary text-sm truncate max-w-[120px] md:max-w-none">{lead.projectTitle}</p>
+                        <p className="text-xs text-text-secondary">{lead.budget || 'No budget'}</p>
                       </td>
                       <td className="px-4 md:px-6 py-3 md:py-5">
                         <span className={`px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-medium ${DARK_STATUS_COLORS[lead.status]}`}>
                           {LEAD_STATUS_LABELS[lead.status]}
                         </span>
                       </td>
-                      <td className="px-4 md:px-6 py-3 md:py-5 text-sm text-[#A3A3A3] hidden sm:table-cell">
+                      <td className="px-4 md:px-6 py-3 md:py-5 text-sm text-text-secondary hidden sm:table-cell">
                         {new Date(lead.createdAt).toLocaleDateString()}
                       </td>
                     </tr>

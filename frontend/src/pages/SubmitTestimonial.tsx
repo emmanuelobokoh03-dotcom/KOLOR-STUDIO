@@ -81,7 +81,7 @@ export default function SubmitTestimonial() {
         </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-3">Thank You!</h1>
         <p className="text-gray-600 mb-2">Your testimonial has been submitted and is being reviewed.</p>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-text-secondary">
           {request?.user?.studioName || 'The studio'} appreciates your feedback!
         </p>
       </div>
@@ -103,7 +103,7 @@ export default function SubmitTestimonial() {
             </div>
           )}
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Share Your Experience</h1>
-          <p className="text-gray-500">
+          <p className="text-text-tertiary">
             How was your experience with <span className="font-semibold" style={{ color: primary }}>{studioName}</span>?
           </p>
         </div>
@@ -134,7 +134,7 @@ export default function SubmitTestimonial() {
               ))}
             </div>
             {rating > 0 && (
-              <p className="text-center text-sm text-gray-500 mt-2">
+              <p className="text-center text-sm text-text-tertiary mt-2">
                 {['', 'Poor', 'Fair', 'Good', 'Great', 'Exceptional'][rating]}
               </p>
             )}
@@ -148,7 +148,7 @@ export default function SubmitTestimonial() {
               onChange={e => setContent(e.target.value)}
               placeholder="Tell us about your experience..."
               rows={4}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:border-transparent text-gray-900 text-sm placeholder:text-gray-400 resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:border-transparent text-gray-900 text-sm placeholder:text-text-secondary resize-none"
               style={{ '--tw-ring-color': `${primary}40` } as any}
               data-testid="testimonial-content"
             />
@@ -192,7 +192,7 @@ export default function SubmitTestimonial() {
             >
               {consentGiven && <Check className="w-3 h-3 text-white" />}
             </button>
-            <span className="text-xs text-gray-500 leading-relaxed">
+            <span className="text-xs text-text-tertiary leading-relaxed">
               I agree that my testimonial and name may be displayed publicly on the studio's website and marketing materials.
             </span>
           </div>
@@ -216,7 +216,7 @@ export default function SubmitTestimonial() {
           </button>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6" data-testid="powered-by-badge">
+        <p className="text-center text-xs text-text-secondary mt-6" data-testid="powered-by-badge">
           Powered by{' '}
           <a href="/" className="text-brand-primary hover:underline transition">Kolor Studio</a>
         </p>

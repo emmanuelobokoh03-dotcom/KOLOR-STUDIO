@@ -7,17 +7,77 @@ export default {
   theme: {
     extend: {
       colors: {
-        dark: {
-          bg: '#0f0f0f',
-          'bg-secondary': '#1a1a1a',
-          card: '#1f1f1f',
-          'card-hover': '#262626',
-          border: '#333333',
-          'border-light': '#404040',
+        // Purple Scale (Brand Identity)
+        purple: {
+          50: '#F3E8FF',
+          100: '#E9D5FF',
+          200: '#D8B4FE',
+          300: '#C084FC',
+          400: '#A855F7',
+          500: '#7C3AED',
+          600: '#6D28D9',
+          700: '#5B21B6',
+          800: '#4C1D95',
+          900: '#2E1065',
         },
+
+        // Dark Neutrals (Purple undertone)
+        dark: {
+          950: '#0A0A0F',
+          900: '#1A1A2E',
+          800: '#252540',
+          700: '#3A3A5C',
+          600: '#4B4B6B',
+        },
+
+        // Light Neutrals (Sophisticated)
+        light: {
+          0: '#FFFFFF',
+          50: '#FAFAFA',
+          100: '#F5F5F5',
+          200: '#E5E5E5',
+          300: '#D4D4D4',
+        },
+
+        // Semantic Colors
+        success: {
+          DEFAULT: '#10B981',
+          light: '#D1FAE5',
+          dark: '#059669',
+        },
+        warning: {
+          DEFAULT: '#F59E0B',
+          light: '#FEF3C7',
+        },
+        error: {
+          DEFAULT: '#EF4444',
+          light: '#FEE2E2',
+        },
+        info: {
+          DEFAULT: '#3B82F6',
+          light: '#DBEAFE',
+        },
+
+        // Workflow Status (Pipeline progression)
+        status: {
+          quote: '#F59E0B',
+          contract: '#6366F1',
+          deposit: '#3B82F6',
+          progress: '#06B6D4',
+          complete: '#10B981',
+        },
+
+        // Text Hierarchy
+        text: {
+          primary: '#1A1A2E',
+          secondary: '#6B7280',
+          tertiary: '#9CA3AF',
+        },
+
+        // Brand colors (kept for BrandThemeContext compatibility)
         'brand-primary': {
-          DEFAULT: 'rgb(var(--color-brand-primary-rgb, 168 85 247) / <alpha-value>)',
-          dark: 'rgb(var(--color-brand-primary-dark-rgb, 147 51 234) / <alpha-value>)',
+          DEFAULT: 'rgb(var(--color-brand-primary-rgb, 124 58 237) / <alpha-value>)',
+          dark: 'rgb(var(--color-brand-primary-dark-rgb, 109 40 217) / <alpha-value>)',
           light: 'rgb(var(--color-brand-primary-light-rgb, 192 132 252) / <alpha-value>)',
         },
         'brand-accent': {
@@ -25,31 +85,22 @@ export default {
           dark: 'rgb(var(--color-brand-accent-dark-rgb, 219 39 119) / <alpha-value>)',
           light: 'rgb(var(--color-brand-accent-light-rgb, 244 114 182) / <alpha-value>)',
         },
-        primary: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
-          900: '#4c1d95',
-        },
-        accent: {
-          50: '#fdf4ff',
-          100: '#fae8ff',
-          200: '#f5d0fe',
-          300: '#f0abfc',
-          400: '#e879f9',
-          500: '#d946ef',
-          600: '#c026d3',
-          700: '#a21caf',
-          800: '#86198f',
-          900: '#701a75',
-        },
       },
+
+      // Gradients (Strategic storytelling)
+      backgroundImage: {
+        'gradient-brand': 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C084FC 100%)',
+        'gradient-creative': 'linear-gradient(135deg, #7C3AED 0%, #06B6D4 50%, #10B981 100%)',
+        'gradient-hero': 'linear-gradient(135deg, #1A1A2E 0%, #7C3AED 100%)',
+      },
+
+      // Elevation System (Surface hierarchy)
+      boxShadow: {
+        'elevation-1': '0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)',
+        'elevation-2': '0 4px 12px rgba(0, 0, 0, 0.08)',
+        'elevation-3': '0 10px 25px rgba(0, 0, 0, 0.12)',
+      },
+
       fontFamily: {
         sans: ['var(--font-brand, Inter)', 'system-ui', 'sans-serif'],
         display: ['Cal Sans', 'Inter', 'sans-serif'],

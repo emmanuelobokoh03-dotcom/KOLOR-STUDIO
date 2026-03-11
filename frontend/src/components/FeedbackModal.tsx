@@ -74,14 +74,14 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
     return (
       <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
         <div 
-          className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-md border border-dark-border p-8 text-center"
+          className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-light-200 p-8 text-center"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-700/30">
             <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
           </div>
-          <h3 className="text-xl font-semibold text-white mb-2">Thank You!</h3>
-          <p className="text-gray-400 mb-6">
+          <h3 className="text-xl font-semibold text-text-primary mb-2">Thank You!</h3>
+          <p className="text-text-secondary mb-6">
             Thanks! We read every piece of feedback and will respond within 24 hours.
           </p>
           <button
@@ -98,7 +98,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div 
-        className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-dark-border flex flex-col"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
         onClick={(e) => e.stopPropagation()}
         data-testid="feedback-modal"
       >
@@ -107,7 +107,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold">Send Feedback</h2>
-              <p className="text-brand-primary-light text-sm mt-1">Help us improve KOLOR STUDIO</p>
+              <p className="text-purple-600 text-sm mt-1">Help us improve KOLOR STUDIO</p>
             </div>
             <button 
               onClick={onClose}
@@ -121,7 +121,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
         {/* Content */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
           {error && (
-            <div className="p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -129,7 +129,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
 
           {/* Feedback Type */}
           <div>
-            <label className="text-sm text-gray-400 mb-2 block">What type of feedback?</label>
+            <label className="text-sm text-text-secondary mb-2 block">What type of feedback?</label>
             <div className="flex gap-2">
               {FEEDBACK_TYPES.map(({ type, label, icon: Icon, color }) => (
                 <button
@@ -139,7 +139,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
                   className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-lg border transition ${
                     feedbackType === type
                       ? `bg-${color}-900/30 border-${color}-600 text-${color}-400`
-                      : 'bg-dark-bg-secondary border-dark-border text-gray-400 hover:border-gray-600'
+                      : 'bg-light-100 border-light-200 text-text-secondary hover:border-gray-600'
                   }`}
                   data-testid={`feedback-type-${type}`}
                   style={{
@@ -156,12 +156,12 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
 
           {/* Title */}
           <div>
-            <label className="text-sm text-gray-400 mb-1 block">Title *</label>
+            <label className="text-sm text-text-secondary mb-1 block">Title *</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+              className="w-full px-4 py-2 bg-light-100 border border-light-200 rounded-lg text-text-primary placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder={
                 feedbackType === 'bug' 
                   ? "Brief description of the bug" 
@@ -175,12 +175,12 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
 
           {/* Description */}
           <div>
-            <label className="text-sm text-gray-400 mb-1 block">Description *</label>
+            <label className="text-sm text-text-secondary mb-1 block">Description *</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none"
+              className="w-full px-4 py-2 bg-light-100 border border-light-200 rounded-lg text-text-primary placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
               placeholder={
                 feedbackType === 'bug'
                   ? "Please describe what happened, what you expected, and steps to reproduce..."
@@ -194,14 +194,14 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
 
           {/* Contact Email (optional) */}
           <div>
-            <label className="text-sm text-gray-400 mb-1 block">
+            <label className="text-sm text-text-secondary mb-1 block">
               Your Email <span className="text-gray-600">(optional, for follow-up)</span>
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+              className="w-full px-4 py-2 bg-light-100 border border-light-200 rounded-lg text-text-primary placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="you@example.com"
               data-testid="feedback-email"
             />
@@ -209,9 +209,9 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
 
           {/* Tips based on feedback type */}
           {feedbackType === 'bug' && (
-            <div className="bg-dark-bg-secondary rounded-lg p-4 border border-dark-border">
-              <p className="text-xs text-gray-400 mb-2 font-medium">Tips for a helpful bug report:</p>
-              <ul className="text-xs text-gray-500 space-y-1">
+            <div className="bg-light-100 rounded-lg p-4 border border-light-200">
+              <p className="text-xs text-text-secondary mb-2 font-medium">Tips for a helpful bug report:</p>
+              <ul className="text-xs text-text-tertiary space-y-1">
                 <li>• Describe what you were doing when the bug occurred</li>
                 <li>• What did you expect to happen?</li>
                 <li>• What actually happened?</li>
@@ -222,11 +222,11 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
         </form>
 
         {/* Footer */}
-        <div className="p-6 border-t border-dark-border flex items-center justify-between gap-3 flex-shrink-0">
+        <div className="p-6 border-t border-light-200 flex items-center justify-between gap-3 flex-shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-gray-400 hover:bg-dark-card-hover rounded-lg transition"
+            className="px-4 py-2 text-text-secondary hover:bg-light-100 rounded-lg transition"
           >
             Cancel
           </button>

@@ -3,15 +3,15 @@ import { ArrowLeft, Shield, Lock, Database, Envelope, Globe, User, FileText, Tra
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-dark-bg text-gray-300">
+    <div className="min-h-screen bg-light-50 text-text-secondary">
       {/* Header */}
-      <header className="bg-dark-card border-b border-dark-border sticky top-0 z-10">
+      <header className="bg-white border-b border-light-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-brand-primary-light hover:text-brand-primary-light transition">
+          <Link to="/" className="flex items-center gap-2 text-purple-600 hover:text-purple-600 transition">
             <ArrowLeft className="w-5 h-5" />
             Back to KOLOR STUDIO
           </Link>
-          <Link to="/terms" className="text-sm text-gray-400 hover:text-white transition">
+          <Link to="/terms" className="text-sm text-text-secondary hover:text-white transition">
             Terms of Service
           </Link>
         </div>
@@ -22,19 +22,19 @@ export default function PrivacyPolicy() {
         {/* Title */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-brand-primary-dark/30 rounded-xl flex items-center justify-center border border-brand-primary-dark/30">
-              <Shield className="w-6 h-6 text-brand-primary-light" />
+            <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center border border-purple-200">
+              <Shield className="w-6 h-6 text-purple-600" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-white">Privacy Policy</h1>
-              <p className="text-gray-500">Last Updated: February 21, 2026</p>
+              <p className="text-text-tertiary">Last Updated: February 21, 2026</p>
             </div>
           </div>
         </div>
 
         {/* Introduction */}
         <section className="mb-10">
-          <p className="text-lg text-gray-300 leading-relaxed">
+          <p className="text-lg text-text-secondary leading-relaxed">
             At KOLOR STUDIO, we take your privacy seriously. This policy explains how we collect, use, and protect your data.
           </p>
         </section>
@@ -42,96 +42,96 @@ export default function PrivacyPolicy() {
         {/* What Data We Collect */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Database className="w-5 h-5 text-brand-primary-light" />
+            <Database className="w-5 h-5 text-purple-600" />
             What Data We Collect
           </h2>
 
           <div className="space-y-6">
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Account Information</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Name and email address
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Studio name and contact information
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Password (encrypted)
                 </li>
               </ul>
             </div>
 
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Lead & Client Data</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Client names, emails, phone numbers
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Project details and descriptions
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Quotes and pricing information
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Event dates and booking details
                 </li>
               </ul>
             </div>
 
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Files & Documents</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Contracts, images, mood boards
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Any files you upload to leads
                 </li>
               </ul>
             </div>
 
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Usage Data</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Pages you visit in the app
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Features you use
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Time spent in the app
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Device and browser information
                 </li>
               </ul>
             </div>
 
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Cookies</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Essential cookies (keep you logged in)
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Analytics cookies (if enabled, optional)
                 </li>
               </ul>
@@ -142,72 +142,72 @@ export default function PrivacyPolicy() {
         {/* How We Use Your Data */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Globe className="w-5 h-5 text-brand-primary-light" />
+            <Globe className="w-5 h-5 text-purple-600" />
             How We Use Your Data
           </h2>
 
           <div className="space-y-6">
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">To Provide Services</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Manage your leads and projects
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Send quotes to clients
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Enable client portal access
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Store your files securely
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Send email notifications
                 </li>
               </ul>
             </div>
 
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">To Improve Our Product</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Analyze usage patterns
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Fix bugs and issues
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Develop new features
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Improve user experience
                 </li>
               </ul>
             </div>
 
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Communications</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Product updates and announcements
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Important service notifications
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-primary-light mt-1">•</span>
+                  <span className="text-purple-600 mt-1">•</span>
                   Optional marketing emails (you can opt out)
                 </li>
               </ul>
@@ -218,14 +218,14 @@ export default function PrivacyPolicy() {
         {/* Third-Party Services */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Globe className="w-5 h-5 text-brand-primary-light" />
+            <Globe className="w-5 h-5 text-purple-600" />
             Third-Party Services We Use
           </h2>
 
           <div className="space-y-4">
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Supabase (Database & Storage)</h3>
-              <ul className="space-y-1 text-gray-400 text-sm">
+              <ul className="space-y-1 text-text-secondary text-sm">
                 <li>• Hosts your database</li>
                 <li>• Stores uploaded files</li>
                 <li>• Data encrypted at rest and in transit</li>
@@ -233,18 +233,18 @@ export default function PrivacyPolicy() {
               </ul>
             </div>
 
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Resend (Email Delivery)</h3>
-              <ul className="space-y-1 text-gray-400 text-sm">
+              <ul className="space-y-1 text-text-secondary text-sm">
                 <li>• Sends quote emails to clients</li>
                 <li>• Sends notification emails to you</li>
                 <li>• No marketing emails from Resend</li>
               </ul>
             </div>
 
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Vercel (Hosting)</h3>
-              <ul className="space-y-1 text-gray-400 text-sm">
+              <ul className="space-y-1 text-text-secondary text-sm">
                 <li>• Hosts the application</li>
                 <li>• Provides analytics</li>
                 <li>• CDN for fast loading</li>
@@ -256,13 +256,13 @@ export default function PrivacyPolicy() {
         {/* Data Security */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Lock className="w-5 h-5 text-brand-primary-light" />
+            <Lock className="w-5 h-5 text-purple-600" />
             Data Security
           </h2>
 
-          <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
-            <p className="text-gray-400 mb-4">We protect your data with:</p>
-            <ul className="space-y-2 text-gray-400">
+          <div className="bg-white rounded-xl p-5 border border-light-200">
+            <p className="text-text-secondary mb-4">We protect your data with:</p>
+            <ul className="space-y-2 text-text-secondary">
               <li className="flex items-start gap-2">
                 <span className="text-green-400 mt-1">✓</span>
                 SSL/TLS encryption (HTTPS everywhere)
@@ -290,40 +290,40 @@ export default function PrivacyPolicy() {
         {/* Your Rights */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <User className="w-5 h-5 text-brand-primary-light" />
+            <User className="w-5 h-5 text-purple-600" />
             Your Rights
           </h2>
 
-          <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
-            <p className="text-gray-400 mb-4">You have the right to:</p>
-            <ul className="space-y-2 text-gray-400">
+          <div className="bg-white rounded-xl p-5 border border-light-200">
+            <p className="text-text-secondary mb-4">You have the right to:</p>
+            <ul className="space-y-2 text-text-secondary">
               <li className="flex items-start gap-2">
-                <span className="text-brand-primary-light mt-1">•</span>
+                <span className="text-purple-600 mt-1">•</span>
                 View all your data
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-brand-primary-light mt-1">•</span>
+                <span className="text-purple-600 mt-1">•</span>
                 Export your data (leads, quotes, files)
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-brand-primary-light mt-1">•</span>
+                <span className="text-purple-600 mt-1">•</span>
                 Delete your account and all data
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-brand-primary-light mt-1">•</span>
+                <span className="text-purple-600 mt-1">•</span>
                 Opt out of marketing emails
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-brand-primary-light mt-1">•</span>
+                <span className="text-purple-600 mt-1">•</span>
                 Correct inaccurate information
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-brand-primary-light mt-1">•</span>
+                <span className="text-purple-600 mt-1">•</span>
                 Request we stop processing your data
               </li>
             </ul>
-            <p className="mt-4 text-sm text-gray-500">
-              To exercise these rights, email: <a href="mailto:privacy@kolorstudio.com" className="text-brand-primary-light hover:underline">privacy@kolorstudio.com</a>
+            <p className="mt-4 text-sm text-text-tertiary">
+              To exercise these rights, email: <a href="mailto:privacy@kolorstudio.com" className="text-purple-600 hover:underline">privacy@kolorstudio.com</a>
             </p>
           </div>
         </section>
@@ -331,20 +331,20 @@ export default function PrivacyPolicy() {
         {/* Data Retention */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Trash className="w-5 h-5 text-brand-primary-light" />
+            <Trash className="w-5 h-5 text-purple-600" />
             Data Retention
           </h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Active Accounts</h3>
-              <p className="text-gray-400 text-sm">
+              <p className="text-text-secondary text-sm">
                 We keep your data as long as your account is active
               </p>
             </div>
-            <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
+            <div className="bg-white rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Deleted Accounts</h3>
-              <ul className="space-y-1 text-gray-400 text-sm">
+              <ul className="space-y-1 text-text-secondary text-sm">
                 <li>• Data retained for 30 days after deletion</li>
                 <li>• Then permanently deleted</li>
                 <li>• Backups purged within 90 days</li>
@@ -356,8 +356,8 @@ export default function PrivacyPolicy() {
         {/* Children's Privacy */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4">Children's Privacy</h2>
-          <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
-            <p className="text-gray-400">
+          <div className="bg-white rounded-xl p-5 border border-light-200">
+            <p className="text-text-secondary">
               KOLOR STUDIO is not intended for users under 18. We don't knowingly collect data from children.
             </p>
           </div>
@@ -366,8 +366,8 @@ export default function PrivacyPolicy() {
         {/* International Users */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4">International Users</h2>
-          <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
-            <p className="text-gray-400">
+          <div className="bg-white rounded-xl p-5 border border-light-200">
+            <p className="text-text-secondary">
               Your data may be transferred to and processed in the United States. By using KOLOR STUDIO, you consent to this transfer.
             </p>
           </div>
@@ -376,8 +376,8 @@ export default function PrivacyPolicy() {
         {/* Changes to This Policy */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4">Changes to This Policy</h2>
-          <div className="bg-dark-card rounded-xl p-5 border border-dark-border">
-            <p className="text-gray-400">
+          <div className="bg-white rounded-xl p-5 border border-light-200">
+            <p className="text-text-secondary">
               We may update this policy. If we make significant changes, we'll notify you via email 30 days before they take effect.
             </p>
           </div>
@@ -386,30 +386,30 @@ export default function PrivacyPolicy() {
         {/* Contact Us */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Envelope className="w-5 h-5 text-brand-primary-light" />
+            <Envelope className="w-5 h-5 text-purple-600" />
             Contact Us
           </h2>
 
-          <div className="bg-gradient-to-r from-brand-primary-dark/30 to-brand-primary-dark/30 rounded-xl p-6 border border-brand-primary-dark/30">
-            <p className="text-gray-300 mb-4">Questions about privacy?</p>
+          <div className="bg-gradient-to-r from-brand-primary-dark/30 to-brand-primary-dark/30 rounded-xl p-6 border border-purple-200">
+            <p className="text-text-secondary mb-4">Questions about privacy?</p>
             <div className="space-y-2">
-              <p className="text-gray-400">
-                Email: <a href="mailto:privacy@kolorstudio.com" className="text-brand-primary-light hover:underline">privacy@kolorstudio.com</a>
+              <p className="text-text-secondary">
+                Email: <a href="mailto:privacy@kolorstudio.com" className="text-purple-600 hover:underline">privacy@kolorstudio.com</a>
               </p>
-              <p className="text-gray-400">
-                Or: <a href="mailto:hello@kolorstudio.com" className="text-brand-primary-light hover:underline">hello@kolorstudio.com</a>
+              <p className="text-text-secondary">
+                Or: <a href="mailto:hello@kolorstudio.com" className="text-purple-600 hover:underline">hello@kolorstudio.com</a>
               </p>
             </div>
           </div>
         </section>
 
         {/* Footer Navigation */}
-        <div className="flex justify-between items-center pt-8 border-t border-dark-border">
-          <Link to="/" className="text-brand-primary-light hover:text-brand-primary-light transition flex items-center gap-2">
+        <div className="flex justify-between items-center pt-8 border-t border-light-200">
+          <Link to="/" className="text-purple-600 hover:text-purple-600 transition flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </Link>
-          <Link to="/terms" className="text-brand-primary-light hover:text-brand-primary-light transition">
+          <Link to="/terms" className="text-purple-600 hover:text-purple-600 transition">
             Terms of Service →
           </Link>
         </div>

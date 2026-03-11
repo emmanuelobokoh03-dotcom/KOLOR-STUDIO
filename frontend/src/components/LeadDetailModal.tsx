@@ -72,14 +72,14 @@ interface LeadDetailModalProps {
 const STATUS_OPTIONS: LeadStatus[] = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
 
 const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
-  NEW: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
-  REVIEWING: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
-  CONTACTED: 'bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50',
-  QUALIFIED: 'bg-indigo-900/30 text-indigo-300 border border-indigo-700/50',
-  QUOTED: 'bg-brand-accent-dark/30 text-brand-accent-light border border-brand-accent-dark/50',
-  NEGOTIATING: 'bg-blue-900/30 text-blue-300 border border-blue-700/50',
-  BOOKED: 'bg-emerald-900/30 text-emerald-300 border border-emerald-700/50',
-  LOST: 'bg-slate-900/30 text-slate-400 border border-slate-700/50',
+  NEW: 'bg-purple-50 text-purple-600 border border-purple-200',
+  REVIEWING: 'bg-purple-50 text-purple-600 border border-purple-200',
+  CONTACTED: 'bg-purple-50 text-purple-600 border border-purple-200',
+  QUALIFIED: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+  QUOTED: 'bg-pink-50 text-pink-600 border border-pink-200',
+  NEGOTIATING: 'bg-blue-50 text-blue-700 border border-blue-200',
+  BOOKED: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  LOST: 'bg-slate-900/30 text-text-secondary border border-light-200/50',
 };
 
 const ACTIVITY_ICONS: Record<string, React.ElementType> = {
@@ -98,16 +98,16 @@ const ACTIVITY_ICONS: Record<string, React.ElementType> = {
 };
 
 const ACTIVITY_COLORS: Record<string, string> = {
-  NOTE_ADDED: 'bg-blue-900/50 text-blue-400',
-  STATUS_CHANGED: 'bg-brand-primary-dark/50 text-brand-primary-light',
+  NOTE_ADDED: 'bg-blue-50 text-blue-600',
+  STATUS_CHANGED: 'bg-purple-100 text-purple-600',
   EMAIL_SENT: 'bg-green-900/50 text-green-400',
   EMAIL_RECEIVED: 'bg-teal-900/50 text-teal-400',
   CALL_MADE: 'bg-orange-900/50 text-orange-400',
   CALL_RECEIVED: 'bg-yellow-900/50 text-yellow-400',
   MEETING_SCHEDULED: 'bg-indigo-900/50 text-indigo-400',
-  MEETING_COMPLETED: 'bg-emerald-900/50 text-emerald-400',
+  MEETING_COMPLETED: 'bg-emerald-50 text-emerald-600',
   FILE_UPLOADED: 'bg-pink-900/50 text-pink-400',
-  QUOTE_SENT: 'bg-amber-900/50 text-amber-400',
+  QUOTE_SENT: 'bg-amber-900/50 text-amber-700',
   PAYMENT_RECEIVED: 'bg-lime-900/50 text-lime-400',
   CONTRACT_SIGNED: 'bg-cyan-900/50 text-cyan-400',
 };
@@ -124,10 +124,10 @@ const FILE_ICONS: Record<string, React.ElementType> = {
 const FILE_COLORS: Record<string, string> = {
   image: 'bg-green-900/50 text-green-400',
   pdf: 'bg-red-900/50 text-red-400',
-  document: 'bg-blue-900/50 text-blue-400',
-  spreadsheet: 'bg-emerald-900/50 text-emerald-400',
-  text: 'bg-gray-800/50 text-gray-400',
-  file: 'bg-brand-primary-dark/50 text-brand-primary-light',
+  document: 'bg-blue-50 text-blue-600',
+  spreadsheet: 'bg-emerald-50 text-emerald-600',
+  text: 'bg-light-100 text-text-secondary',
+  file: 'bg-purple-100 text-purple-600',
 };
 
 // Activity Skeleton
@@ -135,10 +135,10 @@ const ActivitySkeleton = () => (
   <div className="space-y-4">
     {[1, 2, 3].map(i => (
       <div key={i} className="flex gap-4 animate-pulse">
-        <div className="w-10 h-10 rounded-full bg-[#333] flex-shrink-0" />
-        <div className="flex-1 bg-[#1A1A1A] rounded-xl p-4 border border-[#333] space-y-2">
-          <div className="h-3 w-24 bg-[#333] rounded" />
-          <div className="h-4 w-3/4 bg-[#2a2a2a] rounded" />
+        <div className="w-10 h-10 rounded-full bg-light-200 flex-shrink-0" />
+        <div className="flex-1 bg-light-50 rounded-xl p-4 border border-light-200 space-y-2">
+          <div className="h-3 w-24 bg-light-200 rounded" />
+          <div className="h-4 w-3/4 bg-light-100 rounded" />
         </div>
       </div>
     ))}
@@ -149,8 +149,8 @@ const ActivitySkeleton = () => (
 const FileGridSkeleton = () => (
   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
     {[1, 2, 3].map(i => (
-      <div key={i} className="aspect-square bg-[#1A1A1A] rounded-xl border border-[#333] animate-pulse">
-        <div className="w-full h-full bg-[#2a2a2a] rounded-xl" />
+      <div key={i} className="aspect-square bg-light-50 rounded-xl border border-light-200 animate-pulse">
+        <div className="w-full h-full bg-light-100 rounded-xl" />
       </div>
     ))}
   </div>
@@ -483,7 +483,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
     <>
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose}>
         <div 
-          className="bg-[#1A1A1A] w-full md:rounded-2xl md:shadow-2xl md:max-w-3xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-[#333] animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
+          className="bg-light-50 w-full md:rounded-2xl md:shadow-2xl md:max-w-3xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
           onClick={(e) => e.stopPropagation()}
           data-testid="lead-detail-modal"
         >
@@ -495,7 +495,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   {SERVICE_TYPE_LABELS[lead.serviceType]}
                 </span>
                 <h2 className="text-xl md:text-2xl font-bold mt-2 truncate">{lead.projectTitle}</h2>
-                <p className="text-brand-primary-light mt-0.5 md:mt-1 text-xs md:text-sm">Submitted {formatDate(lead.createdAt)}</p>
+                <p className="text-purple-600 mt-0.5 md:mt-1 text-xs md:text-sm">Submitted {formatDate(lead.createdAt)}</p>
               </div>
               <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
                 <button 
@@ -551,7 +551,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex border-b border-[#333] flex-shrink-0 overflow-x-auto scrollbar-hide">
+          <div className="flex border-b border-light-200 flex-shrink-0 overflow-x-auto scrollbar-hide">
             {([
               { key: 'activity' as const, icon: ClockCounterClockwise, label: 'Activity' },
               { key: 'timeline' as const, icon: Flag, label: 'Timeline' },
@@ -567,8 +567,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 onClick={() => setActiveTab(key)}
                 className={`flex-shrink-0 flex-1 min-w-0 px-2 md:px-4 py-3 md:py-3.5 text-xs md:text-sm font-medium transition-all duration-200 touch-target ${
                   activeTab === key 
-                    ? 'text-brand-primary-light border-b-2 border-brand-primary bg-brand-primary-dark/10' 
-                    : 'text-[#A3A3A3] hover:text-white hover:bg-[#262626]'
+                    ? 'text-purple-600 border-b-2 border-brand-primary bg-purple-50' 
+                    : 'text-text-secondary hover:text-text-primary hover:bg-light-100'
                 }`}
                 data-testid={`tab-${key}`}
               >
@@ -576,7 +576,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   <Icon className="w-4 h-4 flex-shrink-0" />
                   <span className="truncate">{label}</span>
                   {badge !== undefined && badge > 0 && (
-                    <span className="bg-brand-primary-dark/50 text-brand-primary-light text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full flex-shrink-0">
+                    <span className="bg-purple-100 text-purple-600 text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full flex-shrink-0">
                       {badge}
                     </span>
                   )}
@@ -590,8 +590,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
             {activeTab === 'activity' ? (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                 {/* Add Note */}
-                <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 border border-[#333]">
-                  <h3 className="text-sm font-semibold text-[#A3A3A3] mb-3 flex items-center gap-2">
+                <div className="bg-white rounded-xl p-4 md:p-5 border border-light-200">
+                  <h3 className="text-sm font-semibold text-text-secondary mb-3 flex items-center gap-2">
                     <ChatText className="w-4 h-4" />
                     Add Note
                   </h3>
@@ -599,7 +599,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                     value={newNote}
                     onChange={(e) => setNewNote(e.target.value)}
                     placeholder="Write a note about this lead..."
-                    className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#333] rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none text-sm text-white placeholder-gray-500 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-light-50 border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm text-text-primary placeholder-gray-400 transition-all duration-200"
                     rows={3}
                     data-testid="note-input"
                   />
@@ -618,7 +618,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
 
                 {/* Activity Timeline */}
                 <div>
-                  <h3 className="text-sm font-semibold text-[#A3A3A3] mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-text-secondary mb-4 flex items-center gap-2">
                     <ClockCounterClockwise className="w-4 h-4" />
                     Activity ClockCounterClockwise
                   </h3>
@@ -628,21 +628,21 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   ) : activities.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="activities-empty-state">
                       <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4CA;</div>
-                      <h3 className="text-lg md:text-xl font-semibold text-[#FAFAFA] mb-2">Project activity appears here</h3>
-                      <p className="text-sm text-[#A3A3A3] max-w-md leading-relaxed">
+                      <h3 className="text-lg md:text-xl font-semibold text-text-primary mb-2">Project activity appears here</h3>
+                      <p className="text-sm text-text-secondary max-w-md leading-relaxed">
                         See a timeline of all communications, file uploads, and status changes for this project.
                       </p>
-                      <p className="text-xs text-gray-500 mt-4 max-w-sm">
+                      <p className="text-xs text-text-tertiary mt-4 max-w-sm">
                         <strong>Pro tip:</strong> Every action you take is automatically logged here.
                       </p>
                     </div>
                   ) : (
                     <div className="relative">
-                      <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-[#333]" />
+                      <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-light-200" />
                       <div className="space-y-4">
                         {activities.map((activity) => {
                           const Icon = ACTIVITY_ICONS[activity.type] || Note;
-                          const colorClass = ACTIVITY_COLORS[activity.type] || 'bg-gray-800/50 text-gray-400';
+                          const colorClass = ACTIVITY_COLORS[activity.type] || 'bg-light-100 text-text-secondary';
 
                           return (
                             <div key={activity.id} className="relative flex gap-4 group" data-testid={`activity-${activity.id}`}>
@@ -650,16 +650,16 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                                 <Icon className="w-4 h-4" />
                               </div>
                               <div className="flex-1 pb-4">
-                                <div className="bg-[#0F0F0F] border border-[#333] rounded-xl p-4 hover:border-[#404040] transition-all duration-200">
+                                <div className="bg-white border border-light-200 rounded-xl p-4 hover:border-light-300 transition-all duration-200">
                                   <div className="flex items-start justify-between mb-2">
-                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                    <span className="text-xs font-medium text-text-tertiary uppercase tracking-wide">
                                       {activity.type.replace(/_/g, ' ')}
                                     </span>
-                                    <span className="text-xs text-gray-500" title={formatDate(activity.createdAt)}>
+                                    <span className="text-xs text-text-tertiary" title={formatDate(activity.createdAt)}>
                                       {formatTimeAgo(activity.createdAt)}
                                     </span>
                                   </div>
-                                  <p className="text-sm text-[#A3A3A3] whitespace-pre-wrap">
+                                  <p className="text-sm text-text-secondary whitespace-pre-wrap">
                                     {activity.description}
                                   </p>
                                   {activity.user && (
@@ -696,8 +696,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 <div 
                   className={`border-2 border-dashed rounded-xl p-6 md:p-8 text-center transition-all duration-200 ${
                     dragOver 
-                      ? 'border-brand-primary bg-brand-primary-dark/20' 
-                      : 'border-[#333] hover:border-brand-primary/50 hover:bg-[#0F0F0F]'
+                      ? 'border-brand-primary bg-purple-50' 
+                      : 'border-light-200 hover:border-purple-300 hover:bg-white'
                   }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -717,18 +717,18 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   {uploading ? (
                     <div className="py-4">
                       <SpinnerGap weight="duotone" className="w-10 h-10 text-brand-primary animate-spin mx-auto mb-3" />
-                      <p className="text-sm text-[#A3A3A3]">{uploadProgress}</p>
+                      <p className="text-sm text-text-secondary">{uploadProgress}</p>
                     </div>
                   ) : (
                     <>
-                      <div className="p-4 bg-[#1A1A1A] rounded-xl inline-block mb-3 border border-[#333]">
-                        <UploadSimple weight="duotone" className="w-8 h-8 text-[#A3A3A3]" />
+                      <div className="p-4 bg-light-50 rounded-xl inline-block mb-3 border border-light-200">
+                        <UploadSimple weight="duotone" className="w-8 h-8 text-text-secondary" />
                       </div>
-                      <p className="text-[#A3A3A3] mb-2">
+                      <p className="text-text-secondary mb-2">
                         Drag and drop files here, or{' '}
                         <button
                           onClick={() => fileInputRef.current?.click()}
-                          className="text-brand-primary-light font-medium hover:underline"
+                          className="text-purple-600 font-medium hover:underline"
                         >
                           browse
                         </button>
@@ -742,7 +742,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
 
                 {/* Visual File Gallery */}
                 <div>
-                  <h3 className="text-sm font-semibold text-[#A3A3A3] mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-text-secondary mb-4 flex items-center gap-2">
                     <Paperclip className="w-4 h-4" />
                     Uploaded Files ({files.length})
                   </h3>
@@ -752,11 +752,11 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   ) : files.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="files-empty-state">
                       <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4CE;</div>
-                      <h3 className="text-lg md:text-xl font-semibold text-[#FAFAFA] mb-2">No files uploaded yet</h3>
-                      <p className="text-sm text-[#A3A3A3] max-w-md mb-1 leading-relaxed">
+                      <h3 className="text-lg md:text-xl font-semibold text-text-primary mb-2">No files uploaded yet</h3>
+                      <p className="text-sm text-text-secondary max-w-md mb-1 leading-relaxed">
                         UploadSimple contracts, references, or deliverables to keep everything organized with your client.
                       </p>
-                      <p className="text-xs text-gray-500 mt-3 max-w-sm">
+                      <p className="text-xs text-text-tertiary mt-3 max-w-sm">
                         <strong>Pro tip:</strong> Share files with your client by toggling "Share with client" on each file.
                       </p>
                     </div>
@@ -765,12 +765,12 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                       {files.map((file) => {
                         const isImage = isImageFile(file);
                         const FileIcon = FILE_ICONS[file.category] || File;
-                        const colorClass = FILE_COLORS[file.category] || 'bg-gray-800/50 text-gray-400';
+                        const colorClass = FILE_COLORS[file.category] || 'bg-light-100 text-text-secondary';
 
                         return (
                           <div 
                             key={file.id} 
-                            className="group relative aspect-square rounded-xl overflow-hidden border border-[#333] bg-[#0F0F0F] hover:border-brand-primary/50 transition-all duration-200"
+                            className="group relative aspect-square rounded-xl overflow-hidden border border-light-200 bg-white hover:border-purple-300 transition-all duration-200"
                             data-testid={`file-${file.id}`}
                           >
                             {/* Client upload badge */}
@@ -799,7 +799,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                                 <div className={`w-16 h-16 rounded-xl flex items-center justify-center ${colorClass}`}>
                                   <FileIcon className="w-8 h-8" />
                                 </div>
-                                <span className="text-xs text-gray-500 uppercase font-medium tracking-wide">
+                                <span className="text-xs text-text-tertiary uppercase font-medium tracking-wide">
                                   {file.mimeType?.split('/').pop()?.toUpperCase() || 'FILE'}
                                 </span>
                               </div>
@@ -810,10 +810,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                               <p className="text-white text-xs font-medium text-center truncate w-full mb-1" title={file.originalName}>
                                 {file.originalName}
                               </p>
-                              <p className="text-gray-400 text-xs mb-2">
+                              <p className="text-text-secondary text-xs mb-2">
                                 {file.formattedSize}
                                 {file.uploadedBy === 'client' && (
-                                  <span className="ml-1 text-blue-400">&middot; Client Upload</span>
+                                  <span className="ml-1 text-blue-600">&middot; Client Upload</span>
                                 )}
                               </p>
                               {/* Share toggle */}
@@ -822,7 +822,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium mb-2 transition-all ${
                                   file.sharedWithClient
                                     ? 'bg-green-600/30 text-green-400 hover:bg-green-600/50'
-                                    : 'bg-[#333] text-[#A3A3A3] hover:bg-[#444]'
+                                    : 'bg-light-200 text-text-secondary hover:bg-light-200'
                                 }`}
                                 data-testid={`share-toggle-${file.id}`}
                               >
@@ -848,7 +848,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                                     </button>
                                     <button
                                       onClick={() => setDeleteConfirm(null)}
-                                      className="px-3 py-2 bg-[#333] text-[#A3A3A3] text-xs rounded-xl hover:bg-[#404040] transition-all duration-200"
+                                      className="px-3 py-2 bg-light-200 text-text-secondary text-xs rounded-xl hover:bg-light-200 transition-all duration-200"
                                     >
                                       Cancel
                                     </button>
@@ -894,12 +894,12 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
               <div className="p-4 md:p-6 flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-[400px]" data-testid="messages-thread">
                   {loadingMessages ? (
-                    <div className="flex justify-center py-8"><SpinnerGap className="w-5 h-5 animate-spin text-[#666]" /></div>
+                    <div className="flex justify-center py-8"><SpinnerGap className="w-5 h-5 animate-spin text-text-tertiary" /></div>
                   ) : messages.length === 0 ? (
                     <div className="text-center py-8">
-                      <ChatCircle weight="duotone" className="w-10 h-10 mx-auto mb-3 text-[#333]" />
-                      <p className="text-[#A3A3A3] text-sm mb-1">No messages yet</p>
-                      <p className="text-[#666] text-xs">Send a message to your client via the portal</p>
+                      <ChatCircle weight="duotone" className="w-10 h-10 mx-auto mb-3 text-text-primary" />
+                      <p className="text-text-secondary text-sm mb-1">No messages yet</p>
+                      <p className="text-text-tertiary text-xs">Send a message to your client via the portal</p>
                     </div>
                   ) : (
                     messages.map(msg => (
@@ -907,10 +907,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                         <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 ${
                           msg.from === 'CREATIVE'
                             ? 'bg-brand-primary text-white rounded-br-md'
-                            : 'bg-[#1A1A1A] text-[#FAFAFA] rounded-bl-md border border-[#333]'
+                            : 'bg-light-50 text-text-primary rounded-bl-md border border-light-200'
                         }`}>
                           <p className="text-sm leading-relaxed">{msg.content}</p>
-                          <p className={`text-[10px] mt-1 ${msg.from === 'CREATIVE' ? 'text-white/60' : 'text-[#666]'}`}>
+                          <p className={`text-[10px] mt-1 ${msg.from === 'CREATIVE' ? 'text-white/60' : 'text-text-tertiary'}`}>
                             {msg.from === 'CREATIVE' ? 'You' : lead.clientName} &middot; {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
@@ -918,14 +918,14 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                     ))
                   )}
                 </div>
-                <div className="flex gap-2 pt-3 border-t border-[#333]">
+                <div className="flex gap-2 pt-3 border-t border-light-200">
                   <input
                     type="text"
                     value={newMsg}
                     onChange={e => setNewMsg(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSendMessage()}
                     placeholder="Type a message..."
-                    className="flex-1 px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-white placeholder-[#666] text-sm focus:outline-none focus:border-brand-primary"
+                    className="flex-1 px-4 py-2.5 bg-white border border-light-200 rounded-xl text-text-primary placeholder-gray-400 text-sm focus:outline-none focus:border-brand-primary"
                     disabled={sendingMsg}
                     data-testid="creative-message-input"
                   />
@@ -942,14 +942,14 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
             ) : (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                 {/* Status & Actions */}
-                <div className="flex items-center justify-between pb-6 border-b border-[#333]">
+                <div className="flex items-center justify-between pb-6 border-b border-light-200">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm text-[#A3A3A3]">Status:</span>
+                    <span className="text-sm text-text-secondary">Status:</span>
                     {editing ? (
                       <select
                         value={formData.status}
                         onChange={(e) => setFormData({ ...formData, status: e.target.value as LeadStatus })}
-                        className="px-3 py-1.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-sm text-white"
+                        className="px-3 py-1.5 bg-white border border-light-200 rounded-xl text-sm text-text-primary"
                       >
                         {STATUS_OPTIONS.map((s) => (
                           <option key={s} value={s}>{LEAD_STATUS_LABELS[s]}</option>
@@ -965,7 +965,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                     <div className="flex gap-2">
                       <button
                         onClick={() => setEditing(false)}
-                        className="px-4 py-2 text-[#A3A3A3] hover:bg-[#262626] rounded-xl text-sm transition-all duration-200"
+                        className="px-4 py-2 text-text-secondary hover:bg-light-100 rounded-xl text-sm transition-all duration-200"
                       >
                         Cancel
                       </button>
@@ -981,7 +981,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                   ) : (
                     <button
                       onClick={() => setEditing(true)}
-                      className="px-4 py-2 text-brand-primary-light hover:bg-brand-primary-dark/30 rounded-xl text-sm font-medium transition-all duration-200"
+                      className="px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-xl text-sm font-medium transition-all duration-200"
                     >
                       Edit Lead
                     </button>
@@ -990,42 +990,42 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
 
                 {/* Client Information */}
                 <div>
-                  <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-[#FAFAFA]">
-                    <User className="w-5 h-5 text-brand-primary-light" />
+                  <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-text-primary">
+                    <User className="w-5 h-5 text-purple-600" />
                     Client Information
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                    <div className="flex items-center gap-3 p-3 md:p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
-                      <User className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                    <div className="flex items-center gap-3 p-3 md:p-4 bg-white rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
+                      <User className="w-5 h-5 text-text-tertiary flex-shrink-0" />
                       <div>
-                        <p className="text-xs text-gray-500">Name</p>
-                        <p className="font-medium text-[#FAFAFA]">{lead.clientName}</p>
+                        <p className="text-xs text-text-tertiary">Name</p>
+                        <p className="font-medium text-text-primary">{lead.clientName}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 md:p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
-                      <Envelope className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                    <div className="flex items-center gap-3 p-3 md:p-4 bg-white rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
+                      <Envelope className="w-5 h-5 text-text-tertiary flex-shrink-0" />
                       <div>
-                        <p className="text-xs text-gray-500">Email</p>
-                        <a href={`mailto:${lead.clientEmail}`} className="font-medium text-brand-primary-light hover:underline">
+                        <p className="text-xs text-text-tertiary">Email</p>
+                        <a href={`mailto:${lead.clientEmail}`} className="font-medium text-purple-600 hover:underline">
                           {lead.clientEmail}
                         </a>
                       </div>
                     </div>
                     {lead.clientPhone && (
-                      <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
-                        <Phone className="w-5 h-5 text-gray-500" />
+                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
+                        <Phone className="w-5 h-5 text-text-tertiary" />
                         <div>
-                          <p className="text-xs text-gray-500">Phone</p>
-                          <a href={`tel:${lead.clientPhone}`} className="font-medium text-[#FAFAFA]">{lead.clientPhone}</a>
+                          <p className="text-xs text-text-tertiary">Phone</p>
+                          <a href={`tel:${lead.clientPhone}`} className="font-medium text-text-primary">{lead.clientPhone}</a>
                         </div>
                       </div>
                     )}
                     {lead.clientCompany && (
-                      <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333] hover:border-[#404040] transition-all duration-200">
-                        <Building className="w-5 h-5 text-gray-500" />
+                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
+                        <Building className="w-5 h-5 text-text-tertiary" />
                         <div>
-                          <p className="text-xs text-gray-500">Company</p>
-                          <p className="font-medium text-[#FAFAFA]">{lead.clientCompany}</p>
+                          <p className="text-xs text-text-tertiary">Company</p>
+                          <p className="font-medium text-text-primary">{lead.clientCompany}</p>
                         </div>
                       </div>
                     )}
@@ -1034,72 +1034,72 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
 
                 {/* Project Details */}
                 <div>
-                  <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-[#FAFAFA]">
-                    <FileText className="w-5 h-5 text-brand-primary-light" />
+                  <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-text-primary">
+                    <FileText className="w-5 h-5 text-purple-600" />
                     Project Details
                   </h3>
-                  <div className="bg-[#0F0F0F] rounded-xl p-4 md:p-5 mb-3 md:mb-4 border border-[#333]">
-                    <p className="text-[#A3A3A3] whitespace-pre-wrap text-sm leading-relaxed">{lead.description}</p>
+                  <div className="bg-white rounded-xl p-4 md:p-5 mb-3 md:mb-4 border border-light-200">
+                    <p className="text-text-secondary whitespace-pre-wrap text-sm leading-relaxed">{lead.description}</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     {(editing || lead.budget) && (
-                      <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
-                        <CurrencyDollar className="w-5 h-5 text-gray-500" />
+                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                        <CurrencyDollar className="w-5 h-5 text-text-tertiary" />
                         <div className="flex-1">
-                          <p className="text-xs text-gray-500">Budget</p>
+                          <p className="text-xs text-text-tertiary">Budget</p>
                           {editing ? (
                             <input
                               type="text"
                               value={formData.budget}
                               onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                              className="w-full px-2 py-1 bg-[#1A1A1A] border border-[#333] rounded-lg text-sm text-white"
+                              className="w-full px-2 py-1 bg-light-50 border border-light-200 rounded-lg text-sm text-text-primary"
                               placeholder="e.g., $5,000-$10,000"
                             />
                           ) : (
-                            <p className="font-medium text-[#FAFAFA]">{lead.budget}</p>
+                            <p className="font-medium text-text-primary">{lead.budget}</p>
                           )}
                         </div>
                       </div>
                     )}
                     {(editing || lead.timeline) && (
-                      <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
-                        <Clock className="w-5 h-5 text-gray-500" />
+                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                        <Clock className="w-5 h-5 text-text-tertiary" />
                         <div className="flex-1">
-                          <p className="text-xs text-gray-500">Timeline</p>
+                          <p className="text-xs text-text-tertiary">Timeline</p>
                           {editing ? (
                             <input
                               type="text"
                               value={formData.timeline}
                               onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                              className="w-full px-2 py-1 bg-[#1A1A1A] border border-[#333] rounded-lg text-sm text-white"
+                              className="w-full px-2 py-1 bg-light-50 border border-light-200 rounded-lg text-sm text-text-primary"
                               placeholder="e.g., March 2026"
                             />
                           ) : (
-                            <p className="font-medium text-[#FAFAFA]">{lead.timeline}</p>
+                            <p className="font-medium text-text-primary">{lead.timeline}</p>
                           )}
                         </div>
                       </div>
                     )}
                     {lead.eventDate && (
-                      <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
-                        <CalendarBlank className="w-5 h-5 text-gray-500" />
+                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                        <CalendarBlank className="w-5 h-5 text-text-tertiary" />
                         <div>
-                          <p className="text-xs text-gray-500">Event Date</p>
-                          <p className="font-medium text-[#FAFAFA]">{formatDate(lead.eventDate)}</p>
+                          <p className="text-xs text-text-tertiary">Event Date</p>
+                          <p className="font-medium text-text-primary">{formatDate(lead.eventDate)}</p>
                         </div>
                       </div>
                     )}
                     {(editing || lead.estimatedValue) && (
-                      <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
+                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
                         <CurrencyDollar className="w-5 h-5 text-green-500" />
                         <div className="flex-1">
-                          <p className="text-xs text-gray-500">Estimated Value</p>
+                          <p className="text-xs text-text-tertiary">Estimated Value</p>
                           {editing ? (
                             <input
                               type="number"
                               value={formData.estimatedValue}
                               onChange={(e) => setFormData({ ...formData, estimatedValue: e.target.value })}
-                              className="w-full px-2 py-1 bg-[#1A1A1A] border border-[#333] rounded-lg text-sm text-white"
+                              className="w-full px-2 py-1 bg-light-50 border border-light-200 rounded-lg text-sm text-text-primary"
                               placeholder="5000"
                             />
                           ) : (
@@ -1116,27 +1116,27 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 {/* Client Portal Section */}
                 {portalUrl && (
                   <div>
-                    <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-[#FAFAFA]">
-                      <ChartBar className="w-5 h-5 text-brand-primary-light" />
+                    <h3 className="text-base font-semibold mb-4 flex items-center gap-2 text-text-primary">
+                      <ChartBar className="w-5 h-5 text-purple-600" />
                       Client Portal
                     </h3>
-                    <div className="rounded-xl border border-[#333] bg-[#0F0F0F] p-3 mb-4">
-                      <p className="text-xs text-[#A3A3A3] leading-relaxed">
-                        <strong className="text-brand-primary-light">Pro tip:</strong> Your client can view quotes, sign contracts, and track progress — all without logging in!
+                    <div className="rounded-xl border border-light-200 bg-white p-3 mb-4">
+                      <p className="text-xs text-text-secondary leading-relaxed">
+                        <strong className="text-purple-600">Pro tip:</strong> Your client can view quotes, sign contracts, and track progress — all without logging in!
                       </p>
                     </div>
                     
-                    <div className="bg-gradient-to-r from-brand-primary-dark/30 to-brand-primary-dark/30 border border-brand-primary-dark/50 rounded-xl p-5 mb-4">
+                    <div className="bg-gradient-to-r from-brand-primary-dark/30 to-brand-primary-dark/30 border border-purple-200 rounded-xl p-5 mb-4">
                       <div className="flex items-center gap-2 mb-3">
-                        <Link className="w-4 h-4 text-brand-primary-light" />
-                        <span className="text-sm font-medium text-[#A3A3A3]">Portal URL</span>
+                        <Link className="w-4 h-4 text-purple-600" />
+                        <span className="text-sm font-medium text-text-secondary">Portal URL</span>
                       </div>
-                      <div className="flex items-center gap-2 bg-[#1A1A1A] rounded-xl p-2 border border-[#333]">
+                      <div className="flex items-center gap-2 bg-light-50 rounded-xl p-2 border border-light-200">
                         <input
                           type="text"
                           value={portalUrl}
                           readOnly
-                          className="flex-1 text-sm text-[#A3A3A3] bg-transparent border-none focus:outline-none truncate"
+                          className="flex-1 text-sm text-text-secondary bg-transparent border-none focus:outline-none truncate"
                           data-testid="portal-url-input"
                         />
                         <button
@@ -1144,7 +1144,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                           className={`px-3 py-1.5 rounded-xl text-sm font-medium flex items-center gap-1.5 transition-all duration-200 ${
                             copiedLink 
                               ? 'bg-green-900/50 text-green-400' 
-                              : 'bg-brand-primary-dark/50 text-brand-primary-light hover:bg-brand-primary-dark/50'
+                              : 'bg-purple-100 text-purple-600 hover:bg-purple-100'
                           }`}
                           data-testid="copy-portal-link-btn"
                         >
@@ -1168,22 +1168,22 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
-                      <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
-                        <div className="w-10 h-10 bg-blue-900/50 rounded-xl flex items-center justify-center border border-blue-700/50">
-                          <Eye className="w-5 h-5 text-blue-400" />
+                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                        <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-200">
+                          <Eye className="w-5 h-5 text-blue-600" />
                         </div>
                         <div>
-                          <p className="text-xs text-gray-500">Portal Views</p>
-                          <p className="font-semibold text-lg text-[#FAFAFA]">{lead.portalViews || 0}</p>
+                          <p className="text-xs text-text-tertiary">Portal Views</p>
+                          <p className="font-semibold text-lg text-text-primary">{lead.portalViews || 0}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 p-4 bg-[#0F0F0F] rounded-xl border border-[#333]">
-                        <div className="w-10 h-10 bg-brand-primary-dark/50 rounded-xl flex items-center justify-center border border-brand-primary-dark/50">
-                          <Clock className="w-5 h-5 text-brand-primary-light" />
+                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                        <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center border border-purple-200">
+                          <Clock className="w-5 h-5 text-purple-600" />
                         </div>
                         <div>
-                          <p className="text-xs text-gray-500">Last Viewed</p>
-                          <p className="font-medium text-[#FAFAFA]">
+                          <p className="text-xs text-text-tertiary">Last Viewed</p>
+                          <p className="font-medium text-text-primary">
                             {lead.lastPortalView ? formatTimeAgo(lead.lastPortalView) : 'Never'}
                           </p>
                         </div>
@@ -1194,14 +1194,14 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                       <div className="flex gap-3">
                         <button
                           onClick={handleCopyPortalLink}
-                          className="flex-1 px-4 py-2.5 border border-[#333] rounded-xl text-sm font-medium text-[#A3A3A3] hover:bg-[#262626] flex items-center justify-center gap-2 transition-all duration-200"
+                          className="flex-1 px-4 py-2.5 border border-light-200 rounded-xl text-sm font-medium text-text-secondary hover:bg-light-100 flex items-center justify-center gap-2 transition-all duration-200"
                           data-testid="copy-link-btn"
                         >
                           <Copy className="w-4 h-4" /> Copy Link
                         </button>
                         <button
                           onClick={handleEmailPortalLink}
-                          className="flex-1 px-4 py-2.5 border border-[#333] rounded-xl text-sm font-medium text-[#A3A3A3] hover:bg-[#262626] flex items-center justify-center gap-2 transition-all duration-200"
+                          className="flex-1 px-4 py-2.5 border border-light-200 rounded-xl text-sm font-medium text-text-secondary hover:bg-light-100 flex items-center justify-center gap-2 transition-all duration-200"
                           data-testid="email-portal-link-btn"
                         >
                           <Envelope className="w-4 h-4" /> Email via App

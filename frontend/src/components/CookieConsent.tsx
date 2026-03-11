@@ -31,19 +31,19 @@ export default function CookieConsent() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-6 animate-slide-up">
-      <div className="max-w-4xl mx-auto bg-dark-card rounded-2xl shadow-2xl border border-dark-border p-4 sm:p-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl border border-light-200 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           {/* Icon & Text */}
           <div className="flex items-start gap-3 flex-1">
-            <div className="w-10 h-10 bg-brand-primary-dark/30 rounded-xl flex items-center justify-center flex-shrink-0 border border-brand-primary-dark/30">
-              <Cookie className="w-5 h-5 text-brand-primary-light" />
+            <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0 border border-purple-200">
+              <Cookie className="w-5 h-5 text-purple-600" />
             </div>
             <div>
-              <p className="text-gray-300 text-sm sm:text-base">
+              <p className="text-text-secondary text-sm sm:text-base">
                 We use cookies to keep you logged in and improve our product.{' '}
                 <Link 
                   to="/privacy" 
-                  className="text-brand-primary-light hover:text-brand-primary-light underline transition"
+                  className="text-purple-600 hover:text-purple-600 underline transition"
                 >
                   Learn more
                 </Link>
@@ -55,7 +55,7 @@ export default function CookieConsent() {
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={handleEssentialOnly}
-              className="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-card-hover rounded-lg transition"
+              className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-lg transition"
               data-testid="cookie-essential-btn"
             >
               Essential Only
@@ -72,7 +72,7 @@ export default function CookieConsent() {
           {/* Close button (mobile) */}
           <button
             onClick={handleEssentialOnly}
-            className="absolute top-3 right-3 sm:hidden p-1 text-gray-500 hover:text-white transition"
+            className="absolute top-3 right-3 sm:hidden p-1 text-text-tertiary hover:text-text-primary transition"
           >
             <X className="w-5 h-5" />
           </button>

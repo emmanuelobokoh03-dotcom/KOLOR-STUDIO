@@ -41,7 +41,7 @@ export function SmartSuggestion({
       message: 'Start by adding a client project. This is the foundation of everything in KOLOR STUDIO.',
       cta: 'Create Project',
       action: 'open-add-lead',
-      gradient: 'from-brand-primary-dark/30 to-brand-primary-dark/30 border-brand-primary-dark/40',
+      gradient: 'from-brand-primary-dark/30 to-brand-primary-dark/30 border-purple-200',
     },
     {
       id: 'send-quote',
@@ -51,7 +51,7 @@ export function SmartSuggestion({
       message: 'You have projects but no quotes yet. Send your first quote to lock in work!',
       cta: 'View Projects',
       action: 'view-kanban',
-      gradient: 'from-brand-accent-dark/30 to-pink-900/30 border-brand-accent-dark/40',
+      gradient: 'from-brand-accent-dark/30 to-pink-900/30 border-pink-200',
     },
     {
       id: 'portfolio-upload',
@@ -71,7 +71,7 @@ export function SmartSuggestion({
       message: "You're quoting clients \u2014 great! Create contracts to protect you and your clients.",
       cta: 'View Projects',
       action: 'view-kanban',
-      gradient: 'from-emerald-900/30 to-teal-900/30 border-emerald-700/40',
+      gradient: 'from-emerald-900/30 to-teal-900/30 border-emerald-200',
     },
     {
       id: 'complete-profile',
@@ -81,7 +81,7 @@ export function SmartSuggestion({
       message: 'Add your studio name to look professional when sharing your portfolio.',
       cta: 'Edit Settings',
       action: 'open-settings',
-      gradient: 'from-amber-900/30 to-orange-900/30 border-amber-700/40',
+      gradient: 'from-amber-900/30 to-orange-900/30 border-amber-200',
     },
     {
       id: 'setup-email-signature',
@@ -128,8 +128,8 @@ export function SmartSuggestion({
         <div className="flex items-start gap-3 md:gap-4">
           <div className="text-2xl md:text-3xl flex-shrink-0 mt-0.5 select-none">{active.emoji}</div>
           <div className="flex-1 min-w-0">
-            <h4 className="text-base font-semibold text-[#FAFAFA] mb-0.5">{active.title}</h4>
-            <p className="text-sm text-[#CCCCCC] mb-3">{active.message}</p>
+            <h4 className="text-base font-semibold text-text-primary mb-0.5">{active.title}</h4>
+            <p className="text-sm text-text-secondary mb-3">{active.message}</p>
             <button
               onClick={() => onAction(active.action)}
               className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition text-sm font-medium"
@@ -141,7 +141,7 @@ export function SmartSuggestion({
           </div>
           <button
             onClick={() => handleDismiss(active.id)}
-            className="flex-shrink-0 p-1 text-gray-500 hover:text-gray-300 transition-colors"
+            className="flex-shrink-0 p-1 text-text-tertiary hover:text-text-secondary transition-colors"
             data-testid={`suggestion-dismiss-${active.id}`}
           >
             <X className="w-4 h-4" />

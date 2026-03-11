@@ -21,8 +21,8 @@ export function InlineHint({ storageKey, children, dismissible = true, variant =
   }
 
   const styles = variant === 'violet'
-    ? 'bg-brand-primary-dark/20 border-brand-primary-dark/30 text-brand-primary-light'
-    : 'bg-[#1A1A1A] border-[#333] text-[#A3A3A3]'
+    ? 'bg-purple-50 border-purple-200 text-purple-600'
+    : 'bg-light-50 border-light-200 text-text-secondary'
 
   return (
     <div className={`rounded-xl border p-3 mb-4 ${styles}`} data-testid={`hint-${storageKey}`}>

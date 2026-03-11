@@ -42,24 +42,24 @@ const formatTime = (d: string) =>
   new Date(d).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
 
 const WidgetCard = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`bg-[#1A1A1A] rounded-xl border border-[#333] p-4 md:p-5 ${className}`}>
+  <div className={`bg-light-50 rounded-xl border border-light-200 p-4 md:p-5 ${className}`}>
     {children}
   </div>
 )
 
-const WidgetHeader = ({ icon: Icon, title, iconColor = 'text-brand-primary-light', action }: {
+const WidgetHeader = ({ icon: Icon, title, iconColor = 'text-purple-600', action }: {
   icon: React.ElementType; title: string; iconColor?: string;
   action?: { label: string; onClick: () => void }
 }) => (
   <div className="flex items-center justify-between mb-3 md:mb-4">
     <div className="flex items-center gap-2">
       <Icon className={`w-4 h-4 ${iconColor}`} />
-      <h3 className="text-sm font-semibold text-[#FAFAFA]">{title}</h3>
+      <h3 className="text-sm font-semibold text-text-primary">{title}</h3>
     </div>
     {action && (
       <button
         onClick={action.onClick}
-        className="text-xs text-brand-primary-light hover:text-brand-primary-light font-medium flex items-center gap-1 transition-colors"
+        className="text-xs text-purple-600 hover:text-purple-600 font-medium flex items-center gap-1 transition-colors"
       >
         {action.label} <CaretRight className="w-3 h-3" />
       </button>
@@ -68,12 +68,12 @@ const WidgetHeader = ({ icon: Icon, title, iconColor = 'text-brand-primary-light
 )
 
 const EmptyWidget = ({ message }: { message: string }) => (
-  <p className="text-xs text-gray-500 text-center py-4">{message}</p>
+  <p className="text-xs text-text-tertiary text-center py-4">{message}</p>
 )
 
 const LoadingDots = () => (
   <div className="flex items-center justify-center py-6">
-    <SpinnerGap className="w-5 h-5 text-brand-primary-light animate-spin" />
+    <SpinnerGap className="w-5 h-5 text-purple-600 animate-spin" />
   </div>
 )
 
@@ -127,7 +127,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
         <WidgetHeader
           icon={Camera}
           title="Upcoming Shoots"
-          iconColor="text-brand-primary-light"
+          iconColor="text-purple-600"
           action={{ label: 'Calendar', onClick: onViewCalendar }}
         />
         {bookings.length === 0 ? (
@@ -137,15 +137,15 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
             {bookings.map(b => (
               <div
                 key={b.id}
-                className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0F0F0F] border border-[#262626] hover:border-brand-primary-dark/40 transition-all group cursor-pointer"
+                className="flex items-center gap-3 p-2.5 rounded-lg bg-white border border-light-200 hover:border-purple-200 transition-all group cursor-pointer"
                 data-testid={`upcoming-shoot-${b.id}`}
               >
-                <div className="w-10 h-10 rounded-lg bg-brand-primary-dark/40 border border-brand-primary-dark/30 flex items-center justify-center flex-shrink-0">
-                  <Camera className="w-4 h-4 text-brand-primary-light" />
+                <div className="w-10 h-10 rounded-lg bg-purple-100 border border-purple-200 flex items-center justify-center flex-shrink-0">
+                  <Camera className="w-4 h-4 text-purple-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#FAFAFA] truncate">{b.title}</p>
-                  <div className="flex items-center gap-2 text-xs text-[#A3A3A3]">
+                  <p className="text-sm font-medium text-text-primary truncate">{b.title}</p>
+                  <div className="flex items-center gap-2 text-xs text-text-secondary">
                     <CalendarDots className="w-3 h-3" />
                     <span>{formatRelativeDate(b.startTime)}</span>
                     <span className="text-gray-600">|</span>
@@ -154,7 +154,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
                   </div>
                 </div>
                 {b.location && (
-                  <div className="hidden sm:flex items-center gap-1 text-xs text-gray-500 flex-shrink-0">
+                  <div className="hidden sm:flex items-center gap-1 text-xs text-text-tertiary flex-shrink-0">
                     <MapPin className="w-3 h-3" />
                     <span className="truncate max-w-[80px]">{b.location}</span>
                   </div>
@@ -164,10 +164,10 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
           </div>
         )}
         {todayBookings.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-[#333]">
+          <div className="mt-3 pt-3 border-t border-light-200">
             <div className="flex items-center gap-2 px-2">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs text-emerald-400 font-medium">
+              <span className="text-xs text-emerald-600 font-medium">
                 {todayBookings.length} shoot{todayBookings.length > 1 ? 's' : ''} today
               </span>
             </div>
@@ -180,7 +180,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
         <WidgetHeader
           icon={Sparkle}
           title="Active Projects"
-          iconColor="text-brand-primary-light"
+          iconColor="text-purple-600"
         />
         {activeProjects.length === 0 ? (
           <EmptyWidget message="No active projects" />
@@ -190,14 +190,14 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
               <div
                 key={lead.id}
                 onClick={() => onLeadClick(lead)}
-                className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0F0F0F] border border-[#262626] hover:border-brand-primary-dark/40 transition-all cursor-pointer group"
+                className="flex items-center gap-3 p-2.5 rounded-lg bg-white border border-light-200 hover:border-purple-200 transition-all cursor-pointer group"
                 data-testid={`active-project-${lead.id}`}
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#FAFAFA] truncate group-hover:text-brand-primary-light transition-colors">{lead.projectTitle}</p>
-                  <p className="text-xs text-[#A3A3A3]">{lead.clientName}</p>
+                  <p className="text-sm font-medium text-text-primary truncate group-hover:text-purple-600 transition-colors">{lead.projectTitle}</p>
+                  <p className="text-xs text-text-secondary">{lead.clientName}</p>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-primary-dark/30 text-brand-primary-light border border-brand-primary-dark/50 flex-shrink-0">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-200 flex-shrink-0">
                   {LEAD_STATUS_LABELS[lead.status]}
                 </span>
               </div>
@@ -261,7 +261,7 @@ export function FineArtWidgets({ onLeadClick, onAddLead }: FineArtWidgetsProps) 
         <WidgetHeader
           icon={Palette}
           title="Active Commissions"
-          iconColor="text-amber-400"
+          iconColor="text-amber-700"
           action={{ label: 'New Commission', onClick: onAddLead }}
         />
         {commissions.length === 0 ? (
@@ -272,21 +272,21 @@ export function FineArtWidgets({ onLeadClick, onAddLead }: FineArtWidgetsProps) 
               <div
                 key={lead.id}
                 onClick={() => onLeadClick(lead)}
-                className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0F0F0F] border border-[#262626] hover:border-amber-700/40 transition-all cursor-pointer group"
+                className="flex items-center gap-3 p-2.5 rounded-lg bg-white border border-light-200 hover:border-amber-200 transition-all cursor-pointer group"
                 data-testid={`commission-${lead.id}`}
               >
                 {lead.coverImage ? (
                   <img src={lead.coverImage} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
                 ) : (
-                  <div className="w-10 h-10 rounded-lg bg-amber-900/30 border border-amber-700/30 flex items-center justify-center flex-shrink-0">
-                    <Palette className="w-4 h-4 text-amber-400" />
+                  <div className="w-10 h-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center flex-shrink-0">
+                    <Palette className="w-4 h-4 text-amber-700" />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#FAFAFA] truncate group-hover:text-amber-300 transition-colors">{lead.projectTitle}</p>
-                  <p className="text-xs text-[#A3A3A3]">{lead.clientName}</p>
+                  <p className="text-sm font-medium text-text-primary truncate group-hover:text-amber-300 transition-colors">{lead.projectTitle}</p>
+                  <p className="text-xs text-text-secondary">{lead.clientName}</p>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-900/30 text-amber-300 border border-amber-700/50 flex-shrink-0">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-300 border border-amber-200 flex-shrink-0">
                   {LEAD_STATUS_LABELS[lead.status]}
                 </span>
               </div>
@@ -300,7 +300,7 @@ export function FineArtWidgets({ onLeadClick, onAddLead }: FineArtWidgetsProps) 
         <WidgetHeader
           icon={Package}
           title="Pipeline"
-          iconColor="text-emerald-400"
+          iconColor="text-emerald-600"
         />
         <div className="space-y-3">
           {Object.entries(statusGroups).map(([status, leads]) => (
@@ -313,16 +313,16 @@ export function FineArtWidgets({ onLeadClick, onAddLead }: FineArtWidgetsProps) 
                   status === 'NEGOTIATING' ? 'bg-blue-400' :
                   'bg-gray-400'
                 }`} />
-                <span className="text-xs text-[#A3A3A3]">{LEAD_STATUS_LABELS[status as LeadStatus]}</span>
+                <span className="text-xs text-text-secondary">{LEAD_STATUS_LABELS[status as LeadStatus]}</span>
               </div>
-              <span className="text-sm font-semibold text-[#FAFAFA]">{leads.length}</span>
+              <span className="text-sm font-semibold text-text-primary">{leads.length}</span>
             </div>
           ))}
           {pendingQuotes > 0 && (
-            <div className="pt-3 border-t border-[#333]">
+            <div className="pt-3 border-t border-light-200">
               <div className="flex items-center gap-2 text-xs">
-                <CurrencyDollar className="w-3.5 h-3.5 text-brand-accent-light" />
-                <span className="text-brand-accent-light font-medium">{pendingQuotes} pending quote{pendingQuotes > 1 ? 's' : ''}</span>
+                <CurrencyDollar className="w-3.5 h-3.5 text-pink-600" />
+                <span className="text-pink-600 font-medium">{pendingQuotes} pending quote{pendingQuotes > 1 ? 's' : ''}</span>
               </div>
             </div>
           )}
@@ -387,7 +387,7 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
           action={{ label: 'New Project', onClick: onAddLead }}
         />
         {/* Phase bar */}
-        <div className="flex h-3 rounded-full overflow-hidden mb-4 bg-[#0F0F0F]">
+        <div className="flex h-3 rounded-full overflow-hidden mb-4 bg-white">
           {phases.map(p => p.count > 0 && (
             <div
               key={p.key}
@@ -399,26 +399,26 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           {phases.map(p => (
-            <div key={p.key} className="text-center p-2 rounded-lg bg-[#0F0F0F] border border-[#262626]">
-              <p className="text-lg font-bold text-[#FAFAFA]">{p.count}</p>
-              <p className="text-[10px] text-[#A3A3A3] mt-0.5">{p.label}</p>
+            <div key={p.key} className="text-center p-2 rounded-lg bg-white border border-light-200">
+              <p className="text-lg font-bold text-text-primary">{p.count}</p>
+              <p className="text-[10px] text-text-secondary mt-0.5">{p.label}</p>
             </div>
           ))}
         </div>
 
         {/* Recent projects */}
         {projects.length > 0 && (
-          <div className="mt-4 pt-3 border-t border-[#333] space-y-2">
+          <div className="mt-4 pt-3 border-t border-light-200 space-y-2">
             {projects.slice(0, 3).map(lead => (
               <div
                 key={lead.id}
                 onClick={() => onLeadClick(lead)}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#0F0F0F] transition-all cursor-pointer group"
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white transition-all cursor-pointer group"
                 data-testid={`design-project-${lead.id}`}
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#FAFAFA] truncate group-hover:text-indigo-300 transition-colors">{lead.projectTitle}</p>
-                  <p className="text-xs text-[#A3A3A3]">{lead.clientName} &middot; {SERVICE_TYPE_LABELS[lead.serviceType]}</p>
+                  <p className="text-sm font-medium text-text-primary truncate group-hover:text-indigo-700 transition-colors">{lead.projectTitle}</p>
+                  <p className="text-xs text-text-secondary">{lead.clientName} &middot; {SERVICE_TYPE_LABELS[lead.serviceType]}</p>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5 text-gray-600 group-hover:text-indigo-400 transition-colors" />
               </div>
@@ -432,36 +432,36 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
         <WidgetHeader
           icon={ChatText}
           title="Awaiting Action"
-          iconColor="text-brand-accent-light"
+          iconColor="text-pink-600"
         />
         <div className="space-y-3">
           <div className="p-3 rounded-lg bg-brand-accent-dark/20 border border-brand-accent-dark/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-brand-accent-light" />
-                <span className="text-xs text-[#A3A3A3]">Pending Proposals</span>
+                <FileText className="w-4 h-4 text-pink-600" />
+                <span className="text-xs text-text-secondary">Pending Proposals</span>
               </div>
-              <span className="text-lg font-bold text-brand-accent-light">{pendingApprovals}</span>
+              <span className="text-lg font-bold text-pink-600">{pendingApprovals}</span>
             </div>
           </div>
 
           <div className="p-3 rounded-lg bg-blue-900/20 border border-blue-800/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-blue-400" />
-                <span className="text-xs text-[#A3A3A3]">In Revisions</span>
+                <Eye className="w-4 h-4 text-blue-600" />
+                <span className="text-xs text-text-secondary">In Revisions</span>
               </div>
-              <span className="text-lg font-bold text-blue-300">{stats.NEGOTIATING || 0}</span>
+              <span className="text-lg font-bold text-blue-700">{stats.NEGOTIATING || 0}</span>
             </div>
           </div>
 
           <div className="p-3 rounded-lg bg-emerald-900/20 border border-emerald-800/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs text-[#A3A3A3]">Delivered</span>
+                <CheckCircle className="w-4 h-4 text-emerald-600" />
+                <span className="text-xs text-text-secondary">Delivered</span>
               </div>
-              <span className="text-lg font-bold text-emerald-300">{stats.BOOKED || 0}</span>
+              <span className="text-lg font-bold text-emerald-700">{stats.BOOKED || 0}</span>
             </div>
           </div>
         </div>

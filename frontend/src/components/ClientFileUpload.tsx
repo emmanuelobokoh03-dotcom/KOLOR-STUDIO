@@ -132,7 +132,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
         </div>
         <div>
           <h3 className="text-base font-semibold text-gray-900">UploadSimple Files</h3>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-tertiary">
             Share reference images, signed contracts, or other files
           </p>
         </div>
@@ -144,7 +144,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
             <CheckCircle weight="duotone" className="w-8 h-8 text-green-500" />
           </div>
           <p className="text-lg font-semibold text-green-700 mb-1">Files Uploaded!</p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-tertiary">
             {uploadedCount} file{uploadedCount > 1 ? 's' : ''} sent successfully.
           </p>
         </div>
@@ -171,17 +171,17 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
               className={`w-full border-2 border-dashed rounded-xl p-8 cursor-pointer text-center transition-all ${
                 dragOver
                   ? 'border-brand-primary bg-brand-primary/5'
-                  : 'border-gray-200 hover:border-brand-primary/50 hover:bg-gray-50'
+                  : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
               }`}
               data-testid="client-dropzone"
             >
               <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <UploadSimple className="w-6 h-6 text-gray-400" />
+                <UploadSimple className="w-6 h-6 text-text-secondary" />
               </div>
               <p className="font-medium text-gray-700 mb-1">
                 Click to upload or drag & drop
               </p>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-text-secondary">
                 Max 5 files, 50MB each &middot; Images, PDFs, Documents, Videos, Design files
               </p>
             </div>
@@ -201,7 +201,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-900 text-sm truncate">{file.name}</p>
-                        <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
+                        <p className="text-xs text-text-tertiary">{formatFileSize(file.size)}</p>
                       </div>
                     </div>
                     <button
@@ -209,7 +209,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
                       className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors ml-2"
                       data-testid={`remove-file-${index}`}
                     >
-                      <X className="w-4 h-4 text-gray-400" />
+                      <X className="w-4 h-4 text-text-secondary" />
                     </button>
                   </div>
                 ))}

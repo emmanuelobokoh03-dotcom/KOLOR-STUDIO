@@ -50,16 +50,16 @@ function statusOf(d: string, completed: boolean) {
 
 const STATUS_STYLES = {
   completed: { dot: 'bg-green-500/20 border-green-500', icon: 'text-green-400', card: 'bg-green-900/10 border-green-700/30', text: 'text-green-400' },
-  overdue:   { dot: 'bg-red-500/20 border-red-500',     icon: 'text-red-400',   card: 'bg-red-900/10 border-red-700/30',     text: 'text-red-400' },
-  today:     { dot: 'bg-amber-500/20 border-amber-500',  icon: 'text-amber-400', card: 'bg-amber-900/10 border-amber-700/30', text: 'text-amber-400' },
-  upcoming:  { dot: 'bg-[#333] border-[#555]',           icon: 'text-[#A3A3A3]', card: 'bg-[#1A1A1A] border-[#333]',          text: 'text-[#A3A3A3]' },
+  overdue:   { dot: 'bg-red-500/20 border-red-500',     icon: 'text-red-400',   card: 'bg-red-900/10 border-red-200',     text: 'text-red-400' },
+  today:     { dot: 'bg-amber-500/20 border-amber-500',  icon: 'text-amber-700', card: 'bg-amber-50 border-amber-200', text: 'text-amber-700' },
+  upcoming:  { dot: 'bg-light-200 border-light-300',           icon: 'text-text-secondary', card: 'bg-light-50 border-light-200',          text: 'text-text-secondary' },
 };
 
 const PORTAL_STATUS_STYLES = {
   completed: { dot: 'bg-green-100 border-green-500', icon: 'text-green-600', card: 'bg-green-50 border-green-200', text: 'text-green-600' },
   overdue:   { dot: 'bg-red-100 border-red-500',     icon: 'text-red-600',   card: 'bg-red-50 border-red-200',     text: 'text-red-600' },
   today:     { dot: 'bg-amber-100 border-amber-500',  icon: 'text-amber-600', card: 'bg-amber-50 border-amber-200', text: 'text-amber-600' },
-  upcoming:  { dot: 'bg-gray-100 border-gray-300',    icon: 'text-gray-400',  card: 'bg-gray-50 border-gray-200',   text: 'text-gray-500' },
+  upcoming:  { dot: 'bg-gray-100 border-gray-300',    icon: 'text-text-secondary',  card: 'bg-gray-50 border-gray-200',   text: 'text-text-tertiary' },
 };
 
 // ── Component ──────────────────────────────────────────
@@ -135,9 +135,9 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
   // ── Render ───────────────────────────────────────────
   if (loading) return <div className="flex items-center justify-center py-10"><SpinnerGap className="w-6 h-6 animate-spin text-brand-primary" /></div>;
 
-  const emptyTextCls = isPortal ? 'text-gray-400' : 'text-[#A3A3A3]';
-  const headingCls = isPortal ? 'text-gray-900' : 'text-[#FAFAFA]';
-  const lineCls = isPortal ? 'bg-gray-200' : 'bg-[#333]';
+  const emptyTextCls = isPortal ? 'text-text-secondary' : 'text-text-secondary';
+  const headingCls = isPortal ? 'text-gray-900' : 'text-text-primary';
+  const lineCls = isPortal ? 'bg-gray-200' : 'bg-light-200';
 
   if (allItems.length === 0 && !editable) {
     return (
@@ -154,10 +154,10 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <CalendarBlank className={`w-5 h-5 ${isPortal ? 'text-brand-primary' : 'text-brand-primary-light'}`} />
+          <CalendarBlank className={`w-5 h-5 ${isPortal ? 'text-brand-primary' : 'text-purple-600'}`} />
           <h3 className={`font-semibold ${headingCls}`}>Project Timeline</h3>
           {allItems.length > 0 && (
-            <span className={`text-xs px-2 py-0.5 rounded-full ${isPortal ? 'bg-gray-100 text-gray-500' : 'bg-[#333] text-[#A3A3A3]'}`}>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${isPortal ? 'bg-gray-100 text-text-tertiary' : 'bg-light-200 text-text-secondary'}`}>
               {data.milestones.filter(m => m.completed).length}/{data.milestones.length} done
             </span>
           )}
@@ -165,7 +165,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
         {editable && (
           <button
             onClick={() => setShowAdd(!showAdd)}
-            className="flex items-center gap-1.5 text-xs font-medium text-brand-primary-light hover:text-brand-primary transition-colors"
+            className="flex items-center gap-1.5 text-xs font-medium text-purple-600 hover:text-brand-primary transition-colors"
             data-testid="add-milestone-btn"
           >
             <Plus weight="bold" className="w-4 h-4" /> Add Milestone
@@ -175,29 +175,29 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
 
       {/* Add Milestone Form */}
       {showAdd && editable && (
-        <div className="mb-5 p-4 bg-[#0F0F0F] border border-[#333] rounded-xl space-y-3" data-testid="add-milestone-form">
+        <div className="mb-5 p-4 bg-white border border-light-200 rounded-xl space-y-3" data-testid="add-milestone-form">
           <input
             type="text" value={newName} onChange={e => setNewName(e.target.value)}
             placeholder="Milestone name (e.g., First Look Preview)"
-            className="w-full px-3 py-2 bg-[#1A1A1A] border border-[#333] rounded-lg text-sm text-[#FAFAFA] placeholder-[#666] focus:outline-none focus:border-brand-primary"
+            className="w-full px-3 py-2 bg-light-50 border border-light-200 rounded-lg text-sm text-text-primary placeholder-[#666] focus:outline-none focus:border-brand-primary"
             data-testid="milestone-name-input"
           />
           <div className="flex gap-3">
             <input
               type="date" value={newDate} onChange={e => setNewDate(e.target.value)}
-              className="flex-1 px-3 py-2 bg-[#1A1A1A] border border-[#333] rounded-lg text-sm text-[#FAFAFA] focus:outline-none focus:border-brand-primary"
+              className="flex-1 px-3 py-2 bg-light-50 border border-light-200 rounded-lg text-sm text-text-primary focus:outline-none focus:border-brand-primary"
               data-testid="milestone-date-input"
             />
             <input
               type="text" value={newDesc} onChange={e => setNewDesc(e.target.value)}
               placeholder="Description (optional)"
-              className="flex-1 px-3 py-2 bg-[#1A1A1A] border border-[#333] rounded-lg text-sm text-[#FAFAFA] placeholder-[#666] focus:outline-none focus:border-brand-primary"
+              className="flex-1 px-3 py-2 bg-light-50 border border-light-200 rounded-lg text-sm text-text-primary placeholder-[#666] focus:outline-none focus:border-brand-primary"
               data-testid="milestone-desc-input"
             />
           </div>
           <div className="flex justify-end gap-2">
             <button onClick={() => { setShowAdd(false); setNewName(''); setNewDate(''); setNewDesc(''); }}
-              className="px-3 py-1.5 text-xs text-[#A3A3A3] hover:text-white transition-colors" data-testid="cancel-milestone-btn">
+              className="px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors" data-testid="cancel-milestone-btn">
               Cancel
             </button>
             <button onClick={addMilestone} disabled={saving || !newName.trim() || !newDate}
@@ -211,7 +211,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
 
       {/* Empty state for editable with no items */}
       {allItems.length === 0 && editable && !showAdd && (
-        <div className="text-center py-8 text-[#A3A3A3]" data-testid="timeline-empty-editable">
+        <div className="text-center py-8 text-text-secondary" data-testid="timeline-empty-editable">
           <Flag weight="duotone" className="w-10 h-10 mx-auto mb-2 opacity-40" />
           <p className="text-sm">No milestones yet</p>
           <p className="text-xs mt-1 opacity-70">Add milestones to track project progress</p>
@@ -245,19 +245,19 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className={`text-sm font-semibold ${isPortal ? 'text-gray-900' : 'text-[#FAFAFA]'}`}>{item.name}</h4>
+                          <h4 className={`text-sm font-semibold ${isPortal ? 'text-gray-900' : 'text-text-primary'}`}>{item.name}</h4>
                           {isKey && (
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${isPortal ? 'bg-brand-primary/10 text-brand-primary' : 'bg-brand-primary-dark/30 text-brand-primary-light'}`}>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${isPortal ? 'bg-brand-primary/10 text-brand-primary' : 'bg-purple-50 text-purple-600'}`}>
                               Key Date
                             </span>
                           )}
                           {status === 'today' && (
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${isPortal ? 'bg-amber-100 text-amber-700' : 'bg-amber-900/30 text-amber-400'}`}>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${isPortal ? 'bg-amber-100 text-amber-700' : 'bg-amber-50 text-amber-700'}`}>
                               Today
                             </span>
                           )}
                         </div>
-                        {item.description && <p className={`text-xs mt-1 ${isPortal ? 'text-gray-500' : 'text-[#A3A3A3]'}`}>{item.description}</p>}
+                        {item.description && <p className={`text-xs mt-1 ${isPortal ? 'text-text-tertiary' : 'text-text-secondary'}`}>{item.description}</p>}
                         <p className={`text-xs mt-1 ${s.text}`}>
                           {status === 'completed' && item.completedAt ? `Completed ${fmtDate(item.completedAt)}` :
                            status === 'completed' ? fmtDate(item.dueDate) :
@@ -274,7 +274,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
                             disabled={togglingId === item.id}
                             className={`text-[11px] px-2 py-1 rounded-lg font-medium transition-colors ${
                               item.completed
-                                ? 'text-[#A3A3A3] hover:bg-[#333]'
+                                ? 'text-text-secondary hover:bg-light-200'
                                 : 'text-green-400 hover:bg-green-900/20'
                             }`}
                             data-testid={`toggle-milestone-${item.id}`}
@@ -283,7 +283,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
                           </button>
                           <button
                             onClick={() => deleteMilestone(item.id)}
-                            className="p-1 text-[#666] hover:text-red-400 transition-colors"
+                            className="p-1 text-text-tertiary hover:text-red-400 transition-colors"
                             data-testid={`delete-milestone-${item.id}`}
                           >
                             <Trash className="w-3.5 h-3.5" />

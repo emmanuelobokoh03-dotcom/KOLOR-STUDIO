@@ -41,11 +41,11 @@ export default function MarkAsDeliveredButton({ leadId, leadStatus, pipelineStat
   if (pipelineStatus === 'COMPLETED') {
     return (
       <div className="bg-emerald-950/30 border border-emerald-700/30 rounded-xl p-4" data-testid="delivery-complete-banner">
-        <div className="flex items-center gap-2 text-emerald-400 mb-1">
+        <div className="flex items-center gap-2 text-emerald-600 mb-1">
           <CheckCircle weight="fill" className="w-5 h-5" />
           <span className="font-semibold text-sm">Project Delivered</span>
         </div>
-        <p className="text-xs text-[#888]">
+        <p className="text-xs text-text-secondary">
           All files shared with client. Testimonial request will be sent automatically.
         </p>
       </div>

@@ -101,26 +101,26 @@ export default function BrandSettings() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Primary Color */}
         <div>
-          <label className="text-sm font-medium text-[#A3A3A3] mb-2 flex items-center gap-1.5">
+          <label className="text-sm font-medium text-text-secondary mb-2 flex items-center gap-1.5">
             <Palette className="w-3.5 h-3.5" /> Primary Color
           </label>
           <div className="relative">
             <button
               onClick={() => { setShowPrimaryPicker(!showPrimaryPicker); setShowAccentPicker(false) }}
-              className="flex items-center gap-3 w-full p-3 rounded-xl bg-[#0F0F0F] border border-[#333] hover:border-[#444] transition-colors"
+              className="flex items-center gap-3 w-full p-3 rounded-xl bg-white border border-light-200 hover:border-light-300 transition-colors"
               data-testid="primary-color-btn"
             >
               <div className="w-8 h-8 rounded-lg border-2 border-white/20 flex-shrink-0" style={{ background: primary }} />
-              <span className="text-sm font-mono text-[#FAFAFA]">{primary.toUpperCase()}</span>
+              <span className="text-sm font-mono text-text-primary">{primary.toUpperCase()}</span>
             </button>
             {showPrimaryPicker && (
-              <div className="absolute top-full left-0 mt-2 z-20 p-3 bg-[#1A1A1A] border border-[#333] rounded-xl shadow-xl" data-testid="primary-picker">
+              <div className="absolute top-full left-0 mt-2 z-20 p-3 bg-light-50 border border-light-200 rounded-xl shadow-xl" data-testid="primary-picker">
                 <HexColorPicker color={primary} onChange={setPrimary} />
                 <input
                   type="text"
                   value={primary}
                   onChange={(e) => /^#[0-9A-Fa-f]{6}$/.test(e.target.value) && setPrimary(e.target.value)}
-                  className="mt-2 w-full px-2 py-1.5 bg-[#0F0F0F] border border-[#333] rounded-lg text-sm font-mono text-center text-[#FAFAFA]"
+                  className="mt-2 w-full px-2 py-1.5 bg-white border border-light-200 rounded-lg text-sm font-mono text-center text-text-primary"
                 />
               </div>
             )}
@@ -129,26 +129,26 @@ export default function BrandSettings() {
 
         {/* Accent Color */}
         <div>
-          <label className="text-sm font-medium text-[#A3A3A3] mb-2 flex items-center gap-1.5">
+          <label className="text-sm font-medium text-text-secondary mb-2 flex items-center gap-1.5">
             <Palette className="w-3.5 h-3.5" /> Accent Color
           </label>
           <div className="relative">
             <button
               onClick={() => { setShowAccentPicker(!showAccentPicker); setShowPrimaryPicker(false) }}
-              className="flex items-center gap-3 w-full p-3 rounded-xl bg-[#0F0F0F] border border-[#333] hover:border-[#444] transition-colors"
+              className="flex items-center gap-3 w-full p-3 rounded-xl bg-white border border-light-200 hover:border-light-300 transition-colors"
               data-testid="accent-color-btn"
             >
               <div className="w-8 h-8 rounded-lg border-2 border-white/20 flex-shrink-0" style={{ background: accent }} />
-              <span className="text-sm font-mono text-[#FAFAFA]">{accent.toUpperCase()}</span>
+              <span className="text-sm font-mono text-text-primary">{accent.toUpperCase()}</span>
             </button>
             {showAccentPicker && (
-              <div className="absolute top-full left-0 mt-2 z-20 p-3 bg-[#1A1A1A] border border-[#333] rounded-xl shadow-xl" data-testid="accent-picker">
+              <div className="absolute top-full left-0 mt-2 z-20 p-3 bg-light-50 border border-light-200 rounded-xl shadow-xl" data-testid="accent-picker">
                 <HexColorPicker color={accent} onChange={setAccent} />
                 <input
                   type="text"
                   value={accent}
                   onChange={(e) => /^#[0-9A-Fa-f]{6}$/.test(e.target.value) && setAccent(e.target.value)}
-                  className="mt-2 w-full px-2 py-1.5 bg-[#0F0F0F] border border-[#333] rounded-lg text-sm font-mono text-center text-[#FAFAFA]"
+                  className="mt-2 w-full px-2 py-1.5 bg-white border border-light-200 rounded-lg text-sm font-mono text-center text-text-primary"
                 />
               </div>
             )}
@@ -158,7 +158,7 @@ export default function BrandSettings() {
 
       {/* Preset Palettes */}
       <div>
-        <label className="text-sm font-medium text-[#A3A3A3] mb-2 block">Quick Palettes</label>
+        <label className="text-sm font-medium text-text-secondary mb-2 block">Quick Palettes</label>
         <div className="flex flex-wrap gap-2">
           {PRESET_PALETTES.map(p => (
             <button
@@ -166,8 +166,8 @@ export default function BrandSettings() {
               onClick={() => { setPrimary(p.primary); setAccent(p.accent); setShowPrimaryPicker(false); setShowAccentPicker(false) }}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
                 primary === p.primary && accent === p.accent
-                  ? 'border-white/30 bg-[#1A1A1A]'
-                  : 'border-[#333] hover:border-[#444] bg-[#0F0F0F]'
+                  ? 'border-white/30 bg-light-50'
+                  : 'border-light-200 hover:border-light-300 bg-white'
               }`}
               data-testid={`palette-${p.name.toLowerCase()}`}
             >
@@ -175,7 +175,7 @@ export default function BrandSettings() {
                 <div className="w-4 h-4 rounded-full border border-black/30" style={{ background: p.primary }} />
                 <div className="w-4 h-4 rounded-full border border-black/30" style={{ background: p.accent }} />
               </div>
-              <span className="text-xs text-[#CCCCCC]">{p.name}</span>
+              <span className="text-xs text-text-secondary">{p.name}</span>
             </button>
           ))}
         </div>
@@ -183,7 +183,7 @@ export default function BrandSettings() {
 
       {/* Font Family */}
       <div>
-        <label className="text-sm font-medium text-[#A3A3A3] mb-2 flex items-center gap-1.5">
+        <label className="text-sm font-medium text-text-secondary mb-2 flex items-center gap-1.5">
           <TextT className="w-3.5 h-3.5" /> Font Family
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -194,14 +194,14 @@ export default function BrandSettings() {
               className={`p-3 rounded-xl border text-left transition-all ${
                 font === f.value
                   ? 'border-brand-primary bg-brand-primary/10'
-                  : 'border-[#333] hover:border-[#444] bg-[#0F0F0F]'
+                  : 'border-light-200 hover:border-light-300 bg-white'
               }`}
               data-testid={`font-${f.value.toLowerCase().replace(/\s/g, '-')}`}
             >
-              <span className="text-sm font-semibold text-[#FAFAFA] block" style={{ fontFamily: f.value }}>
+              <span className="text-sm font-semibold text-text-primary block" style={{ fontFamily: f.value }}>
                 {f.label}
               </span>
-              <span className="text-[10px] text-[#A3A3A3]">{f.style}</span>
+              <span className="text-[10px] text-text-secondary">{f.style}</span>
             </button>
           ))}
         </div>
@@ -209,13 +209,13 @@ export default function BrandSettings() {
 
       {/* Logo Upload */}
       <div>
-        <label className="text-sm font-medium text-[#A3A3A3] mb-2 flex items-center gap-1.5">
+        <label className="text-sm font-medium text-text-secondary mb-2 flex items-center gap-1.5">
           <UploadSimple className="w-3.5 h-3.5" /> Studio Logo
         </label>
         <div className="flex items-center gap-4">
           {logoUrl ? (
             <div className="relative group">
-              <img src={logoUrl} alt="Brand logo" className="h-16 w-16 rounded-xl object-contain bg-[#0F0F0F] border border-[#333] p-1" data-testid="brand-logo-img" />
+              <img src={logoUrl} alt="Brand logo" className="h-16 w-16 rounded-xl object-contain bg-white border border-light-200 p-1" data-testid="brand-logo-img" />
               <button
                 onClick={handleLogoDelete}
                 className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -227,13 +227,13 @@ export default function BrandSettings() {
           ) : (
             <div
               onClick={() => fileRef.current?.click()}
-              className="h-16 w-16 rounded-xl border-2 border-dashed border-[#333] flex items-center justify-center cursor-pointer hover:border-[#555] transition-colors bg-[#0F0F0F]"
+              className="h-16 w-16 rounded-xl border-2 border-dashed border-light-200 flex items-center justify-center cursor-pointer hover:border-light-300 transition-colors bg-white"
               data-testid="upload-logo-area"
             >
               {uploading ? (
-                <SpinnerGap className="w-5 h-5 text-[#A3A3A3] animate-spin" />
+                <SpinnerGap className="w-5 h-5 text-text-secondary animate-spin" />
               ) : (
-                <UploadSimple weight="bold" className="w-5 h-5 text-[#A3A3A3]" />
+                <UploadSimple weight="bold" className="w-5 h-5 text-text-secondary" />
               )}
             </div>
           )}
@@ -245,7 +245,7 @@ export default function BrandSettings() {
             >
               {logoUrl ? 'Change Logo' : 'Upload Logo'}
             </button>
-            <p className="text-xs text-gray-500 mt-0.5">PNG, JPG, SVG up to 2MB</p>
+            <p className="text-xs text-text-tertiary mt-0.5">PNG, JPG, SVG up to 2MB</p>
           </div>
           <input
             ref={fileRef}
@@ -258,7 +258,7 @@ export default function BrandSettings() {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-3 pt-2 border-t border-[#262626]">
+      <div className="flex items-center gap-3 pt-2 border-t border-light-200">
         <button
           onClick={handleSave}
           disabled={saving || !hasChanges}
@@ -271,7 +271,7 @@ export default function BrandSettings() {
         </button>
         <button
           onClick={handleReset}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#333] text-[#A3A3A3] hover:text-[#FAFAFA] hover:border-[#444] transition-colors text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-light-200 text-text-secondary hover:text-text-primary hover:border-light-300 transition-colors text-sm font-medium"
           data-testid="reset-brand-btn"
         >
           <ArrowCounterClockwise className="w-4 h-4" />
@@ -283,7 +283,7 @@ export default function BrandSettings() {
       {/* Right Column: Live Preview */}
       <div className="lg:w-[320px] flex-shrink-0 space-y-5">
         <BrandPreview primary={primary} accent={accent} font={font} logoUrl={logoUrl} />
-        <div className="border-t border-[#262626] pt-5">
+        <div className="border-t border-light-200 pt-5">
           <EmailSignatureGenerator />
         </div>
       </div>

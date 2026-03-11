@@ -86,7 +86,7 @@ const getEmailTemplate = (content: string, title: string) => `
                 </tr>
                 <tr>
                   <td align="center" style="color: #9ca3af; font-size: 12px; padding-top: 8px;">
-                    Built for photographers, designers, and videographers
+                    Your CRM should work harder than you do
                   </td>
                 </tr>
               </table>
@@ -834,35 +834,34 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
   // Build the message section based on whether custom message was provided
   const messageSection = data.customMessage
     ? `<div style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7; white-space: pre-wrap;">${data.customMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>`
-    : `<p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-      Hi ${firstName},
+    : `<p style="margin: 0 0 20px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+      Hey ${firstName}! 👋
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-      We've prepared a quote for your project <strong>"${data.projectTitle}"</strong>. 
-      Click the button below to view the full details and accept the quote.
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+      I'm excited about your project <strong>"${data.projectTitle}"</strong>! 
+      Here's what I'm thinking:
     </p>`;
 
   const content = `
-    <div style="text-align: center; margin-bottom: 32px;">
-      <span style="font-size: 48px;">📋</span>
-    </div>
-    
     <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
       Your Quote is Ready!
     </h1>
     
     ${messageSection}
     
-    <!-- Quote Summary Box -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); border-radius: 12px; margin-bottom: 24px;">
+    <!-- Investment Highlight -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border-radius: 16px; margin-bottom: 24px;">
       <tr>
-        <td style="padding: 24px; text-align: center;">
-          <p style="margin: 0 0 8px 0; font-size: 14px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">
-            Quote ${data.quoteNumber}
+        <td style="padding: 32px; text-align: center;">
+          <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+            Investment
           </p>
-          <p style="margin: 0; font-size: 36px; font-weight: 700; color: #ffffff;">
+          <p style="margin: 0; font-size: 48px; font-weight: 700; color: #10B981; line-height: 1;">
             ${formattedTotal}
+          </p>
+          <p style="margin: 8px 0 0 0; font-size: 13px; color: #6B7280;">
+            Quote ${data.quoteNumber}
           </p>
         </td>
       </tr>
@@ -872,29 +871,34 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
       <tr>
         <td align="center">
-          <a href="${quoteUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
-            View Quote Details
+          <a href="${quoteUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 18px; font-weight: 600; text-decoration: none; padding: 18px 48px; border-radius: 12px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
+            View Your Quote →
           </a>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="padding-top: 12px;">
+          <p style="margin: 0; font-size: 13px; color: #9CA3AF;">Takes 2 seconds to accept if you're ready!</p>
         </td>
       </tr>
     </table>
     
     <!-- Validity Notice -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fef3c7; border-radius: 12px; margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-left: 4px solid #F59E0B; background: linear-gradient(90deg, #FEF3C7 0%, transparent 100%); border-radius: 0 8px 8px 0; margin-bottom: 24px;">
       <tr>
         <td style="padding: 16px 20px;">
-          <p style="margin: 0; font-size: 14px; color: #92400e; text-align: center;">
-            <strong>⏰ This quote is valid until ${formattedDate}</strong>
+          <p style="margin: 0; font-size: 14px; color: #92400e;">
+            <strong>⏰ Valid until ${formattedDate}</strong> — but no pressure, just let me know!
           </p>
         </td>
       </tr>
     </table>
     
-    <p style="margin: 24px 0 0 0; font-size: 14px; color: #6b7280; line-height: 1.7;">
-      If you have any questions about this quote, simply reply to this email - we're here to help!
+    <p style="margin: 24px 0 0 0; font-size: 16px; color: #374151; line-height: 1.7;">
+      Questions? Just reply to this email — I'm usually pretty quick 😊
     </p>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
+    <p style="margin: 24px 0 0 0; font-size: 16px; color: #374151;">
       Looking forward to working with you,<br>
       <strong style="color: #7c3aed;">${data.studioName}</strong>
     </p>

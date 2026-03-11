@@ -203,8 +203,8 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-white">Portfolio</h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <h2 className="text-xl font-bold text-text-primary">Portfolio</h2>
+          <p className="text-sm text-text-secondary mt-1">
             Showcase your best work to impress potential clients
           </p>
         </div>
@@ -220,7 +220,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
 
       {/* Error */}
       {error && (
-        <div className="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-red-300 text-sm">
+        <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
           <WarningCircle className="w-4 h-4" />
           {error}
         </div>
@@ -229,16 +229,16 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
       {/* Loading */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary-light" />
+          <SpinnerGap className="w-8 h-8 animate-spin text-purple-600" />
         </div>
       ) : items.length === 0 ? (
         /* Empty State */
-        <div className="text-center py-16 bg-slate-800/50 rounded-2xl border border-slate-700">
-          <div className="w-16 h-16 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Image weight="duotone" className="w-8 h-8 text-gray-400" />
+        <div className="text-center py-16 bg-light-100 rounded-2xl border border-light-200">
+          <div className="w-16 h-16 bg-light-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Image weight="duotone" className="w-8 h-8 text-text-secondary" />
           </div>
-          <h3 className="text-lg font-semibold text-white mb-2">No Portfolio Items Yet</h3>
-          <p className="text-gray-400 mb-6 max-w-md mx-auto">
+          <h3 className="text-lg font-semibold text-text-primary mb-2">No Portfolio Items Yet</h3>
+          <p className="text-text-secondary mb-6 max-w-md mx-auto">
             UploadSimple your best work to showcase your skills and impress potential clients.
           </p>
           <button
@@ -255,7 +255,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
           {items.map((item) => (
             <div
               key={item.id}
-              className="group bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-brand-primary/50 transition"
+              className="group bg-white rounded-xl overflow-hidden border border-light-200 hover:border-purple-300 transition"
             >
               {/* Image */}
               <div className="relative aspect-video bg-slate-900">
@@ -289,26 +289,26 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                     }`}
                     title={item.featured ? 'Remove from featured' : 'Mark as featured'}
                   >
-                    <Star className={`w-5 h-5 ${item.featured ? 'text-yellow-400 fill-current' : 'text-white'}`} />
+                    <Star className={`w-5 h-5 ${item.featured ? 'text-yellow-400 fill-current' : 'text-text-tertiary'}`} />
                   </button>
                   <button
                     onClick={() => handleDelete(item)}
                     className="p-2 bg-red-500/30 hover:bg-red-500/50 rounded-lg transition"
                     title="Delete"
                   >
-                    <Trash className="w-5 h-5 text-red-300" />
+                    <Trash className="w-5 h-5 text-red-700" />
                   </button>
                 </div>
               </div>
               {/* Info */}
               <div className="p-4">
-                <h3 className="font-semibold text-white truncate">{item.title}</h3>
+                <h3 className="font-semibold text-text-primary truncate">{item.title}</h3>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="px-2 py-0.5 bg-brand-primary/20 text-brand-primary-light rounded text-xs">
+                  <span className="px-2 py-0.5 bg-brand-primary/20 text-purple-600 rounded text-xs">
                     {PORTFOLIO_CATEGORY_LABELS[item.category]}
                   </span>
                   {item.tags.length > 0 && (
-                    <span className="text-xs text-gray-500 truncate">
+                    <span className="text-xs text-text-tertiary truncate">
                       +{item.tags.length} tags
                     </span>
                   )}
@@ -322,15 +322,15 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
       {/* Upload/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-900 rounded-2xl w-full max-w-lg border border-slate-700 shadow-2xl">
+          <div className="bg-slate-900 rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-700">
-              <h3 className="text-lg font-semibold text-white">
+            <div className="flex items-center justify-between p-4 border-b border-light-200">
+              <h3 className="text-lg font-semibold text-text-primary">
                 {editingItem ? 'Edit Portfolio Item' : 'Add Portfolio Item'}
               </h3>
               <button
                 onClick={() => { setShowModal(false); resetForm(); }}
-                className="p-2 hover:bg-slate-800 rounded-lg transition text-gray-400"
+                className="p-2 hover:bg-white rounded-lg transition text-text-secondary"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -340,7 +340,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
             <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
               {/* Error */}
               {modalError && (
-                <div className="flex items-center gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-red-300 text-sm">
+                <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                   <WarningCircle className="w-4 h-4" />
                   {modalError}
                 </div>
@@ -348,7 +348,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
 
               {/* Image Upload */}
               <div>
-                <label className="text-xs text-gray-400 mb-2 block">
+                <label className="text-xs text-text-secondary mb-2 block">
                   Image {!editingItem && <span className="text-red-400">*</span>}
                 </label>
                 <div
@@ -357,7 +357,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-slate-600 rounded-xl p-6 text-center cursor-pointer hover:border-brand-primary transition"
+                  className="border-2 border-dashed border-light-200 rounded-xl p-6 text-center cursor-pointer hover:border-brand-primary transition"
                 >
                   {imagePreview ? (
                     <div className="relative">
@@ -377,15 +377,15 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                       >
                         <X className="w-4 h-4 text-white" />
                       </button>
-                      <p className="text-xs text-gray-400 mt-2">Click to replace image</p>
+                      <p className="text-xs text-text-secondary mt-2">Click to replace image</p>
                     </div>
                   ) : (
                     <>
-                      <UploadSimple weight="duotone" className="w-8 h-8 text-gray-500 mx-auto mb-2" />
-                      <p className="text-sm text-gray-400">
+                      <UploadSimple weight="duotone" className="w-8 h-8 text-text-tertiary mx-auto mb-2" />
+                      <p className="text-sm text-text-secondary">
                         Drag & drop or click to upload
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-text-tertiary mt-1">
                         PNG, JPG, GIF, WebP up to 10MB
                       </p>
                     </>
@@ -402,7 +402,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
 
               {/* Title */}
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">
+                <label className="text-xs text-text-secondary mb-1 block">
                   Title <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -410,30 +410,30 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Summer Wedding Collection"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                   data-testid="portfolio-title-input"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">Description</label>
+                <label className="text-xs text-text-secondary mb-1 block">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Brief description of this work..."
                   rows={3}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary resize-none"
+                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none"
                 />
               </div>
 
               {/* Category */}
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">Category</label>
+                <label className="text-xs text-text-secondary mb-1 block">Category</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as PortfolioCategory)}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                   data-testid="portfolio-category-select"
                 >
                   {Object.entries(PORTFOLIO_CATEGORY_LABELS).map(([value, label]) => (
@@ -444,15 +444,15 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
 
               {/* Tags */}
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">Tags</label>
+                <label className="text-xs text-text-secondary mb-1 block">Tags</label>
                 <input
                   type="text"
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder="e.g., wedding, outdoor, portraits"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                 />
-                <p className="text-xs text-gray-500 mt-1">Separate tags with commas</p>
+                <p className="text-xs text-text-tertiary mt-1">Separate tags with commas</p>
               </div>
 
               {/* Featured Toggle */}
@@ -462,9 +462,9 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   id="featured"
                   checked={featured}
                   onChange={(e) => setFeatured(e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-brand-primary focus:ring-brand-primary"
+                  className="w-4 h-4 rounded border-light-200 bg-white text-brand-primary focus:ring-purple-500"
                 />
-                <label htmlFor="featured" className="text-sm text-gray-300 flex items-center gap-2">
+                <label htmlFor="featured" className="text-sm text-text-secondary flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-400" />
                   Mark as featured
                 </label>
@@ -472,11 +472,11 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex gap-3 p-4 border-t border-slate-700">
+            <div className="flex gap-3 p-4 border-t border-light-200">
               <button
                 onClick={() => { setShowModal(false); resetForm(); }}
                 disabled={saving}
-                className="flex-1 px-4 py-2 border border-slate-600 text-gray-300 rounded-lg hover:bg-slate-800 transition text-sm font-medium"
+                className="flex-1 px-4 py-2 border border-light-200 text-text-secondary rounded-lg hover:bg-white transition text-sm font-medium"
               >
                 Cancel
               </button>

@@ -83,19 +83,19 @@ export default function IndustryOnboarding() {
   // Success screen
   if (done) {
     return (
-      <div className="min-h-screen bg-dark-bg flex items-center justify-center p-6">
+      <div className="min-h-screen bg-light-50 flex items-center justify-center p-6">
         <div className="text-center max-w-md mx-auto animate-fadeIn">
           <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-900/30">
             <CheckCircle weight="duotone" className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-3">You're all set!</h1>
-          <p className="text-lg text-gray-400 mb-2">
+          <p className="text-lg text-text-secondary mb-2">
             Your <span className="text-white font-semibold">{INDUSTRY_TYPE_LABELS[selected!]}</span> workspace is ready
           </p>
-          <p className="text-sm text-gray-500 mb-6">
-            We've created your "<span className="text-brand-primary-light">{templateName}</span>" workflow template
+          <p className="text-sm text-text-tertiary mb-6">
+            We've created your "<span className="text-purple-600">{templateName}</span>" workflow template
           </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center justify-center gap-2 text-sm text-text-tertiary">
             <SpinnerGap className="w-4 h-4 animate-spin" />
             Taking you to your dashboard...
           </div>
@@ -105,17 +105,17 @@ export default function IndustryOnboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg flex flex-col" data-testid="industry-onboarding">
+    <div className="min-h-screen bg-light-50 flex flex-col" data-testid="industry-onboarding">
       {/* Header */}
       <div className="text-center pt-16 pb-8 px-6">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <Sparkle className="w-6 h-6 text-brand-primary-light" />
-          <span className="text-sm font-medium text-brand-primary-light tracking-wider uppercase">Welcome to Kolor Studio</span>
+          <Sparkle className="w-6 h-6 text-purple-600" />
+          <span className="text-sm font-medium text-purple-600 tracking-wider uppercase">Welcome to Kolor Studio</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
           What type of creative are you?
         </h1>
-        <p className="text-lg text-gray-400 max-w-xl mx-auto">
+        <p className="text-lg text-text-secondary max-w-xl mx-auto">
           We'll set up your workspace with industry-specific workflows, so you can start managing clients right away.
         </p>
       </div>
@@ -132,8 +132,8 @@ export default function IndustryOnboarding() {
                 data-testid={`industry-${type.toLowerCase().replace('_', '-')}`}
                 className={`relative p-4 rounded-2xl border-2 text-left transition-all duration-200 group ${
                   isSelected
-                    ? 'border-brand-primary bg-brand-primary-dark/20 scale-[1.02] shadow-lg shadow-brand-primary-dark/20'
-                    : 'border-dark-border bg-dark-card hover:border-gray-600 hover:bg-dark-card-hover'
+                    ? 'border-brand-primary bg-purple-50 scale-[1.02] shadow-lg shadow-brand-primary-dark/20'
+                    : 'border-light-200 bg-white hover:border-gray-600 hover:bg-light-100'
                 }`}
               >
                 <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-3 ${
@@ -141,10 +141,10 @@ export default function IndustryOnboarding() {
                 } transition`}>
                   <Icon className="w-5 h-5 text-white" />
                 </div>
-                <div className={`text-sm font-semibold mb-1 ${isSelected ? 'text-white' : 'text-gray-300'}`}>
+                <div className={`text-sm font-semibold mb-1 ${isSelected ? 'text-white' : 'text-text-secondary'}`}>
                   {INDUSTRY_TYPE_LABELS[type]}
                 </div>
-                <div className="text-xs text-gray-500 leading-relaxed">{desc}</div>
+                <div className="text-xs text-text-tertiary leading-relaxed">{desc}</div>
                 {isSelected && (
                   <div className="absolute top-3 right-3 w-5 h-5 bg-brand-primary rounded-full flex items-center justify-center">
                     <CheckCircle className="w-3.5 h-3.5 text-white" />
@@ -156,18 +156,18 @@ export default function IndustryOnboarding() {
         </div>
 
         {error && (
-          <div className="mt-4 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-sm text-red-400 text-center">
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-400 text-center">
             {error}
           </div>
         )}
       </div>
 
       {/* Footer */}
-      <div className="sticky bottom-0 bg-dark-bg/95 backdrop-blur-sm border-t border-dark-border p-6">
+      <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm border-t border-light-200 p-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <button
             onClick={handleSkip}
-            className="text-sm text-gray-500 hover:text-gray-300 transition"
+            className="text-sm text-text-tertiary hover:text-text-secondary transition"
             data-testid="onboarding-skip"
           >
             Skip for now
@@ -177,7 +177,7 @@ export default function IndustryOnboarding() {
             disabled={!selected || loading}
             className={`flex items-center gap-2 px-8 py-3 rounded-xl font-semibold text-white transition-all ${
               selected
-                ? 'bg-brand-primary hover:bg-brand-primary shadow-lg shadow-brand-primary-dark/30'
+                ? 'bg-brand-primary hover:bg-brand-primary shadow-lg shadow-purple-200'
                 : 'bg-gray-700 cursor-not-allowed opacity-50'
             }`}
             data-testid="onboarding-continue"

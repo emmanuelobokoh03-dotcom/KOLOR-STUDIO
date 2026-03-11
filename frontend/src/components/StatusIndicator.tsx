@@ -57,7 +57,7 @@ export default function StatusIndicator({ showLabel = true }: StatusIndicatorPro
     },
     checking: {
       icon: SpinnerGap,
-      color: 'text-gray-400',
+      color: 'text-text-secondary',
       bgColor: 'bg-gray-400',
       label: 'Checking Status...'
     }

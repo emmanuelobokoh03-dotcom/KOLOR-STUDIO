@@ -178,13 +178,13 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
     }, 1000);
   };
 
-  const inputClass = "w-full px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent text-white placeholder-gray-500 transition-all duration-200 text-base";
-  const labelClass = "block text-sm font-medium text-[#A3A3A3] mb-1.5";
+  const inputClass = "w-full px-4 py-2.5 bg-white border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-text-primary placeholder-gray-400 transition-all duration-200 text-base";
+  const labelClass = "block text-sm font-medium text-text-secondary mb-1.5";
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose}>
       <div 
-        className="bg-[#1A1A1A] w-full md:rounded-2xl md:shadow-2xl md:max-w-2xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden border-t md:border border-[#333] animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
+        className="bg-light-50 w-full md:rounded-2xl md:shadow-2xl md:max-w-2xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
         data-testid="add-lead-modal"
       >
@@ -193,7 +193,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl md:text-2xl font-bold">Add New Lead</h2>
-              <p className="text-brand-primary-light mt-0.5 md:mt-1 text-sm">Manually add a potential client</p>
+              <p className="text-purple-600 mt-0.5 md:mt-1 text-sm">Manually add a potential client</p>
             </div>
             <button onClick={onClose} className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 touch-target" data-testid="add-lead-close">
               <X className="w-6 h-6" />
@@ -204,7 +204,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
         {/* Content */}
         <div className="p-4 md:p-6 overflow-y-auto flex-1 md:max-h-[70vh]">
           {error && (
-            <div className="mb-5 p-4 bg-red-900/30 border border-red-700/50 rounded-xl flex items-center gap-3 text-red-400 animate-fade-in">
+            <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-400 animate-fade-in">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -219,7 +219,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
           <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
             {/* Cover Image Upload */}
             <div>
-              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Cover Image</h3>
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-text-primary">Cover Image</h3>
               <input
                 type="file"
                 ref={coverInputRef}
@@ -229,7 +229,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                 data-testid="cover-image-input"
               />
               {coverImagePreview ? (
-                <div className="relative group rounded-xl overflow-hidden border border-[#333]">
+                <div className="relative group rounded-xl overflow-hidden border border-light-200">
                   <img 
                     src={coverImagePreview} 
                     alt="Cover preview" 
@@ -256,13 +256,13 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                 <button
                   type="button"
                   onClick={() => coverInputRef.current?.click()}
-                  className="w-full h-36 border-2 border-dashed border-[#333] rounded-xl flex flex-col items-center justify-center gap-2 hover:border-brand-primary/50 hover:bg-brand-primary-dark/10 transition-all duration-200"
+                  className="w-full h-36 border-2 border-dashed border-light-200 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200"
                   data-testid="cover-image-upload-btn"
                 >
-                  <div className="p-3 bg-[#262626] rounded-xl">
-                    <Image className="w-6 h-6 text-[#A3A3A3]" />
+                  <div className="p-3 bg-light-100 rounded-xl">
+                    <Image className="w-6 h-6 text-text-secondary" />
                   </div>
-                  <span className="text-sm text-[#A3A3A3]">Click to upload a cover image</span>
+                  <span className="text-sm text-text-secondary">Click to upload a cover image</span>
                   <span className="text-xs text-gray-600">JPG, PNG, WebP up to 10MB</span>
                 </button>
               )}
@@ -270,7 +270,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Project Type Selector */}
             <div>
-              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Project Type</h3>
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-text-primary">Project Type</h3>
               <InlineHint storageKey="seen_project_type_tip" variant="violet">
                 <span className="text-xs"><strong>First project?</strong> Choose the type that matches your workflow. This helps us show you the right tools.</span>
               </InlineHint>
@@ -286,11 +286,11 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                         selected
                           ? `border-${color}-500 bg-${color}-500/10`
-                          : 'border-[#333] bg-[#0F0F0F] hover:border-gray-600'
+                          : 'border-light-200 bg-white hover:border-gray-600'
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mb-1.5 ${selected ? `text-${color}-400` : 'text-[#A3A3A3]'}`} />
-                      <div className={`text-sm font-medium ${selected ? 'text-[#FAFAFA]' : 'text-[#A3A3A3]'}`}>
+                      <Icon className={`w-5 h-5 mb-1.5 ${selected ? `text-${color}-400` : 'text-text-secondary'}`} />
+                      <div className={`text-sm font-medium ${selected ? 'text-text-primary' : 'text-text-secondary'}`}>
                         {PROJECT_TYPE_LABELS[type]}
                       </div>
                       <div className="text-xs text-gray-600 mt-0.5">{desc}</div>
@@ -302,7 +302,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Client Info */}
             <div>
-              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Client Information</h3>
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-text-primary">Client Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <label className={labelClass}>Client Name *</label>
@@ -325,7 +325,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Project Details */}
             <div>
-              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Project Details</h3>
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-text-primary">Project Details</h3>
               <div className="space-y-3 md:space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div>
@@ -383,7 +383,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Deliverable Type */}
             <div>
-              <h3 className="text-sm md:text-base font-semibold mb-3 text-[#FAFAFA]">Deliverable Type</h3>
+              <h3 className="text-sm md:text-base font-semibold mb-3 text-text-primary">Deliverable Type</h3>
               <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3" data-testid="deliverable-type-selector">
                 {DELIVERABLE_CONFIG.map(({ type, icon: Icon, color }) => {
                   const selected = formData.deliverableType === type;
@@ -396,11 +396,11 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       className={`p-3 rounded-xl border-2 text-center transition-all duration-200 ${
                         selected
                           ? `border-${color}-500 bg-${color}-500/10`
-                          : 'border-[#333] bg-[#0F0F0F] hover:border-gray-600'
+                          : 'border-light-200 bg-white hover:border-gray-600'
                       }`}
                     >
-                      <Icon className={`w-4 h-4 mx-auto mb-1 ${selected ? `text-${color}-400` : 'text-[#A3A3A3]'}`} />
-                      <div className={`text-xs font-medium ${selected ? 'text-[#FAFAFA]' : 'text-[#A3A3A3]'}`}>
+                      <Icon className={`w-4 h-4 mx-auto mb-1 ${selected ? `text-${color}-400` : 'text-text-secondary'}`} />
+                      <div className={`text-xs font-medium ${selected ? 'text-text-primary' : 'text-text-secondary'}`}>
                         {DELIVERABLE_TYPE_LABELS[type]}
                       </div>
                     </button>
@@ -411,8 +411,8 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Conditional Fields */}
             {formData.projectType === 'COMMISSION' && (
-              <div className="p-5 bg-amber-900/10 border border-amber-800/30 rounded-xl space-y-4">
-                <h4 className="text-sm font-medium text-amber-400">Commission Details</h4>
+              <div className="p-5 bg-amber-50 border border-amber-800/30 rounded-xl space-y-4">
+                <h4 className="text-sm font-medium text-amber-700">Commission Details</h4>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Dimensions</label>
@@ -428,7 +428,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {(formData.deliverableType === 'PHYSICAL_ART' || formData.deliverableType === 'PRINTS') && formData.projectType !== 'COMMISSION' && (
               <div className="p-5 bg-emerald-900/10 border border-emerald-800/30 rounded-xl space-y-4">
-                <h4 className="text-sm font-medium text-emerald-400">Physical Deliverable Details</h4>
+                <h4 className="text-sm font-medium text-emerald-600">Physical Deliverable Details</h4>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Dimensions</label>
@@ -443,8 +443,8 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
             )}
 
             {/* Submit */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-[#333]">
-              <button type="button" onClick={onClose} className="px-5 md:px-6 py-2.5 text-[#A3A3A3] hover:bg-[#262626] rounded-xl font-medium transition-all duration-200 touch-target">Cancel</button>
+            <div className="flex justify-end gap-3 pt-4 border-t border-light-200">
+              <button type="button" onClick={onClose} className="px-5 md:px-6 py-2.5 text-text-secondary hover:bg-light-100 rounded-xl font-medium transition-all duration-200 touch-target">Cancel</button>
               <button 
                 type="submit" 
                 disabled={loading} 

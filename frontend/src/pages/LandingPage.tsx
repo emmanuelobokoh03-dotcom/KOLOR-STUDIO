@@ -36,7 +36,7 @@ const LandingPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg">
+    <div className="min-h-screen bg-light-50">
       {/* Navigation */}
       <nav className="container mx-auto px-6 py-6">
         <div className="flex items-center justify-between">
@@ -58,13 +58,13 @@ const LandingPage = () => {
           >
             <Link 
               to="/login" 
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-text-secondary hover:text-text-primary transition-colors"
             >
               Login
             </Link>
             <Link 
               to="/signup"
-              className="bg-brand-primary text-white px-6 py-2 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-brand-primary-dark/30 hover:shadow-xl hover:shadow-brand-primary-dark/40"
+              className="bg-brand-primary text-white px-6 py-2 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-brand-primary-dark/40"
             >
               Get Started
             </Link>
@@ -80,7 +80,7 @@ const LandingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <span className="inline-block px-4 py-2 bg-brand-primary-dark/50 text-brand-primary-light rounded-full text-sm font-medium mb-6 border border-brand-primary-dark/50">
+            <span className="inline-block px-4 py-2 bg-purple-100 text-purple-600 rounded-full text-sm font-medium mb-6 border border-purple-200">
               The CRM that doesn't feel like a CRM
             </span>
           </motion.div>
@@ -89,10 +89,10 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-6xl md:text-7xl font-bold mb-6 leading-tight text-white"
+            className="text-6xl md:text-7xl font-bold mb-6 leading-tight text-text-primary"
           >
             Turn{' '}
-            <span className="bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-500 to-purple-400 bg-clip-text text-transparent">
               creativity
             </span>
             {' '}into revenue
@@ -102,7 +102,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-xl text-gray-400 mb-10 leading-relaxed"
+            className="text-xl text-text-secondary mb-10 leading-relaxed"
           >
             Built for creative professionals — photographers, videographers, designers, illustrators, and visual artists.
             <br />
@@ -118,16 +118,16 @@ const LandingPage = () => {
             <div className="flex items-center justify-center space-x-4 mb-4">
               <Link
                 to="/signup"
-                className="bg-brand-primary text-white px-8 py-4 rounded-xl hover:bg-brand-primary transition-all shadow-xl shadow-brand-primary-dark/30 hover:shadow-2xl hover:shadow-brand-primary-dark/40 flex items-center space-x-2 text-lg font-semibold"
+                className="bg-brand-primary text-white px-8 py-4 rounded-xl hover:bg-brand-primary transition-all shadow-xl shadow-purple-200 hover:shadow-2xl hover:shadow-brand-primary-dark/40 flex items-center space-x-2 text-lg font-semibold"
               >
                 <span>Start Managing Leads in 2 Minutes</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
-              <button className="border-2 border-dark-border text-gray-300 px-8 py-4 rounded-xl hover:border-gray-500 hover:bg-dark-card transition-all text-lg font-semibold">
+              <button className="border-2 border-light-200 text-text-secondary px-8 py-4 rounded-xl hover:border-gray-500 hover:bg-white transition-all text-lg font-semibold">
                 Watch demo
               </button>
             </div>
-            <p className="text-sm text-gray-400 mb-2">
+            <p className="text-sm text-text-secondary mb-2">
               Join 200+ photographers, videographers, and designers who've ditched spreadsheets
             </p>
           </motion.div>
@@ -136,7 +136,7 @@ const LandingPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-sm text-gray-500 mt-4 flex items-center justify-center gap-4"
+            className="text-sm text-text-tertiary mt-4 flex items-center justify-center gap-4"
           >
             <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-400" /> Free forever</span>
             <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-400" /> No credit card required</span>
@@ -176,9 +176,9 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-dark-card rounded-2xl shadow-xl p-12 border border-dark-border"
+            className="bg-white rounded-2xl shadow-xl p-12 border border-light-200"
           >
-            <h2 className="text-3xl font-bold mb-8 text-center text-white">
+            <h2 className="text-3xl font-bold mb-8 text-center text-text-primary">
               Why creatives love KOLOR STUDIO
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
@@ -199,11 +199,11 @@ const LandingPage = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <span className="inline-block px-4 py-2 bg-brand-primary-dark/30 text-brand-primary-light rounded-full text-sm font-medium mb-4 border border-brand-primary-dark/30">
+          <span className="inline-block px-4 py-2 bg-purple-50 text-purple-600 rounded-full text-sm font-medium mb-4 border border-purple-200">
             Trusted by Creative Professionals Worldwide
           </span>
-          <h2 className="text-4xl font-bold text-white mb-4">What our users say</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-bold text-text-primary mb-4">What our users say</h2>
+          <p className="text-text-secondary max-w-2xl mx-auto">
             Don't just take our word for it — hear from creative professionals who've transformed their business
           </p>
         </motion.div>
@@ -246,20 +246,20 @@ const LandingPage = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-16"
         >
           <div className="text-center">
-            <p className="text-3xl font-bold text-white">200+</p>
-            <p className="text-sm text-gray-400">Creative Professionals</p>
+            <p className="text-3xl font-bold text-text-primary">200+</p>
+            <p className="text-sm text-text-secondary">Creative Professionals</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold text-white">1,000+</p>
-            <p className="text-sm text-gray-400">Quotes Sent</p>
+            <p className="text-3xl font-bold text-text-primary">1,000+</p>
+            <p className="text-sm text-text-secondary">Quotes Sent</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold text-brand-primary-light">₦500K+</p>
-            <p className="text-sm text-gray-400">Revenue Managed</p>
+            <p className="text-3xl font-bold text-purple-600">₦500K+</p>
+            <p className="text-sm text-text-secondary">Revenue Managed</p>
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-green-400">98%</p>
-            <p className="text-sm text-gray-400">User Satisfaction</p>
+            <p className="text-sm text-text-secondary">User Satisfaction</p>
           </div>
         </motion.div>
       </section>
@@ -272,10 +272,10 @@ const LandingPage = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl font-bold text-white mb-4">
+          <h2 className="text-4xl font-bold text-text-primary mb-4">
             KOLOR STUDIO vs. The Old Way
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-text-secondary max-w-2xl mx-auto">
             Stop wasting time with spreadsheets, scattered emails, and manual follow-ups
           </p>
         </motion.div>
@@ -286,13 +286,13 @@ const LandingPage = () => {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto"
         >
-          <div className="bg-dark-card rounded-2xl border border-dark-border overflow-hidden">
+          <div className="bg-white rounded-2xl border border-light-200 overflow-hidden">
             <div className="overflow-x-auto">
             <div className="min-w-[600px]">
-            <div className="grid grid-cols-3 bg-dark-bg-secondary border-b border-dark-border">
-              <div className="p-4 text-gray-400 text-sm font-medium">Task</div>
-              <div className="p-4 text-center text-gray-400 text-sm font-medium border-x border-dark-border">Spreadsheets</div>
-              <div className="p-4 text-center text-brand-primary-light text-sm font-medium bg-brand-primary-dark/20">KOLOR STUDIO</div>
+            <div className="grid grid-cols-3 bg-light-100 border-b border-light-200">
+              <div className="p-4 text-text-secondary text-sm font-medium">Task</div>
+              <div className="p-4 text-center text-text-secondary text-sm font-medium border-x border-light-200">Spreadsheets</div>
+              <div className="p-4 text-center text-purple-600 text-sm font-medium bg-purple-50">KOLOR STUDIO</div>
             </div>
             
             <ComparisonRow 
@@ -344,8 +344,8 @@ const LandingPage = () => {
             <span className="inline-block px-4 py-2 bg-green-900/30 text-green-300 rounded-full text-sm font-medium mb-4 border border-green-700/30">
               Built for Security & Reliability
             </span>
-            <h2 className="text-4xl font-bold text-white mb-4">Your data is safe with us</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold text-text-primary mb-4">Your data is safe with us</h2>
+            <p className="text-text-secondary max-w-2xl mx-auto">
               We take security seriously. Your client data is protected with the same standards used by banks.
             </p>
           </div>
@@ -378,8 +378,8 @@ const LandingPage = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl font-bold text-white mb-4">Frequently Asked Questions</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-bold text-text-primary mb-4">Frequently Asked Questions</h2>
+          <p className="text-text-secondary max-w-2xl mx-auto">
             Got questions? We've got answers.
           </p>
         </motion.div>
@@ -447,16 +447,16 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-2xl mx-auto bg-dark-card rounded-2xl p-10 border border-dark-border text-center"
+          className="max-w-2xl mx-auto bg-white rounded-2xl p-10 border border-light-200 text-center"
         >
-          <Envelope weight="duotone" className="w-10 h-10 text-brand-primary-light mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-white mb-2">Get Lead Management Tips & Updates</h3>
-          <p className="text-gray-400 mb-6">
+          <Envelope weight="duotone" className="w-10 h-10 text-purple-600 mx-auto mb-4" />
+          <h3 className="text-2xl font-bold text-text-primary mb-2">Get Lead Management Tips & Updates</h3>
+          <p className="text-text-secondary mb-6">
             Join 500+ creatives getting weekly tips on booking more clients and growing their business.
           </p>
           
           {emailSubmitted ? (
-            <div className="flex items-center justify-center gap-2 text-green-400 bg-green-900/20 py-3 px-4 rounded-lg border border-green-700/30">
+            <div className="flex items-center justify-center gap-2 text-green-600 bg-green-50 py-3 px-4 rounded-lg border border-green-200">
               <Check className="w-5 h-5" />
               <span>Thanks! Check your email to confirm your subscription.</span>
             </div>
@@ -468,7 +468,7 @@ const LandingPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="flex-1 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                  className="flex-1 px-4 py-3 bg-light-100 border border-light-200 rounded-lg text-text-primary placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   required
                 />
                 <button
@@ -478,7 +478,7 @@ const LandingPage = () => {
                   Subscribe
                 </button>
               </form>
-              <p className="text-xs text-gray-500">No spam. Unsubscribe anytime. We respect your inbox.</p>
+              <p className="text-xs text-text-tertiary">No spam. Unsubscribe anytime. We respect your inbox.</p>
             </>
           )}
         </motion.div>
@@ -490,13 +490,13 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto bg-gradient-to-r from-brand-primary to-brand-primary rounded-2xl shadow-2xl p-12 text-center text-white"
+          className="max-w-4xl mx-auto bg-gradient-brand rounded-2xl shadow-2xl p-12 text-center text-white"
         >
           <Sparkle weight="duotone" className="w-12 h-12 mx-auto mb-6" />
           <h2 className="text-4xl font-bold mb-4">
             Ready to elevate your creative business?
           </h2>
-          <p className="text-xl mb-8 text-brand-primary-light">
+          <p className="text-xl mb-8 text-white/80">
             Join photographers, videographers, designers, illustrators, and visual artists who are in control.
           </p>
           <Link
@@ -529,13 +529,13 @@ const FeatureCard = ({ icon, title, description, delay }: FeatureCardProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay }}
-      className="bg-dark-card p-8 rounded-2xl shadow-lg border border-dark-border hover:border-brand-primary/50 hover:shadow-xl hover:shadow-brand-primary-dark/20 transition-all"
+      className="bg-white p-8 rounded-2xl shadow-lg border border-light-200 hover:border-purple-300 hover:shadow-xl hover:shadow-brand-primary-dark/20 transition-all"
     >
-      <div className="w-12 h-12 bg-brand-primary-dark/50 rounded-xl flex items-center justify-center text-brand-primary-light mb-4">
+      <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4">
         {icon}
       </div>
-      <h3 className="text-xl font-bold mb-3 text-white">{title}</h3>
-      <p className="text-gray-400 leading-relaxed">{description}</p>
+      <h3 className="text-xl font-bold mb-3 text-text-primary">{title}</h3>
+      <p className="text-text-secondary leading-relaxed">{description}</p>
     </motion.div>
   )
 }
@@ -544,10 +544,10 @@ const FeatureCard = ({ icon, title, description, delay }: FeatureCardProps) => {
 const Benefit = ({ text }: { text: string }) => {
   return (
     <div className="flex items-start space-x-3">
-      <div className="flex-shrink-0 w-6 h-6 bg-brand-primary-dark/50 rounded-full flex items-center justify-center mt-0.5">
-        <Check className="w-4 h-4 text-brand-primary-light" />
+      <div className="flex-shrink-0 w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mt-0.5">
+        <Check className="w-4 h-4 text-purple-600" />
       </div>
-      <p className="text-gray-300">{text}</p>
+      <p className="text-text-secondary">{text}</p>
     </div>
   )
 }
@@ -570,7 +570,7 @@ const TestimonialCard = ({ quote, author, role, location, initials, rating, dela
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay }}
-      className="bg-dark-card p-6 rounded-2xl border border-dark-border hover:border-brand-primary/30 transition-all"
+      className="bg-white p-6 rounded-2xl border border-light-200 hover:border-brand-primary/30 transition-all"
     >
       <div className="flex gap-1 mb-4">
         {[...Array(rating)].map((_, i) => (
@@ -578,14 +578,14 @@ const TestimonialCard = ({ quote, author, role, location, initials, rating, dela
         ))}
       </div>
       <Quotes className="w-8 h-8 text-brand-primary/30 mb-2" />
-      <p className="text-gray-300 mb-4 italic">"{quote}"</p>
+      <p className="text-text-secondary mb-4 italic">"{quote}"</p>
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center text-white font-semibold text-sm">
           {initials}
         </div>
         <div>
-          <p className="font-semibold text-white">{author}</p>
-          <p className="text-sm text-gray-500">{role}</p>
+          <p className="font-semibold text-text-primary">{author}</p>
+          <p className="text-sm text-text-tertiary">{role}</p>
           <p className="text-xs text-gray-600">{location}</p>
         </div>
       </div>
@@ -603,15 +603,15 @@ interface ComparisonRowProps {
 
 const ComparisonRow = ({ task, old, newWay, isLast = false }: ComparisonRowProps) => {
   return (
-    <div className={`grid grid-cols-3 ${!isLast ? 'border-b border-dark-border' : ''}`}>
-      <div className="p-4 text-white text-sm">{task}</div>
-      <div className="p-4 text-center text-gray-500 text-sm border-x border-dark-border flex items-center justify-center gap-2">
+    <div className={`grid grid-cols-3 ${!isLast ? 'border-b border-light-200' : ''}`}>
+      <div className="p-4 text-text-primary text-sm">{task}</div>
+      <div className="p-4 text-center text-text-tertiary text-sm border-x border-light-200 flex items-center justify-center gap-2">
         <XIcon className="w-4 h-4 text-red-400 flex-shrink-0" />
         <span>{old}</span>
       </div>
-      <div className="p-4 text-center text-sm bg-brand-primary-dark/10 flex items-center justify-center gap-2">
+      <div className="p-4 text-center text-sm bg-purple-50 flex items-center justify-center gap-2">
         <Check className="w-4 h-4 text-green-400 flex-shrink-0" />
-        <span className="text-white">{newWay}</span>
+        <span className="text-purple-600">{newWay}</span>
       </div>
     </div>
   )
@@ -630,13 +630,13 @@ const TrustCard = ({ icon, title, description }: TrustCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="bg-dark-card p-6 rounded-xl border border-dark-border text-center"
+      className="bg-white p-6 rounded-xl border border-light-200 text-center"
     >
-      <div className="w-12 h-12 bg-green-900/30 rounded-xl flex items-center justify-center text-green-400 mx-auto mb-4 border border-green-700/30">
+      <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600 mx-auto mb-4 border border-green-200">
         {icon}
       </div>
-      <h3 className="font-semibold text-white mb-2">{title}</h3>
-      <p className="text-sm text-gray-400">{description}</p>
+      <h3 className="font-semibold text-text-primary mb-2">{title}</h3>
+      <p className="text-sm text-text-secondary">{description}</p>
     </motion.div>
   )
 }
@@ -651,21 +651,21 @@ interface FAQItemProps {
 
 const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => {
   return (
-    <div className="bg-dark-card rounded-xl border border-dark-border overflow-hidden">
+    <div className="bg-white rounded-xl border border-light-200 overflow-hidden">
       <button
         onClick={onClick}
-        className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-dark-card-hover transition"
+        className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-light-100 transition"
       >
-        <span className="font-medium text-white">{question}</span>
+        <span className="font-medium text-text-primary">{question}</span>
         {isOpen ? (
-          <CaretUp className="w-5 h-5 text-brand-primary-light" />
+          <CaretUp className="w-5 h-5 text-purple-600" />
         ) : (
-          <CaretDown className="w-5 h-5 text-gray-500" />
+          <CaretDown className="w-5 h-5 text-text-tertiary" />
         )}
       </button>
       {isOpen && (
         <div className="px-6 pb-4">
-          <p className="text-gray-400 leading-relaxed">{answer}</p>
+          <p className="text-text-secondary leading-relaxed">{answer}</p>
         </div>
       )}
     </div>

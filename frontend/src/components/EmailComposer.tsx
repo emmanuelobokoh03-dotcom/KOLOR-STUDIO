@@ -80,28 +80,28 @@ export default function EmailComposer({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4" data-testid="email-composer-modal">
       <div
-        className="bg-[#1A1A1A] rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-[#333] flex flex-col"
+        className="bg-light-50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#333] flex items-center justify-between flex-shrink-0">
+        <div className="px-6 py-4 border-b border-light-200 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-brand-primary/20 rounded-lg flex items-center justify-center">
-              <Envelope className="w-5 h-5 text-brand-primary-light" />
+              <Envelope className="w-5 h-5 text-purple-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-[#FAFAFA]" data-testid="email-composer-title">
+              <h2 className="text-lg font-semibold text-text-primary" data-testid="email-composer-title">
                 {type === 'quote' ? 'Send Quotes' : 'Send Contract'}
               </h2>
-              <p className="text-xs text-[#A3A3A3]">Customize your message to {firstName}</p>
+              <p className="text-xs text-text-secondary">Customize your message to {firstName}</p>
             </div>
           </div>
           <button
             onClick={onCancel}
-            className="p-2 hover:bg-[#333] rounded-lg transition-colors"
+            className="p-2 hover:bg-light-200 rounded-lg transition-colors"
             data-testid="email-composer-close"
           >
-            <X className="w-5 h-5 text-[#A3A3A3]" />
+            <X className="w-5 h-5 text-text-secondary" />
           </button>
         </div>
 
@@ -111,7 +111,7 @@ export default function EmailComposer({
           <div className="flex justify-end">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#A3A3A3] border border-[#333] rounded-lg hover:bg-[#333] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-text-secondary border border-light-200 rounded-lg hover:bg-light-200 transition-colors"
               data-testid="email-preview-toggle"
             >
               {showPreview ? <><PencilSimple className="w-3.5 h-3.5" /> Edit</> : <><Eye className="w-3.5 h-3.5" /> Preview</>}
@@ -122,10 +122,10 @@ export default function EmailComposer({
             /* Preview Mode */
             <div className="bg-white text-gray-900 rounded-xl overflow-hidden" data-testid="email-preview">
               <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-text-tertiary">
                   <span className="font-medium text-gray-700">To:</span> {recipientName} &lt;{recipientEmail}&gt;
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-text-tertiary mt-1">
                   <span className="font-medium text-gray-700">Subject:</span> {subject}
                 </p>
               </div>
@@ -146,20 +146,20 @@ export default function EmailComposer({
             <>
               {/* Recipient (read-only) */}
               <div>
-                <label className="block text-xs font-medium text-[#A3A3A3] uppercase tracking-wide mb-1.5">To</label>
-                <div className="px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-[#A3A3A3] text-sm">
+                <label className="block text-xs font-medium text-text-secondary uppercase tracking-wide mb-1.5">To</label>
+                <div className="px-4 py-2.5 bg-white border border-light-200 rounded-xl text-text-secondary text-sm">
                   {recipientName} ({recipientEmail})
                 </div>
               </div>
 
               {/* Subject */}
               <div>
-                <label className="block text-xs font-medium text-[#A3A3A3] uppercase tracking-wide mb-1.5">Subject</label>
+                <label className="block text-xs font-medium text-text-secondary uppercase tracking-wide mb-1.5">Subject</label>
                 <input
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-[#FAFAFA] text-sm focus:outline-none focus:border-brand-primary transition-colors"
+                  className="w-full px-4 py-2.5 bg-white border border-light-200 rounded-xl text-text-primary text-sm focus:outline-none focus:border-brand-primary transition-colors"
                   placeholder="Email subject..."
                   data-testid="email-subject-input"
                 />
@@ -167,7 +167,7 @@ export default function EmailComposer({
 
               {/* Quick Insert */}
               <div>
-                <label className="block text-xs font-medium text-[#A3A3A3] uppercase tracking-wide mb-1.5">Quick Insert</label>
+                <label className="block text-xs font-medium text-text-secondary uppercase tracking-wide mb-1.5">Quick Insert</label>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { label: 'Client Name', value: recipientName },
@@ -180,7 +180,7 @@ export default function EmailComposer({
                       key={v.label}
                       type="button"
                       onClick={() => insertVariable(v.value)}
-                      className="px-2.5 py-1 bg-[#0F0F0F] border border-[#333] hover:border-brand-primary/50 rounded-lg text-xs text-[#A3A3A3] hover:text-brand-primary-light transition-colors"
+                      className="px-2.5 py-1 bg-white border border-light-200 hover:border-purple-300 rounded-lg text-xs text-text-secondary hover:text-purple-600 transition-colors"
                       data-testid={`insert-${v.label.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       {v.label}
@@ -191,13 +191,13 @@ export default function EmailComposer({
 
               {/* Message body */}
               <div>
-                <label className="block text-xs font-medium text-[#A3A3A3] uppercase tracking-wide mb-1.5">Message</label>
+                <label className="block text-xs font-medium text-text-secondary uppercase tracking-wide mb-1.5">Message</label>
                 <textarea
                   ref={textareaRef}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={10}
-                  className="w-full px-4 py-3 bg-[#0F0F0F] border border-[#333] rounded-xl text-[#FAFAFA] text-sm font-mono leading-relaxed focus:outline-none focus:border-brand-primary transition-colors resize-none"
+                  className="w-full px-4 py-3 bg-white border border-light-200 rounded-xl text-text-primary text-sm font-mono leading-relaxed focus:outline-none focus:border-brand-primary transition-colors resize-none"
                   placeholder="Write your message..."
                   data-testid="email-message-input"
                 />
@@ -210,11 +210,11 @@ export default function EmailComposer({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[#333] flex items-center justify-end gap-3 flex-shrink-0">
+        <div className="px-6 py-4 border-t border-light-200 flex items-center justify-end gap-3 flex-shrink-0">
           <button
             onClick={onCancel}
             disabled={sending}
-            className="px-4 py-2.5 text-sm font-medium text-[#A3A3A3] border border-[#333] rounded-xl hover:bg-[#333] transition-colors disabled:opacity-50"
+            className="px-4 py-2.5 text-sm font-medium text-text-secondary border border-light-200 rounded-xl hover:bg-light-200 transition-colors disabled:opacity-50"
             data-testid="email-cancel-btn"
           >
             Cancel

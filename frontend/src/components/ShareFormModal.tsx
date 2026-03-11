@@ -112,7 +112,7 @@ Looking forward to working with you!`
       onClick={onClose}
     >
       <div 
-        className="bg-dark-card rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-dark-border animate-in fade-in duration-200"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-light-200 animate-in fade-in duration-200"
         onClick={(e) => e.stopPropagation()}
         data-testid="share-form-modal"
       >
@@ -125,7 +125,7 @@ Looking forward to working with you!`
               </div>
               <div>
                 <h2 className="text-xl font-bold">Share Your Inquiry Form</h2>
-                <p className="text-brand-primary-light text-sm">Get potential clients to submit project requests</p>
+                <p className="text-purple-600 text-sm">Get potential clients to submit project requests</p>
               </div>
             </div>
             <button 
@@ -142,8 +142,8 @@ Looking forward to working with you!`
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)] space-y-6">
           {/* Section 1: The Link */}
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-              <Link className="w-4 h-4 text-brand-primary-light" />
+            <label className="flex items-center gap-2 text-sm font-medium text-text-secondary mb-2">
+              <Link className="w-4 h-4 text-purple-600" />
               Your Inquiry Form URL
             </label>
             <div className="flex gap-2">
@@ -153,7 +153,7 @@ Looking forward to working with you!`
                 value={inquiryUrl}
                 readOnly
                 onClick={handleInputClick}
-                className="flex-1 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent cursor-pointer"
+                className="flex-1 px-4 py-3 bg-light-100 border border-light-200 rounded-lg text-text-secondary text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-pointer"
                 data-testid="inquiry-url-input"
               />
               <button
@@ -182,22 +182,22 @@ Looking forward to working with you!`
 
           {/* Section 2: Quick Actions */}
           <div>
-            <label className="text-sm font-medium text-gray-300 mb-3 block">Quick Actions</label>
+            <label className="text-sm font-medium text-text-secondary mb-3 block">Quick Actions</label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleEmailLink}
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 hover:border-brand-primary/50 hover:bg-dark-card-hover transition font-medium text-sm"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-light-100 border border-light-200 rounded-lg text-text-secondary hover:border-purple-300 hover:bg-light-100 transition font-medium text-sm"
                 data-testid="email-link-btn"
               >
-                <Envelope className="w-4 h-4 text-brand-primary-light" />
+                <Envelope className="w-4 h-4 text-purple-600" />
                 Email Link
               </button>
               <button
                 onClick={handleOpenForm}
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-gray-300 hover:border-brand-primary/50 hover:bg-dark-card-hover transition font-medium text-sm"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-light-100 border border-light-200 rounded-lg text-text-secondary hover:border-purple-300 hover:bg-light-100 transition font-medium text-sm"
                 data-testid="open-form-btn"
               >
-                <ArrowSquareOut className="w-4 h-4 text-brand-primary-light" />
+                <ArrowSquareOut className="w-4 h-4 text-purple-600" />
                 Open Form
               </button>
             </div>
@@ -205,8 +205,8 @@ Looking forward to working with you!`
 
           {/* Section 3: QR Code */}
           <div>
-            <label className="text-sm font-medium text-gray-300 mb-3 block">QR Code for Business Cards</label>
-            <div className="bg-dark-bg-secondary border border-dark-border rounded-xl p-6">
+            <label className="text-sm font-medium text-text-secondary mb-3 block">QR Code for Business Cards</label>
+            <div className="bg-light-100 border border-light-200 rounded-xl p-6">
               <div className="flex flex-col items-center">
                 <div 
                   ref={qrRef} 
@@ -230,7 +230,7 @@ Looking forward to working with you!`
                   <DownloadSimple weight="bold" className="w-4 h-4" />
                   Download QR Code
                 </button>
-                <p className="text-xs text-gray-500 mt-3 text-center">
+                <p className="text-xs text-text-tertiary mt-3 text-center">
                   Print this on your business cards so clients can scan and submit inquiries instantly
                 </p>
               </div>
@@ -238,14 +238,14 @@ Looking forward to working with you!`
           </div>
 
           {/* Section 4: Pro Tips */}
-          <div className="bg-brand-primary-dark/20 border border-brand-primary-dark/30 rounded-xl p-4">
+          <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-brand-primary-dark/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Lightbulb className="w-4 h-4 text-brand-primary-light" />
+              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Lightbulb className="w-4 h-4 text-purple-600" />
               </div>
               <div>
                 <h4 className="font-medium text-gray-200 mb-2">Pro Tips</h4>
-                <ul className="text-sm text-gray-400 space-y-1.5">
+                <ul className="text-sm text-text-secondary space-y-1.5">
                   <li>• Add this link to your InstagramLogo bio</li>
                   <li>• Include it in your email signature</li>
                   <li>• Share it on your website's contact page</li>

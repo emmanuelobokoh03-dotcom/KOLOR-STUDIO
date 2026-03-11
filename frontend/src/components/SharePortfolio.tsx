@@ -56,8 +56,8 @@ export default function SharePortfolio() {
           <ShareNetwork className="w-4.5 h-4.5 text-brand-primary" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-[#FAFAFA]">Share Your Portfolio</h3>
-          <p className="text-xs text-[#888]">Share this link to potential clients</p>
+          <h3 className="text-sm font-semibold text-text-primary">Share Your Portfolio</h3>
+          <p className="text-xs text-text-secondary">Share this link to potential clients</p>
         </div>
       </div>
 
@@ -67,7 +67,7 @@ export default function SharePortfolio() {
           type="text"
           value={portfolioUrl}
           readOnly
-          className="flex-1 px-3 py-2.5 bg-[#0F0F0F] border border-[#333] rounded-xl text-xs text-[#CCC] font-mono"
+          className="flex-1 px-3 py-2.5 bg-white border border-light-200 rounded-xl text-xs text-text-secondary font-mono"
           data-testid="portfolio-url-input"
         />
         <button
@@ -83,14 +83,14 @@ export default function SharePortfolio() {
       <div className="flex gap-2 mb-4">
         <button
           onClick={shareViaEmail}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#333] text-xs text-[#CCC] hover:text-[#FAFAFA] hover:border-[#444] transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-light-50 border border-light-200 text-xs text-text-secondary hover:text-text-primary hover:border-light-300 transition-colors"
           data-testid="share-email"
         >
           <Envelope className="w-3.5 h-3.5" /> Email
         </button>
         <button
           onClick={shareViaSMS}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#333] text-xs text-[#CCC] hover:text-[#FAFAFA] hover:border-[#444] transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-light-50 border border-light-200 text-xs text-text-secondary hover:text-text-primary hover:border-light-300 transition-colors"
           data-testid="share-sms"
         >
           <ChatCircle className="w-3.5 h-3.5" /> Text
@@ -100,16 +100,16 @@ export default function SharePortfolio() {
       {/* QR Code */}
       {qrCodeUrl && (
         <div className="pt-4 border-t border-brand-primary/20">
-          <p className="text-xs font-medium text-[#A3A3A3] mb-3">QR Code</p>
+          <p className="text-xs font-medium text-text-secondary mb-3">QR Code</p>
           <div className="flex flex-col sm:flex-row items-start gap-4">
             <img src={qrCodeUrl} alt="Portfolio QR Code" className="w-24 h-24 bg-white rounded-lg p-1.5" data-testid="qr-code-img" />
             <div className="flex-1">
-              <p className="text-xs text-[#888] mb-3 leading-relaxed">
+              <p className="text-xs text-text-secondary mb-3 leading-relaxed">
                 Print on business cards, posters, or marketing materials. Clients scan to view your portfolio instantly.
               </p>
               <button
                 onClick={downloadQR}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#333] text-xs text-[#CCC] hover:text-[#FAFAFA] hover:border-[#444] transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-light-50 border border-light-200 text-xs text-text-secondary hover:text-text-primary hover:border-light-300 transition-colors"
                 data-testid="download-qr"
               >
                 <DownloadSimple className="w-3.5 h-3.5" /> DownloadSimple QR Code

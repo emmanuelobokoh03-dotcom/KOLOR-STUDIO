@@ -88,7 +88,7 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
           </div>
           <div>
             <h3 className="text-base font-semibold text-gray-900">Messages</h3>
-            <p className="text-xs text-gray-500">Ask questions or share updates with {studioName}</p>
+            <p className="text-xs text-text-tertiary">Ask questions or share updates with {studioName}</p>
           </div>
         </div>
       </div>
@@ -97,13 +97,13 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
       <div className="p-4 md:p-6 space-y-3 max-h-80 overflow-y-auto bg-white" data-testid="portal-messages-list">
         {loading ? (
           <div className="flex justify-center py-8">
-            <SpinnerGap className="w-6 h-6 animate-spin text-gray-400" />
+            <SpinnerGap className="w-6 h-6 animate-spin text-text-secondary" />
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center py-8">
-            <ChatCircle weight="duotone" className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-            <p className="text-gray-500 text-sm mb-1">No messages yet</p>
-            <p className="text-gray-400 text-xs">Send a message to start the conversation!</p>
+            <ChatCircle weight="duotone" className="w-10 h-10 mx-auto mb-3 text-text-secondary" />
+            <p className="text-text-tertiary text-sm mb-1">No messages yet</p>
+            <p className="text-text-secondary text-xs">Send a message to start the conversation!</p>
           </div>
         ) : (
           <>
@@ -120,7 +120,7 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
                 }`}>
                   <p className="text-sm leading-relaxed">{msg.content}</p>
                   <p className={`text-[10px] mt-1 ${
-                    msg.from === 'CLIENT' ? 'text-white/60' : 'text-gray-400'
+                    msg.from === 'CLIENT' ? 'text-white/60' : 'text-text-secondary'
                   }`}>
                     {msg.from === 'CLIENT' ? 'You' : studioName} &middot; {timeAgo(msg.createdAt)}
                   </p>

@@ -84,16 +84,16 @@ export function CelebrationModal({ achievement, show, onClose }: CelebrationModa
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.7, opacity: 0 }}
             transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-            className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] border border-brand-primary-dark/50 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl shadow-brand-primary-dark/30"
+            className="relative bg-gradient-to-br from-white to-light-50 border border-purple-200 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl shadow-purple-200"
             data-testid="celebration-content"
           >
             <div className="text-6xl md:text-7xl mb-4 animate-bounce select-none">{achievement.emoji}</div>
             <div className="flex items-center justify-center gap-2 mb-2">
               <Sparkle className="w-5 h-5 text-yellow-400" />
-              <h2 className="text-2xl md:text-3xl font-bold text-[#FAFAFA]">{achievement.title}</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-text-primary">{achievement.title}</h2>
               <Sparkle className="w-5 h-5 text-yellow-400" />
             </div>
-            <p className="text-brand-primary-light text-base md:text-lg mb-6">{achievement.message}</p>
+            <p className="text-purple-600 text-base md:text-lg mb-6">{achievement.message}</p>
             <button
               onClick={onClose}
               className="px-8 py-3 bg-brand-primary hover:bg-brand-primary text-white rounded-xl font-semibold transition-all"

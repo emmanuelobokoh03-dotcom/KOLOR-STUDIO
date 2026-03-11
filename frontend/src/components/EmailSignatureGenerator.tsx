@@ -54,8 +54,8 @@ export default function EmailSignatureGenerator() {
           <Envelope className="w-4.5 h-4.5 text-brand-primary" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-[#FAFAFA]">Email Signature</h3>
-          <p className="text-xs text-[#666]">Professional signature with your portfolio link</p>
+          <h3 className="text-sm font-semibold text-text-primary">Email Signature</h3>
+          <p className="text-xs text-text-tertiary">Professional signature with your portfolio link</p>
         </div>
       </div>
 
@@ -73,13 +73,13 @@ export default function EmailSignatureGenerator() {
       </button>
 
       {/* Instructions */}
-      <div className="mt-4 p-3 bg-[#0F0F0F] rounded-xl border border-[#262626]">
-        <p className="text-xs font-medium text-[#A3A3A3] mb-2">How to add to your email:</p>
-        <ol className="text-xs text-[#888] space-y-1 list-decimal list-inside">
+      <div className="mt-4 p-3 bg-white rounded-xl border border-light-200">
+        <p className="text-xs font-medium text-text-secondary mb-2">How to add to your email:</p>
+        <ol className="text-xs text-text-secondary space-y-1 list-decimal list-inside">
           <li>Click "Copy Signature" above</li>
-          <li><strong className="text-[#A3A3A3]">Gmail:</strong> Settings → General → Signature → Paste</li>
-          <li><strong className="text-[#A3A3A3]">Outlook:</strong> File → Options → Envelope → Signatures → Paste</li>
-          <li><strong className="text-[#A3A3A3]">Apple Mail:</strong> Preferences → Signatures → Paste</li>
+          <li><strong className="text-text-secondary">Gmail:</strong> Settings → General → Signature → Paste</li>
+          <li><strong className="text-text-secondary">Outlook:</strong> File → Options → Envelope → Signatures → Paste</li>
+          <li><strong className="text-text-secondary">Apple Mail:</strong> Preferences → Signatures → Paste</li>
         </ol>
       </div>
     </div>

@@ -42,12 +42,12 @@ export default function RevenueDashboard() {
 
   if (loading) {
     return (
-      <div className="bg-[#1A1A1A] rounded-2xl border border-[#262626] p-5 animate-pulse" data-testid="revenue-dashboard-loading">
-        <div className="h-4 bg-[#333] rounded w-32 mb-4" />
+      <div className="bg-light-50 rounded-2xl border border-light-200 p-5 animate-pulse" data-testid="revenue-dashboard-loading">
+        <div className="h-4 bg-light-200 rounded w-32 mb-4" />
         <div className="grid grid-cols-2 gap-3 mb-4">
-          {[...Array(4)].map((_, i) => <div key={i} className="h-16 bg-[#222] rounded-xl" />)}
+          {[...Array(4)].map((_, i) => <div key={i} className="h-16 bg-light-100 rounded-xl" />)}
         </div>
-        <div className="h-32 bg-[#222] rounded-xl" />
+        <div className="h-32 bg-light-100 rounded-xl" />
       </div>
     )
   }
@@ -59,16 +59,16 @@ export default function RevenueDashboard() {
   const brandRGBLight = chartColor ? `rgba(${chartColor}, 0.3)` : 'rgba(168,85,247,0.3)'
 
   return (
-    <div className="bg-[#1A1A1A] rounded-2xl border border-[#262626] overflow-hidden" data-testid="revenue-dashboard">
+    <div className="bg-light-50 rounded-2xl border border-light-200 overflow-hidden" data-testid="revenue-dashboard">
       {/* Header */}
-      <div className="px-5 py-4 flex items-center justify-between border-b border-[#262626]">
+      <div className="px-5 py-4 flex items-center justify-between border-b border-light-200">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-            <CurrencyDollar weight="duotone" className="w-4.5 h-4.5 text-emerald-400" />
+            <CurrencyDollar weight="duotone" className="w-4.5 h-4.5 text-emerald-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-[#FAFAFA]">Revenue Overview</h3>
-            <p className="text-xs text-[#666]">Track your earnings</p>
+            <h3 className="text-sm font-semibold text-text-primary">Revenue Overview</h3>
+            <p className="text-xs text-text-tertiary">Track your earnings</p>
           </div>
         </div>
       </div>
@@ -77,48 +77,48 @@ export default function RevenueDashboard() {
         {/* Stat Cards */}
         <div className="grid grid-cols-2 gap-3">
           {/* This Month */}
-          <div className="bg-[#0F0F0F] rounded-xl p-3 border border-[#262626]">
+          <div className="bg-white rounded-xl p-3 border border-light-200">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-medium text-[#888] uppercase tracking-wider">This Month</span>
+              <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">This Month</span>
               {stats.monthOverMonth !== 0 && (
-                <span className={`flex items-center gap-0.5 text-[10px] font-semibold ${stats.monthOverMonth > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                <span className={`flex items-center gap-0.5 text-[10px] font-semibold ${stats.monthOverMonth > 0 ? 'text-emerald-600' : 'text-red-400'}`}>
                   {stats.monthOverMonth > 0 ? <TrendUp className="w-3 h-3" /> : <TrendDown className="w-3 h-3" />}
                   {Math.abs(stats.monthOverMonth)}%
                 </span>
               )}
             </div>
-            <p className="text-lg font-bold text-[#FAFAFA]" data-testid="revenue-this-month">{formatCurrency(stats.thisMonth)}</p>
-            <p className="text-[10px] text-[#666]">{stats.thisMonthCount} payment{stats.thisMonthCount !== 1 ? 's' : ''}</p>
+            <p className="text-lg font-bold text-text-primary" data-testid="revenue-this-month">{formatCurrency(stats.thisMonth)}</p>
+            <p className="text-[10px] text-text-tertiary">{stats.thisMonthCount} payment{stats.thisMonthCount !== 1 ? 's' : ''}</p>
           </div>
 
           {/* YTD */}
-          <div className="bg-[#0F0F0F] rounded-xl p-3 border border-[#262626]">
+          <div className="bg-white rounded-xl p-3 border border-light-200">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-medium text-[#888] uppercase tracking-wider">Year to Date</span>
-              <CalendarBlank className="w-3 h-3 text-[#666]" />
+              <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">Year to Date</span>
+              <CalendarBlank className="w-3 h-3 text-text-tertiary" />
             </div>
-            <p className="text-lg font-bold text-[#FAFAFA]" data-testid="revenue-ytd">{formatCurrency(stats.ytd)}</p>
-            <p className="text-[10px] text-[#666]">of {formatCurrency(stats.yearGoal)} goal</p>
+            <p className="text-lg font-bold text-text-primary" data-testid="revenue-ytd">{formatCurrency(stats.ytd)}</p>
+            <p className="text-[10px] text-text-tertiary">of {formatCurrency(stats.yearGoal)} goal</p>
           </div>
 
           {/* Expected */}
-          <div className="bg-[#0F0F0F] rounded-xl p-3 border border-[#262626]">
+          <div className="bg-white rounded-xl p-3 border border-light-200">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-medium text-[#888] uppercase tracking-wider">Pipeline</span>
-              <ArrowUpRight className="w-3 h-3 text-[#666]" />
+              <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">Pipeline</span>
+              <ArrowUpRight className="w-3 h-3 text-text-tertiary" />
             </div>
-            <p className="text-lg font-bold text-amber-400" data-testid="revenue-expected">{formatCurrency(stats.expected)}</p>
-            <p className="text-[10px] text-[#666]">{stats.expectedCount} pending</p>
+            <p className="text-lg font-bold text-amber-700" data-testid="revenue-expected">{formatCurrency(stats.expected)}</p>
+            <p className="text-[10px] text-text-tertiary">{stats.expectedCount} pending</p>
           </div>
 
           {/* Goal Progress */}
-          <div className="bg-[#0F0F0F] rounded-xl p-3 border border-[#262626]">
+          <div className="bg-white rounded-xl p-3 border border-light-200">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-medium text-[#888] uppercase tracking-wider">Goal</span>
-              <Crosshair className="w-3 h-3 text-[#666]" />
+              <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">Goal</span>
+              <Crosshair className="w-3 h-3 text-text-tertiary" />
             </div>
-            <p className="text-lg font-bold text-[#FAFAFA]" data-testid="revenue-goal">{stats.goalProgress}%</p>
-            <div className="w-full h-1.5 bg-[#333] rounded-full mt-1">
+            <p className="text-lg font-bold text-text-primary" data-testid="revenue-goal">{stats.goalProgress}%</p>
+            <div className="w-full h-1.5 bg-light-200 rounded-full mt-1">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(stats.goalProgress, 100)}%`, background: brandRGB }}
@@ -128,8 +128,8 @@ export default function RevenueDashboard() {
         </div>
 
         {/* Monthly Trend Chart */}
-        <div className="bg-[#0F0F0F] rounded-xl p-3 border border-[#262626]">
-          <p className="text-[10px] font-medium text-[#888] uppercase tracking-wider mb-3">Monthly Revenue (12 months)</p>
+        <div className="bg-white rounded-xl p-3 border border-light-200">
+          <p className="text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-3">Monthly Revenue (12 months)</p>
           <div className="h-[120px]" data-testid="revenue-chart">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={stats.monthlyTrend} barSize={16}>

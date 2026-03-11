@@ -18,7 +18,7 @@ const NAV_ITEMS: { mode: ViewMode | 'settings'; icon: React.ElementType; label: 
 export default function MobileBottomNav({ viewMode, onViewChange, onOpenSettings }: MobileBottomNavProps) {
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] border-t border-[#333] z-50 lg:hidden safe-bottom"
+      className="fixed bottom-0 left-0 right-0 bg-light-50 border-t border-light-200 z-50 lg:hidden safe-bottom"
       data-testid="mobile-bottom-nav"
     >
       <div className="flex items-center justify-around px-2 pt-2 pb-1">
@@ -32,8 +32,8 @@ export default function MobileBottomNav({ viewMode, onViewChange, onOpenSettings
               onClick={() => isSettings ? onOpenSettings() : onViewChange(mode as ViewMode)}
               className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-3 rounded-xl min-w-[64px] touch-target transition-all duration-200 ${
                 isActive
-                  ? 'text-brand-primary-light'
-                  : 'text-[#666] active:text-white'
+                  ? 'text-purple-600'
+                  : 'text-text-tertiary active:text-purple-600'
               }`}
               data-testid={`bottom-nav-${mode}`}
             >

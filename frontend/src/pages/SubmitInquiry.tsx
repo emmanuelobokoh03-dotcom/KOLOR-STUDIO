@@ -61,19 +61,19 @@ const SubmitInquiry = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-dark-bg flex items-center justify-center px-6 py-12">
+      <div className="min-h-screen bg-light-50 flex items-center justify-center px-6 py-12">
         <div className="max-w-md w-full text-center">
-          <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
             <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
               <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
             </div>
             <h1 className="text-2xl font-bold mb-4 text-white">Thank You!</h1>
-            <p className="text-gray-400 mb-6">
+            <p className="text-text-secondary mb-6">
               Your inquiry has been submitted successfully. We'll review your project details and get back to you within 24-48 hours.
             </p>
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-brand-primary-light hover:text-brand-primary-light font-medium"
+              className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-600 font-medium"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Home
@@ -85,7 +85,7 @@ const SubmitInquiry = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg py-12 px-6">
+    <div className="min-h-screen bg-light-50 py-12 px-6">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -96,13 +96,13 @@ const SubmitInquiry = () => {
             </span>
           </Link>
           <h1 className="text-3xl font-bold mb-2 text-white">Start Your Project</h1>
-          <p className="text-gray-400">Tell us about your creative project and we'll get back to you within 24-48 hours</p>
+          <p className="text-text-secondary">Tell us about your creative project and we'll get back to you within 24-48 hours</p>
         </div>
 
         {/* Form */}
-        <div className="bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3 text-red-400">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -114,7 +114,7 @@ const SubmitInquiry = () => {
               <h2 className="text-lg font-semibold mb-4 text-white">Contact Information</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Your Name *
                   </label>
                   <input
@@ -122,13 +122,13 @@ const SubmitInquiry = () => {
                     name="clientName"
                     value={formData.clientName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                     placeholder="John Smith"
                     data-testid="inquiry-name"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Email Address *
                   </label>
                   <input
@@ -136,13 +136,13 @@ const SubmitInquiry = () => {
                     name="clientEmail"
                     value={formData.clientEmail}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                     placeholder="john@example.com"
                     data-testid="inquiry-email"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Phone Number
                   </label>
                   <input
@@ -150,12 +150,12 @@ const SubmitInquiry = () => {
                     name="clientPhone"
                     value={formData.clientPhone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                     placeholder="+1 (555) 123-4567"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Company/Organization
                   </label>
                   <input
@@ -163,7 +163,7 @@ const SubmitInquiry = () => {
                     name="clientCompany"
                     value={formData.clientCompany}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                     placeholder="Your Company"
                   />
                 </div>
@@ -175,14 +175,14 @@ const SubmitInquiry = () => {
               <h2 className="text-lg font-semibold mb-4 text-white">Project Details</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Service TextT *
                   </label>
                   <select
                     name="serviceType"
                     value={formData.serviceType}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white"
+                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-white"
                     data-testid="inquiry-service-type"
                   >
                     {SERVICE_TYPES.map((type) => (
@@ -193,7 +193,7 @@ const SubmitInquiry = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Project Title *
                   </label>
                   <input
@@ -201,13 +201,13 @@ const SubmitInquiry = () => {
                     name="projectTitle"
                     value={formData.projectTitle}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                     placeholder="e.g., Wedding Photography - June 2026"
                     data-testid="inquiry-project-title"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Project Description *
                   </label>
                   <textarea
@@ -215,21 +215,21 @@ const SubmitInquiry = () => {
                     value={formData.description}
                     onChange={handleChange}
                     rows={5}
-                    className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition resize-none text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition resize-none text-text-primary placeholder-gray-400"
                     placeholder="Tell us about your project... What are you looking for? Any specific requirements or vision?"
                     data-testid="inquiry-description"
                   />
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-text-secondary mb-2">
                       Budget Range
                     </label>
                     <select
                       name="budget"
                       value={formData.budget}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white"
+                      className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-white"
                     >
                       <option value="">Select a range</option>
                       <option value="Under $1,000">Under $1,000</option>
@@ -241,7 +241,7 @@ const SubmitInquiry = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-text-secondary mb-2">
                       Timeline
                     </label>
                     <input
@@ -249,7 +249,7 @@ const SubmitInquiry = () => {
                       name="timeline"
                       value={formData.timeline}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition text-white placeholder-gray-500"
+                      className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
                       placeholder="e.g., March 2026, ASAP, Flexible"
                     />
                   </div>
@@ -261,7 +261,7 @@ const SubmitInquiry = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-brand-primary-dark/30 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               data-testid="inquiry-submit"
             >
               {loading ? (
@@ -275,7 +275,7 @@ const SubmitInquiry = () => {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="mt-6 text-center text-sm text-text-tertiary">
             By submitting, you agree to our terms of service and privacy policy.
           </p>
         </div>
@@ -284,7 +284,7 @@ const SubmitInquiry = () => {
         <div className="text-center mt-6">
           <Link
             to="/"
-            className="text-gray-400 hover:text-brand-primary-light text-sm flex items-center justify-center gap-2"
+            className="text-text-secondary hover:text-purple-600 text-sm flex items-center justify-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Home
