@@ -109,7 +109,7 @@ const ResetPassword = () => {
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
-                <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
+                <CheckCircle weight="duotone" className="w-8 h-8 text-green-700" />
               </div>
               <h1 className="text-2xl font-bold mb-3 text-text-primary" data-testid="reset-success-title">Password reset successful!</h1>
               <p className="text-text-secondary mb-6">
@@ -142,7 +142,7 @@ const ResetPassword = () => {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400" data-testid="reset-password-error">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-600" data-testid="reset-password-error">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -194,10 +194,10 @@ const ResetPassword = () => {
                     <span
                       className={`text-xs font-medium ${
                         passwordStrength.score === 1
-                          ? 'text-red-400'
+                          ? 'text-red-600'
                           : passwordStrength.score === 2
                           ? 'text-yellow-400'
-                          : 'text-green-400'
+                          : 'text-green-700'
                       }`}
                       data-testid="password-strength-label"
                     >
@@ -243,10 +243,10 @@ const ResetPassword = () => {
                 </button>
               </div>
               {confirmPassword && confirmPassword !== password && (
-                <p className="mt-2 text-sm text-red-400">Passwords do not match</p>
+                <p className="mt-2 text-sm text-red-600">Passwords do not match</p>
               )}
               {confirmPassword && confirmPassword === password && (
-                <p className="mt-2 text-sm text-green-400 flex items-center gap-1">
+                <p className="mt-2 text-sm text-green-700 flex items-center gap-1">
                   <CheckCircle className="w-4 h-4" />
                   Passwords match
                 </p>

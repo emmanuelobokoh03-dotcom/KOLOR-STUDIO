@@ -119,7 +119,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
         <div className="px-6 py-6">
           <div className="flex items-center gap-4 mb-5">
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
-              <Icon className="w-7 h-7 text-purple-400" />
+              <Icon className="w-7 h-7 text-purple-600" />
             </div>
             <h2 className="text-xl font-bold text-text-primary leading-tight" data-testid="wizard-step-title">
               {currentStep.title}
@@ -132,7 +132,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
 
           {/* Tip box */}
           <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4">
-            <p className="text-sm text-purple-300 leading-relaxed">
+            <p className="text-sm text-purple-700 leading-relaxed">
               {currentStep.tip}
             </p>
           </div>

@@ -88,9 +88,9 @@ export default function IndustryOnboarding() {
           <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-900/30">
             <CheckCircle weight="duotone" className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-3">You're all set!</h1>
+          <h1 className="text-3xl font-bold text-text-primary mb-3">You're all set!</h1>
           <p className="text-lg text-text-secondary mb-2">
-            Your <span className="text-white font-semibold">{INDUSTRY_TYPE_LABELS[selected!]}</span> workspace is ready
+            Your <span className="text-purple-600 font-semibold">{INDUSTRY_TYPE_LABELS[selected!]}</span> workspace is ready
           </p>
           <p className="text-sm text-text-tertiary mb-6">
             We've created your "<span className="text-purple-600">{templateName}</span>" workflow template
@@ -112,7 +112,7 @@ export default function IndustryOnboarding() {
           <Sparkle className="w-6 h-6 text-purple-600" />
           <span className="text-sm font-medium text-purple-600 tracking-wider uppercase">Welcome to Kolor Studio</span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+        <h1 className="text-4xl sm:text-5xl font-bold text-text-primary mb-4">
           What type of creative are you?
         </h1>
         <p className="text-lg text-text-secondary max-w-xl mx-auto">
@@ -141,7 +141,7 @@ export default function IndustryOnboarding() {
                 } transition`}>
                   <Icon className="w-5 h-5 text-white" />
                 </div>
-                <div className={`text-sm font-semibold mb-1 ${isSelected ? 'text-white' : 'text-text-secondary'}`}>
+                <div className={`text-sm font-semibold mb-1 ${isSelected ? 'text-purple-700' : 'text-text-secondary'}`}>
                   {INDUSTRY_TYPE_LABELS[type]}
                 </div>
                 <div className="text-xs text-text-tertiary leading-relaxed">{desc}</div>
@@ -156,7 +156,7 @@ export default function IndustryOnboarding() {
         </div>
 
         {error && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-400 text-center">
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 text-center">
             {error}
           </div>
         )}

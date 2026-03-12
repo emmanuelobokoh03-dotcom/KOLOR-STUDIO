@@ -86,16 +86,16 @@ const Signup = () => {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400" data-testid="signup-error">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-600" data-testid="signup-error">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="mb-6 p-4 bg-green-900/30 border border-green-700/50 rounded-lg flex items-center gap-3 text-green-400" data-testid="signup-success">
-              <CheckCircle className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm">{success}</span>
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3 text-green-700" data-testid="signup-success">
+              <CheckCircle weight="fill" className="w-5 h-5 flex-shrink-0" />
+              <span className="text-sm font-medium">{success}</span>
             </div>
           )}
 

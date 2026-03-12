@@ -74,7 +74,7 @@ const ForgotPassword = () => {
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
-                <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
+                <CheckCircle weight="duotone" className="w-8 h-8 text-green-700" />
               </div>
               <h1 className="text-2xl font-bold mb-3 text-text-primary" data-testid="success-title">Check your email</h1>
               <p className="text-text-secondary mb-6">
@@ -114,7 +114,7 @@ const ForgotPassword = () => {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400" data-testid="forgot-password-error">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-600" data-testid="forgot-password-error">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>

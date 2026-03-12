@@ -43,7 +43,7 @@ export default function VerifyEmail() {
 
         {status === 'success' && (
           <div data-testid="verify-success">
-            <CheckCircle weight="duotone" className="w-16 h-16 mx-auto mb-4 text-green-400" />
+            <CheckCircle weight="duotone" className="w-16 h-16 mx-auto mb-4 text-green-700" />
             <h2 className="text-2xl font-bold text-text-primary mb-2">Email Verified!</h2>
             <p className="text-text-secondary mb-6">{message}</p>
             <p className="text-sm text-text-tertiary">Redirecting to dashboard...</p>
@@ -52,7 +52,7 @@ export default function VerifyEmail() {
 
         {status === 'error' && (
           <div data-testid="verify-error">
-            <XCircle weight="duotone" className="w-16 h-16 mx-auto mb-4 text-red-400" />
+            <XCircle weight="duotone" className="w-16 h-16 mx-auto mb-4 text-red-600" />
             <h2 className="text-2xl font-bold text-text-primary mb-2">Verification Failed</h2>
             <p className="text-text-secondary mb-6">{message}</p>
             <button

@@ -67,7 +67,7 @@ const Login = () => {
 
         <div className="bg-light-50 rounded-2xl shadow-2xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-400 animate-fade-in" data-testid="login-error">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600 animate-fade-in" data-testid="login-error">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
