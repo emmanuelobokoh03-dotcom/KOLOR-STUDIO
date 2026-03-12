@@ -109,6 +109,12 @@ Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals
 - **Route audit**: All 15+ API routes verified as properly mounted and accessible
 - **Tested: 10/10 backend + 11/11 frontend tests passed (100%)**
 
+### Bug Fix: Color Contrast in Auth/Onboarding (March 2026) ✅
+- Fixed invisible text across signup, onboarding, login, forgot-password, reset-password, verify-email pages
+- Root cause: `text-white`, `text-green-400`, `text-red-400`, `text-purple-300` on light backgrounds from dark→light theme migration
+- Changes: `text-white` → `text-text-primary`, `text-green-400` → `text-green-700`, `text-red-400` → `text-red-600`, `text-purple-300` → `text-purple-700`
+- **Tested: 25/25 contrast checks passed (100%)**
+
 ## Upcoming Tasks (Priority Order)
 1. **(P2) Polish & Mobile:**
    - Thorough mobile responsiveness review across all pages
