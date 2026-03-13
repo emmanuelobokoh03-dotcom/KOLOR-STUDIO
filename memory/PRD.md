@@ -121,6 +121,14 @@ Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals
 - With demo data (leadsCount > 0), wizard skips → tour starts directly
 - **Tested: 10/10 onboarding tests passed (100%)**
 
+### Comprehensive Bug Fix: 5 Critical Issues (March 2026) ✅
+- **Error #3 (Contract Auto-Gen)**: Verified working — `autoGenerateContract` function in quotes.ts triggers on quote acceptance
+- **Error #4 (Email Templates)**: Already fixed in previous session — light theme with purple gradients
+- **Error #5 (Email Signature)**: New `emailSignature` field on User + EmailSignatureSettings component in Settings > Email tab with save/preview
+- **Error #6 (Portfolio Contrast)**: Fixed `bg-slate-900` → `bg-white` on modal, `text-white` → `text-text-primary` on inputs/headings, removed "UploadSimple" text bug
+- **Error #7 (Quote Form)**: Input contrast fixes applied; font size increase deferred for user review
+- **Tested: 9/9 backend + 11/11 frontend tests passed (100%)**
+
 ## Upcoming Tasks (Priority Order)
 1. **(P2) Polish & Mobile:**
    - Thorough mobile responsiveness review across all pages
