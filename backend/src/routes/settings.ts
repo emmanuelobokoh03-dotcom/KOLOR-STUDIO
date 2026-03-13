@@ -67,6 +67,7 @@ const SETTINGS_SELECT = {
   brandAccentColor: true,
   brandLogoUrl: true,
   brandFontFamily: true,
+  emailSignature: true,
 };
 
 // GET /api/settings - Get current user settings
@@ -103,7 +104,7 @@ router.patch('/', authMiddleware, async (req: AuthRequest, res: Response): Promi
     }
 
     const updateData: any = {};
-    const profileFields = ['firstName', 'lastName', 'studioName', 'phone', 'website', 'timezone'];
+    const profileFields = ['firstName', 'lastName', 'studioName', 'phone', 'website', 'timezone', 'emailSignature'];
     const currencyFields = ['currency', 'currencySymbol', 'currencyPosition', 'numberFormat', 'defaultTaxRate'];
 
     [...profileFields, ...currencyFields].forEach(field => {

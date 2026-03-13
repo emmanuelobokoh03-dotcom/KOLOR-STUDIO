@@ -460,6 +460,7 @@ model User {
   brandFontFamily      String               @default("Inter")
   brandLogoUrl         String?
   brandPrimaryColor    String               @default("#A855F7")
+  emailSignature       String?
   verificationSentAt   DateTime?
   verificationToken    String?              @unique
   leads                Lead[]

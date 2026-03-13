@@ -295,9 +295,9 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-16 md:py-20 px-6 text-center bg-light-100 rounded-2xl border border-light-200" data-testid="portfolio-empty-state">
           <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F5BC;&#xFE0F;</div>
-          <h3 className="text-xl md:text-2xl font-semibold text-white mb-2 md:mb-3">Showcase your best work</h3>
+          <h3 className="text-xl md:text-2xl font-semibold text-text-primary mb-2 md:mb-3">Showcase your best work</h3>
           <p className="text-sm md:text-base text-text-secondary max-w-md mb-5 md:mb-6 leading-relaxed">
-            UploadSimple 5-10 of your favorite pieces to create a stunning portfolio that attracts dream clients.
+            Upload 5-10 of your favorite pieces to create a stunning portfolio that attracts dream clients.
           </p>
           <button
             onClick={handleAddNew}
@@ -305,7 +305,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
             data-testid="portfolio-empty-cta"
           >
             <UploadSimple weight="bold" className="w-5 h-5" />
-            UploadSimple Your First Piece
+            Upload Your First Piece
           </button>
           <p className="text-xs text-text-tertiary mt-4 max-w-sm">
             <strong>Pro tip:</strong> Quality over quantity! Choose work that represents your unique style.
@@ -364,7 +364,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
               </div>
               {/* Info */}
               <div className="p-4">
-                <h3 className="font-semibold text-white truncate">{item.title}</h3>
+                <h3 className="font-semibold text-text-primary truncate">{item.title}</h3>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="px-2 py-0.5 bg-brand-primary/20 text-purple-600 rounded text-xs">
                     {PORTFOLIO_CATEGORY_LABELS[item.category]}
@@ -384,10 +384,10 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
       {/* Upload/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={() => { setShowModal(false); resetForm(); }}>
-          <div className="bg-slate-900 rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl" onClick={e => e.stopPropagation()}>
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-light-200">
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-lg font-semibold text-text-primary">
                 {editingItem ? 'Edit Portfolio Item' : 'Add Portfolio Item'}
               </h3>
               <button
@@ -472,7 +472,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Summer Wedding Collection"
-                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                   data-testid="portfolio-title-input"
                 />
               </div>
@@ -485,7 +485,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Brief description of this work..."
                   rows={3}
-                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none"
+                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none"
                 />
               </div>
 
@@ -495,7 +495,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as PortfolioCategory)}
-                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                   data-testid="portfolio-category-select"
                 >
                   {Object.entries(PORTFOLIO_CATEGORY_LABELS).map(([value, label]) => (
@@ -512,7 +512,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder="e.g., wedding, outdoor, portraits"
-                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                 />
                 <p className="text-xs text-text-tertiary mt-1">Separate tags with commas</p>
               </div>
