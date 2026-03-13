@@ -178,13 +178,13 @@ const Dashboard = () => {
     init()
   }, [navigate])
 
-  // Auto-start onboarding tour for new users
+  // Auto-start onboarding tour for new users — only when wizard is NOT showing
   useEffect(() => {
-    if (!loading && user && !tourComplete) {
+    if (!loading && user && !tourComplete && !showWizard) {
       const timer = setTimeout(() => startTour(), 1500)
       return () => clearTimeout(timer)
     }
-  }, [loading, user, tourComplete, startTour])
+  }, [loading, user, tourComplete, startTour, showWizard])
 
   const fetchLeads = async () => {
     const params: any = {};
