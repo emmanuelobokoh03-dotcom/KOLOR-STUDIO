@@ -115,6 +115,12 @@ Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals
 - Changes: `text-white` → `text-text-primary`, `text-green-400` → `text-green-700`, `text-red-400` → `text-red-600`, `text-purple-300` → `text-purple-700`
 - **Tested: 25/25 contrast checks passed (100%)**
 
+### Bug Fix: Sequential Onboarding (March 2026) ✅
+- Fixed wizard and Driver.js tour firing simultaneously by adding `!showWizard` guard to tour's useEffect
+- Flow: Wizard shows first (if needed) → closes → tour starts after 1.5s delay
+- With demo data (leadsCount > 0), wizard skips → tour starts directly
+- **Tested: 10/10 onboarding tests passed (100%)**
+
 ## Upcoming Tasks (Priority Order)
 1. **(P2) Polish & Mobile:**
    - Thorough mobile responsiveness review across all pages
