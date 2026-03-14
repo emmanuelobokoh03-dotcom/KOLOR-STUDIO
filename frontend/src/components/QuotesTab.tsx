@@ -116,6 +116,16 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
       throw new Error(result.message || 'Failed to send quote');
     }
 
+    // Check if email was actually delivered
+    if (result.emailSent === false) {
+      // Quote status updated but email failed - warn user
+      console.warn('[QuotesTab] Quote status updated but email delivery failed:', result.emailError || result.message);
+      fetchQuotes();
+      onQuoteUpdate?.();
+      setEmailComposerQuote(null);
+      throw new Error('Quote saved but email delivery failed. This is likely a Resend domain configuration issue — please verify your sending domain at resend.com/domains.');
+    }
+
     trackQuoteSent(emailComposerQuote.total);
     setEmailComposerQuote(null);
     fetchQuotes();

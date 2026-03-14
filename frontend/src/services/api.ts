@@ -827,7 +827,7 @@ export const quotesApi = {
 
   // Send quote to client
   send: async (quoteId: string, emailData?: { subject: string; message: string }) => {
-    return request<{ message: string; quote: Quote }>(`/api/quotes/${quoteId}/send`, {
+    return request<{ message: string; quote: Quote; emailSent?: boolean; emailError?: string }>(`/api/quotes/${quoteId}/send`, {
       method: 'POST',
       body: emailData ? JSON.stringify(emailData) : undefined,
     });

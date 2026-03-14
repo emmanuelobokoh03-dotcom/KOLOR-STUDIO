@@ -146,7 +146,7 @@ If you're using the VS Code preview in Emergent (like the link you shared earlie
 
 The app might be accessible through Emergent's preview system at something like:
 ```
-https://landing-redesign-32.preview.emergentagent.com/
+https://quote-fix-1.preview.emergentagent.com/
 ```
 
 Or you can access it directly if Emergent exposes ports:

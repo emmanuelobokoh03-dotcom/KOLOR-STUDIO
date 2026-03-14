@@ -12,6 +12,7 @@ export const apiLimiter = rateLimit({
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { trustProxy: false },
   skip: isDev,
   handler: (req, res) => { logHit(req); res.status(429).json({ error: 'Too many requests, please try again later.' }); },
 });
@@ -22,6 +23,7 @@ export const authLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { trustProxy: false },
   skip: isDev,
   handler: (req, res) => { logHit(req); res.status(429).json({ error: 'Too many authentication attempts, please try again later.' }); },
 });
@@ -32,6 +34,7 @@ export const emailLimiter = rateLimit({
   max: 3,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { trustProxy: false },
   skip: isDev,
   handler: (req, res) => { logHit(req); res.status(429).json({ error: 'Too many email verification requests, please try again later.' }); },
 });
@@ -42,6 +45,7 @@ export const uploadLimiter = rateLimit({
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { trustProxy: false },
   skip: isDev,
   handler: (req, res) => { logHit(req); res.status(429).json({ error: 'Too many upload requests, please try again later.' }); },
 });
@@ -52,6 +56,7 @@ export const portalLimiter = rateLimit({
   max: 50,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { trustProxy: false },
   skip: isDev,
   handler: (req, res) => { logHit(req); res.status(429).json({ error: 'Too many requests, please try again later.' }); },
 });

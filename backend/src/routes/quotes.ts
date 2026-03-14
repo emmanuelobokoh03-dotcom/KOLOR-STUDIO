@@ -656,9 +656,10 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
     });
 
     // Send email to client
+    let emailSent = false;
+    let emailError: any = null;
     try {
-
-      await sendQuoteEmail({
+      const emailData = {
         clientName: (quote as any).lead.clientName,
         clientEmail: (quote as any).lead.clientEmail,
         projectTitle: (quote as any).lead.projectTitle,
@@ -673,11 +674,15 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
         studioName: (quote as any).createdBy.studioName || `${(quote as any).createdBy.firstName}'s Studio`,
         customSubject: customSubject || undefined,
         customMessage: customMessage || undefined,
-      });
+      };
+      console.log('[QUOTE SEND] Sending email to:', emailData.clientEmail, '| Quote:', emailData.quoteNumber);
+      console.log('[QUOTE SEND] Data check - portalToken:', !!emailData.portalToken, '| quoteToken:', !!emailData.quoteToken, '| studioName:', emailData.studioName);
 
-    } catch (emailError) {
-      console.error('Failed to send quote email:', emailError);
-      // Don't fail the request, just log it
+      emailSent = await sendQuoteEmail(emailData);
+      console.log('[QUOTE SEND] Email result:', emailSent ? 'SUCCESS' : 'FAILED (returned false)');
+    } catch (err) {
+      emailError = err;
+      console.error('[QUOTE SEND] Email exception:', err);
     }
 
     // Create activity log
@@ -703,7 +708,12 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
       });
     }
 
-    res.json({ message: 'Quote sent successfully', quote: updatedQuote });
+    res.json({
+      message: emailSent ? 'Quote sent successfully' : 'Quote status updated but email delivery failed',
+      quote: updatedQuote,
+      emailSent,
+      emailError: emailError ? String(emailError) : undefined,
+    });
 
     // Auto-enroll in follow-up sequences (non-blocking)
     enrollLead(quote.leadId, 'QUOTE_SENT').catch(e => console.error('Sequence enroll error:', e));
