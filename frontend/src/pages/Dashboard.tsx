@@ -24,7 +24,7 @@ import {
   Funnel,
   CaretDown
 } from '@phosphor-icons/react'
-import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS } from '../services/api'
+import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi } from '../services/api'
 import KanbanBoard from '../components/KanbanBoard'
 import LeadDetailModal from '../components/LeadDetailModal'
 import AddLeadModal from '../components/AddLeadModal'
@@ -139,6 +139,7 @@ const Dashboard = () => {
   const [celebration, setCelebration] = useState<Achievement | null>(null)
   const [showCelebration, setShowCelebration] = useState(false)
   const [showDemoBanner, setShowDemoBanner] = useState(true)
+  const [pendingContracts, setPendingContracts] = useState<any[]>([])
   const { startTour, tourComplete } = useOnboardingTour()
   const { showWizard, setShowWizard, resetWizard } = useOnboardingWizard(leads.length)
 
@@ -166,6 +167,7 @@ const Dashboard = () => {
 
       await fetchLeads()
       await fetchStats()
+      await fetchPendingContracts()
       setLoading(false)
 
       // Async celebration checks (milestones triggered by client-side events)
@@ -199,10 +201,16 @@ const Dashboard = () => {
     if (result.data) setStats({ total: result.data.total, statusCounts: result.data.statusCounts })
   }
 
+  const fetchPendingContracts = async () => {
+    const result = await contractsApi.getPending()
+    if (result.data?.contracts) setPendingContracts(result.data.contracts)
+  }
+
   const handleRefresh = async () => {
     setRefreshing(true)
     await fetchLeads()
     await fetchStats()
+    await fetchPendingContracts()
     setRefreshing(false)
   }
 
@@ -497,6 +505,42 @@ const Dashboard = () => {
         />
 
         {/* Revenue Pipeline Widget */}
+        {/* Pending Contract Review Banner */}
+        {pendingContracts.length > 0 && (
+          <div className="mb-4 md:mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5" data-testid="pending-contract-banner">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Briefcase weight="duotone" className="w-5 h-5 text-amber-700" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-base font-semibold text-amber-900 mb-1">
+                  Contract Ready for Review
+                </h3>
+                <p className="text-sm text-amber-700 mb-3">
+                  <strong>{pendingContracts[0].lead?.clientName}</strong> accepted your quote for <strong>"{pendingContracts[0].lead?.projectTitle}"</strong>. Review the contract before sending it to your client.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      const lead = leads.find(l => l.id === pendingContracts[0].lead?.id)
+                      if (lead) setSelectedLead(lead)
+                    }}
+                    className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                    data-testid="review-contract-btn"
+                  >
+                    Review Contract
+                  </button>
+                  {pendingContracts.length > 1 && (
+                    <span className="inline-flex items-center px-3 py-2 text-xs font-medium text-amber-700 bg-amber-100 rounded-lg">
+                      +{pendingContracts.length - 1} more pending
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="mb-4 md:mb-6">
           <RevenuePipelineWidget />
         </div>

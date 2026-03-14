@@ -993,9 +993,9 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
       <strong>What happens next:</strong>
     </p>
     <ul style="margin: 0 0 24px 0; padding-left: 24px; color: #4b5563; line-height: 1.8;">
-      <li>A contract has been automatically generated and sent to your client</li>
-      <li>Once signed, a deposit payment link will be created</li>
-      <li>Track everything from your dashboard</li>
+      <li>A contract has been automatically generated and is <strong>ready for your review</strong></li>
+      <li>Review the terms, edit if needed, then send to your client</li>
+      <li>The contract will <strong>not</strong> be sent until you confirm</li>
     </ul>
     
     <!-- Dashboard CTA -->
@@ -1003,7 +1003,7 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
       <tr>
         <td align="center">
           <a href="${dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
-            View in Dashboard
+            Review Contract Now
           </a>
         </td>
       </tr>

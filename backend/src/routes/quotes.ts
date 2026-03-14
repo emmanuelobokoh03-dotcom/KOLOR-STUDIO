@@ -118,7 +118,7 @@ function fillContractTemplate(template: string, data: Record<string, string>): s
 }
 
 /** Auto-generate and send a contract when a quote is accepted */
-async function autoGenerateContract(quoteId: string): Promise<void> {
+async function autoGenerateContract(quoteId: string): Promise<string | null> {
   try {
     const quote = await prisma.quote.findUnique({
       where: { id: quoteId },
@@ -131,7 +131,7 @@ async function autoGenerateContract(quoteId: string): Promise<void> {
     });
     if (!quote || !quote.lead) {
       console.error(`[AUTOPILOT] Quote ${quoteId} or lead not found`);
-      return;
+      return null;
     }
 
     const lead = quote.lead;
@@ -159,34 +159,13 @@ async function autoGenerateContract(quoteId: string): Promise<void> {
         templateType: contractType as any,
         title: template.title,
         content: filledContent,
-        status: 'SENT',
-        sentAt: new Date(),
+        status: 'DRAFT',
       },
     });
 
-    // Send contract email to client (delay to avoid rate-limiting from simultaneous emails)
-    const portalUrl = `${process.env.FRONTEND_URL || ''}/portal/${lead.portalToken}`;
-    console.log('[AUTOPILOT] Contract created:', contract.id, '| Sending email to:', lead.clientEmail, '| Portal:', portalUrl);
-    
-    // Wait 3 seconds to avoid Resend rate-limit collision with deposit/notification emails
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    const emailSent = await sendContractSentEmail({
-      clientName: lead.clientName,
-      clientEmail: lead.clientEmail,
-      projectTitle: lead.projectTitle,
-      contractTitle: contract.title,
-      studioName,
-      portalUrl,
-    });
-    
-    if (!emailSent) {
-      console.error('[AUTOPILOT] Contract email FAILED to send for contract:', contract.id);
-    } else {
-      console.log('[AUTOPILOT] Contract email sent successfully for contract:', contract.id);
-    }
-
-    await logActivity(lead.id, quote.createdById, 'CONTRACT_SIGNED', `Contract auto-generated and sent: "${contract.title}"`);
+    console.log('[AUTOPILOT] Contract created as DRAFT:', contract.id, '| User must review before sending.');
+    await logActivity(lead.id, quote.createdById, 'CONTRACT_SIGNED', `Contract auto-generated (DRAFT): "${contract.title}" — awaiting user review`);
+    return contract.id;
   } catch (error) {
     console.error('[AUTOPILOT] Contract auto-generation FAILED:', error);
     throw error;

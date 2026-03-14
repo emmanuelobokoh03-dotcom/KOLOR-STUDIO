@@ -1307,6 +1307,9 @@ export interface ContractTemplate {
 }
 
 export const contractsApi = {
+  getPending: async () => {
+    return request<{ contracts: Contract[] }>('/api/contracts/pending');
+  },
   getTemplates: async () => {
     return request<{ templates: ContractTemplate[] }>('/api/contracts/templates/list');
   },

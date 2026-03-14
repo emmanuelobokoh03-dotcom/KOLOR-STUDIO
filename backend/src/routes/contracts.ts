@@ -143,6 +143,33 @@ function fillTemplate(template: string, data: Record<string, string>): string {
 }
 
 // =====================
+// AUTHENTICATED: USER-LEVEL
+// =====================
+
+// GET /api/contracts/pending — Fetch DRAFT contracts awaiting user review
+router.get('/contracts/pending', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const contracts = await prisma.contract.findMany({
+      where: {
+        lead: { assignedToId: userId },
+        status: 'DRAFT',
+      },
+      include: {
+        lead: {
+          select: { id: true, clientName: true, clientEmail: true, projectTitle: true, portalToken: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json({ contracts });
+  } catch (error) {
+    console.error('[CONTRACTS] Failed to fetch pending:', error);
+    res.status(500).json({ error: 'Failed to fetch pending contracts' });
+  }
+});
+
+// =====================
 // AUTHENTICATED: LEAD-SCOPED
 // =====================
 
