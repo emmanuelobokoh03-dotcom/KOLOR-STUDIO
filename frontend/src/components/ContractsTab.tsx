@@ -41,8 +41,8 @@ interface ContractsTabProps {
 const STATUS_STYLES: Record<ContractStatus, string> = {
   DRAFT: 'bg-light-100 text-text-secondary border border-light-200',
   SENT: 'bg-blue-50 text-blue-700 border border-blue-200',
-  VIEWED: 'bg-yellow-900/50 text-yellow-300 border border-yellow-700/50',
-  AGREED: 'bg-green-900/50 text-green-300 border border-green-700/50',
+  VIEWED: 'bg-yellow-50 text-yellow-700 border border-yellow-200',
+  AGREED: 'bg-green-50 text-green-700 border border-green-200',
 };
 
 const TEMPLATE_ICONS: Record<string, React.ElementType> = {
@@ -82,6 +82,10 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
     const result = await contractsApi.getForLead(leadId);
     if (result.data?.contracts) {
       setContracts(result.data.contracts);
+      // Auto-expand the newest contract so it's immediately visible
+      if (result.data.contracts.length > 0 && !expandedContract) {
+        setExpandedContract(result.data.contracts[0].id);
+      }
       // Check for first signed contract celebration
       if (result.data.contracts.some((c: Contract) => c.clientAgreed)) {
         onContractSigned?.();
@@ -394,7 +398,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                         </div>
                       )}
                       {contract.clientAgreedAt && (
-                        <div className="flex items-center gap-2 text-xs text-green-400">
+                        <div className="flex items-center gap-2 text-xs text-green-600">
                           <CheckCircle className="w-3.5 h-3.5" />
                           Signed on {formatDate(contract.clientAgreedAt)}
                           {contract.clientIP && <span className="text-text-tertiary">(IP: {contract.clientIP})</span>}
@@ -451,7 +455,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                         </button>
                       )}
                       {contract.status === 'AGREED' && (
-                        <div className="flex items-center gap-2 ml-auto text-green-400 text-sm font-medium">
+                        <div className="flex items-center gap-2 ml-auto text-green-600 text-sm font-medium">
                           <CheckCircle className="w-4 h-4" /> Agreement Signed
                         </div>
                       )}

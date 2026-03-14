@@ -1496,7 +1496,7 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
     `;
 
     console.log('[EMAIL] Calling resend.emails.send for contract:', data.contractTitle);
-    const { error } = await resend.emails.send({
+    const { data: resendData, error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.clientEmail],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
@@ -1509,7 +1509,7 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
       return false;
     }
 
-    console.log('[EMAIL] Contract email sent successfully to:', data.clientEmail);
+    console.log('[EMAIL] Contract email sent successfully to:', data.clientEmail, '| Resend ID:', resendData?.id || 'unknown');
     return true;
   } catch (error) {
     console.error('[EMAIL] Exception sending contract email:', error);
