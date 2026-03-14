@@ -978,10 +978,25 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
 
     // Send notification email to studio owner
     try {
-      console.log('[QUOTE ACCEPT] Sending notification to owner:', (quote as any).createdBy.email);
+      const ownerEmail = (quote as any).createdBy.email;
+      const ownerName = (quote as any).createdBy.firstName;
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('[QUOTE ACCEPT] NOTIFICATION DEBUG:');
+      console.log('[QUOTE ACCEPT] Quote created by (createdBy):', JSON.stringify((quote as any).createdBy));
+      console.log('[QUOTE ACCEPT] Owner email (notification recipient):', ownerEmail);
+      console.log('[QUOTE ACCEPT] Owner name:', ownerName);
+      console.log('[QUOTE ACCEPT] Client name:', (quote as any).lead.clientName);
+      console.log('[QUOTE ACCEPT] SENDER_EMAIL:', process.env.SENDER_EMAIL);
+      console.log('[QUOTE ACCEPT] Is Resend sandbox?:', (process.env.SENDER_EMAIL || '').includes('resend.dev'));
+      if ((process.env.SENDER_EMAIL || '').includes('resend.dev') && ownerEmail !== 'emmanuelobokoh03@gmail.com') {
+        console.warn('[QUOTE ACCEPT] WARNING: Resend sandbox can ONLY send to emmanuelobokoh03@gmail.com.');
+        console.warn('[QUOTE ACCEPT] Owner email', ownerEmail, 'will be REJECTED by Resend.');
+        console.warn('[QUOTE ACCEPT] To fix: Verify a domain at resend.com/domains and update SENDER_EMAIL.');
+      }
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       const notifSent = await sendQuoteAcceptedNotification({
-        ownerEmail: (quote as any).createdBy.email,
-        ownerName: (quote as any).createdBy.firstName,
+        ownerEmail,
+        ownerName,
         clientName: (quote as any).lead.clientName,
         projectTitle: (quote as any).lead.projectTitle,
         quoteNumber: quote.quoteNumber,
@@ -990,7 +1005,7 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
         currencySymbol: quote.currencySymbol || '$',
         currency: quote.currency || 'USD',
       });
-      console.log('[QUOTE ACCEPT] Notification result:', notifSent ? 'SUCCESS' : 'FAILED');
+      console.log('[QUOTE ACCEPT] Notification result:', notifSent ? 'SUCCESS' : 'FAILED (Resend rejected — verify domain)');
     } catch (emailError) {
       console.error('[QUOTE ACCEPT] Notification email exception:', emailError);
     }
