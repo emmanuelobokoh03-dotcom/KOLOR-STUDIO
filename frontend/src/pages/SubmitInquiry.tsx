@@ -64,16 +64,16 @@ const SubmitInquiry = () => {
       <div className="min-h-screen bg-light-50 flex items-center justify-center px-6 py-12">
         <div className="max-w-md w-full text-center">
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
-            <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
-              <CheckCircle weight="duotone" className="w-8 h-8 text-green-400" />
+            <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-200">
+              <CheckCircle weight="duotone" className="w-8 h-8 text-green-600" />
             </div>
-            <h1 className="text-2xl font-bold mb-4 text-white">Thank You!</h1>
+            <h1 className="text-2xl font-bold mb-4 text-gray-900">Thank You!</h1>
             <p className="text-text-secondary mb-6">
               Your inquiry has been submitted successfully. We'll review your project details and get back to you within 24-48 hours.
             </p>
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-600 font-medium"
+              className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Home
@@ -95,7 +95,7 @@ const SubmitInquiry = () => {
               KOLOR STUDIO
             </span>
           </Link>
-          <h1 className="text-3xl font-bold mb-2 text-white">Start Your Project</h1>
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">Start Your Project</h1>
           <p className="text-text-secondary">Tell us about your creative project and we'll get back to you within 24-48 hours</p>
         </div>
 
@@ -111,7 +111,7 @@ const SubmitInquiry = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Contact Information */}
             <div>
-              <h2 className="text-lg font-semibold mb-4 text-white">Contact Information</h2>
+              <h2 className="text-lg font-semibold mb-4 text-gray-900">Contact Information</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">
@@ -172,17 +172,17 @@ const SubmitInquiry = () => {
 
             {/* Project Details */}
             <div>
-              <h2 className="text-lg font-semibold mb-4 text-white">Project Details</h2>
+              <h2 className="text-lg font-semibold mb-4 text-gray-900">Project Details</h2>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">
-                    Service TextT *
+                    Project Category *
                   </label>
                   <select
                     name="serviceType"
                     value={formData.serviceType}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-white"
+                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary"
                     data-testid="inquiry-service-type"
                   >
                     {SERVICE_TYPES.map((type) => (
@@ -229,7 +229,7 @@ const SubmitInquiry = () => {
                       name="budget"
                       value={formData.budget}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-white"
+                      className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary"
                     >
                       <option value="">Select a range</option>
                       <option value="Under $1,000">Under $1,000</option>

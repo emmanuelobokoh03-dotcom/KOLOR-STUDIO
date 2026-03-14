@@ -330,19 +330,33 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
     const studioName = contract.lead.assignedTo?.studioName || `${contract.lead.assignedTo?.firstName} ${contract.lead.assignedTo?.lastName}`;
     const portalUrl = `${process.env.FRONTEND_URL || 'https://quote-fix-1.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
 
-    await sendContractSentEmail({
-      clientName: contract.lead.clientName,
-      clientEmail: contract.lead.clientEmail,
-      projectTitle: contract.lead.projectTitle,
-      contractTitle: contract.title,
-      studioName: studioName || 'Studio',
-      portalUrl,
-      customSubject: customSubject || undefined,
-      customMessage: customMessage || undefined,
-    });
+    console.log('[CONTRACT SEND] Sending contract email to:', contract.lead.clientEmail, '| Contract:', contract.title);
+    let emailSent = false;
+    let emailError: string | undefined;
+    try {
+      emailSent = await sendContractSentEmail({
+        clientName: contract.lead.clientName,
+        clientEmail: contract.lead.clientEmail,
+        projectTitle: contract.lead.projectTitle,
+        contractTitle: contract.title,
+        studioName: studioName || 'Studio',
+        portalUrl,
+        customSubject: customSubject || undefined,
+        customMessage: customMessage || undefined,
+      });
+      console.log('[CONTRACT SEND] Email result:', emailSent ? 'SUCCESS' : 'FAILED');
+    } catch (err: any) {
+      emailError = err?.message || String(err);
+      console.error('[CONTRACT SEND] Email exception:', err);
+    }
 
     await logActivity(contract.lead.id, req.userId as string, 'CONTRACT_SIGNED', `Contract "${contract.title}" sent to ${contract.lead.clientEmail}`);
-    res.json({ contract: updated });
+    res.json({
+      contract: updated,
+      emailSent,
+      emailError,
+      message: emailSent ? 'Contract sent successfully' : 'Contract status updated but email delivery failed',
+    });
   } catch (error) {
     console.error('Error sending contract:', error);
     res.status(500).json({ error: 'Failed to send contract' });

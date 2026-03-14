@@ -1424,57 +1424,95 @@ interface ContractSentEmailData {
 }
 
 export async function sendContractSentEmail(data: ContractSentEmailData): Promise<boolean> {
+  console.log('[EMAIL] sendContractSentEmail called for:', data.clientEmail, '| Contract:', data.contractTitle);
+  
   try {
     if (!resend) {
-      return true;
+      console.error('[EMAIL] Resend not initialized! RESEND_API_KEY missing.');
+      return false;
     }
 
     const firstName = data.clientName.split(' ')[0];
 
     // Build custom message section or default
-    const messageHtml = data.customMessage
-      ? `<div style="color: #a3a3a3; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${data.customMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>`
-      : `<p style="color: #fafafa; font-size: 16px; line-height: 1.6;">Hi ${firstName},</p>
-            <p style="color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-              An agreement for your project <strong style="color: #fafafa;">"${data.projectTitle}"</strong> is ready for your review. 
-              Please review the terms and sign the agreement using the link below.
-            </p>`;
+    const messageSection = data.customMessage
+      ? `<div style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7; white-space: pre-wrap;">${data.customMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>`
+      : `<p style="margin: 0 0 20px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+          Hi ${firstName}! 👋
+        </p>
+        <p style="margin: 0 0 24px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+          An agreement for your project <strong>"${data.projectTitle}"</strong> is ready for your review.
+          Please review the terms and sign the agreement using the link below.
+        </p>`;
 
-    await resend.emails.send({
-      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
-      to: data.clientEmail,
-      subject: data.customSubject || `Agreement for ${data.projectTitle} - ${data.studioName}`,
-      html: `
-        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f0f0f; padding: 0;">
-          <div style="background: linear-gradient(135deg, #7c3aed, #9333ea); padding: 32px; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">Agreement Ready</h1>
-            <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 14px;">${data.studioName}</p>
-          </div>
-          <div style="padding: 32px; background: #1a1a1a;">
-            ${messageHtml}
-            <div style="margin: 24px 0; text-align: center;">
-              <a href="${data.portalUrl}" 
-                 style="display: inline-block; padding: 14px 32px; background: #7c3aed; color: white; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 14px;">
-                Review &amp; Sign Agreement
-              </a>
-            </div>
-            <div style="margin-top: 24px; padding: 16px; background: #0f0f0f; border-radius: 12px; border: 1px solid #333;">
-              <p style="color: #a3a3a3; font-size: 12px; margin: 0;">
-                <strong style="color: #fafafa;">Document:</strong> ${data.contractTitle}<br/>
-                <strong style="color: #fafafa;">Project:</strong> ${data.projectTitle}
-              </p>
-            </div>
-            <p style="color: #666; font-size: 12px; margin-top: 24px; line-height: 1.5;">
-              If you have any questions about the agreement, please reply to this email or contact ${data.studioName} directly.
+    const content = `
+      <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+        Your Agreement is Ready
+      </h1>
+      
+      ${messageSection}
+      
+      <!-- Contract Info Card -->
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin-bottom: 24px;">
+        <tr>
+          <td style="padding: 20px;">
+            <p style="margin: 0 0 8px 0; font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+              Agreement Details
             </p>
-          </div>
-        </div>
-      `,
+            <p style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #1f2937;">
+              ${data.contractTitle}
+            </p>
+            <p style="margin: 0; font-size: 14px; color: #6b7280;">
+              Project: ${data.projectTitle}
+            </p>
+          </td>
+        </tr>
+      </table>
+      
+      <!-- CTA Button -->
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
+        <tr>
+          <td align="center">
+            <a href="${data.portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 18px; font-weight: 600; text-decoration: none; padding: 18px 48px; border-radius: 12px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
+              Review &amp; Sign Agreement
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding-top: 12px;">
+            <p style="margin: 0; font-size: 13px; color: #9CA3AF;">Takes just 30 seconds to review and sign!</p>
+          </td>
+        </tr>
+      </table>
+      
+      <p style="margin: 24px 0 0 0; font-size: 16px; color: #374151; line-height: 1.7;">
+        Questions about the agreement? Just reply to this email — happy to help!
+      </p>
+      
+      <p style="margin: 24px 0 0 0; font-size: 16px; color: #374151;">
+        Looking forward to working together,<br>
+        <strong style="color: #7c3aed;">${data.studioName}</strong>
+      </p>
+    `;
+
+    console.log('[EMAIL] Calling resend.emails.send for contract:', data.contractTitle);
+    const { error } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: [data.clientEmail],
+      replyTo: OWNER_EMAIL || SENDER_EMAIL,
+      subject: data.customSubject || `Agreement for ${data.projectTitle} - ${data.studioName}`,
+      html: getEmailTemplate(content, 'Your Agreement'),
     });
 
+    if (error) {
+      console.error('[EMAIL] Resend API error for contract:', JSON.stringify(error));
+      return false;
+    }
+
+    console.log('[EMAIL] Contract email sent successfully to:', data.clientEmail);
     return true;
   } catch (error) {
-    console.error('Error sending contract email:', error);
+    console.error('[EMAIL] Exception sending contract email:', error);
     return false;
   }
 }
