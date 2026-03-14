@@ -12,6 +12,12 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Icons:** @phosphor-icons/react
 - **Tours:** Driver.js
 
+## Core Workflow (Updated March 2026)
+1. Create Lead → 2. Create Quote → 3. Send Quote to Client →
+4. Client Accepts → 5. **Contract Auto-Generated as DRAFT** →
+6. **User Gets Notification Email** → 7. **Dashboard Shows Banner** →
+8. **User Reviews & Sends Contract** → 9. Client Signs → 10. Payment
+
 ## What's Been Implemented
 - Landing page (6-section branded design)
 - Full auth flow (signup, login, email verification, password reset)
@@ -19,8 +25,10 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - Quote builder (line items, tax, currency, PDF generation)
 - Quote sending via email (with portal links)
 - Client portal (public view of quotes/contracts)
-- Contract creation & sending via email
-- Contract auto-generation on quote acceptance (with 3s email delay)
+- **Contract auto-generation as DRAFT (user must review before sending)**
+- **Pending contracts dashboard banner with "Review Contract" button**
+- **User notification email on quote acceptance**
+- Manual contract send with email delivery
 - Booking management with calendar
 - Portfolio page
 - Email sequences (onboarding, follow-up)
@@ -29,45 +37,35 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - Security audit (audit logs, GDPR account deletion)
 - Onboarding wizard + dashboard tour (sequential)
 - Email signature settings
-- Weekly digest cron
 - Inquiry form (public, client-facing)
 
 ## Bug Fixes Applied (March 2026)
 
-### P0: Quote Email Sending — RESOLVED
-- Root Cause: Resend sandbox only allows emails to account owner
-- Fix: Trust proxy, rate limiter validation, comprehensive logging, emailSent in response
+### Contract Workflow Overhaul
+- **Auto-generated contracts now DRAFT** (was SENT): User reviews before sending
+- **No auto-email to client**: Contract email only sent when user manually clicks Send
+- **User notification email**: Updated to say "review and send" with "Review Contract Now" CTA
+- **Dashboard pending banner**: Amber banner shows when DRAFT contracts exist
+- **Pending contracts API**: `GET /api/contracts/pending` returns DRAFT contracts
 
-### P0: Contract Email Not Arriving — RESOLVED
-- Root Cause: Multiple emails firing simultaneously during quote acceptance caused rate-limit collision
-- Fix: Added 3-second delay before contract email, await instead of fire-and-forget, full Resend response logging with email ID
-- Files: quotes.ts (autoGenerateContract), email.ts (sendContractSentEmail)
-
-### HIGH: Wrong Contract Displayed — RESOLVED
-- Root Cause: ContractsTab didn't auto-expand newest contract, user saw collapsed list
-- Fix: Auto-expand first (newest) contract on load, fixed dark-theme status badges to light theme
-
-### HIGH: Inquiry Form Issues — RESOLVED
-- Fix: text-white → text-gray-900 for headings, "Service TextT *" → "Project Category *", dropdown text colors fixed
-
-### P0: TypeScript Build Error — RESOLVED
-- Fix: result.emailSent → result.data?.emailSent in QuotesTab.tsx
-
-### P0: Trust Proxy Deployment Crash — RESOLVED
-- Fix: trust proxy true → 1, rate limiters validate: { trustProxy: false }
+### Previous Fixes
+- Quote email: Trust proxy, rate limiter, emailSent response, comprehensive logging
+- Contract email template: Updated from dark to light theme, Resend ID logging
+- Inquiry form: Fixed contrast, label, dropdown colors
+- TypeScript build error: Fixed emailSent type access
+- ContractsTab: Auto-expand newest, light theme status badges
 
 ## User Action Required
-- Verify a domain at resend.com/domains and update SENDER_EMAIL to send to non-owner client emails
+- Verify a domain at resend.com/domains and update SENDER_EMAIL for external client emails
 
 ## Prioritized Backlog
 
 ### P0 (Blockers) — ALL RESOLVED
 - [x] Quote emails not sending
 - [x] Contract emails not arriving
-- [x] Trust proxy / rate limiter deployment crash
-- [x] TypeScript build error
+- [x] Contract auto-sent without user review
+- [x] No user notification on quote acceptance
 - [x] Inquiry form contrast/label issues
-- [x] Wrong contract displayed / dark theme badges
 
 ### P1 (Next Up)
 - [ ] Polish & mobile responsiveness review
@@ -78,20 +76,15 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [ ] Visual Sequence Builder (post-beta)
 
 ## Key Endpoints
-- `POST /api/quotes/:id/send` — Send quote email (returns emailSent)
-- `POST /api/contracts/:id/send` — Send contract email (returns emailSent)
-- `POST /api/contracts/:id/agree` — Client signs contract (public)
-- `POST /api/quotes/public/:quoteToken/accept` — Client accepts quote, auto-generates contract
-- `GET /api/portal/:token` — Client portal with quotes + contracts
-- `POST /api/auth/signup` / `POST /api/auth/login`
-- `DELETE /api/user/account` — GDPR deletion
-- `GET /api/health` — Health check
-
-## Test Credentials
-- `emailtest@test.com` / `password123`
-- Owner email for Resend: `emmanuelobokoh03@gmail.com`
+- `POST /api/quotes/:id/send` — Send quote email
+- `POST /api/quotes/public/:quoteToken/accept` — Client accepts quote → DRAFT contract
+- `GET /api/contracts/pending` — Fetch DRAFT contracts for dashboard
+- `POST /api/contracts/:id/send` — User sends contract to client
+- `POST /api/contracts/:id/agree` — Client signs contract
+- `GET /api/portal/:token` — Client portal
 
 ## Test Reports
-- iteration_67.json: Quote email fix verification
-- iteration_68.json: Contract email + inquiry form fix
-- iteration_69.json: Contract auto-generation E2E + ContractsTab UI fixes
+- iteration_67: Quote email fix
+- iteration_68: Contract email + inquiry form
+- iteration_69: Contract E2E + ContractsTab
+- iteration_70: Contract workflow overhaul (DRAFT + pending + banner)
