@@ -62,7 +62,7 @@
     "password": "successful26#",
     "test_lead_id": "8fa6a719-5299-4425-ac17-636c6d49ebb3",
     "portal_token": "efa5b345-d8df-4aa4-ab2c-a87b4ac65a58",
-    "portal_url": "https://landing-redesign-32.preview.emergentagent.com/portal/efa5b345-d8df-4aa4-ab2c-a87b4ac65a58"
+    "portal_url": "https://quote-fix-1.preview.emergentagent.com/portal/efa5b345-d8df-4aa4-ab2c-a87b4ac65a58"
   },
   "seed_data_creation": "Multiple test contracts created during pytest run (DRAFT status, can be cleaned up)",
   "retest_needed": false,
