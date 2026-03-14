@@ -948,10 +948,14 @@ interface QuoteAcceptedData {
 }
 
 export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Promise<boolean> {
+  console.log('[EMAIL] sendQuoteAcceptedNotification called | To:', data.ownerEmail, '| Client:', data.clientName, '| Quote:', data.quoteNumber);
+  
   if (!resend) {
-
+    console.error('[EMAIL] Resend not initialized! RESEND_API_KEY missing.');
     return false;
   }
+
+  console.log('[EMAIL] SENDER_EMAIL:', SENDER_EMAIL, '| Recipient:', data.ownerEmail);
 
   const baseUrl = process.env.FRONTEND_URL || 'https://quote-fix-1.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
@@ -1016,7 +1020,8 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
   `;
 
   try {
-    const { error } = await resend.emails.send({
+    console.log('[EMAIL] Calling resend.emails.send for quote accepted notification...');
+    const { data: resendData, error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [data.ownerEmail],
       subject: `🎉 ${data.clientName} accepted your quote! (${formattedTotal})`,
@@ -1024,13 +1029,14 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
     });
 
     if (error) {
-      console.error('Failed to send quote accepted notification:', error);
+      console.error('[EMAIL] Resend API error for quote accepted notification:', JSON.stringify(error));
       return false;
     }
 
+    console.log('[EMAIL] Quote accepted notification sent successfully to:', data.ownerEmail, '| Resend ID:', resendData?.id || 'unknown');
     return true;
   } catch (error) {
-    console.error('Failed to send quote accepted notification:', error);
+    console.error('[EMAIL] Exception sending quote accepted notification:', error);
     return false;
   }
 }

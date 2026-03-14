@@ -978,7 +978,8 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
 
     // Send notification email to studio owner
     try {
-      await sendQuoteAcceptedNotification({
+      console.log('[QUOTE ACCEPT] Sending notification to owner:', (quote as any).createdBy.email);
+      const notifSent = await sendQuoteAcceptedNotification({
         ownerEmail: (quote as any).createdBy.email,
         ownerName: (quote as any).createdBy.firstName,
         clientName: (quote as any).lead.clientName,
@@ -989,8 +990,9 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
         currencySymbol: quote.currencySymbol || '$',
         currency: quote.currency || 'USD',
       });
+      console.log('[QUOTE ACCEPT] Notification result:', notifSent ? 'SUCCESS' : 'FAILED');
     } catch (emailError) {
-      console.error('Failed to send quote accepted notification:', emailError);
+      console.error('[QUOTE ACCEPT] Notification email exception:', emailError);
     }
 
     res.json({ message: 'Quote accepted successfully! We will be in touch soon.' });
