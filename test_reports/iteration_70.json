@@ -1,0 +1,92 @@
+{
+  "summary": "All contract workflow fixes VERIFIED: 1) Auto-generated contracts created as DRAFT (not SENT) - sentAt is null. 2) GET /api/contracts/pending endpoint returns DRAFT contracts with lead info. 3) Manual POST /api/contracts/:id/send changes status to SENT and sets sentAt. 4) Dashboard shows amber 'Contract Ready for Review' banner with client name, project title, and 'Review Contract' button. 5) Review Contract button opens lead detail modal. 6) Activity log shows 'Contract auto-generated (DRAFT): ... — awaiting user review'.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "GET /api/health - Health check successful (200)",
+    "POST /api/auth/login - Login returns token",
+    "POST /api/leads - Create lead works (201)",
+    "POST /api/leads/:leadId/quotes - Create quote works (201, status DRAFT)",
+    "POST /api/quotes/:quoteId/send - Send quote to client (200)",
+    "POST /api/quotes/public/:quoteToken/accept - Quote acceptance triggers contract auto-generation",
+    "Auto-generated contract has status DRAFT (not SENT)",
+    "Auto-generated contract has sentAt = null (no email sent to client)",
+    "GET /api/contracts/pending - Returns DRAFT contracts with lead info (200)",
+    "GET /api/contracts/pending - Requires authentication (401 without token)",
+    "POST /api/contracts/:id/send - Changes status to SENT and sets sentAt",
+    "Sent contracts no longer appear in /api/contracts/pending",
+    "Dashboard shows amber pending contract banner (data-testid='pending-contract-banner')",
+    "Banner shows 'Contract Ready for Review' title",
+    "Banner shows client name and project title",
+    "'Review Contract' button opens lead detail modal",
+    "Activity log shows 'Contract auto-generated (DRAFT): ... — awaiting user review'"
+  ],
+  "test_report_links": [
+    "/app/kolor-studio-v2/backend/tests/test_contract_workflow_fixes.py",
+    "/app/test_reports/pytest/contract_workflow_fixes.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "autoGenerateContract (quotes.ts lines 121-173) correctly creates contract with status 'DRAFT' and no email sent",
+    "GET /api/contracts/pending (contracts.ts lines 149-170) returns DRAFT contracts for authenticated user with lead info",
+    "Dashboard.tsx (lines 204-208, 509-542) fetches pending contracts and shows amber banner",
+    "sendQuoteAcceptedNotification (email.ts) now says 'review and send' instead of 'already sent'",
+    "Activity log correctly says 'awaiting user review' for auto-generated contracts"
+  ],
+  "updated_files": [
+    "/app/kolor-studio-v2/backend/tests/test_contract_workflow_fixes.py"
+  ],
+  "success_rate": {
+    "backend": "100% (10/10 tests passed)",
+    "frontend": "100% (All UI elements verified)"
+  },
+  "test_credentials": {
+    "preview_url": "https://quote-fix-1.preview.emergentagent.com",
+    "test_user": "emailtest@test.com / password123",
+    "owner_email": "emmanuelobokoh03@gmail.com"
+  },
+  "seed_data_creation": "Test leads, quotes, and contracts created during E2E testing. Multiple DRAFT contracts visible in pending endpoint.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Contract workflow fixes verified: 1) Quote acceptance creates DRAFT contract (no email to client). 2) New /api/contracts/pending endpoint returns DRAFT contracts. 3) User must manually send contract via POST /contracts/:id/send. 4) Dashboard shows amber banner when pending contracts exist with 'Review Contract' button that opens lead detail. Full E2E flow: login -> create lead -> create quote -> send quote -> accept quote via public endpoint -> contract auto-generated as DRAFT -> pending endpoint returns it -> dashboard shows banner -> click 'Review Contract' opens lead modal.",
+  "verification_details": {
+    "contract_draft_not_sent": {
+      "file": "/app/kolor-studio-v2/backend/src/routes/quotes.ts",
+      "function": "autoGenerateContract",
+      "lines": "156-163",
+      "status_value": "DRAFT",
+      "no_email_send": "sendContractSentEmail NOT called during auto-generation"
+    },
+    "pending_endpoint": {
+      "file": "/app/kolor-studio-v2/backend/src/routes/contracts.ts",
+      "endpoint": "GET /api/contracts/pending",
+      "lines": "149-170",
+      "filter": "status: 'DRAFT'",
+      "includes_lead_info": true
+    },
+    "dashboard_banner": {
+      "file": "/app/kolor-studio-v2/frontend/src/pages/Dashboard.tsx",
+      "lines": "509-542",
+      "data_testid": "pending-contract-banner",
+      "styling": "bg-amber-50 border border-amber-200",
+      "title": "Contract Ready for Review",
+      "button_testid": "review-contract-btn"
+    },
+    "api_integration": {
+      "file": "/app/kolor-studio-v2/frontend/src/services/api.ts",
+      "function": "contractsApi.getPending()",
+      "line": "1310-1312"
+    }
+  },
+  "screenshots": [
+    "/app/.screenshots/pending_contract_banner.png - Dashboard with amber pending contract banner",
+    "/app/.screenshots/lead_modal_opened.png - Lead detail modal after clicking Review Contract"
+  ]
+}
