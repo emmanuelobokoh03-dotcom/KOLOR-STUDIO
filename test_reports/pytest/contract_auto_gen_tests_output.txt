@@ -1,0 +1,100 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0 -- /root/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /app/kolor-studio-v2/backend
+plugins: anyio-4.12.1
+collecting ... collected 13 items
+
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_01_health_check Health check passed
+PASSED
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_02_login_returns_token Login successful, got token
+PASSED
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_03_create_lead_with_owner_email Created lead: cmmqrjk46000wg2d2he205c5a
+PASSED
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_04_create_quote_for_lead Created quote: cmmqrjl9e0014g2d2qcosaiz3 (number: Q-2026-047)
+PASSED
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_05_send_quote_to_client Quote sent, emailSent: True
+PASSED
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_06_accept_quote_triggers_contract_auto_generation Quote accepted: Quote accepted successfully! We will be in touch soon.
+Waiting 8 seconds for auto-contract generation (3s delay + processing)...
+PASSED
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_07_verify_contract_auto_generated Auto-generated contract found: cmmqrjon4001jg2d2tu3w7gzy
+  Title: Photography Services Agreement
+  Status: SENT
+  Sent at: 2026-03-14T20:13:30.112Z
+PASSED
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_08_portal_returns_auto_generated_contract Portal shows auto-generated contract: cmmqrjon4001jg2d2tu3w7gzy
+PASSED
+tests/test_contract_auto_generation.py::TestManualContractSend::test_01_create_lead_for_manual_contract Created lead for manual contract: cmmqrjxca001og2d2upoznfmr
+PASSED
+tests/test_contract_auto_generation.py::TestManualContractSend::test_02_create_contract_draft Created contract draft: cmmqrjxwy001vg2d2qlmwyj0t
+PASSED
+tests/test_contract_auto_generation.py::TestManualContractSend::test_03_send_contract_returns_emailSent Contract send result: emailSent=True
+Message: Contract sent successfully
+PASSED
+tests/test_contract_auto_generation.py::TestContractStatusBadges::test_status_styles_in_component DRAFT badge: bg-light-100 found
+SENT badge: bg-blue-50 found
+VIEWED badge: bg-yellow-50 found
+AGREED badge: bg-green-50 found
+All status badges use light theme colors
+PASSED
+tests/test_contract_auto_generation.py::TestContractAutoExpand::test_auto_expand_logic_in_component Auto-expand newest contract logic verified
+PASSED
+
+=============================== warnings summary ===============================
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_03_create_lead_with_owner_email
+  /root/.venv/lib/python3.11/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_03_create_lead_with_owner_email returned <class 'dict'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_04_create_quote_for_lead
+  /root/.venv/lib/python3.11/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_04_create_quote_for_lead returned <class 'dict'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_05_send_quote_to_client
+  /root/.venv/lib/python3.11/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_05_send_quote_to_client returned <class 'dict'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_06_accept_quote_triggers_contract_auto_generation
+  /root/.venv/lib/python3.11/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_06_accept_quote_triggers_contract_auto_generation returned <class 'dict'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_07_verify_contract_auto_generated
+  /root/.venv/lib/python3.11/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_07_verify_contract_auto_generated returned <class 'dict'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_08_portal_returns_auto_generated_contract
+  /root/.venv/lib/python3.11/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_contract_auto_generation.py::TestContractAutoGeneration::test_08_portal_returns_auto_generated_contract returned <class 'dict'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_contract_auto_generation.py::TestManualContractSend::test_01_create_lead_for_manual_contract
+  /root/.venv/lib/python3.11/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_contract_auto_generation.py::TestManualContractSend::test_01_create_lead_for_manual_contract returned <class 'dict'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_contract_auto_generation.py::TestManualContractSend::test_02_create_contract_draft
+  /root/.venv/lib/python3.11/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_contract_auto_generation.py::TestManualContractSend::test_02_create_contract_draft returned <class 'dict'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_contract_auto_generation.py::TestManualContractSend::test_03_send_contract_returns_emailSent
+  /root/.venv/lib/python3.11/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_contract_auto_generation.py::TestManualContractSend::test_03_send_contract_returns_emailSent returned <class 'dict'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 13 passed, 9 warnings in 21.20s ========================
