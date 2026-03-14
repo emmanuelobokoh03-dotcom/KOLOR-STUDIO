@@ -1,164 +1,93 @@
-# KOLOR STUDIO — Product Requirements Document
+# KOLOR STUDIO - Product Requirements Document
 
 ## Original Problem Statement
-Build a comprehensive full-stack CRM, "KOLOR STUDIO," for creative professionals (photographers, videographers, designers, illustrators, visual artists). The platform manages leads, quotes, contracts, payments, client portals, and automated email sequences.
-
-**Brand Positioning:** "Your CRM Should Work Harder Than You Do"
-**Design Philosophy:** First CRM that creatives are PROUD to use, not just tolerate.
+Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographers, designers, artists). The app manages leads, quotes, contracts, bookings, payments, and client communication through an elegant, branded experience.
 
 ## Tech Stack
-- **Frontend**: React 18 + TypeScript + Vite + Tailwind CSS + shadcn/ui
-- **Backend**: Node.js + Express + TypeScript + Prisma ORM
-- **Database**: Supabase (PostgreSQL)
-- **Icons**: `@phosphor-icons/react` (app-level), `lucide-react` (shadcn/ui internal only)
-- **Email**: Resend
-- **Payments**: Stripe
-- **Analytics**: Vercel Analytics
-- **Tours**: Driver.js
-- **Scheduling**: node-cron
+- **Frontend:** React + TypeScript + Tailwind CSS + Shadcn/UI
+- **Backend:** Node.js + Express + Prisma + PostgreSQL (Supabase)
+- **Email:** Resend
+- **Payments:** Stripe
+- **Storage:** Supabase Storage
+- **Icons:** @phosphor-icons/react
+- **Tours:** Driver.js
 
 ## Architecture
 ```
 /app/kolor-studio-v2/
 ├── backend/
-│   ├── prisma/schema.prisma         # AuditLog model added
+│   ├── prisma/schema.prisma
 │   └── src/
-│       ├── routes/
-│       │   ├── auth.ts              # Password reset hardened
-│       │   ├── leads.ts             # Audit log on delete
-│       │   ├── user.ts              # NEW: GDPR account deletion
-│       │   └── ...
-│       ├── services/
-│       │   ├── auditService.ts      # NEW: Audit logging service
-│       │   ├── email.ts             # Console.logs cleaned
-│       │   └── ...
-│       └── server.ts                # User routes registered
+│       ├── routes/ (auth, leads, quotes, contracts, etc.)
+│       ├── services/ (email, pdf, storage, audit, etc.)
+│       ├── middleware/ (auth, rateLimiter)
+│       └── server.ts
 └── frontend/
     └── src/
-        ├── components/
-        │   ├── AccountDangerZone.tsx # NEW: GDPR delete UI
-        │   ├── SettingsModal.tsx     # Account tab added
-        │   └── ...
-        ├── pages/
-        │   ├── LandingPage.tsx       # Rewritten (6 sections)
-        │   └── ...
-        └── ...
+        ├── components/ (modals, onboarding, settings, etc.)
+        ├── pages/ (Landing, Dashboard, auth/)
+        ├── services/api.ts
+        └── utils/
 ```
 
-## Design System (Visual Identity)
-### Color System
-- **Purple Scale**: #7C3AED (primary), #6D28D9 (hover), #5B21B6 (pressed)
-- **Light Neutrals**: #FFFFFF, #FAFAFA, #F5F5F5, #E5E5E5, #D4D4D4
-- **Text Hierarchy**: #1A1A2E (primary), #6B7280 (secondary), #9CA3AF (tertiary)
-- **Workflow Status**: Amber (quote) → Indigo (contract) → Blue (deposit) → Cyan (progress) → Green (complete)
-- **Semantic**: Success (#10B981), Warning (#F59E0B), Error (#EF4444), Info (#3B82F6)
+## What's Been Implemented
+- Landing page (6-section branded design)
+- Full auth flow (signup, login, email verification, password reset)
+- Lead management (CRUD, pipeline, status tracking)
+- Quote builder (line items, tax, currency, PDF generation)
+- Quote sending via email (with portal links)
+- Client portal (public view of quotes/contracts)
+- Contract auto-generation on quote acceptance
+- Booking management with calendar
+- Portfolio page
+- Email sequences (onboarding, follow-up)
+- Payment integration (Stripe deposits)
+- Dashboard with analytics
+- Security audit (audit logs, GDPR account deletion)
+- Onboarding wizard + dashboard tour (sequential)
+- Email signature settings
+- Weekly digest cron
 
-## Completed Features (All Sessions)
-- Full CRM pipeline (leads, kanban, list view)
-- Quote builder with templates, PDF export, public quote pages
-- Contract management, Deliverables tracking
-- Client portal with messaging
-- Calendar views (month, week, day, agenda)
-- Email composer with CC/BCC
-- Brand settings with live preview, Portfolio management
-- Revenue dashboard and analytics
-- Email sequences (onboarding drip, quote follow-up)
-- Email open tracking via 1x1 pixel, Weekly digest emails
-- Interactive onboarding wizard and tours
-- Mobile responsive with bottom nav
-- Cookie consent, privacy policy, terms of service
-- Industry-specific onboarding and widgets
-- CRM alerts, smart suggestions, testimonials management
-- Settings modal with currency configuration
-- QR code sharing for inquiry forms
+## P0 Fix: Quote Email Sending (March 2026)
+### Root Cause
+Resend sandbox sender `onboarding@resend.dev` only allows sending to the account owner email (`emmanuelobokoh03@gmail.com`). Client emails to external addresses fail with 403.
 
-## Recently Completed (March 2026)
-### Icon Migration & Build Fix
-- Fixed 1200+ TypeScript errors from corrupted icon migration
-- Completed Phosphor icon migration with strategic weight hierarchy
+### Fix Applied
+1. **Trust proxy:** Changed `app.set('trust proxy', true)` to `app.set('trust proxy', 1)` — fixes Railway deployment crash
+2. **Rate limiters:** Added `validate: { trustProxy: false }` to all 5 limiters — prevents ERR_ERL_PERMISSIVE_TRUST_PROXY
+3. **Logging:** Added comprehensive `[QUOTE SEND]` and `[EMAIL]` diagnostic logs
+4. **API response:** Quote send endpoint now returns `emailSent` boolean and error details
+5. **Frontend:** QuotesTab shows clear warning when email delivery fails
 
-### Complete Visual Redesign (Dark → Light)
-- New Tailwind config with complete color/gradient/shadow design token system
-- All 580+ hardcoded dark colors replaced with design tokens
-- Updated email templates with brand voice
-- New EmptyState, StatusBadge, Button components
+### To Fully Resolve (User Action Required)
+- Verify a domain at resend.com/domains (e.g., kolorstudio.app)
+- Update `SENDER_EMAIL` in backend .env to verified domain email (e.g., noreply@kolorstudio.app)
 
-### Landing Page Rewrite (P0) ✅
-- 6-section layout: Hero, Problem, Solution, How It Works, Pricing, Final CTA
-- Framer Motion animations, Phosphor icons, mobile responsive
-- **Tested: 44/44 frontend tests passed (100%)**
+## Prioritized Backlog
 
-### Security Audit (P1) ✅
-- **Audit Logging System**: AuditLog Prisma model + auditService.ts
-  - Logs: DELETE_LEAD, PAYMENT_RECEIVED, ACCOUNT_DELETED, PASSWORD_RESET, QUOTE_DELETED, FILE_DELETED
-  - Captures userId, action, entity, entityId, metadata, ipAddress, userAgent
-- **GDPR Account Deletion**: DELETE /api/user/account
-  - Password verification required, audit log before cascade delete
-  - Account tab in Settings modal with Danger Zone UI
-- **Console.log Cleanup**: Removed ~115 debug console.logs from production paths
-  - Only server startup logs and console.error remain
-- **NPM Audit Fix**: Backend 0 vulnerabilities, frontend 2 moderate (react-quill dev dep)
-- **Password Reset Hardening**:
-  - Minimum 8 characters, common password rejection, same-password prevention
-  - Audit logging on successful reset
-- **Tested: 8/8 backend + 11/11 frontend tests passed (100%)**
+### P0 (Blockers) — RESOLVED
+- [x] Quote emails not sending (Resend sandbox + trust proxy fix)
 
-### Bug Fix: Delete Account Cascade (March 2026) ✅
-- **Root cause**: 5 Prisma User relations were missing `onDelete` rules (Activity.user, Booking.createdBy, Lead.assignedTo, Message.sender, Quote.createdBy)
-- **Fix**: Added `onDelete: Cascade` for required relations, `onDelete: SetNull` for optional
-- **Route audit**: All 15+ API routes verified as properly mounted and accessible
-- **Tested: 10/10 backend + 11/11 frontend tests passed (100%)**
+### P1 (Next Up)
+- [ ] Re-verify contract auto-generation flow after domain verification
+- [ ] Polish & mobile responsiveness review
+- [ ] Email template update (old dark theme → new light theme for contract emails)
 
-### Bug Fix: Color Contrast in Auth/Onboarding (March 2026) ✅
-- Fixed invisible text across signup, onboarding, login, forgot-password, reset-password, verify-email pages
-- Root cause: `text-white`, `text-green-400`, `text-red-400`, `text-purple-300` on light backgrounds from dark→light theme migration
-- Changes: `text-white` → `text-text-primary`, `text-green-400` → `text-green-700`, `text-red-400` → `text-red-600`, `text-purple-300` → `text-purple-700`
-- **Tested: 25/25 contrast checks passed (100%)**
+### P2 (Future)
+- [ ] Domain & launch prep (SPF/DKIM for Resend)
+- [ ] Inquiry form contrast fixes
+- [ ] Category dropdown fix ("service text" label, wrong categories)
+- [ ] Dashboard project card text visibility
+- [ ] Visual Sequence Builder (post-beta)
 
-### Bug Fix: Sequential Onboarding (March 2026) ✅
-- Fixed wizard and Driver.js tour firing simultaneously by adding `!showWizard` guard to tour's useEffect
-- Flow: Wizard shows first (if needed) → closes → tour starts after 1.5s delay
-- With demo data (leadsCount > 0), wizard skips → tour starts directly
-- **Tested: 10/10 onboarding tests passed (100%)**
-
-### Comprehensive Bug Fix: 5 Critical Issues (March 2026) ✅
-- **Error #3 (Contract Auto-Gen)**: Verified working — `autoGenerateContract` function in quotes.ts triggers on quote acceptance
-- **Error #4 (Email Templates)**: Already fixed in previous session — light theme with purple gradients
-- **Error #5 (Email Signature)**: New `emailSignature` field on User + EmailSignatureSettings component in Settings > Email tab with save/preview
-- **Error #6 (Portfolio Contrast)**: Fixed `bg-slate-900` → `bg-white` on modal, `text-white` → `text-text-primary` on inputs/headings, removed "UploadSimple" text bug
-- **Error #7 (Quote Form)**: Input contrast fixes applied; font size increase deferred for user review
-- **Tested: 9/9 backend + 11/11 frontend tests passed (100%)**
-
-## Upcoming Tasks (Priority Order)
-1. **(P2) Polish & Mobile:**
-   - Thorough mobile responsiveness review across all pages
-   - Refine loading/error/empty states
-   - Add subtle CSS animations and transitions
-
-2. **(P3) Domain & Launch Prep:**
-   - Configure production domains (kolorstudio.app, api.kolorstudio.app)
-   - Set up SPF/DKIM for email (Resend)
-
-3. **(Backlog - Post-Beta) Visual Sequence Builder:**
-   - Drag-and-drop email automation sequence builder
-
-## Key DB Schema
-- **User**: id, email, password, firstName, lastName, studioName, role, preferences, ...
-- **Lead**: id, clientName, clientEmail, serviceType, projectTitle, status, ...
-- **Quote**: id, quoteNumber, total, status, leadId, ...
-- **Contract**: id, title, content, status, leadId, ...
-- **AuditLog**: id, userId, action, entity, entityId, metadata, ipAddress, userAgent, createdAt
-
-## Key API Endpoints
-- `POST /api/auth/signup` — Register
-- `POST /api/auth/login` — Login
-- `POST /api/auth/reset-password` — Reset password (hardened)
-- `GET /api/leads` — Get all leads
-- `DELETE /api/leads/:id` — Delete lead (audit logged)
-- `DELETE /api/user/account` — GDPR account deletion
-- `GET /api/analytics/dashboard` — Dashboard stats
-- `GET /api/sequences` — Email sequences
+## Key Endpoints
+- `POST /api/quotes/:id/send` — Send quote email (now with emailSent response)
+- `POST /api/auth/signup` / `POST /api/auth/login`
+- `POST /api/leads` / `GET /api/leads`
+- `DELETE /api/user/account` — GDPR deletion
+- `PATCH /api/user/profile` — User settings
+- `GET /api/health` — Health check
 
 ## Test Credentials
-- Email: `security@test.com`
-- Password: `TestPass123!`
+- Create fresh users via signup (no hardcoded test accounts in this environment)
+- Owner email for Resend: emmanuelobokoh03@gmail.com
