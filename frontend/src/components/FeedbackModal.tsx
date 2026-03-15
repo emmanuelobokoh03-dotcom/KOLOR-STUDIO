@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useModalA11y } from '../hooks/useModalA11y'
 import {
   X,
   Bug,
@@ -96,24 +97,28 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose} role="presentation">
       <div 
         className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
         onClick={(e) => e.stopPropagation()}
         data-testid="feedback-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="feedback-title"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold">Send Feedback</h2>
+              <h2 id="feedback-title" className="text-xl font-bold">Send Feedback</h2>
               <p className="text-purple-600 text-sm mt-1">Help us improve KOLOR STUDIO</p>
             </div>
             <button 
               onClick={onClose}
               className="p-2 hover:bg-white/20 rounded-lg transition"
+              aria-label="Close feedback form" title="Close (Esc)"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
         </div>

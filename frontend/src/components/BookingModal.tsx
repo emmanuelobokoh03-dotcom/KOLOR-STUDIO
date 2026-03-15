@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useModalA11y } from '../hooks/useModalA11y'
 import {
   X,
   CalendarBlank,
@@ -276,18 +277,19 @@ export default function BookingModal({
   }
 
   const leadInfo = existingBooking?.lead || lead || getSelectedLead()
+  const modalRef = useModalA11y(true, onClose)
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" role="presentation" onClick={onClose}>
+      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-light-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-              <CalendarBlank className="w-5 h-5 text-purple-600" />
+              <CalendarBlank className="w-5 h-5 text-purple-600" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-text-primary">
+              <h2 id="booking-modal-title" className="text-lg font-semibold text-text-primary">
                 {existingBooking ? 'Edit Booking' : 'Create Booking'}
               </h2>
               {leadInfo && (
@@ -300,8 +302,9 @@ export default function BookingModal({
           <button
             onClick={onClose}
             className="p-2 hover:bg-light-100 rounded-lg transition text-text-secondary hover:text-text-primary"
+            aria-label="Close modal" title="Close (Esc)"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 

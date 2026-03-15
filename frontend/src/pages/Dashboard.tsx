@@ -448,7 +448,7 @@ const Dashboard = () => {
                   }`}
                   data-testid={`sidebar-${mode}`}
                 >
-                  <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-5 h-5" />
+                  <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-5 h-5" aria-hidden="true" />
                   {label}
                 </button>
               ))}
@@ -459,13 +459,13 @@ const Dashboard = () => {
                 onClick={() => { setShowSettings(true); setMobileMenuOpen(false); }}
                 className="w-full flex items-center gap-3 px-3 py-3 text-sm text-text-secondary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
               >
-                <GearSix weight="regular" className="w-5 h-5" /> Settings
+                <GearSix weight="regular" className="w-5 h-5" aria-hidden="true" /> Settings
               </button>
               <button
                 onClick={() => { setShowFeedback(true); setMobileMenuOpen(false); }}
                 className="w-full flex items-center gap-3 px-3 py-3 text-sm text-text-secondary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
               >
-                <Envelope className="w-5 h-5" /> Feedback
+                <Envelope className="w-5 h-5" aria-hidden="true" /> Feedback
               </button>
             </div>
           </div>
@@ -701,10 +701,11 @@ const Dashboard = () => {
                 activeFilterCount > 0 ? 'border-brand-primary bg-purple-50 text-purple-600' : 'border-light-200 text-text-secondary'
               }`}
               data-testid="mobile-filter-toggle"
+              aria-label={`Toggle filters${activeFilterCount > 0 ? ` (${activeFilterCount} active)` : ''}`}
             >
-              <Funnel className="w-4 h-4" />
+              <Funnel className="w-4 h-4" aria-hidden="true" />
               {activeFilterCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center" aria-hidden="true">
                   {activeFilterCount}
                 </span>
               )}
@@ -715,10 +716,11 @@ const Dashboard = () => {
               className="p-2.5 hover:bg-light-100 rounded-xl transition-all duration-200 touch-target hidden md:flex items-center gap-2"
               disabled={refreshing}
               data-testid="refresh-button"
+              aria-label={refreshing ? 'Refreshing data' : 'Refresh data'}
             >
-              <ArrowsClockwise className={`w-5 h-5 text-text-secondary ${refreshing ? 'animate-spin' : ''}`} />
-              <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              <ArrowsClockwise className={`w-5 h-5 text-text-secondary ${refreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
+              <div className="flex items-center gap-1.5" role="status" aria-live="polite">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" aria-hidden="true" />
                 <span className="text-xs text-text-tertiary">Live</span>
               </div>
             </button>
@@ -740,8 +742,10 @@ const Dashboard = () => {
                   data-testid={`view-${mode}`}
                   data-tour={mode === 'portfolio' ? 'view-portfolio' : mode === 'calendar' ? 'view-calendar' : undefined}
                   title={title}
+                  aria-label={title}
+                  aria-pressed={viewMode === mode}
                 >
-                  <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-4 h-4" />
+                  <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-4 h-4" aria-hidden="true" />
                 </button>
               ))}
             </div>

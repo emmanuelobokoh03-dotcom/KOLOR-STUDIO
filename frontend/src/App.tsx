@@ -23,6 +23,14 @@ function App() {
   return (
     <BrandThemeProvider>
       <Router>
+      {/* Skip navigation link for keyboard users */}
+      <a
+        href="#main-content"
+        className="sr-only-focusable fixed top-4 left-4 z-[9999] bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg"
+      >
+        Skip to main content
+      </a>
+      <div id="main-content">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
@@ -40,6 +48,7 @@ function App() {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
       </Routes>
+      </div>
       <CookieConsent />
       <Toaster theme="dark" position="top-center" richColors />
       <Analytics />

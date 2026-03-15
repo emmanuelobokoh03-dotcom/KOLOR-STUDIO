@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useModalA11y } from '../hooks/useModalA11y'
 import { 
   Lead, 
   LeadStatus,
@@ -481,11 +482,14 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose}>
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose} role="presentation">
         <div 
           className="bg-light-50 w-full md:rounded-2xl md:shadow-2xl md:max-w-3xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
           onClick={(e) => e.stopPropagation()}
           data-testid="lead-detail-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="lead-detail-title"
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-4 md:p-6 flex-shrink-0">
@@ -494,7 +498,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 <span className="text-xs px-2.5 py-1 bg-white/20 rounded-full backdrop-blur-sm">
                   {SERVICE_TYPE_LABELS[lead.serviceType]}
                 </span>
-                <h2 className="text-xl md:text-2xl font-bold mt-2 truncate">{lead.projectTitle}</h2>
+                <h2 id="lead-detail-title" className="text-xl md:text-2xl font-bold mt-2 truncate">{lead.projectTitle}</h2>
                 <p className="text-purple-600 mt-0.5 md:mt-1 text-xs md:text-sm">Submitted {formatDate(lead.createdAt)}</p>
               </div>
               <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
@@ -528,8 +532,9 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                 <button 
                   onClick={onClose}
                   className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 touch-target"
+                  aria-label="Close lead details" title="Close (Esc)"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-6 h-6" aria-hidden="true" />
                 </button>
               </div>
             </div>

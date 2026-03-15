@@ -67,20 +67,23 @@ const Login = () => {
 
         <div className="bg-light-50 rounded-2xl shadow-2xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600 animate-fade-in" data-testid="login-error">
-              <WarningCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600 animate-fade-in" data-testid="login-error" role="alert">
+              <WarningCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
               <span className="text-sm">{error}</span>
             </div>
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">
+              <label htmlFor="login-email" className="block text-sm font-medium text-text-secondary mb-2">
                 Email
               </label>
               <input
+                id="login-email"
                 type="email"
                 name="email"
+                required
+                aria-required="true"
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-gray-400"
@@ -90,12 +93,15 @@ const Login = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">
+              <label htmlFor="login-password" className="block text-sm font-medium text-text-secondary mb-2">
                 Password
               </label>
               <input
+                id="login-password"
                 type="password"
                 name="password"
+                required
+                aria-required="true"
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-gray-400"
@@ -117,12 +123,13 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
+              aria-busy={loading}
               className="w-full bg-brand-primary text-white py-3 rounded-xl hover:bg-brand-primary transition-all duration-200 shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               data-testid="login-submit"
             >
               {loading ? (
                 <>
-                  <SpinnerGap className="w-5 h-5 animate-spin" />
+                  <SpinnerGap className="w-5 h-5 animate-spin" aria-hidden="true" />
                   Signing in...
                 </>
               ) : (

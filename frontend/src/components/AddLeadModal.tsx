@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useModalA11y } from '../hooks/useModalA11y'
 import { InlineHint } from './InlineHint'
 import { 
   ServiceType, 
@@ -182,22 +183,28 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
   const selectClass = "w-full px-4 py-2.5 bg-white border-2 border-light-200 rounded-xl focus:ring-2 focus:ring-purple-100 focus:border-purple-500 text-text-primary transition-all duration-200 text-base font-medium appearance-none cursor-pointer";
   const labelClass = "block text-sm font-medium text-text-primary mb-1.5";
 
+  const modalRef = useModalA11y(true, onClose)
+
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose} role="presentation">
       <div 
+        ref={modalRef}
         className="bg-light-50 w-full md:rounded-2xl md:shadow-2xl md:max-w-2xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
         data-testid="add-lead-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-lead-title"
       >
         {/* Header */}
         <div className="bg-gradient-brand text-white p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl md:text-2xl font-bold">Add New Lead</h2>
+              <h2 id="add-lead-title" className="text-xl md:text-2xl font-bold">Add New Lead</h2>
               <p className="text-white/80 mt-0.5 md:mt-1 text-sm">Manually add a potential client</p>
             </div>
-            <button onClick={onClose} className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 touch-target" data-testid="add-lead-close">
-              <X className="w-6 h-6" />
+            <button onClick={onClose} className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 touch-target" data-testid="add-lead-close" aria-label="Close modal" title="Close (Esc)">
+              <X className="w-6 h-6" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -205,8 +212,8 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
         {/* Content */}
         <div className="p-4 md:p-6 overflow-y-auto flex-1 md:max-h-[70vh]">
           {error && (
-            <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 animate-fade-in">
-              <WarningCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 animate-fade-in" role="alert">
+              <WarningCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -448,14 +455,16 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
               <button type="button" onClick={onClose} className="px-5 md:px-6 py-2.5 text-text-secondary hover:bg-light-100 rounded-xl font-medium transition-all duration-200 touch-target">Cancel</button>
               <button 
                 type="submit" 
-                disabled={loading} 
+                disabled={loading}
+                aria-busy={loading}
+                aria-label={loading ? 'Creating lead, please wait' : 'Create lead'}
                 className="px-5 md:px-6 py-2.5 bg-brand-primary text-white rounded-xl font-medium hover:bg-brand-primary disabled:opacity-50 flex items-center gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-brand-primary/20 touch-target" 
                 data-testid="add-lead-submit"
               >
                 {loading ? (
                   <>
-                    <SpinnerGap className="w-4 h-4 animate-spin" />
-                    {uploadingCover ? 'Uploading image...' : 'Creating...'}
+                    <SpinnerGap className="w-4 h-4 animate-spin" aria-hidden="true" />
+                    <span>{uploadingCover ? 'Uploading image...' : 'Creating...'}</span>
                   </>
                 ) : 'Create Lead'}
               </button>

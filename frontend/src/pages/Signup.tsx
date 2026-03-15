@@ -86,7 +86,7 @@ const Signup = () => {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-600" data-testid="signup-error">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-600" data-testid="signup-error" role="alert">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
@@ -102,12 +102,15 @@ const Signup = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-2">
-                  First Name *
+                <label htmlFor="signup-fn" className="block text-sm font-medium text-text-secondary mb-2">
+                  First Name <span className="text-red-500" aria-label="required">*</span>
                 </label>
                 <input
+                  id="signup-fn"
                   type="text"
                   name="firstName"
+                  required
+                  aria-required="true"
                   value={formData.firstName}
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
@@ -116,12 +119,15 @@ const Signup = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-2">
-                  Last Name *
+                <label htmlFor="signup-ln" className="block text-sm font-medium text-text-secondary mb-2">
+                  Last Name <span className="text-red-500" aria-label="required">*</span>
                 </label>
                 <input
+                  id="signup-ln"
                   type="text"
                   name="lastName"
+                  required
+                  aria-required="true"
                   value={formData.lastName}
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
@@ -132,10 +138,11 @@ const Signup = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">
+              <label htmlFor="signup-studio" className="block text-sm font-medium text-text-secondary mb-2">
                 Studio Name
               </label>
               <input
+                id="signup-studio"
                 type="text"
                 name="studioName"
                 value={formData.studioName}
@@ -147,12 +154,15 @@ const Signup = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">
-                Email *
+              <label htmlFor="signup-email" className="block text-sm font-medium text-text-secondary mb-2">
+                Email <span className="text-red-500" aria-label="required">*</span>
               </label>
               <input
+                id="signup-email"
                 type="email"
                 name="email"
+                required
+                aria-required="true"
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
@@ -162,12 +172,15 @@ const Signup = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">
-                Password *
+              <label htmlFor="signup-pw" className="block text-sm font-medium text-text-secondary mb-2">
+                Password <span className="text-red-500" aria-label="required">*</span>
               </label>
               <input
+                id="signup-pw"
                 type="password"
                 name="password"
+                required
+                aria-required="true"
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"

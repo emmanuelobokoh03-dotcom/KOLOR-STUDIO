@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useModalA11y } from '../hooks/useModalA11y'
 import {
   X,
   Plus,
@@ -372,17 +373,20 @@ export default function QuoteBuilderModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose} role="presentation">
       <div 
         className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
         onClick={(e) => e.stopPropagation()}
         data-testid="quote-builder-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quote-builder-title"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold">
+              <h2 id="quote-builder-title" className="text-xl font-bold">
                 {existingQuote ? 'Edit Quote' : 'Create Quote'}
               </h2>
               <p className="text-purple-600 text-sm mt-1">
@@ -392,8 +396,9 @@ export default function QuoteBuilderModal({
             <button 
               onClick={onClose}
               className="p-2 hover:bg-white/20 rounded-lg transition"
+              aria-label="Close quote builder" title="Close (Esc)"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -401,8 +406,8 @@ export default function QuoteBuilderModal({
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400">
-              <WarningCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400" role="alert">
+              <WarningCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
               <span className="text-sm">{error}</span>
             </div>
           )}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useModalA11y } from '../hooks/useModalA11y'
 import {
   X,
   GearSix,
@@ -125,38 +126,43 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div className="bg-white rounded-2xl p-6 md:p-8">
-          <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
+      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50" role="presentation">
+        <div className="bg-white rounded-2xl p-6 md:p-8" role="status" aria-label="Loading settings">
+          <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary" aria-hidden="true" />
+          <span className="sr-only">Loading settings...</span>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-50 p-0 md:p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-50 p-0 md:p-4" onClick={onClose} role="presentation">
       <div 
         className={`bg-white md:rounded-2xl shadow-2xl w-full h-full md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 transition-all duration-300 ${
           activeTab === 'brand' || activeTab === 'testimonials' ? 'md:max-w-5xl' : 'md:max-w-2xl'
         }`}
         onClick={e => e.stopPropagation()}
         data-testid="settings-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-4 md:p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <GearSix weight="duotone" className="w-5 h-5 md:w-6 md:h-6" />
+              <GearSix weight="duotone" className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />
               <div>
-                <h2 className="text-xl font-bold">Settings</h2>
+                <h2 id="settings-title" className="text-xl font-bold">Settings</h2>
                 <p className="text-purple-600 text-sm">Manage your preferences</p>
               </div>
             </div>
             <button 
               onClick={onClose}
               className="p-2 hover:bg-white/20 rounded-lg transition"
+              aria-label="Close settings" title="Close (Esc)"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
           

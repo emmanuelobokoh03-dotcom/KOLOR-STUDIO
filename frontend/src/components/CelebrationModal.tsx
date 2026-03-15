@@ -77,7 +77,7 @@ export function CelebrationModal({ achievement, show, onClose }: CelebrationModa
             gravity={0.3}
           />
 
-          <div className="absolute inset-0 bg-black/70" onClick={onClose} />
+          <div className="absolute inset-0 bg-black/70" onClick={onClose} role="presentation" />
 
           <motion.div
             initial={{ scale: 0.7, opacity: 0 }}
@@ -86,6 +86,9 @@ export function CelebrationModal({ achievement, show, onClose }: CelebrationModa
             transition={{ type: 'spring', damping: 20, stiffness: 300 }}
             className="relative bg-gradient-to-br from-white to-light-50 border border-purple-200 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl shadow-purple-200"
             data-testid="celebration-content"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="celebration-title"
           >
             <div className="text-6xl md:text-7xl mb-4 animate-bounce select-none">{achievement.emoji}</div>
             <div className="flex items-center justify-center gap-2 mb-2">

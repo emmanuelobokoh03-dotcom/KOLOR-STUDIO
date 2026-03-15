@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useModalA11y } from '../hooks/useModalA11y'
 import { QRCodeSVG } from 'qrcode.react'
 import {
   X,
@@ -106,25 +107,32 @@ Looking forward to working with you!`
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   };
 
+  const modalRef = useModalA11y(true, onClose)
+
   return (
     <div 
       className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
       onClick={onClose}
+      role="presentation"
     >
       <div 
+        ref={modalRef}
         className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-light-200 animate-in fade-in duration-200"
         onClick={(e) => e.stopPropagation()}
         data-testid="share-form-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="share-form-title"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                <ShareNetwork className="w-5 h-5" />
+                <ShareNetwork className="w-5 h-5" aria-hidden="true" />
               </div>
               <div>
-                <h2 className="text-xl font-bold">Share Your Inquiry Form</h2>
+                <h2 id="share-form-title" className="text-xl font-bold">Share Your Inquiry Form</h2>
                 <p className="text-purple-600 text-sm">Get potential clients to submit project requests</p>
               </div>
             </div>
@@ -132,8 +140,9 @@ Looking forward to working with you!`
               onClick={onClose}
               className="p-2 hover:bg-white/20 rounded-lg transition"
               data-testid="close-share-modal"
+              aria-label="Close modal" title="Close (Esc)"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
         </div>
