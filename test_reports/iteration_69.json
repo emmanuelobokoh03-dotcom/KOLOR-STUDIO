@@ -44,7 +44,7 @@
     "frontend": "100% (Portal and component code verification passed)"
   },
   "test_credentials": {
-    "preview_url": "https://quote-fix-1.preview.emergentagent.com",
+    "preview_url": "https://kolor-light-theme.preview.emergentagent.com",
     "test_user": "emailtest@test.com / password123",
     "owner_email_for_email_delivery": "emmanuelobokoh03@gmail.com",
     "test_portal_token": "cmmqrjk46000xg2d23390e1wd"
@@ -78,7 +78,7 @@
       "auto_expand_logic": "setExpandedContract(result.data.contracts[0].id) when contracts.length > 0"
     },
     "portal_verification": {
-      "url": "https://quote-fix-1.preview.emergentagent.com/portal/cmmqrjk46000xg2d23390e1wd",
+      "url": "https://kolor-light-theme.preview.emergentagent.com/portal/cmmqrjk46000xg2d23390e1wd",
       "shows_contract": "Photography Services Agreement with Sign Agreement button",
       "shows_quote": "Quote #Q-2026-047 with Accepted badge (bg-green-100)",
       "shows_status": "Project Confirmed with green checkmark"

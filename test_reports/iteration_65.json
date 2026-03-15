@@ -35,7 +35,7 @@
     "frontend": "100% (10/10 onboarding tests passed)"
   },
   "test_credentials": {
-    "preview_url": "https://quote-fix-1.preview.emergentagent.com",
+    "preview_url": "https://kolor-light-theme.preview.emergentagent.com",
     "new_user_created": "tour-test-1773413686095@test.com",
     "existing_user": "security@test.com / TestPass123!"
   },

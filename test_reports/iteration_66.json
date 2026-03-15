@@ -48,7 +48,7 @@
     "frontend": "100% (11/11 UI tests passed)"
   },
   "test_credentials": {
-    "preview_url": "https://quote-fix-1.preview.emergentagent.com",
+    "preview_url": "https://kolor-light-theme.preview.emergentagent.com",
     "test_email": "security@test.com",
     "test_password": "TestPass123!"
   },
