@@ -493,7 +493,7 @@ export default function QuoteBuilderModal({
               {lineItems.map((item, index) => (
                 <div key={index} className="bg-light-100 rounded-lg p-4 border border-light-200">
                   <div className="grid grid-cols-12 gap-3 items-end">
-                    <div className="col-span-5">
+                    <div className="col-span-4">
                       <label className="text-xs text-text-tertiary mb-1 block">Description</label>
                       <input
                         type="text"
@@ -504,18 +504,18 @@ export default function QuoteBuilderModal({
                         data-testid={`line-item-description-${index}`}
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-1">
                       <label className="text-xs text-text-tertiary mb-1 block">Qty</label>
                       <input
                         type="number"
                         min="1"
                         value={item.quantity}
                         onChange={(e) => updateLineItem(index, 'quantity', e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="w-full px-2 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm text-center focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         data-testid={`line-item-quantity-${index}`}
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-3">
                       <label className="text-xs text-text-tertiary mb-1 block">Price</label>
                       <input
                         type="number"
@@ -523,14 +523,14 @@ export default function QuoteBuilderModal({
                         step="0.01"
                         value={item.price || ''}
                         onChange={(e) => updateLineItem(index, 'price', e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm font-mono text-right focus:ring-2 focus:ring-purple-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0.00"
                         data-testid={`line-item-price-${index}`}
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-3">
                       <label className="text-xs text-text-tertiary mb-1 block">Total</label>
-                      <div className="px-3 py-2 bg-white/50 border border-light-200 rounded-lg text-text-secondary text-sm">
+                      <div className="px-3 py-2 bg-white/50 border border-light-200 rounded-lg text-text-secondary text-sm font-mono text-right">
                         {formatCurrency(item.quantity * item.price, effectiveCurrency)}
                       </div>
                     </div>
@@ -563,7 +563,7 @@ export default function QuoteBuilderModal({
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-text-secondary">Subtotal</span>
-                <span className="text-text-primary font-medium">{formatCurrency(subtotal, effectiveCurrency)}</span>
+                <span className="text-text-primary font-medium font-mono">{formatCurrency(subtotal, effectiveCurrency)}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">

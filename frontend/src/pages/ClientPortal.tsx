@@ -339,10 +339,7 @@ export default function ClientPortal() {
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Portal Not Found</h1>
           <p className="text-gray-600 mb-6">{error || 'This project portal could not be found.'}</p>
           <p className="text-sm text-text-tertiary">
-            Please check your link or contact us at{' '}
-            <a href="mailto:emmanuelobokoh03@gmail.com" className="text-purple-600 hover:underline">
-              emmanuelobokoh03@gmail.com
-            </a>
+            Please check your link or contact the studio that shared it with you.
           </p>
         </div>
       </div>

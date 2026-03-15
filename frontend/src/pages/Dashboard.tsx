@@ -180,6 +180,27 @@ const Dashboard = () => {
     init()
   }, [navigate])
 
+  // Auto-refresh dashboard data every 30s (60s when inactive)
+  useEffect(() => {
+    if (loading) return
+    let lastActivity = Date.now()
+    const handleActivity = () => { lastActivity = Date.now() }
+    window.addEventListener('mousemove', handleActivity)
+    window.addEventListener('keydown', handleActivity)
+
+    const interval = setInterval(async () => {
+      const inactive = Date.now() - lastActivity > 5 * 60 * 1000
+      if (inactive) return // skip refresh when idle > 5 min
+      await Promise.all([fetchLeads(), fetchStats(), fetchPendingContracts()])
+    }, 30000)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('mousemove', handleActivity)
+      window.removeEventListener('keydown', handleActivity)
+    }
+  }, [loading, projectTypeFilter, industryFilter])
+
   // Auto-start onboarding tour for new users — only when wizard is NOT showing
   useEffect(() => {
     if (!loading && user && !tourComplete && !showWizard) {
@@ -505,6 +526,56 @@ const Dashboard = () => {
         />
 
         {/* Revenue Pipeline Widget */}
+        {/* Active Commissions Widget - Universal for all users */}
+        {leads.filter(l => l.projectType === 'COMMISSION' && !['BOOKED', 'LOST'].includes(l.status)).length > 0 && (
+          <div className="mb-4 md:mb-6 bg-white border border-light-200 rounded-xl p-5" data-testid="active-commissions-widget">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Crosshair weight="duotone" className="w-5 h-5 text-amber-600" />
+                <h3 className="text-base font-semibold text-text-primary">Active Commissions</h3>
+                <span className="text-xs px-2 py-0.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200 font-medium">
+                  {leads.filter(l => l.projectType === 'COMMISSION' && !['BOOKED', 'LOST'].includes(l.status)).length}
+                </span>
+              </div>
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="text-xs text-purple-600 hover:text-purple-700 font-medium transition-colors"
+                data-testid="new-commission-btn"
+              >
+                + New Commission
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {leads
+                .filter(l => l.projectType === 'COMMISSION' && !['BOOKED', 'LOST'].includes(l.status))
+                .slice(0, 6)
+                .map(lead => (
+                  <div
+                    key={lead.id}
+                    onClick={() => setSelectedLead(lead)}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-light-50 border border-light-200 hover:border-purple-300 transition-all cursor-pointer group"
+                    data-testid={`active-commission-${lead.id}`}
+                  >
+                    {lead.coverImage ? (
+                      <img src={lead.coverImage} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center flex-shrink-0">
+                        <Briefcase className="w-4 h-4 text-amber-600" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-text-primary truncate group-hover:text-purple-600 transition-colors">{lead.projectTitle}</p>
+                      <p className="text-xs text-text-secondary">{lead.clientName}</p>
+                    </div>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full flex-shrink-0 ${DARK_STATUS_COLORS[lead.status]}`}>
+                      {LEAD_STATUS_LABELS[lead.status]}
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
         {/* Pending Contract Review Banner */}
         {pendingContracts.length > 0 && (
           <div className="mb-4 md:mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5" data-testid="pending-contract-banner">
@@ -641,10 +712,15 @@ const Dashboard = () => {
 
             <button
               onClick={handleRefresh}
-              className="p-2.5 hover:bg-light-100 rounded-xl transition-all duration-200 touch-target hidden md:flex"
+              className="p-2.5 hover:bg-light-100 rounded-xl transition-all duration-200 touch-target hidden md:flex items-center gap-2"
               disabled={refreshing}
+              data-testid="refresh-button"
             >
               <ArrowsClockwise className={`w-5 h-5 text-text-secondary ${refreshing ? 'animate-spin' : ''}`} />
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="text-xs text-text-tertiary">Live</span>
+              </div>
             </button>
 
             {/* Desktop view toggles */}
@@ -687,8 +763,9 @@ const Dashboard = () => {
               onChange={(e) => setIndustryFilter(e.target.value)}
               className="hidden lg:block px-3 py-2.5 bg-white border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
               data-testid="filter-industry"
+              title="Filter leads by industry"
             >
-              <option value="">All Industries</option>
+              <option value="">Filter: All Industries</option>
               {(Object.entries(INDUSTRY_TYPE_LABELS) as [IndustryType, string][]).map(([k, v]) => (
                 <option key={k} value={k}>{v}</option>
               ))}
