@@ -54,6 +54,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - Inquiry form: Fixed contrast, label, dropdown colors
 - TypeScript build error: Fixed emailSent type access
 - ContractsTab: Auto-expand newest, light theme status badges
+- **Add Lead form**: Labels → text-text-primary, inputs → border-2 + purple focus, selects → explicit text-text-primary bg-white options, header → bg-gradient-brand, placeholder "Wedding" → "Brand Photoshoot"
 
 ## User Action Required
 - Verify a domain at resend.com/domains and update SENDER_EMAIL for external client emails
@@ -66,6 +67,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [x] Contract auto-sent without user review
 - [x] No user notification on quote acceptance
 - [x] Inquiry form contrast/label issues
+- [x] Add Lead form UI contrast/typography (fixed Mar 15, 2026)
 
 ### P1 (Next Up)
 - [ ] Polish & mobile responsiveness review
@@ -88,3 +90,4 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_68: Contract email + inquiry form
 - iteration_69: Contract E2E + ContractsTab
 - iteration_70: Contract workflow overhaul (DRAFT + pending + banner)
+- iteration_72: Add Lead modal UI fix (20/20 tests passed, 100% frontend)
