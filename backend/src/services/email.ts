@@ -66,7 +66,7 @@ const getEmailTemplate = (content: string, title: string) => `
                 <tr>
                   <td align="center" style="padding-top: 8px;">
                     <span style="font-size: 14px; color: rgba(255,255,255,0.85);">
-                      The CRM that doesn't feel like a CRM
+                      Your CRM should work harder than you do
                     </span>
                   </td>
                 </tr>
@@ -1544,40 +1544,58 @@ export async function sendContractAgreedNotification(data: ContractAgreedData): 
       hour: '2-digit', minute: '2-digit', timeZoneName: 'short',
     });
 
-    await resend.emails.send({
+    const content = `
+      <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+        Agreement Signed!
+      </h1>
+      
+      <p style="margin: 0 0 16px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+        Great news! <strong>${data.clientName}</strong> has signed the agreement for 
+        <strong>"${data.projectTitle}"</strong>.
+      </p>
+      
+      <!-- Contract Details Card -->
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin: 24px 0;">
+        <tr>
+          <td style="padding: 20px;">
+            <p style="margin: 0 0 4px 0; font-size: 14px; color: #6b7280;"><strong style="color: #1f2937;">Document:</strong> ${data.contractTitle}</p>
+            <p style="margin: 0 0 4px 0; font-size: 14px; color: #6b7280;"><strong style="color: #1f2937;">Signed:</strong> ${agreedDate}</p>
+            <p style="margin: 0; font-size: 14px; color: #6b7280;"><strong style="color: #1f2937;">Client IP:</strong> ${data.clientIP}</p>
+          </td>
+        </tr>
+      </table>
+      
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
+        <tr>
+          <td align="center">
+            <a href="${process.env.FRONTEND_URL || ''}/dashboard" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+              View in Dashboard
+            </a>
+          </td>
+        </tr>
+      </table>
+      
+      <p style="margin: 24px 0 0 0; color: #9ca3af; font-size: 12px;">
+        This record serves as an audit trail for the client's consent.
+      </p>
+    `;
+
+    const { data: resendData, error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: data.ownerEmail,
       subject: `Client signed agreement for ${data.projectTitle}`,
-      html: `
-        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f0f0f; padding: 0;">
-          <div style="background: linear-gradient(135deg, #059669, #10b981); padding: 32px; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">Agreement Signed!</h1>
-            <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 14px;">${data.studioName}</p>
-          </div>
-          <div style="padding: 32px; background: #1a1a1a;">
-            <p style="color: #fafafa; font-size: 16px; line-height: 1.6;">Great news!</p>
-            <p style="color: #a3a3a3; font-size: 14px; line-height: 1.6;">
-              <strong style="color: #fafafa;">${data.clientName}</strong> has signed the agreement for 
-              <strong style="color: #fafafa;">"${data.projectTitle}"</strong>.
-            </p>
-            <div style="margin: 24px 0; padding: 16px; background: #0f0f0f; border-radius: 12px; border: 1px solid #333;">
-              <p style="color: #a3a3a3; font-size: 12px; margin: 0; line-height: 1.8;">
-                <strong style="color: #fafafa;">Document:</strong> ${data.contractTitle}<br/>
-                <strong style="color: #fafafa;">Signed:</strong> ${agreedDate}<br/>
-                <strong style="color: #fafafa;">Client IP:</strong> ${data.clientIP}
-              </p>
-            </div>
-            <p style="color: #666; font-size: 12px; margin-top: 24px;">
-              This record serves as an audit trail for the client's consent.
-            </p>
-          </div>
-        </div>
-      `,
+      html: getEmailTemplate(content, 'Agreement Signed'),
     });
 
+    if (error) {
+      console.error('[EMAIL] Resend API error for contract agreed notification:', JSON.stringify(error));
+      return false;
+    }
+
+    console.log('[EMAIL] Contract agreed notification sent to:', data.ownerEmail, '| Resend ID:', resendData?.id || 'unknown');
     return true;
   } catch (error) {
-    console.error('Error sending contract agreed notification:', error);
+    console.error('[EMAIL] Error sending contract agreed notification:', error);
     return false;
   }
 }
