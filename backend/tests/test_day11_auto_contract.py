@@ -14,7 +14,7 @@ import requests
 import time
 import uuid
 
-BASE_URL = "https://quote-fix-1.preview.emergentagent.com"
+BASE_URL = "https://kolor-light-theme.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

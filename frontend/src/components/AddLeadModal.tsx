@@ -178,8 +178,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
     }, 1000);
   };
 
-  const inputClass = "w-full px-4 py-2.5 bg-white border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-text-primary placeholder-gray-400 transition-all duration-200 text-base";
-  const labelClass = "block text-sm font-medium text-text-secondary mb-1.5";
+  const inputClass = "w-full px-4 py-2.5 bg-white border-2 border-light-200 rounded-xl focus:ring-2 focus:ring-purple-100 focus:border-purple-500 text-text-primary placeholder-gray-400 transition-all duration-200 text-base font-medium";
+  const selectClass = "w-full px-4 py-2.5 bg-white border-2 border-light-200 rounded-xl focus:ring-2 focus:ring-purple-100 focus:border-purple-500 text-text-primary transition-all duration-200 text-base font-medium appearance-none cursor-pointer";
+  const labelClass = "block text-sm font-medium text-text-primary mb-1.5";
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose}>
@@ -189,11 +190,11 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
         data-testid="add-lead-modal"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-4 md:p-6">
+        <div className="bg-gradient-brand text-white p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl md:text-2xl font-bold">Add New Lead</h2>
-              <p className="text-purple-600 mt-0.5 md:mt-1 text-sm">Manually add a potential client</p>
+              <p className="text-white/80 mt-0.5 md:mt-1 text-sm">Manually add a potential client</p>
             </div>
             <button onClick={onClose} className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 touch-target" data-testid="add-lead-close">
               <X className="w-6 h-6" />
@@ -204,13 +205,13 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
         {/* Content */}
         <div className="p-4 md:p-6 overflow-y-auto flex-1 md:max-h-[70vh]">
           {error && (
-            <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-400 animate-fade-in">
+            <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 animate-fade-in">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
           {success && (
-            <div className="mb-5 p-4 bg-green-900/30 border border-green-700/50 rounded-xl flex items-center gap-3 text-green-400 animate-fade-in">
+            <div className="mb-5 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3 text-green-700 animate-fade-in">
               <CheckCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">Lead created successfully!</span>
             </div>
@@ -329,10 +330,10 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
               <div className="space-y-3 md:space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div>
-                    <label className={labelClass}>Service TextT *</label>
-                    <select name="serviceType" value={formData.serviceType} onChange={handleChange} className={inputClass} data-testid="add-lead-service-type">
+                    <label className={labelClass}>Project Category *</label>
+                    <select name="serviceType" value={formData.serviceType} onChange={handleChange} className={selectClass} data-testid="add-lead-service-type">
                       {SERVICE_TYPES.map((type) => (
-                        <option key={type} value={type}>{SERVICE_TYPE_LABELS[type]}</option>
+                        <option key={type} value={type} className="text-text-primary bg-white py-2">{SERVICE_TYPE_LABELS[type]}</option>
                       ))}
                     </select>
                   </div>
@@ -342,12 +343,12 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       name="industry"
                       value={formData.industry || ''}
                       onChange={(e) => setFormData({ ...formData, industry: e.target.value as IndustryType || undefined })}
-                      className={inputClass}
+                      className={selectClass}
                       data-testid="add-lead-industry"
                     >
-                      <option value="">Select industry...</option>
+                      <option value="" className="text-text-tertiary bg-white">Select industry...</option>
                       {(Object.keys(INDUSTRY_TYPE_LABELS) as IndustryType[]).map((ind) => (
-                        <option key={ind} value={ind}>{INDUSTRY_TYPE_LABELS[ind]}</option>
+                        <option key={ind} value={ind} className="text-text-primary bg-white">{INDUSTRY_TYPE_LABELS[ind]}</option>
                       ))}
                     </select>
                   </div>
@@ -355,9 +356,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div>
                     <label className={labelClass}>Lead Source</label>
-                    <select name="source" value={formData.source} onChange={handleChange} className={inputClass}>
+                    <select name="source" value={formData.source} onChange={handleChange} className={selectClass}>
                       {LEAD_SOURCES.map((source) => (
-                        <option key={source} value={source}>{source.charAt(0) + source.slice(1).toLowerCase().replace('_', ' ')}</option>
+                        <option key={source} value={source} className="text-text-primary bg-white">{source.charAt(0) + source.slice(1).toLowerCase().replace('_', ' ')}</option>
                       ))}
                     </select>
                   </div>
@@ -368,7 +369,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                 </div>
                 <div>
                   <label className={labelClass}>Project Title *</label>
-                  <input type="text" name="projectTitle" value={formData.projectTitle} onChange={handleChange} className={inputClass} placeholder="Wedding Photography - June 2026" data-testid="add-lead-project-title" />
+                  <input type="text" name="projectTitle" value={formData.projectTitle} onChange={handleChange} className={inputClass} placeholder="Brand Photoshoot - June 2026" data-testid="add-lead-project-title" />
                 </div>
                 <div>
                   <label className={labelClass}>Description *</label>

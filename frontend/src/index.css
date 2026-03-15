@@ -98,6 +98,14 @@
     scrollbar-width: none;
   }
 
+  /* Select dropdown styling for light theme */
+  select option {
+    color: #1A1A2E;
+    background-color: #FFFFFF;
+    padding: 8px 12px;
+  }
+
+
   /* Snap scrolling for mobile kanban */
   .snap-x {
     scroll-snap-type: x mandatory;
