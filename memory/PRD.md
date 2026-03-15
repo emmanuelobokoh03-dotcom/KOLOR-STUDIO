@@ -56,6 +56,13 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - ContractsTab: Auto-expand newest, light theme status badges
 - **Add Lead form**: Labels → text-text-primary, inputs → border-2 + purple focus, selects → explicit text-text-primary bg-white options, header → bg-gradient-brand, placeholder "Wedding" → "Brand Photoshoot"
 
+### Dashboard Functionality Fixes (Mar 15, 2026)
+- **Auto-refresh**: 30s polling with smart idle detection (skips when inactive > 5min). Live green indicator in toolbar
+- **Active Commissions widget**: Universal for ALL users, shows COMMISSION leads with clickable cards and status badges
+- **Quote price input**: font-mono, text-right, hidden spinners, wider grid columns (3/12 instead of 2/12)
+- **Client Portal email**: Removed hardcoded `emmanuelobokoh03@gmail.com`, replaced with generic message
+- **Industry filter**: Default option now says "Filter: All Industries" with title tooltip
+
 ## User Action Required
 - Verify a domain at resend.com/domains and update SENDER_EMAIL for external client emails
 
@@ -68,6 +75,11 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [x] No user notification on quote acceptance
 - [x] Inquiry form contrast/label issues
 - [x] Add Lead form UI contrast/typography (fixed Mar 15, 2026)
+- [x] Dashboard auto-refresh with Live indicator (fixed Mar 15, 2026)
+- [x] Active Commissions widget visible for ALL users (fixed Mar 15, 2026)
+- [x] Quote price input overflow for large numbers (fixed Mar 15, 2026)
+- [x] Client Portal hardcoded email removed (fixed Mar 15, 2026)
+- [x] Industry filter labeled clearly (fixed Mar 15, 2026)
 
 ### P1 (Next Up)
 - [ ] Polish & mobile responsiveness review
@@ -91,3 +103,4 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_69: Contract E2E + ContractsTab
 - iteration_70: Contract workflow overhaul (DRAFT + pending + banner)
 - iteration_72: Add Lead modal UI fix (20/20 tests passed, 100% frontend)
+- iteration_73: Dashboard functionality fixes - all 6 issues (20/20 tests passed, 100%)
