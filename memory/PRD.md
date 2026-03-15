@@ -63,6 +63,14 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Client Portal email**: Removed hardcoded `emmanuelobokoh03@gmail.com`, replaced with generic message
 - **Industry filter**: Default option now says "Filter: All Industries" with title tooltip
 
+### Accessibility (WCAG 2.1 AA) (Mar 15, 2026)
+- **Global CSS**: sr-only class, focus-visible purple ring, prefers-reduced-motion support
+- **Skip navigation**: "Skip to main content" link visible on keyboard focus
+- **Modal a11y (9 modals)**: `useModalA11y` hook for focus trapping, Escape-to-close, focus restoration. All modals have `role="dialog"`, `aria-modal="true"`, `aria-labelledby`
+- **Form a11y**: Login/Signup/AddLead forms with `htmlFor`/`id` pairing, `aria-required`, `role="alert"` on errors
+- **Icon buttons**: `aria-label` on interactive icon-only buttons, `aria-hidden="true"` on decorative icons
+- **Live regions**: `role="status"` + `aria-live="polite"` on Live indicator, loading states
+
 ## User Action Required
 - Verify a domain at resend.com/domains and update SENDER_EMAIL for external client emails
 
@@ -104,3 +112,4 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_70: Contract workflow overhaul (DRAFT + pending + banner)
 - iteration_72: Add Lead modal UI fix (20/20 tests passed, 100% frontend)
 - iteration_73: Dashboard functionality fixes - all 6 issues (20/20 tests passed, 100%)
+- iteration_74: Accessibility (WCAG 2.1 AA) - all 31 features verified (100%)
