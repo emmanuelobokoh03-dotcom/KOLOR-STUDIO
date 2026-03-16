@@ -71,6 +71,12 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Icon buttons**: `aria-label` on interactive icon-only buttons, `aria-hidden="true"` on decorative icons
 - **Live regions**: `role="status"` + `aria-live="polite"` on Live indicator, loading states
 
+### Rate Limiter Fix (Mar 15, 2026)
+- **Root cause**: Auto-refresh (3 endpoints x every 30s = 360 req/hr) exceeded 100 req/hr API limit
+- **Fix**: Increased API limit to 1000 req/hr, auth to 30/hr, portal to 200/hr, uploads to 50/hr, email to 5/hr
+- **Also**: Reduced auto-refresh interval from 30s to 60s (halves API load)
+- **Health endpoint**: Excluded from rate limiting
+
 ## User Action Required
 - Verify a domain at resend.com/domains and update SENDER_EMAIL for external client emails
 
