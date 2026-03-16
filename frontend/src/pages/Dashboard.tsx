@@ -180,7 +180,7 @@ const Dashboard = () => {
     init()
   }, [navigate])
 
-  // Auto-refresh dashboard data every 30s (60s when inactive)
+  // Auto-refresh dashboard data every 60s (skip when idle > 5 min)
   useEffect(() => {
     if (loading) return
     let lastActivity = Date.now()
@@ -192,7 +192,7 @@ const Dashboard = () => {
       const inactive = Date.now() - lastActivity > 5 * 60 * 1000
       if (inactive) return // skip refresh when idle > 5 min
       await Promise.all([fetchLeads(), fetchStats(), fetchPendingContracts()])
-    }, 30000)
+    }, 60000)
 
     return () => {
       clearInterval(interval)
