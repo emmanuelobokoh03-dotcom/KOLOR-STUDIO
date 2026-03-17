@@ -77,6 +77,12 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Also**: Reduced auto-refresh interval from 30s to 60s (halves API load)
 - **Health endpoint**: Excluded from rate limiting
 
+### Product Features 1-4 (Mar 17, 2026)
+- **Feature 1 (Timeline Milestones)**: Manual CRUD API at /api/leads/:leadId/milestones (dueDate optional). Auto-generates 4 milestones on contract signing (Contract Signed, Deposit Payment, Project Completion, Final Payment). ProjectTimeline tab in LeadDetailModal.
+- **Feature 2 (Scheduled Review Emails)**: ScheduledEmail model + processScheduledEmails cron (every 2hr). Testimonial request scheduled 3 days after lead status → BOOKED. File review reminder scheduled 3 days after file upload. sendFileReviewReminderEmail template added.
+- **Feature 3 (Share Files + Comment)**: Renamed "UploadSimple Files" → "Share Files" in ClientFileUpload.tsx. Added message/comment textarea. Message logged as activity note.
+- **Feature 4 (Project Categories)**: Added projectType dropdown (SERVICE/COMMISSION/PROJECT/PRODUCT_SALE) to inquiry form. Backend portal submit + leads endpoints accept projectType. SubmitLeadData interface updated.
+
 ## User Action Required
 - Verify a domain at resend.com/domains and update SENDER_EMAIL for external client emails
 
@@ -119,3 +125,4 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_72: Add Lead modal UI fix (20/20 tests passed, 100% frontend)
 - iteration_73: Dashboard functionality fixes - all 6 issues (20/20 tests passed, 100%)
 - iteration_74: Accessibility (WCAG 2.1 AA) - all 31 features verified (100%)
+- iteration_75: Product Features 1-4 - backend 17/17 (100%), frontend 4/5 (80% - portal blank page pre-existing)
