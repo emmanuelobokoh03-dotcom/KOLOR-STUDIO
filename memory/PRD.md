@@ -12,96 +12,73 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Icons:** @phosphor-icons/react
 - **Tours:** Driver.js
 
-## Core Workflow (Updated March 2026)
+## Core Workflow
 1. Create Lead → 2. Create Quote → 3. Send Quote to Client →
-4. Client Accepts → 5. **Contract Auto-Generated as DRAFT** →
-6. **User Gets Notification Email** → 7. **Dashboard Shows Banner** →
-8. **User Reviews & Sends Contract** → 9. Client Signs → 10. Payment
+4. Client Accepts → 5. Contract Auto-Generated as DRAFT →
+6. User Gets Notification Email → 7. Dashboard Shows Banner →
+8. User Reviews & Sends Contract → 9. Client Signs → 10. Payment
 
 ## What's Been Implemented
+
+### Core CRM
 - Landing page (6-section branded design)
 - Full auth flow (signup, login, email verification, password reset)
 - Lead management (CRUD, pipeline, status tracking)
 - Quote builder (line items, tax, currency, PDF generation)
 - Quote sending via email (with portal links)
 - Client portal (public view of quotes/contracts)
-- **Contract auto-generation as DRAFT (user must review before sending)**
-- **Pending contracts dashboard banner with "Review Contract" button**
-- **User notification email on quote acceptance**
-- Manual contract send with email delivery
+- Contract auto-generation as DRAFT (user must review before sending)
+- Pending contracts dashboard banner with "Review Contract" button
 - Booking management with calendar
 - Portfolio page
 - Email sequences (onboarding, follow-up)
 - Payment integration (Stripe deposits)
-- Dashboard with analytics
+- Dashboard with analytics (auto-refresh, live indicator)
 - Security audit (audit logs, GDPR account deletion)
-- Onboarding wizard + dashboard tour (sequential)
+- Onboarding wizard + dashboard tour
 - Email signature settings
 - Inquiry form (public, client-facing)
 
-## Bug Fixes Applied (March 2026)
-
-### Contract Workflow Overhaul
-- **Auto-generated contracts now DRAFT** (was SENT): User reviews before sending
-- **No auto-email to client**: Contract email only sent when user manually clicks Send
-- **User notification email**: Updated to say "review and send" with "Review Contract Now" CTA
-- **Dashboard pending banner**: Amber banner shows when DRAFT contracts exist
-- **Pending contracts API**: `GET /api/contracts/pending` returns DRAFT contracts
-
-### Previous Fixes
-- Quote email: Trust proxy, rate limiter, emailSent response, comprehensive logging
-- Contract email template: Updated from dark to light theme, Resend ID logging
-- Inquiry form: Fixed contrast, label, dropdown colors
-- TypeScript build error: Fixed emailSent type access
-- ContractsTab: Auto-expand newest, light theme status badges
-- **Add Lead form**: Labels → text-text-primary, inputs → border-2 + purple focus, selects → explicit text-text-primary bg-white options, header → bg-gradient-brand, placeholder "Wedding" → "Brand Photoshoot"
-
-### Dashboard Functionality Fixes (Mar 15, 2026)
-- **Auto-refresh**: 30s polling with smart idle detection (skips when inactive > 5min). Live green indicator in toolbar
-- **Active Commissions widget**: Universal for ALL users, shows COMMISSION leads with clickable cards and status badges
-- **Quote price input**: font-mono, text-right, hidden spinners, wider grid columns (3/12 instead of 2/12)
-- **Client Portal email**: Removed hardcoded `emmanuelobokoh03@gmail.com`, replaced with generic message
-- **Industry filter**: Default option now says "Filter: All Industries" with title tooltip
-
-### Accessibility (WCAG 2.1 AA) (Mar 15, 2026)
-- **Global CSS**: sr-only class, focus-visible purple ring, prefers-reduced-motion support
-- **Skip navigation**: "Skip to main content" link visible on keyboard focus
-- **Modal a11y (9 modals)**: `useModalA11y` hook for focus trapping, Escape-to-close, focus restoration. All modals have `role="dialog"`, `aria-modal="true"`, `aria-labelledby`
-- **Form a11y**: Login/Signup/AddLead forms with `htmlFor`/`id` pairing, `aria-required`, `role="alert"` on errors
-- **Icon buttons**: `aria-label` on interactive icon-only buttons, `aria-hidden="true"` on decorative icons
-- **Live regions**: `role="status"` + `aria-live="polite"` on Live indicator, loading states
-
-### Rate Limiter Fix (Mar 15, 2026)
-- **Root cause**: Auto-refresh (3 endpoints x every 30s = 360 req/hr) exceeded 100 req/hr API limit
-- **Fix**: Increased API limit to 1000 req/hr, auth to 30/hr, portal to 200/hr, uploads to 50/hr, email to 5/hr
-- **Also**: Reduced auto-refresh interval from 30s to 60s (halves API load)
-- **Health endpoint**: Excluded from rate limiting
+### Accessibility (WCAG 2.1 AA)
+- Focus trapping modals (useModalA11y hook)
+- focus-visible styles, ARIA labels, screen-reader text
+- Skip to navigation link
 
 ### Product Features 1-4 (Mar 17, 2026)
-- **Feature 1 (Timeline Milestones)**: Manual CRUD API at /api/leads/:leadId/milestones (dueDate optional). Auto-generates 4 milestones on contract signing (Contract Signed, Deposit Payment, Project Completion, Final Payment). ProjectTimeline tab in LeadDetailModal.
-- **Feature 2 (Scheduled Review Emails)**: ScheduledEmail model + processScheduledEmails cron (every 2hr). Testimonial request scheduled 3 days after lead status → BOOKED. File review reminder scheduled 3 days after file upload. sendFileReviewReminderEmail template added.
-- **Feature 3 (Share Files + Comment)**: Renamed "UploadSimple Files" → "Share Files" in ClientFileUpload.tsx. Added message/comment textarea. Message logged as activity note.
-- **Feature 4 (Project Categories)**: Added projectType dropdown (SERVICE/COMMISSION/PROJECT/PRODUCT_SALE) to inquiry form. Backend portal submit + leads endpoints accept projectType. SubmitLeadData interface updated.
+- **Timeline Milestones**: Auto-generated milestones on contract signing
+- **Scheduled Review Emails**: ScheduledEmail model + cron processor
+- **Share Files + Comment**: Renamed tab, added message textarea
+- **Project Categories**: projectType dropdown on inquiry form
+
+### Meeting Booking System (Mar 18, 2026) - NEW
+- **MeetingType model**: Configurable meeting types (name, duration, color, location, buffer times, max per day)
+- **AvailabilitySchedule model**: Weekly availability windows (day of week, start/end times)
+- **MeetingBooking model**: Client bookings with status tracking, confirmation/reminder emails
+- **Backend APIs**:
+  - `GET/POST/PUT/DELETE /api/meeting-types` - CRUD for meeting types (auth required)
+  - `GET/PUT /api/availability` - Availability schedule management (auth required)
+  - `GET /api/book/:userId` - Public booking page data
+  - `GET /api/book/:userId/:meetingTypeId/slots?date=YYYY-MM-DD` - Slot generation algorithm
+  - `POST /api/book/:userId/:meetingTypeId` - Create booking with conflict detection
+  - `GET /api/meeting-bookings` - Authenticated user's bookings
+  - `PATCH /api/meeting-bookings/:id/cancel` - Cancel a booking
+- **Slot Generation**: Generates 30-min increment slots from availability, excluding past times, existing bookings (with buffer), and respecting maxPerDay limits
+- **Email Notifications**: Confirmation email to client, notification to studio owner
+- **Reminder Cron**: Hourly check for meetings in 24 hours, sends reminder emails
+- **Frontend - Public Booking Page** (`/book/:userId`): Multi-step flow (Select Type → Calendar → Time → Details → Confirmed) with studio branding
+- **Frontend - Settings**: New "Scheduling" tab in Settings modal with meeting types CRUD, availability editor, and copyable booking link
 
 ## User Action Required
 - Verify a domain at resend.com/domains and update SENDER_EMAIL for external client emails
 
 ## Prioritized Backlog
 
-### P0 (Blockers) — ALL RESOLVED
-- [x] Quote emails not sending
-- [x] Contract emails not arriving
-- [x] Contract auto-sent without user review
-- [x] No user notification on quote acceptance
-- [x] Inquiry form contrast/label issues
-- [x] Add Lead form UI contrast/typography (fixed Mar 15, 2026)
-- [x] Dashboard auto-refresh with Live indicator (fixed Mar 15, 2026)
-- [x] Active Commissions widget visible for ALL users (fixed Mar 15, 2026)
-- [x] Quote price input overflow for large numbers (fixed Mar 15, 2026)
-- [x] Client Portal hardcoded email removed (fixed Mar 15, 2026)
-- [x] Industry filter labeled clearly (fixed Mar 15, 2026)
+### P0 (All Resolved)
+- [x] All critical bugs fixed
+- [x] Meeting Booking System implemented
 
 ### P1 (Next Up)
+- [ ] Google Calendar integration for booking system
 - [ ] Polish & mobile responsiveness review
 - [ ] Dashboard project card text visibility
 
@@ -111,18 +88,20 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 
 ## Key Endpoints
 - `POST /api/quotes/:id/send` — Send quote email
-- `POST /api/quotes/public/:quoteToken/accept` — Client accepts quote → DRAFT contract
-- `GET /api/contracts/pending` — Fetch DRAFT contracts for dashboard
-- `POST /api/contracts/:id/send` — User sends contract to client
+- `POST /api/quotes/public/:quoteToken/accept` — Client accepts quote
+- `GET /api/contracts/pending` — Fetch DRAFT contracts
+- `POST /api/contracts/:id/send` — Send contract to client
 - `POST /api/contracts/:id/agree` — Client signs contract
 - `GET /api/portal/:token` — Client portal
+- `GET/POST/PUT/DELETE /api/meeting-types` — Meeting types CRUD
+- `GET/PUT /api/availability` — Availability schedule
+- `GET /api/book/:userId` — Public booking page
+- `GET /api/book/:userId/:mtId/slots` — Available time slots
+- `POST /api/book/:userId/:mtId` — Create meeting booking
 
 ## Test Reports
-- iteration_67: Quote email fix
-- iteration_68: Contract email + inquiry form
-- iteration_69: Contract E2E + ContractsTab
-- iteration_70: Contract workflow overhaul (DRAFT + pending + banner)
-- iteration_72: Add Lead modal UI fix (20/20 tests passed, 100% frontend)
-- iteration_73: Dashboard functionality fixes - all 6 issues (20/20 tests passed, 100%)
-- iteration_74: Accessibility (WCAG 2.1 AA) - all 31 features verified (100%)
-- iteration_75: Product Features 1-4 - backend 17/17 (100%), frontend 4/5 (80% - portal blank page pre-existing)
+- iteration_75: Product Features 1-4 (backend 17/17, frontend 4/5)
+- iteration_76: Meeting Booking System (backend 19/19, frontend 100%)
+
+## Test Credentials
+- bookingtest@test.com / password123 (User ID: cmmw4gvhr0000msmu77aijfb9)
