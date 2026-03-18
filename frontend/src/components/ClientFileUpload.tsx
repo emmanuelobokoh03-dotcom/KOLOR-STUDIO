@@ -29,6 +29,7 @@ const formatFileSize = (bytes: number) => {
 
 export default function ClientFileUpload({ token, onUploadComplete }: ClientFileUploadProps) {
   const [files, setFiles] = useState<File[]>([]);
+  const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
   const [uploadedCount, setUploadedCount] = useState(0);
@@ -95,6 +96,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
     try {
       const formData = new FormData();
       files.forEach(file => formData.append('files', file));
+      if (message.trim()) formData.append('message', message.trim());
 
       const res = await fetch(`${API_URL}/api/portal/${token}/upload`, {
         method: 'POST',
@@ -110,6 +112,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
       setUploadedCount(result.files?.length || files.length);
       setUploaded(true);
       setFiles([]);
+      setMessage('');
 
       // Reset after 3 seconds and notify parent
       setTimeout(() => {
@@ -131,7 +134,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
           <UploadSimple weight="bold" className="w-5 h-5 text-brand-primary" />
         </div>
         <div>
-          <h3 className="text-base font-semibold text-gray-900">UploadSimple Files</h3>
+          <h3 className="text-base font-semibold text-gray-900">Share Files</h3>
           <p className="text-sm text-text-tertiary">
             Share reference images, signed contracts, or other files
           </p>
@@ -197,7 +200,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="w-9 h-9 bg-brand-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <FileText className="w-4 h-4 text-brand-primary" />
+                        <FileText className="w-4 h-4 text-brand-primary" aria-hidden="true" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-900 text-sm truncate">{file.name}</p>
@@ -208,11 +211,29 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
                       onClick={() => removeFile(index)}
                       className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors ml-2"
                       data-testid={`remove-file-${index}`}
+                      aria-label={`Remove ${file.name}`}
                     >
-                      <X className="w-4 h-4 text-text-secondary" />
+                      <X className="w-4 h-4 text-text-secondary" aria-hidden="true" />
                     </button>
                   </div>
                 ))}
+              </div>
+
+              {/* Message/Comment box */}
+              <div className="mb-4">
+                <label htmlFor="file-message" className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Add a Message (Optional)
+                </label>
+                <textarea
+                  id="file-message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Add context or notes about these files..."
+                  rows={2}
+                  className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm resize-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-colors"
+                  data-testid="file-message-input"
+                />
+                <p className="text-xs text-text-tertiary mt-1">This message will be visible to the studio</p>
               </div>
 
               {/* Actions */}
@@ -234,13 +255,13 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
                 >
                   {uploading ? (
                     <>
-                      <SpinnerGap className="w-4 h-4 animate-spin" />
+                      <SpinnerGap className="w-4 h-4 animate-spin" aria-hidden="true" />
                       Uploading...
                     </>
                   ) : (
                     <>
-                      <UploadSimple weight="bold" className="w-4 h-4" />
-                      UploadSimple {files.length} File{files.length > 1 ? 's' : ''}
+                      <UploadSimple weight="bold" className="w-4 h-4" aria-hidden="true" />
+                      Share {files.length} File{files.length > 1 ? 's' : ''}
                     </>
                   )}
                 </button>

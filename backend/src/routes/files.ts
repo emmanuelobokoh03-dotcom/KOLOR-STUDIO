@@ -194,6 +194,23 @@ router.post(
         files: uploadedFiles,
         errors: errors.length > 0 ? errors : undefined,
       });
+
+      // Schedule file review reminder for 3 days later (non-blocking)
+      try {
+        const threeDaysLater = new Date();
+        threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+        await prisma.scheduledEmail.create({
+          data: {
+            leadId: req.body.leadId || uploadedFiles[0]?.leadId,
+            type: 'FILE_REVIEW_REMINDER',
+            scheduledFor: threeDaysLater,
+            metadata: { fileCount: uploadedFiles.length },
+          },
+        });
+        console.log(`[SCHEDULED] File review reminder in 3 days for lead ${req.body.leadId}`);
+      } catch (schedErr) {
+        console.error('[SCHEDULED] Failed to schedule file review:', schedErr);
+      }
     } catch (error) {
       console.error('Upload files error:', error);
       res.status(500).json({ error: 'Server Error', message: 'Failed to upload files' });

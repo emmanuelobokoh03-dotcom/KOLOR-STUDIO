@@ -3,6 +3,15 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Sparkle, SpinnerGap, WarningCircle, CheckCircle, ArrowLeft } from '@phosphor-icons/react'
 import { ServiceType, SERVICE_TYPE_LABELS, leadsApi } from '../services/api'
 
+type ProjectType = 'SERVICE' | 'COMMISSION' | 'PROJECT' | 'PRODUCT_SALE'
+const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
+  SERVICE: 'Service',
+  COMMISSION: 'Commission',
+  PROJECT: 'Project',
+  PRODUCT_SALE: 'Product Sale',
+}
+const PROJECT_TYPES: ProjectType[] = ['SERVICE', 'COMMISSION', 'PROJECT', 'PRODUCT_SALE']
+
 const SERVICE_TYPES: ServiceType[] = [
   'PHOTOGRAPHY', 'VIDEOGRAPHY', 'GRAPHIC_DESIGN', 'WEB_DESIGN', 
   'BRANDING', 'CONTENT_CREATION', 'CONSULTING', 'OTHER'
@@ -20,6 +29,7 @@ const SubmitInquiry = () => {
     clientPhone: '',
     clientCompany: '',
     serviceType: 'PHOTOGRAPHY' as ServiceType,
+    projectType: 'SERVICE' as ProjectType,
     projectTitle: '',
     description: '',
     budget: '',
@@ -194,6 +204,24 @@ const SubmitInquiry = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-2">
+                    Project Type *
+                  </label>
+                  <select
+                    name="projectType"
+                    value={formData.projectType}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary"
+                    data-testid="inquiry-project-type"
+                  >
+                    {PROJECT_TYPES.map((type) => (
+                      <option key={type} value={type} className="text-text-primary bg-white">
+                        {PROJECT_TYPE_LABELS[type]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Project Title *
                   </label>
                   <input
@@ -202,7 +230,7 @@ const SubmitInquiry = () => {
                     value={formData.projectTitle}
                     onChange={handleChange}
                     className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
-                    placeholder="e.g., Wedding Photography - June 2026"
+                    placeholder="e.g., Brand Photography - June 2026"
                     data-testid="inquiry-project-title"
                   />
                 </div>

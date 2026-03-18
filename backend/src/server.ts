@@ -34,6 +34,7 @@ import { generateDigestForUser, getAllUsersForDigest } from './services/digestSe
 import { sendWeeklyDigestEmail } from './services/email';
 import { processOnboardingSequences } from './services/onboardingService';
 import { processQuoteFollowUpSequences } from './services/quoteFollowUpService';
+import { processScheduledEmails } from './services/scheduledEmailService';
 import trackingRoutes from './routes/tracking';
 import userRoutes from './routes/user';
 
@@ -287,6 +288,16 @@ app.listen(PORT, () => {
     }, FOLLOWUP_INTERVAL);
   }, 25000);
   console.log('💰 Quote follow-up processor scheduled (every 6 hours)');
+
+  // Scheduled email processor (testimonial requests, file review reminders) — every 2 hours
+  const SCHEDULED_EMAIL_INTERVAL = 2 * 60 * 60 * 1000;
+  setTimeout(() => {
+    processScheduledEmails().catch(e => console.error('[ScheduledEmails] Initial run error:', e));
+    setInterval(() => {
+      processScheduledEmails().catch(e => console.error('[ScheduledEmails] Cron error:', e));
+    }, SCHEDULED_EMAIL_INTERVAL);
+  }, 30000);
+  console.log('📬 Scheduled email processor started (every 2 hours)');
 });
 
 export default app;

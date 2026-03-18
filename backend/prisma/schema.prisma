@@ -263,6 +263,7 @@ model Lead {
   enrollments       SequenceEnrollment[]
   onboardingEnrollments ClientOnboardingEnrollment[]
   emailTracking         EmailTracking[]
+  scheduledEmails       ScheduledEmail[]
 
   @@index([assignedToId])
   @@index([createdAt])
@@ -315,7 +316,7 @@ model ProjectMilestone {
   leadId      String
   name        String
   description String?
-  dueDate     DateTime
+  dueDate     DateTime?
   completed   Boolean   @default(false)
   completedAt DateTime?
   order       Int       @default(0)
@@ -838,4 +839,20 @@ model EmailTracking {
   @@index([leadId])
   @@index([sequenceId, stepNumber])
   @@map("email_tracking")
+}
+
+
+model ScheduledEmail {
+  id           String    @id @default(cuid())
+  leadId       String
+  lead         Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type         String
+  scheduledFor DateTime
+  sentAt       DateTime?
+  metadata     Json?
+  createdAt    DateTime  @default(now())
+
+  @@index([scheduledFor])
+  @@index([sentAt])
+  @@map("scheduled_emails")
 }

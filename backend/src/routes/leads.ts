@@ -455,6 +455,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       clientPhone,
       clientCompany,
       serviceType,
+      projectType,
       projectTitle,
       description,
       budget,
@@ -516,6 +517,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         clientPhone,
         clientCompany,
         serviceType,
+        projectType: projectType || 'SERVICE',
         projectTitle,
         description,
         budget,
@@ -732,6 +734,20 @@ router.patch('/:id/status', authMiddleware, async (req: AuthRequest, res: Respon
           }
         })
         .catch(err => console.error('Status notification error:', err));
+    }
+
+    // Schedule testimonial request for 3 days after project is booked/completed
+    if (status === 'BOOKED' && oldStatus !== 'BOOKED') {
+      try {
+        const threeDaysLater = new Date();
+        threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+        await prisma.scheduledEmail.create({
+          data: { leadId: id, type: 'TESTIMONIAL_REQUEST', scheduledFor: threeDaysLater },
+        });
+        console.log(`[SCHEDULED] Testimonial request for ${existingLead.clientEmail} in 3 days`);
+      } catch (schedErr) {
+        console.error('[SCHEDULED] Failed to schedule testimonial request:', schedErr);
+      }
     }
 
     res.json({ message: 'Status updated', lead });
@@ -958,10 +974,10 @@ router.post('/:id/milestones', authMiddleware, async (req: AuthRequest, res: Res
     if (!lead) { res.status(404).json({ error: 'Lead not found' }); return; }
 
     const { name, description, dueDate, order } = req.body;
-    if (!name || !dueDate) { res.status(400).json({ error: 'Name and dueDate are required' }); return; }
+    if (!name) { res.status(400).json({ error: 'Name is required' }); return; }
 
     const milestone = await prisma.projectMilestone.create({
-      data: { leadId: lead.id, name, description: description || null, dueDate: new Date(dueDate), order: order ?? 0 },
+      data: { leadId: lead.id, name, description: description || null, dueDate: dueDate ? new Date(dueDate) : null, order: order ?? 0 },
     });
 
     await logActivity(lead.id, req.userId!, 'NOTE_ADDED', `Milestone added: "${name}"`);

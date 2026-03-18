@@ -565,6 +565,18 @@ router.post('/:token/upload', clientUpload.array('files', 5), async (req: Reques
       return;
     }
 
+    // Log client message if provided
+    const clientMessage = req.body.message;
+    if (clientMessage && typeof clientMessage === 'string' && clientMessage.trim()) {
+      await logActivity(
+        lead.id,
+        lead.assignedTo?.id || null,
+        'NOTE_ADDED',
+        `Client note with file upload: "${clientMessage.trim()}"`,
+        { uploadedBy: 'client', fileCount: uploadedFiles.length }
+      );
+    }
+
     res.json({
       message: `${uploadedFiles.length} file(s) uploaded successfully`,
       files: uploadedFiles,
@@ -623,6 +635,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       clientPhone,
       projectTitle,
       serviceType,
+      projectType,
       description,
       budget,
       timeline,
@@ -675,6 +688,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         clientPhone: clientPhone || null,
         projectTitle,
         serviceType,
+        projectType: projectType || 'SERVICE',
         description: description || null,
         budget: budget || null,
         timeline: timeline || null,

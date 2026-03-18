@@ -612,6 +612,7 @@ export interface SubmitLeadData {
   clientPhone?: string;
   clientCompany?: string;
   serviceType: ServiceType;
+  projectType?: string;
   projectTitle: string;
   description: string;
   budget?: string;

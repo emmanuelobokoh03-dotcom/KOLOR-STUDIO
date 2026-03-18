@@ -1891,6 +1891,49 @@ export async function sendTestimonialRequestEmail(data: TestimonialRequestData):
   }
 }
 
+// File Review Reminder Email
+interface FileReviewReminderData {
+  clientName: string;
+  clientEmail: string;
+  creativeName: string;
+  studioName?: string;
+  projectTitle: string;
+  fileCount: number;
+  portalUrl: string;
+}
+export async function sendFileReviewReminderEmail(data: FileReviewReminderData): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const content = `
+      <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Files Ready for Review</h2>
+      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #4b5563; font-size: 15px;">Just a friendly reminder — we delivered <strong>${data.fileCount} file${data.fileCount > 1 ? 's' : ''}</strong> for <strong>"${data.projectTitle}"</strong> a few days ago.</p>
+      <p style="color: #4b5563; font-size: 15px;">We'd love to hear your thoughts! Please let us know if:</p>
+      <ul style="color: #4b5563; font-size: 15px; padding-left: 20px;">
+        <li>Everything looks great</li>
+        <li>You'd like any changes or revisions</li>
+        <li>You have questions about the files</li>
+      </ul>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${data.portalUrl}" style="${buttonStyle}">Review Files Now</a>
+      </div>
+      <p style="color: #9ca3af; font-size: 13px;">We're here to make any adjustments you need!</p>
+      <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+    `;
+    const { error } = await resend.emails.send({
+      from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
+      to: data.clientEmail,
+      subject: `Files ready for your review — ${data.projectTitle}`,
+      html: getEmailTemplate(content, 'File Review'),
+    });
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error sending file review reminder:', error);
+    return false;
+  }
+}
+
 // 8. Payment Received Notification (To Creative)
 interface PaymentReceivedNotificationData {
   creativeEmail: string;

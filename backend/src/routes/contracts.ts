@@ -456,6 +456,29 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
 
     await logActivity(contract.lead.id, null, 'CONTRACT_SIGNED', `Client ${contract.lead.clientName} signed: "${contract.title}"`);
 
+    // Auto-generate milestones for the project
+    try {
+      const existingMilestones = await prisma.projectMilestone.count({ where: { leadId: contract.leadId } });
+      if (existingMilestones === 0) {
+        const now = new Date();
+        const in7Days = new Date(now); in7Days.setDate(in7Days.getDate() + 7);
+        const in30Days = new Date(now); in30Days.setDate(in30Days.getDate() + 30);
+        const in45Days = new Date(now); in45Days.setDate(in45Days.getDate() + 45);
+
+        await prisma.projectMilestone.createMany({
+          data: [
+            { leadId: contract.leadId, name: 'Contract Signed', description: 'Service agreement executed', dueDate: now, completed: true, completedAt: now, order: 0 },
+            { leadId: contract.leadId, name: 'Deposit Payment', description: 'Initial deposit received', dueDate: in7Days, completed: false, order: 1 },
+            { leadId: contract.leadId, name: 'Project Completion', description: 'All deliverables completed', dueDate: in30Days, completed: false, order: 2 },
+            { leadId: contract.leadId, name: 'Final Payment', description: 'Balance payment received', dueDate: in45Days, completed: false, order: 3 },
+          ],
+        });
+        console.log('[CONTRACT] Auto-generated 4 milestones for lead:', contract.leadId);
+      }
+    } catch (milestoneErr) {
+      console.error('[CONTRACT] Failed to auto-generate milestones:', milestoneErr);
+    }
+
     // Enroll client in onboarding drip sequence
     try {
       await enrollInOnboarding(contract.lead.id);
