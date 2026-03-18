@@ -201,7 +201,7 @@ router.post(
         threeDaysLater.setDate(threeDaysLater.getDate() + 3);
         await prisma.scheduledEmail.create({
           data: {
-            leadId: req.body.leadId || uploadedFiles[0]?.leadId,
+            leadId,
             type: 'FILE_REVIEW_REMINDER',
             scheduledFor: threeDaysLater,
             metadata: { fileCount: uploadedFiles.length },
