@@ -55,6 +55,8 @@ import DeliverablesTab from './DeliverablesTab'
 import ContractsTab from './ContractsTab'
 import ProjectTimeline from './ProjectTimeline'
 import MarkAsDeliveredButton from './MarkAsDeliveredButton'
+import FileCategoryBadge from './FileCategoryBadge'
+import FileComments from './FileComments'
 import { 
   trackFileUploaded, 
   trackFileDownloaded, 
@@ -178,6 +180,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
   const [files, setFiles] = useState<LeadFile[]>([]);
   const [loadingFiles, setLoadingFiles] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [expandedComments, setExpandedComments] = useState<string | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
   // Messages state
   const [messages, setMessages] = useState<Array<{ id: string; content: string; from: 'CLIENT' | 'CREATIVE'; read: boolean; createdAt: string }>>([]);
@@ -457,6 +461,24 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
     });
   };
 
+  const handleReviewFile = async (fileId: string, status: 'APPROVED' | 'NEEDS_CHANGES') => {
+    const res = await leadsApi.updateFileReview(fileId, status);
+    if (res.data?.file) {
+      setFiles(prev => prev.map(f => f.id === fileId ? { ...f, reviewStatus: res.data!.file.reviewStatus, reviewedAt: res.data!.file.reviewedAt } : f));
+    }
+  };
+
+  const handleUpdateCategory = async (fileId: string, category: string) => {
+    const res = await leadsApi.updateFileCategory(fileId, category);
+    if (res.data?.file) {
+      setFiles(prev => prev.map(f => f.id === fileId ? { ...f, category: res.data!.file.category } : f));
+    }
+  };
+
+  const filteredFiles = categoryFilter
+    ? files.filter(f => f.category === categoryFilter)
+    : files;
+
   const formatTimeAgo = (dateString: string) => {
     const now = new Date();
     const date = new Date(dateString);
@@ -478,7 +500,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
     });
   };
 
-  const isImageFile = (file: LeadFile) => file.category === 'image' || file.mimeType?.startsWith('image/');
+  const isImageFile = (file: LeadFile) => file.mimeType?.startsWith('image/');
 
   return (
     <>
@@ -739,129 +761,179 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                         </button>
                       </p>
                       <p className="text-xs text-gray-600">
-                        PDF, Word, Excel, Images up to 50MB
+                        PDF, Word, Excel, Images up to 50MB &middot; Files are auto-categorized
                       </p>
                     </>
                   )}
                 </div>
 
-                {/* Visual File Gallery */}
+                {/* Category Filter */}
+                {files.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5" data-testid="file-category-filter">
+                    <button
+                      onClick={() => setCategoryFilter(null)}
+                      className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors ${
+                        !categoryFilter ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-gray-600 border-gray-200 hover:border-purple-300'
+                      }`}
+                      data-testid="filter-all"
+                    >
+                      All ({files.length})
+                    </button>
+                    {['REFERENCE', 'LEGAL', 'PAYMENT', 'DELIVERABLE', 'REVISION', 'ASSET', 'OTHER'].map(cat => {
+                      const count = files.filter(f => f.category === cat).length;
+                      if (count === 0) return null;
+                      return (
+                        <button
+                          key={cat}
+                          onClick={() => setCategoryFilter(categoryFilter === cat ? null : cat)}
+                          className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors ${
+                            categoryFilter === cat ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-gray-600 border-gray-200 hover:border-purple-300'
+                          }`}
+                          data-testid={`filter-${cat}`}
+                        >
+                          <FileCategoryBadge category={cat} size="sm" /> ({count})
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* File List */}
                 <div>
                   <h3 className="text-sm font-semibold text-text-secondary mb-4 flex items-center gap-2">
                     <Paperclip className="w-4 h-4" />
-                    Uploaded Files ({files.length})
+                    {categoryFilter ? `${categoryFilter} Files` : 'All Files'} ({filteredFiles.length})
                   </h3>
 
                   {loadingFiles ? (
                     <FileGridSkeleton />
-                  ) : files.length === 0 ? (
+                  ) : filteredFiles.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="files-empty-state">
                       <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4CE;</div>
-                      <h3 className="text-lg md:text-xl font-semibold text-text-primary mb-2">No files uploaded yet</h3>
+                      <h3 className="text-lg md:text-xl font-semibold text-text-primary mb-2">
+                        {categoryFilter ? 'No files in this category' : 'No files uploaded yet'}
+                      </h3>
                       <p className="text-sm text-text-secondary max-w-md mb-1 leading-relaxed">
-                        UploadSimple contracts, references, or deliverables to keep everything organized with your client.
-                      </p>
-                      <p className="text-xs text-text-tertiary mt-3 max-w-sm">
-                        <strong>Pro tip:</strong> Share files with your client by toggling "Share with client" on each file.
+                        Upload contracts, references, or deliverables to keep everything organized with your client.
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" data-testid="file-gallery">
-                      {files.map((file) => {
+                    <div className="space-y-3" data-testid="file-list">
+                      {filteredFiles.map((file) => {
                         const isImage = isImageFile(file);
-                        const FileIcon = FILE_ICONS[file.category] || File;
-                        const colorClass = FILE_COLORS[file.category] || 'bg-light-100 text-text-secondary';
 
                         return (
                           <div 
                             key={file.id} 
-                            className="group relative aspect-square rounded-xl overflow-hidden border border-light-200 bg-white hover:border-purple-300 transition-all duration-200"
+                            className="rounded-xl border border-light-200 bg-white hover:border-purple-200 transition-all duration-200 overflow-hidden"
                             data-testid={`file-${file.id}`}
                           >
-                            {/* Client upload badge */}
-                            {file.uploadedBy === 'client' && (
-                              <div className="absolute top-2 left-2 z-10 px-1.5 py-0.5 bg-blue-600/80 text-white text-[10px] font-medium rounded-md flex items-center gap-1" data-testid={`client-upload-badge-${file.id}`}>
-                                <UploadSimple className="w-3 h-3" /> Client
-                              </div>
-                            )}
-                            {/* Shared badge */}
-                            {file.sharedWithClient && (
-                              <div className="absolute top-2 right-2 z-10 px-1.5 py-0.5 bg-green-600/80 text-white text-[10px] font-medium rounded-md flex items-center gap-1" data-testid={`shared-badge-${file.id}`}>
-                                <Eye className="w-3 h-3" /> Shared
-                              </div>
-                            )}
-
-                            {/* File Content */}
-                            {isImage ? (
-                              <img 
-                                src={file.url} 
-                                alt={file.originalName}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                loading="lazy"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-                                <div className={`w-16 h-16 rounded-xl flex items-center justify-center ${colorClass}`}>
-                                  <FileIcon className="w-8 h-8" />
-                                </div>
-                                <span className="text-xs text-text-tertiary uppercase font-medium tracking-wide">
-                                  {file.mimeType?.split('/').pop()?.toUpperCase() || 'FILE'}
-                                </span>
-                              </div>
-                            )}
-
-                            {/* Hover Overlay */}
-                            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-200 flex flex-col items-center justify-center p-3">
-                              <p className="text-white text-xs font-medium text-center truncate w-full mb-1" title={file.originalName}>
-                                {file.originalName}
-                              </p>
-                              <p className="text-text-secondary text-xs mb-2">
-                                {file.formattedSize}
-                                {file.uploadedBy === 'client' && (
-                                  <span className="ml-1 text-blue-600">&middot; Client Upload</span>
+                            <div className="flex items-start gap-3 p-4">
+                              {/* Thumbnail / Icon */}
+                              <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden border border-light-200 bg-light-50 flex items-center justify-center">
+                                {isImage ? (
+                                  <img src={file.url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                                ) : (
+                                  <FileText className="w-6 h-6 text-gray-400" />
                                 )}
-                              </p>
-                              {/* Share toggle */}
-                              <button
-                                onClick={() => handleToggleShare(file.id, !!file.sharedWithClient)}
-                                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium mb-2 transition-all ${
-                                  file.sharedWithClient
-                                    ? 'bg-green-600/30 text-green-400 hover:bg-green-600/50'
-                                    : 'bg-light-200 text-text-secondary hover:bg-light-200'
-                                }`}
-                                data-testid={`share-toggle-${file.id}`}
-                              >
-                                {file.sharedWithClient ? <><Eye className="w-3 h-3" /> Shared</> : <><EyeSlash className="w-3 h-3" /> Private</>}
-                              </button>
-                              <div className="flex items-center gap-2">
+                              </div>
+
+                              {/* File Info */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap mb-1">
+                                  <a
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="font-medium text-sm text-gray-900 hover:text-purple-600 truncate max-w-[200px]"
+                                    title={file.originalName}
+                                  >
+                                    {file.originalName}
+                                  </a>
+                                  <FileCategoryBadge category={file.category} size="sm" />
+                                  {file.requiresReview && file.reviewStatus === 'PENDING' && (
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold" data-testid={`review-pending-${file.id}`}>
+                                      Needs Review
+                                    </span>
+                                  )}
+                                  {file.reviewStatus === 'APPROVED' && (
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold" data-testid={`review-approved-${file.id}`}>
+                                      Approved
+                                    </span>
+                                  )}
+                                  {file.reviewStatus === 'NEEDS_CHANGES' && (
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200 font-semibold" data-testid={`review-changes-${file.id}`}>
+                                      Changes Needed
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-gray-400">
+                                  <span>{file.formattedSize}</span>
+                                  <span>&middot;</span>
+                                  <span>{new Date(file.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                                  {(file.uploadedByType === 'CLIENT' || file.uploadedBy === 'client') && (
+                                    <>
+                                      <span>&middot;</span>
+                                      <span className="text-blue-500 font-medium">Client Upload</span>
+                                    </>
+                                  )}
+                                  {file.sharedWithClient && (
+                                    <>
+                                      <span>&middot;</span>
+                                      <span className="text-emerald-500 font-medium flex items-center gap-0.5"><Eye className="w-3 h-3" /> Shared</span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Actions */}
+                              <div className="flex items-center gap-1 flex-shrink-0">
+                                {/* Review actions */}
+                                {file.requiresReview && file.reviewStatus === 'PENDING' && (
+                                  <>
+                                    <button
+                                      onClick={() => handleReviewFile(file.id, 'APPROVED')}
+                                      className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors"
+                                      title="Approve"
+                                      data-testid={`approve-${file.id}`}
+                                    >
+                                      <CheckCircle className="w-5 h-5" weight="fill" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleReviewFile(file.id, 'NEEDS_CHANGES')}
+                                      className="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 transition-colors"
+                                      title="Request Changes"
+                                      data-testid={`request-changes-${file.id}`}
+                                    >
+                                      <Flag className="w-5 h-5" weight="fill" />
+                                    </button>
+                                  </>
+                                )}
+                                <button
+                                  onClick={() => handleToggleShare(file.id, !!file.sharedWithClient)}
+                                  className={`p-1.5 rounded-lg transition-colors ${file.sharedWithClient ? 'text-emerald-500 hover:bg-emerald-50' : 'text-gray-400 hover:bg-gray-50'}`}
+                                  title={file.sharedWithClient ? 'Shared with client' : 'Share with client'}
+                                  data-testid={`share-toggle-${file.id}`}
+                                >
+                                  {file.sharedWithClient ? <Eye className="w-4 h-4" /> : <EyeSlash className="w-4 h-4" />}
+                                </button>
                                 <button
                                   onClick={() => handleDownload(file)}
-                                  className="p-2.5 bg-brand-primary text-white rounded-xl hover:bg-brand-primary transition-all duration-200"
+                                  className="p-1.5 rounded-lg text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
                                   title="Download"
                                   data-testid={`download-${file.id}`}
                                 >
-                                  <DownloadSimple weight="bold" className="w-4 h-4" />
+                                  <DownloadSimple className="w-4 h-4" weight="bold" />
                                 </button>
-                                
                                 {deleteConfirm === file.id ? (
                                   <div className="flex items-center gap-1">
-                                    <button
-                                      onClick={() => handleDeleteFile(file.id)}
-                                      className="px-3 py-2 bg-red-600 text-white text-xs rounded-xl hover:bg-red-500 transition-all duration-200"
-                                    >
-                                      Confirm
-                                    </button>
-                                    <button
-                                      onClick={() => setDeleteConfirm(null)}
-                                      className="px-3 py-2 bg-light-200 text-text-secondary text-xs rounded-xl hover:bg-light-200 transition-all duration-200"
-                                    >
-                                      Cancel
-                                    </button>
+                                    <button onClick={() => handleDeleteFile(file.id)} className="px-2 py-1 bg-red-600 text-white text-[10px] rounded-lg" data-testid={`confirm-delete-${file.id}`}>Yes</button>
+                                    <button onClick={() => setDeleteConfirm(null)} className="px-2 py-1 bg-gray-100 text-gray-600 text-[10px] rounded-lg">No</button>
                                   </div>
                                 ) : (
                                   <button
                                     onClick={() => setDeleteConfirm(file.id)}
-                                    className="p-2.5 bg-red-600/30 text-red-400 rounded-xl hover:bg-red-600/50 transition-all duration-200"
+                                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                                     title="Delete"
                                     data-testid={`delete-${file.id}`}
                                   >
@@ -869,6 +941,23 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }
                                   </button>
                                 )}
                               </div>
+                            </div>
+
+                            {/* Comments Toggle + Panel */}
+                            <div className="border-t border-light-200 px-4 py-2">
+                              <button
+                                onClick={() => setExpandedComments(expandedComments === file.id ? null : file.id)}
+                                className="text-xs font-medium text-purple-600 hover:text-purple-700 flex items-center gap-1"
+                                data-testid={`toggle-comments-${file.id}`}
+                              >
+                                <ChatCircle className="w-3.5 h-3.5" />
+                                {expandedComments === file.id ? 'Hide Comments' : `Comments${file.commentCount ? ` (${file.commentCount})` : ''}`}
+                              </button>
+                              {expandedComments === file.id && (
+                                <div className="mt-3 pb-1">
+                                  <FileComments fileId={file.id} />
+                                </div>
+                              )}
                             </div>
                           </div>
                         );

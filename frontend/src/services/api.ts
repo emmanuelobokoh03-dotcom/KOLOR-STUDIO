@@ -208,6 +208,37 @@ export const leadsApi = {
     });
   },
 
+  updateFileCategory: async (fileId: string, category: string) => {
+    return request<{ file: { id: string; category: string } }>(`/api/files/${fileId}/category`, {
+      method: 'PATCH',
+      body: JSON.stringify({ category }),
+    });
+  },
+
+  updateFileReview: async (fileId: string, reviewStatus: string) => {
+    return request<{ file: { id: string; reviewStatus: string; reviewedAt: string | null } }>(`/api/files/${fileId}/review`, {
+      method: 'PATCH',
+      body: JSON.stringify({ reviewStatus }),
+    });
+  },
+
+  getFileComments: async (fileId: string) => {
+    return request<{ comments: Array<{ id: string; authorName: string; authorType: string; content: string; createdAt: string }> }>(`/api/files/${fileId}/comments`);
+  },
+
+  addFileComment: async (fileId: string, content: string) => {
+    return request<{ comment: { id: string; authorName: string; authorType: string; content: string; createdAt: string } }>(`/api/files/${fileId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    });
+  },
+
+  deleteFileComment: async (fileId: string, commentId: string) => {
+    return request<{ message: string }>(`/api/files/${fileId}/comments/${commentId}`, {
+      method: 'DELETE',
+    });
+  },
+
   markAsDelivered: async (leadId: string) => {
     return request<{ message: string; filesShared: number; status: string; paymentLinkSent: boolean }>(`/api/leads/${leadId}/mark-delivered`, {
       method: 'POST',
@@ -543,12 +574,19 @@ export interface LeadFile {
   mimeType: string;
   size: number;
   formattedSize: string;
-  category: 'image' | 'pdf' | 'document' | 'spreadsheet' | 'text' | 'file';
+  category: string;
+  categoryDisplay?: string;
   url: string;
   uploadedBy: string | null;
+  uploadedByType?: string;
+  uploadedByName?: string;
   sharedWithClient?: boolean;
   sharedAt?: string;
   downloadCount?: number;
+  requiresReview?: boolean;
+  reviewStatus?: string | null;
+  reviewedAt?: string | null;
+  commentCount?: number;
   createdAt: string;
 }
 
