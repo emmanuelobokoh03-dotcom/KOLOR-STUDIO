@@ -8,8 +8,6 @@ import {
 
 const router = Router();
 
-const FRONTEND_URL = process.env.FRONTEND_URL || '';
-
 // Template catalog
 const TEMPLATES = [
   { id: 'new-lead', name: 'New Lead Alert', category: 'user', description: 'Notification when a new inquiry is submitted' },
@@ -97,7 +95,7 @@ router.get('/:id', (req: Request, res: Response): void => {
     return;
   }
 
-  const html = buildPreview(id);
+  const html = buildPreview(id as string);
   res.setHeader('Content-Type', 'text/html');
   res.send(html);
 });
