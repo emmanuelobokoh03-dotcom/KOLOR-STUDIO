@@ -11,6 +11,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Storage:** Supabase Storage
 - **Icons:** @phosphor-icons/react
 - **Tours:** Driver.js
+- **Fonts:** Bricolage Grotesque (headings), Instrument Sans (body)
 
 ## Core Workflow
 1. Create Lead → 2. Create Quote → 3. Send Quote to Client →
@@ -27,8 +28,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - Quote builder (line items, tax, currency, PDF generation)
 - Quote sending via email (with portal links)
 - Client portal (public view of quotes/contracts)
-- Contract auto-generation as DRAFT (user must review before sending)
-- Pending contracts dashboard banner with "Review Contract" button
+- Contract auto-generation as DRAFT
 - Booking management with calendar
 - Portfolio page
 - Email sequences (onboarding, follow-up)
@@ -45,41 +45,37 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - Skip to navigation link
 
 ### Product Features 1-4 (Mar 17, 2026)
-- **Timeline Milestones**: Auto-generated milestones on contract signing
-- **Scheduled Review Emails**: ScheduledEmail model + cron processor
-- **Share Files + Comment**: Renamed tab, added message textarea
-- **Project Categories**: projectType dropdown on inquiry form
+- Timeline Milestones: Auto-generated on contract signing
+- Scheduled Review Emails: ScheduledEmail model + cron
+- Share Files + Comment: Renamed tab, added message textarea
+- Project Categories: projectType dropdown on inquiry form
 
-### Meeting Booking System (Mar 18, 2026) - NEW
-- **MeetingType model**: Configurable meeting types (name, duration, color, location, buffer times, max per day)
-- **AvailabilitySchedule model**: Weekly availability windows (day of week, start/end times)
-- **MeetingBooking model**: Client bookings with status tracking, confirmation/reminder emails
-- **Backend APIs**:
-  - `GET/POST/PUT/DELETE /api/meeting-types` - CRUD for meeting types (auth required)
-  - `GET/PUT /api/availability` - Availability schedule management (auth required)
-  - `GET /api/book/:userId` - Public booking page data
-  - `GET /api/book/:userId/:meetingTypeId/slots?date=YYYY-MM-DD` - Slot generation algorithm
-  - `POST /api/book/:userId/:meetingTypeId` - Create booking with conflict detection
-  - `GET /api/meeting-bookings` - Authenticated user's bookings
-  - `PATCH /api/meeting-bookings/:id/cancel` - Cancel a booking
-- **Slot Generation**: Generates 30-min increment slots from availability, excluding past times, existing bookings (with buffer), and respecting maxPerDay limits
-- **Email Notifications**: Confirmation email to client, notification to studio owner
-- **Reminder Cron**: Hourly check for meetings in 24 hours, sends reminder emails
-- **Frontend - Public Booking Page** (`/book/:userId`): Multi-step flow (Select Type → Calendar → Time → Details → Confirmed) with studio branding
-- **Frontend - Settings**: New "Scheduling" tab in Settings modal with meeting types CRUD, availability editor, and copyable booking link
+### Meeting Booking System (Mar 18, 2026)
+- MeetingType, AvailabilitySchedule, MeetingBooking models
+- Full CRUD APIs for meeting types and availability
+- Public booking page at /book/:userId with multi-step flow
+- Slot generation with buffer times and conflict detection
+- Confirmation + reminder emails (24hr cron)
 
-## User Action Required
-- Verify a domain at resend.com/domains and update SENDER_EMAIL for external client emails
+### UI System v2.0 (Mar 19, 2026) - NEW
+- **Color System**: Full brand palette (50-900), surface, border, text, semantic colors (success/warning/danger/info with light/hover/border/text variants)
+- **Typography**: Bricolage Grotesque (headings) + Instrument Sans (body) via Google Fonts. Full type scale (h1-h6, body-lg/body/body-sm, caption, label, button, overline)
+- **Spacing**: Semantic tokens (xs/sm/md/lg/xl/2xl/3xl)
+- **Elevation**: 5-level shadow system (elevation-0 to elevation-4) + component-specific shadows (card, card-hover, button, input-focus, input-error)
+- **Animations**: fadeIn, slideUp, slideDown, scaleIn + transition durations (fast/base/slow) + spring timing function
+- **Border Radius**: Semantic tokens (button/input/card/modal/badge)
+- **Component Classes**: .btn/.btn-primary/.btn-secondary/.btn-ghost/.btn-danger, .card/.card-hover, .input/.input-error/.input-label, .badge variants
+- **Updated Pages**: Login, Signup, Dashboard, AddLeadModal, LandingPage, PublicBookingPage all using new design tokens
 
 ## Prioritized Backlog
 
 ### P0 (All Resolved)
-- [x] All critical bugs fixed
-- [x] Meeting Booking System implemented
+- [x] Meeting Booking System
+- [x] UI System v2.0 Design System
 
 ### P1 (Next Up)
 - [ ] Google Calendar integration for booking system
-- [ ] Polish & mobile responsiveness review
+- [ ] Mobile responsiveness polish
 - [ ] Dashboard project card text visibility
 
 ### P2 (Future)
@@ -88,11 +84,8 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 
 ## Key Endpoints
 - `POST /api/quotes/:id/send` — Send quote email
-- `POST /api/quotes/public/:quoteToken/accept` — Client accepts quote
 - `GET /api/contracts/pending` — Fetch DRAFT contracts
 - `POST /api/contracts/:id/send` — Send contract to client
-- `POST /api/contracts/:id/agree` — Client signs contract
-- `GET /api/portal/:token` — Client portal
 - `GET/POST/PUT/DELETE /api/meeting-types` — Meeting types CRUD
 - `GET/PUT /api/availability` — Availability schedule
 - `GET /api/book/:userId` — Public booking page
@@ -100,8 +93,8 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - `POST /api/book/:userId/:mtId` — Create meeting booking
 
 ## Test Reports
-- iteration_75: Product Features 1-4 (backend 17/17, frontend 4/5)
 - iteration_76: Meeting Booking System (backend 19/19, frontend 100%)
+- iteration_77: UI System v2.0 (frontend 100%, all pages + responsive verified)
 
 ## Test Credentials
 - bookingtest@test.com / password123 (User ID: cmmw4gvhr0000msmu77aijfb9)
