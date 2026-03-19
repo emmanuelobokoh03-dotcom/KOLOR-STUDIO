@@ -1,10 +1,12 @@
 import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
-import { uploadFile, formatFileSize, getFileCategory } from '../services/storage';
+import { uploadFile, formatFileSize } from '../services/storage';
 import { logActivity } from './activities';
 import { stopSequencesForLead } from '../services/sequenceEngine';
 import { stopQuoteFollowUp } from '../services/quoteFollowUpService';
+import { categorizeFile, getCategoryDisplayName, getCategoryColor } from '../services/fileCategorizationService';
+import { sendFileUploadNotification } from '../services/email';
 
 const router = Router();
 import prisma from '../lib/prisma';
@@ -490,7 +492,7 @@ router.post('/:token/upload', clientUpload.array('files', 5), async (req: Reques
 
     const lead = await prisma.lead.findUnique({
       where: { portalToken: String(token) },
-      include: { assignedTo: { select: { id: true } } },
+      include: { assignedTo: { select: { id: true, email: true, firstName: true, lastName: true, studioName: true } } },
     });
 
     if (!lead) {
@@ -517,6 +519,7 @@ router.post('/:token/upload', clientUpload.array('files', 5), async (req: Reques
         }
 
         // Create file record in database
+        const fileCategory = categorizeFile(file.originalname, file.mimetype);
         const fileRecord = await prisma.file.create({
           data: {
             filename: result.path.split('/').pop() || file.originalname,
@@ -525,6 +528,12 @@ router.post('/:token/upload', clientUpload.array('files', 5), async (req: Reques
             size: file.size,
             url: result.url,
             uploadedBy: 'client',
+            uploadedByType: 'CLIENT',
+            uploadedByName: lead.clientName || 'Client',
+            uploadedByEmail: lead.clientEmail || undefined,
+            category: fileCategory,
+            requiresReview: fileCategory === 'DELIVERABLE' || fileCategory === 'REVISION',
+            reviewStatus: (fileCategory === 'DELIVERABLE' || fileCategory === 'REVISION') ? 'PENDING' : null,
             leadId: lead.id,
             sharedWithClient: false,
           },
@@ -537,7 +546,7 @@ router.post('/:token/upload', clientUpload.array('files', 5), async (req: Reques
           mimeType: fileRecord.mimeType,
           size: fileRecord.size,
           formattedSize: formatFileSize(fileRecord.size),
-          category: getFileCategory(fileRecord.mimeType),
+          category: fileRecord.category,
           uploadedBy: fileRecord.uploadedBy,
           createdAt: fileRecord.createdAt,
         });
@@ -582,6 +591,25 @@ router.post('/:token/upload', clientUpload.array('files', 5), async (req: Reques
       files: uploadedFiles,
       errors: errors.length > 0 ? errors : undefined,
     });
+
+    // Send email notification to owner (non-blocking)
+    if (lead.assignedTo) {
+      for (const uf of uploadedFiles) {
+        sendFileUploadNotification({
+          userEmail: lead.assignedTo.email,
+          userName: `${lead.assignedTo.firstName} ${lead.assignedTo.lastName}`.trim(),
+          clientName: lead.clientName || 'Client',
+          projectTitle: lead.projectTitle || lead.clientName || 'Project',
+          fileName: uf.originalName,
+          fileSize: uf.size,
+          category: uf.category,
+          categoryDisplayName: getCategoryDisplayName(uf.category),
+          categoryColor: getCategoryColor(uf.category),
+          requiresReview: uf.category === 'DELIVERABLE' || uf.category === 'REVISION',
+          leadId: lead.id,
+        }).catch(err => console.error('[PORTAL] File upload notification failed:', err));
+      }
+    }
   } catch (error) {
     console.error('Client file upload error:', error);
     res.status(500).json({ error: 'Upload failed', message: 'Something went wrong during upload' });

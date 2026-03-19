@@ -43,6 +43,7 @@ import publicBookingRoutes, { meetingBookingsRouter } from './routes/public-book
 import { processMeetingReminders } from './services/meetingReminderService';
 import { authMiddleware } from './middleware/auth';
 import emailPreviewRoutes from './routes/emailPreview';
+import fileCommentRoutes from './routes/fileComments';
 
 // dotenv already loaded at the top of this file
 
@@ -154,6 +155,7 @@ app.use('/api/leads', activitiesRoutes); // Activities: /api/leads/:id/activitie
 app.use('/api/leads', filesRoutes); // Files: /api/leads/:id/files
 app.use('/api/leads', messageRoutes); // Messages: /api/leads/:id/messages
 app.use('/api/files', filesRoutes); // Also handle /api/files/:id routes
+app.use('/api/files', fileCommentRoutes); // File comments: /api/files/:fileId/comments
 app.use('/api/portal', portalRoutes); // Public portal access
 app.use('/api/leads', quotesRoutes); // Quotes: /api/leads/:leadId/quotes
 app.use('/api/quotes', quotesRoutes); // Quotes: /api/quotes/:quoteId/*

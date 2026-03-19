@@ -1,8 +1,9 @@
 import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { uploadFile, deleteFile, getSignedUrl, formatFileSize, getFileCategory } from '../services/storage';
+import { uploadFile, deleteFile, getSignedUrl, formatFileSize } from '../services/storage';
 import { logActivity } from './activities';
+import { categorizeFile, getCategoryDisplayName } from '../services/fileCategorizationService';
 
 const router = Router();
 import prisma from '../lib/prisma';
@@ -57,6 +58,7 @@ router.get('/:leadId/files', authMiddleware, async (req: AuthRequest, res: Respo
     const files = await prisma.file.findMany({
       where: { leadId },
       orderBy: { createdAt: 'desc' },
+      include: { comments: { select: { id: true } } },
     });
 
     // Generate fresh signed URLs for each file
@@ -75,12 +77,19 @@ router.get('/:leadId/files', authMiddleware, async (req: AuthRequest, res: Respo
           mimeType: file.mimeType,
           size: file.size,
           formattedSize: formatFileSize(file.size),
-          category: getFileCategory(file.mimeType),
+          category: file.category,
+          categoryDisplay: getCategoryDisplayName(file.category),
           url: signedUrl || file.url,
           uploadedBy: file.uploadedBy,
+          uploadedByType: file.uploadedByType,
+          uploadedByName: file.uploadedByName,
           sharedWithClient: file.sharedWithClient,
           sharedAt: file.sharedAt,
           downloadCount: file.downloadCount,
+          requiresReview: file.requiresReview,
+          reviewStatus: file.reviewStatus,
+          reviewedAt: file.reviewedAt,
+          commentCount: file.comments.length,
           createdAt: file.createdAt,
         };
       })
@@ -138,6 +147,9 @@ router.post(
           }
 
           // Save file record to database
+          const fileCategory = categorizeFile(file.originalname, file.mimetype);
+          const requiresReview = fileCategory === 'DELIVERABLE' || fileCategory === 'REVISION';
+
           const dbFile = await prisma.file.create({
             data: {
               filename: result.path.split('/').pop() || file.originalname,
@@ -146,6 +158,11 @@ router.post(
               size: file.size,
               url: result.url,
               uploadedBy: userId,
+              uploadedByType: 'USER',
+              uploadedByName: undefined, // Filled below after user lookup
+              category: fileCategory,
+              requiresReview,
+              reviewStatus: requiresReview ? 'PENDING' : null,
               leadId,
             },
           });
@@ -157,12 +174,16 @@ router.post(
             mimeType: dbFile.mimeType,
             size: dbFile.size,
             formattedSize: formatFileSize(dbFile.size),
-            category: getFileCategory(dbFile.mimeType),
+            category: dbFile.category,
+            categoryDisplay: getCategoryDisplayName(dbFile.category),
             url: result.url,
             uploadedBy: dbFile.uploadedBy,
+            uploadedByType: dbFile.uploadedByType,
             sharedWithClient: dbFile.sharedWithClient,
             sharedAt: dbFile.sharedAt,
             downloadCount: dbFile.downloadCount,
+            requiresReview: dbFile.requiresReview,
+            reviewStatus: dbFile.reviewStatus,
             createdAt: dbFile.createdAt,
           });
 
@@ -217,6 +238,73 @@ router.post(
     }
   }
 );
+
+// PATCH /api/files/:fileId/category - Update file category
+router.patch('/:fileId/category', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const fileId = req.params.fileId as string;
+    const { category } = req.body;
+
+    const validCategories = ['REFERENCE', 'LEGAL', 'PAYMENT', 'DELIVERABLE', 'REVISION', 'ASSET', 'OTHER'];
+    if (!category || !validCategories.includes(category)) {
+      res.status(400).json({ error: 'Invalid category', validCategories });
+      return;
+    }
+
+    const file = await prisma.file.findUnique({
+      where: { id: fileId },
+      include: { lead: { select: { assignedToId: true } } },
+    });
+    if (!file) { res.status(404).json({ error: 'File not found' }); return; }
+    if (file.lead.assignedToId !== userId) { res.status(403).json({ error: 'Access denied' }); return; }
+
+    const updated = await prisma.file.update({
+      where: { id: fileId },
+      data: { category },
+    });
+
+    res.json({ file: { id: updated.id, category: updated.category } });
+  } catch (error) {
+    console.error('Update file category error:', error);
+    res.status(500).json({ error: 'Failed to update category' });
+  }
+});
+
+// PATCH /api/files/:fileId/review - Update review status
+router.patch('/:fileId/review', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const fileId = req.params.fileId as string;
+    const { reviewStatus } = req.body;
+
+    const validStatuses = ['PENDING', 'APPROVED', 'NEEDS_CHANGES'];
+    if (!reviewStatus || !validStatuses.includes(reviewStatus)) {
+      res.status(400).json({ error: 'Invalid reviewStatus', validStatuses });
+      return;
+    }
+
+    const file = await prisma.file.findUnique({
+      where: { id: fileId },
+      include: { lead: { select: { assignedToId: true } } },
+    });
+    if (!file) { res.status(404).json({ error: 'File not found' }); return; }
+    if (file.lead.assignedToId !== userId) { res.status(403).json({ error: 'Access denied' }); return; }
+
+    const updated = await prisma.file.update({
+      where: { id: fileId },
+      data: {
+        reviewStatus,
+        reviewedAt: reviewStatus !== 'PENDING' ? new Date() : null,
+      },
+    });
+
+    res.json({ file: { id: updated.id, reviewStatus: updated.reviewStatus, reviewedAt: updated.reviewedAt } });
+  } catch (error) {
+    console.error('Update file review error:', error);
+    res.status(500).json({ error: 'Failed to update review status' });
+  }
+});
 
 // DELETE /api/files/:fileId - Delete a file
 router.delete('/:fileId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {

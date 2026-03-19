@@ -139,7 +139,7 @@ model EmailSequence {
 }
 
 model File {
-  id               String    @id @default(cuid())
+  id               String       @id @default(cuid())
   filename         String
   originalName     String
   mimeType         String
@@ -147,15 +147,53 @@ model File {
   url              String
   uploadedBy       String?
   leadId           String
-  createdAt        DateTime  @default(now())
-  downloadCount    Int       @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt @default(now())
+  downloadCount    Int          @default(0)
   lastDownloadedAt DateTime?
   sharedAt         DateTime?
-  sharedWithClient Boolean   @default(false)
-  lead             Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  sharedWithClient Boolean      @default(false)
+  category         FileCategory @default(OTHER)
+  uploadedByType   String       @default("USER")
+  uploadedByName   String?
+  uploadedByEmail  String?
+  requiresReview   Boolean      @default(false)
+  reviewedAt       DateTime?
+  reviewStatus     String?
+  lead             Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  comments         FileComment[]
 
   @@index([leadId])
+  @@index([category])
   @@map("files")
+}
+
+model FileComment {
+  id          String   @id @default(cuid())
+  fileId      String
+  file        File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName  String
+  authorEmail String?
+  authorType  String
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([fileId])
+  @@index([userId])
+  @@map("file_comments")
+}
+
+enum FileCategory {
+  REFERENCE
+  LEGAL
+  PAYMENT
+  DELIVERABLE
+  REVISION
+  ASSET
+  OTHER
 }
 
 model Income {
@@ -479,6 +517,7 @@ model User {
   meetingTypes         MeetingType[]
   availabilitySchedules AvailabilitySchedule[]
   meetingBookings      MeetingBooking[]
+  fileComments         FileComment[]
 
   @@map("users")
 }
@@ -563,6 +602,7 @@ enum ActivityType {
   BOOKING_UPDATED
   BOOKING_COMPLETED
   BOOKING_CANCELLED
+  FILE_COMMENT
 }
 
 enum BookingStatus {

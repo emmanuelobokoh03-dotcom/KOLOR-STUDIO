@@ -2782,3 +2782,58 @@ export async function sendMeetingReminderEmail(data: {
     return false;
   }
 }
+
+// ── File Upload Notification ───────────────────────────
+interface FileUploadNotificationData {
+  userEmail: string;
+  userName: string;
+  clientName: string;
+  projectTitle: string;
+  fileName: string;
+  fileSize: number;
+  category: string;
+  categoryDisplayName: string;
+  categoryColor: string;
+  requiresReview: boolean;
+  leadId: string;
+}
+export async function sendFileUploadNotification(data: FileUploadNotificationData): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const formattedSize = data.fileSize < 1024 * 1024
+      ? `${(data.fileSize / 1024).toFixed(1)} KB`
+      : `${(data.fileSize / (1024 * 1024)).toFixed(1)} MB`;
+
+    const content = `
+      <h1 style="margin:0 0 ${EmailSpacing.lg} 0;font-size:24px;font-weight:700;color:${EmailColors.textPrimary};font-family:${EmailFonts.heading};">New File Uploaded</h1>
+      <p style="font-size:16px;color:${EmailColors.textSecondary};line-height:1.7;font-family:${EmailFonts.body};">
+        Hi ${data.userName.split(' ')[0]},
+      </p>
+      <p style="font-size:16px;color:${EmailColors.textSecondary};line-height:1.7;font-family:${EmailFonts.body};">
+        <strong style="color:${EmailColors.textPrimary};">${data.clientName}</strong> just uploaded a file to
+        <strong style="color:${EmailColors.textPrimary};">${data.projectTitle}</strong>.
+      </p>
+      ${cardBlock(`
+        <p style="margin:0 0 ${EmailSpacing.sm} 0;font-size:16px;font-weight:600;color:${EmailColors.textPrimary};font-family:${EmailFonts.heading};">${data.fileName}</p>
+        <p style="margin:0;">
+          <span style="display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:600;background:${data.categoryColor}20;color:${data.categoryColor};">${data.categoryDisplayName}</span>
+          <span style="margin-left:8px;font-size:13px;color:${EmailColors.textTertiary};">${formattedSize}</span>
+        </p>
+      `)}
+      ${data.requiresReview ? warningBox(`<p style="margin:0;font-size:14px;color:${EmailColors.warningText};font-family:${EmailFonts.body};"><strong>Review Required</strong> — This file has been flagged for your review.</p>`) : ''}
+      <table width="100%"><tr><td align="center" style="padding-top:${EmailSpacing.md};"><a href="${process.env.FRONTEND_URL || ''}/leads/${data.leadId}?tab=files" style="${primaryButtonStyle}">View File in Dashboard</a></td></tr></table>
+    `;
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: data.userEmail,
+      subject: `New file from ${data.clientName}: ${data.fileName}`,
+      html: getEmailTemplate(content, 'New File Uploaded'),
+    });
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] File upload notification error:', error);
+    return false;
+  }
+}
