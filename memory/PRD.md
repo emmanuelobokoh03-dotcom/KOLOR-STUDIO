@@ -40,16 +40,25 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Shared Styles:** `primaryButtonStyle` and `successButtonStyle` replaced old gradient buttons across all autopilot emails
 - **Reusable Components:** highlightBox, successBox, warningBox, infoBox, cardBlock, detailRow
 
+### Email Preview Endpoint (Mar 19, 2026)
+- **emailPreview.ts:** Dev-only route at `/api/preview-email` with gallery page and 23 individual template previews
+- **Gallery:** Card-based UI with USER/CLIENT badges, click-to-preview
+- **Guard:** `NODE_ENV !== 'production'` prevents exposure in production
+
 ## Prioritized Backlog
 
-### P1 (Next Up)
+### P0 (Next Up)
 - [ ] Google Calendar integration for booking system
+
+### P1
 - [ ] Mobile responsiveness polish
 - [ ] Landing page redesign (if user requests)
 
 ### P2 (Future)
 - [ ] Domain & launch prep (SPF/DKIM for Resend)
 - [ ] Visual Sequence Builder (post-beta)
+- [ ] Meeting booking widget embed code
+- [ ] Design Tokens Reference Page (live style guide)
 
 ## Test Reports
 - iteration_76: Meeting Booking System (backend 19/19, frontend 100%)
