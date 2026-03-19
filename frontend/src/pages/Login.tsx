@@ -23,7 +23,6 @@ const Login = () => {
     setLoading(true)
     setError('')
 
-    // Basic validation
     if (!formData.email || !formData.password) {
       setError('Please fill in all fields')
       setLoading(false)
@@ -42,7 +41,6 @@ const Login = () => {
       return
     }
 
-    // Store token and user data
     if (result.data?.token) {
       localStorage.setItem('token', result.data.token)
       localStorage.setItem('user', JSON.stringify(result.data.user))
@@ -52,30 +50,30 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-6">
+    <div className="min-h-screen bg-surface-background flex items-center justify-center px-6">
       <div className="max-w-md w-full animate-fade-in">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-3 mb-6 group">
-            <Sparkle className="w-8 h-8 text-brand-primary group-hover:text-purple-600 transition-colors duration-200" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
+            <Sparkle className="w-8 h-8 text-brand-600 group-hover:text-brand-700 transition-colors duration-fast" />
+            <span className="text-2xl font-bold font-heading bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
           </Link>
-          <h1 className="text-3xl font-bold mb-2 text-text-primary">Welcome back</h1>
-          <p className="text-text-secondary">Sign in to manage your creative business</p>
+          <h1 className="text-h3 font-heading text-text-primary mb-2">Welcome back</h1>
+          <p className="text-body-lg text-text-secondary">Sign in to manage your creative business</p>
         </div>
 
-        <div className="bg-light-50 rounded-2xl shadow-2xl p-8 border border-light-200">
+        <div className="card p-8 shadow-elevation-3 border-border">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600 animate-fade-in" data-testid="login-error" role="alert">
+            <div className="mb-6 p-4 bg-danger-light border border-danger-border rounded-card flex items-center gap-3 text-danger-text animate-fade-in" data-testid="login-error" role="alert">
               <WarningCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
-              <span className="text-sm">{error}</span>
+              <span className="text-body">{error}</span>
             </div>
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="login-email" className="block text-sm font-medium text-text-secondary mb-2">
+              <label htmlFor="login-email" className="input-label">
                 Email
               </label>
               <input
@@ -86,14 +84,14 @@ const Login = () => {
                 aria-required="true"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-gray-400"
+                className="input"
                 placeholder="you@example.com"
                 data-testid="login-email"
               />
             </div>
 
             <div>
-              <label htmlFor="login-password" className="block text-sm font-medium text-text-secondary mb-2">
+              <label htmlFor="login-password" className="input-label">
                 Password
               </label>
               <input
@@ -104,7 +102,7 @@ const Login = () => {
                 aria-required="true"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-200 text-text-primary placeholder-gray-400"
+                className="input"
                 placeholder="••••••••"
                 data-testid="login-password"
               />
@@ -113,7 +111,7 @@ const Login = () => {
             <div className="flex items-center justify-end">
               <Link
                 to="/forgot-password"
-                className="text-sm text-purple-600 hover:text-purple-600 font-medium transition-colors duration-200"
+                className="text-body-sm text-brand-600 hover:text-brand-700 font-medium transition-colors duration-fast"
                 data-testid="forgot-password-link"
               >
                 Forgot password?
@@ -124,7 +122,7 @@ const Login = () => {
               type="submit"
               disabled={loading}
               aria-busy={loading}
-              className="w-full bg-brand-primary text-white py-3 rounded-xl hover:bg-brand-primary transition-all duration-200 shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="btn btn-primary w-full py-3 rounded-card shadow-elevation-2 hover:shadow-elevation-3"
               data-testid="login-submit"
             >
               {loading ? (
@@ -139,9 +137,9 @@ const Login = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-text-secondary">
+            <p className="text-body text-text-secondary">
               Don't have an account?{' '}
-              <Link to="/signup" className="text-purple-600 hover:text-purple-600 font-semibold transition-colors duration-200">
+              <Link to="/signup" className="text-brand-600 hover:text-brand-700 font-semibold transition-colors duration-fast">
                 Sign up
               </Link>
             </p>

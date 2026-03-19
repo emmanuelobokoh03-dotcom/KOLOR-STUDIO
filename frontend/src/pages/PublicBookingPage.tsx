@@ -172,15 +172,15 @@ export default function PublicBookingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center">
-        <SpinnerGap className="w-8 h-8 animate-spin text-purple-600" />
+      <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-pink-50 flex items-center justify-center">
+        <SpinnerGap className="w-8 h-8 animate-spin text-brand-600" />
       </div>
     )
   }
 
   if (error && !userInfo) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-pink-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 text-center max-w-md">
           <CalendarBlank className="w-12 h-12 text-red-400 mx-auto mb-4" />
           <h1 className="text-xl font-bold text-text-primary mb-2">Booking Unavailable</h1>
@@ -191,9 +191,9 @@ export default function PublicBookingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50" data-testid="public-booking-page">
+    <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-pink-50" data-testid="public-booking-page">
       {/* Header */}
-      <div className="border-b border-light-200 bg-white/80 backdrop-blur-sm">
+      <div className="border-b border-border bg-white/80 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
           {userInfo?.brandLogoUrl && (
             <img src={userInfo.brandLogoUrl} alt="" className="w-8 h-8 rounded-lg object-cover" />

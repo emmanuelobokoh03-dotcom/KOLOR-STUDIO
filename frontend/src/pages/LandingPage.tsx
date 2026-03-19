@@ -44,7 +44,7 @@ const LandingPage = () => {
             </Link>
             <Link
               to="/signup"
-              className="bg-white text-purple-600 px-5 py-2 rounded-lg text-sm font-semibold hover:bg-white/90 transition-all shadow-lg"
+              className="bg-white text-brand-600 px-5 py-2 rounded-button text-sm font-semibold hover:bg-white/90 transition-all shadow-elevation-2"
               data-testid="nav-signup-link"
             >
               Get Started
@@ -67,7 +67,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
-            className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight"
+            className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight font-heading"
             data-testid="hero-headline"
           >
             Your CRM Should Work
@@ -81,7 +81,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-lg sm:text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto"
+            className="text-lg sm:text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto font-body"
             data-testid="hero-subheadline"
           >
             Autopilot quotes, contracts, and payments for photographers, artists, and designers.
@@ -97,14 +97,14 @@ const LandingPage = () => {
           >
             <Link
               to="/signup"
-              className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg shadow-elevation-3 hover:scale-105 transition-all inline-flex items-center gap-2"
+              className="bg-white text-brand-600 px-8 py-4 rounded-card font-semibold text-lg shadow-elevation-3 hover:scale-105 transition-all inline-flex items-center gap-2"
               data-testid="hero-cta-primary"
             >
               Start Free Trial <ArrowRight weight="bold" className="w-5 h-5" />
             </Link>
             <a
               href="#how-it-works"
-              className="border-2 border-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/10 transition-all"
+              className="border-2 border-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-card font-semibold text-lg hover:bg-white/10 transition-all"
               data-testid="hero-cta-secondary"
             >
               See How It Works
@@ -131,7 +131,7 @@ const LandingPage = () => {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="text-3xl sm:text-4xl font-bold text-text-primary mb-6"
+            className="text-3xl sm:text-4xl font-bold text-text-primary mb-6 font-heading"
           >
             You Didn't Become a Creative to Do Admin
           </motion.h2>
@@ -198,7 +198,7 @@ const LandingPage = () => {
               whileInView="visible"
               viewport={{ once: true }}
               custom={0}
-              className="text-3xl sm:text-4xl font-bold text-text-primary mb-4"
+              className="text-3xl sm:text-4xl font-bold text-text-primary mb-4 font-heading"
             >
               Complete Autopilot from Inquiry to Payment
             </motion.h2>
@@ -272,7 +272,7 @@ const LandingPage = () => {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="text-3xl sm:text-4xl font-bold text-text-primary text-center mb-16"
+            className="text-3xl sm:text-4xl font-bold text-text-primary text-center mb-16 font-heading"
           >
             From Inquiry to Payment in 3 Clicks
           </motion.h2>
@@ -321,7 +321,7 @@ const LandingPage = () => {
               whileInView="visible"
               viewport={{ once: true }}
               custom={0}
-              className="text-3xl sm:text-4xl font-bold text-text-primary mb-4"
+              className="text-3xl sm:text-4xl font-bold text-text-primary mb-4 font-heading"
             >
               Simple Pricing for Creatives
             </motion.h2>
@@ -390,7 +390,7 @@ const LandingPage = () => {
               </ul>
               <Link
                 to="/signup"
-                className="block w-full py-3 bg-white text-purple-600 rounded-xl font-semibold hover:shadow-elevation-3 transition-all text-center"
+                className="block w-full py-3 bg-white text-brand-600 rounded-card font-semibold hover:shadow-elevation-3 transition-all text-center"
                 data-testid="pricing-pro-cta"
               >
                 Start Free Trial <span aria-hidden>→</span>
@@ -437,7 +437,7 @@ const LandingPage = () => {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="text-4xl sm:text-5xl font-bold text-white mb-6"
+            className="text-4xl sm:text-5xl font-bold text-white mb-6 font-heading"
           >
             Stop Chasing. Start Creating.
           </motion.h2>
@@ -463,7 +463,7 @@ const LandingPage = () => {
           >
             <Link
               to="/signup"
-              className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg shadow-elevation-3 hover:scale-105 transition-all inline-flex items-center gap-2"
+              className="bg-white text-brand-600 px-8 py-4 rounded-card font-semibold text-lg shadow-elevation-3 hover:scale-105 transition-all inline-flex items-center gap-2"
               data-testid="final-cta-button"
             >
               Start Free Trial <ArrowRight weight="bold" className="w-5 h-5" />
@@ -503,7 +503,7 @@ function PainCard({
       whileInView="visible"
       viewport={{ once: true }}
       custom={index}
-      className="bg-white rounded-xl p-6 border border-light-200 shadow-elevation-1"
+      className="bg-white rounded-card p-6 border border-border shadow-card"
       data-testid={`pain-card-${index}`}
     >
       <div className={`w-14 h-14 ${bg} rounded-xl flex items-center justify-center mb-4 mx-auto`}>
@@ -537,7 +537,7 @@ function FeatureCard({
       whileInView="visible"
       viewport={{ once: true }}
       custom={index}
-      className="bg-white rounded-2xl p-8 shadow-elevation-2 hover:shadow-elevation-3 transition-shadow"
+      className="bg-white rounded-2xl p-8 shadow-card hover:shadow-card-hover transition-shadow"
       data-testid={`feature-card-${index}`}
     >
       <div
@@ -545,7 +545,7 @@ function FeatureCard({
       >
         {icon}
       </div>
-      <h3 className="text-xl sm:text-2xl font-bold text-text-primary mb-3">{title}</h3>
+      <h3 className="text-xl sm:text-2xl font-bold text-text-primary mb-3 font-heading">{title}</h3>
       <p className="text-text-secondary mb-4">{desc}</p>
       <div className="flex flex-wrap items-center gap-2 text-sm">
         {tags.map((t) => (

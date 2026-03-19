@@ -179,9 +179,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
     }, 1000);
   };
 
-  const inputClass = "w-full px-4 py-2.5 bg-white border-2 border-light-200 rounded-xl focus:ring-2 focus:ring-purple-100 focus:border-purple-500 text-text-primary placeholder-gray-400 transition-all duration-200 text-base font-medium";
-  const selectClass = "w-full px-4 py-2.5 bg-white border-2 border-light-200 rounded-xl focus:ring-2 focus:ring-purple-100 focus:border-purple-500 text-text-primary transition-all duration-200 text-base font-medium appearance-none cursor-pointer";
-  const labelClass = "block text-sm font-medium text-text-primary mb-1.5";
+  const inputClass = "input";
+  const selectClass = "input appearance-none cursor-pointer";
+  const labelClass = "input-label";
 
   const modalRef = useModalA11y(true, onClose)
 
@@ -212,15 +212,15 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
         {/* Content */}
         <div className="p-4 md:p-6 overflow-y-auto flex-1 md:max-h-[70vh]">
           {error && (
-            <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 animate-fade-in" role="alert">
+            <div className="mb-5 p-4 bg-danger-light border border-danger-border rounded-card flex items-center gap-3 text-danger-text animate-fade-in" role="alert">
               <WarningCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
-              <span className="text-sm">{error}</span>
+              <span className="text-body">{error}</span>
             </div>
           )}
           {success && (
-            <div className="mb-5 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3 text-green-700 animate-fade-in">
+            <div className="mb-5 p-4 bg-success-light border border-success-border rounded-card flex items-center gap-3 text-success-text animate-fade-in">
               <CheckCircle className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm">Lead created successfully!</span>
+              <span className="text-body">Lead created successfully!</span>
             </div>
           )}
 
@@ -452,13 +452,13 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
 
             {/* Submit */}
             <div className="flex justify-end gap-3 pt-4 border-t border-light-200">
-              <button type="button" onClick={onClose} className="px-5 md:px-6 py-2.5 text-text-secondary hover:bg-light-100 rounded-xl font-medium transition-all duration-200 touch-target">Cancel</button>
+              <button type="button" onClick={onClose} className="btn btn-ghost touch-target">Cancel</button>
               <button 
                 type="submit" 
                 disabled={loading}
                 aria-busy={loading}
                 aria-label={loading ? 'Creating lead, please wait' : 'Create lead'}
-                className="px-5 md:px-6 py-2.5 bg-brand-primary text-white rounded-xl font-medium hover:bg-brand-primary disabled:opacity-50 flex items-center gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-brand-primary/20 touch-target" 
+                className="btn btn-primary touch-target" 
                 data-testid="add-lead-submit"
               >
                 {loading ? (

@@ -478,7 +478,7 @@ const Dashboard = () => {
         <div className="mb-4 md:mb-8" data-testid="welcome-section">
           {isFirstLogin ? (
             <div className="animate-fade-in">
-              <h1 className="text-2xl md:text-3xl font-bold text-text-primary" data-testid="welcome-first-login">
+              <h1 className="text-2xl md:text-3xl font-bold text-text-primary font-heading" data-testid="welcome-first-login">
                 Welcome to KOLOR STUDIO, {user?.firstName}!
               </h1>
               <p className="text-sm md:text-base text-text-secondary mt-1 md:mt-2">
@@ -487,7 +487,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="animate-fade-in">
-              <h1 className="text-2xl md:text-3xl font-bold text-text-primary" data-testid="welcome-back">
+              <h1 className="text-2xl md:text-3xl font-bold text-text-primary font-heading" data-testid="welcome-back">
                 {getGreeting()}, {user?.firstName}
               </h1>
               <p className="text-xs md:text-sm text-text-secondary mt-1">{formatCurrentDate()}</p>
@@ -596,7 +596,7 @@ const Dashboard = () => {
                       const lead = leads.find(l => l.id === pendingContracts[0].lead?.id)
                       if (lead) setSelectedLead(lead)
                     }}
-                    className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                    className="btn btn-primary text-sm"
                     data-testid="review-contract-btn"
                   >
                     Review Contract
@@ -689,7 +689,7 @@ const Dashboard = () => {
                 placeholder="Search leads..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 bg-white border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-text-primary placeholder-gray-400 transition-all duration-200 text-sm"
+                className="w-full pl-9 pr-3 py-2.5 bg-white border-2 border-border rounded-input focus:border-brand-600 focus:shadow-input-focus text-text-primary placeholder-text-tertiary transition-all duration-fast text-sm"
                 data-testid="search-input"
               />
             </div>

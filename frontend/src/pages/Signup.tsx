@@ -28,7 +28,6 @@ const Signup = () => {
     setError('')
     setSuccess('')
 
-    // Basic validation
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
       setError('Please fill in all required fields')
       setLoading(false)
@@ -58,7 +57,6 @@ const Signup = () => {
 
     trackSignup('email')
     
-    // Auto-login after signup
     const loginResult = await authApi.login({ email: formData.email, password: formData.password })
     if (loginResult.data?.token) {
       localStorage.setItem('token', loginResult.data.token)
@@ -71,39 +69,39 @@ const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-50 flex items-center justify-center px-6 py-12">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-surface-background flex items-center justify-center px-6 py-12">
+      <div className="max-w-md w-full animate-fade-in">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Sparkle className="w-8 h-8 text-brand-primary" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
+          <Link to="/" className="inline-flex items-center gap-3 mb-6 group">
+            <Sparkle className="w-8 h-8 text-brand-600 group-hover:text-brand-700 transition-colors duration-fast" />
+            <span className="text-2xl font-bold font-heading bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">
               KOLOR STUDIO
             </span>
           </Link>
-          <h1 className="text-3xl font-bold mb-2 text-text-primary">Start your free account</h1>
-          <p className="text-text-secondary">No credit card required • 2-minute setup</p>
+          <h1 className="text-h3 font-heading text-text-primary mb-2">Start your free account</h1>
+          <p className="text-body-lg text-text-secondary">No credit card required · 2-minute setup</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
+        <div className="card p-8 shadow-elevation-3">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-600" data-testid="signup-error" role="alert">
+            <div className="mb-6 p-4 bg-danger-light border border-danger-border rounded-card flex items-center gap-3 text-danger-text animate-fade-in" data-testid="signup-error" role="alert">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm">{error}</span>
+              <span className="text-body">{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3 text-green-700" data-testid="signup-success">
+            <div className="mb-6 p-4 bg-success-light border border-success-border rounded-card flex items-center gap-3 text-success-text animate-fade-in" data-testid="signup-success">
               <CheckCircle weight="fill" className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm font-medium">{success}</span>
+              <span className="text-body font-medium">{success}</span>
             </div>
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="signup-fn" className="block text-sm font-medium text-text-secondary mb-2">
-                  First Name <span className="text-red-500" aria-label="required">*</span>
+                <label htmlFor="signup-fn" className="input-label">
+                  First Name <span className="text-danger" aria-label="required">*</span>
                 </label>
                 <input
                   id="signup-fn"
@@ -113,14 +111,14 @@ const Signup = () => {
                   aria-required="true"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
+                  className="input"
                   placeholder="John"
                   data-testid="signup-firstname"
                 />
               </div>
               <div>
-                <label htmlFor="signup-ln" className="block text-sm font-medium text-text-secondary mb-2">
-                  Last Name <span className="text-red-500" aria-label="required">*</span>
+                <label htmlFor="signup-ln" className="input-label">
+                  Last Name <span className="text-danger" aria-label="required">*</span>
                 </label>
                 <input
                   id="signup-ln"
@@ -130,7 +128,7 @@ const Signup = () => {
                   aria-required="true"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
+                  className="input"
                   placeholder="Doe"
                   data-testid="signup-lastname"
                 />
@@ -138,7 +136,7 @@ const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="signup-studio" className="block text-sm font-medium text-text-secondary mb-2">
+              <label htmlFor="signup-studio" className="input-label">
                 Studio Name
               </label>
               <input
@@ -147,15 +145,15 @@ const Signup = () => {
                 name="studioName"
                 value={formData.studioName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
+                className="input"
                 placeholder="Your Creative Studio"
                 data-testid="signup-studioname"
               />
             </div>
 
             <div>
-              <label htmlFor="signup-email" className="block text-sm font-medium text-text-secondary mb-2">
-                Email <span className="text-red-500" aria-label="required">*</span>
+              <label htmlFor="signup-email" className="input-label">
+                Email <span className="text-danger" aria-label="required">*</span>
               </label>
               <input
                 id="signup-email"
@@ -165,15 +163,15 @@ const Signup = () => {
                 aria-required="true"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
+                className="input"
                 placeholder="you@example.com"
                 data-testid="signup-email"
               />
             </div>
 
             <div>
-              <label htmlFor="signup-pw" className="block text-sm font-medium text-text-secondary mb-2">
-                Password <span className="text-red-500" aria-label="required">*</span>
+              <label htmlFor="signup-pw" className="input-label">
+                Password <span className="text-danger" aria-label="required">*</span>
               </label>
               <input
                 id="signup-pw"
@@ -183,17 +181,17 @@ const Signup = () => {
                 aria-required="true"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-light-100 border border-light-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-text-primary placeholder-gray-400"
+                className="input"
                 placeholder="••••••••"
                 data-testid="signup-password"
               />
-              <p className="text-xs text-text-tertiary mt-1">Minimum 6 characters</p>
+              <p className="text-caption text-text-tertiary mt-1">Minimum 6 characters</p>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-primary text-white py-3 rounded-lg hover:bg-brand-primary transition-all shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-brand-primary-dark/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="btn btn-primary w-full py-3 rounded-card shadow-elevation-2 hover:shadow-elevation-3"
               data-testid="signup-submit"
             >
               {loading ? (
@@ -208,22 +206,22 @@ const Signup = () => {
           </form>
 
           <div className="mt-4 text-center">
-            <p className="text-xs text-text-tertiary" data-testid="signup-legal-agreement">
+            <p className="text-caption text-text-tertiary" data-testid="signup-legal-agreement">
               By signing up, you agree to our{' '}
-              <Link to="/terms" className="text-purple-600 hover:text-purple-600 underline">
+              <Link to="/terms" className="text-brand-600 hover:text-brand-700 underline">
                 Terms of Service
               </Link>
               {' '}and{' '}
-              <Link to="/privacy" className="text-purple-600 hover:text-purple-600 underline">
+              <Link to="/privacy" className="text-brand-600 hover:text-brand-700 underline">
                 Privacy Policy
               </Link>
             </p>
           </div>
 
           <div className="mt-4 text-center">
-            <p className="text-sm text-text-secondary">
+            <p className="text-body text-text-secondary">
               Already have an account?{' '}
-              <Link to="/login" className="text-purple-600 hover:text-purple-600 font-semibold">
+              <Link to="/login" className="text-brand-600 hover:text-brand-700 font-semibold transition-colors duration-fast">
                 Sign in
               </Link>
             </p>
