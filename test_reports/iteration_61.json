@@ -72,7 +72,7 @@
     "frontend": "100% (44 tests passed)"
   },
   "test_credentials": {
-    "preview_url": "https://availability-sync-5.preview.emergentagent.com"
+    "preview_url": "https://email-preview-7.preview.emergentagent.com"
   },
   "seed_data_creation": "No seed data required - public landing page",
   "retest_needed": false,

@@ -41,7 +41,7 @@
     "backend": "100% (9/9 tests passed)"
   },
   "test_credentials": {
-    "preview_url": "https://availability-sync-5.preview.emergentagent.com",
+    "preview_url": "https://email-preview-7.preview.emergentagent.com",
     "owner_email_for_email_delivery": "emmanuelobokoh03@gmail.com",
     "note": "External emails return emailSent: false due to Resend sandbox limitation"
   },

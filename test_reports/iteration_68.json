@@ -44,7 +44,7 @@
     "frontend": "100% (All inquiry form checks passed)"
   },
   "test_credentials": {
-    "preview_url": "https://availability-sync-5.preview.emergentagent.com",
+    "preview_url": "https://email-preview-7.preview.emergentagent.com",
     "test_user": "emailtest@test.com / password123",
     "owner_email_for_email_delivery": "emmanuelobokoh03@gmail.com"
   },

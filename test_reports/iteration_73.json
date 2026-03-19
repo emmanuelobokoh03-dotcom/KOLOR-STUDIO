@@ -52,7 +52,7 @@
   "test_credentials": {
     "email": "testuser@test.com",
     "password": "Test1234!",
-    "app_url": "https://availability-sync-5.preview.emergentagent.com"
+    "app_url": "https://email-preview-7.preview.emergentagent.com"
   },
   "seed_data_creation": "Used existing test lead 'Final UI Test - Brand Photoshoot' with Commission type",
   "retest_needed": false,
