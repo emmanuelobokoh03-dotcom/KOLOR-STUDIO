@@ -11,7 +11,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = "https://kolor-light-theme.preview.emergentagent.com"
+BASE_URL = "https://availability-sync-5.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

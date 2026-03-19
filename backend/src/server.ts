@@ -37,6 +37,11 @@ import { processQuoteFollowUpSequences } from './services/quoteFollowUpService';
 import { processScheduledEmails } from './services/scheduledEmailService';
 import trackingRoutes from './routes/tracking';
 import userRoutes from './routes/user';
+import meetingTypesRoutes from './routes/meeting-types';
+import availabilityRoutes from './routes/availability';
+import publicBookingRoutes, { meetingBookingsRouter } from './routes/public-booking';
+import { processMeetingReminders } from './services/meetingReminderService';
+import { authMiddleware } from './middleware/auth';
 
 // dotenv already loaded at the top of this file
 
@@ -138,6 +143,7 @@ app.use('/api/auth/verify-email', emailLimiter);
 app.use('/api/auth/forgot-password', emailLimiter);
 app.use('/api/files/upload', uploadLimiter);
 app.use('/api/portal', portalLimiter);
+app.use('/api/book', portalLimiter);
 app.use('/api/', apiLimiter); // general limiter last (least restrictive)
 
 // API Routes - all prefixed with /api for K8s ingress routing
@@ -165,6 +171,10 @@ app.use('/api/payments', paymentRoutes); // Payments: /api/payments/*
 app.use('/api/digest', digestRoutes); // Digest: /api/digest/*
 app.use('/api/track', trackingRoutes); // Email tracking: /api/track/* (public, no auth)
 app.use('/api/user', userRoutes); // User account: /api/user/* (GDPR delete)
+app.use('/api/meeting-types', meetingTypesRoutes); // Meeting types: /api/meeting-types/*
+app.use('/api/availability', availabilityRoutes); // Availability: /api/availability/*
+app.use('/api/book', publicBookingRoutes); // Public booking: /api/book/:userId/*
+app.use('/api/meeting-bookings', authMiddleware as any, meetingBookingsRouter); // Auth'd meeting bookings
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {
@@ -298,6 +308,16 @@ app.listen(PORT, () => {
     }, SCHEDULED_EMAIL_INTERVAL);
   }, 30000);
   console.log('📬 Scheduled email processor started (every 2 hours)');
+
+  // Meeting reminders — runs every hour
+  const MEETING_REMINDER_INTERVAL = 60 * 60 * 1000;
+  setTimeout(() => {
+    processMeetingReminders().catch(e => console.error('[MeetingReminders] Initial run error:', e));
+    setInterval(() => {
+      processMeetingReminders().catch(e => console.error('[MeetingReminders] Cron error:', e));
+    }, MEETING_REMINDER_INTERVAL);
+  }, 35000);
+  console.log('📅 Meeting reminder processor started (every hour)');
 });
 
 export default app;

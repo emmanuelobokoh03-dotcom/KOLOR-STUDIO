@@ -1405,4 +1405,114 @@ export const paymentsApi = {
 };
 
 
-export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi, contractsApi, paymentsApi };
+// ========================
+// MEETING BOOKING SYSTEM
+// ========================
+
+export interface MeetingType {
+  id: string;
+  name: string;
+  description?: string | null;
+  duration: number;
+  color: string;
+  location?: string | null;
+  isActive: boolean;
+  order: number;
+  bufferBefore: number;
+  bufferAfter: number;
+  maxPerDay?: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AvailabilitySlot {
+  id: string;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  isActive: boolean;
+}
+
+export interface MeetingBooking {
+  id: string;
+  meetingTypeId: string;
+  userId: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone?: string | null;
+  clientNotes?: string | null;
+  startTime: string;
+  endTime: string;
+  status: 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
+  meetingType?: { name: string; duration: number; color: string; location?: string | null };
+  createdAt: string;
+}
+
+export const meetingTypesApi = {
+  getAll: async () => {
+    return request<{ meetingTypes: MeetingType[] }>('/api/meeting-types');
+  },
+  create: async (data: { name: string; description?: string; duration: number; color?: string; location?: string; bufferBefore?: number; bufferAfter?: number; maxPerDay?: number | null }) => {
+    return request<{ message: string; meetingType: MeetingType }>('/api/meeting-types', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  update: async (id: string, data: Partial<MeetingType>) => {
+    return request<{ message: string; meetingType: MeetingType }>(`/api/meeting-types/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  delete: async (id: string) => {
+    return request<{ message: string }>(`/api/meeting-types/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+export const availabilityApi = {
+  get: async () => {
+    return request<{ availability: AvailabilitySlot[] }>('/api/availability');
+  },
+  save: async (slots: { dayOfWeek: number; startTime: string; endTime: string; isActive?: boolean }[]) => {
+    return request<{ message: string; availability: AvailabilitySlot[] }>('/api/availability', {
+      method: 'PUT',
+      body: JSON.stringify({ slots }),
+    });
+  },
+};
+
+export const publicBookingApi = {
+  getPageData: async (userId: string) => {
+    return request<{
+      user: { id: string; firstName: string; lastName: string; studioName?: string | null; brandPrimaryColor: string; brandAccentColor: string; brandLogoUrl?: string | null; timezone: string };
+      meetingTypes: { id: string; name: string; description?: string | null; duration: number; color: string; location?: string | null }[];
+    }>(`/api/book/${userId}`);
+  },
+  getSlots: async (userId: string, meetingTypeId: string, date: string) => {
+    return request<{ slots: string[]; date: string; meetingType: { name: string; duration: number } }>(`/api/book/${userId}/${meetingTypeId}/slots?date=${date}`);
+  },
+  createBooking: async (userId: string, meetingTypeId: string, data: { clientName: string; clientEmail: string; clientPhone?: string; clientNotes?: string; startTime: string }) => {
+    return request<{ message: string; booking: { id: string; meetingType: string; startTime: string; endTime: string; status: string } }>(`/api/book/${userId}/${meetingTypeId}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+};
+
+export const meetingBookingsApi = {
+  getAll: async (params?: { status?: string; upcoming?: boolean }) => {
+    const query = params ? '?' + new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)])).toString() : '';
+    return request<{ bookings: MeetingBooking[] }>(`/api/meeting-bookings${query}`);
+  },
+  cancel: async (id: string, reason?: string) => {
+    return request<{ message: string; booking: MeetingBooking }>(`/api/meeting-bookings/${id}/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ reason }),
+    });
+  },
+};
+
+
+export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi, contractsApi, paymentsApi, meetingTypesApi, availabilityApi, publicBookingApi, meetingBookingsApi };

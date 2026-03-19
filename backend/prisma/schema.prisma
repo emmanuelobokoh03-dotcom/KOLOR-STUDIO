@@ -476,6 +476,9 @@ model User {
   testimonials         Testimonial[]
   emailSequences       EmailSequence[]
   auditLogs            AuditLog[]
+  meetingTypes         MeetingType[]
+  availabilitySchedules AvailabilitySchedule[]
+  meetingBookings      MeetingBooking[]
 
   @@map("users")
 }
@@ -855,4 +858,81 @@ model ScheduledEmail {
   @@index([scheduledFor])
   @@index([sentAt])
   @@map("scheduled_emails")
+}
+
+
+// ========================
+// MEETING BOOKING SYSTEM
+// ========================
+
+model MeetingType {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  duration    Int      @default(30)   // minutes
+  color       String   @default("#A855F7")
+  location    String?                 // e.g. "Zoom", "Studio", "Phone"
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  bufferBefore Int     @default(0)    // minutes buffer before meeting
+  bufferAfter  Int     @default(15)   // minutes buffer after meeting
+  maxPerDay   Int?                    // optional daily cap
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  bookings    MeetingBooking[]
+
+  @@index([userId])
+  @@index([isActive])
+  @@map("meeting_types")
+}
+
+model AvailabilitySchedule {
+  id        String @id @default(cuid())
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dayOfWeek Int    // 0=Sunday, 1=Monday ... 6=Saturday
+  startTime String // "09:00" (HH:mm format)
+  endTime   String // "17:00" (HH:mm format)
+  isActive  Boolean @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@unique([userId, dayOfWeek, startTime])
+  @@map("availability_schedules")
+}
+
+model MeetingBooking {
+  id              String   @id @default(cuid())
+  meetingTypeId   String
+  meetingType     MeetingType @relation(fields: [meetingTypeId], references: [id], onDelete: Cascade)
+  userId          String   // the studio owner who the meeting is with
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clientName      String
+  clientEmail     String
+  clientPhone     String?
+  clientNotes     String?
+  startTime       DateTime
+  endTime         DateTime
+  status          MeetingStatus @default(CONFIRMED)
+  cancelledAt     DateTime?
+  cancelReason    String?
+  reminderSentAt  DateTime?
+  confirmationSentAt DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([meetingTypeId])
+  @@index([startTime])
+  @@index([status])
+  @@map("meeting_bookings")
+}
+
+enum MeetingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
 }

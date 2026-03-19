@@ -14,6 +14,7 @@ import TermsOfService from './pages/TermsOfService'
 import PublicPortfolio from './pages/PublicPortfolio'
 import SubmitTestimonial from './pages/SubmitTestimonial'
 import VerifyEmail from './pages/VerifyEmail'
+import PublicBookingPage from './pages/PublicBookingPage'
 import IndustryOnboarding from './components/IndustryOnboarding'
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
@@ -44,6 +45,7 @@ function App() {
         <Route path="/portfolio/:userId" element={<PublicPortfolio />} />
         <Route path="/testimonial/:token" element={<SubmitTestimonial />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
+        <Route path="/book/:userId" element={<PublicBookingPage />} />
         <Route path="/onboarding" element={<IndustryOnboarding />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />

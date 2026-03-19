@@ -7,7 +7,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://kolor-light-theme.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://availability-sync-5.preview.emergentagent.com')
 BASE_URL = BASE_URL.rstrip('/')
 
 # Test portal token provided

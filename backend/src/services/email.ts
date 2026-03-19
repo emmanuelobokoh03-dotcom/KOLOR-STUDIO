@@ -113,7 +113,7 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
     return false;
   }
 
-  const dashboardUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const dashboardUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
 
   const content = `
@@ -261,7 +261,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   }
 
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
   const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null;
 
   const content = `
@@ -443,7 +443,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -538,7 +538,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -632,7 +632,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
   const resetUrl = `${baseUrl}/reset-password/${data.resetToken}`;
 
   const content = `
@@ -725,7 +725,7 @@ export async function sendVerificationEmail(data: VerificationEmailData): Promis
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
   const verifyUrl = `${baseUrl}/verify-email/${data.verificationToken}`;
 
   const content = `
@@ -818,7 +818,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
   console.log('[EMAIL] SENDER_EMAIL:', SENDER_EMAIL);
   console.log('[EMAIL] Recipient:', data.clientEmail);
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
   // Link to portal if portalToken is available, otherwise fallback to public quote page
   const quoteUrl = data.portalToken
     ? `${baseUrl}/portal/${data.portalToken}`
@@ -957,7 +957,7 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
 
   console.log('[EMAIL] SENDER_EMAIL:', SENDER_EMAIL, '| Recipient:', data.ownerEmail);
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const sym = data.currencySymbol || '$';
   const formattedTotal = `${sym}${data.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -1059,7 +1059,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -2165,7 +2165,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
   const sym = stats.currencySymbol;
   const startStr = period.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const endStr = period.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolor-light-theme.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
 
   // Build stat cards
   const statCards = [
@@ -2657,6 +2657,206 @@ export async function sendQuoteFollowUpEmail(
     return true;
   } catch (error) {
     console.error(`[QUOTE FOLLOWUP] Step ${step} error:`, error);
+    return false;
+  }
+}
+
+
+// ========================
+// MEETING BOOKING EMAILS
+// ========================
+
+interface MeetingConfirmationData {
+  clientName: string;
+  clientEmail: string;
+  meetingTypeName: string;
+  startTime: Date;
+  endTime: Date;
+  duration: number;
+  location?: string | null;
+  studioName: string;
+  bookingId: string;
+}
+
+export async function sendMeetingConfirmationEmail(data: MeetingConfirmationData): Promise<boolean> {
+  if (!resend) {
+    console.warn('[EMAIL] Resend not configured — skipping meeting confirmation');
+    return false;
+  }
+
+  const formattedDate = data.startTime.toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+  });
+  const formattedTime = data.startTime.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit', timeZone: 'UTC',
+  });
+  const formattedEndTime = data.endTime.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit', timeZone: 'UTC',
+  });
+
+  const content = `
+    <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 20px;">Meeting Confirmed!</h2>
+    <p style="color: #4a4a68; font-size: 16px; line-height: 1.6;">
+      Hi ${data.clientName},
+    </p>
+    <p style="color: #4a4a68; font-size: 16px; line-height: 1.6;">
+      Your meeting with <strong>${data.studioName}</strong> has been confirmed.
+    </p>
+    <div style="background: #f8f7ff; border-radius: 12px; padding: 24px; margin: 24px 0;">
+      <table style="width: 100%;" cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600; width: 120px;">Meeting</td>
+          <td style="padding: 8px 0; color: #1a1a2e;">${data.meetingTypeName}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Date</td>
+          <td style="padding: 8px 0; color: #1a1a2e;">${formattedDate}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Time</td>
+          <td style="padding: 8px 0; color: #1a1a2e;">${formattedTime} — ${formattedEndTime} (${data.duration} min)</td>
+        </tr>
+        ${data.location ? `
+        <tr>
+          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Location</td>
+          <td style="padding: 8px 0; color: #1a1a2e;">${data.location}</td>
+        </tr>
+        ` : ''}
+      </table>
+    </div>
+    <p style="color: #4a4a68; font-size: 14px; line-height: 1.6;">
+      If you need to cancel or reschedule, please reply to this email.
+    </p>
+  `;
+
+  try {
+    const { error } = await resend.emails.send({
+      from: `${data.studioName} <${SENDER_EMAIL}>`,
+      to: [data.clientEmail],
+      subject: `Meeting Confirmed: ${data.meetingTypeName} with ${data.studioName}`,
+      html: getEmailTemplate(content, 'Meeting Confirmation'),
+    });
+    if (error) {
+      console.error('[EMAIL] Meeting confirmation failed:', error);
+      return false;
+    }
+    console.log(`[EMAIL] Meeting confirmation sent to ${data.clientEmail}`);
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Meeting confirmation error:', error);
+    return false;
+  }
+}
+
+interface MeetingOwnerNotificationData {
+  ownerEmail: string;
+  clientName: string;
+  clientEmail: string;
+  meetingTypeName: string;
+  startTime: Date;
+  duration: number;
+  location?: string | null;
+  clientNotes?: string;
+  studioName: string;
+}
+
+export async function sendMeetingNotificationToOwner(data: MeetingOwnerNotificationData): Promise<boolean> {
+  if (!resend) return false;
+
+  const formattedDate = data.startTime.toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+  });
+  const formattedTime = data.startTime.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit', timeZone: 'UTC',
+  });
+
+  const content = `
+    <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 20px;">New Meeting Booked!</h2>
+    <p style="color: #4a4a68; font-size: 16px; line-height: 1.6;">
+      <strong>${data.clientName}</strong> (${data.clientEmail}) has booked a meeting with you.
+    </p>
+    <div style="background: #f8f7ff; border-radius: 12px; padding: 24px; margin: 24px 0;">
+      <table style="width: 100%;" cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600; width: 120px;">Meeting</td>
+          <td style="padding: 8px 0; color: #1a1a2e;">${data.meetingTypeName}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Date</td>
+          <td style="padding: 8px 0; color: #1a1a2e;">${formattedDate}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Time</td>
+          <td style="padding: 8px 0; color: #1a1a2e;">${formattedTime} (${data.duration} min)</td>
+        </tr>
+        ${data.location ? `<tr><td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Location</td><td style="padding: 8px 0; color: #1a1a2e;">${data.location}</td></tr>` : ''}
+        ${data.clientNotes ? `<tr><td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Notes</td><td style="padding: 8px 0; color: #1a1a2e;">${data.clientNotes}</td></tr>` : ''}
+      </table>
+    </div>
+  `;
+
+  try {
+    const { error } = await resend.emails.send({
+      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
+      to: [data.ownerEmail],
+      subject: `New Booking: ${data.meetingTypeName} with ${data.clientName}`,
+      html: getEmailTemplate(content, 'New Meeting Booking'),
+    });
+    if (error) {
+      console.error('[EMAIL] Owner meeting notification failed:', error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Owner meeting notification error:', error);
+    return false;
+  }
+}
+
+export async function sendMeetingReminderEmail(data: {
+  clientName: string;
+  clientEmail: string;
+  meetingTypeName: string;
+  startTime: Date;
+  duration: number;
+  location?: string | null;
+  studioName: string;
+}): Promise<boolean> {
+  if (!resend) return false;
+
+  const formattedDate = data.startTime.toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+  });
+  const formattedTime = data.startTime.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit', timeZone: 'UTC',
+  });
+
+  const content = `
+    <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 20px;">Meeting Reminder</h2>
+    <p style="color: #4a4a68; font-size: 16px; line-height: 1.6;">
+      Hi ${data.clientName}, this is a reminder about your upcoming meeting with <strong>${data.studioName}</strong>.
+    </p>
+    <div style="background: #f8f7ff; border-radius: 12px; padding: 24px; margin: 24px 0;">
+      <p style="color: #1a1a2e; margin: 0;"><strong>${data.meetingTypeName}</strong></p>
+      <p style="color: #4a4a68; margin: 8px 0 0;">${formattedDate} at ${formattedTime} (${data.duration} min)</p>
+      ${data.location ? `<p style="color: #4a4a68; margin: 8px 0 0;">Location: ${data.location}</p>` : ''}
+    </div>
+  `;
+
+  try {
+    const { error } = await resend.emails.send({
+      from: `${data.studioName} <${SENDER_EMAIL}>`,
+      to: [data.clientEmail],
+      subject: `Reminder: ${data.meetingTypeName} with ${data.studioName} — ${formattedDate}`,
+      html: getEmailTemplate(content, 'Meeting Reminder'),
+    });
+    if (error) {
+      console.error('[EMAIL] Meeting reminder failed:', error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Meeting reminder error:', error);
     return false;
   }
 }

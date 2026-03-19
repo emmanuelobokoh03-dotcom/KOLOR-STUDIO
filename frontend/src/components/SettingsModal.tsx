@@ -15,6 +15,7 @@ import {
   Warning,
   UserCircleMinus,
   EnvelopeSimple,
+  CalendarBlank,
 } from '@phosphor-icons/react'
 import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 import { formatCurrency, NUMBER_FORMAT_OPTIONS } from '../utils/currency'
@@ -22,6 +23,7 @@ import BrandSettings from './BrandSettings'
 import TestimonialsManagement from './TestimonialsManagement'
 import AccountDangerZone from './AccountDangerZone'
 import EmailSignatureSettings from './EmailSignatureSettings'
+import SchedulingSettings from './SchedulingSettings'
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -29,7 +31,7 @@ interface SettingsModalProps {
   onRestartTutorial?: () => void;
 }
 
-type SettingsTab = 'currency' | 'brand' | 'testimonials' | 'email' | 'account';
+type SettingsTab = 'currency' | 'brand' | 'testimonials' | 'email' | 'scheduling' | 'account';
 
 export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTutorial }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>('currency')
@@ -139,7 +141,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
     <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-50 p-0 md:p-4" onClick={onClose} role="presentation">
       <div 
         className={`bg-white md:rounded-2xl shadow-2xl w-full h-full md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 transition-all duration-300 ${
-          activeTab === 'brand' || activeTab === 'testimonials' ? 'md:max-w-5xl' : 'md:max-w-2xl'
+          activeTab === 'brand' || activeTab === 'testimonials' || activeTab === 'scheduling' ? 'md:max-w-5xl' : 'md:max-w-2xl'
         }`}
         onClick={e => e.stopPropagation()}
         data-testid="settings-modal"
@@ -205,6 +207,18 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               Reviews
             </button>
             <button
+              onClick={() => setActiveTab('scheduling')}
+              className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
+                activeTab === 'scheduling'
+                  ? 'bg-white text-text-primary'
+                  : 'bg-white/20 text-white/90 hover:text-white hover:bg-white/30'
+              }`}
+              data-testid="scheduling-tab"
+            >
+              <CalendarBlank className="w-4 h-4" />
+              Scheduling
+            </button>
+            <button
               onClick={() => setActiveTab('email')}
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'email'
@@ -237,6 +251,8 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
             <BrandSettings />
           ) : activeTab === 'testimonials' ? (
             <TestimonialsManagement />
+          ) : activeTab === 'scheduling' ? (
+            <SchedulingSettings />
           ) : activeTab === 'email' ? (
             <EmailSignatureSettings />
           ) : activeTab === 'account' ? (
