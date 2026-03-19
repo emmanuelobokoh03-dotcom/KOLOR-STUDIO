@@ -53,10 +53,15 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Email notification:** `sendFileUploadNotification` triggered when clients upload via portal
 - **Activity logging:** FILE_COMMENT activity type added
 
+### File Upload Notifications System - Part 2 Frontend (Mar 19, 2026)
+- **FileCategoryBadge.tsx:** Colored badge component with Phosphor icons for all 7 categories
+- **FileComments.tsx:** Inline comments with add/delete, author type badges (You/Client), timestamps
+- **LeadDetailModal Files tab:** Replaced gallery grid with list view, added category filter pills with counts, review workflow buttons (Approve/Request Changes), review status badges (Pending/Approved/Changes Needed), expandable comments per file
+- **api.ts:** Added `updateFileCategory`, `updateFileReview`, `getFileComments`, `addFileComment`, `deleteFileComment` methods; updated `LeadFile` interface
+
 ## Prioritized Backlog
 
 ### P0 (Next Up)
-- [ ] File Upload Notifications System - Part 2 (Frontend UI: file categories, comments UI, review workflow)
 - [ ] Google Calendar integration for booking system
 
 ### P1
@@ -74,6 +79,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_77: UI System v2.0 (frontend 100%)
 - iteration_78: Email Template Redesign (backend 14/14, all API paths verified)
 - iteration_79: File Upload Notifications Part 1 (backend 18/18, 100%)
+- iteration_80: File Management Frontend UI (backend 100%, frontend 100%)
 
 ## Test Credentials
 - bookingtest@test.com / password123 (User ID: cmmw4gvhr0000msmu77aijfb9)
