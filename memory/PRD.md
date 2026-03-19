@@ -45,9 +45,18 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Gallery:** Card-based UI with USER/CLIENT badges, click-to-preview
 - **Guard:** `NODE_ENV !== 'production'` prevents exposure in production
 
+### File Upload Notifications System - Part 1 (Mar 19, 2026)
+- **Schema:** Added `FileCategory` enum (REFERENCE, LEGAL, PAYMENT, DELIVERABLE, REVISION, ASSET, OTHER), `FileComment` model, extended `File` model with `category`, `uploadedByType`, `uploadedByName`, `requiresReview`, `reviewStatus`, `reviewedAt`
+- **Auto-categorization:** `fileCategorizationService.ts` classifies files by filename patterns (contract->LEGAL, invoice->PAYMENT, mood->REFERENCE, final->DELIVERABLE, etc.)
+- **File comments:** CRUD endpoints at `/api/files/:fileId/comments` with ownership validation
+- **Review workflow:** PATCH `/api/files/:fileId/category` and `/api/files/:fileId/review` for manual overrides
+- **Email notification:** `sendFileUploadNotification` triggered when clients upload via portal
+- **Activity logging:** FILE_COMMENT activity type added
+
 ## Prioritized Backlog
 
 ### P0 (Next Up)
+- [ ] File Upload Notifications System - Part 2 (Frontend UI: file categories, comments UI, review workflow)
 - [ ] Google Calendar integration for booking system
 
 ### P1
@@ -64,6 +73,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_76: Meeting Booking System (backend 19/19, frontend 100%)
 - iteration_77: UI System v2.0 (frontend 100%)
 - iteration_78: Email Template Redesign (backend 14/14, all API paths verified)
+- iteration_79: File Upload Notifications Part 1 (backend 18/18, 100%)
 
 ## Test Credentials
 - bookingtest@test.com / password123 (User ID: cmmw4gvhr0000msmu77aijfb9)
