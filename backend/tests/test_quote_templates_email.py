@@ -11,7 +11,7 @@ import os
 import json
 
 # Use the public URL for testing
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://availability-sync-5.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://email-preview-7.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api" if not BASE_URL.endswith('/api') else BASE_URL
 
 # Test credentials

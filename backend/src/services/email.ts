@@ -1,4 +1,9 @@
 import { Resend } from 'resend';
+import {
+  EmailColors, EmailFonts, EmailSpacing, EmailRadius, EmailShadows,
+  primaryButtonStyle, successButtonStyle,
+  highlightBox, successBox, warningBox, cardBlock, detailRow,
+} from './emailDesignSystem';
 
 // Initialize Resend
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -38,64 +43,70 @@ const SERVICE_TYPE_LABELS: Record<string, string> = {
   OTHER: 'Other',
 };
 
-// KOLOR STUDIO branded email template
-const getEmailTemplate = (content: string, title: string) => `
+// KOLOR STUDIO branded email template — v2.0
+export const getEmailTemplate = (content: string, title: string) => `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>${title}</title>
+  <!--[if mso]>
+  <style type="text/css">body,table,td{font-family:Arial,Helvetica,sans-serif !important;}</style>
+  <![endif]-->
+  <style>
+    body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+    table,td{mso-table-lspace:0pt;mso-table-rspace:0pt;}
+    img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none;}
+    body{margin:0;padding:0;width:100%!important;background-color:${EmailColors.surfaceBackground};font-family:${EmailFonts.body};color:${EmailColors.textPrimary};line-height:1.6;}
+    h1,h2,h3,h4{font-family:${EmailFonts.heading};margin:0;padding:0;color:${EmailColors.textPrimary};}
+    h1{font-size:24px;line-height:32px;font-weight:700;letter-spacing:-0.02em;}
+    h2{font-size:20px;line-height:28px;font-weight:600;letter-spacing:-0.01em;}
+    h3{font-size:16px;line-height:24px;font-weight:600;}
+    p{margin:0 0 16px 0;font-size:14px;line-height:22px;}
+    @media only screen and (max-width:600px){
+      .email-container{width:100%!important;}
+      .email-body{padding:24px 16px!important;}
+      h1{font-size:22px!important;line-height:28px!important;}
+      .cta-btn{display:block!important;width:100%!important;text-align:center!important;box-sizing:border-box!important;}
+    }
+  </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f3ff;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f3ff; padding: 40px 20px;">
+<body>
+  <div style="display:none;max-height:0;overflow:hidden;">${title}</div>
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:${EmailColors.surfaceBackground};padding:${EmailSpacing.xl} 0;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="email-container" style="max-width:600px;width:100%;background-color:${EmailColors.surfaceWhite};border-radius:${EmailRadius.card};box-shadow:${EmailShadows.card};">
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); padding: 32px 40px; text-align: center;">
+            <td style="background-color:${EmailColors.brandPrimary};padding:${EmailSpacing.xl} ${EmailSpacing.lg};text-align:center;border-radius:${EmailRadius.card} ${EmailRadius.card} 0 0;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
-                    <span style="font-size: 28px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">
-                      KOLOR STUDIO
-                    </span>
+                    <span style="font-size:24px;font-weight:800;color:${EmailColors.textInverse};letter-spacing:-0.5px;font-family:${EmailFonts.heading};">KOLOR STUDIO</span>
                   </td>
                 </tr>
                 <tr>
-                  <td align="center" style="padding-top: 8px;">
-                    <span style="font-size: 14px; color: rgba(255,255,255,0.85);">
-                      Your CRM should work harder than you do
-                    </span>
+                  <td align="center" style="padding-top:${EmailSpacing.sm};">
+                    <span style="font-size:13px;color:rgba(255,255,255,0.8);font-family:${EmailFonts.body};">Your CRM should work harder than you do</span>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
-          
           <!-- Content -->
           <tr>
-            <td style="padding: 40px;">
+            <td class="email-body" style="padding:${EmailSpacing.xl} ${EmailSpacing.lg};">
               ${content}
             </td>
           </tr>
-          
           <!-- Footer -->
           <tr>
-            <td style="background-color: #faf5ff; padding: 24px 40px; border-top: 1px solid #e9d5ff;">
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center" style="color: #7c3aed; font-size: 14px; font-weight: 600;">
-                    KOLOR STUDIO
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center" style="color: #9ca3af; font-size: 12px; padding-top: 8px;">
-                    Your CRM should work harder than you do
-                  </td>
-                </tr>
-              </table>
+            <td style="background-color:${EmailColors.surfaceBackground};padding:${EmailSpacing.lg};border-top:1px solid ${EmailColors.borderDefault};border-radius:0 0 ${EmailRadius.card} ${EmailRadius.card};text-align:center;">
+              <p style="font-size:13px;font-weight:600;color:${EmailColors.brandPrimary};margin:0 0 ${EmailSpacing.xs} 0;font-family:${EmailFonts.heading};">KOLOR STUDIO</p>
+              <p style="font-size:12px;color:${EmailColors.textTertiary};margin:0;font-family:${EmailFonts.body};">&#169; ${new Date().getFullYear()} KOLOR STUDIO. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -113,92 +124,42 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
     return false;
   }
 
-  const dashboardUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const dashboardUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
 
   const content = `
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
+    <h1 style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 24px; font-weight: 700; color: ${EmailColors.textPrimary}; font-family: ${EmailFonts.heading};">
       New Lead Alert!
     </h1>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.6;">
+    <p style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 16px; color: ${EmailColors.textSecondary}; line-height: 1.6; font-family: ${EmailFonts.body};">
       Great news! Someone just submitted a project inquiry through your KOLOR STUDIO form. Here are the details:
     </p>
     
     <!-- Lead Info Card -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${EmailColors.surfaceHover}; border-radius: ${EmailRadius.card}; margin-bottom: ${EmailSpacing.lg}; border: 1px solid ${EmailColors.borderDefault};">
       <tr>
-        <td style="padding: 24px;">
+        <td style="padding: ${EmailSpacing.lg};">
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
-              <td style="padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
-                <span style="font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+              <td style="padding-bottom: ${EmailSpacing.md}; border-bottom: 1px solid ${EmailColors.borderDefault};">
+                <span style="font-size: 11px; color: ${EmailColors.brandPrimary}; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-family: ${EmailFonts.body};">
                   ${serviceLabel}
                 </span>
-                <h2 style="margin: 8px 0 0 0; font-size: 20px; font-weight: 700; color: #1f2937;">
+                <h2 style="margin: ${EmailSpacing.sm} 0 0 0; font-size: 20px; font-weight: 700; color: ${EmailColors.textPrimary}; font-family: ${EmailFonts.heading};">
                   ${lead.projectTitle}
                 </h2>
               </td>
             </tr>
             <tr>
-              <td style="padding-top: 16px;">
+              <td style="padding-top: ${EmailSpacing.md};">
                 <table width="100%" cellpadding="0" cellspacing="0">
-                  <tr>
-                    <td style="padding: 8px 0;">
-                      <span style="color: #6b7280; font-size: 14px;">Client:</span>
-                      <span style="color: #1f2937; font-size: 14px; font-weight: 600; padding-left: 8px;">
-                        ${lead.clientName}
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0;">
-                      <span style="color: #6b7280; font-size: 14px;">Email:</span>
-                      <a href="mailto:${lead.clientEmail}" style="color: #7c3aed; font-size: 14px; font-weight: 600; padding-left: 8px; text-decoration: none;">
-                        ${lead.clientEmail}
-                      </a>
-                    </td>
-                  </tr>
-                  ${lead.clientPhone ? `
-                  <tr>
-                    <td style="padding: 8px 0;">
-                      <span style="color: #6b7280; font-size: 14px;">Phone:</span>
-                      <span style="color: #1f2937; font-size: 14px; font-weight: 600; padding-left: 8px;">
-                        ${lead.clientPhone}
-                      </span>
-                    </td>
-                  </tr>
-                  ` : ''}
-                  ${lead.clientCompany ? `
-                  <tr>
-                    <td style="padding: 8px 0;">
-                      <span style="color: #6b7280; font-size: 14px;">Company:</span>
-                      <span style="color: #1f2937; font-size: 14px; font-weight: 600; padding-left: 8px;">
-                        ${lead.clientCompany}
-                      </span>
-                    </td>
-                  </tr>
-                  ` : ''}
-                  ${lead.budget ? `
-                  <tr>
-                    <td style="padding: 8px 0;">
-                      <span style="color: #6b7280; font-size: 14px;">Budget:</span>
-                      <span style="color: #059669; font-size: 14px; font-weight: 700; padding-left: 8px;">
-                        ${lead.budget}
-                      </span>
-                    </td>
-                  </tr>
-                  ` : ''}
-                  ${lead.timeline ? `
-                  <tr>
-                    <td style="padding: 8px 0;">
-                      <span style="color: #6b7280; font-size: 14px;">Timeline:</span>
-                      <span style="color: #1f2937; font-size: 14px; font-weight: 600; padding-left: 8px;">
-                        ${lead.timeline}
-                      </span>
-                    </td>
-                  </tr>
-                  ` : ''}
+                  ${detailRow('Client', lead.clientName)}
+                  <tr><td style="padding: ${EmailSpacing.sm} 0;"><span style="color: ${EmailColors.textSecondary}; font-size: 14px;">Email:</span><a href="mailto:${lead.clientEmail}" style="color: ${EmailColors.brandPrimary}; font-size: 14px; font-weight: 600; padding-left: 8px; text-decoration: none;">${lead.clientEmail}</a></td></tr>
+                  ${lead.clientPhone ? detailRow('Phone', lead.clientPhone) : ''}
+                  ${lead.clientCompany ? detailRow('Company', lead.clientCompany) : ''}
+                  ${lead.budget ? detailRow('Budget', lead.budget, EmailColors.success) : ''}
+                  ${lead.timeline ? detailRow('Timeline', lead.timeline) : ''}
                 </table>
               </td>
             </tr>
@@ -208,27 +169,23 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
     </table>
     
     <!-- Project Description -->
-    <div style="margin-bottom: 24px;">
-      <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">
-        Project Description
-      </h3>
-      <p style="margin: 0; font-size: 15px; color: #374151; line-height: 1.7; background-color: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #7c3aed;">
-        ${lead.description}
-      </p>
-    </div>
+    ${highlightBox(`
+      <p style="margin: 0 0 ${EmailSpacing.sm} 0; font-size: 12px; font-weight: 700; color: ${EmailColors.textSecondary}; text-transform: uppercase; letter-spacing: 0.1em; font-family: ${EmailFonts.body};">Project Description</p>
+      <p style="margin: 0; font-size: 15px; color: ${EmailColors.textPrimary}; line-height: 1.7; font-family: ${EmailFonts.body};">${lead.description}</p>
+    `)}
     
     <!-- CTA Button -->
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
-        <td align="center" style="padding-top: 8px;">
-          <a href="${dashboardUrl}/dashboard" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+        <td align="center" style="padding-top: ${EmailSpacing.sm};">
+          <a href="${dashboardUrl}/dashboard" class="cta-btn" style="${primaryButtonStyle}">
             View Lead in Dashboard
           </a>
         </td>
       </tr>
     </table>
     
-    <p style="margin: 24px 0 0 0; font-size: 14px; color: #9ca3af; text-align: center;">
+    <p style="margin: ${EmailSpacing.lg} 0 0 0; font-size: 13px; color: ${EmailColors.textTertiary}; text-align: center; font-family: ${EmailFonts.body};">
       Don't keep them waiting - reach out while they're still excited!
     </p>
   `;
@@ -261,20 +218,20 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   }
 
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
-  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
   const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null;
 
   const content = `
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
+    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">
       Thank You, ${lead.clientName.split(' ')[0]}!
     </h1>
     
-    <p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 20px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       We've received your project inquiry and we're excited to learn more about your vision! Your request has been added to our queue and we'll review it personally.
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-      <strong style="color: #1f2937;">What happens next?</strong> We'll review your project details and get back to you within <strong style="color: #7c3aed;">24-48 hours</strong> with next steps and any questions we might have.
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
+      <strong style="color: #1A1A2E;">What happens next?</strong> We'll review your project details and get back to you within <strong style="color: #7c3aed;">24-48 hours</strong> with next steps and any questions we might have.
     </p>
     
     ${portalUrl ? `
@@ -297,7 +254,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
     ` : ''}
     
     <!-- Summary Card -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
       <tr>
         <td style="padding: 24px;">
           <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: 600; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">
@@ -306,16 +263,16 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td style="padding: 8px 0;">
-                <span style="color: #6b7280; font-size: 14px;">Service:</span>
-                <span style="color: #1f2937; font-size: 14px; font-weight: 600; padding-left: 8px;">
+                <span style="color: #6B7280; font-size: 14px;">Service:</span>
+                <span style="color: #1A1A2E; font-size: 14px; font-weight: 600; padding-left: 8px;">
                   ${serviceLabel}
                 </span>
               </td>
             </tr>
             <tr>
               <td style="padding: 8px 0;">
-                <span style="color: #6b7280; font-size: 14px;">Project:</span>
-                <span style="color: #1f2937; font-size: 14px; font-weight: 600; padding-left: 8px;">
+                <span style="color: #6B7280; font-size: 14px;">Project:</span>
+                <span style="color: #1A1A2E; font-size: 14px; font-weight: 600; padding-left: 8px;">
                   ${lead.projectTitle}
                 </span>
               </td>
@@ -323,7 +280,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
             ${lead.budget ? `
             <tr>
               <td style="padding: 8px 0;">
-                <span style="color: #6b7280; font-size: 14px;">Budget:</span>
+                <span style="color: #6B7280; font-size: 14px;">Budget:</span>
                 <span style="color: #059669; font-size: 14px; font-weight: 600; padding-left: 8px;">
                   ${lead.budget}
                 </span>
@@ -333,8 +290,8 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
             ${lead.timeline ? `
             <tr>
               <td style="padding: 8px 0;">
-                <span style="color: #6b7280; font-size: 14px;">Timeline:</span>
-                <span style="color: #1f2937; font-size: 14px; font-weight: 600; padding-left: 8px;">
+                <span style="color: #6B7280; font-size: 14px;">Timeline:</span>
+                <span style="color: #1A1A2E; font-size: 14px; font-weight: 600; padding-left: 8px;">
                   ${lead.timeline}
                 </span>
               </td>
@@ -345,15 +302,15 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
       </tr>
     </table>
     
-    <p style="margin: 0 0 8px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 8px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       In the meantime, feel free to reply to this email if you have any additional details or questions to share.
     </p>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #1f2937; line-height: 1.7;">
+    <p style="margin: 24px 0 0 0; font-size: 16px; color: #1A1A2E; line-height: 1.7;">
       We're looking forward to bringing your creative vision to life!
     </p>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
+    <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Warm regards,<br>
       <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
     </p>
@@ -443,7 +400,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -452,26 +409,26 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
       <span style="font-size: 48px;">${statusConfig.emoji}</span>
     </div>
     
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1A1A2E; text-align: center;">
       ${statusConfig.title}
     </h1>
     
-    <p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 20px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       Hi ${firstName},
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       ${statusConfig.message}
     </p>
     
     <!-- Project Info -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
       <tr>
         <td style="padding: 20px;">
           <p style="margin: 0; font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
             Your Project
           </p>
-          <p style="margin: 8px 0 0 0; font-size: 18px; font-weight: 700; color: #1f2937;">
+          <p style="margin: 8px 0 0 0; font-size: 18px; font-weight: 700; color: #1A1A2E;">
             ${data.projectTitle}
           </p>
         </td>
@@ -482,22 +439,22 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center">
-          <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${portalUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             View Project Portal
           </a>
         </td>
       </tr>
     </table>
     
-    <p style="margin: 24px 0 0 0; font-size: 14px; color: #9ca3af; text-align: center;">
+    <p style="margin: 24px 0 0 0; font-size: 14px; color: #9CA3AF; text-align: center;">
       Track your project progress anytime at your personal portal
     </p>
     
-    <p style="margin: 32px 0 0 0; font-size: 16px; color: #4b5563;">
+    <p style="margin: 32px 0 0 0; font-size: 16px; color: #6B7280;">
       Questions? Just reply to this email - we're here to help!
     </p>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
+    <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Best regards,<br>
       <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
     </p>
@@ -538,7 +495,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -547,26 +504,26 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
       <span style="font-size: 48px;">🔗</span>
     </div>
     
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1A1A2E; text-align: center;">
       Your Project Portal Link
     </h1>
     
-    <p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 20px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       Hi ${firstName},
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       Here's your personal project portal link. You can use this link anytime to check the status of your project, view updates, and track our progress together.
     </p>
     
     <!-- Project Info -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
       <tr>
         <td style="padding: 20px;">
           <p style="margin: 0; font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
             Your Project
           </p>
-          <p style="margin: 8px 0 0 0; font-size: 18px; font-weight: 700; color: #1f2937;">
+          <p style="margin: 8px 0 0 0; font-size: 18px; font-weight: 700; color: #1A1A2E;">
             ${data.projectTitle}
           </p>
         </td>
@@ -577,22 +534,22 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center">
-          <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${portalUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             View My Project Portal
           </a>
         </td>
       </tr>
     </table>
     
-    <p style="margin: 24px 0 0 0; font-size: 14px; color: #9ca3af; text-align: center;">
+    <p style="margin: 24px 0 0 0; font-size: 14px; color: #9CA3AF; text-align: center;">
       Bookmark this link to check your project progress anytime
     </p>
     
-    <p style="margin: 32px 0 0 0; font-size: 16px; color: #4b5563;">
+    <p style="margin: 32px 0 0 0; font-size: 16px; color: #6B7280;">
       Questions? Just reply to this email - we're here to help!
     </p>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
+    <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Best regards,<br>
       <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
     </p>
@@ -632,7 +589,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
   const resetUrl = `${baseUrl}/reset-password/${data.resetToken}`;
 
   const content = `
@@ -640,15 +597,15 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
       <span style="font-size: 48px;">🔐</span>
     </div>
     
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1A1A2E; text-align: center;">
       Reset Your Password
     </h1>
     
-    <p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 20px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       Hi ${data.firstName},
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       We received a request to reset the password for your KOLOR STUDIO account. Click the button below to create a new password.
     </p>
     
@@ -656,7 +613,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
       <tr>
         <td align="center">
-          <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${resetUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             Reset Password
           </a>
         </td>
@@ -674,19 +631,19 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
       </tr>
     </table>
     
-    <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280; line-height: 1.7;">
+    <p style="margin: 0 0 16px 0; font-size: 14px; color: #6B7280; line-height: 1.7;">
       If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.
     </p>
     
-    <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280; line-height: 1.7;">
+    <p style="margin: 0 0 16px 0; font-size: 14px; color: #6B7280; line-height: 1.7;">
       If the button doesn't work, copy and paste this link into your browser:
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 12px; color: #9ca3af; word-break: break-all; background-color: #f9fafb; padding: 12px; border-radius: 8px;">
+    <p style="margin: 0 0 24px 0; font-size: 12px; color: #9CA3AF; word-break: break-all; background-color: #F9FAFB; padding: 12px; border-radius: 8px;">
       ${resetUrl}
     </p>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
+    <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Stay creative,<br>
       <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
     </p>
@@ -725,47 +682,47 @@ export async function sendVerificationEmail(data: VerificationEmailData): Promis
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
   const verifyUrl = `${baseUrl}/verify-email/${data.verificationToken}`;
 
   const content = `
-    <div style="text-align: center; margin-bottom: 32px;">
+    <div style="text-align: center; margin-bottom: ${EmailSpacing.xl};">
       <span style="font-size: 48px;">&#x2709;&#xFE0F;</span>
     </div>
     
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+    <h1 style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 24px; font-weight: 700; color: ${EmailColors.textPrimary}; text-align: center; font-family: ${EmailFonts.heading};">
       Verify Your Email
     </h1>
     
-    <p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 ${EmailSpacing.md} 0; font-size: 16px; color: ${EmailColors.textSecondary}; line-height: 1.7; font-family: ${EmailFonts.body};">
       Hi ${data.firstName},
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 16px; color: ${EmailColors.textSecondary}; line-height: 1.7; font-family: ${EmailFonts.body};">
       Welcome to KOLOR STUDIO! Please verify your email address to unlock all features and secure your account.
     </p>
     
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: ${EmailSpacing.lg};">
       <tr>
         <td align="center">
-          <a href="${verifyUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${verifyUrl}" class="cta-btn" style="${primaryButtonStyle}">
             Verify Email Address
           </a>
         </td>
       </tr>
     </table>
     
-    <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280; line-height: 1.7;">
+    <p style="margin: 0 0 ${EmailSpacing.md} 0; font-size: 14px; color: ${EmailColors.textTertiary}; line-height: 1.7; font-family: ${EmailFonts.body};">
       If the button doesn't work, copy and paste this link into your browser:
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 12px; color: #9ca3af; word-break: break-all; background-color: #f9fafb; padding: 12px; border-radius: 8px;">
+    <p style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 12px; color: ${EmailColors.textTertiary}; word-break: break-all; background-color: ${EmailColors.surfaceHover}; padding: 12px; border-radius: ${EmailRadius.button}; font-family: ${EmailFonts.body};">
       ${verifyUrl}
     </p>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
+    <p style="margin: ${EmailSpacing.lg} 0 0 0; font-size: 16px; color: ${EmailColors.textSecondary}; font-family: ${EmailFonts.body};">
       Stay creative,<br>
-      <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
+      <strong style="color: ${EmailColors.brandPrimary};">The KOLOR STUDIO Team</strong>
     </p>
   `;
 
@@ -818,7 +775,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
   console.log('[EMAIL] SENDER_EMAIL:', SENDER_EMAIL);
   console.log('[EMAIL] Recipient:', data.clientEmail);
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
   // Link to portal if portalToken is available, otherwise fallback to public quote page
   const quoteUrl = data.portalToken
     ? `${baseUrl}/portal/${data.portalToken}`
@@ -838,34 +795,34 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
 
   // Build the message section based on whether custom message was provided
   const messageSection = data.customMessage
-    ? `<div style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7; white-space: pre-wrap;">${data.customMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>`
-    : `<p style="margin: 0 0 20px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+    ? `<div style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7; white-space: pre-wrap;">${data.customMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>`
+    : `<p style="margin: 0 0 20px 0; font-size: 16px; color: #1A1A2E; line-height: 1.7;">
       Hey ${firstName}! 👋
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #1A1A2E; line-height: 1.7;">
       I'm excited about your project <strong>"${data.projectTitle}"</strong>! 
       Here's what I'm thinking:
     </p>`;
 
   const content = `
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+    <h1 style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 24px; font-weight: 700; color: ${EmailColors.textPrimary}; text-align: center; font-family: ${EmailFonts.heading};">
       Your Quote is Ready!
     </h1>
     
     ${messageSection}
     
     <!-- Investment Highlight -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border-radius: 16px; margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${EmailColors.successLight}; border: 1px solid ${EmailColors.successBorder}; border-radius: ${EmailRadius.card}; margin-bottom: ${EmailSpacing.lg};">
       <tr>
-        <td style="padding: 32px; text-align: center;">
-          <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+        <td style="padding: ${EmailSpacing.xl}; text-align: center;">
+          <p style="margin: 0 0 ${EmailSpacing.sm} 0; font-size: 11px; color: ${EmailColors.textSecondary}; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; font-family: ${EmailFonts.body};">
             Investment
           </p>
-          <p style="margin: 0; font-size: 48px; font-weight: 700; color: #10B981; line-height: 1;">
+          <p style="margin: 0; font-size: 42px; font-weight: 700; color: ${EmailColors.successText}; line-height: 1; font-family: ${EmailFonts.heading};">
             ${formattedTotal}
           </p>
-          <p style="margin: 8px 0 0 0; font-size: 13px; color: #6B7280;">
+          <p style="margin: ${EmailSpacing.sm} 0 0 0; font-size: 13px; color: ${EmailColors.textTertiary}; font-family: ${EmailFonts.body};">
             Quote ${data.quoteNumber}
           </p>
         </td>
@@ -873,39 +830,31 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
     </table>
     
     <!-- View Quote CTA -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: ${EmailSpacing.lg};">
       <tr>
         <td align="center">
-          <a href="${quoteUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 18px; font-weight: 600; text-decoration: none; padding: 18px 48px; border-radius: 12px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
-            View Your Quote →
+          <a href="${quoteUrl}" class="cta-btn" style="${primaryButtonStyle} font-size: 18px; padding: 18px 48px;">
+            View Your Quote
           </a>
         </td>
       </tr>
       <tr>
-        <td align="center" style="padding-top: 12px;">
-          <p style="margin: 0; font-size: 13px; color: #9CA3AF;">Takes 2 seconds to accept if you're ready!</p>
+        <td align="center" style="padding-top: ${EmailSpacing.sm};">
+          <p style="margin: 0; font-size: 13px; color: ${EmailColors.textTertiary}; font-family: ${EmailFonts.body};">Takes 2 seconds to accept if you're ready!</p>
         </td>
       </tr>
     </table>
     
     <!-- Validity Notice -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="border-left: 4px solid #F59E0B; background: linear-gradient(90deg, #FEF3C7 0%, transparent 100%); border-radius: 0 8px 8px 0; margin-bottom: 24px;">
-      <tr>
-        <td style="padding: 16px 20px;">
-          <p style="margin: 0; font-size: 14px; color: #92400e;">
-            <strong>⏰ Valid until ${formattedDate}</strong> — but no pressure, just let me know!
-          </p>
-        </td>
-      </tr>
-    </table>
+    ${warningBox(`<p style="margin: 0; font-size: 14px; color: ${EmailColors.warningText}; font-family: ${EmailFonts.body};"><strong>Valid until ${formattedDate}</strong> — but no pressure, just let me know!</p>`)}
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #374151; line-height: 1.7;">
-      Questions? Just reply to this email — I'm usually pretty quick 😊
+    <p style="margin: ${EmailSpacing.lg} 0 0 0; font-size: 16px; color: ${EmailColors.textPrimary}; line-height: 1.7; font-family: ${EmailFonts.body};">
+      Questions? Just reply to this email — I'm usually pretty quick
     </p>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #374151;">
+    <p style="margin: ${EmailSpacing.lg} 0 0 0; font-size: 16px; color: ${EmailColors.textPrimary}; font-family: ${EmailFonts.body};">
       Looking forward to working with you,<br>
-      <strong style="color: #7c3aed;">${data.studioName}</strong>
+      <strong style="color: ${EmailColors.brandPrimary};">${data.studioName}</strong>
     </p>
   `;
 
@@ -957,65 +906,61 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
 
   console.log('[EMAIL] SENDER_EMAIL:', SENDER_EMAIL, '| Recipient:', data.ownerEmail);
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const sym = data.currencySymbol || '$';
   const formattedTotal = `${sym}${data.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const content = `
-    <div style="text-align: center; margin-bottom: 32px;">
-      <span style="font-size: 64px;">🎉</span>
-    </div>
+    ${successBox(`
+      <p style="margin: 0; font-size: 24px; font-weight: 700; color: ${EmailColors.successText}; font-family: ${EmailFonts.heading}; text-align: center;">Quote Accepted!</p>
+    `)}
     
-    <h1 style="margin: 0 0 24px 0; font-size: 28px; font-weight: 700; color: #1f2937; text-align: center;">
-      Quote Accepted!
-    </h1>
-    
-    <p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-      Great news, ${data.ownerName}! 🎊
+    <p style="margin: ${EmailSpacing.lg} 0 ${EmailSpacing.md} 0; font-size: 16px; color: ${EmailColors.textSecondary}; line-height: 1.7; font-family: ${EmailFonts.body};">
+      Great news, ${data.ownerName}!
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-      <strong>${data.clientName}</strong> has accepted your quote for <strong>"${data.projectTitle}"</strong>.
+    <p style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 16px; color: ${EmailColors.textSecondary}; line-height: 1.7; font-family: ${EmailFonts.body};">
+      <strong style="color: ${EmailColors.textPrimary};">${data.clientName}</strong> has accepted your quote for <strong style="color: ${EmailColors.textPrimary};">"${data.projectTitle}"</strong>.
     </p>
     
     <!-- Accepted Amount Box -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); border-radius: 12px; margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${EmailColors.success}; border-radius: ${EmailRadius.card}; margin-bottom: ${EmailSpacing.lg};">
       <tr>
-        <td style="padding: 24px; text-align: center;">
-          <p style="margin: 0 0 8px 0; font-size: 14px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">
+        <td style="padding: ${EmailSpacing.xl}; text-align: center;">
+          <p style="margin: 0 0 ${EmailSpacing.sm} 0; font-size: 12px; color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 0.1em; font-family: ${EmailFonts.body};">
             Quote ${data.quoteNumber} Accepted
           </p>
-          <p style="margin: 0; font-size: 36px; font-weight: 700; color: #ffffff;">
+          <p style="margin: 0; font-size: 36px; font-weight: 700; color: ${EmailColors.textInverse}; font-family: ${EmailFonts.heading};">
             ${formattedTotal}
           </p>
         </td>
       </tr>
     </table>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-      <strong>What happens next:</strong>
-    </p>
-    <ul style="margin: 0 0 24px 0; padding-left: 24px; color: #4b5563; line-height: 1.8;">
-      <li>A contract has been automatically generated and is <strong>ready for your review</strong></li>
-      <li>Review the terms, edit if needed, then send to your client</li>
-      <li>The contract will <strong>not</strong> be sent until you confirm</li>
-    </ul>
+    ${highlightBox(`
+      <p style="margin: 0 0 ${EmailSpacing.sm} 0; font-size: 14px; font-weight: 600; color: ${EmailColors.textPrimary}; font-family: ${EmailFonts.heading};">What happens next:</p>
+      <ul style="margin: 0; padding-left: 20px; color: ${EmailColors.textSecondary}; line-height: 1.8; font-size: 14px; font-family: ${EmailFonts.body};">
+        <li>A contract has been automatically generated and is <strong>ready for your review</strong></li>
+        <li>Review the terms, edit if needed, then send to your client</li>
+        <li>The contract will <strong>not</strong> be sent until you confirm</li>
+      </ul>
+    `)}
     
     <!-- Dashboard CTA -->
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center">
-          <a href="${dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${dashboardUrl}" class="cta-btn" style="${primaryButtonStyle}">
             Review Contract Now
           </a>
         </td>
       </tr>
     </table>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
-      Congratulations! 🚀<br>
-      <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
+    <p style="margin: ${EmailSpacing.lg} 0 0 0; font-size: 16px; color: ${EmailColors.textSecondary}; font-family: ${EmailFonts.body};">
+      Congratulations!<br>
+      <strong style="color: ${EmailColors.brandPrimary};">The KOLOR STUDIO Team</strong>
     </p>
   `;
 
@@ -1059,7 +1004,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -1068,15 +1013,15 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
       <span style="font-size: 48px;">📝</span>
     </div>
     
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1A1A2E; text-align: center;">
       Quote Declined
     </h1>
     
-    <p style="margin: 0 0 20px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 20px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       Hi ${data.ownerName},
     </p>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       <strong>${data.clientName}</strong> has declined your quote for <strong>"${data.projectTitle}"</strong>.
     </p>
     
@@ -1084,10 +1029,10 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; border-radius: 12px; margin-bottom: 24px;">
       <tr>
         <td style="padding: 20px;">
-          <p style="margin: 0 0 8px 0; font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">
+          <p style="margin: 0 0 8px 0; font-size: 12px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px;">
             Quote ${data.quoteNumber}
           </p>
-          <p style="margin: 0; font-size: 24px; font-weight: 700; color: #374151;">
+          <p style="margin: 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">
             ${formattedTotal}
           </p>
         </td>
@@ -1109,7 +1054,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     </table>
     ` : ''}
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
       <strong>Consider:</strong> Reaching out to understand their concerns and potentially offering a revised quote.
     </p>
     
@@ -1117,14 +1062,14 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center">
-          <a href="${dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${dashboardUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             View Lead in Dashboard
           </a>
         </td>
       </tr>
     </table>
     
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
+    <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Don't give up! 💪<br>
       <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
     </p>
@@ -1170,13 +1115,13 @@ export async function sendCustomEmail(data: CustomEmailData): Promise<boolean> {
 
   // Wrap the user's HTML content in our branded template
   const content = `
-    <div style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.8;">
+    <div style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.8;">
       ${data.htmlBody}
     </div>
     
     <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;" />
     
-    <p style="margin: 0; font-size: 14px; color: #9ca3af;">
+    <p style="margin: 0; font-size: 14px; color: #9CA3AF;">
       Sent via <strong style="color: #7c3aed;">KOLOR STUDIO</strong>
     </p>
   `;
@@ -1262,11 +1207,11 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
   const formattedDuration = formatDuration(data.duration);
 
   const content = `
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
+    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">
       Booking Confirmed!
     </h1>
     
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.6;">
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.6;">
       Hi ${data.clientName},<br><br>
       Great news! Your booking has been confirmed. We're excited to work with you on your project.
     </p>
@@ -1282,7 +1227,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
                 <span style="font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
                   PROJECT
                 </span>
-                <h2 style="margin: 8px 0 0 0; font-size: 20px; font-weight: 700; color: #1f2937;">
+                <h2 style="margin: 8px 0 0 0; font-size: 20px; font-weight: 700; color: #1A1A2E;">
                   ${data.projectTitle}
                 </h2>
               </td>
@@ -1299,8 +1244,8 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
                       </div>
                     </td>
                     <td style="padding-left: 12px;">
-                      <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Date & Time</span>
-                      <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: #1f2937;">
+                      <span style="font-size: 12px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px;">Date & Time</span>
+                      <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: #1A1A2E;">
                         ${formattedDate}
                       </p>
                     </td>
@@ -1320,8 +1265,8 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
                       </div>
                     </td>
                     <td style="padding-left: 12px;">
-                      <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Duration</span>
-                      <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: #1f2937;">
+                      <span style="font-size: 12px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px;">Duration</span>
+                      <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: #1A1A2E;">
                         ${formattedDuration}
                       </p>
                     </td>
@@ -1342,8 +1287,8 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
                       </div>
                     </td>
                     <td style="padding-left: 12px;">
-                      <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Location</span>
-                      <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: #1f2937;">
+                      <span style="font-size: 12px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px;">Location</span>
+                      <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600; color: #1A1A2E;">
                         ${data.location}
                       </p>
                     </td>
@@ -1357,8 +1302,8 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
             <!-- Notes -->
             <tr>
               <td style="padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Notes</span>
-                <p style="margin: 8px 0 0 0; font-size: 14px; color: #4b5563; line-height: 1.5;">
+                <span style="font-size: 12px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px;">Notes</span>
+                <p style="margin: 8px 0 0 0; font-size: 14px; color: #6B7280; line-height: 1.5;">
                   ${data.notes}
                 </p>
               </td>
@@ -1370,13 +1315,13 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
     </table>
     
     <!-- What's Next -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
       <tr>
         <td style="padding: 20px;">
-          <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #1f2937;">
+          <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #1A1A2E;">
             What's Next?
           </h3>
-          <ul style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 14px; line-height: 1.8;">
+          <ul style="margin: 0; padding-left: 20px; color: #6B7280; font-size: 14px; line-height: 1.8;">
             <li>Mark this date on your calendar</li>
             <li>We'll send you a reminder before the session</li>
             <li>If you need to reschedule, please contact us as soon as possible</li>
@@ -1385,7 +1330,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
       </tr>
     </table>
     
-    <p style="margin: 0; font-size: 16px; color: #4b5563; line-height: 1.6;">
+    <p style="margin: 0; font-size: 16px; color: #6B7280; line-height: 1.6;">
       We're looking forward to creating something amazing together!<br><br>
       Best regards,<br>
       <strong style="color: #7c3aed;">${studioName}</strong>
@@ -1442,33 +1387,33 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
 
     // Build custom message section or default
     const messageSection = data.customMessage
-      ? `<div style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.7; white-space: pre-wrap;">${data.customMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>`
-      : `<p style="margin: 0 0 20px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+      ? `<div style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7; white-space: pre-wrap;">${data.customMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>`
+      : `<p style="margin: 0 0 20px 0; font-size: 16px; color: #1A1A2E; line-height: 1.7;">
           Hi ${firstName}! 👋
         </p>
-        <p style="margin: 0 0 24px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+        <p style="margin: 0 0 24px 0; font-size: 16px; color: #1A1A2E; line-height: 1.7;">
           An agreement for your project <strong>"${data.projectTitle}"</strong> is ready for your review.
           Please review the terms and sign the agreement using the link below.
         </p>`;
 
     const content = `
-      <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+      <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1A1A2E; text-align: center;">
         Your Agreement is Ready
       </h1>
       
       ${messageSection}
       
       <!-- Contract Info Card -->
-      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin-bottom: 24px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
         <tr>
           <td style="padding: 20px;">
             <p style="margin: 0 0 8px 0; font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
               Agreement Details
             </p>
-            <p style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #1f2937;">
+            <p style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #1A1A2E;">
               ${data.contractTitle}
             </p>
-            <p style="margin: 0; font-size: 14px; color: #6b7280;">
+            <p style="margin: 0; font-size: 14px; color: #6B7280;">
               Project: ${data.projectTitle}
             </p>
           </td>
@@ -1491,11 +1436,11 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
         </tr>
       </table>
       
-      <p style="margin: 24px 0 0 0; font-size: 16px; color: #374151; line-height: 1.7;">
+      <p style="margin: 24px 0 0 0; font-size: 16px; color: #1A1A2E; line-height: 1.7;">
         Questions about the agreement? Just reply to this email — happy to help!
       </p>
       
-      <p style="margin: 24px 0 0 0; font-size: 16px; color: #374151;">
+      <p style="margin: 24px 0 0 0; font-size: 16px; color: #1A1A2E;">
         Looking forward to working together,<br>
         <strong style="color: #7c3aed;">${data.studioName}</strong>
       </p>
@@ -1545,37 +1490,35 @@ export async function sendContractAgreedNotification(data: ContractAgreedData): 
     });
 
     const content = `
-      <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
-        Agreement Signed!
-      </h1>
+      ${successBox(`
+        <p style="margin: 0; font-size: 18px; font-weight: 700; color: ${EmailColors.successText}; font-family: ${EmailFonts.heading}; text-align: center;">Agreement Signed!</p>
+      `)}
       
-      <p style="margin: 0 0 16px 0; font-size: 16px; color: #374151; line-height: 1.7;">
+      <p style="margin: ${EmailSpacing.lg} 0 ${EmailSpacing.md} 0; font-size: 16px; color: ${EmailColors.textPrimary}; line-height: 1.7; font-family: ${EmailFonts.body};">
         Great news! <strong>${data.clientName}</strong> has signed the agreement for 
         <strong>"${data.projectTitle}"</strong>.
       </p>
       
       <!-- Contract Details Card -->
-      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 12px; margin: 24px 0;">
-        <tr>
-          <td style="padding: 20px;">
-            <p style="margin: 0 0 4px 0; font-size: 14px; color: #6b7280;"><strong style="color: #1f2937;">Document:</strong> ${data.contractTitle}</p>
-            <p style="margin: 0 0 4px 0; font-size: 14px; color: #6b7280;"><strong style="color: #1f2937;">Signed:</strong> ${agreedDate}</p>
-            <p style="margin: 0; font-size: 14px; color: #6b7280;"><strong style="color: #1f2937;">Client IP:</strong> ${data.clientIP}</p>
-          </td>
-        </tr>
-      </table>
+      ${cardBlock(`
+        <table width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Document', data.contractTitle)}
+          ${detailRow('Signed', agreedDate)}
+          ${detailRow('Client IP', data.clientIP)}
+        </table>
+      `)}
       
-      <table width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin: ${EmailSpacing.lg} 0;">
         <tr>
           <td align="center">
-            <a href="${process.env.FRONTEND_URL || ''}/dashboard" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+            <a href="${process.env.FRONTEND_URL || ''}/dashboard" class="cta-btn" style="${primaryButtonStyle}">
               View in Dashboard
             </a>
           </td>
         </tr>
       </table>
       
-      <p style="margin: 24px 0 0 0; color: #9ca3af; font-size: 12px;">
+      <p style="margin: ${EmailSpacing.lg} 0 0 0; color: ${EmailColors.textTertiary}; font-size: 12px; font-family: ${EmailFonts.body};">
         This record serves as an audit trail for the client's consent.
       </p>
     `;
@@ -1605,8 +1548,8 @@ export async function sendContractAgreedNotification(data: ContractAgreedData): 
 // AUTOPILOT EMAIL FUNCTIONS (Day 12)
 // =====================
 
-const buttonStyle = `display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;`;
-const greenButtonStyle = `display: inline-block; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;`;
+const buttonStyle = primaryButtonStyle;
+const greenButtonStyle = successButtonStyle;
 
 // 1. Auto-Response (Lead Inquiry)
 interface AutoResponseData {
@@ -1625,12 +1568,12 @@ export async function sendAutoResponseEmail(data: AutoResponseData): Promise<boo
   try {
     const content = `
       <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Hi ${data.clientName}!</h2>
-      <div style="white-space: pre-wrap; color: #4b5563; font-size: 15px; line-height: 1.7;">${data.message}</div>
+      <div style="white-space: pre-wrap; color: #6B7280; font-size: 15px; line-height: 1.7;">${data.message}</div>
       ${data.portalUrl ? `
       <div style="text-align: center; margin: 32px 0;">
         <a href="${data.portalUrl}" style="${buttonStyle}">View My Portfolio</a>
       </div>` : ''}
-      <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">
+      <p style="color: #6B7280; font-size: 14px; margin-top: 24px;">
         Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong>
       </p>
     `;
@@ -1667,16 +1610,16 @@ export async function sendDepositPaymentEmail(data: DepositPaymentData): Promise
   try {
     const content = `
       <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Secure Your Booking</h2>
-      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
-      <p style="color: #4b5563; font-size: 15px;">To confirm your booking for <strong>"${data.projectTitle}"</strong>, please pay the deposit below.</p>
+      <p style="color: #6B7280; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #6B7280; font-size: 15px;">To confirm your booking for <strong>"${data.projectTitle}"</strong>, please pay the deposit below.</p>
       <div style="margin: 24px 0; padding: 20px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
-        <p style="margin: 0; font-size: 14px; color: #6b7280;">Deposit (30%): <strong style="color: #1a1a1a; font-size: 20px;">$${data.depositAmount.toFixed(2)}</strong></p>
-        <p style="margin: 4px 0 0; font-size: 13px; color: #9ca3af;">Total project: $${data.totalAmount.toFixed(2)}</p>
+        <p style="margin: 0; font-size: 14px; color: #6B7280;">Deposit (30%): <strong style="color: #1a1a1a; font-size: 20px;">$${data.depositAmount.toFixed(2)}</strong></p>
+        <p style="margin: 4px 0 0; font-size: 13px; color: #9CA3AF;">Total project: $${data.totalAmount.toFixed(2)}</p>
       </div>
       <div style="text-align: center; margin: 32px 0;">
         <a href="${data.paymentUrl}" style="${greenButtonStyle}">Pay Deposit ($${data.depositAmount.toFixed(2)})</a>
       </div>
-      <p style="color: #6b7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+      <p style="color: #6B7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
     `;
     const { error } = await resend.emails.send({
       from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
@@ -1710,14 +1653,14 @@ export async function sendDepositReceivedEmail(data: DepositReceivedData): Promi
   try {
     const content = `
       <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Booking Confirmed!</h2>
-      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
-      <p style="color: #4b5563; font-size: 15px;">Your deposit of <strong>$${data.depositAmount.toFixed(2)}</strong> for <strong>"${data.projectTitle}"</strong> has been received!</p>
-      <p style="color: #4b5563; font-size: 15px;">Your project is officially booked. I'm looking forward to working with you!</p>
+      <p style="color: #6B7280; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #6B7280; font-size: 15px;">Your deposit of <strong>$${data.depositAmount.toFixed(2)}</strong> for <strong>"${data.projectTitle}"</strong> has been received!</p>
+      <p style="color: #6B7280; font-size: 15px;">Your project is officially booked. I'm looking forward to working with you!</p>
       ${data.portalUrl ? `
       <div style="text-align: center; margin: 32px 0;">
         <a href="${data.portalUrl}" style="${buttonStyle}">View Project Portal</a>
       </div>` : ''}
-      <p style="color: #6b7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+      <p style="color: #6B7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
     `;
     const { error } = await resend.emails.send({
       from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
@@ -1750,13 +1693,13 @@ export async function sendDeliveryNotificationEmail(data: DeliveryNotificationDa
   try {
     const content = `
       <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Your Files Are Ready!</h2>
-      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
-      <p style="color: #4b5563; font-size: 15px;">Great news! Your project <strong>"${data.projectTitle}"</strong> is complete and ready to download!</p>
+      <p style="color: #6B7280; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #6B7280; font-size: 15px;">Great news! Your project <strong>"${data.projectTitle}"</strong> is complete and ready to download!</p>
       <div style="text-align: center; margin: 32px 0;">
         <a href="${data.portalUrl}" style="${greenButtonStyle}">Download Your Files</a>
       </div>
-      <p style="color: #4b5563; font-size: 15px;">I hope you love the final result! Let me know if you have any questions.</p>
-      <p style="color: #6b7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+      <p style="color: #6B7280; font-size: 15px;">I hope you love the final result! Let me know if you have any questions.</p>
+      <p style="color: #6B7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
     `;
     const { error } = await resend.emails.send({
       from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
@@ -1790,16 +1733,16 @@ export async function sendFinalPaymentEmail(data: FinalPaymentData): Promise<boo
   try {
     const content = `
       <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Final Payment Due</h2>
-      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
-      <p style="color: #4b5563; font-size: 15px;">Your project <strong>"${data.projectTitle}"</strong> is complete! The final payment is now due.</p>
+      <p style="color: #6B7280; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #6B7280; font-size: 15px;">Your project <strong>"${data.projectTitle}"</strong> is complete! The final payment is now due.</p>
       <div style="margin: 24px 0; padding: 20px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
-        <p style="margin: 0; font-size: 14px; color: #6b7280;">Final Balance: <strong style="color: #1a1a1a; font-size: 20px;">$${data.finalAmount.toFixed(2)}</strong></p>
+        <p style="margin: 0; font-size: 14px; color: #6B7280;">Final Balance: <strong style="color: #1a1a1a; font-size: 20px;">$${data.finalAmount.toFixed(2)}</strong></p>
       </div>
       <div style="text-align: center; margin: 32px 0;">
         <a href="${data.paymentUrl}" style="${greenButtonStyle}">Pay Final Balance ($${data.finalAmount.toFixed(2)})</a>
       </div>
-      <p style="color: #4b5563; font-size: 15px;">Thank you for choosing to work with me!</p>
-      <p style="color: #6b7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+      <p style="color: #6B7280; font-size: 15px;">Thank you for choosing to work with me!</p>
+      <p style="color: #6B7280; font-size: 14px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
     `;
     const { error } = await resend.emails.send({
       from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
@@ -1832,10 +1775,10 @@ export async function sendFinalPaymentReceivedEmail(data: FinalPaymentReceivedDa
   try {
     const content = `
       <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Payment Received — Thank You!</h2>
-      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
-      <p style="color: #4b5563; font-size: 15px;">Your final payment of <strong>$${data.amount.toFixed(2)}</strong> for <strong>"${data.projectTitle}"</strong> has been received!</p>
-      <p style="color: #4b5563; font-size: 15px;">It was wonderful working with you. I hope we can collaborate again in the future!</p>
-      <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+      <p style="color: #6B7280; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #6B7280; font-size: 15px;">Your final payment of <strong>$${data.amount.toFixed(2)}</strong> for <strong>"${data.projectTitle}"</strong> has been received!</p>
+      <p style="color: #6B7280; font-size: 15px;">It was wonderful working with you. I hope we can collaborate again in the future!</p>
+      <p style="color: #6B7280; font-size: 14px; margin-top: 24px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
     `;
     const { error } = await resend.emails.send({
       from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
@@ -1868,14 +1811,14 @@ export async function sendTestimonialRequestEmail(data: TestimonialRequestData):
   try {
     const content = `
       <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">How Was Your Experience?</h2>
-      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
-      <p style="color: #4b5563; font-size: 15px;">I hope you're loving your <strong>"${data.projectTitle}"</strong>!</p>
-      <p style="color: #4b5563; font-size: 15px;">Would you mind sharing your experience? It'll only take 2 minutes.</p>
+      <p style="color: #6B7280; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #6B7280; font-size: 15px;">I hope you're loving your <strong>"${data.projectTitle}"</strong>!</p>
+      <p style="color: #6B7280; font-size: 15px;">Would you mind sharing your experience? It'll only take 2 minutes.</p>
       <div style="text-align: center; margin: 32px 0;">
         <a href="${data.testimonialUrl}" style="${buttonStyle}">Share Your Experience</a>
       </div>
-      <p style="color: #9ca3af; font-size: 13px;">Your feedback helps me improve and helps others find my work. Thank you!</p>
-      <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+      <p style="color: #9CA3AF; font-size: 13px;">Your feedback helps me improve and helps others find my work. Thank you!</p>
+      <p style="color: #6B7280; font-size: 14px; margin-top: 24px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
     `;
     const { error } = await resend.emails.send({
       from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
@@ -1906,10 +1849,10 @@ export async function sendFileReviewReminderEmail(data: FileReviewReminderData):
   try {
     const content = `
       <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">Files Ready for Review</h2>
-      <p style="color: #4b5563; font-size: 15px;">Hi ${data.clientName},</p>
-      <p style="color: #4b5563; font-size: 15px;">Just a friendly reminder — we delivered <strong>${data.fileCount} file${data.fileCount > 1 ? 's' : ''}</strong> for <strong>"${data.projectTitle}"</strong> a few days ago.</p>
-      <p style="color: #4b5563; font-size: 15px;">We'd love to hear your thoughts! Please let us know if:</p>
-      <ul style="color: #4b5563; font-size: 15px; padding-left: 20px;">
+      <p style="color: #6B7280; font-size: 15px;">Hi ${data.clientName},</p>
+      <p style="color: #6B7280; font-size: 15px;">Just a friendly reminder — we delivered <strong>${data.fileCount} file${data.fileCount > 1 ? 's' : ''}</strong> for <strong>"${data.projectTitle}"</strong> a few days ago.</p>
+      <p style="color: #6B7280; font-size: 15px;">We'd love to hear your thoughts! Please let us know if:</p>
+      <ul style="color: #6B7280; font-size: 15px; padding-left: 20px;">
         <li>Everything looks great</li>
         <li>You'd like any changes or revisions</li>
         <li>You have questions about the files</li>
@@ -1917,8 +1860,8 @@ export async function sendFileReviewReminderEmail(data: FileReviewReminderData):
       <div style="text-align: center; margin: 32px 0;">
         <a href="${data.portalUrl}" style="${buttonStyle}">Review Files Now</a>
       </div>
-      <p style="color: #9ca3af; font-size: 13px;">We're here to make any adjustments you need!</p>
-      <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
+      <p style="color: #9CA3AF; font-size: 13px;">We're here to make any adjustments you need!</p>
+      <p style="color: #6B7280; font-size: 14px; margin-top: 24px;">Best regards,<br><strong style="color: #1a1a1a;">${data.studioName || data.creativeName}</strong></p>
     `;
     const { error } = await resend.emails.send({
       from: `${data.studioName || data.creativeName} <${SENDER_EMAIL}>`,
@@ -1952,8 +1895,8 @@ export async function sendPaymentReceivedNotification(data: PaymentReceivedNotif
     const typeLabel = data.type === 'deposit' ? 'Deposit' : 'Final';
     const content = `
       <h2 style="color: #1a1a1a; font-size: 22px; margin-bottom: 16px;">${typeLabel} Payment Received!</h2>
-      <p style="color: #4b5563; font-size: 15px;"><strong>${data.clientName}</strong> paid the ${data.type} payment of <strong>$${data.amount.toFixed(2)}</strong>.</p>
-      <p style="color: #4b5563; font-size: 15px;">Project: <strong>"${data.projectTitle}"</strong></p>
+      <p style="color: #6B7280; font-size: 15px;"><strong>${data.clientName}</strong> paid the ${data.type} payment of <strong>$${data.amount.toFixed(2)}</strong>.</p>
+      <p style="color: #6B7280; font-size: 15px;">Project: <strong>"${data.projectTitle}"</strong></p>
       <div style="text-align: center; margin: 32px 0;">
         <a href="${data.dashboardUrl}" style="${buttonStyle}">View Dashboard</a>
       </div>
@@ -1988,7 +1931,7 @@ export async function sendSequenceEmail(data: SequenceEmailData): Promise<boolea
   }
   try {
     const content = `
-      <div style="color: #4b5563; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${data.body}</div>
+      <div style="color: #6B7280; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${data.body}</div>
       ${data.portalUrl ? `
       <div style="text-align: center; margin: 32px 0;">
         <a href="${data.portalUrl}" style="${buttonStyle}">View Your Quote</a>
@@ -2028,17 +1971,17 @@ export async function sendNewMessageNotification(data: {
       <div style="text-align: center; margin-bottom: 24px;">
         <span style="font-size: 48px;">💬</span>
       </div>
-      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1f2937; text-align: center;">New Message from ${data.from}</h2>
-      <p style="text-align: center; color: #6b7280; margin-bottom: 24px;">Regarding: ${data.projectTitle}</p>
+      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1A1A2E; text-align: center;">New Message from ${data.from}</h2>
+      <p style="text-align: center; color: #6B7280; margin-bottom: 24px;">Regarding: ${data.projectTitle}</p>
       <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;">
-        <p style="margin: 0; color: #374151; font-style: italic; line-height: 1.6;">"${preview}"</p>
+        <p style="margin: 0; color: #1A1A2E; font-style: italic; line-height: 1.6;">"${preview}"</p>
       </div>
       <div style="text-align: center; margin-top: 28px;">
         <a href="${data.dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
           View & Reply
         </a>
       </div>
-      <p style="text-align: center; color: #9ca3af; font-size: 14px; margin-top: 20px;">Reply quickly to keep your clients engaged!</p>
+      <p style="text-align: center; color: #9CA3AF; font-size: 14px; margin-top: 20px;">Reply quickly to keep your clients engaged!</p>
     `;
     const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
@@ -2071,9 +2014,9 @@ export async function sendClientMessageNotification(data: {
       <div style="text-align: center; margin-bottom: 24px;">
         <span style="font-size: 48px;">💬</span>
       </div>
-      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1f2937; text-align: center;">New Message from ${data.creativeName}</h2>
+      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1A1A2E; text-align: center;">New Message from ${data.creativeName}</h2>
       <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;">
-        <p style="margin: 0; color: #374151; font-style: italic; line-height: 1.6;">"${preview}"</p>
+        <p style="margin: 0; color: #1A1A2E; font-style: italic; line-height: 1.6;">"${preview}"</p>
       </div>
       <div style="text-align: center; margin-top: 28px;">
         <a href="${data.portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
@@ -2121,18 +2064,18 @@ export async function sendWorkProgressNotification(data: {
       <div style="text-align: center; margin-bottom: 24px;">
         <span style="font-size: 48px;">${data.status === 'DELIVERED' || data.status === 'SHIPPED' ? '✅' : '🚀'}</span>
       </div>
-      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1f2937; text-align: center;">${cfg.title}</h2>
-      <p style="text-align: center; color: #6b7280; margin-bottom: 24px;">Hi ${data.clientName},</p>
+      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1A1A2E; text-align: center;">${cfg.title}</h2>
+      <p style="text-align: center; color: #6B7280; margin-bottom: 24px;">Hi ${data.clientName},</p>
       <div style="background: ${cfg.color}10; border-left: 4px solid ${cfg.color}; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
-        <h3 style="margin: 0 0 8px 0; color: #1f2937;">${data.deliverableName}</h3>
-        <p style="margin: 0; color: #6b7280;">${data.creativeName} ${cfg.message} your deliverable.</p>
+        <h3 style="margin: 0 0 8px 0; color: #1A1A2E;">${data.deliverableName}</h3>
+        <p style="margin: 0; color: #6B7280;">${data.creativeName} ${cfg.message} your deliverable.</p>
       </div>
       <div style="text-align: center; margin-top: 28px;">
         <a href="${data.portalUrl}" style="display: inline-block; background: ${cfg.color}; color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
           View in Portal
         </a>
       </div>
-      <p style="text-align: center; color: #9ca3af; font-size: 14px; margin-top: 20px;">Track all project updates in your client portal.</p>
+      <p style="text-align: center; color: #9CA3AF; font-size: 14px; margin-top: 20px;">Track all project updates in your client portal.</p>
     `;
     const senderName = data.studioName || data.creativeName;
     const { error } = await resend.emails.send({
@@ -2165,7 +2108,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
   const sym = stats.currencySymbol;
   const startStr = period.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const endStr = period.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const baseUrl = process.env.FRONTEND_URL || 'https://availability-sync-5.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com';
 
   // Build stat cards
   const statCards = [
@@ -2184,7 +2127,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
         <td style="padding: 10px 16px; border-bottom: 1px solid #f3f4f6;">
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
-              <td style="color: #374151; font-size: 14px;">${a.label}</td>
+              <td style="color: #1A1A2E; font-size: 14px;">${a.label}</td>
               <td align="right" style="font-weight: 700; color: #7c3aed; font-size: 14px;">${a.count}</td>
             </tr>
           </table>
@@ -2199,7 +2142,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
         <td style="padding: 8px 16px; border-bottom: 1px solid #f3f4f6;">
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
-              <td style="color: #374151; font-size: 14px;">${i + 1}. ${c.name}</td>
+              <td style="color: #1A1A2E; font-size: 14px;">${i + 1}. ${c.name}</td>
               <td align="right" style="font-weight: 700; color: #059669; font-size: 14px;">${sym}${c.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
           </table>
@@ -2221,13 +2164,13 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
     : '';
 
   const content = `
-    <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
+    <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">
       Weekly Autopilot Digest
     </h1>
-    <p style="margin: 0 0 4px 0; font-size: 14px; color: #9ca3af;">
+    <p style="margin: 0 0 4px 0; font-size: 14px; color: #9CA3AF;">
       ${startStr} — ${endStr}
     </p>
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #4b5563; line-height: 1.6;">
+    <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.6;">
       Hi ${userName}, here's how your pipeline performed this week at <strong style="color: #7c3aed;">${studioName}</strong>.
     </p>
 
@@ -2239,7 +2182,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
         <td style="width: 33%; padding: 4px;">
           <div style="background: ${s.color}10; border: 1px solid ${s.color}30; border-radius: 12px; padding: 16px; text-align: center;">
             <div style="font-size: 28px; font-weight: 700; color: ${s.color};">${s.value}</div>
-            <div style="font-size: 11px; color: #6b7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${s.label}</div>
+            <div style="font-size: 11px; color: #6B7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${s.label}</div>
           </div>
         </td>
       `).join('')}</tr>
@@ -2247,7 +2190,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
         <td style="width: 33%; padding: 4px;">
           <div style="background: ${s.color}10; border: 1px solid ${s.color}30; border-radius: 12px; padding: 16px; text-align: center;">
             <div style="font-size: 28px; font-weight: 700; color: ${s.color};">${s.value}</div>
-            <div style="font-size: 11px; color: #6b7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${s.label}</div>
+            <div style="font-size: 11px; color: #6B7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${s.label}</div>
           </div>
         </td>
       `).join('')}<td style="width: 33%; padding: 4px;"></td></tr>
@@ -2278,14 +2221,14 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center" style="padding: 8px 0 24px;">
-          <a href="${baseUrl}/dashboard" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${baseUrl}/dashboard" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             Open Dashboard
           </a>
         </td>
       </tr>
     </table>
 
-    <p style="margin: 0; font-size: 12px; color: #9ca3af; text-align: center; line-height: 1.6;">
+    <p style="margin: 0; font-size: 12px; color: #9CA3AF; text-align: center; line-height: 1.6;">
       This is your weekly autopilot digest from KOLOR STUDIO.<br>
       To adjust email preferences, visit your <a href="${baseUrl}/dashboard" style="color: #7c3aed; text-decoration: underline;">dashboard settings</a>.
     </p>
@@ -2359,36 +2302,36 @@ export async function sendClientOnboardingEmail(
     1: {
       subject: `Welcome! Let's Get Started on Your ${projectType}`,
       content: `
-        <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1f2937;">
+        <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1A1A2E;">
           Welcome to Your Project!
         </h1>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           I'm excited to work with you on your <strong>${projectType}</strong>.
           Here's what to expect over the coming days:
         </p>
         <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 20px; margin: 24px 0; border-radius: 8px;">
-          <h3 style="margin: 0 0 12px 0; color: #1f2937; font-size: 16px;">What Happens Next</h3>
-          <ul style="margin: 0; padding-left: 20px; color: #4b5563; line-height: 2;">
+          <h3 style="margin: 0 0 12px 0; color: #1A1A2E; font-size: 16px;">What Happens Next</h3>
+          <ul style="margin: 0; padding-left: 20px; color: #6B7280; line-height: 2;">
             <li>I'll start working on your project right away</li>
             <li>You'll receive updates through your client portal</li>
             <li>Feel free to message me anytime with questions</li>
             <li>I'll notify you when files are ready for review</li>
           </ul>
         </div>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           Track everything in your personal client portal:
         </p>
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td align="center" style="padding: 16px 0;">
-              <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+              <a href="${portalUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
                 Open Your Portal
               </a>
             </td>
           </tr>
         </table>
-        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="color: #6B7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
           Questions? Just reply to this email!<br><strong>${creativeName}</strong>
         </p>
       `,
@@ -2396,11 +2339,11 @@ export async function sendClientOnboardingEmail(
     2: {
       subject: 'Quick Guide to Your Client Portal',
       content: `
-        <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1f2937;">
+        <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1A1A2E;">
           Your Client Portal Guide
         </h1>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           Quick tip: your client portal is where everything lives! Here's what you can do:
         </p>
         <div style="margin: 24px 0;">
@@ -2430,7 +2373,7 @@ export async function sendClientOnboardingEmail(
             </td>
           </tr>
         </table>
-        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="color: #6B7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
           Need help navigating? I'm just an email away!<br><strong>${creativeName}</strong>
         </p>
       `,
@@ -2438,11 +2381,11 @@ export async function sendClientOnboardingEmail(
     3: {
       subject: `Your ${projectType} is Progressing!`,
       content: `
-        <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1f2937;">
+        <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1A1A2E;">
           Your Project is Underway!
         </h1>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           Great news! Work on your <strong>${projectType}</strong> is progressing well.
         </p>
         <div style="background: #ecfdf5; border: 2px solid #10b981; padding: 24px; margin: 24px 0; border-radius: 12px; text-align: center;">
@@ -2451,8 +2394,8 @@ export async function sendClientOnboardingEmail(
             : `<p style="margin: 0; color: #065f46; font-size: 18px; font-weight: 600;">On track for timely delivery!</p>`
           }
         </div>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;"><strong>What you can do:</strong></p>
-        <ul style="color: #4b5563; line-height: 2; padding-left: 24px;">
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;"><strong>What you can do:</strong></p>
+        <ul style="color: #6B7280; line-height: 2; padding-left: 24px;">
           <li>Check your portal for work-in-progress updates</li>
           <li>Send me a message if you have questions or ideas</li>
           <li>Review any files I've shared for feedback</li>
@@ -2467,7 +2410,7 @@ export async function sendClientOnboardingEmail(
             </td>
           </tr>
         </table>
-        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="color: #6B7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
           Thank you for your trust!<br><strong>${creativeName}</strong>
         </p>
       `,
@@ -2554,16 +2497,16 @@ export async function sendQuoteFollowUpEmail(
     1: {
       subject: `Following up on your ${projectType} quote`,
       content: `
-        <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1f2937;">Just Following Up</h1>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">Just Following Up</h1>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           I wanted to follow up on the quote I sent you for your <strong>${projectType}</strong>.
         </p>
         <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 20px; margin: 24px 0; border-radius: 8px;">
           <p style="margin: 0; color: #1e40af; font-size: 20px; font-weight: 700;">${formattedAmount}</p>
           <p style="margin: 4px 0 0 0; color: #475569; font-size: 14px;">Investment for ${projectType}</p>
         </div>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           I'm excited about the possibility of working together! If you have any questions or need clarification, I'm here to help.
         </p>
         <table width="100%" cellpadding="0" cellspacing="0">
@@ -2571,7 +2514,7 @@ export async function sendQuoteFollowUpEmail(
             <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">Review Your Quote</a>
           </td></tr>
         </table>
-        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="color: #6B7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
           Looking forward to hearing from you!<br><strong>${creativeName}</strong>
         </p>
       `,
@@ -2579,21 +2522,21 @@ export async function sendQuoteFollowUpEmail(
     2: {
       subject: `Any questions about your ${projectType}?`,
       content: `
-        <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1f2937;">Any Questions?</h1>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">Any Questions?</h1>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           I haven't heard back about your <strong>${projectType}</strong> quote yet, and I wanted to check in.
         </p>
         <div style="background: #faf5ff; border-left: 4px solid #8b5cf6; padding: 20px; margin: 24px 0; border-radius: 8px;">
           <h3 style="margin: 0 0 12px 0; color: #6b21a8; font-size: 15px;">Common Questions:</h3>
-          <ul style="margin: 0; padding-left: 20px; color: #4b5563; line-height: 2;">
+          <ul style="margin: 0; padding-left: 20px; color: #6B7280; line-height: 2;">
             <li>Can the timeline be adjusted?</li>
             <li>Are payment plans available?</li>
             <li>What's included in the price?</li>
             <li>Can we customize the package?</li>
           </ul>
         </div>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           If you have any concerns, I'm happy to discuss! Reply to this email or send me a message through your portal.
         </p>
         <table width="100%" cellpadding="0" cellspacing="0">
@@ -2601,7 +2544,7 @@ export async function sendQuoteFollowUpEmail(
             <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">View Quote & Ask Questions</a>
           </td></tr>
         </table>
-        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="color: #6B7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
           No pressure — just want to make sure you have everything you need!<br><strong>${creativeName}</strong>
         </p>
       `,
@@ -2609,25 +2552,25 @@ export async function sendQuoteFollowUpEmail(
     3: {
       subject: `Your ${projectType} quote expires soon`,
       content: `
-        <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1f2937;">Final Follow-Up</h1>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">Final Follow-Up</h1>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           This is my final follow-up regarding your <strong>${projectType}</strong> quote.
         </p>
         <div style="background: #fffbeb; border: 2px solid #f59e0b; padding: 24px; margin: 24px 0; border-radius: 12px; text-align: center;">
           <p style="margin: 0; color: #92400e; font-size: 18px; font-weight: 600;">Quote expires in ${expirationDays || 7} days</p>
           <p style="margin: 8px 0 0 0; color: #78350f; font-size: 14px;">${formattedAmount} for ${projectType}</p>
         </div>
-        <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           I'd love to work with you, but I understand if the timing isn't right. If you're interested, let me know soon so I can reserve your spot!
         </p>
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr><td align="center" style="padding: 16px 0;">
             <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">Accept Quote Now</a>
           </td></tr>
-          <tr><td align="center"><p style="margin: 0; color: #6b7280; font-size: 13px;">Or reply to let me know if you need more time</p></td></tr>
+          <tr><td align="center"><p style="margin: 0; color: #6B7280; font-size: 13px;">Or reply to let me know if you need more time</p></td></tr>
         </table>
-        <p style="color: #6b7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="color: #6B7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
           Either way, I appreciate you considering me for your project!<br><strong>${creativeName}</strong>
         </p>
       `,
@@ -2695,36 +2638,24 @@ export async function sendMeetingConfirmationEmail(data: MeetingConfirmationData
   });
 
   const content = `
-    <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 20px;">Meeting Confirmed!</h2>
-    <p style="color: #4a4a68; font-size: 16px; line-height: 1.6;">
+    ${successBox(`
+      <p style="margin: 0; font-size: 18px; font-weight: 700; color: ${EmailColors.successText}; font-family: ${EmailFonts.heading}; text-align: center;">Meeting Confirmed!</p>
+    `)}
+    <p style="color: ${EmailColors.textSecondary}; font-size: 16px; line-height: 1.6; font-family: ${EmailFonts.body};">
       Hi ${data.clientName},
     </p>
-    <p style="color: #4a4a68; font-size: 16px; line-height: 1.6;">
-      Your meeting with <strong>${data.studioName}</strong> has been confirmed.
+    <p style="color: ${EmailColors.textSecondary}; font-size: 16px; line-height: 1.6; font-family: ${EmailFonts.body};">
+      Your meeting with <strong style="color: ${EmailColors.textPrimary};">${data.studioName}</strong> has been confirmed.
     </p>
-    <div style="background: #f8f7ff; border-radius: 12px; padding: 24px; margin: 24px 0;">
+    ${cardBlock(`
       <table style="width: 100%;" cellpadding="0" cellspacing="0">
-        <tr>
-          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600; width: 120px;">Meeting</td>
-          <td style="padding: 8px 0; color: #1a1a2e;">${data.meetingTypeName}</td>
-        </tr>
-        <tr>
-          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Date</td>
-          <td style="padding: 8px 0; color: #1a1a2e;">${formattedDate}</td>
-        </tr>
-        <tr>
-          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Time</td>
-          <td style="padding: 8px 0; color: #1a1a2e;">${formattedTime} — ${formattedEndTime} (${data.duration} min)</td>
-        </tr>
-        ${data.location ? `
-        <tr>
-          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Location</td>
-          <td style="padding: 8px 0; color: #1a1a2e;">${data.location}</td>
-        </tr>
-        ` : ''}
+        ${detailRow('Meeting', data.meetingTypeName, EmailColors.brandPrimary)}
+        ${detailRow('Date', formattedDate)}
+        ${detailRow('Time', `${formattedTime} — ${formattedEndTime} (${data.duration} min)`)}
+        ${data.location ? detailRow('Location', data.location) : ''}
       </table>
-    </div>
-    <p style="color: #4a4a68; font-size: 14px; line-height: 1.6;">
+    `)}
+    <p style="color: ${EmailColors.textTertiary}; font-size: 14px; line-height: 1.6; font-family: ${EmailFonts.body};">
       If you need to cancel or reschedule, please reply to this email.
     </p>
   `;
@@ -2771,28 +2702,19 @@ export async function sendMeetingNotificationToOwner(data: MeetingOwnerNotificat
   });
 
   const content = `
-    <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 20px;">New Meeting Booked!</h2>
-    <p style="color: #4a4a68; font-size: 16px; line-height: 1.6;">
-      <strong>${data.clientName}</strong> (${data.clientEmail}) has booked a meeting with you.
+    <h2 style="color: ${EmailColors.textPrimary}; font-size: 22px; margin: 0 0 ${EmailSpacing.lg}; font-family: ${EmailFonts.heading};">New Meeting Booked!</h2>
+    <p style="color: ${EmailColors.textSecondary}; font-size: 16px; line-height: 1.6; font-family: ${EmailFonts.body};">
+      <strong style="color: ${EmailColors.textPrimary};">${data.clientName}</strong> (${data.clientEmail}) has booked a meeting with you.
     </p>
-    <div style="background: #f8f7ff; border-radius: 12px; padding: 24px; margin: 24px 0;">
+    ${cardBlock(`
       <table style="width: 100%;" cellpadding="0" cellspacing="0">
-        <tr>
-          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600; width: 120px;">Meeting</td>
-          <td style="padding: 8px 0; color: #1a1a2e;">${data.meetingTypeName}</td>
-        </tr>
-        <tr>
-          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Date</td>
-          <td style="padding: 8px 0; color: #1a1a2e;">${formattedDate}</td>
-        </tr>
-        <tr>
-          <td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Time</td>
-          <td style="padding: 8px 0; color: #1a1a2e;">${formattedTime} (${data.duration} min)</td>
-        </tr>
-        ${data.location ? `<tr><td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Location</td><td style="padding: 8px 0; color: #1a1a2e;">${data.location}</td></tr>` : ''}
-        ${data.clientNotes ? `<tr><td style="padding: 8px 0; color: #7c3aed; font-weight: 600;">Notes</td><td style="padding: 8px 0; color: #1a1a2e;">${data.clientNotes}</td></tr>` : ''}
+        ${detailRow('Meeting', data.meetingTypeName, EmailColors.brandPrimary)}
+        ${detailRow('Date', formattedDate)}
+        ${detailRow('Time', `${formattedTime} (${data.duration} min)`)}
+        ${data.location ? detailRow('Location', data.location) : ''}
+        ${data.clientNotes ? detailRow('Notes', data.clientNotes) : ''}
       </table>
-    </div>
+    `)}
   `;
 
   try {
@@ -2832,15 +2754,15 @@ export async function sendMeetingReminderEmail(data: {
   });
 
   const content = `
-    <h2 style="color: #1a1a2e; font-size: 22px; margin: 0 0 20px;">Meeting Reminder</h2>
-    <p style="color: #4a4a68; font-size: 16px; line-height: 1.6;">
-      Hi ${data.clientName}, this is a reminder about your upcoming meeting with <strong>${data.studioName}</strong>.
+    <h2 style="color: ${EmailColors.textPrimary}; font-size: 22px; margin: 0 0 ${EmailSpacing.lg}; font-family: ${EmailFonts.heading};">Meeting Reminder</h2>
+    <p style="color: ${EmailColors.textSecondary}; font-size: 16px; line-height: 1.6; font-family: ${EmailFonts.body};">
+      Hi ${data.clientName}, this is a reminder about your upcoming meeting with <strong style="color: ${EmailColors.textPrimary};">${data.studioName}</strong>.
     </p>
-    <div style="background: #f8f7ff; border-radius: 12px; padding: 24px; margin: 24px 0;">
-      <p style="color: #1a1a2e; margin: 0;"><strong>${data.meetingTypeName}</strong></p>
-      <p style="color: #4a4a68; margin: 8px 0 0;">${formattedDate} at ${formattedTime} (${data.duration} min)</p>
-      ${data.location ? `<p style="color: #4a4a68; margin: 8px 0 0;">Location: ${data.location}</p>` : ''}
-    </div>
+    ${highlightBox(`
+      <p style="color: ${EmailColors.textPrimary}; margin: 0; font-weight: 600; font-size: 16px; font-family: ${EmailFonts.heading};">${data.meetingTypeName}</p>
+      <p style="color: ${EmailColors.textSecondary}; margin: ${EmailSpacing.sm} 0 0; font-size: 14px; font-family: ${EmailFonts.body};">${formattedDate} at ${formattedTime} (${data.duration} min)</p>
+      ${data.location ? `<p style="color: ${EmailColors.textSecondary}; margin: ${EmailSpacing.sm} 0 0; font-size: 14px; font-family: ${EmailFonts.body};">Location: ${data.location}</p>` : ''}
+    `)}
   `;
 
   try {

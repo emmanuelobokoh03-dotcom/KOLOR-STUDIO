@@ -12,7 +12,7 @@ import requests
 import os
 import time
 
-BASE_URL = "https://availability-sync-5.preview.emergentagent.com"
+BASE_URL = "https://email-preview-7.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

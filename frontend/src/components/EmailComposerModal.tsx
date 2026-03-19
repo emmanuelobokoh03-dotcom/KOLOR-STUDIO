@@ -259,7 +259,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
               Project Title
             </button>
             <button
-              onClick={() => insertSnippet(`https://availability-sync-5.preview.emergentagent.com/portal/${lead.portalToken}`)}
+              onClick={() => insertSnippet(`https://email-preview-7.preview.emergentagent.com/portal/${lead.portalToken}`)}
               className="flex items-center gap-1 px-2 py-1 bg-light-100 border border-light-200 rounded text-xs text-text-secondary hover:text-text-primary hover:border-brand-primary transition"
               title="Insert client portal link"
             >

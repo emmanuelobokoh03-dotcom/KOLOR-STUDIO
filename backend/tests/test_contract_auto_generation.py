@@ -17,7 +17,7 @@ import os
 import json
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://availability-sync-5.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://email-preview-7.preview.emergentagent.com').rstrip('/')
 
 # Test credentials
 TEST_USER_EMAIL = "emailtest@test.com"

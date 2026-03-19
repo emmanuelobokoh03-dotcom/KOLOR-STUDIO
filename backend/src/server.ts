@@ -42,6 +42,7 @@ import availabilityRoutes from './routes/availability';
 import publicBookingRoutes, { meetingBookingsRouter } from './routes/public-booking';
 import { processMeetingReminders } from './services/meetingReminderService';
 import { authMiddleware } from './middleware/auth';
+import emailPreviewRoutes from './routes/emailPreview';
 
 // dotenv already loaded at the top of this file
 
@@ -175,6 +176,12 @@ app.use('/api/meeting-types', meetingTypesRoutes); // Meeting types: /api/meetin
 app.use('/api/availability', availabilityRoutes); // Availability: /api/availability/*
 app.use('/api/book', publicBookingRoutes); // Public booking: /api/book/:userId/*
 app.use('/api/meeting-bookings', authMiddleware as any, meetingBookingsRouter); // Auth'd meeting bookings
+
+// Email preview endpoint (development/staging only)
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api/preview-email', emailPreviewRoutes);
+  console.log('📧 Email preview endpoint available at /api/preview-email');
+}
 
 // Welcome route - with /api prefix
 app.get('/api', (_req: Request, res: Response) => {
