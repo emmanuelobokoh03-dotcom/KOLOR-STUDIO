@@ -1529,7 +1529,7 @@ export const publicBookingApi = {
     }>(`/api/book/${userId}`);
   },
   getSlots: async (userId: string, meetingTypeId: string, date: string) => {
-    return request<{ slots: string[]; date: string; meetingType: { name: string; duration: number } }>(`/api/book/${userId}/${meetingTypeId}/slots?date=${date}`);
+    return request<{ slots: string[]; date: string; calendarSynced?: boolean; meetingType: { name: string; duration: number } }>(`/api/book/${userId}/${meetingTypeId}/slots?date=${date}`);
   },
   createBooking: async (userId: string, meetingTypeId: string, data: { clientName: string; clientEmail: string; clientPhone?: string; clientNotes?: string; startTime: string }) => {
     return request<{ message: string; booking: { id: string; meetingType: string; startTime: string; endTime: string; status: string } }>(`/api/book/${userId}/${meetingTypeId}`, {
