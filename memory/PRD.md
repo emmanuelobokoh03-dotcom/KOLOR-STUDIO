@@ -66,10 +66,17 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Booking integration:** Availability check against Google Calendar before booking; auto-creates calendar event on booking confirmation; deletes event on cancellation
 - **Frontend:** Google Calendar connect/disconnect card in SchedulingSettings with status indicators
 
+### Google Calendar Sync Enhancement (Mar 20, 2026)
+- **getBusySlots:** New function in googleCalendarService.ts uses freebusy API to fetch busy time ranges
+- **Slot generation:** public-booking.ts merges Google Calendar busy slots into allBookedSlots before generating available times
+- **calendarSynced flag:** Slots response includes `calendarSynced: true/false` so frontend can show sync indicator
+- **Frontend indicator:** Green "Showing real-time availability from Google Calendar" text on booking page when synced
+
 ## Prioritized Backlog
 
 ### P0 (Next Up)
 - [x] Google Calendar integration for booking system (DONE)
+- [x] Google Calendar sync to booking page (DONE)
 
 ### P1
 - [ ] Mobile responsiveness polish
@@ -88,6 +95,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_79: File Upload Notifications Part 1 (backend 18/18, 100%)
 - iteration_80: File Management Frontend UI (backend 100%, frontend 100%)
 - iteration_81: Google Calendar Integration (backend 14/14, frontend 100%)
+- iteration_82: Google Calendar Sync to Booking Page (backend 13/13, 100%)
 
 ## Test Credentials
 - bookingtest@test.com / password123 (User ID: cmmw4gvhr0000msmu77aijfb9)
