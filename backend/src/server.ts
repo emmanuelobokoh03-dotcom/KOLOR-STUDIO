@@ -44,6 +44,7 @@ import { processMeetingReminders } from './services/meetingReminderService';
 import { authMiddleware } from './middleware/auth';
 import emailPreviewRoutes from './routes/emailPreview';
 import fileCommentRoutes from './routes/fileComments';
+import googleCalendarRoutes from './routes/googleCalendar';
 
 // dotenv already loaded at the top of this file
 
@@ -178,6 +179,7 @@ app.use('/api/meeting-types', meetingTypesRoutes); // Meeting types: /api/meetin
 app.use('/api/availability', availabilityRoutes); // Availability: /api/availability/*
 app.use('/api/book', publicBookingRoutes); // Public booking: /api/book/:userId/*
 app.use('/api/meeting-bookings', authMiddleware as any, meetingBookingsRouter); // Auth'd meeting bookings
+app.use('/api/google-calendar', googleCalendarRoutes); // Google Calendar OAuth + status (auth inside)
 
 // Email preview endpoint (development/staging only)
 if (process.env.NODE_ENV !== 'production') {

@@ -518,6 +518,7 @@ model User {
   availabilitySchedules AvailabilitySchedule[]
   meetingBookings      MeetingBooking[]
   fileComments         FileComment[]
+  calendarConnections  CalendarConnection[]
 
   @@map("users")
 }
@@ -960,6 +961,7 @@ model MeetingBooking {
   cancelReason    String?
   reminderSentAt  DateTime?
   confirmationSentAt DateTime?
+  calendarEventId String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -968,6 +970,23 @@ model MeetingBooking {
   @@index([startTime])
   @@index([status])
   @@map("meeting_bookings")
+}
+
+model CalendarConnection {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider     String    @default("GOOGLE")
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime?
+  scope        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([userId, provider])
+  @@index([userId])
+  @@map("calendar_connections")
 }
 
 enum MeetingStatus {

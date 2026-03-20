@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import {
   Clock, Plus, Trash, FloppyDisk, SpinnerGap, Copy, Check,
-  CalendarBlank, MapPin, Timer, CaretDown, CaretUp, ToggleLeft, ToggleRight
+  CalendarBlank, MapPin, Timer, CaretDown, CaretUp, ToggleLeft, ToggleRight,
+  GoogleLogo, Link as LinkIcon, LinkBreak
 } from '@phosphor-icons/react'
 import { meetingTypesApi, availabilityApi, MeetingType, AvailabilitySlot } from '../services/api'
 
@@ -34,6 +35,8 @@ export default function SchedulingSettings() {
   const [copied, setCopied] = useState(false)
   const [userId, setUserId] = useState('')
   const [expandedSection, setExpandedSection] = useState<'types' | 'hours' | 'link'>('types')
+  const [calendarConnected, setCalendarConnected] = useState(false)
+  const [calendarLoading, setCalendarLoading] = useState(false)
 
   useEffect(() => {
     fetchData()
@@ -55,8 +58,24 @@ export default function SchedulingSettings() {
         const payload = JSON.parse(atob(token.split('.')[1]))
         setUserId(payload.userId || payload.id || '')
       } catch { /* ignore */ }
+
+      // Check Google Calendar status
+      try {
+        const resp = await fetch('/api/google-calendar/status', { headers: { Authorization: `Bearer ${token}` } })
+        if (resp.ok) {
+          const data = await resp.json()
+          setCalendarConnected(data.connected)
+        }
+      } catch { /* ignore */ }
     }
     setLoading(false)
+
+    // Check URL for calendar connection result
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('calendar') === 'connected') {
+      setCalendarConnected(true)
+      window.history.replaceState({}, '', window.location.pathname)
+    }
   }
 
   // Availability helpers
@@ -156,6 +175,32 @@ export default function SchedulingSettings() {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const connectGoogleCalendar = async () => {
+    setCalendarLoading(true)
+    const token = localStorage.getItem('token')
+    try {
+      const resp = await fetch('/api/google-calendar/auth-url', { headers: { Authorization: `Bearer ${token}` } })
+      if (resp.ok) {
+        const data = await resp.json()
+        window.location.href = data.authUrl
+      }
+    } catch { /* ignore */ }
+    setCalendarLoading(false)
+  }
+
+  const disconnectGoogleCalendar = async () => {
+    setCalendarLoading(true)
+    const token = localStorage.getItem('token')
+    try {
+      const resp = await fetch('/api/google-calendar/disconnect', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (resp.ok) setCalendarConnected(false)
+    } catch { /* ignore */ }
+    setCalendarLoading(false)
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -187,6 +232,53 @@ export default function SchedulingSettings() {
             {copied ? 'Copied' : 'Copy'}
           </button>
         </div>
+      </div>
+
+      {/* Google Calendar Connection */}
+      <div className={`border rounded-xl p-4 ${calendarConnected ? 'border-emerald-200 bg-emerald-50/50' : 'border-light-200 bg-white'}`} data-testid="google-calendar-section">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${calendarConnected ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+              <GoogleLogo weight="bold" className={`w-5 h-5 ${calendarConnected ? 'text-emerald-600' : 'text-gray-500'}`} />
+            </div>
+            <div>
+              <p className="font-semibold text-text-primary text-sm">Google Calendar</p>
+              <p className="text-xs text-text-secondary">
+                {calendarConnected
+                  ? 'Connected — bookings sync automatically'
+                  : 'Connect to sync availability & create events'}
+              </p>
+            </div>
+          </div>
+          {calendarConnected ? (
+            <button
+              onClick={disconnectGoogleCalendar}
+              disabled={calendarLoading}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition disabled:opacity-50"
+              data-testid="disconnect-google-calendar"
+            >
+              {calendarLoading ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <LinkBreak className="w-3.5 h-3.5" />}
+              Disconnect
+            </button>
+          ) : (
+            <button
+              onClick={connectGoogleCalendar}
+              disabled={calendarLoading}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition disabled:opacity-50"
+              data-testid="connect-google-calendar"
+            >
+              {calendarLoading ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <LinkIcon className="w-3.5 h-3.5" />}
+              Connect
+            </button>
+          )}
+        </div>
+        {calendarConnected && (
+          <div className="mt-3 flex items-center gap-4 text-xs text-emerald-700">
+            <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Availability sync</span>
+            <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Auto-create events</span>
+            <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Conflict detection</span>
+          </div>
+        )}
       </div>
 
       {/* Meeting Types Section */}

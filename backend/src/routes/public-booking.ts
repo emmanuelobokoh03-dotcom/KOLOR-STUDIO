@@ -2,6 +2,7 @@ import { Router, Response, Request } from 'express';
 import prisma from '../lib/prisma';
 import { AuthRequest } from '../middleware/auth';
 import { sendMeetingConfirmationEmail, sendMeetingNotificationToOwner } from '../services/email';
+import * as gcal from '../services/googleCalendarService';
 
 const router = Router();
 
@@ -212,6 +213,20 @@ router.post('/:userId/:meetingTypeId', async (req: Request, res: Response): Prom
     const start = new Date(startTime);
     const end = new Date(start.getTime() + meetingType.duration * 60000);
 
+    // Check Google Calendar availability (if connected)
+    try {
+      const calConn = await gcal.getCalendarConnection(userId);
+      if (calConn) {
+        const isFree = await gcal.checkAvailability(userId, start, end);
+        if (!isFree) {
+          res.status(409).json({ error: 'This time slot conflicts with an existing calendar event' });
+          return;
+        }
+      }
+    } catch (calErr) {
+      console.error('[PublicBooking] Calendar check failed (continuing):', calErr);
+    }
+
     // Double-check for conflicts
     const conflict = await prisma.meetingBooking.findFirst({
       where: {
@@ -278,6 +293,25 @@ router.post('/:userId/:meetingTypeId', async (req: Request, res: Response): Prom
       });
     } catch (emailError) {
       console.error('[PublicBooking] Owner notification email error:', emailError);
+    }
+
+    // Create Google Calendar event (non-blocking)
+    try {
+      const calConn = await gcal.getCalendarConnection(userId);
+      if (calConn) {
+        await gcal.createEvent(userId, {
+          id: booking.id,
+          clientName,
+          clientEmail,
+          clientPhone: clientPhone || null,
+          clientNotes: clientNotes || null,
+          startTime: start,
+          endTime: end,
+          meetingType: { name: meetingType.name, duration: meetingType.duration, location: meetingType.location },
+        });
+      }
+    } catch (calErr) {
+      console.error('[PublicBooking] Calendar event creation failed (booking still valid):', calErr);
     }
 
     res.status(201).json({
@@ -350,6 +384,13 @@ meetingBookingsRouter.patch('/:id/cancel', async (req: Request, res: Response): 
         cancelReason: reason || null,
       },
     });
+
+    // Delete Google Calendar event (non-blocking)
+    if (updated.calendarEventId) {
+      gcal.deleteEvent(userId, updated.calendarEventId).catch(err =>
+        console.error('[MeetingBookings] Calendar event deletion failed:', err)
+      );
+    }
 
     res.json({ message: 'Booking cancelled', booking: updated });
   } catch (error) {
