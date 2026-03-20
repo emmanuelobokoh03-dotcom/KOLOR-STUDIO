@@ -114,6 +114,19 @@ router.get('/:userId/:meetingTypeId/slots', async (req: Request, res: Response):
       ...existingLegacyBookings.map(b => ({ start: b.startTime, end: b.endTime })),
     ];
 
+    // Also check Google Calendar busy slots if user has calendar connected
+    let calendarSynced = false;
+    try {
+      const calConn = await gcal.getCalendarConnection(userId);
+      if (calConn) {
+        const gcalBusy = await gcal.getBusySlots(userId, dayStart, dayEnd);
+        allBookedSlots.push(...gcalBusy);
+        calendarSynced = true;
+      }
+    } catch (calErr) {
+      console.error('[PublicBooking] Google Calendar sync failed (continuing):', calErr);
+    }
+
     // Check maxPerDay limit
     if (meetingType.maxPerDay) {
       const todayBookingCount = await prisma.meetingBooking.count({
@@ -172,7 +185,7 @@ router.get('/:userId/:meetingTypeId/slots', async (req: Request, res: Response):
       }
     }
 
-    res.json({ slots, date, meetingType: { name: meetingType.name, duration: meetingType.duration } });
+    res.json({ slots, date, calendarSynced, meetingType: { name: meetingType.name, duration: meetingType.duration } });
   } catch (error) {
     console.error('[PublicBooking] Get slots error:', error);
     res.status(500).json({ error: 'Failed to generate slots' });

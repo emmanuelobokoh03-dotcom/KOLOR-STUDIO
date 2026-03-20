@@ -40,6 +40,7 @@ export default function PublicBookingPage() {
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [slots, setSlots] = useState<string[]>([])
   const [loadingSlots, setLoadingSlots] = useState(false)
+  const [calendarSynced, setCalendarSynced] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [bookingResult, setBookingResult] = useState<{ id: string; startTime: string; endTime: string } | null>(null)
 
@@ -76,9 +77,11 @@ export default function PublicBookingPage() {
     if (!selectedType || !userId) return
     setLoadingSlots(true)
     setSlots([])
+    setCalendarSynced(false)
     const res = await publicBookingApi.getSlots(userId, selectedType.id, date)
     if (res.data) {
       setSlots(res.data.slots)
+      setCalendarSynced(!!res.data.calendarSynced)
     }
     setLoadingSlots(false)
   }
@@ -350,6 +353,12 @@ export default function PublicBookingPage() {
                 {new Date(selectedDate + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                 {' · '}{selectedType.name} ({selectedType.duration} min)
               </p>
+              {calendarSynced && !loadingSlots && (
+                <p className="mt-2 text-xs text-emerald-600 flex items-center gap-1.5" data-testid="calendar-synced-indicator">
+                  <Check className="w-3.5 h-3.5" weight="bold" />
+                  Showing real-time availability from Google Calendar
+                </p>
+              )}
             </div>
 
             {loadingSlots ? (

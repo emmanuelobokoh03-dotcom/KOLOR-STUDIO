@@ -109,6 +109,32 @@ export async function checkAvailability(
   }
 }
 
+/** Get busy time ranges from Google Calendar for a given day */
+export async function getBusySlots(
+  userId: string,
+  dayStart: Date,
+  dayEnd: Date
+): Promise<Array<{ start: Date; end: Date }>> {
+  try {
+    const calendar = await getCalendarClient(userId);
+    const resp = await calendar.freebusy.query({
+      requestBody: {
+        timeMin: dayStart.toISOString(),
+        timeMax: dayEnd.toISOString(),
+        items: [{ id: 'primary' }],
+      },
+    });
+    const busy = resp.data.calendars?.primary?.busy || [];
+    return busy.map(b => ({
+      start: new Date(b.start as string),
+      end: new Date(b.end as string),
+    }));
+  } catch (error) {
+    console.error('[GCAL] getBusySlots failed:', error);
+    return [];
+  }
+}
+
 /** Create a Google Calendar event for a booking */
 export async function createEvent(
   userId: string,
