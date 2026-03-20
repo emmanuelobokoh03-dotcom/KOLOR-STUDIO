@@ -27,7 +27,7 @@ function App() {
       {/* Skip navigation link for keyboard users */}
       <a
         href="#main-content"
-        className="sr-only-focusable fixed top-4 left-4 z-[9999] bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg"
+        className="sr-only-focusable bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg focus:outline focus:outline-2 focus:outline-white focus:outline-offset-2"
       >
         Skip to main content
       </a>
