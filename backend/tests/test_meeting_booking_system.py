@@ -7,7 +7,7 @@ import requests
 import os
 from datetime import datetime, timedelta
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://email-preview-7.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://calendar-file-mgmt.preview.emergentagent.com')
 
 # Test credentials from the request
 TEST_USER_EMAIL = "bookingtest@test.com"

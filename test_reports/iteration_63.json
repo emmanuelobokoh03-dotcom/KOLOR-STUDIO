@@ -59,7 +59,7 @@
     "frontend": "100% (11 UI elements verified)"
   },
   "test_credentials": {
-    "preview_url": "https://email-preview-7.preview.emergentagent.com",
+    "preview_url": "https://calendar-file-mgmt.preview.emergentagent.com",
     "test_email": "security@test.com",
     "test_password": "TestPass123!"
   },

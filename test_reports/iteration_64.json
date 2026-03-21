@@ -54,7 +54,7 @@
     "frontend": "100% (25/25 contrast checks passed)"
   },
   "test_credentials": {
-    "preview_url": "https://email-preview-7.preview.emergentagent.com",
+    "preview_url": "https://calendar-file-mgmt.preview.emergentagent.com",
     "test_email_1": "contrast-test-131200@test.com",
     "test_email_2": "wizard-test2-1773342043@test.com",
     "test_password": "TestPassword123!"
