@@ -530,12 +530,27 @@ router.post('/send-verification', authMiddleware, async (req: AuthRequest, res: 
 // GET /api/auth/verify-email/:token - Verify email (public)
 router.get('/verify-email/:token', async (req: Request, res: Response): Promise<void> => {
   try {
+    const { token } = req.params;
+
+    if (!token || token.length < 10) {
+      console.error('[EMAIL VERIFY] Invalid token format:', token);
+      res.status(400).json({ error: 'Invalid verification token', message: 'The verification link is malformed.' });
+      return;
+    }
+
     const user = await prisma.user.findFirst({
-      where: { verificationToken: String(req.params.token) }
+      where: { verificationToken: String(token) }
     });
 
     if (!user) {
-      res.status(404).json({ error: 'Invalid or expired verification token' });
+      console.error('[EMAIL VERIFY] No user found for token:', token.substring(0, 8) + '...');
+      res.status(404).json({ error: 'Token not found', message: 'Verification link is expired or already used. Please request a new verification email from your dashboard.' });
+      return;
+    }
+
+    if (user.emailVerified) {
+      console.log('[EMAIL VERIFY] User already verified:', user.email);
+      res.json({ message: 'Your email is already verified. You can log in.' });
       return;
     }
 
@@ -547,10 +562,11 @@ router.get('/verify-email/:token', async (req: Request, res: Response): Promise<
       }
     });
 
-    res.json({ message: 'Email verified successfully' });
+    console.log('[EMAIL VERIFY] Success for user:', user.email);
+    res.json({ message: 'Email verified successfully! You can now use all features.' });
   } catch (error) {
     console.error('Verify email error:', error);
-    res.status(500).json({ error: 'Server Error', message: 'Failed to verify email' });
+    res.status(500).json({ error: 'Server Error', message: 'Verification failed. Please try again or request a new verification email.' });
   }
 });
 

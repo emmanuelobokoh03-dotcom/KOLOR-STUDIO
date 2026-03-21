@@ -46,7 +46,10 @@ import {
   Package,
   Scroll,
   Flag,
-  Star as StarIcon
+  Star as StarIcon,
+  PhoneCall,
+  Checks,
+  Megaphone
 } from '@phosphor-icons/react'
 import QuotesTab from './QuotesTab'
 import EmailComposerModal from './EmailComposerModal'
@@ -99,6 +102,8 @@ const ACTIVITY_ICONS: Record<string, React.ElementType> = {
   QUOTE_SENT: CurrencyDollar,
   PAYMENT_RECEIVED: CurrencyDollar,
   CONTRACT_SIGNED: FileText,
+  DISCOVERY_CALL_SCHEDULED: PhoneCall,
+  DISCOVERY_CALL_COMPLETED: Checks,
 };
 
 const ACTIVITY_COLORS: Record<string, string> = {
@@ -114,6 +119,8 @@ const ACTIVITY_COLORS: Record<string, string> = {
   QUOTE_SENT: 'bg-amber-900/50 text-amber-700',
   PAYMENT_RECEIVED: 'bg-lime-900/50 text-lime-400',
   CONTRACT_SIGNED: 'bg-cyan-900/50 text-cyan-400',
+  DISCOVERY_CALL_SCHEDULED: 'bg-purple-50 text-purple-600',
+  DISCOVERY_CALL_COMPLETED: 'bg-emerald-50 text-emerald-600',
 };
 
 const FILE_ICONS: Record<string, React.ElementType> = {
@@ -505,11 +512,41 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
 
   const isImageFile = (file: LeadFile) => file.mimeType?.startsWith('image/');
 
+  // Discovery Call handlers
+  const handleScheduleDiscoveryCall = async () => {
+    try {
+      const result = await leadsApi.updateDiscoveryCall(lead.id, {
+        discoveryCallScheduled: true,
+      });
+      if (result.data?.lead) {
+        onUpdate(result.data.lead);
+        fetchActivities();
+      }
+    } catch (error) {
+      console.error('Schedule discovery call error:', error);
+    }
+  };
+
+  const handleCompleteDiscoveryCall = async () => {
+    const notes = prompt('Add any notes from the discovery call (optional):');
+    try {
+      const result = await leadsApi.updateDiscoveryCall(lead.id, {
+        discoveryCallCompletedAt: new Date().toISOString(),
+        discoveryCallNotes: notes || null,
+      });
+      if (result.data?.lead) {
+        onUpdate(result.data.lead);
+        fetchActivities();
+      }
+    } catch (error) {
+      console.error('Complete discovery call error:', error);
+    }
+  };
   return (
     <>
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose} role="presentation">
         <div 
-          className="bg-light-50 w-full md:rounded-2xl md:shadow-2xl md:max-w-3xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
+          className="glass-modal w-full md:rounded-2xl md:shadow-2xl md:max-w-3xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
           onClick={(e) => e.stopPropagation()}
           data-testid="lead-detail-modal"
           role="dialog"
@@ -619,6 +656,80 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
           <div className="flex-1 overflow-y-auto">
             {activeTab === 'activity' ? (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+                {/* Discovery Call Card */}
+                {['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED'].includes(lead.status) && (
+                  <div data-testid="discovery-call-card">
+                    {!lead.discoveryCallScheduled && !lead.discoveryCallCompletedAt && (
+                      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200 p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                            <PhoneCall weight="duotone" className="w-4.5 h-4.5 text-purple-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-semibold text-text-primary">Schedule Discovery Call</h4>
+                            <p className="text-xs text-text-secondary mt-0.5">Book a call to discuss project details before sending a quote</p>
+                          </div>
+                          <button
+                            onClick={handleScheduleDiscoveryCall}
+                            className="flex items-center gap-1.5 px-3 py-2 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition flex-shrink-0"
+                            data-testid="schedule-discovery-btn"
+                          >
+                            <PhoneCall weight="bold" className="w-3.5 h-3.5" />
+                            Schedule Call
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {lead.discoveryCallScheduled && !lead.discoveryCallCompletedAt && (
+                      <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <CalendarBlank weight="duotone" className="w-4.5 h-4.5 text-blue-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-semibold text-blue-900">Discovery Call Scheduled</h4>
+                            <p className="text-xs text-blue-700 mt-0.5">Waiting for call to complete before sending quote</p>
+                          </div>
+                          <button
+                            onClick={handleCompleteDiscoveryCall}
+                            className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition flex-shrink-0"
+                            data-testid="complete-discovery-btn"
+                          >
+                            <Checks weight="bold" className="w-3.5 h-3.5" />
+                            Mark Complete
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {lead.discoveryCallCompletedAt && (
+                      <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                            <CheckCircle weight="fill" className="w-4.5 h-4.5 text-emerald-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-semibold text-emerald-900">Discovery Call Completed</h4>
+                            <p className="text-xs text-emerald-700 mt-0.5">
+                              {new Date(lead.discoveryCallCompletedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                              {lead.discoveryCallNotes && ` — ${lead.discoveryCallNotes}`}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => setActiveTab('quotes')}
+                            className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 text-white text-xs font-medium rounded-lg hover:bg-emerald-700 transition flex-shrink-0"
+                            data-testid="send-quote-after-discovery-btn"
+                          >
+                            <Receipt weight="bold" className="w-3.5 h-3.5" />
+                            Send Quote
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Add Note */}
                 <div className="bg-white rounded-xl p-4 md:p-5 border border-light-200">
                   <h3 className="text-sm font-semibold text-text-secondary mb-3 flex items-center gap-2">

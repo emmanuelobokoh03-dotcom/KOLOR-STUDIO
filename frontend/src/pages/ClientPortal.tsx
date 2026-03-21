@@ -953,17 +953,10 @@ export default function ClientPortal() {
 
         {/* Footer */}
         <footer className="text-center text-text-secondary text-sm py-8">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkle className="w-4 h-4" />
-            <span className="font-semibold text-text-tertiary">KOLOR STUDIO</span>
-          </div>
           <p>Thank you for choosing us for your creative project.</p>
-          <p className="mt-2">
-            <Link to="/" className="text-purple-600 hover:underline">Powered by KOLOR STUDIO</Link>
-          </p>
-          <p className="mt-3 text-xs text-text-tertiary" data-testid="powered-by-badge">
+          <p className="mt-3 text-xs text-text-secondary" data-testid="powered-by-badge">
             Powered by{' '}
-            <Link to="/" className="text-purple-600 hover:text-purple-400 transition">
+            <Link to="/" className="text-purple-600 hover:text-purple-400 transition font-semibold">
               KOLOR STUDIO
             </Link>
           </p>

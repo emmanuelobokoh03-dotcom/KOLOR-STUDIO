@@ -74,8 +74,8 @@ export default {
         // ── Text Colors ───────────────────────────────────
         text: {
           primary: '#1A1A2E',
-          secondary: '#6B7280',
-          tertiary: '#9CA3AF',
+          secondary: '#4B5563',
+          tertiary: '#6B7280',
           disabled: '#D1D5DB',
           inverse: '#FFFFFF',
           brand: '#7C3AED',

@@ -286,6 +286,13 @@ model Lead {
   deliveryDate      DateTime?
   editingDeadline   DateTime?
   shootingDate      DateTime?
+  
+  // Discovery Call workflow
+  discoveryCallScheduled    Boolean   @default(false)
+  discoveryCallBookingId    String?
+  discoveryCallCompletedAt  DateTime?
+  discoveryCallNotes        String?   @db.Text
+
   assignedTo        User?                 @relation(fields: [assignedToId], references: [id], onDelete: Cascade)
   activities        Activity[]
   messages          Message[]
@@ -604,6 +611,8 @@ enum ActivityType {
   BOOKING_COMPLETED
   BOOKING_CANCELLED
   FILE_COMMENT
+  DISCOVERY_CALL_SCHEDULED
+  DISCOVERY_CALL_COMPLETED
 }
 
 enum BookingStatus {
@@ -779,6 +788,8 @@ enum ServiceType {
   GRAPHIC_DESIGN
   WEB_DESIGN
   BRANDING
+  ILLUSTRATION
+  FINE_ART
   CONTENT_CREATION
   CONSULTING
   OTHER

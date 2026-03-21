@@ -4,6 +4,23 @@ import * as gcal from '../services/googleCalendarService';
 
 const router = Router();
 
+/** GET /api/google-calendar/config-check — Verify backend configuration */
+router.get('/config-check', authMiddleware, (req: Request, res: Response): void => {
+  const hasClientId = !!process.env.GOOGLE_CLIENT_ID;
+  const hasClientSecret = !!process.env.GOOGLE_CLIENT_SECRET;
+  const hasRedirectUri = !!process.env.GOOGLE_REDIRECT_URI;
+
+  res.json({
+    configured: hasClientId && hasClientSecret && hasRedirectUri,
+    details: {
+      hasClientId,
+      hasClientSecret,
+      hasRedirectUri,
+      redirectUri: process.env.GOOGLE_REDIRECT_URI || null,
+    },
+  });
+});
+
 /** GET /api/google-calendar/auth-url — Generate OAuth consent URL */
 router.get('/auth-url', authMiddleware, (req: Request, res: Response): void => {
   try {

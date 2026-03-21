@@ -331,7 +331,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
-        <header className="bg-light-50 border-b border-light-200 sticky top-0 z-40">
+        <header className="glass-header sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-7 h-7 md:w-8 md:h-8 bg-light-200 rounded-lg animate-pulse" />
@@ -364,7 +364,7 @@ const Dashboard = () => {
       )}
 
       {/* Header */}
-      <header className="bg-light-50 border-b border-light-200 sticky top-0 z-40">
+      <header className="glass-header sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-5 flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3">
             {/* Mobile hamburger */}
@@ -706,7 +706,7 @@ const Dashboard = () => {
           ]).map(({ key, label, count, icon: Icon, iconBg, iconColor, testId }) => (
             <div
               key={testId}
-              className={`bg-light-50 rounded-xl p-4 md:p-6 border cursor-pointer hover:border-purple-300 transition-all duration-200 group hover:shadow-lg hover:shadow-brand-primary/5 active:scale-[0.98] ${
+              className={`glass-card rounded-xl p-4 md:p-6 border cursor-pointer hover:border-purple-300 transition-all duration-200 group hover:shadow-lg hover:shadow-brand-primary/5 active:scale-[0.98] ${
                 statusFilter === key ? `border-brand-primary bg-brand-primary/10` : 'border-light-200'
               }`}
               onClick={() => key === null ? clearStatusFilter() : handleFilterByStatus(statusFilter === key ? null : key)}
@@ -726,7 +726,7 @@ const Dashboard = () => {
         </div>
 
         {/* Toolbar */}
-        <div className="bg-light-50 rounded-xl border border-light-200 p-3 md:p-5 mb-4 md:mb-8">
+        <div className="glass-card rounded-xl border border-light-200 p-3 md:p-5 mb-4 md:mb-8">
           {/* Mobile toolbar */}
           <div className="flex items-center gap-2 md:gap-3">
             <div className="relative flex-1">

@@ -273,6 +273,18 @@ export const leadsApi = {
     });
   },
 
+  updateDiscoveryCall: async (leadId: string, data: {
+    discoveryCallScheduled?: boolean;
+    discoveryCallCompletedAt?: string;
+    discoveryCallNotes?: string | null;
+    discoveryCallBookingId?: string;
+  }) => {
+    return request<{ lead: Lead }>(`/api/leads/${leadId}/discovery-call`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
   uploadCoverImage: async (file: File) => {
     const token = localStorage.getItem('token');
     const formData = new FormData();
@@ -335,6 +347,8 @@ export type ServiceType =
   | 'GRAPHIC_DESIGN' 
   | 'WEB_DESIGN' 
   | 'BRANDING' 
+  | 'ILLUSTRATION'
+  | 'FINE_ART'
   | 'CONTENT_CREATION' 
   | 'CONSULTING' 
   | 'OTHER';
@@ -619,6 +633,10 @@ export interface Lead {
   pipelineStatus?: string;
   quotesCount?: number;
   contractsCount?: number;
+  discoveryCallScheduled?: boolean;
+  discoveryCallBookingId?: string | null;
+  discoveryCallCompletedAt?: string | null;
+  discoveryCallNotes?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -666,6 +684,8 @@ export const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
   GRAPHIC_DESIGN: 'Graphic Design',
   WEB_DESIGN: 'Web Design',
   BRANDING: 'Branding',
+  ILLUSTRATION: 'Illustration',
+  FINE_ART: 'Fine Art',
   CONTENT_CREATION: 'Content Creation',
   CONSULTING: 'Consulting',
   OTHER: 'Other',

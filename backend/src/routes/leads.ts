@@ -1144,4 +1144,55 @@ router.post('/:id/mark-delivered', authMiddleware, async (req: AuthRequest, res:
   }
 });
 
+// PATCH /api/leads/:id/discovery-call - Update discovery call status
+router.patch('/:id/discovery-call', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId as string;
+    const { discoveryCallScheduled, discoveryCallCompletedAt, discoveryCallNotes, discoveryCallBookingId } = req.body;
+
+    const lead = await prisma.lead.findFirst({ where: { id, assignedToId: userId } });
+    if (!lead) {
+      res.status(404).json({ error: 'Lead not found' });
+      return;
+    }
+
+    const updateData: any = {};
+    if (discoveryCallScheduled !== undefined) updateData.discoveryCallScheduled = discoveryCallScheduled;
+    if (discoveryCallCompletedAt) updateData.discoveryCallCompletedAt = new Date(discoveryCallCompletedAt);
+    if (discoveryCallNotes !== undefined) updateData.discoveryCallNotes = discoveryCallNotes;
+    if (discoveryCallBookingId !== undefined) updateData.discoveryCallBookingId = discoveryCallBookingId;
+
+    const updated = await prisma.lead.update({
+      where: { id },
+      data: updateData,
+      include: {
+        quotes: { select: { id: true } },
+        contracts: { select: { id: true } },
+        bookings: { select: { id: true } },
+      },
+    });
+
+    // Log activity
+    if (discoveryCallScheduled) {
+      await logActivity(id, 'DISCOVERY_CALL_SCHEDULED', 'Discovery call scheduled with client');
+    }
+    if (discoveryCallCompletedAt) {
+      await logActivity(id, 'DISCOVERY_CALL_COMPLETED', discoveryCallNotes ? `Discovery call completed. Notes: ${discoveryCallNotes}` : 'Discovery call completed');
+    }
+
+    res.json({
+      lead: {
+        ...updated,
+        quotesCount: updated.quotes.length,
+        contractsCount: updated.contracts.length,
+        bookingsCount: updated.bookings.length,
+      }
+    });
+  } catch (error) {
+    console.error('Discovery call update error:', error);
+    res.status(500).json({ error: 'Failed to update discovery call status' });
+  }
+});
+
 export default router;

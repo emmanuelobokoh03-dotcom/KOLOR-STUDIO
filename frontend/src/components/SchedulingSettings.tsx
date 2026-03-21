@@ -179,12 +179,32 @@ export default function SchedulingSettings() {
     setCalendarLoading(true)
     const token = localStorage.getItem('token')
     try {
+      // Check config first
+      const configResp = await fetch('/api/google-calendar/config-check', { headers: { Authorization: `Bearer ${token}` } })
+      if (configResp.ok) {
+        const config = await configResp.json()
+        if (!config.configured) {
+          alert('Google Calendar is not configured on the server. Please contact support.')
+          setCalendarLoading(false)
+          return
+        }
+      }
+
       const resp = await fetch('/api/google-calendar/auth-url', { headers: { Authorization: `Bearer ${token}` } })
       if (resp.ok) {
         const data = await resp.json()
-        window.location.href = data.authUrl
+        if (data.authUrl) {
+          window.location.href = data.authUrl
+        } else {
+          alert('Failed to get authorization URL.')
+        }
+      } else {
+        alert(`Failed to connect calendar (${resp.status}).`)
       }
-    } catch { /* ignore */ }
+    } catch (err: any) {
+      console.error('[CALENDAR] Connect error:', err)
+      alert(`Calendar connection error: ${err.message || 'Unknown error'}`)
+    }
     setCalendarLoading(false)
   }
 

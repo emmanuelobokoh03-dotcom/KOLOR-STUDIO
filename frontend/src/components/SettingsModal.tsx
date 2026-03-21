@@ -140,7 +140,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
   return (
     <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-50 p-0 md:p-4" onClick={onClose} role="presentation">
       <div 
-        className={`bg-white md:rounded-2xl shadow-2xl w-full h-full md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 transition-all duration-300 ${
+        className={`glass-modal md:rounded-2xl shadow-2xl w-full h-full md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 transition-all duration-300 ${
           activeTab === 'brand' || activeTab === 'testimonials' || activeTab === 'scheduling' ? 'md:max-w-5xl' : 'md:max-w-2xl'
         }`}
         onClick={e => e.stopPropagation()}

@@ -44,17 +44,54 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
 
   const handleConnect = async () => {
     setActionLoading(true)
-    const token = localStorage.getItem('token')
     try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        console.error('[CALENDAR] No auth token found')
+        setActionLoading(false)
+        return
+      }
+
+      // First check backend config
+      const configResp = await fetch('/api/google-calendar/config-check', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (configResp.ok) {
+        const config = await configResp.json()
+        if (!config.configured) {
+          alert('Google Calendar is not configured on the server. Please contact support to set up Google OAuth credentials.')
+          console.error('[CALENDAR] Backend config missing:', config.details)
+          setActionLoading(false)
+          return
+        }
+      }
+
       const resp = await fetch('/api/google-calendar/auth-url', {
         headers: { Authorization: `Bearer ${token}` },
       })
-      if (resp.ok) {
-        const data = await resp.json()
-        window.location.href = data.authUrl
+
+      if (!resp.ok) {
+        const errText = await resp.text()
+        console.error('[CALENDAR] Auth URL error:', resp.status, errText)
+        alert(`Failed to connect calendar (${resp.status}). Check console for details.`)
+        setActionLoading(false)
+        return
       }
-    } catch { /* ignore */ }
-    setActionLoading(false)
+
+      const data = await resp.json()
+      if (!data.authUrl) {
+        console.error('[CALENDAR] No authUrl in response:', data)
+        alert('Failed to get authorization URL from server.')
+        setActionLoading(false)
+        return
+      }
+
+      window.location.href = data.authUrl
+    } catch (err: any) {
+      console.error('[CALENDAR] Connection error:', err)
+      alert(`Calendar connection error: ${err.message || 'Unknown error'}`)
+      setActionLoading(false)
+    }
   }
 
   const handleDisconnect = async () => {
