@@ -959,7 +959,7 @@ export default function ClientPortal() {
           </div>
           <p>Thank you for choosing us for your creative project.</p>
           <p className="mt-2">
-            <Link to="/" className="text-purple-600 hover:underline">Visit our website</Link>
+            <Link to="/" className="text-purple-600 hover:underline">Powered by KOLOR STUDIO</Link>
           </p>
           <p className="mt-3 text-xs text-text-tertiary" data-testid="powered-by-badge">
             Powered by{' '}

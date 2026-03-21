@@ -350,3 +350,27 @@ textarea:focus-visible {
 .kolor-tour-popover .driver-popover-arrow-side-bottom .driver-popover-arrow {
   border-color: #E5E7EB !important;
 }
+
+/* Enhanced loading spinner */
+@keyframes kolor-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid #F3E8FF;
+  border-top-color: #7C3AED;
+  border-radius: 50%;
+  animation: kolor-spin 0.7s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+.loading-spinner-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 2px;
+}
+.loading-spinner-lg {
+  width: 3rem;
+  height: 3rem;
+  border-width: 4px;
+}

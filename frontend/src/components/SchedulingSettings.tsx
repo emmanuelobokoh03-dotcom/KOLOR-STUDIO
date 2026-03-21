@@ -246,7 +246,7 @@ export default function SchedulingSettings() {
               <p className="text-xs text-text-secondary">
                 {calendarConnected
                   ? 'Connected — bookings sync automatically'
-                  : 'Connect to sync availability & create events'}
+                  : 'Sync availability & auto-create events'}
               </p>
             </div>
           </div>
@@ -278,6 +278,11 @@ export default function SchedulingSettings() {
             <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Auto-create events</span>
             <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Conflict detection</span>
           </div>
+        )}
+        {!calendarConnected && (
+          <p className="mt-2 text-[11px] text-text-tertiary">
+            Tip: You can also connect from the main Dashboard for quick access.
+          </p>
         )}
       </div>
 

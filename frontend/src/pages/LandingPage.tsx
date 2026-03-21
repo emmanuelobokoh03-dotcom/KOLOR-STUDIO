@@ -24,7 +24,7 @@ const fadeUp = {
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-light-50" data-testid="landing-page">
+    <div className="min-h-screen bg-[#1A1A2E]" data-testid="landing-page">
       {/* Navigation */}
       <nav className="absolute top-0 left-0 right-0 z-20" data-testid="landing-nav">
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">

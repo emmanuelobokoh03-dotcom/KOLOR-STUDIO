@@ -47,6 +47,7 @@ import { CelebrationModal, checkCelebration, Achievement, achievements } from '.
 import CRMAlerts from '../components/CRMAlerts'
 import RevenueDashboard from '../components/RevenueDashboard'
 import RevenuePipelineWidget from '../components/RevenuePipelineWidget'
+import CalendarConnectionWidget from '../components/CalendarConnectionWidget'
 import SequencesDashboard from './SequencesDashboard'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import DemoProjectBanner from '../components/DemoProjectBanner'
@@ -122,6 +123,7 @@ const Dashboard = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('kanban')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
+  const [selectedLeadInitialTab, setSelectedLeadInitialTab] = useState<string | undefined>(undefined)
   const [showAddModal, setShowAddModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
@@ -140,6 +142,10 @@ const Dashboard = () => {
   const [showCelebration, setShowCelebration] = useState(false)
   const [showDemoBanner, setShowDemoBanner] = useState(true)
   const [pendingContracts, setPendingContracts] = useState<any[]>([])
+  const [calendarConnected, setCalendarConnected] = useState(false)
+  const [calendarHintDismissed, setCalendarHintDismissed] = useState(
+    () => localStorage.getItem('kolor_calendar_hint_dismissed') === 'true'
+  )
   const { startTour, tourComplete } = useOnboardingTour()
   const { showWizard, setShowWizard, resetWizard } = useOnboardingWizard(leads.length)
 
@@ -169,6 +175,15 @@ const Dashboard = () => {
       await fetchStats()
       await fetchPendingContracts()
       setLoading(false)
+
+      // Handle Google Calendar OAuth callback
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('calendar') === 'connected') {
+        setCalendarConnected(true)
+        setCalendarHintDismissed(false) // Show widget so user sees success
+        localStorage.removeItem('kolor_calendar_hint_dismissed')
+        window.history.replaceState({}, '', '/dashboard')
+      }
 
       // Async celebration checks (milestones triggered by client-side events)
       const statsResult = await leadsApi.getStats()
@@ -547,7 +562,7 @@ const Dashboard = () => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {leads
-                .filter(l => l.projectType === 'COMMISSION' && !['BOOKED', 'LOST'].includes(l.status))
+                .filter(l => !['BOOKED', 'LOST'].includes(l.status))
                 .slice(0, 6)
                 .map(lead => (
                   <div
@@ -594,7 +609,10 @@ const Dashboard = () => {
                   <button
                     onClick={() => {
                       const lead = leads.find(l => l.id === pendingContracts[0].lead?.id)
-                      if (lead) setSelectedLead(lead)
+                      if (lead) {
+                        setSelectedLeadInitialTab('contracts')
+                        setSelectedLead(lead)
+                      }
                     }}
                     className="btn btn-primary text-sm"
                     data-testid="review-contract-btn"
@@ -615,6 +633,35 @@ const Dashboard = () => {
         <div className="mb-4 md:mb-6">
           <RevenuePipelineWidget />
         </div>
+
+        {/* Google Calendar Connection Widget */}
+        {!calendarHintDismissed && (
+          <div className="mb-4 md:mb-6" data-testid="calendar-widget-section">
+            <CalendarConnectionWidget
+              onStatusChange={(connected) => {
+                setCalendarConnected(connected)
+                if (connected) {
+                  setCalendarHintDismissed(true)
+                  localStorage.setItem('kolor_calendar_hint_dismissed', 'true')
+                }
+              }}
+            />
+            {!calendarConnected && (
+              <div className="flex justify-end mt-1.5">
+                <button
+                  onClick={() => {
+                    setCalendarHintDismissed(true)
+                    localStorage.setItem('kolor_calendar_hint_dismissed', 'true')
+                  }}
+                  className="text-[11px] text-text-tertiary hover:text-text-secondary transition"
+                  data-testid="dismiss-calendar-widget"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* CRM Alerts + Revenue Dashboard */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
@@ -1040,9 +1087,10 @@ const Dashboard = () => {
       {selectedLead && (
         <LeadDetailModal
           lead={selectedLead}
-          onClose={() => setSelectedLead(null)}
+          onClose={() => { setSelectedLead(null); setSelectedLeadInitialTab(undefined) }}
           onUpdate={handleLeadUpdate}
           onCelebrate={triggerCelebration}
+          initialTab={selectedLeadInitialTab}
         />
       )}
       {showAddModal && (

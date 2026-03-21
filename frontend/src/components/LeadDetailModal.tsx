@@ -70,6 +70,7 @@ interface LeadDetailModalProps {
   onClose: () => void;
   onUpdate: (updatedLead: Lead) => void;
   onCelebrate?: (key: string, achievementKey: string) => void;
+  initialTab?: string;
 }
 
 const STATUS_OPTIONS: LeadStatus[] = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
@@ -159,14 +160,16 @@ const FileGridSkeleton = () => (
   </div>
 );
 
-export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate }: LeadDetailModalProps) {
+export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, initialTab }: LeadDetailModalProps) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [newNote, setNewNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
-  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables' | 'contracts' | 'messages' | 'timeline'>('activity');
+  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables' | 'contracts' | 'messages' | 'timeline'>(
+    (initialTab as any) || 'activity'
+  );
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [formData, setFormData] = useState({

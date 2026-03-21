@@ -105,10 +105,10 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           </div>
         </div>
       ) : (
-        <div className="relative h-20 md:h-24 bg-gradient-to-br from-brand-primary-dark/30 to-brand-primary-dark/20 flex items-center justify-center cursor-pointer overflow-hidden" onClick={() => onLeadClick(lead)}>
-          <Image className="w-7 h-7 md:w-8 md:h-8 text-brand-primary/30" />
+        <div className="relative h-20 md:h-24 bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center cursor-pointer overflow-hidden" onClick={() => onLeadClick(lead)}>
+          <Image className="w-7 h-7 md:w-8 md:h-8 text-purple-300" />
           <div className="absolute bottom-2 left-3 right-3">
-            <span className="text-xs px-2 py-0.5 bg-brand-primary-dark/80 backdrop-blur-sm text-purple-600 rounded-full border border-purple-200">
+            <span className="text-xs px-2 py-0.5 bg-white/80 backdrop-blur-sm text-purple-700 rounded-full border border-purple-200 font-medium">
               {SERVICE_TYPE_LABELS[lead.serviceType]}
             </span>
           </div>
@@ -164,7 +164,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           {lead.budget && (
             <div className="flex items-center gap-2">
               <CurrencyDollar className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="text-green-400 font-medium">{lead.budget}</span>
+              <span className="text-emerald-600 font-medium">{lead.budget}</span>
             </div>
           )}
           <div className="flex items-center gap-2">

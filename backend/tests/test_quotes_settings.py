@@ -7,7 +7,7 @@ import requests
 import os
 from datetime import datetime, timedelta
 
-BASE_URL = os.environ.get('VITE_API_URL', 'https://email-preview-7.preview.emergentagent.com/api')
+BASE_URL = os.environ.get('VITE_API_URL', 'https://calendar-file-mgmt.preview.emergentagent.com/api')
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

@@ -229,11 +229,28 @@ router.post('/leads/:leadId/contracts', authMiddleware, async (req: AuthRequest,
       studioName,
     });
 
+    // Build industry-aware title
+    const SERVICE_TITLES: Record<string, string> = {
+      WEDDING_PHOTO: 'Wedding Photography Services Agreement',
+      PORTRAIT_PHOTO: 'Portrait Photography Services Agreement',
+      COMMERCIAL_PHOTO: 'Commercial Photography Services Agreement',
+      EVENT_PHOTO: 'Event Photography Services Agreement',
+      BRAND_DESIGN: 'Brand Design Services Agreement',
+      GRAPHIC_DESIGN: 'Graphic Design Services Agreement',
+      WEB_DESIGN: 'Web Design Services Agreement',
+      FINE_ART: 'Fine Art Commission Agreement',
+      ILLUSTRATION: 'Illustration Services Agreement',
+      DIGITAL_ART: 'Digital Art Commission Agreement',
+      PHOTOGRAPHY: 'Photography Services Agreement',
+      VIDEOGRAPHY: 'Videography Services Agreement',
+    };
+    const contractTitle = title || SERVICE_TITLES[lead.serviceType] || template.title;
+
     const contract = await prisma.contract.create({
       data: {
         leadId,
         templateType: templateType as any,
-        title: title || template.title,
+        title: contractTitle,
         content: filledContent,
         status: 'DRAFT',
       },
@@ -355,7 +372,7 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
     });
 
     const studioName = contract.lead.assignedTo?.studioName || `${contract.lead.assignedTo?.firstName} ${contract.lead.assignedTo?.lastName}`;
-    const portalUrl = `${process.env.FRONTEND_URL || 'https://email-preview-7.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
+    const portalUrl = `${process.env.FRONTEND_URL || 'https://calendar-file-mgmt.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
 
     console.log('[CONTRACT SEND] Sending contract email to:', contract.lead.clientEmail, '| Contract:', contract.title);
     let emailSent = false;

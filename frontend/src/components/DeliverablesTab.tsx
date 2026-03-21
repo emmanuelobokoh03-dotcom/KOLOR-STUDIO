@@ -54,8 +54,8 @@ const TYPE_COLORS: Record<DeliverableType, string> = {
 const STATUS_COLORS: Record<DeliverableStatus, string> = {
   PENDING: 'bg-light-100 text-text-secondary border-light-200',
   IN_PROGRESS: 'bg-blue-50 text-blue-600 border-blue-200',
-  READY: 'bg-amber-50 text-amber-700 border-amber-200',
-  DELIVERED: 'bg-green-900/40 text-green-400 border-green-700/40',
+  READY: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  DELIVERED: 'bg-emerald-100 text-emerald-800 border-emerald-300',
   SHIPPED: 'bg-purple-100 text-purple-600 border-purple-200',
 };
 

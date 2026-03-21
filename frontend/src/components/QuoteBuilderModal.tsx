@@ -499,7 +499,7 @@ export default function QuoteBuilderModal({
                 <div key={index} className="bg-light-100 rounded-lg p-4 border border-light-200">
                   <div className="grid grid-cols-12 gap-3 items-end">
                     <div className="col-span-4">
-                      <label className="text-xs text-text-tertiary mb-1 block">Description</label>
+                      <label className="text-xs text-gray-600 mb-1 block">Description</label>
                       <input
                         type="text"
                         value={item.description}
@@ -510,7 +510,7 @@ export default function QuoteBuilderModal({
                       />
                     </div>
                     <div className="col-span-1">
-                      <label className="text-xs text-text-tertiary mb-1 block">Qty</label>
+                      <label className="text-xs text-gray-600 mb-1 block">Qty</label>
                       <input
                         type="number"
                         min="1"
@@ -521,7 +521,7 @@ export default function QuoteBuilderModal({
                       />
                     </div>
                     <div className="col-span-3">
-                      <label className="text-xs text-text-tertiary mb-1 block">Price</label>
+                      <label className="text-xs text-gray-600 mb-1 block">Price</label>
                       <input
                         type="number"
                         min="0"
@@ -534,7 +534,7 @@ export default function QuoteBuilderModal({
                       />
                     </div>
                     <div className="col-span-3">
-                      <label className="text-xs text-text-tertiary mb-1 block">Total</label>
+                      <label className="text-xs text-gray-600 mb-1 block">Total</label>
                       <div className="px-3 py-2 bg-white/50 border border-light-200 rounded-lg text-text-secondary text-sm font-mono text-right">
                         {formatCurrency(item.quantity * item.price, effectiveCurrency)}
                       </div>
@@ -632,7 +632,7 @@ export default function QuoteBuilderModal({
                 {useCurrencyOverride && (
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs text-text-tertiary mb-1 block">Currency</label>
+                      <label className="text-xs text-gray-600 mb-1 block">Currency</label>
                       <select
                         value={currencyOverride.currency || ''}
                         onChange={(e) => {
@@ -656,7 +656,7 @@ export default function QuoteBuilderModal({
                       </select>
                     </div>
                     <div>
-                      <label className="text-xs text-text-tertiary mb-1 block">Position</label>
+                      <label className="text-xs text-gray-600 mb-1 block">Position</label>
                       <select
                         value={currencyOverride.currencyPosition || 'BEFORE'}
                         onChange={(e) => setCurrencyOverride({
@@ -684,7 +684,7 @@ export default function QuoteBuilderModal({
           {/* Terms */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-text-tertiary mb-1 block">Payment Terms</label>
+              <label className="text-xs text-gray-600 mb-1 block">Payment Terms</label>
               <select
                 value={paymentTerms}
                 onChange={(e) => setPaymentTerms(e.target.value)}
@@ -699,7 +699,7 @@ export default function QuoteBuilderModal({
               </select>
             </div>
             <div>
-              <label className="text-xs text-text-tertiary mb-1 block">Valid Until</label>
+              <label className="text-xs text-gray-600 mb-1 block">Valid Until</label>
               <input
                 type="date"
                 value={validUntil}
@@ -711,7 +711,7 @@ export default function QuoteBuilderModal({
           </div>
 
           <div>
-            <label className="text-xs text-text-tertiary mb-1 block">Terms & Conditions</label>
+            <label className="text-xs text-gray-600 mb-1 block">Terms & Conditions</label>
             <textarea
               value={terms}
               onChange={(e) => setTerms(e.target.value)}

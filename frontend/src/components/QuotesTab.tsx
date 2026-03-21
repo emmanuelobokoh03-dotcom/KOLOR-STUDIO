@@ -224,7 +224,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
           data-testid="create-quote-btn"
         >
           <Plus weight="bold" className="w-4 h-4" />
-          Create Quotes
+          Create Quote
         </button>
       </div>
 
@@ -248,9 +248,9 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
             data-testid="quotes-empty-cta"
           >
             <FileText className="w-5 h-5" />
-            Create Quotes
+            Create Quote
           </button>
-          <p className="text-xs text-text-tertiary mt-4 max-w-sm">
+          <p className="text-xs text-gray-500 mt-4 max-w-sm">
             <strong>Pro tip:</strong> Use quote templates to save time on similar projects.
           </p>
         </div>
@@ -376,7 +376,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
                           rel="noopener noreferrer"
                           className="w-full px-4 py-2 text-left text-sm hover:bg-light-100 text-text-secondary flex items-center gap-2"
                         >
-                          <ArrowSquareOut className="w-4 h-4" /> View Quotes
+                          <ArrowSquareOut className="w-4 h-4" /> View Quote
                         </a>
                         <button
                           onClick={() => {
