@@ -4,13 +4,14 @@
 Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographers, designers, artists). The app manages leads, quotes, contracts, bookings, payments, and client communication through an elegant, branded experience.
 
 ## Tech Stack
-- **Frontend:** React + TypeScript + Tailwind CSS + Shadcn/UI
+- **Frontend:** React + TypeScript + Vite + Tailwind CSS
 - **Backend:** Node.js + Express + Prisma + PostgreSQL (Supabase)
 - **Email:** Resend (sandbox mode — verify domain for production)
 - **Payments:** Stripe
 - **Storage:** Supabase Storage
 - **Icons:** @phosphor-icons/react
 - **Tours:** Driver.js
+- **Calendar:** googleapis (Google Calendar API)
 - **Fonts:** Bricolage Grotesque (headings), Instrument Sans (body)
 
 ## What's Been Implemented
@@ -22,95 +23,77 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - Security audit, GDPR, onboarding wizard, email signature settings
 - Inquiry form, project timeline, scheduled review emails
 
-### Meeting Booking System (Mar 18, 2026)
+### Meeting Booking System (Complete)
 - MeetingType, AvailabilitySchedule, MeetingBooking models
 - Full CRUD APIs, public booking page `/book/:userId`
 - Slot generation with buffer/conflict detection, confirmation + reminder emails
 
-### UI System v2.0 (Mar 19, 2026)
-- **Tailwind Config:** Full brand palette (50-900), surface, border, text, semantic colors, typography scale, spacing tokens, elevation shadows, animations, border radius
-- **Global CSS:** Google Fonts import, CSS variables, component classes (.btn, .card, .input, .badge variants)
-- **Updated Pages:** Login, Signup, Dashboard, LandingPage, AddLeadModal, PublicBookingPage
+### UI System v2.0 (Complete)
+- Full brand palette, surface, border, text, semantic colors, typography scale
+- Updated: Login, Signup, Dashboard, LandingPage, AddLeadModal, PublicBookingPage
 
-### Email Template Redesign v2.0 (Mar 19, 2026)
-- **emailDesignSystem.ts:** Centralized email-safe design tokens
-- **Base Template:** Updated `getEmailTemplate()` with proper HTML5 email structure
-- **Key Emails Updated:** All 29+ emails use consistent v2.0 text colors
-- **Shared Styles:** `primaryButtonStyle` and `successButtonStyle` replaced old gradient buttons
+### File Upload Notifications System (Complete)
+- Auto-categorization by filename patterns
+- File comments system
+- Email notification on client upload
+- Review workflow (approve/needs changes)
 
-### Email Preview Endpoint (Mar 19, 2026)
-- **emailPreview.ts:** Dev-only route at `/api/preview-email` with gallery page and 23 individual template previews
+### Google Calendar Integration (Complete)
+- OAuth 2.0 flow for calendar connection
+- Secure token management with refresh logic
+- Auto-create calendar events on booking
+- Real-time availability sync on public booking page
+- Dashboard widget for easy connection (CalendarConnectionWidget)
+- Settings panel management
 
-### File Upload Notifications System (Mar 19, 2026)
-- **Schema:** Added `FileCategory` enum, `FileComment` model, extended `File` model
-- **Auto-categorization:** `fileCategorizationService.ts` classifies files by filename patterns
-- **File comments:** CRUD endpoints at `/api/files/:fileId/comments`
-- **Review workflow:** PATCH endpoints for manual overrides
-- **Email notification:** `sendFileUploadNotification` triggered when clients upload via portal
-- **Frontend:** FileCategoryBadge, FileComments components, enhanced LeadDetailModal Files tab
+### Discovery Call Workflow (Mar 21, 2026) — NEW
+- Added `discoveryCallScheduled`, `discoveryCallCompletedAt`, `discoveryCallNotes` fields to Lead model
+- Backend endpoint `PATCH /api/leads/:id/discovery-call` with activity logging
+- UI cards in LeadDetailModal Activity tab:
+  - **Schedule**: Purple gradient CTA for leads with status NEW/REVIEWING/CONTACTED/QUALIFIED
+  - **Scheduled**: Blue info card with "Mark Complete" button
+  - **Completed**: Green success card with date, notes, and "Send Quote" CTA
+- Activity types: DISCOVERY_CALL_SCHEDULED, DISCOVERY_CALL_COMPLETED
 
-### Google Calendar Integration (Mar 20, 2026)
-- **CalendarConnection model:** Stores OAuth tokens per user with auto-refresh
-- **googleCalendarService.ts:** OAuth flow, freebusy availability check, event CRUD
-- **Routes:** `/api/google-calendar/auth-url`, `/callback`, `/status`, `/disconnect`
-- **Booking integration:** Availability check, auto-creates calendar event on booking
+### Liquid Glass Design System (Mar 21, 2026) — NEW
+- CSS utility classes: `.glass`, `.glass-strong`, `.glass-subtle`, `.glass-dark`, `.glass-card`, `.glass-modal`, `.glass-header`
+- Applied to: Dashboard header, stat cards, toolbar, SettingsModal, AddLeadModal, LeadDetailModal
+- Performance: Reduced blur on mobile, fallback for unsupported browsers
+- Accessibility: Updated text-secondary to #4B5563, text-tertiary to #6B7280 for better contrast
 
-### Google Calendar Sync Enhancement (Mar 20, 2026)
-- **getBusySlots:** Freebusy API fetches busy time ranges
-- **Slot generation:** Merges Google Calendar busy slots into available times
-- **Frontend indicator:** Green sync indicator on booking page
-
-### Comprehensive 11-Issue Fix (Mar 21, 2026)
-1. Landing page: Full-screen dark bg `#1A1A2E`
-2. KanbanBoard cards: Service badge visible text
-3. QuotesTab: Singular labels
-4. Review Contract: Button opens lead modal on contracts tab
-5. DeliverablesTab: Emerald colors for READY/DELIVERED
-6. Active Commissions: Shows all non-BOOKED/LOST leads
-7. Client Portal footer: "Powered by KOLOR STUDIO"
-8. Contract titles: Industry-specific titles
-9. Loading spinner: Brand-colored animation
-10. Skip link: Hidden off-screen by default
-
-### Google Calendar Dashboard Widget (Mar 21, 2026) - NEW
-- **CalendarConnectionWidget.tsx:** Prominent dashboard widget with two states:
-  - **NOT CONNECTED:** Purple gradient CTA with Google logo, benefits list (Real-time sync, Auto-create events, Prevent conflicts), and "Connect Calendar" button
-  - **CONNECTED:** Green border card with CalendarCheck icon, sync status, benefits confirmed, and subtle "Disconnect" option
-- **Dashboard integration:** Widget placed after Revenue Pipeline for maximum visibility
-- **Dismissible:** Users can dismiss the CTA with localStorage persistence
-- **OAuth callback handling:** Dashboard detects `?calendar=connected` and shows success state
-- **Settings kept:** SchedulingSettings still has Google Calendar section with tip text pointing to dashboard
+### Comprehensive Bug Fixes (Mar 21, 2026) — NEW
+1. Google Calendar connect: Added config-check endpoint, error handling, user-friendly alerts
+2. Email verification: Detailed error messages for invalid/expired/already-used tokens
+3. Subheading contrast: text-secondary darkened to #4B5563, text-tertiary to #6B7280
+4. Fine Art category: Added FINE_ART and ILLUSTRATION to ServiceType enum
+5. Duplicate footer: Fixed ClientPortal to show single "Powered by KOLOR STUDIO"
 
 ## Prioritized Backlog
 
-### P0 (Next Up)
-- [x] Google Calendar integration for booking system (DONE)
-- [x] Google Calendar sync to booking page (DONE)
+### P0 — Done
+- [x] Google Calendar integration (DONE)
 - [x] Google Calendar Dashboard Widget (DONE)
+- [x] Comprehensive Bug Fixes (DONE)
+- [x] Discovery Call Workflow (DONE)
+- [x] Liquid Glass Design System (DONE)
 
 ### P1
 - [ ] Mobile responsiveness polish
+- [ ] Landing page full-bleed background verification
 - [ ] Landing page redesign (if user requests)
 
 ### P2 (Future)
-- [ ] Domain & launch prep (SPF/DKIM for Resend)
-- [ ] Visual Sequence Builder (post-beta)
+- [ ] Domain & launch prep (SPF/DKIM for Resend production email)
 - [ ] Meeting booking widget embed code
-- [ ] Design Tokens Reference Page (live style guide)
+- [ ] Design Tokens Reference Page (`/design-system`)
 - [ ] "Smart Inbox" view for files needing review
 - [ ] "File Request" feature
 - [ ] "Smart Scheduling" feature
+- [ ] Visual Sequence Builder
 
 ## Test Reports
-- iteration_76: Meeting Booking System (backend 19/19, frontend 100%)
-- iteration_77: UI System v2.0 (frontend 100%)
-- iteration_78: Email Template Redesign (backend 14/14)
-- iteration_79: File Upload Notifications Part 1 (backend 18/18, 100%)
-- iteration_80: File Management Frontend UI (backend 100%, frontend 100%)
-- iteration_81: Google Calendar Integration (backend 14/14, frontend 100%)
-- iteration_82: Google Calendar Sync to Booking Page (backend 13/13, 100%)
-- iteration_83: Comprehensive 11-Issue Fix (backend 100%, frontend 100%)
-- iteration_84: Google Calendar Dashboard Widget (backend 7/7 100%, frontend 100%)
+- iteration_84: Google Calendar Dashboard Widget (100%)
+- iteration_85: Comprehensive Update - Bug Fixes + Discovery Call + Liquid Glass (backend 15/15 100%, frontend 100%)
 
 ## Test Credentials
-- bookingtest@test.com / password123 (User ID: cmmw4gvhr0000msmu77aijfb9)
+- bookingtest@test.com / password123
