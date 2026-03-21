@@ -61,7 +61,12 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - Performance: Reduced blur on mobile, fallback for unsupported browsers
 - Accessibility: Updated text-secondary to #4B5563, text-tertiary to #6B7280 for better contrast
 
-### Comprehensive Bug Fixes (Mar 21, 2026) — NEW
+### TypeScript Build Fix (Mar 21, 2026) — NEW
+- Fixed 9 TypeScript errors in leads.ts, auth.ts, googleCalendar.ts
+- Discovery call endpoint: replaced Prisma include with separate count queries (avoids type inference issues)
+- Fixed logActivity calls to include userId parameter
+- Fixed Express req.params typing (string | string[] → string cast)
+- `npx tsc --noEmit` passes with zero errors
 1. Google Calendar connect: Added config-check endpoint, error handling, user-friendly alerts
 2. Email verification: Detailed error messages for invalid/expired/already-used tokens
 3. Subheading contrast: text-secondary darkened to #4B5563, text-tertiary to #6B7280
