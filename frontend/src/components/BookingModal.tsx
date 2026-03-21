@@ -35,6 +35,8 @@ const SERVICE_COLORS: Record<ServiceType, string> = {
   CONTENT_CREATION: '#22c55e',
   CONSULTING: '#eab308',
   OTHER: '#6b7280',
+  FINE_ART: '#e11d48',
+  ILLUSTRATION: '#d97706',
 }
 
 export default function BookingModal({

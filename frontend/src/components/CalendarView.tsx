@@ -42,6 +42,8 @@ const SERVICE_COLORS: Record<ServiceType, { bg: string; border: string; text: st
   CONTENT_CREATION: { bg: 'bg-green-900/60', border: 'border-green-500', text: 'text-green-200', dot: 'bg-green-500' },
   CONSULTING: { bg: 'bg-yellow-900/60', border: 'border-yellow-500', text: 'text-yellow-200', dot: 'bg-yellow-500' },
   OTHER: { bg: 'bg-light-100', border: 'border-gray-500', text: 'text-text-secondary', dot: 'bg-gray-500' },
+  FINE_ART: { bg: 'bg-rose-900/60', border: 'border-rose-500', text: 'text-rose-200', dot: 'bg-rose-500' },
+  ILLUSTRATION: { bg: 'bg-amber-900/60', border: 'border-amber-500', text: 'text-amber-200', dot: 'bg-amber-500' },
 };
 
 const SERVICE_ICONS: Record<ServiceType, React.ReactNode> = {
@@ -53,6 +55,8 @@ const SERVICE_ICONS: Record<ServiceType, React.ReactNode> = {
   CONTENT_CREATION: <FileText className="w-3 h-3" />,
   CONSULTING: <ChatText className="w-3 h-3" />,
   OTHER: <Package className="w-3 h-3" />,
+  FINE_ART: <Palette className="w-3 h-3" />,
+  ILLUSTRATION: <Palette className="w-3 h-3" />,
 };
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

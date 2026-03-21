@@ -57,6 +57,8 @@ const SERVICE_COLORS: Record<ServiceType, string> = {
   CONTENT_CREATION: '#22c55e',
   CONSULTING: '#eab308',
   OTHER: '#6b7280',
+  FINE_ART: '#e11d48',
+  ILLUSTRATION: '#d97706',
 }
 
 const SERVICE_ICONS: Record<ServiceType, React.ReactNode> = {
@@ -68,6 +70,8 @@ const SERVICE_ICONS: Record<ServiceType, React.ReactNode> = {
   CONTENT_CREATION: <FileText className="w-3 h-3" />,
   CONSULTING: <ChatText className="w-3 h-3" />,
   OTHER: <Package className="w-3 h-3" />,
+  FINE_ART: <Palette className="w-3 h-3" />,
+  ILLUSTRATION: <Palette className="w-3 h-3" />,
 }
 
 export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
