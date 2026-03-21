@@ -32,51 +32,61 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Global CSS:** Google Fonts import, CSS variables, component classes (.btn, .card, .input, .badge variants)
 - **Updated Pages:** Login, Signup, Dashboard, LandingPage, AddLeadModal, PublicBookingPage
 
-### Email Template Redesign v2.0 (Mar 19, 2026) - NEW
-- **emailDesignSystem.ts:** Centralized email-safe design tokens (colors, fonts, spacing, radius, shadows, button styles, HTML block helpers)
-- **Base Template:** Updated `getEmailTemplate()` with proper HTML5 email structure, MSO fallbacks, responsive media queries, Bricolage Grotesque + Instrument Sans fonts, v2.0 color system
-- **Key Emails Updated:** sendNewLeadNotification, sendQuoteEmail, sendQuoteAcceptedNotification, sendContractAgreedNotification, sendVerificationEmail, sendMeetingConfirmationEmail, sendMeetingNotificationToOwner, sendMeetingReminderEmail
-- **Bulk Color Update:** All 29+ emails now use consistent v2.0 text colors (#1A1A2E primary, #6B7280 secondary, #9CA3AF tertiary)
-- **Shared Styles:** `primaryButtonStyle` and `successButtonStyle` replaced old gradient buttons across all autopilot emails
-- **Reusable Components:** highlightBox, successBox, warningBox, infoBox, cardBlock, detailRow
+### Email Template Redesign v2.0 (Mar 19, 2026)
+- **emailDesignSystem.ts:** Centralized email-safe design tokens
+- **Base Template:** Updated `getEmailTemplate()` with proper HTML5 email structure
+- **Key Emails Updated:** All 29+ emails use consistent v2.0 text colors
+- **Shared Styles:** `primaryButtonStyle` and `successButtonStyle` replaced old gradient buttons
 
 ### Email Preview Endpoint (Mar 19, 2026)
 - **emailPreview.ts:** Dev-only route at `/api/preview-email` with gallery page and 23 individual template previews
-- **Gallery:** Card-based UI with USER/CLIENT badges, click-to-preview
-- **Guard:** `NODE_ENV !== 'production'` prevents exposure in production
 
-### File Upload Notifications System - Part 1 (Mar 19, 2026)
-- **Schema:** Added `FileCategory` enum (REFERENCE, LEGAL, PAYMENT, DELIVERABLE, REVISION, ASSET, OTHER), `FileComment` model, extended `File` model with `category`, `uploadedByType`, `uploadedByName`, `requiresReview`, `reviewStatus`, `reviewedAt`
-- **Auto-categorization:** `fileCategorizationService.ts` classifies files by filename patterns (contract->LEGAL, invoice->PAYMENT, mood->REFERENCE, final->DELIVERABLE, etc.)
-- **File comments:** CRUD endpoints at `/api/files/:fileId/comments` with ownership validation
-- **Review workflow:** PATCH `/api/files/:fileId/category` and `/api/files/:fileId/review` for manual overrides
+### File Upload Notifications System (Mar 19, 2026)
+- **Schema:** Added `FileCategory` enum, `FileComment` model, extended `File` model
+- **Auto-categorization:** `fileCategorizationService.ts` classifies files by filename patterns
+- **File comments:** CRUD endpoints at `/api/files/:fileId/comments`
+- **Review workflow:** PATCH endpoints for manual overrides
 - **Email notification:** `sendFileUploadNotification` triggered when clients upload via portal
-- **Activity logging:** FILE_COMMENT activity type added
-
-### File Upload Notifications System - Part 2 Frontend (Mar 19, 2026)
-- **FileCategoryBadge.tsx:** Colored badge component with Phosphor icons for all 7 categories
-- **FileComments.tsx:** Inline comments with add/delete, author type badges (You/Client), timestamps
-- **LeadDetailModal Files tab:** Replaced gallery grid with list view, added category filter pills with counts, review workflow buttons (Approve/Request Changes), review status badges (Pending/Approved/Changes Needed), expandable comments per file
-- **api.ts:** Added `updateFileCategory`, `updateFileReview`, `getFileComments`, `addFileComment`, `deleteFileComment` methods; updated `LeadFile` interface
+- **Frontend:** FileCategoryBadge, FileComments components, enhanced LeadDetailModal Files tab
 
 ### Google Calendar Integration (Mar 20, 2026)
-- **CalendarConnection model:** Stores OAuth tokens (accessToken, refreshToken, expiresAt) per user with auto-refresh
-- **googleCalendarService.ts:** OAuth flow (getAuthUrl, exchangeCodeForTokens, storeCalendarConnection), freebusy availability check, event CRUD
-- **googleCalendar.ts routes:** `/api/google-calendar/auth-url`, `/callback`, `/status`, `/disconnect`
-- **Booking integration:** Availability check against Google Calendar before booking; auto-creates calendar event on booking confirmation; deletes event on cancellation
-- **Frontend:** Google Calendar connect/disconnect card in SchedulingSettings with status indicators
+- **CalendarConnection model:** Stores OAuth tokens per user with auto-refresh
+- **googleCalendarService.ts:** OAuth flow, freebusy availability check, event CRUD
+- **Routes:** `/api/google-calendar/auth-url`, `/callback`, `/status`, `/disconnect`
+- **Booking integration:** Availability check, auto-creates calendar event on booking
 
 ### Google Calendar Sync Enhancement (Mar 20, 2026)
-- **getBusySlots:** New function in googleCalendarService.ts uses freebusy API to fetch busy time ranges
-- **Slot generation:** public-booking.ts merges Google Calendar busy slots into allBookedSlots before generating available times
-- **calendarSynced flag:** Slots response includes `calendarSynced: true/false` so frontend can show sync indicator
-- **Frontend indicator:** Green "Showing real-time availability from Google Calendar" text on booking page when synced
+- **getBusySlots:** Freebusy API fetches busy time ranges
+- **Slot generation:** Merges Google Calendar busy slots into available times
+- **Frontend indicator:** Green sync indicator on booking page
+
+### Comprehensive 11-Issue Fix (Mar 21, 2026)
+1. Landing page: Full-screen dark bg `#1A1A2E`
+2. KanbanBoard cards: Service badge visible text
+3. QuotesTab: Singular labels
+4. Review Contract: Button opens lead modal on contracts tab
+5. DeliverablesTab: Emerald colors for READY/DELIVERED
+6. Active Commissions: Shows all non-BOOKED/LOST leads
+7. Client Portal footer: "Powered by KOLOR STUDIO"
+8. Contract titles: Industry-specific titles
+9. Loading spinner: Brand-colored animation
+10. Skip link: Hidden off-screen by default
+
+### Google Calendar Dashboard Widget (Mar 21, 2026) - NEW
+- **CalendarConnectionWidget.tsx:** Prominent dashboard widget with two states:
+  - **NOT CONNECTED:** Purple gradient CTA with Google logo, benefits list (Real-time sync, Auto-create events, Prevent conflicts), and "Connect Calendar" button
+  - **CONNECTED:** Green border card with CalendarCheck icon, sync status, benefits confirmed, and subtle "Disconnect" option
+- **Dashboard integration:** Widget placed after Revenue Pipeline for maximum visibility
+- **Dismissible:** Users can dismiss the CTA with localStorage persistence
+- **OAuth callback handling:** Dashboard detects `?calendar=connected` and shows success state
+- **Settings kept:** SchedulingSettings still has Google Calendar section with tip text pointing to dashboard
 
 ## Prioritized Backlog
 
 ### P0 (Next Up)
 - [x] Google Calendar integration for booking system (DONE)
 - [x] Google Calendar sync to booking page (DONE)
+- [x] Google Calendar Dashboard Widget (DONE)
 
 ### P1
 - [ ] Mobile responsiveness polish
@@ -87,28 +97,20 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [ ] Visual Sequence Builder (post-beta)
 - [ ] Meeting booking widget embed code
 - [ ] Design Tokens Reference Page (live style guide)
+- [ ] "Smart Inbox" view for files needing review
+- [ ] "File Request" feature
+- [ ] "Smart Scheduling" feature
 
 ## Test Reports
 - iteration_76: Meeting Booking System (backend 19/19, frontend 100%)
 - iteration_77: UI System v2.0 (frontend 100%)
-- iteration_78: Email Template Redesign (backend 14/14, all API paths verified)
+- iteration_78: Email Template Redesign (backend 14/14)
 - iteration_79: File Upload Notifications Part 1 (backend 18/18, 100%)
 - iteration_80: File Management Frontend UI (backend 100%, frontend 100%)
 - iteration_81: Google Calendar Integration (backend 14/14, frontend 100%)
-### Comprehensive 11-Issue Fix (Mar 21, 2026)
-1. Landing page: Full-screen dark bg `#1A1A2E` — no white border
-2. KanbanBoard cards: Service badge uses `text-purple-700` on `bg-white/80`, budget uses `text-emerald-600`
-3. QuotesTab: "Create Quote" (singular), "View Quote" (singular), form labels `text-gray-600`
-4. Review Contract: Button opens lead modal on `contracts` tab via new `initialTab` prop
-5. DeliverablesTab: READY/DELIVERED use emerald (green) on light background
-6. Active Commissions: Shows all non-BOOKED/LOST leads (removed `projectType` filter)
-7. Client Portal footer: "Powered by KOLOR STUDIO" replaces "Visit our website"
-8. Contract titles: `SERVICE_TITLES` map generates industry-specific titles (e.g., "Photography Services Agreement")
-9. Loading spinner: Added `.loading-spinner` CSS class with smooth brand-colored animation
-10. Skip link: Hidden off-screen by default, appears only on keyboard Tab
-
 - iteration_82: Google Calendar Sync to Booking Page (backend 13/13, 100%)
 - iteration_83: Comprehensive 11-Issue Fix (backend 100%, frontend 100%)
+- iteration_84: Google Calendar Dashboard Widget (backend 7/7 100%, frontend 100%)
 
 ## Test Credentials
 - bookingtest@test.com / password123 (User ID: cmmw4gvhr0000msmu77aijfb9)
