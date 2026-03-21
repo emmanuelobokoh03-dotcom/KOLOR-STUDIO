@@ -1147,7 +1147,7 @@ router.post('/:id/mark-delivered', authMiddleware, async (req: AuthRequest, res:
 // PATCH /api/leads/:id/discovery-call - Update discovery call status
 router.patch('/:id/discovery-call', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const userId = req.userId as string;
     const { discoveryCallScheduled, discoveryCallCompletedAt, discoveryCallNotes, discoveryCallBookingId } = req.body;
 
@@ -1161,32 +1161,33 @@ router.patch('/:id/discovery-call', authMiddleware, async (req: AuthRequest, res
     if (discoveryCallScheduled !== undefined) updateData.discoveryCallScheduled = discoveryCallScheduled;
     if (discoveryCallCompletedAt) updateData.discoveryCallCompletedAt = new Date(discoveryCallCompletedAt);
     if (discoveryCallNotes !== undefined) updateData.discoveryCallNotes = discoveryCallNotes;
-    if (discoveryCallBookingId !== undefined) updateData.discoveryCallBookingId = discoveryCallBookingId;
+    if (discoveryCallBookingId !== undefined) updateData.discoveryCallBookingId = discoveryCallBookingId as string;
 
     const updated = await prisma.lead.update({
       where: { id },
       data: updateData,
-      include: {
-        quotes: { select: { id: true } },
-        contracts: { select: { id: true } },
-        bookings: { select: { id: true } },
-      },
     });
+
+    const [quotesCount, contractsCount, bookingsCount] = await Promise.all([
+      prisma.quote.count({ where: { leadId: id } }),
+      prisma.contract.count({ where: { leadId: id } }),
+      prisma.booking.count({ where: { leadId: id } }),
+    ]);
 
     // Log activity
     if (discoveryCallScheduled) {
-      await logActivity(id, 'DISCOVERY_CALL_SCHEDULED', 'Discovery call scheduled with client');
+      await logActivity(id, userId, 'DISCOVERY_CALL_SCHEDULED', 'Discovery call scheduled with client');
     }
     if (discoveryCallCompletedAt) {
-      await logActivity(id, 'DISCOVERY_CALL_COMPLETED', discoveryCallNotes ? `Discovery call completed. Notes: ${discoveryCallNotes}` : 'Discovery call completed');
+      await logActivity(id, userId, 'DISCOVERY_CALL_COMPLETED', discoveryCallNotes ? `Discovery call completed. Notes: ${discoveryCallNotes}` : 'Discovery call completed');
     }
 
     res.json({
       lead: {
         ...updated,
-        quotesCount: updated.quotes.length,
-        contractsCount: updated.contracts.length,
-        bookingsCount: updated.bookings.length,
+        quotesCount,
+        contractsCount,
+        bookingsCount,
       }
     });
   } catch (error) {

@@ -530,7 +530,7 @@ router.post('/send-verification', authMiddleware, async (req: AuthRequest, res: 
 // GET /api/auth/verify-email/:token - Verify email (public)
 router.get('/verify-email/:token', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { token } = req.params;
+    const token = req.params.token as string;
 
     if (!token || token.length < 10) {
       console.error('[EMAIL VERIFY] Invalid token format:', token);
@@ -543,7 +543,7 @@ router.get('/verify-email/:token', async (req: Request, res: Response): Promise<
     });
 
     if (!user) {
-      console.error('[EMAIL VERIFY] No user found for token:', token.substring(0, 8) + '...');
+      console.error('[EMAIL VERIFY] No user found for token:', String(token).substring(0, 8) + '...');
       res.status(404).json({ error: 'Token not found', message: 'Verification link is expired or already used. Please request a new verification email from your dashboard.' });
       return;
     }

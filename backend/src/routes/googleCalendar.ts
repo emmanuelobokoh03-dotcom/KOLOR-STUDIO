@@ -5,7 +5,7 @@ import * as gcal from '../services/googleCalendarService';
 const router = Router();
 
 /** GET /api/google-calendar/config-check — Verify backend configuration */
-router.get('/config-check', authMiddleware, (req: Request, res: Response): void => {
+router.get('/config-check', authMiddleware, (_req: Request, res: Response): void => {
   const hasClientId = !!process.env.GOOGLE_CLIENT_ID;
   const hasClientSecret = !!process.env.GOOGLE_CLIENT_SECRET;
   const hasRedirectUri = !!process.env.GOOGLE_REDIRECT_URI;
