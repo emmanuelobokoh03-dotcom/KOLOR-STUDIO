@@ -12,7 +12,8 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Icons:** @phosphor-icons/react
 - **Tours:** Driver.js
 - **Calendar:** googleapis (Google Calendar API)
-- **Fonts:** Bricolage Grotesque (headings), Instrument Sans (body)
+- **Fonts:** Raleway (headings), Instrument Sans (body)
+- **Auth:** HTTP-Only cookie-based JWT (migrated from localStorage)
 
 ## What's Been Implemented
 
@@ -46,32 +47,28 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - Dashboard widget for easy connection (CalendarConnectionWidget)
 - Settings panel management
 
-### Discovery Call Workflow (Mar 21, 2026) — NEW
+### Discovery Call Workflow (Mar 21, 2026)
 - Added `discoveryCallScheduled`, `discoveryCallCompletedAt`, `discoveryCallNotes` fields to Lead model
 - Backend endpoint `PATCH /api/leads/:id/discovery-call` with activity logging
-- UI cards in LeadDetailModal Activity tab:
-  - **Schedule**: Purple gradient CTA for leads with status NEW/REVIEWING/CONTACTED/QUALIFIED
-  - **Scheduled**: Blue info card with "Mark Complete" button
-  - **Completed**: Green success card with date, notes, and "Send Quote" CTA
-- Activity types: DISCOVERY_CALL_SCHEDULED, DISCOVERY_CALL_COMPLETED
+- UI cards in LeadDetailModal Activity tab
 
-### Liquid Glass Design System (Mar 21, 2026) — NEW
+### Liquid Glass Design System (Mar 21, 2026)
 - CSS utility classes: `.glass`, `.glass-strong`, `.glass-subtle`, `.glass-dark`, `.glass-card`, `.glass-modal`, `.glass-header`
 - Applied to: Dashboard header, stat cards, toolbar, SettingsModal, AddLeadModal, LeadDetailModal
-- Performance: Reduced blur on mobile, fallback for unsupported browsers
-- Accessibility: Updated text-secondary to #4B5563, text-tertiary to #6B7280 for better contrast
 
-### TypeScript Build Fix (Mar 21, 2026) — NEW
-- Fixed 9 TypeScript errors in leads.ts, auth.ts, googleCalendar.ts
-- Discovery call endpoint: replaced Prisma include with separate count queries (avoids type inference issues)
-- Fixed logActivity calls to include userId parameter
-- Fixed Express req.params typing (string | string[] → string cast)
-- `npx tsc --noEmit` passes with zero errors
-1. Google Calendar connect: Added config-check endpoint, error handling, user-friendly alerts
-2. Email verification: Detailed error messages for invalid/expired/already-used tokens
-3. Subheading contrast: text-secondary darkened to #4B5563, text-tertiary to #6B7280
-4. Fine Art category: Added FINE_ART and ILLUSTRATION to ServiceType enum
-5. Duplicate footer: Fixed ClientPortal to show single "Powered by KOLOR STUDIO"
+### HTTP-Only Cookie Auth Migration (Mar 22, 2026) — VERIFIED
+- **Backend:** cookie-parser installed, login sets `auth_token` HTTP-Only cookie (httpOnly, secure=conditional, sameSite=lax, maxAge=7d)
+- **Backend:** Auth middleware reads cookie first, falls back to Bearer token for backward compat
+- **Backend:** Logout clears cookie, /api/auth/me verified with cookie auth
+- **Frontend:** All API calls use `credentials: 'include'`, localStorage token removed
+- **Frontend:** Login/Signup no longer save tokens to localStorage
+- **CORS:** credentials=true, origin whitelist configured
+- **Testing:** 100% pass rate — Backend 10/10, Frontend 7/7 (iteration_87)
+
+### Raleway Font Update (Mar 22, 2026) — VERIFIED
+- Heading font changed from Bricolage Grotesque to Raleway
+- CSS variable `--font-heading` updated, Tailwind config updated
+- Verified: H1 font-family is 'Raleway, Inter, sans-serif'
 
 ## Prioritized Backlog
 
@@ -81,6 +78,8 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [x] Comprehensive Bug Fixes (DONE)
 - [x] Discovery Call Workflow (DONE)
 - [x] Liquid Glass Design System (DONE)
+- [x] HTTP-Only Cookie Auth Migration (DONE — Mar 22, 2026)
+- [x] Raleway Font Update (DONE — Mar 22, 2026)
 
 ### P1
 - [ ] Mobile responsiveness polish
@@ -99,6 +98,13 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 ## Test Reports
 - iteration_84: Google Calendar Dashboard Widget (100%)
 - iteration_85: Comprehensive Update - Bug Fixes + Discovery Call + Liquid Glass (backend 15/15 100%, frontend 100%)
+- iteration_87: HTTP-Only Cookie Auth Migration + Raleway Font (backend 10/10 100%, frontend 7/7 100%)
 
 ## Test Credentials
 - bookingtest@test.com / password123
+
+## Key Architecture Notes
+- Auth cookie name: `auth_token`
+- Cookie attributes: httpOnly=true, secure=conditional on protocol, sameSite=lax, maxAge=7 days, path=/
+- Backend still accepts Bearer token in Authorization header for backward compatibility
+- Frontend uses `credentials: 'include'` in all fetch calls via central `request()` function in api.ts
