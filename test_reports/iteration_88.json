@@ -1,0 +1,107 @@
+{
+  "summary": "Remember Me Feature - All tests passed. Backend: 9/9 tests passed. Frontend: 7/7 tests passed. The Remember Me toggle on login page works correctly - checked (default) sets 7-day persistent cookie with Max-Age, unchecked sets session-only cookie without Max-Age.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_remember_me_feature.py",
+    "/app/test_reports/pytest/remember_me_tests.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend auth.ts line 155: rememberMe defaults to true when not provided - correct",
+    "Backend auth.ts line 203: JWT expiry is '7d' when rememberMe=true, '24h' when rememberMe=false - correct",
+    "Backend auth.ts line 220: Cookie uses spread operator ...(rememberMe && { maxAge: ... }) to conditionally add maxAge - correct implementation",
+    "Frontend Login.tsx line 11: rememberMe state defaults to true - correct",
+    "Frontend Login.tsx line 117-127: Checkbox with data-testid='remember-me-checkbox' - correct",
+    "Frontend api.ts line 60: login type includes rememberMe?: boolean - correct",
+    "Frontend Signup.tsx line 60: Auto-login after signup passes rememberMe: true - correct"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_remember_me_feature.py"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (7/7 tests passed)"
+  },
+  "test_credentials": {
+    "email": "bookingtest@test.com",
+    "password": "password123"
+  },
+  "seed_data_creation": "None - used existing test user",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Remember Me feature is fully functional. Backend needed a restart to pick up the changes (hot reload may not have worked). Cookie name is 'auth_token'. When rememberMe=true: Max-Age=604800 (7 days). When rememberMe=false: no Max-Age (session cookie). JWT expiry also differs: 7d vs 24h.",
+  "features_tested": {
+    "Backend_RememberMe_True_Persistent_Cookie": {
+      "status": "PASSED",
+      "details": "POST /api/auth/login with rememberMe=true sets cookie with Max-Age=604800 (7 days)"
+    },
+    "Backend_RememberMe_False_Session_Cookie": {
+      "status": "PASSED",
+      "details": "POST /api/auth/login with rememberMe=false sets session cookie (no Max-Age/Expires)"
+    },
+    "Backend_Default_RememberMe_True": {
+      "status": "PASSED",
+      "details": "POST /api/auth/login without rememberMe param defaults to rememberMe=true (7-day cookie)"
+    },
+    "Backend_JWT_Expiry_Differs": {
+      "status": "PASSED",
+      "details": "JWT expiry is 7d when rememberMe=true, 24h when rememberMe=false"
+    },
+    "Backend_Session_Cookie_Auth_Works": {
+      "status": "PASSED",
+      "details": "Session cookie (rememberMe=false) successfully authenticates requests to /api/auth/me"
+    },
+    "Backend_Persistent_Cookie_Auth_Works": {
+      "status": "PASSED",
+      "details": "Persistent cookie (rememberMe=true) successfully authenticates requests to /api/auth/me"
+    },
+    "Backend_Cookie_HttpOnly_Attribute": {
+      "status": "PASSED",
+      "details": "Cookie has HttpOnly attribute for both rememberMe=true and rememberMe=false"
+    },
+    "Backend_Cookie_SameSite_Attribute": {
+      "status": "PASSED",
+      "details": "Cookie has SameSite=Lax attribute for both rememberMe=true and rememberMe=false"
+    },
+    "Backend_Cookie_Path_Attribute": {
+      "status": "PASSED",
+      "details": "Cookie has Path=/ attribute for both rememberMe=true and rememberMe=false"
+    },
+    "Frontend_Login_Page_Renders": {
+      "status": "PASSED",
+      "details": "Login page renders with email, password fields and Remember Me checkbox"
+    },
+    "Frontend_Checkbox_Found": {
+      "status": "PASSED",
+      "details": "Remember Me checkbox found with data-testid='remember-me-checkbox'"
+    },
+    "Frontend_Checkbox_Default_Checked": {
+      "status": "PASSED",
+      "details": "Remember Me checkbox is checked by default"
+    },
+    "Frontend_Login_With_Checkbox_Checked": {
+      "status": "PASSED",
+      "details": "Login with checkbox checked navigates to dashboard"
+    },
+    "Frontend_Logout_Works": {
+      "status": "PASSED",
+      "details": "Logout button works and redirects to login page"
+    },
+    "Frontend_Checkbox_Can_Be_Unchecked": {
+      "status": "PASSED",
+      "details": "Remember Me checkbox can be unchecked by clicking"
+    },
+    "Frontend_Login_With_Checkbox_Unchecked": {
+      "status": "PASSED",
+      "details": "Login with checkbox unchecked navigates to dashboard (session cookie works)"
+    }
+  }
+}
