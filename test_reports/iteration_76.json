@@ -32,7 +32,7 @@
   "seed_data_creation": "None - used existing test data from main agent",
   "retest_needed": false,
   "should_main_agent_self_test": false,
-  "context_for_next_testing_agent": "Meeting Booking System fully implemented and tested. All 19 backend tests pass. Public booking page at /book/:userId works perfectly - shows studio name, meeting types, calendar, time slots, and booking form. Settings modal has Scheduling tab (verified in code and screenshots). The API URL is https://calendar-file-mgmt.preview.emergentagent.com",
+  "context_for_next_testing_agent": "Meeting Booking System fully implemented and tested. All 19 backend tests pass. Public booking page at /book/:userId works perfectly - shows studio name, meeting types, calendar, time slots, and booking form. Settings modal has Scheduling tab (verified in code and screenshots). The API URL is https://raleway-design-check.preview.emergentagent.com",
   "features_verified": {
     "backend_meeting_types_api": {
       "status": "PASS",
