@@ -11,7 +11,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = "https://calendar-file-mgmt.preview.emergentagent.com"
+BASE_URL = "https://raleway-design-check.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

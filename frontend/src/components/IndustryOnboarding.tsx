@@ -45,14 +45,11 @@ export default function IndustryOnboarding() {
     setError('')
 
     try {
-      const token = localStorage.getItem('token')
       const API_URL = import.meta.env.VITE_API_URL || ''
       const res = await fetch(`${API_URL}/api/auth/onboarding`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ primaryIndustry: selected }),
       })
       const data = await res.json()

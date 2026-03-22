@@ -32,9 +32,8 @@ export default function RevenuePipelineWidget() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
     fetch(`${API_URL}/api/analytics/revenue-pipeline`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include',
     })
       .then(r => r.json())
       .then(data => {

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..800&family=Instrument+Sans:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Instrument+Sans:wght@400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -63,7 +63,7 @@ textarea:focus-visible {
 @layer base {
   :root {
     /* Typography */
-    --font-heading: 'Bricolage Grotesque', 'Inter', sans-serif;
+    --font-heading: 'Raleway', 'Inter', sans-serif;
     --font-body: 'Instrument Sans', 'Inter', sans-serif;
 
     /* Transitions */

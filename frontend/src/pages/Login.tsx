@@ -8,6 +8,7 @@ const Login = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [rememberMe, setRememberMe] = useState(true)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -32,6 +33,7 @@ const Login = () => {
     const result = await authApi.login({
       email: formData.email,
       password: formData.password,
+      rememberMe,
     })
 
     setLoading(false)
@@ -42,7 +44,9 @@ const Login = () => {
     }
 
     if (result.data?.token) {
-      localStorage.setItem('token', result.data.token)
+      // Cookie is set automatically by the server response
+      // Clean up legacy localStorage
+      localStorage.removeItem('token')
       localStorage.setItem('user', JSON.stringify(result.data.user))
       trackLogin('email')
       navigate('/dashboard')
@@ -108,7 +112,19 @@ const Login = () => {
               />
             </div>
 
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer" data-testid="remember-me-label">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 focus:ring-offset-0 cursor-pointer"
+                  data-testid="remember-me-checkbox"
+                />
+                <span className="text-body-sm text-text-secondary select-none">
+                  Remember me
+                </span>
+              </label>
               <Link
                 to="/forgot-password"
                 className="text-body-sm text-brand-600 hover:text-brand-700 font-medium transition-colors duration-fast"

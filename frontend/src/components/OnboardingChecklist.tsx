@@ -24,16 +24,13 @@ export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings
   }, [dismissed])
 
   const fetchProgress = async () => {
-    const token = localStorage.getItem('token')
-    if (!token) { setLoading(false); return }
 
     try {
-      const headers = { Authorization: `Bearer ${token}` }
       const [calRes, mtRes, availRes, leadsRes] = await Promise.all([
-        fetch('/api/google-calendar/status', { headers }).then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('/api/meeting-types', { headers }).then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('/api/availability', { headers }).then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('/api/leads', { headers }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/google-calendar/status', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/meeting-types', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/availability', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/leads', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
       ])
 
       const meetingTypes = mtRes?.meetingTypes || mtRes || []

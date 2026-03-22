@@ -203,10 +203,9 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
   const handleRequestTestimonial = async () => {
     try {
       const API_URL = import.meta.env.VITE_API_URL || ''
-      const token = localStorage.getItem('token')
       const res = await fetch(`${API_URL}/api/testimonials/request/${lead.id}`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
+        credentials: 'include',
       })
       const data = await res.json()
       if (res.ok) {
@@ -1082,7 +1081,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               </div>
             ) : activeTab === 'timeline' ? (
               <div className="p-4 md:p-6">
-                <ProjectTimeline leadId={lead.id} editable={true} authToken={localStorage.getItem('token') || undefined} />
+                <ProjectTimeline leadId={lead.id} editable={true} />
               </div>
             ) : activeTab === 'quotes' ? (
               <QuotesTab 

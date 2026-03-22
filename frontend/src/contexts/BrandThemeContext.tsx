@@ -99,8 +99,7 @@ export function BrandThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const cached = loadCached()
     applyToDOM(cached)
-    const token = localStorage.getItem('token')
-    if (token) refresh()
+    refresh()
   }, [refresh])
 
   return (

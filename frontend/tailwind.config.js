@@ -140,10 +140,10 @@ export default {
 
       // ── Typography ────────────────────────────────────
       fontFamily: {
-        heading: ['Bricolage Grotesque', 'Inter', 'sans-serif'],
+        heading: ['Raleway', 'Inter', 'sans-serif'],
         body: ['Instrument Sans', 'Inter', 'sans-serif'],
         sans: ['var(--font-brand, "Instrument Sans")', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['Bricolage Grotesque', 'Inter', 'sans-serif'],
+        display: ['Raleway', 'Inter', 'sans-serif'],
         brand: ['var(--font-brand, "Instrument Sans")', 'sans-serif'],
       },
       fontSize: {

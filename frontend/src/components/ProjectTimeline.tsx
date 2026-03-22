@@ -35,7 +35,6 @@ interface ProjectTimelineProps {
   leadId?: string;
   token?: string;
   editable?: boolean;
-  authToken?: string;
 }
 
 // ── Helpers ────────────────────────────────────────────
@@ -63,7 +62,7 @@ const PORTAL_STATUS_STYLES = {
 };
 
 // ── Component ──────────────────────────────────────────
-export default function ProjectTimeline({ leadId, token, editable = false, authToken }: ProjectTimelineProps) {
+export default function ProjectTimeline({ leadId, token, editable = false }: ProjectTimelineProps) {
   const [data, setData] = useState<TimelineData>({ shootingDate: null, editingDeadline: null, deliveryDate: null, milestones: [] });
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -76,9 +75,6 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
   const isPortal = !!token;
   const styles = isPortal ? PORTAL_STATUS_STYLES : STATUS_STYLES;
 
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
-
   useEffect(() => { fetchTimeline(); }, [leadId, token]);
 
   const fetchTimeline = async () => {
@@ -86,7 +82,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
       const url = token
         ? `${API_URL}/api/portal/${token}/timeline`
         : `${API_URL}/api/leads/${leadId}/milestones`;
-      const res = await fetch(url, { headers: authToken ? { Authorization: `Bearer ${authToken}` } : {} });
+      const res = await fetch(url, isPortal ? {} : { credentials: 'include' });
       if (res.ok) setData(await res.json());
     } catch (err) { console.error('Fetch timeline error:', err); }
     finally { setLoading(false); }
@@ -97,7 +93,9 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
     setSaving(true);
     try {
       const res = await fetch(`${API_URL}/api/leads/${leadId}/milestones`, {
-        method: 'POST', headers,
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newName.trim(), description: newDesc.trim() || null, dueDate: newDate, order: data.milestones.length }),
       });
       if (res.ok) { setNewName(''); setNewDate(''); setNewDesc(''); setShowAdd(false); await fetchTimeline(); }
@@ -109,7 +107,9 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
     setTogglingId(ms.id);
     try {
       await fetch(`${API_URL}/api/leads/milestones/${ms.id}`, {
-        method: 'PATCH', headers,
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completed: !ms.completed }),
       });
       await fetchTimeline();
@@ -119,7 +119,7 @@ export default function ProjectTimeline({ leadId, token, editable = false, authT
 
   const deleteMilestone = async (id: string) => {
     try {
-      await fetch(`${API_URL}/api/leads/milestones/${id}`, { method: 'DELETE', headers });
+      await fetch(`${API_URL}/api/leads/milestones/${id}`, { method: 'DELETE', credentials: 'include' });
       await fetchTimeline();
     } catch (err) { console.error(err); }
   };

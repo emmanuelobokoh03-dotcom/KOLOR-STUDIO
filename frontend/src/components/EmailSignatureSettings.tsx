@@ -10,8 +10,7 @@ export default function EmailSignatureSettings() {
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    fetch(`${API_URL}/api/settings`, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${API_URL}/api/settings`, { credentials: 'include' })
       .then(r => r.json())
       .then(d => setSignature(d.settings?.emailSignature || ''))
       .catch(() => {})
@@ -21,10 +20,10 @@ export default function EmailSignatureSettings() {
     setSaving(true)
     setSaved(false)
     try {
-      const token = localStorage.getItem('token')
       await fetch(`${API_URL}/api/settings`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emailSignature: signature }),
       })
       setSaved(true)

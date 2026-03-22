@@ -4,6 +4,7 @@ dotenv.config();
 
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import authRoutes from './routes/auth';
 import leadsRoutes from './routes/leads';
@@ -108,6 +109,9 @@ app.use('/api/webhooks', express.raw({ type: 'application/json' }), webhookRoute
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Cookie parsing (for HTTP-only cookie auth)
+app.use(cookieParser());
 
 // Logging
 if (process.env.NODE_ENV === 'development') {

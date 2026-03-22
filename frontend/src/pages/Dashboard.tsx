@@ -152,12 +152,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     const init = async () => {
-      const token = localStorage.getItem('token')
-      if (!token) { navigate('/login'); return }
-
       const userResult = await authApi.getMe()
       if (userResult.error) {
-        localStorage.removeItem('token')
         localStorage.removeItem('user')
         navigate('/login')
         return
@@ -251,9 +247,9 @@ const Dashboard = () => {
     setRefreshing(false)
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     trackLogout()
-    localStorage.removeItem('token')
+    try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }) } catch { /* ignore */ }
     localStorage.removeItem('user')
     navigate('/login')
   }

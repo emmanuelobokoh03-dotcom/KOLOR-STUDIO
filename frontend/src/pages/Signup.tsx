@@ -57,9 +57,10 @@ const Signup = () => {
 
     trackSignup('email')
     
-    const loginResult = await authApi.login({ email: formData.email, password: formData.password })
+    const loginResult = await authApi.login({ email: formData.email, password: formData.password, rememberMe: true })
     if (loginResult.data?.token) {
-      localStorage.setItem('token', loginResult.data.token)
+      // Cookie is set automatically by the server
+      localStorage.removeItem('token')
       setSuccess('Account created! Setting up your workspace...')
       setTimeout(() => navigate('/onboarding'), 1000)
     } else {

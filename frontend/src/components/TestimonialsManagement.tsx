@@ -40,11 +40,10 @@ export default function TestimonialsManagement() {
   const fetchTestimonials = async () => {
     try {
       const API_URL = import.meta.env.VITE_API_URL || ''
-      const token = localStorage.getItem('token')
-      const headers = { Authorization: `Bearer ${token}` }
+      const opts = { credentials: 'include' as RequestCredentials }
       const [tesRes, statsRes] = await Promise.all([
-        fetch(`${API_URL}/api/testimonials`, { headers }),
-        fetch(`${API_URL}/api/testimonials/stats`, { headers })
+        fetch(`${API_URL}/api/testimonials`, opts),
+        fetch(`${API_URL}/api/testimonials/stats`, opts)
       ])
       if (tesRes.ok) { const d = await tesRes.json(); setTestimonials(d.testimonials) }
       if (statsRes.ok) { const d = await statsRes.json(); setStats(d) }
@@ -57,10 +56,9 @@ export default function TestimonialsManagement() {
   const handleAction = async (id: string, action: 'approve' | 'reject' | 'feature') => {
     try {
       const API_URL = import.meta.env.VITE_API_URL || ''
-      const token = localStorage.getItem('token')
       await fetch(`${API_URL}/api/testimonials/${id}/${action}`, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${token}` }
+        credentials: 'include',
       })
       fetchTestimonials()
     } catch (err) { console.error(`Failed to ${action}:`, err) }

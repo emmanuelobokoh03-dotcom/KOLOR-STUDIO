@@ -48,9 +48,8 @@ export default function CRMAlerts({ onLeadClick }: { onLeadClick?: (leadId: stri
     setLoading(true)
     try {
       const API_URL = import.meta.env.VITE_API_URL || ''
-      const token = localStorage.getItem('token')
       const res = await fetch(`${API_URL}/api/crm/alerts`, {
-        headers: { Authorization: `Bearer ${token}` }
+        credentials: 'include',
       })
       if (res.ok) {
         const data: CRMApiResponse = await res.json()

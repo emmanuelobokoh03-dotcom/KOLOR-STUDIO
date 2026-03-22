@@ -372,7 +372,7 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
     });
 
     const studioName = contract.lead.assignedTo?.studioName || `${contract.lead.assignedTo?.firstName} ${contract.lead.assignedTo?.lastName}`;
-    const portalUrl = `${process.env.FRONTEND_URL || 'https://calendar-file-mgmt.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
+    const portalUrl = `${process.env.FRONTEND_URL || 'https://raleway-design-check.preview.emergentagent.com'}/portal/${contract.lead.portalToken}`;
 
     console.log('[CONTRACT SEND] Sending contract email to:', contract.lead.clientEmail, '| Contract:', contract.title);
     let emailSent = false;

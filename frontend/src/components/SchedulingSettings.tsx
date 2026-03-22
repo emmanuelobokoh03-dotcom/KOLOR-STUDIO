@@ -51,23 +51,23 @@ export default function SchedulingSettings() {
     if (typesRes.data) setMeetingTypes(typesRes.data.meetingTypes)
     if (availRes.data) setAvailability(availRes.data.availability)
 
-    // Get user ID for booking link
-    const token = localStorage.getItem('token')
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        setUserId(payload.userId || payload.id || '')
-      } catch { /* ignore */ }
+    // Get user ID from /api/auth/me
+    try {
+      const meResp = await fetch('/api/auth/me', { credentials: 'include' })
+      if (meResp.ok) {
+        const meData = await meResp.json()
+        setUserId(meData.user?.id || '')
+      }
+    } catch { /* ignore */ }
 
-      // Check Google Calendar status
-      try {
-        const resp = await fetch('/api/google-calendar/status', { headers: { Authorization: `Bearer ${token}` } })
-        if (resp.ok) {
-          const data = await resp.json()
-          setCalendarConnected(data.connected)
-        }
-      } catch { /* ignore */ }
-    }
+    // Check Google Calendar status
+    try {
+      const resp = await fetch('/api/google-calendar/status', { credentials: 'include' })
+      if (resp.ok) {
+        const data = await resp.json()
+        setCalendarConnected(data.connected)
+      }
+    } catch { /* ignore */ }
     setLoading(false)
 
     // Check URL for calendar connection result
@@ -177,10 +177,8 @@ export default function SchedulingSettings() {
 
   const connectGoogleCalendar = async () => {
     setCalendarLoading(true)
-    const token = localStorage.getItem('token')
     try {
-      // Check config first
-      const configResp = await fetch('/api/google-calendar/config-check', { headers: { Authorization: `Bearer ${token}` } })
+      const configResp = await fetch('/api/google-calendar/config-check', { credentials: 'include' })
       if (configResp.ok) {
         const config = await configResp.json()
         if (!config.configured) {
@@ -190,7 +188,7 @@ export default function SchedulingSettings() {
         }
       }
 
-      const resp = await fetch('/api/google-calendar/auth-url', { headers: { Authorization: `Bearer ${token}` } })
+      const resp = await fetch('/api/google-calendar/auth-url', { credentials: 'include' })
       if (resp.ok) {
         const data = await resp.json()
         if (data.authUrl) {
@@ -210,11 +208,10 @@ export default function SchedulingSettings() {
 
   const disconnectGoogleCalendar = async () => {
     setCalendarLoading(true)
-    const token = localStorage.getItem('token')
     try {
       const resp = await fetch('/api/google-calendar/disconnect', {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
       })
       if (resp.ok) setCalendarConnected(false)
     } catch { /* ignore */ }

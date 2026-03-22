@@ -10,22 +10,24 @@ async function request<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
-  const token = localStorage.getItem('token');
-  
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...options.headers,
   };
 
-  if (token) {
-    (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
-  }
-
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {
       ...options,
       headers,
+      credentials: 'include', // Send HTTP-only cookie
     });
+
+    // Handle 401 — session expired
+    if (response.status === 401) {
+      // Clean up stale localStorage from migration
+      localStorage.removeItem('token');
+      return { error: 'Unauthorized', message: 'Authentication required' };
+    }
 
     const data = await response.json();
 
@@ -55,7 +57,7 @@ export const authApi = {
     });
   },
 
-  login: async (credentials: { email: string; password: string }) => {
+  login: async (credentials: { email: string; password: string; rememberMe?: boolean }) => {
     return request<{ message: string; token: string; user: User }>('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
@@ -150,16 +152,13 @@ export const leadsApi = {
   },
 
   uploadFiles: async (leadId: string, files: File[]) => {
-    const token = localStorage.getItem('token');
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
 
     try {
       const response = await fetch(`${API_URL}/api/leads/${leadId}/files`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        credentials: 'include',
         body: formData,
       });
 
@@ -286,16 +285,13 @@ export const leadsApi = {
   },
 
   uploadCoverImage: async (file: File) => {
-    const token = localStorage.getItem('token');
     const formData = new FormData();
     formData.append('coverImage', file);
 
     try {
       const response = await fetch(`${API_URL}/api/leads/upload-cover`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        credentials: 'include',
         body: formData,
       });
 
@@ -928,17 +924,12 @@ export const quotesApi = {
   // Download quote as PDF (authenticated - by id)
   downloadPdf: (quoteId: string) => {
     const apiUrl = import.meta.env.VITE_API_URL || '/api';
-    const token = localStorage.getItem('token');
-    // Create a temporary link to download with auth
     const link = document.createElement('a');
     link.href = `${apiUrl}/quotes/${quoteId}/pdf`;
     link.download = '';
     
-    // For authenticated routes, we need to fetch with token
     fetch(`${apiUrl}/quotes/${quoteId}/pdf`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
+      credentials: 'include',
     })
       .then(response => response.blob())
       .then(blob => {
@@ -997,10 +988,9 @@ export const settingsApi = {
     });
   },
   uploadBrandLogo: async (formData: FormData) => {
-    const token = localStorage.getItem('token');
     const res = await fetch(`${API_URL}/api/settings/brand/logo`, {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
+      credentials: 'include',
       body: formData,
     });
     return res.json();
@@ -1232,12 +1222,9 @@ export const portfolioApi = {
 
   // Create portfolio item with image
   create: async (formData: FormData) => {
-    const token = localStorage.getItem('token');
     const response = await fetch(`${API_URL}/api/portfolio`, {
       method: 'POST',
-      headers: {
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
+      credentials: 'include',
       body: formData,
     });
     const data = await response.json();
@@ -1249,12 +1236,9 @@ export const portfolioApi = {
 
   // Update portfolio item
   update: async (id: string, formData: FormData) => {
-    const token = localStorage.getItem('token');
     const response = await fetch(`${API_URL}/api/portfolio/${id}`, {
       method: 'PATCH',
-      headers: {
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
+      credentials: 'include',
       body: formData,
     });
     const data = await response.json();

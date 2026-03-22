@@ -27,9 +27,8 @@ export default function RevenueDashboard() {
     const fetchRevenue = async () => {
       try {
         const API_URL = import.meta.env.VITE_API_URL || ''
-        const token = localStorage.getItem('token')
         const res = await fetch(`${API_URL}/api/crm/revenue`, {
-          headers: { Authorization: `Bearer ${token}` }
+          credentials: 'include',
         })
         if (res.ok) setStats(await res.json())
       } catch (err) {

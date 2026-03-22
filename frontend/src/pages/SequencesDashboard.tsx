@@ -52,10 +52,10 @@ interface StatsData {
 }
 
 function request(path: string, opts?: RequestInit) {
-  const token = localStorage.getItem('token')
   return fetch(`${API_URL}${path}`, {
     ...opts,
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...opts?.headers },
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', ...opts?.headers },
   }).then(r => r.json())
 }
 

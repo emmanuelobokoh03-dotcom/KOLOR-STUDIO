@@ -152,7 +152,7 @@ router.post('/onboarding', authMiddleware, async (req: AuthRequest, res: Respons
 // POST /api/auth/login - Authenticate user
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe = true } = req.body;
 
     // Validate required fields
     if (!email || !password) {
@@ -200,7 +200,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign(
       { userId: user.id },
       jwtSecret,
-      { expiresIn: '7d' }
+      { expiresIn: rememberMe ? '7d' : '24h' }
     );
 
     // Track first login (lastLoginAt is null on first ever login)
@@ -212,9 +212,18 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       data: { lastLoginAt: new Date() }
     });
 
+    // Set HTTP-only cookie — session-only when rememberMe is false
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production' || req.protocol === 'https',
+      sameSite: 'lax',
+      ...(rememberMe && { maxAge: 7 * 24 * 60 * 60 * 1000 }), // 7 days if remembering, session-only otherwise
+      path: '/',
+    });
+
     res.json({
       message: 'Login successful',
-      token,
+      token, // Keep for backward compat during migration
       user: {
         id: user.id,
         email: user.email,
@@ -233,6 +242,17 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to authenticate'
     });
   }
+});
+
+// POST /api/auth/logout - Clear auth cookie
+router.post('/logout', (_req: Request, res: Response): void => {
+  res.clearCookie('auth_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+  });
+  res.json({ message: 'Logged out successfully' });
 });
 
 // GET /api/auth/me - Get current user info (protected route)
