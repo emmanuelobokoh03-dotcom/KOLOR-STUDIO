@@ -48,6 +48,7 @@ import CRMAlerts from '../components/CRMAlerts'
 import RevenueDashboard from '../components/RevenueDashboard'
 import RevenuePipelineWidget from '../components/RevenuePipelineWidget'
 import CalendarConnectionWidget from '../components/CalendarConnectionWidget'
+import OnboardingChecklist from '../components/OnboardingChecklist'
 import SequencesDashboard from './SequencesDashboard'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import DemoProjectBanner from '../components/DemoProjectBanner'
@@ -539,6 +540,9 @@ const Dashboard = () => {
             else if (action === 'open-brand-settings') setShowSettings(true)
           }}
         />
+
+        {/* Onboarding Checklist */}
+        <OnboardingChecklist onOpenSettings={() => setShowSettings(true)} />
 
         {/* Revenue Pipeline Widget */}
         {/* Active Commissions Widget - Universal for all users */}
