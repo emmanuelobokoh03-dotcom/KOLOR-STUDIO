@@ -70,6 +70,13 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - CSS variable `--font-heading` updated, Tailwind config updated
 - Verified: H1 font-family is 'Raleway, Inter, sans-serif'
 
+### Remember Me Toggle (Mar 22, 2026) — VERIFIED
+- Login page checkbox (default: checked) controls cookie persistence
+- Checked: 7-day persistent cookie + 7d JWT expiry
+- Unchecked: session-only cookie (no maxAge) + 24h JWT expiry
+- All security attributes preserved (httpOnly, secure, sameSite=lax)
+- Testing: 100% pass rate — Backend 9/9, Frontend 7/7 (iteration_88)
+
 ## Prioritized Backlog
 
 ### P0 — Done
@@ -80,6 +87,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [x] Liquid Glass Design System (DONE)
 - [x] HTTP-Only Cookie Auth Migration (DONE — Mar 22, 2026)
 - [x] Raleway Font Update (DONE — Mar 22, 2026)
+- [x] Remember Me Toggle (DONE — Mar 22, 2026)
 
 ### P1
 - [ ] Mobile responsiveness polish
@@ -99,6 +107,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_84: Google Calendar Dashboard Widget (100%)
 - iteration_85: Comprehensive Update - Bug Fixes + Discovery Call + Liquid Glass (backend 15/15 100%, frontend 100%)
 - iteration_87: HTTP-Only Cookie Auth Migration + Raleway Font (backend 10/10 100%, frontend 7/7 100%)
+- iteration_88: Remember Me Toggle (backend 9/9 100%, frontend 7/7 100%)
 
 ## Test Credentials
 - bookingtest@test.com / password123
