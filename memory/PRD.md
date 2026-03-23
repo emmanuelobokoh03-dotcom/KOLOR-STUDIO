@@ -77,6 +77,19 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - All security attributes preserved (httpOnly, secure, sameSite=lax)
 - Testing: 100% pass rate — Backend 9/9, Frontend 7/7 (iteration_88)
 
+### Landing Page Screenshots (Mar 23, 2026) — Created
+- 3 high-quality PNGs saved to `/frontend/public/screenshots/`
+- `dashboard-overview.png` (80KB) — Clean dashboard with 5 professional mock leads
+- `quote-builder.png` (100KB) — Quote builder modal for wedding photography
+- `client-portal.png` (100KB) — Lead detail modal with activity timeline
+- User name updated to "Sarah Mitchell" for professional appearance
+- All onboarding banners dismissed via localStorage keys
+
+### KOLOR STUDIO Custom Skill (Mar 23, 2026) — Created
+- `/mnt/skills/user/kolor-studio/README.md` — Skill overview
+- `/mnt/skills/user/kolor-studio/SKILL.md` — Comprehensive dev reference (142 lines)
+- Covers: auth, design system, API patterns, business logic, database, common gotchas
+
 ## Prioritized Backlog
 
 ### P0 — Done
