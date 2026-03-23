@@ -1,0 +1,9 @@
+-- CreateIndex (composite indexes for performance)
+CREATE INDEX "activities_leadId_createdAt_idx" ON "activities"("leadId", "createdAt");
+CREATE INDEX "activities_userId_createdAt_idx" ON "activities"("userId", "createdAt");
+CREATE INDEX "leads_assignedToId_status_idx" ON "leads"("assignedToId", "status");
+CREATE INDEX "leads_assignedToId_pipelineStatus_idx" ON "leads"("assignedToId", "pipelineStatus");
+CREATE INDEX "leads_assignedToId_createdAt_idx" ON "leads"("assignedToId", "createdAt");
+CREATE INDEX "quotes_leadId_status_idx" ON "quotes"("leadId", "status");
+CREATE INDEX "quotes_createdById_status_idx" ON "quotes"("createdById", "status");
+CREATE INDEX "quotes_createdById_createdAt_idx" ON "quotes"("createdById", "createdAt");

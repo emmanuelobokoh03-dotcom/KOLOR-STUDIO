@@ -8,7 +8,7 @@ import os
 import time
 import hashlib
 
-BASE_URL = "https://raleway-design-check.preview.emergentagent.com"
+BASE_URL = "https://hardened-crm-2.preview.emergentagent.com"
 
 # Test user credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

@@ -20,6 +20,8 @@ model Activity {
 
   @@index([createdAt])
   @@index([leadId])
+  @@index([leadId, createdAt])
+  @@index([userId, createdAt])
   @@map("activities")
 }
 
@@ -316,6 +318,9 @@ model Lead {
   @@index([pipelineStatus])
   @@index([projectType])
   @@index([status])
+  @@index([assignedToId, status])
+  @@index([assignedToId, pipelineStatus])
+  @@index([assignedToId, createdAt])
   @@map("leads")
 }
 
@@ -423,6 +428,9 @@ model Quote {
   @@index([createdAt])
   @@index([leadId])
   @@index([status])
+  @@index([leadId, status])
+  @@index([createdById, status])
+  @@index([createdById, createdAt])
   @@map("quotes")
 }
 

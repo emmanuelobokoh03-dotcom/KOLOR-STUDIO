@@ -1,187 +1,123 @@
+/**
+ * Analytics utility for KOLOR Studio
+ *
+ * Uses Vercel Analytics (free, built-in, privacy-focused).
+ * Enable in Vercel Dashboard -> Project -> Analytics.
+ *
+ * Web Vitals (LCP, FID, CLS) are automatically tracked by Vercel.
+ * No additional setup required.
+ */
 import { track as vercelTrack } from '@vercel/analytics';
 
-// Check if analytics consent was given
-const hasAnalyticsConsent = (): boolean => {
-  const consent = localStorage.getItem('analytics_consent');
-  return consent === 'true';
-};
+// =====================
+// Core tracking
+// =====================
 
-// Wrapper for track that respects cookie consent
-export const track = (
+/**
+ * Track a custom event via Vercel Analytics.
+ * In development, events are logged to the console instead.
+ */
+export function trackEvent(
   eventName: string,
   properties?: Record<string, string | number | boolean | null>
-): void => {
-  // Only track if user has given analytics consent
-  if (!hasAnalyticsConsent()) {
+) {
+  if (import.meta.env.DEV) {
+    console.log('[Analytics] Event:', eventName, properties);
     return;
   }
 
-  // Clean properties - remove any potential PII
-  const cleanProperties = properties ? sanitizeProperties(properties) : undefined;
-
   try {
-    vercelTrack(eventName, cleanProperties);
+    vercelTrack(eventName, properties ?? {});
   } catch (error) {
     console.error('Analytics tracking error:', error);
   }
-};
+}
 
-// Remove any potential PII from properties
-const sanitizeProperties = (
-  properties: Record<string, string | number | boolean | null>
-): Record<string, string | number | boolean | null> => {
-  const sanitized: Record<string, string | number | boolean | null> = {};
-  
-  // List of keys that might contain PII - we'll skip these
-  const piiKeys = ['email', 'name', 'phone', 'address', 'clientName', 'clientEmail'];
-  
-  for (const [key, value] of Object.entries(properties)) {
-    // Skip PII fields
-    if (piiKeys.some(piiKey => key.toLowerCase().includes(piiKey.toLowerCase()))) {
-      continue;
-    }
-    
-    // Skip if value looks like an email
-    if (typeof value === 'string' && value.includes('@')) {
-      continue;
-    }
-    
-    sanitized[key] = value;
-  }
-  
-  return sanitized;
-};
+// Alias used by legacy call-sites
+export const track = trackEvent;
 
-// Pre-defined event tracking functions for consistency
+// =====================
+// Pre-defined event helpers (backward-compatible named exports)
+// =====================
 
-// Authentication Events
-export const trackSignup = (method: 'email' | 'google' = 'email') => {
-  track('Signup Completed', { method });
-};
+// Authentication
+export const trackSignup = (method: 'email' | 'google' = 'email') =>
+  trackEvent('Signup Completed', { method });
 
-export const trackLogin = (method: 'email' | 'google' = 'email') => {
-  track('Login Success', { method });
-};
+export const trackLogin = (method: 'email' | 'google' = 'email') =>
+  trackEvent('Login Success', { method });
 
-export const trackLogout = () => {
-  track('Logout');
-};
+export const trackLogout = () => trackEvent('Logout');
 
-// Lead Events
-export const trackLeadCreated = (source?: string, serviceType?: string) => {
-  track('Lead Created', {
+// Leads
+export const trackLeadCreated = (source?: string, serviceType?: string) =>
+  trackEvent('Lead Created', {
     source: source || 'unknown',
     serviceType: serviceType || 'unknown',
   });
-};
 
-export const trackLeadStatusChanged = (fromStatus: string, toStatus: string) => {
-  track('Lead Status Changed', {
-    from: fromStatus,
-    to: toStatus,
-  });
-};
+export const trackLeadStatusChanged = (from: string, to: string) =>
+  trackEvent('Lead Status Changed', { from, to });
 
-export const trackLeadDeleted = () => {
-  track('Lead Deleted');
-};
+export const trackLeadDeleted = () => trackEvent('Lead Deleted');
 
-// Quote Events
-export const trackQuoteCreated = (value: number, currency: string, itemCount: number) => {
-  track('Quote Created', {
-    value,
-    currency,
-    itemCount,
-  });
-};
+// Quotes
+export const trackQuoteCreated = (value: number, currency: string, itemCount: number) =>
+  trackEvent('Quote Created', { value, currency, itemCount });
 
-export const trackQuoteSent = (value: number) => {
-  track('Quote Sent', { value });
-};
+export const trackQuoteSent = (value: number) => trackEvent('Quote Sent', { value });
+export const trackQuoteAccepted = (value: number) => trackEvent('Quote Accepted', { value });
+export const trackQuoteDeclined = () => trackEvent('Quote Declined');
+export const trackQuoteViewed = () => trackEvent('Quote Viewed');
+export const trackQuoteDuplicated = () => trackEvent('Quote Duplicated');
+export const trackQuotePDFDownloaded = () => trackEvent('Quote PDF Downloaded');
 
-export const trackQuoteAccepted = (value: number) => {
-  track('Quote Accepted', { value });
-};
+// Templates
+export const trackTemplateCreated = () => trackEvent('Template Created');
+export const trackTemplateApplied = () => trackEvent('Template Applied');
 
-export const trackQuoteDeclined = () => {
-  track('Quote Declined');
-};
+// Portal
+export const trackPortalLinkShared = () => trackEvent('Portal Link Shared');
+export const trackPortalViewed = () => trackEvent('Portal Viewed');
+export const trackPortalLinkEmailSent = () => trackEvent('Portal Link Email Sent');
 
-export const trackQuoteViewed = () => {
-  track('Quote Viewed');
-};
+// Files
+export const trackFileUploaded = (fileType: string, sizeKB: number) =>
+  trackEvent('File Uploaded', { fileType, sizeKB: Math.round(sizeKB) });
 
-export const trackQuoteDuplicated = () => {
-  track('Quote Duplicated');
-};
+export const trackFileDownloaded = () => trackEvent('File Downloaded');
+export const trackFileDeleted = () => trackEvent('File Deleted');
 
-export const trackQuotePDFDownloaded = () => {
-  track('Quote PDF Downloaded');
-};
+// Email
+export const trackEmailSent = () => trackEvent('Email Sent');
 
-// Template Events
-export const trackTemplateCreated = () => {
-  track('Template Created');
-};
+// Feature Usage
+export const trackFeatureUsed = (feature: string) => trackEvent('Feature Used', { feature });
+export const trackViewChanged = (view: string) => trackEvent('View Changed', { view });
 
-export const trackTemplateApplied = () => {
-  track('Template Applied');
-};
+// Calendar
+export const trackCalendarViewed = (viewType: string) =>
+  trackEvent('Calendar Viewed', { viewType });
 
-// Portal Events
-export const trackPortalLinkShared = () => {
-  track('Portal Link Shared');
-};
+// Settings
+export const trackSettingsUpdated = (settingType: string) =>
+  trackEvent('Settings Updated', { settingType });
 
-export const trackPortalViewed = () => {
-  track('Portal Viewed');
-};
+// Inquiry
+export const trackInquirySubmitted = (serviceType: string) =>
+  trackEvent('Inquiry Submitted', { serviceType });
 
-export const trackPortalLinkEmailSent = () => {
-  track('Portal Link Email Sent');
-};
-
-// File Events
-export const trackFileUploaded = (fileType: string, sizeKB: number) => {
-  track('File Uploaded', {
-    fileType,
-    sizeKB: Math.round(sizeKB),
-  });
-};
-
-export const trackFileDownloaded = () => {
-  track('File Downloaded');
-};
-
-export const trackFileDeleted = () => {
-  track('File Deleted');
-};
-
-// Email Events
-export const trackEmailSent = () => {
-  track('Email Sent');
-};
-
-// Feature Usage Events
-export const trackFeatureUsed = (feature: string) => {
-  track('Feature Used', { feature });
-};
-
-export const trackViewChanged = (view: string) => {
-  track('View Changed', { view });
-};
-
-// Calendar Events
-export const trackCalendarViewed = (viewType: string) => {
-  track('Calendar Viewed', { viewType });
-};
-
-// Settings Events
-export const trackSettingsUpdated = (settingType: string) => {
-  track('Settings Updated', { settingType });
-};
-
-// Inquiry Form Events
-export const trackInquirySubmitted = (serviceType: string) => {
-  track('Inquiry Submitted', { serviceType });
+// =====================
+// Convenience object (new-style API)
+// =====================
+export const analytics = {
+  signupCompleted: () => trackEvent('signup_completed'),
+  loginCompleted: () => trackEvent('login_completed'),
+  leadCreated: (serviceType: string) => trackEvent('lead_created', { serviceType }),
+  leadConverted: (leadId: string) => trackEvent('lead_converted', { leadId }),
+  quoteCreated: (amount: number) => trackEvent('quote_created', { amount }),
+  quoteAccepted: (amount: number) => trackEvent('quote_accepted', { amount }),
+  contractSigned: (contractId: string) => trackEvent('contract_signed', { contractId }),
+  calendarConnected: () => trackEvent('calendar_connected'),
+  meetingBooked: (meetingType: string) => trackEvent('meeting_booked', { meetingType }),
 };

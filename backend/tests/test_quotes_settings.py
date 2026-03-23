@@ -7,7 +7,7 @@ import requests
 import os
 from datetime import datetime, timedelta
 
-BASE_URL = os.environ.get('VITE_API_URL', 'https://raleway-design-check.preview.emergentagent.com/api')
+BASE_URL = os.environ.get('VITE_API_URL', 'https://hardened-crm-2.preview.emergentagent.com/api')
 
 # Test credentials
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

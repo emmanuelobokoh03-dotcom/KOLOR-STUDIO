@@ -193,7 +193,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
           <div className="relative">
             <div className="absolute -inset-4 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10" />
             <img
-              src="/screenshots/dashboard-overview.png"
+              src="/screenshots/dashboard-overview.webp"
               alt="KOLOR Studio Dashboard"
               className="relative rounded-xl shadow-2xl shadow-black/30 border border-white/10 w-full"
               data-testid="hero-image"
@@ -290,10 +290,10 @@ function FeaturesSection() {
   const { ref, visible } = useReveal()
   const features = [
     { icon: Users, title: 'Smart Lead Management', desc: 'Never lose a potential client. Every lead gets a timeline, status tracking, and automated follow-up reminders.', img: null },
-    { icon: Sparkle, title: 'Lightning-Fast Quotes', desc: 'Custom-branded quotes with line items, totals, and validity dates. Send them in seconds, not half an hour.', img: '/screenshots/quote-builder.png' },
+    { icon: Sparkle, title: 'Lightning-Fast Quotes', desc: 'Custom-branded quotes with line items, totals, and validity dates. Send them in seconds, not half an hour.', img: '/screenshots/quote-builder.webp' },
     { icon: PhoneCall, title: 'Discovery Call Workflow', desc: 'Book discovery calls to understand scope before quoting. 78% higher acceptance rates when you qualify first.', img: null },
     { icon: CalendarBlank, title: 'Google Calendar Sync', desc: 'Two-way sync with Google Calendar. Your availability updates in real-time. No more scheduling conflicts.', img: null },
-    { icon: Globe, title: 'Client Portal', desc: 'Beautiful portal where clients review quotes, sign contracts, upload files, and track progress — all branded to you.', img: '/screenshots/client-portal.png' },
+    { icon: Globe, title: 'Client Portal', desc: 'Beautiful portal where clients review quotes, sign contracts, upload files, and track progress — all branded to you.', img: '/screenshots/client-portal.webp' },
     { icon: PencilSimple, title: 'E-Signatures Built In', desc: 'Industry-specific contracts with built-in e-signature. No more printing, scanning, or chasing signatures.', img: null },
   ]
 

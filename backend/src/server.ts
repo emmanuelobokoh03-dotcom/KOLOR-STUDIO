@@ -2,9 +2,40 @@ import dotenv from 'dotenv';
 // Load environment variables BEFORE any other imports that read process.env
 dotenv.config();
 
+// =====================
+// SECRET VALIDATION — fail fast if critical env vars are missing
+// =====================
+const REQUIRED_SECRETS = ['JWT_SECRET', 'DATABASE_URL', 'FRONTEND_URL'];
+
+(function validateSecrets() {
+  const missing = REQUIRED_SECRETS.filter(s => !process.env[s]);
+  if (missing.length > 0) {
+    console.error(`[STARTUP] ❌ Missing required secrets: ${missing.join(', ')}`);
+    console.error('[STARTUP] Set them in .env (dev) or Railway dashboard (prod) and restart.');
+    process.exit(1);
+  }
+  console.log('[STARTUP] ✅ All required secrets present');
+})();
+
+import * as Sentry from '@sentry/node';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
+
+// =====================
+// SENTRY — back-end error tracking (disabled when DSN is absent)
+// =====================
+const SENTRY_DSN = process.env.SENTRY_DSN;
+if (SENTRY_DSN) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    environment: process.env.NODE_ENV || 'development',
+    tracesSampleRate: 0.2,
+  });
+  console.log('[Sentry] Initialized (backend)');
+}
 import morgan from 'morgan';
 import authRoutes from './routes/auth';
 import leadsRoutes from './routes/leads';
@@ -66,7 +97,37 @@ const PORT = process.env.PORT || 5000;
 app.set('trust proxy', 1);
 
 // =====================
-// MIDDLEWARE
+// SECURITY & PERFORMANCE MIDDLEWARE
+// =====================
+
+// Helmet — security headers (CSP, HSTS, X-Frame, etc.)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com'],
+      fontSrc: ["'self'", 'fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'https:'],
+      scriptSrc: ["'self'", "'unsafe-inline'", 'https://va.vercel-scripts.com'],
+      connectSrc: ["'self'", 'https://va.vercel-scripts.com', process.env.FRONTEND_URL || ''].filter(Boolean),
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Allow cross-origin images (Supabase storage)
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true,
+  },
+}));
+
+// Compression — gzip responses >1KB
+app.use(compression({
+  level: 6,
+  threshold: 1024,
+}));
+
+// =====================
+// CORS
 // =====================
 
 // CORS — environment-specific origin whitelist
@@ -236,6 +297,11 @@ app.use((req: Request, res: Response) => {
     message: `Route ${req.method} ${req.path} not found`,
   });
 });
+
+// Sentry error handler — must be before the global error handler
+if (SENTRY_DSN) {
+  Sentry.setupExpressErrorHandler(app);
+}
 
 // Global Error Handler
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
