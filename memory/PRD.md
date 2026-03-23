@@ -100,6 +100,13 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - `/mnt/skills/user/kolor-studio/SKILL.md` — Comprehensive dev reference (142 lines)
 - Covers: auth, design system, API patterns, business logic, database, common gotchas
 
+### Production Hardening (Mar 23, 2026) — VERIFIED
+- **Security:** `validateSecrets()` startup check — server exits if JWT_SECRET, DATABASE_URL, or FRONTEND_URL missing. `helmet()` middleware with CSP (allows plausible.io, fonts.googleapis.com), HSTS (1yr + preload), X-Frame-Options, X-Content-Type-Options.
+- **Performance:** `compression()` middleware (gzip, level 6, threshold 1KB). 8 composite DB indexes on activities (leadId+createdAt, userId+createdAt), leads (assignedToId+status/pipelineStatus/createdAt), quotes (leadId+status, createdById+status/createdAt). Landing page screenshots converted to WebP (50-75% smaller).
+- **Monitoring:** Plausible analytics script tag in index.html (data-domain="kolor-studio.vercel.app"). `analytics.ts` rewritten to use `window.plausible()` instead of Vercel Analytics. Sentry init stubs in main.tsx (frontend) and server.ts (backend) — reads from env vars, gracefully disabled when DSN absent.
+- **Cleanup:** Deleted obsolete LandingPage.tsx, removed Vercel Analytics from App.tsx, cleaned up old PNG screenshots.
+- Testing: 100% pass rate — Backend 14/14, Frontend 100% (iteration_90)
+
 ## Prioritized Backlog
 
 ### P0 — Done
@@ -111,11 +118,13 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [x] HTTP-Only Cookie Auth Migration (DONE — Mar 22, 2026)
 - [x] Raleway Font Update (DONE — Mar 22, 2026)
 - [x] Remember Me Toggle (DONE — Mar 22, 2026)
+- [x] Landing Page V2 (DONE — Mar 23, 2026)
+- [x] Production Hardening: Security + Performance + Monitoring (DONE — Mar 23, 2026)
 
 ### P1
-- [ ] Mobile responsiveness polish
-- [ ] Landing page full-bleed background verification
-- [ ] Landing page redesign (if user requests)
+- [ ] Mobile responsiveness polish (landing page + app on various sizes)
+- [ ] Launch prep — configure production domains, DNS records (SPF/DKIM) for Resend email
+- [ ] Push & Deploy to production
 
 ### P2 (Future)
 - [ ] Domain & launch prep (SPF/DKIM for Resend production email)
@@ -131,6 +140,8 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_85: Comprehensive Update - Bug Fixes + Discovery Call + Liquid Glass (backend 15/15 100%, frontend 100%)
 - iteration_87: HTTP-Only Cookie Auth Migration + Raleway Font (backend 10/10 100%, frontend 7/7 100%)
 - iteration_88: Remember Me Toggle (backend 9/9 100%, frontend 7/7 100%)
+- iteration_89: Landing Page V2 (frontend 18/18 100%)
+- iteration_90: Production Hardening — Security + Performance + Monitoring (backend 14/14 100%, frontend 100%)
 
 ## Test Credentials
 - bookingtest@test.com / password123
