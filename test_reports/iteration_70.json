@@ -48,7 +48,7 @@
     "frontend": "100% (All UI elements verified)"
   },
   "test_credentials": {
-    "preview_url": "https://raleway-design-check.preview.emergentagent.com",
+    "preview_url": "https://hardened-crm-2.preview.emergentagent.com",
     "test_user": "emailtest@test.com / password123",
     "owner_email": "emmanuelobokoh03@gmail.com"
   },

@@ -11,7 +11,7 @@ import pytest
 import requests
 import json
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://raleway-design-check.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://hardened-crm-2.preview.emergentagent.com').rstrip('/')
 
 # Test credentials
 TEST_EMAIL = "testuser@test.com"

@@ -44,7 +44,7 @@
     "frontend": "100% (All inquiry form checks passed)"
   },
   "test_credentials": {
-    "preview_url": "https://raleway-design-check.preview.emergentagent.com",
+    "preview_url": "https://hardened-crm-2.preview.emergentagent.com",
     "test_user": "emailtest@test.com / password123",
     "owner_email_for_email_delivery": "emmanuelobokoh03@gmail.com"
   },

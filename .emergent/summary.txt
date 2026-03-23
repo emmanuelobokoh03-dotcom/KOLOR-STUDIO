@@ -1,65 +1,63 @@
 <analysis>**original_problem_statement:**
-The user requested a comprehensive and critical update to the application, involving two main phases:
-1.  **P0: HTTP-Only Cookie Migration:** A critical security enhancement to move authentication from  (vulnerable to XSS) to secure,  cookies. This required a full-stack migration, touching backend auth logic, middleware, and almost every frontend component that performs an authenticated API call.
-2.  **P1: Raleway Font Update:** A design enhancement to change the application's heading font to 'Raleway' for a more professional and elegant appearance.
+The user has requested a final production hardening phase for the application before beta launch. This involves implementing three critical specifications:
+1.  **P0: Secrets Management & Security:** Move all secrets to a secure environment (e.g., Railway), validate their presence on application startup, and add essential security headers using  to protect against common web vulnerabilities (XSS, clickjacking).
+2.  **P1: Performance Basics:** Implement Gzip/Brotli  for API responses, add  to prevent abuse, create composite database indexes in  to speed up common queries, and convert landing page images from PNG to the more efficient WebP format.
+3.  **P1: Monitoring & Error Tracking:** Integrate stubs for Plausible (for privacy-focused analytics) and Sentry (for front-end and back-end error tracking), and confirm the existence of a  endpoint for uptime monitoring via a service like UptimeRobot.
 
-PRODUCT REQUIREMENTS:
--   **Security:** The application must not store JWTs in . All authentication must be handled via , ,  cookies.
--   **Backend:** Must be updated to set cookies on login/signup and read cookies for authenticating subsequent requests. A logout endpoint must clear the cookie.
--   **Frontend:** Must be refactored to remove all  token management and use  for all API calls to automatically send the auth cookie.
--   **Design:** All headings across the application should use the 'Raleway' font, while body text remains 'Instrument Sans'.
+The user has approved proceeding with all three specs, providing clarification that the Sentry/Plausible integration should only be the code structure (reading from environment variables), and that the database migration for performance indexes is safe to run.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The codebase has been significantly refactored to support HTTP-Only cookie authentication.
--   **Backend:**  has been installed. The ,  routes (login, signup, logout, me), and  middleware have been updated to set, clear, and read the  cookie. Backend functionality has been successfully verified via  tests.
--   **Frontend:** The global API request function in  has been updated to use . Login and Signup pages no longer save tokens to . Dozens of  calls have been removed across all components. The font has been updated to 'Raleway' in  and .
--   **Bug Fix:** A critical redirect loop on the login page, caused by an over-eager 401 handler, was identified and fixed.
+The application is a full-stack CRM for creative professionals. A comprehensive, 8-section, conversion-optimized landing page () has just been built and verified. The backend features secure HTTP-Only cookie authentication with a Remember Me option. Rate limiting middleware and a  endpoint are already present in the backend. The Prisma schema has single-field indexes but lacks more performant composite indexes. High-quality PNG screenshots for the landing page exist in .
 
 **Last working item**:
--   Last item agent was working: The agent was attempting to perform the first end-to-end visual verification of the cookie migration and the new font. After fixing a redirect loop, the agent scripted a  to log in and capture the dashboard. This final verification step timed out.
+-   Last item agent was working: The agent was in the middle of implementing the three production hardening specs. It successfully installed backend dependencies (, , ) and converted the landing page PNGs to WebP, reducing their size by 50-75%. It then attempted to apply multiple code changes in parallel, but this was blocked when it tried to create , which already existed.
 -   Status: IN PROGRESS
 -   Agent Testing Done: N
--   Which testing method agent to use? Frontend testing agent
+-   Which testing method agent to use? both
 -   User Testing Done: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Timeout during frontend end-to-end verification (P0)**
-    -   **Attempted fixes:** The agent identified and fixed a redirect loop that was causing the login page to be blank. However, the subsequent attempt to screenshot the dashboard post-login resulted in a timeout.
+-   **Issue 1: File creation conflict for  (P1)**
+    -   **Attempted fixes:** The agent used  without , which failed because  already exists.
     -   **Next debug checklist**:
-        1.  Analyze the console logs from the last failed screenshot () to check for new JavaScript errors.
-        2.  Review the data-fetching  hooks in . Since the global API error handler was changed to *not* redirect on 401, these hooks might be failing silently or not handling auth errors correctly, causing the page to hang.
-        3.  Attempt another screenshot, ensuring the login test credentials (/) are correct and the selectors (, etc.) are accurate for .
-    -   **Why fix this issue and what will be achieved with the fix?**: This is the final step to confirm the critical security migration is successful and the app is usable.
+        1.  Use  with  to replace the contents of  with the new Plausible  utility function as requested in the spec.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a blocker for the Monitoring spec. Fixing it will complete the code setup for custom event tracking with Plausible analytics.
     -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: Y (Screenshot tool has timed out multiple times, though for different root causes).
+    -   **Is recurring issue?**: N
     -   **Should Test frontend/backend/both after fix?**: Frontend
     -   **Blocked on other issue**: None
 
 **In progress Task List**:
--   **Task 1: Complete verification of HTTP-Only Cookie Migration & Raleway Font (P0)**
-    -   **Where to resume**: The code for both features is fully implemented. The task is blocked on successfully verifying the frontend end-to-end flow. Resume by debugging the  timeout.
-    -   **What will be achieved with this?**: A secure, production-ready application with an updated, professional design.
+-   **Task 1: Complete Production Hardening (Security, Performance, Monitoring Specs) (P0)**
+    -   **Where to resume**: Resume after resolving the  file conflict. The agent needs to complete the parallel implementation of all code changes for the three specs.
+    -   **What will be achieved with this?**: The application will be made production-ready. This includes adding security headers, response compression, optimized database indexes, smaller image assets, and the foundational code for analytics and error monitoring.
     -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Should Test frontend/backend/both after fix?**: Both
     -   **Blocked on something**: .
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
-*   **(P1) Mobile Responsiveness Polish:** Conduct a final review of mobile responsiveness across the entire application.
-*   **(P2) Launch Prep:** Prepare for beta launch by configuring production domains and setting up DNS records (SPF/DKIM) for Resend.
+*   **(P1) Mobile Responsiveness Polish:** Conduct a final, detailed review of the new landing page and the rest of the application on various mobile device sizes.
+*   **(P1) Launch Prep:** Configure production domains and set up DNS records (SPF/DKIM) for the Resend email service to ensure high deliverability.
+*   **(P1) Push & Deploy:** Push all recent changes to production.
 
 **Future Tasks:**
 *   Add a meeting booking widget embed code.
-*   Add a smart inbox view that groups all files needing review.
-*   Add a file request feature to request specific files from clients.
+*   Add a Smart Inbox view for files needing review.
+*   Add a File Request feature to request specific files from clients.
 *   Add a Smart Scheduling feature that suggests optimal meeting times.
+*   Add a Visual Sequence Builder.
+*   A/B test landing page hero copy variants.
 
 **Completed work in this session**
--   **HTTP-Only Cookie Migration (Backend & Frontend):** The entire application was migrated from localStorage JWTs to a secure cookie-based authentication system.
--   **Typography Update:** The heading font was successfully changed to 'Raleway' across the application.
--   **Bug Fix (Auth Redirect Loop):** Fixed a critical bug where the application would get stuck in a redirect loop on the login page after the auth migration.
+-   **HTTP-Only Cookie Migration (Verified):** The entire application was migrated from localStorage JWTs to a secure cookie-based authentication system.
+-   **Remember Me Feature (Verified):** Added a checkbox to the login page to allow users to choose between persistent and session-only cookies.
+-   **Typography Update (Verified):** The heading font was successfully changed to 'Raleway' across the application.
+-   **Landing Page Screenshots (Created):** Created mock data via API and used a Playwright script to capture three professional, clean screenshots for the landing page.
+-   **10/10 Landing Page (Verified):** Built a complete 8-section, conversion-optimized landing page with a countdown timer, animated stats, and real screenshots. Verified with 18/18 tests passing.
+-   **Custom Skill File (Created):** Authored a comprehensive development skill file () documenting the app's tech stack, design system, and coding patterns.
 
 **Earlier issues found/mentioned but not fixed**
 -   None.
@@ -68,67 +66,81 @@ The codebase has been significantly refactored to support HTTP-Only cookie authe
 -   None.
 
 **Code Architecture**
-credentials: 'include'
+
 
 **Key Technical Concepts**
--   **HTTP-Only Cookie Authentication:** Migrated the entire authentication flow from  to  cookies to mitigate XSS risks. This involved backend changes to set/read cookies and a full frontend refactor to use .
--   **CORS Configuration:** Updated the backend CORS policy to allow credentials from a specific frontend origin, which is a requirement for cookie-based authentication.
--   **Font Stack Management:** Updated the application-wide font stack using Google Fonts, CSS variables (), and Tailwind's configuration file.
+-   **HTTP-Only Cookie Authentication:** Securely manages user sessions, preventing XSS attacks.
+-   **Playwright Scripting:** Programmatically controlled a headless browser to generate clean, professional screenshots with mock data.
+-   **Conversion-Optimized Page Design:** Built an 8-section landing page following a standard marketing funnel structure (Problem, Solution, Features, etc.).
+-   **(In Progress) Production Hardening:** A set of practices to improve security (), performance (, DB indexing, image optimization), and observability (, ).
 
 **key DB schema**
--   No changes made.
+-   The , , and  models in  will be updated to include composite  fields to improve query performance (e.g., ). A migration must be created for this.
 
 **changes in tech stack**
--   **Backend:** Added .
--   **Frontend:** Added 'Raleway' font to the design system.
+-   **Backend:** , ,  have been installed.
+-   **Frontend:**  has been installed.
+-   **Dev Tools:**  was installed for image conversion.
 
 **All files of reference**
-*    (Core server setup)
-*    (Auth logic)
-*    (Login/logout endpoints)
-*    (Central frontend API utility)
-*    (Login UI component)
-*    (Primary authenticated page)
-*    (Global CSS and font definitions)
+*   **Primary Task Files:**
+    *    (for security/performance middleware)
+    *    (for database indexes)
+    *    (to update image paths to )
+    *    (for Plausible utility)
+    *    (for Sentry initialization)
+*   **User Instructions:** The user message containing the three specs for Security, Performance, and Monitoring.
 
 **Areas that need refactoring**:
--   None.
+-   The old landing page at  is now obsolete and can be deleted to clean up the codebase.
 
 **key api endpoints**
--   : Sets  HTTP-Only cookie.
--   : Sets  HTTP-Only cookie.
--   : Clears  cookie.
--   All other authenticated endpoints now use the cookie instead of the  header.
+-   : Exists and will be used for uptime monitoring.
+-   All  routes will be protected by the new  and  middleware.
+-    and  have strict rate-limiting policies that should be verified.
 
 **Critical Info for New Agent**
--   Your main goal is to successfully verify the end-to-end flow of the HTTP-Only cookie migration. The implementation work is done, but the final test is failing.
--   The last action, a screenshot of the dashboard after login, timed out. This likely means the dashboard page is hanging or not loading correctly.
--   Start by debugging . Check its data-fetching logic and how it handles API errors, as the global error handler was recently changed.
--   Do not attempt to change the cookie implementation itself; the backend is confirmed to be working correctly. The issue lies within the frontend's authenticated state handling post-login.
--   Once login is verified, also confirm that the 'Raleway' font is correctly applied to headings on authenticated pages like the dashboard.
+-   Your immediate task is to complete the **Production Hardening** phase by implementing the three specs provided by the user (Security, Performance, Monitoring).
+-   **Start by resolving the  file creation conflict.** Use  with  to place the Plausible analytics utility.
+-   After resolving the blocker, proceed with the remaining changes in parallel:
+    1.  **Security:** Add  and  middleware to .
+    2.  **Performance:** Add  middleware to . Add the composite indexes to  and then **create a new migration** using . Update the image paths in  from  to .
+    3.  **Monitoring:** Add the Plausible script tag to . Add the Sentry initialization code to  and .
+-   **IMPORTANT:** Do not ask for a Sentry DSN. The implementation should read from  and be disabled if the variable is not set. The database migration is approved and **must be run**.
 
 **documents and test reports created in this job**
--   None in this session.
+*   
+*   
+*   
+*   
+*   
+*   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  User requested to implement a critical P0 migration to HTTP-Only cookies for security and a P1 font update to 'Raleway'. (IN PROGRESS)
+-   User provided specs for a new 10/10 landing page. (Completed)
+-   Agent successfully built and verified the new landing page, fixing several icon import issues along the way. (Completed)
+-   User provided three new production hardening specs for Security, Performance, and Monitoring. (In Progress)
+-   User approved proceeding with all three specs and provided clarifications for Sentry, Plausible, and the DB migration. (Pending Implementation)
 
 **Project Health Check:**
--   **Broken**: The frontend authenticated session is not functioning. Users cannot log in and access the dashboard, blocking all core application functionality.
--   **Mocked**: None
+-   **Broken**: None.
+-   **Mocked**: None.
 
 **3rd Party Integrations**
--   No new integrations. The core change was to the application's own authentication mechanism.
+-   **Resend**: For transactional emails.
+-   **Google Calendar**: For scheduling and availability sync.
+-   **Plausible**: To be added for analytics (code structure only).
+-   **Sentry**: To be added for error tracking (code structure only).
+-   **UptimeRobot**: To be configured externally to monitor the existing  endpoint.
 
 **Testing status**
--   Testing agent used after significant changes: NO
+-   Testing agent used after significant changes: YES (after landing page build)
 -   Troubleshoot agent used after agent stuck in loop: NO
 -   Test files created: None
--   Known regressions: The entire login and authenticated user experience is currently not working as a result of the incomplete migration verification.
+-   Known regressions: None
 
 **Credentials to test flow:**
 -   email: , password: 
 
 **What agent forgot to execute**
--   The user-provided spec suggested creating a new utility file at . The agent modified the existing  instead. This is a minor architectural deviation that does not need to be addressed.
--   The full testing checklist provided by the user for the cookie migration could not be completed due to the blocking timeout issue.</analysis>
+-   The agent did not use  when attempting to create , leading to the current (minor) blocker.</analysis>

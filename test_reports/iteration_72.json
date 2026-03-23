@@ -51,7 +51,7 @@
   "test_credentials": {
     "email": "testuser@test.com",
     "password": "Test1234!",
-    "app_url": "https://raleway-design-check.preview.emergentagent.com"
+    "app_url": "https://hardened-crm-2.preview.emergentagent.com"
   },
   "seed_data_creation": "Created test lead 'Final UI Test - Brand Photoshoot' with Commission type for testing",
   "retest_needed": false,
