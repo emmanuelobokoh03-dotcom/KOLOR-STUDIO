@@ -152,6 +152,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_89: Landing Page V2 (frontend 18/18 100%)
 - iteration_90: Production Hardening — Security + Performance + Monitoring (backend 14/14 100%, frontend 100%)
 - iteration_91: Design System v3.0 — Inter Font + Token Consolidation (all 13 tests passed 100%)
+- iteration_92: bg-white → bg-surface-base Migration (all 12 frontend tests passed 100%)
 
 ## Test Credentials
 - bookingtest@test.com / password123
