@@ -150,7 +150,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-xs font-medium text-white/90 mb-6">
             <Sparkle weight="fill" className="w-3.5 h-3.5 text-amber-300" /> Now in Beta — Free for Early Adopters
           </div>
-          <h1 className="font-heading font-extrabold text-4xl sm:text-5xl lg:text-[3.4rem] leading-[1.1] tracking-tight mb-6" data-testid="hero-headline">
+          <h1 className="font-heading font-extrabold text-4xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tight mb-6" data-testid="hero-headline">
             Stop Losing Clients to&nbsp;Messy&nbsp;Workflows
           </h1>
           <p className="text-lg sm:text-xl text-white/80 leading-relaxed mb-8 max-w-xl">
@@ -160,7 +160,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
           <div className="flex flex-wrap gap-3 mb-10">
             <button
               onClick={onCta}
-              className="bg-white text-brand-700 font-bold px-7 py-3.5 rounded-xl text-base hover:bg-brand-50 transition-all shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/15 hover:-translate-y-0.5"
+              className="bg-surface-base text-brand-700 font-bold px-7 py-3.5 rounded-xl text-base hover:bg-brand-50 transition-all shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/15 hover:-translate-y-0.5"
               data-testid="hero-cta-primary"
             >
               Start Free Trial <ArrowRight weight="bold" className="w-4 h-4 inline ml-1" />
@@ -218,7 +218,7 @@ function ProblemSection() {
   ]
 
   return (
-    <section className="py-20 lg:py-28 bg-white" data-testid="problem-section">
+    <section className="py-20 lg:py-28 bg-surface-base" data-testid="problem-section">
       <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <h2 className="font-heading font-bold text-3xl sm:text-4xl text-text-primary mb-12">Sound Familiar?</h2>
 
@@ -270,7 +270,7 @@ function SolutionSection() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {steps.map((s, i) => (
-            <div key={i} className="relative bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+            <div key={i} className="relative bg-surface-base rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
               <div className="absolute top-6 right-6 text-5xl font-heading font-extrabold text-brand-100 select-none">{i + 1}</div>
               <div className="w-14 h-14 rounded-2xl bg-brand-50 flex items-center justify-center mb-5 group-hover:bg-brand-100 transition-colors">
                 <s.icon weight="duotone" className="w-7 h-7 text-brand-600" />
@@ -298,7 +298,7 @@ function FeaturesSection() {
   ]
 
   return (
-    <section className="py-20 lg:py-28 bg-white" data-testid="features-section">
+    <section className="py-20 lg:py-28 bg-surface-base" data-testid="features-section">
       <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="text-center mb-16">
           <h2 className="font-heading font-bold text-3xl sm:text-4xl text-text-primary mb-4">
@@ -390,7 +390,7 @@ function TestimonialsSection() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+            <div key={i} className="bg-surface-base rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col">
               <Stars />
               <p className="text-text-secondary text-sm leading-relaxed mt-4 flex-1">"{t.quote}"</p>
               <div className="flex items-center gap-3 mt-5 pt-4 border-t border-gray-100">
@@ -420,7 +420,7 @@ function StatsSection() {
   ]
 
   return (
-    <section className="py-20 lg:py-28 bg-white" data-testid="stats-section">
+    <section className="py-20 lg:py-28 bg-surface-base" data-testid="stats-section">
       <div ref={ref} className={`max-w-5xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((s, i) => (
@@ -479,7 +479,7 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
 
           <button
             onClick={onCta}
-            className="bg-white text-brand-700 font-bold px-8 py-4 rounded-xl text-base hover:bg-brand-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 w-full sm:w-auto"
+            className="bg-surface-base text-brand-700 font-bold px-8 py-4 rounded-xl text-base hover:bg-brand-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 w-full sm:w-auto"
             data-testid="urgency-cta"
           >
             Claim Your Free Account <ArrowRight weight="bold" className="w-4 h-4 inline ml-1" />
@@ -510,7 +510,7 @@ function FinalCTA({ onCta }: { onCta: () => void }) {
   ]
 
   return (
-    <section className="py-20 lg:py-28 bg-white" data-testid="final-cta-section">
+    <section className="py-20 lg:py-28 bg-surface-base" data-testid="final-cta-section">
       <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <h2 className="font-heading font-bold text-3xl sm:text-4xl text-text-primary mb-4">
           Ready to Stop Losing Time and Money on&nbsp;Admin?

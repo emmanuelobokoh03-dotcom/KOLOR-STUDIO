@@ -392,7 +392,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
 
       {/* Navigation */}
       {viewType !== 'agenda' && (
-        <div className="flex items-center justify-between bg-white rounded-xl p-4 border border-light-200">
+        <div className="flex items-center justify-between bg-surface-base rounded-xl p-4 border border-light-200">
           <button
             onClick={goToPrev}
             className="p-2 hover:bg-light-100 rounded-lg transition text-text-secondary hover:text-text-primary"
@@ -443,7 +443,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
       ) : hasNoBookings ? (
         /* Empty State */
-        <div className="bg-white rounded-xl border border-light-200 p-6 md:p-12">
+        <div className="bg-surface-base rounded-xl border border-light-200 p-6 md:p-12">
           <div className="flex flex-col items-center justify-center py-8 md:py-12 px-6 text-center" data-testid="bookings-empty-state">
             <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4C5;</div>
             <h3 className="text-xl md:text-2xl font-semibold text-text-primary mb-2 md:mb-3">No bookings scheduled</h3>
@@ -457,7 +457,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
       ) : viewType === 'month' ? (
         /* Month View */
-        <div className="bg-white rounded-xl border border-light-200 overflow-hidden">
+        <div className="bg-surface-base rounded-xl border border-light-200 overflow-hidden">
           {/* Day Headers */}
           <div className="grid grid-cols-7 border-b border-light-200">
             {DAYS.map(day => (
@@ -515,7 +515,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
       ) : viewType === 'week' ? (
         /* Week View */
-        <div className="bg-white rounded-xl border border-light-200 overflow-hidden">
+        <div className="bg-surface-base rounded-xl border border-light-200 overflow-hidden">
           <div className="grid grid-cols-7 divide-x divide-light-200">
             {weekDays.map((day, index) => (
               <div key={index} className="min-h-[300px] sm:min-h-[400px]">
@@ -572,7 +572,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
       ) : viewType === 'day' ? (
         /* Day View */
-        <div className="bg-white rounded-xl border border-light-200 p-4 sm:p-6">
+        <div className="bg-surface-base rounded-xl border border-light-200 p-4 sm:p-6">
           {dayEvents.length === 0 ? (
             <div className="text-center py-12">
               <CalendarIcon weight="duotone" className="w-12 h-12 text-gray-600 mx-auto mb-4" />
@@ -614,7 +614,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
       ) : (
         /* Agenda View */
-        <div className="bg-white rounded-xl border border-light-200 overflow-hidden">
+        <div className="bg-surface-base rounded-xl border border-light-200 overflow-hidden">
           <div className="p-4 border-b border-light-200">
             <h3 className="text-lg font-semibold text-text-primary">Upcoming Events</h3>
             <p className="text-sm text-text-secondary">Next 30 days</p>

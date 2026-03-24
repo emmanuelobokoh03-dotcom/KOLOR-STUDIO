@@ -184,7 +184,7 @@ export default function PublicBookingPage() {
   if (error && !userInfo) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-pink-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center max-w-md">
+        <div className="bg-surface-base rounded-2xl shadow-lg p-8 text-center max-w-md">
           <CalendarBlank className="w-12 h-12 text-red-400 mx-auto mb-4" />
           <h1 className="text-xl font-bold text-text-primary mb-2">Booking Unavailable</h1>
           <p className="text-text-secondary">{error}</p>
@@ -246,7 +246,7 @@ export default function PublicBookingPage() {
             <p className="text-sm text-text-secondary mb-6">Select the type of meeting you'd like to schedule.</p>
 
             {meetingTypes.length === 0 ? (
-              <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+              <div className="bg-surface-base rounded-xl shadow-sm p-8 text-center">
                 <CalendarBlank className="w-10 h-10 text-text-secondary mx-auto mb-3" />
                 <p className="text-text-secondary">No meeting types available at the moment.</p>
               </div>
@@ -256,7 +256,7 @@ export default function PublicBookingPage() {
                   <button
                     key={mt.id}
                     onClick={() => { setSelectedType(mt); setStep('select-date') }}
-                    className="bg-white rounded-xl shadow-sm border border-light-200 p-5 text-left hover:shadow-md hover:border-purple-200 transition-all group"
+                    className="bg-surface-base rounded-xl shadow-sm border border-light-200 p-5 text-left hover:shadow-md hover:border-purple-200 transition-all group"
                     data-testid={`select-meeting-type-${mt.id}`}
                   >
                     <div className="flex items-start gap-4">
@@ -303,7 +303,7 @@ export default function PublicBookingPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-light-200 p-5">
+            <div className="bg-surface-base rounded-xl shadow-sm border border-light-200 p-5">
               <div className="flex items-center justify-between mb-4">
                 <button
                   onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1))}
@@ -366,7 +366,7 @@ export default function PublicBookingPage() {
                 <SpinnerGap className="w-6 h-6 animate-spin text-purple-600" />
               </div>
             ) : slots.length === 0 ? (
-              <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+              <div className="bg-surface-base rounded-xl shadow-sm p-8 text-center">
                 <Clock className="w-10 h-10 text-text-secondary mx-auto mb-3" />
                 <p className="text-text-secondary">No available time slots on this day.</p>
                 <button
@@ -391,7 +391,7 @@ export default function PublicBookingPage() {
                       className={`py-3 px-2 rounded-lg text-sm font-medium border transition-all ${
                         selectedTime === time
                           ? 'text-white border-transparent shadow-md'
-                          : 'bg-white border-light-200 text-text-primary hover:border-purple-300 hover:bg-purple-50'
+                          : 'bg-surface-base border-light-200 text-text-primary hover:border-purple-300 hover:bg-purple-50'
                       }`}
                       style={selectedTime === time ? { backgroundColor: primaryColor } : undefined}
                       data-testid={`time-slot-${time}`}
@@ -428,7 +428,7 @@ export default function PublicBookingPage() {
               </div>
             )}
 
-            <div className="bg-white rounded-xl shadow-sm border border-light-200 p-5 space-y-4">
+            <div className="bg-surface-base rounded-xl shadow-sm border border-light-200 p-5 space-y-4">
               <div>
                 <label className="flex items-center gap-1.5 text-sm font-medium text-text-secondary mb-1.5">
                   <User className="w-4 h-4" /> Name *
@@ -506,7 +506,7 @@ export default function PublicBookingPage() {
             <h2 className="text-2xl font-bold text-text-primary mb-2">Meeting Confirmed!</h2>
             <p className="text-text-secondary mb-6">A confirmation email has been sent to {clientEmail}</p>
 
-            <div className="bg-white rounded-xl shadow-sm border border-light-200 p-6 max-w-sm mx-auto text-left">
+            <div className="bg-surface-base rounded-xl shadow-sm border border-light-200 p-6 max-w-sm mx-auto text-left">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-1 h-8 rounded-full" style={{ backgroundColor: selectedType.color }} />

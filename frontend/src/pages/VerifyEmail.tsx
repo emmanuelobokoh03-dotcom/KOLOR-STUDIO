@@ -31,7 +31,7 @@ export default function VerifyEmail() {
   }, [token, navigate])
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-6" data-testid="verify-email-page">
+    <div className="min-h-screen bg-surface-base flex items-center justify-center p-6" data-testid="verify-email-page">
       <div className="max-w-md w-full text-center">
         {status === 'loading' && (
           <>

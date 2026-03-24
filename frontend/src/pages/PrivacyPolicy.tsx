@@ -5,7 +5,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-light-50 text-text-secondary">
       {/* Header */}
-      <header className="bg-white border-b border-light-200 sticky top-0 z-10">
+      <header className="bg-surface-base border-b border-light-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-purple-600 hover:text-purple-600 transition">
             <ArrowLeft className="w-5 h-5" />
@@ -47,7 +47,7 @@ export default function PrivacyPolicy() {
           </h2>
 
           <div className="space-y-6">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Account Information</h3>
               <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
@@ -65,7 +65,7 @@ export default function PrivacyPolicy() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Lead & Client Data</h3>
               <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
@@ -87,7 +87,7 @@ export default function PrivacyPolicy() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Files & Documents</h3>
               <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Usage Data</h3>
               <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
@@ -123,7 +123,7 @@ export default function PrivacyPolicy() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Cookies</h3>
               <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
@@ -147,7 +147,7 @@ export default function PrivacyPolicy() {
           </h2>
 
           <div className="space-y-6">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">To Provide Services</h3>
               <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
@@ -173,7 +173,7 @@ export default function PrivacyPolicy() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">To Improve Our Product</h3>
               <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
@@ -195,7 +195,7 @@ export default function PrivacyPolicy() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Communications</h3>
               <ul className="space-y-2 text-text-secondary">
                 <li className="flex items-start gap-2">
@@ -223,7 +223,7 @@ export default function PrivacyPolicy() {
           </h2>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Supabase (Database & Storage)</h3>
               <ul className="space-y-1 text-text-secondary text-sm">
                 <li>• Hosts your database</li>
@@ -233,7 +233,7 @@ export default function PrivacyPolicy() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Resend (Email Delivery)</h3>
               <ul className="space-y-1 text-text-secondary text-sm">
                 <li>• Sends quote emails to clients</li>
@@ -242,7 +242,7 @@ export default function PrivacyPolicy() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Vercel (Hosting)</h3>
               <ul className="space-y-1 text-text-secondary text-sm">
                 <li>• Hosts the application</li>
@@ -260,7 +260,7 @@ export default function PrivacyPolicy() {
             Data Security
           </h2>
 
-          <div className="bg-white rounded-xl p-5 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-5 border border-light-200">
             <p className="text-text-secondary mb-4">We protect your data with:</p>
             <ul className="space-y-2 text-text-secondary">
               <li className="flex items-start gap-2">
@@ -294,7 +294,7 @@ export default function PrivacyPolicy() {
             Your Rights
           </h2>
 
-          <div className="bg-white rounded-xl p-5 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-5 border border-light-200">
             <p className="text-text-secondary mb-4">You have the right to:</p>
             <ul className="space-y-2 text-text-secondary">
               <li className="flex items-start gap-2">
@@ -336,13 +336,13 @@ export default function PrivacyPolicy() {
           </h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Active Accounts</h3>
               <p className="text-text-secondary text-sm">
                 We keep your data as long as your account is active
               </p>
             </div>
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Deleted Accounts</h3>
               <ul className="space-y-1 text-text-secondary text-sm">
                 <li>• Data retained for 30 days after deletion</li>
@@ -356,7 +356,7 @@ export default function PrivacyPolicy() {
         {/* Children's Privacy */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4">Children's Privacy</h2>
-          <div className="bg-white rounded-xl p-5 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-5 border border-light-200">
             <p className="text-text-secondary">
               KOLOR STUDIO is not intended for users under 18. We don't knowingly collect data from children.
             </p>
@@ -366,7 +366,7 @@ export default function PrivacyPolicy() {
         {/* International Users */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4">International Users</h2>
-          <div className="bg-white rounded-xl p-5 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-5 border border-light-200">
             <p className="text-text-secondary">
               Your data may be transferred to and processed in the United States. By using KOLOR STUDIO, you consent to this transfer.
             </p>
@@ -376,7 +376,7 @@ export default function PrivacyPolicy() {
         {/* Changes to This Policy */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4">Changes to This Policy</h2>
-          <div className="bg-white rounded-xl p-5 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-5 border border-light-200">
             <p className="text-text-secondary">
               We may update this policy. If we make significant changes, we'll notify you via email 30 days before they take effect.
             </p>

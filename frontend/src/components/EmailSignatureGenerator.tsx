@@ -60,7 +60,7 @@ export default function EmailSignatureGenerator() {
       </div>
 
       {/* Preview */}
-      <div className="bg-white rounded-xl p-5 mb-4" dangerouslySetInnerHTML={{ __html: signatureHTML }} />
+      <div className="bg-surface-base rounded-xl p-5 mb-4" dangerouslySetInnerHTML={{ __html: signatureHTML }} />
 
       {/* Copy Button */}
       <button
@@ -73,7 +73,7 @@ export default function EmailSignatureGenerator() {
       </button>
 
       {/* Instructions */}
-      <div className="mt-4 p-3 bg-white rounded-xl border border-light-200">
+      <div className="mt-4 p-3 bg-surface-base rounded-xl border border-light-200">
         <p className="text-xs font-medium text-text-secondary mb-2">How to add to your email:</p>
         <ol className="text-xs text-text-secondary space-y-1 list-decimal list-inside">
           <li>Click "Copy Signature" above</li>

@@ -125,7 +125,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         <button
           onClick={handleRefresh}
           disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-light-200 rounded-lg text-text-secondary hover:bg-light-100 transition disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-surface-base border border-light-200 rounded-lg text-text-secondary hover:bg-light-100 transition disabled:opacity-50"
           data-testid="refresh-analytics"
         >
           <ArrowsClockwise className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
@@ -150,7 +150,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         </div>
 
         {/* Booked This Month */}
-        <div className="bg-white rounded-xl p-5 border border-light-200" data-testid="card-this-month">
+        <div className="bg-surface-base rounded-xl p-5 border border-light-200" data-testid="card-this-month">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-emerald-50 rounded-lg">
               <CalendarBlank className="w-5 h-5 text-emerald-600" />
@@ -175,7 +175,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         </div>
 
         {/* Year to Date */}
-        <div className="bg-white rounded-xl p-5 border border-light-200" data-testid="card-ytd">
+        <div className="bg-surface-base rounded-xl p-5 border border-light-200" data-testid="card-ytd">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-blue-50 rounded-lg">
               <ChartBar className="w-5 h-5 text-blue-600" />
@@ -191,7 +191,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         </div>
 
         {/* Conversion Rate */}
-        <div className="bg-white rounded-xl p-5 border border-light-200" data-testid="card-conversion">
+        <div className="bg-surface-base rounded-xl p-5 border border-light-200" data-testid="card-conversion">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-amber-50 rounded-lg">
               <Crosshair className="w-5 h-5 text-amber-700" />
@@ -249,7 +249,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       </div>
 
       {/* Monthly Revenue Trend Chart */}
-      <div className="bg-white rounded-xl p-6 border border-light-200">
+      <div className="bg-surface-base rounded-xl p-6 border border-light-200">
         <h3 className="text-lg font-semibold text-text-primary mb-4">Revenue Trend</h3>
         {monthlyTrend.length > 0 ? (
           <div className="h-[300px]">
@@ -299,7 +299,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
       {/* Bottom Section: Lead Sources & Pipeline */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Lead Source Performance */}
-        <div className="bg-white rounded-xl p-6 border border-light-200">
+        <div className="bg-surface-base rounded-xl p-6 border border-light-200">
           <h3 className="text-lg font-semibold text-text-primary mb-4">Lead Source Performance</h3>
           {leadSources.length > 0 ? (
             <div className="space-y-3">
@@ -335,7 +335,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         </div>
 
         {/* Pipeline by Stage */}
-        <div className="bg-white rounded-xl p-6 border border-light-200">
+        <div className="bg-surface-base rounded-xl p-6 border border-light-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-text-primary">Pipeline by Stage</h3>
             {onFilterByStatus && (

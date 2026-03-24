@@ -283,7 +283,7 @@ export default function BookingModal({
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" role="presentation" onClick={onClose}>
-      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
+      <div ref={modalRef} className="bg-surface-base rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-light-200">
           <div className="flex items-center gap-3">
@@ -335,19 +335,19 @@ export default function BookingModal({
               <div className="relative">
                 <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
                 {loadingLeads ? (
-                  <div className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-secondary text-sm flex items-center gap-2">
+                  <div className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-secondary text-sm flex items-center gap-2">
                     <SpinnerGap className="w-4 h-4 animate-spin" />
                     Loading leads...
                   </div>
                 ) : availableLeads.length === 0 ? (
-                  <div className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-secondary text-sm">
+                  <div className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-secondary text-sm">
                     No leads available. Create a lead first, then book it.
                   </div>
                 ) : (
                   <select
                     value={selectedLeadId}
                     onChange={(e) => setSelectedLeadId(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary appearance-none cursor-pointer"
+                    className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary appearance-none cursor-pointer"
                     data-testid="booking-lead-select"
                   >
                     <option value="">Choose a lead...</option>
@@ -375,7 +375,7 @@ export default function BookingModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Wedding Photography Shoot"
-              className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+              className="w-full px-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
               data-testid="booking-title-input"
             />
           </div>
@@ -387,7 +387,7 @@ export default function BookingModal({
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+              className="w-full px-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
               data-testid="booking-date-input"
             />
           </div>
@@ -417,7 +417,7 @@ export default function BookingModal({
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                    className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                     data-testid="booking-start-time"
                   />
                 </div>
@@ -430,7 +430,7 @@ export default function BookingModal({
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                    className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                     data-testid="booking-end-time"
                   />
                 </div>
@@ -455,7 +455,7 @@ export default function BookingModal({
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g., Studio A, 123 Main St"
-                className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                 data-testid="booking-location-input"
               />
             </div>
@@ -471,7 +471,7 @@ export default function BookingModal({
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any additional details..."
                 rows={3}
-                className="w-full pl-9 pr-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none"
+                className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none"
                 data-testid="booking-notes-input"
               />
             </div>

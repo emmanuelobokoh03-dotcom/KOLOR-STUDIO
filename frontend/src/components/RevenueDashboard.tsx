@@ -76,7 +76,7 @@ export default function RevenueDashboard() {
         {/* Stat Cards */}
         <div className="grid grid-cols-2 gap-3">
           {/* This Month */}
-          <div className="bg-white rounded-xl p-3 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-3 border border-light-200">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">This Month</span>
               {stats.monthOverMonth !== 0 && (
@@ -91,7 +91,7 @@ export default function RevenueDashboard() {
           </div>
 
           {/* YTD */}
-          <div className="bg-white rounded-xl p-3 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-3 border border-light-200">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">Year to Date</span>
               <CalendarBlank className="w-3 h-3 text-text-tertiary" />
@@ -101,7 +101,7 @@ export default function RevenueDashboard() {
           </div>
 
           {/* Expected */}
-          <div className="bg-white rounded-xl p-3 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-3 border border-light-200">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">Pipeline</span>
               <ArrowUpRight className="w-3 h-3 text-text-tertiary" />
@@ -111,7 +111,7 @@ export default function RevenueDashboard() {
           </div>
 
           {/* Goal Progress */}
-          <div className="bg-white rounded-xl p-3 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-3 border border-light-200">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">Goal</span>
               <Crosshair className="w-3 h-3 text-text-tertiary" />
@@ -127,7 +127,7 @@ export default function RevenueDashboard() {
         </div>
 
         {/* Monthly Trend Chart */}
-        <div className="bg-white rounded-xl p-3 border border-light-200">
+        <div className="bg-surface-base rounded-xl p-3 border border-light-200">
           <p className="text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-3">Monthly Revenue (12 months)</p>
           <div className="h-[120px]" data-testid="revenue-chart">
             <ResponsiveContainer width="100%" height="100%">

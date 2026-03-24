@@ -75,7 +75,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
     return (
       <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
         <div 
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-light-200 p-8 text-center"
+          className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-md border border-light-200 p-8 text-center"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-700/30">
@@ -99,7 +99,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose} role="presentation">
       <div 
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
+        className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
         onClick={(e) => e.stopPropagation()}
         data-testid="feedback-modal"
         role="dialog"

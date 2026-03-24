@@ -128,7 +128,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6" data-testid="client-file-upload">
+    <div className="bg-surface-base rounded-2xl shadow-lg border border-gray-100 p-6" data-testid="client-file-upload">
       <div className="flex items-center gap-3 mb-5">
         <div className="w-10 h-10 bg-brand-primary/10 rounded-xl flex items-center justify-center">
           <UploadSimple weight="bold" className="w-5 h-5 text-brand-primary" />
@@ -230,7 +230,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Add context or notes about these files..."
                   rows={2}
-                  className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm resize-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-colors"
+                  className="w-full px-3 py-2.5 bg-surface-base border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm resize-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-colors"
                   data-testid="file-message-input"
                 />
                 <p className="text-xs text-text-tertiary mt-1">This message will be visible to the studio</p>

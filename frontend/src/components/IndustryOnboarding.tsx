@@ -130,7 +130,7 @@ export default function IndustryOnboarding() {
                 className={`relative p-4 rounded-2xl border-2 text-left transition-all duration-200 group ${
                   isSelected
                     ? 'border-brand-primary bg-purple-50 scale-[1.02] shadow-lg shadow-brand-primary-dark/20'
-                    : 'border-light-200 bg-white hover:border-gray-600 hover:bg-light-100'
+                    : 'border-light-200 bg-surface-base hover:border-gray-600 hover:bg-light-100'
                 }`}
               >
                 <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-3 ${

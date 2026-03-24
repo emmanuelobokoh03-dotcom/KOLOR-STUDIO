@@ -120,7 +120,7 @@ export default function PublicPortfolio() {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-surface-base rounded-full flex items-center justify-center mx-auto mb-4">
             <X className="w-8 h-8 text-text-tertiary" />
           </div>
           <h1 className="text-xl font-bold text-text-primary mb-2">Portfolio Not Found</h1>
@@ -174,7 +174,7 @@ export default function PublicPortfolio() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                   activeCategory === 'ALL'
                     ? 'bg-brand-primary text-white'
-                    : 'bg-white text-text-secondary hover:bg-light-100'
+                    : 'bg-surface-base text-text-secondary hover:bg-light-100'
                 }`}
               >
                 All
@@ -188,7 +188,7 @@ export default function PublicPortfolio() {
                   className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                     activeCategory === cat
                       ? 'bg-brand-primary text-white'
-                      : 'bg-white text-text-secondary hover:bg-light-100'
+                      : 'bg-surface-base text-text-secondary hover:bg-light-100'
                   }`}
                 >
                   {PORTFOLIO_CATEGORY_LABELS[cat]}
@@ -204,7 +204,7 @@ export default function PublicPortfolio() {
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition ${
                   showFeaturedOnly
                     ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
-                    : 'bg-white text-text-secondary hover:bg-light-100'
+                    : 'bg-surface-base text-text-secondary hover:bg-light-100'
                 }`}
               >
                 <Star className={`w-4 h-4 ${showFeaturedOnly ? 'fill-current' : ''}`} />
@@ -219,7 +219,7 @@ export default function PublicPortfolio() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {filteredItems.length === 0 ? (
           <div className="text-center py-16">
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-surface-base rounded-full flex items-center justify-center mx-auto mb-4">
               <Star className="w-8 h-8 text-text-tertiary" />
             </div>
             <h2 className="text-xl font-semibold text-white mb-2">
@@ -393,7 +393,7 @@ export default function PublicPortfolio() {
               {currentItem.tags.length > 0 && (
                 <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
                   {currentItem.tags.map((tag, i) => (
-                    <span key={i} className="px-2 py-1 bg-white text-text-secondary rounded text-xs">
+                    <span key={i} className="px-2 py-1 bg-surface-base text-text-secondary rounded text-xs">
                       #{tag}
                     </span>
                   ))}

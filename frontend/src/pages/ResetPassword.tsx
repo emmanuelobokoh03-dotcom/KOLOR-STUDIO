@@ -106,7 +106,7 @@ const ResetPassword = () => {
             </Link>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
+          <div className="bg-surface-base rounded-2xl shadow-xl p-8 border border-light-200">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/50">
                 <CheckCircle weight="duotone" className="w-8 h-8 text-green-700" />
@@ -140,7 +140,7 @@ const ResetPassword = () => {
           <p className="text-text-secondary">Your new password must be at least 8 characters</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
+        <div className="bg-surface-base rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-600" data-testid="reset-password-error">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />

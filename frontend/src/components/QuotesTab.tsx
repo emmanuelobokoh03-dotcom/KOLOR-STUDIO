@@ -369,7 +369,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
                     </button>
                     
                     {menuOpenId === quote.id && (
-                      <div className="absolute right-0 top-10 bg-white rounded-lg shadow-xl border border-light-200 py-1 z-10 min-w-[150px]">
+                      <div className="absolute right-0 top-10 bg-surface-base rounded-lg shadow-xl border border-light-200 py-1 z-10 min-w-[150px]">
                         <a
                           href={`/quote/${quote.quoteToken}`}
                           target="_blank"

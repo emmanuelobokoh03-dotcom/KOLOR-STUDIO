@@ -56,11 +56,12 @@ export default {
 
         // ── Surface Colors ────────────────────────────────
         surface: {
-          white: '#FFFFFF',
-          background: '#FAFAFA',
-          card: '#FFFFFF',
-          hover: '#F9FAFB',
-          elevated: '#FFFFFF',
+          base: '#FFFFFF',        // Cards, panels, elevated content
+          white: '#FFFFFF',       // backwards compat alias
+          background: '#FAFAFA',  // Page background
+          card: '#FFFFFF',        // backwards compat alias
+          hover: '#F5F5F5',       // Hover state backgrounds
+          elevated: '#FFFFFF',    // Modals, popovers
         },
 
         // ── Border Colors ─────────────────────────────────
@@ -68,6 +69,7 @@ export default {
           light: '#F3F4F6',
           DEFAULT: '#E5E7EB',
           strong: '#D1D5DB',
+          dark: '#D1D5DB',        // alias for strong
           brand: '#E9D5FF',
         },
 
@@ -76,7 +78,7 @@ export default {
           primary: '#1A1A2E',
           secondary: '#4B5563',
           tertiary: '#6B7280',
-          disabled: '#D1D5DB',
+          disabled: '#9CA3AF',
           inverse: '#FFFFFF',
           brand: '#7C3AED',
         },
@@ -140,11 +142,13 @@ export default {
 
       // ── Typography ────────────────────────────────────
       fontFamily: {
-        heading: ['Raleway', 'Inter', 'sans-serif'],
-        body: ['Instrument Sans', 'Inter', 'sans-serif'],
-        sans: ['var(--font-brand, "Instrument Sans")', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['Raleway', 'Inter', 'sans-serif'],
-        brand: ['var(--font-brand, "Instrument Sans")', 'sans-serif'],
+        // Single font family — Inter everywhere
+        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        // Deprecated aliases — all resolve to Inter for backward compat
+        heading: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        body: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        brand: ['var(--font-brand, "Inter")', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'h1': ['48px', { lineHeight: '56px', fontWeight: '700', letterSpacing: '-0.02em' }],
@@ -160,6 +164,13 @@ export default {
         'label': ['12px', { lineHeight: '16px', fontWeight: '500' }],
         'button': ['14px', { lineHeight: '20px', fontWeight: '600' }],
         'overline': ['11px', { lineHeight: '16px', fontWeight: '700', letterSpacing: '0.1em' }],
+      },
+      fontWeight: {
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+        bold: '700',
+        extrabold: '800',
       },
 
       // ── Spacing ───────────────────────────────────────
@@ -180,15 +191,17 @@ export default {
         'gradient-hero': 'linear-gradient(135deg, #1A1A2E 0%, #7C3AED 100%)',
       },
 
-      // ── Elevation / Shadows ───────────────────────────
+      // ── Elevation / Shadows (simplified 3-level hierarchy) ──
       boxShadow: {
         'elevation-0': 'none',
         'elevation-1': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
         'elevation-2': '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         'elevation-3': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
         'elevation-4': '0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        // Simplified 3-level: card → hover → modal
+        'card': '0 1px 3px rgba(0, 0, 0, 0.1)',
+        'card-hover': '0 4px 12px rgba(0, 0, 0, 0.12)',
+        'modal': '0 20px 40px rgba(0, 0, 0, 0.15)',
         'button': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
         'input-focus': '0 0 0 3px rgba(124, 58, 237, 0.1)',
         'input-error': '0 0 0 3px rgba(239, 68, 68, 0.1)',

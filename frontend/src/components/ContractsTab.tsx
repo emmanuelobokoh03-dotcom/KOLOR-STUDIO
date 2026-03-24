@@ -209,7 +209,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
             type="text"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
-            className="w-full px-4 py-2.5 bg-white border border-light-200 rounded-xl text-text-primary text-base"
+            className="w-full px-4 py-2.5 bg-surface-base border border-light-200 rounded-xl text-text-primary text-base"
             data-testid="contract-title-input"
           />
         </div>
@@ -219,11 +219,11 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
             rows={15}
-            className="w-full px-4 py-3 bg-white border border-light-200 rounded-xl text-text-primary font-mono text-sm resize-none text-base"
+            className="w-full px-4 py-3 bg-surface-base border border-light-200 rounded-xl text-text-primary font-mono text-sm resize-none text-base"
             data-testid="contract-content-input"
           />
         </div>
-        <div className="bg-white rounded-xl p-4 border border-light-200">
+        <div className="bg-surface-base rounded-xl p-4 border border-light-200">
           <p className="text-xs text-text-secondary mb-2 font-medium">Preview:</p>
           <div
             className="prose prose-sm prose-invert max-w-none text-text-secondary [&_h2]:text-text-primary [&_h2]:text-lg [&_h3]:text-text-primary [&_h3]:text-base [&_strong]:text-text-primary [&_p]:leading-relaxed"
@@ -278,7 +278,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
 
       {/* Template Selector Modal */}
       {showTemplateSelector && (
-        <div className="bg-white rounded-xl border border-light-200 p-4 md:p-5 animate-fade-in" data-testid="template-selector">
+        <div className="bg-surface-base rounded-xl border border-light-200 p-4 md:p-5 animate-fade-in" data-testid="template-selector">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-sm font-semibold text-text-primary">Choose a Template</h4>
             <button onClick={() => setShowTemplateSelector(false)} className="p-1.5 text-text-secondary hover:text-text-primary touch-target">
@@ -322,7 +322,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
       {loading ? (
         <div className="space-y-3">
           {[1, 2].map(i => (
-            <div key={i} className="bg-white rounded-xl border border-light-200 p-4 animate-pulse">
+            <div key={i} className="bg-surface-base rounded-xl border border-light-200 p-4 animate-pulse">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-light-200 rounded-xl" />
                 <div className="flex-1 space-y-2">
@@ -361,7 +361,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
             return (
               <div
                 key={contract.id}
-                className="bg-white rounded-xl border border-light-200 overflow-hidden hover:border-light-300 transition-all duration-200"
+                className="bg-surface-base rounded-xl border border-light-200 overflow-hidden hover:border-light-300 transition-all duration-200"
                 data-testid={`contract-${contract.id}`}
               >
                 {/* Contract header */}

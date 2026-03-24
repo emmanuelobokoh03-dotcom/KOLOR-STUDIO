@@ -189,19 +189,19 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       <div className="flex items-center gap-2">
         <button
           onClick={() => onNavigate('TODAY')}
-          className="px-3 py-1.5 text-sm bg-white border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary"
+          className="px-3 py-1.5 text-sm bg-surface-base border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary"
         >
           Today
         </button>
         <button
           onClick={() => onNavigate('PREV')}
-          className="p-1.5 bg-white border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary"
+          className="p-1.5 bg-surface-base border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary"
         >
           ←
         </button>
         <button
           onClick={() => onNavigate('NEXT')}
-          className="p-1.5 bg-white border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary"
+          className="p-1.5 bg-surface-base border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary"
         >
           →
         </button>
@@ -215,7 +215,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
           <select
             value={serviceFilter}
             onChange={(e) => setServiceFilter(e.target.value as ServiceType | 'all')}
-            className="pl-8 pr-3 py-1.5 text-sm bg-white border border-light-200 rounded-lg text-text-secondary focus:ring-2 focus:ring-purple-500"
+            className="pl-8 pr-3 py-1.5 text-sm bg-surface-base border border-light-200 rounded-lg text-text-secondary focus:ring-2 focus:ring-purple-500"
           >
             <option value="all">All Services</option>
             {Object.entries(SERVICE_TYPE_LABELS).map(([value, label]) => (
@@ -225,7 +225,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         </div>
         
         {/* View buttons */}
-        <div className="flex bg-white border border-light-200 rounded-lg overflow-hidden">
+        <div className="flex bg-surface-base border border-light-200 rounded-lg overflow-hidden">
           {['month', 'week', 'day', 'agenda'].map((v) => (
             <button
               key={v}
@@ -233,7 +233,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
               className={`px-3 py-1.5 text-sm capitalize transition ${
                 view === v 
                   ? 'bg-brand-primary text-white' 
-                  : 'text-text-secondary hover:text-text-primary hover:bg-white'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-base'
               }`}
             >
               {v}
@@ -245,7 +245,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         <button
           onClick={() => fetchEvents()}
           disabled={loading}
-          className="p-1.5 bg-white border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary disabled:opacity-50"
+          className="p-1.5 bg-surface-base border border-light-200 rounded-lg hover:bg-light-100 transition text-text-secondary disabled:opacity-50"
         >
           <ArrowsClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
@@ -291,19 +291,19 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
     <div className="h-full flex flex-col" data-testid="calendar-view">
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <div className="bg-white border border-light-200 rounded-xl p-4">
+        <div className="bg-surface-base border border-light-200 rounded-xl p-4">
           <p className="text-xs text-text-tertiary mb-1">Total Bookings</p>
           <p className="text-2xl font-bold text-text-primary">{stats.total}</p>
         </div>
-        <div className="bg-white border border-light-200 rounded-xl p-4">
+        <div className="bg-surface-base border border-light-200 rounded-xl p-4">
           <p className="text-xs text-text-tertiary mb-1">Upcoming</p>
           <p className="text-2xl font-bold text-purple-600">{stats.upcoming}</p>
         </div>
-        <div className="bg-white border border-light-200 rounded-xl p-4">
+        <div className="bg-surface-base border border-light-200 rounded-xl p-4">
           <p className="text-xs text-text-tertiary mb-1">Completed</p>
           <p className="text-2xl font-bold text-green-400">{stats.completed}</p>
         </div>
-        <div className="bg-white border border-light-200 rounded-xl p-4">
+        <div className="bg-surface-base border border-light-200 rounded-xl p-4">
           <p className="text-xs text-text-tertiary mb-1">Total Value</p>
           <p className="text-2xl font-bold text-text-primary">
             {user?.currencySymbol || '$'}{stats.totalValue.toLocaleString()}
@@ -312,7 +312,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       </div>
 
       {/* Calendar */}
-      <div className="flex-1 bg-white border border-light-200 rounded-xl p-2 md:p-4 min-h-[600px] overflow-x-auto">
+      <div className="flex-1 bg-surface-base border border-light-200 rounded-xl p-2 md:p-4 min-h-[600px] overflow-x-auto">
         <div className="min-w-[600px] h-full">
         {loading && events.length === 0 ? (
           <div className="h-full flex items-center justify-center">

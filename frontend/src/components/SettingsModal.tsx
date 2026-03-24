@@ -129,7 +129,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50" role="presentation">
-        <div className="bg-white rounded-2xl p-6 md:p-8" role="status" aria-label="Loading settings">
+        <div className="bg-surface-base rounded-2xl p-6 md:p-8" role="status" aria-label="Loading settings">
           <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary" aria-hidden="true" />
           <span className="sr-only">Loading settings...</span>
         </div>
@@ -174,7 +174,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               onClick={() => setActiveTab('currency')}
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'currency'
-                  ? 'bg-white text-text-primary'
+                  ? 'bg-surface-base text-text-primary'
                   : 'bg-white/20 text-white/90 hover:text-white hover:bg-white/30'
               }`}
             >
@@ -185,7 +185,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               onClick={() => setActiveTab('brand')}
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'brand'
-                  ? 'bg-white text-text-primary'
+                  ? 'bg-surface-base text-text-primary'
                   : 'bg-white/20 text-white/90 hover:text-white hover:bg-white/30'
               }`}
               data-testid="brand-tab"
@@ -197,7 +197,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               onClick={() => setActiveTab('testimonials')}
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'testimonials'
-                  ? 'bg-white text-text-primary'
+                  ? 'bg-surface-base text-text-primary'
                   : 'bg-white/20 text-white/90 hover:text-white hover:bg-white/30'
               }`}
               data-testid="testimonials-tab"
@@ -210,7 +210,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               onClick={() => setActiveTab('scheduling')}
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'scheduling'
-                  ? 'bg-white text-text-primary'
+                  ? 'bg-surface-base text-text-primary'
                   : 'bg-white/20 text-white/90 hover:text-white hover:bg-white/30'
               }`}
               data-testid="scheduling-tab"
@@ -222,7 +222,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               onClick={() => setActiveTab('email')}
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'email'
-                  ? 'bg-white text-text-primary'
+                  ? 'bg-surface-base text-text-primary'
                   : 'bg-white/20 text-white/90 hover:text-white hover:bg-white/30'
               }`}
               data-testid="email-tab"
@@ -234,7 +234,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               onClick={() => setActiveTab('account')}
               className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 rounded-t-lg text-sm font-medium transition ${
                 activeTab === 'account'
-                  ? 'bg-white text-text-primary'
+                  ? 'bg-surface-base text-text-primary'
                   : 'bg-white/20 text-white/90 hover:text-white hover:bg-white/30'
               }`}
               data-testid="account-tab"

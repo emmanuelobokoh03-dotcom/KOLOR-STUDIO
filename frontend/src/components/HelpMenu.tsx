@@ -42,7 +42,7 @@ export default function HelpMenu({ onOpenFeedback }: HelpMenuProps) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-light-200 py-2 z-50">
+        <div className="absolute right-0 top-full mt-2 w-64 bg-surface-base rounded-xl shadow-xl border border-light-200 py-2 z-50">
           {/* Email Support */}
           <a
             href="mailto:hello@kolorstudio.com"
@@ -101,7 +101,7 @@ export default function HelpMenu({ onOpenFeedback }: HelpMenuProps) {
 
       {/* Toast Notification */}
       {showToast && (
-        <div className="fixed bottom-4 right-4 bg-white border border-light-200 rounded-lg px-4 py-3 shadow-xl z-50 animate-slide-up">
+        <div className="fixed bottom-4 right-4 bg-surface-base border border-light-200 rounded-lg px-4 py-3 shadow-xl z-50 animate-slide-up">
           <p className="text-sm text-text-secondary">
             📚 Documentation coming soon! Stay tuned for guides and tutorials.
           </p>

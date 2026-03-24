@@ -68,7 +68,7 @@ export default function AccountDangerZone() {
             Delete My Account
           </button>
         ) : (
-          <div className="bg-white rounded-lg p-5 border border-red-200 mt-2 space-y-4">
+          <div className="bg-surface-base rounded-lg p-5 border border-red-200 mt-2 space-y-4">
             <p className="text-sm font-semibold text-text-primary">
               This will permanently delete:
             </p>

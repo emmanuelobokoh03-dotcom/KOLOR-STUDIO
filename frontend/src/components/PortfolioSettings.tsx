@@ -255,7 +255,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
           {items.map((item) => (
             <div
               key={item.id}
-              className="group bg-white rounded-xl overflow-hidden border border-light-200 hover:border-purple-300 transition"
+              className="group bg-surface-base rounded-xl overflow-hidden border border-light-200 hover:border-purple-300 transition"
             >
               {/* Image */}
               <div className="relative aspect-video bg-slate-900">
@@ -330,7 +330,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
               </h3>
               <button
                 onClick={() => { setShowModal(false); resetForm(); }}
-                className="p-2 hover:bg-white rounded-lg transition text-text-secondary"
+                className="p-2 hover:bg-surface-base rounded-lg transition text-text-secondary"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -410,7 +410,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Summer Wedding Collection"
-                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                  className="w-full px-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                   data-testid="portfolio-title-input"
                 />
               </div>
@@ -423,7 +423,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Brief description of this work..."
                   rows={3}
-                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none"
+                  className="w-full px-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none"
                 />
               </div>
 
@@ -433,7 +433,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as PortfolioCategory)}
-                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                  className="w-full px-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                   data-testid="portfolio-category-select"
                 >
                   {Object.entries(PORTFOLIO_CATEGORY_LABELS).map(([value, label]) => (
@@ -450,7 +450,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder="e.g., wedding, outdoor, portraits"
-                  className="w-full px-3 py-2 bg-white border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                  className="w-full px-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
                 />
                 <p className="text-xs text-text-tertiary mt-1">Separate tags with commas</p>
               </div>
@@ -462,7 +462,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
                   id="featured"
                   checked={featured}
                   onChange={(e) => setFeatured(e.target.checked)}
-                  className="w-4 h-4 rounded border-light-200 bg-white text-brand-primary focus:ring-purple-500"
+                  className="w-4 h-4 rounded border-light-200 bg-surface-base text-brand-primary focus:ring-purple-500"
                 />
                 <label htmlFor="featured" className="text-sm text-text-secondary flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-400" />
@@ -476,7 +476,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
               <button
                 onClick={() => { setShowModal(false); resetForm(); }}
                 disabled={saving}
-                className="flex-1 px-4 py-2 border border-light-200 text-text-secondary rounded-lg hover:bg-white transition text-sm font-medium"
+                className="flex-1 px-4 py-2 border border-light-200 text-text-secondary rounded-lg hover:bg-surface-base transition text-sm font-medium"
               >
                 Cancel
               </button>

@@ -79,7 +79,7 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden" data-testid="portal-messages">
+    <div className="bg-surface-base rounded-2xl shadow-lg border border-gray-100 overflow-hidden" data-testid="portal-messages">
       {/* Header */}
       <div className="px-5 md:px-6 py-4 border-b border-gray-100 bg-gray-50">
         <div className="flex items-center gap-3">
@@ -94,7 +94,7 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
       </div>
 
       {/* Messages list */}
-      <div className="p-4 md:p-6 space-y-3 max-h-80 overflow-y-auto bg-white" data-testid="portal-messages-list">
+      <div className="p-4 md:p-6 space-y-3 max-h-80 overflow-y-auto bg-surface-base" data-testid="portal-messages-list">
         {loading ? (
           <div className="flex justify-center py-8">
             <SpinnerGap className="w-6 h-6 animate-spin text-text-secondary" />
@@ -140,7 +140,7 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-primary text-sm"
+            className="flex-1 px-4 py-2.5 bg-surface-base border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-primary text-sm"
             disabled={sending}
             data-testid="portal-message-input"
           />

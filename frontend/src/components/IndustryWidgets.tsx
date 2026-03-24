@@ -137,7 +137,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
             {bookings.map(b => (
               <div
                 key={b.id}
-                className="flex items-center gap-3 p-2.5 rounded-lg bg-white border border-light-200 hover:border-purple-200 transition-all group cursor-pointer"
+                className="flex items-center gap-3 p-2.5 rounded-lg bg-surface-base border border-light-200 hover:border-purple-200 transition-all group cursor-pointer"
                 data-testid={`upcoming-shoot-${b.id}`}
               >
                 <div className="w-10 h-10 rounded-lg bg-purple-100 border border-purple-200 flex items-center justify-center flex-shrink-0">
@@ -190,7 +190,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
               <div
                 key={lead.id}
                 onClick={() => onLeadClick(lead)}
-                className="flex items-center gap-3 p-2.5 rounded-lg bg-white border border-light-200 hover:border-purple-200 transition-all cursor-pointer group"
+                className="flex items-center gap-3 p-2.5 rounded-lg bg-surface-base border border-light-200 hover:border-purple-200 transition-all cursor-pointer group"
                 data-testid={`active-project-${lead.id}`}
               >
                 <div className="flex-1 min-w-0">
@@ -272,7 +272,7 @@ export function FineArtWidgets({ onLeadClick, onAddLead }: FineArtWidgetsProps) 
               <div
                 key={lead.id}
                 onClick={() => onLeadClick(lead)}
-                className="flex items-center gap-3 p-2.5 rounded-lg bg-white border border-light-200 hover:border-amber-200 transition-all cursor-pointer group"
+                className="flex items-center gap-3 p-2.5 rounded-lg bg-surface-base border border-light-200 hover:border-amber-200 transition-all cursor-pointer group"
                 data-testid={`commission-${lead.id}`}
               >
                 {lead.coverImage ? (
@@ -387,7 +387,7 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
           action={{ label: 'New Project', onClick: onAddLead }}
         />
         {/* Phase bar */}
-        <div className="flex h-3 rounded-full overflow-hidden mb-4 bg-white">
+        <div className="flex h-3 rounded-full overflow-hidden mb-4 bg-surface-base">
           {phases.map(p => p.count > 0 && (
             <div
               key={p.key}
@@ -399,7 +399,7 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           {phases.map(p => (
-            <div key={p.key} className="text-center p-2 rounded-lg bg-white border border-light-200">
+            <div key={p.key} className="text-center p-2 rounded-lg bg-surface-base border border-light-200">
               <p className="text-lg font-bold text-text-primary">{p.count}</p>
               <p className="text-[10px] text-text-secondary mt-0.5">{p.label}</p>
             </div>
@@ -413,7 +413,7 @@ export function DesignWidgets({ onLeadClick, onAddLead }: DesignWidgetsProps) {
               <div
                 key={lead.id}
                 onClick={() => onLeadClick(lead)}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white transition-all cursor-pointer group"
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-base transition-all cursor-pointer group"
                 data-testid={`design-project-${lead.id}`}
               >
                 <div className="flex-1 min-w-0">

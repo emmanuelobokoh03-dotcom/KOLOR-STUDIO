@@ -68,7 +68,7 @@ export default function SubmitTestimonial() {
   const primary = request?.user?.brandPrimaryColor || '#A855F7'
 
   if (loading) return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
+    <div className="min-h-screen bg-surface-base flex items-center justify-center">
       <div className="animate-spin w-8 h-8 border-2 border-gray-200 border-t-gray-600 rounded-full" />
     </div>
   )
@@ -109,7 +109,7 @@ export default function SubmitTestimonial() {
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+        <div className="bg-surface-base rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
           {/* Star Rating */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">Rating</label>

@@ -31,7 +31,7 @@ export default function CookieConsent() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-6 animate-slide-up">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl border border-light-200 p-4 sm:p-6">
+      <div className="max-w-4xl mx-auto bg-surface-base rounded-2xl shadow-2xl border border-light-200 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           {/* Icon & Text */}
           <div className="flex items-start gap-3 flex-1">

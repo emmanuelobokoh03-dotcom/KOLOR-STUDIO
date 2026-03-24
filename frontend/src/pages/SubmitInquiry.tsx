@@ -74,7 +74,7 @@ const SubmitInquiry = () => {
     return (
       <div className="min-h-screen bg-light-50 flex items-center justify-center px-6 py-12">
         <div className="max-w-md w-full text-center">
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
+          <div className="bg-surface-base rounded-2xl shadow-xl p-8 border border-light-200">
             <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-200">
               <CheckCircle weight="duotone" className="w-8 h-8 text-green-600" />
             </div>
@@ -111,7 +111,7 @@ const SubmitInquiry = () => {
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-light-200">
+        <div className="bg-surface-base rounded-2xl shadow-xl p-8 border border-light-200">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-400">
               <WarningCircle className="w-5 h-5 flex-shrink-0" />
@@ -215,7 +215,7 @@ const SubmitInquiry = () => {
                     data-testid="inquiry-project-type"
                   >
                     {PROJECT_TYPES.map((type) => (
-                      <option key={type} value={type} className="text-text-primary bg-white">
+                      <option key={type} value={type} className="text-text-primary bg-surface-base">
                         {PROJECT_TYPE_LABELS[type]}
                       </option>
                     ))}

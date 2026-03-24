@@ -47,7 +47,7 @@ export default function RevenuePipelineWidget() {
 
   if (loading) {
     return (
-      <div className="bg-white border border-light-200 rounded-xl p-6 flex items-center justify-center h-40">
+      <div className="bg-surface-base border border-light-200 rounded-xl p-6 flex items-center justify-center h-40">
         <SpinnerGap className="w-5 h-5 animate-spin text-text-secondary" />
       </div>
     );
@@ -58,7 +58,7 @@ export default function RevenuePipelineWidget() {
   const hasData = Object.values(pipeline).some(s => s.count > 0);
 
   return (
-    <div className="bg-white border border-light-200 rounded-xl p-5" data-testid="revenue-pipeline-widget">
+    <div className="bg-surface-base border border-light-200 rounded-xl p-5" data-testid="revenue-pipeline-widget">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <TrendUp weight="duotone" className="w-5 h-5 text-purple-600" />

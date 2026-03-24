@@ -107,7 +107,7 @@ export default function BrandSettings() {
           <div className="relative">
             <button
               onClick={() => { setShowPrimaryPicker(!showPrimaryPicker); setShowAccentPicker(false) }}
-              className="flex items-center gap-3 w-full p-3 rounded-xl bg-white border border-light-200 hover:border-light-300 transition-colors"
+              className="flex items-center gap-3 w-full p-3 rounded-xl bg-surface-base border border-light-200 hover:border-light-300 transition-colors"
               data-testid="primary-color-btn"
             >
               <div className="w-8 h-8 rounded-lg border-2 border-white/20 flex-shrink-0" style={{ background: primary }} />
@@ -120,7 +120,7 @@ export default function BrandSettings() {
                   type="text"
                   value={primary}
                   onChange={(e) => /^#[0-9A-Fa-f]{6}$/.test(e.target.value) && setPrimary(e.target.value)}
-                  className="mt-2 w-full px-2 py-1.5 bg-white border border-light-200 rounded-lg text-sm font-mono text-center text-text-primary"
+                  className="mt-2 w-full px-2 py-1.5 bg-surface-base border border-light-200 rounded-lg text-sm font-mono text-center text-text-primary"
                 />
               </div>
             )}
@@ -135,7 +135,7 @@ export default function BrandSettings() {
           <div className="relative">
             <button
               onClick={() => { setShowAccentPicker(!showAccentPicker); setShowPrimaryPicker(false) }}
-              className="flex items-center gap-3 w-full p-3 rounded-xl bg-white border border-light-200 hover:border-light-300 transition-colors"
+              className="flex items-center gap-3 w-full p-3 rounded-xl bg-surface-base border border-light-200 hover:border-light-300 transition-colors"
               data-testid="accent-color-btn"
             >
               <div className="w-8 h-8 rounded-lg border-2 border-white/20 flex-shrink-0" style={{ background: accent }} />
@@ -148,7 +148,7 @@ export default function BrandSettings() {
                   type="text"
                   value={accent}
                   onChange={(e) => /^#[0-9A-Fa-f]{6}$/.test(e.target.value) && setAccent(e.target.value)}
-                  className="mt-2 w-full px-2 py-1.5 bg-white border border-light-200 rounded-lg text-sm font-mono text-center text-text-primary"
+                  className="mt-2 w-full px-2 py-1.5 bg-surface-base border border-light-200 rounded-lg text-sm font-mono text-center text-text-primary"
                 />
               </div>
             )}
@@ -167,7 +167,7 @@ export default function BrandSettings() {
               className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
                 primary === p.primary && accent === p.accent
                   ? 'border-white/30 bg-light-50'
-                  : 'border-light-200 hover:border-light-300 bg-white'
+                  : 'border-light-200 hover:border-light-300 bg-surface-base'
               }`}
               data-testid={`palette-${p.name.toLowerCase()}`}
             >
@@ -194,7 +194,7 @@ export default function BrandSettings() {
               className={`p-3 rounded-xl border text-left transition-all ${
                 font === f.value
                   ? 'border-brand-primary bg-brand-primary/10'
-                  : 'border-light-200 hover:border-light-300 bg-white'
+                  : 'border-light-200 hover:border-light-300 bg-surface-base'
               }`}
               data-testid={`font-${f.value.toLowerCase().replace(/\s/g, '-')}`}
             >
@@ -215,7 +215,7 @@ export default function BrandSettings() {
         <div className="flex items-center gap-4">
           {logoUrl ? (
             <div className="relative group">
-              <img src={logoUrl} alt="Brand logo" className="h-16 w-16 rounded-xl object-contain bg-white border border-light-200 p-1" data-testid="brand-logo-img" />
+              <img src={logoUrl} alt="Brand logo" className="h-16 w-16 rounded-xl object-contain bg-surface-base border border-light-200 p-1" data-testid="brand-logo-img" />
               <button
                 onClick={handleLogoDelete}
                 className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -227,7 +227,7 @@ export default function BrandSettings() {
           ) : (
             <div
               onClick={() => fileRef.current?.click()}
-              className="h-16 w-16 rounded-xl border-2 border-dashed border-light-200 flex items-center justify-center cursor-pointer hover:border-light-300 transition-colors bg-white"
+              className="h-16 w-16 rounded-xl border-2 border-dashed border-light-200 flex items-center justify-center cursor-pointer hover:border-light-300 transition-colors bg-surface-base"
               data-testid="upload-logo-area"
             >
               {uploading ? (

@@ -332,7 +332,7 @@ export default function ClientPortal() {
   if (error || !data) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-5 md:p-8 max-w-md w-full text-center">
+        <div className="bg-surface-base rounded-2xl shadow-xl p-5 md:p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <WarningCircle weight="duotone" className="w-8 h-8 text-red-500" />
           </div>
@@ -396,7 +396,7 @@ export default function ClientPortal() {
           <div className={`rounded-2xl p-6 ${
             data.status.isBooked 
               ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
-              : 'bg-white shadow-lg border border-gray-200'
+              : 'bg-surface-base shadow-lg border border-gray-200'
           }`}>
             <div className="flex items-start gap-4">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
@@ -422,7 +422,7 @@ export default function ClientPortal() {
 
         {/* Progress Bar */}
         {!data.status.isLost && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+          <div className="bg-surface-base rounded-2xl shadow-lg border border-gray-200 p-6">
             <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wide mb-6">
               Project Progress
             </h3>
@@ -500,7 +500,7 @@ export default function ClientPortal() {
         )}
 
         {/* Project Details */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+        <div className="bg-surface-base rounded-2xl shadow-lg border border-gray-200 p-6">
           <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wide mb-4">
             Project Details
           </h3>
@@ -572,7 +572,7 @@ export default function ClientPortal() {
         </div>
 
         {/* Project Timeline */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6" data-testid="portal-timeline-section">
+        <div className="bg-surface-base rounded-2xl shadow-lg border border-gray-200 p-6" data-testid="portal-timeline-section">
           <ProjectTimeline token={token || ''} editable={false} />
         </div>
 
@@ -588,7 +588,7 @@ export default function ClientPortal() {
               return (
                 <div
                   key={quote.id}
-                  className={`bg-white rounded-2xl shadow-lg border overflow-hidden ${
+                  className={`bg-surface-base rounded-2xl shadow-lg border overflow-hidden ${
                     isAccepted ? 'border-green-200' : isDeclined ? 'border-red-200' : 'border-purple-200'
                   }`}
                   data-testid={`portal-quote-${quote.id}`}
@@ -694,7 +694,7 @@ export default function ClientPortal() {
                       </button>
                       <button
                         onClick={() => handleDeclineQuote(quote.quoteToken)}
-                        className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition"
+                        className="px-6 py-3 bg-surface-base border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition"
                         data-testid={`decline-quote-${quote.id}`}
                       >
                         Decline
@@ -726,7 +726,7 @@ export default function ClientPortal() {
               return (
                 <div
                   key={contract.id}
-                  className={`bg-white rounded-2xl shadow-lg border overflow-hidden transition-all duration-300 ${
+                  className={`bg-surface-base rounded-2xl shadow-lg border overflow-hidden transition-all duration-300 ${
                     isAgreed ? 'border-green-200' : 'border-purple-200'
                   }`}
                   data-testid={`portal-contract-${contract.id}`}
@@ -847,7 +847,7 @@ export default function ClientPortal() {
 
         {/* Activity Timeline */}
         {data.timeline.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+          <div className="bg-surface-base rounded-2xl shadow-lg border border-gray-200 p-6">
             <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wide mb-4">
               Recent Updates
             </h3>
@@ -872,7 +872,7 @@ export default function ClientPortal() {
 
         {/* Shared Files Section */}
         {data.files && data.files.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200" data-testid="shared-files-section">
+          <div className="bg-surface-base rounded-2xl shadow-lg p-6 border border-gray-200" data-testid="shared-files-section">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Paperclip className="w-5 h-5 text-purple-600" />
               Project Files
@@ -943,7 +943,7 @@ export default function ClientPortal() {
             </div>
             <a 
               href={`mailto:${data.contact.email}?subject=Re: ${data.project.title}`}
-              className="inline-flex items-center gap-2 bg-white text-purple-700 px-6 py-3 rounded-xl font-semibold hover:bg-purple-50 transition-colors"
+              className="inline-flex items-center gap-2 bg-surface-base text-purple-700 px-6 py-3 rounded-xl font-semibold hover:bg-purple-50 transition-colors"
             >
               <Envelope className="w-5 h-5" />
               Contact Us

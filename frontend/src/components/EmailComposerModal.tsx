@@ -123,7 +123,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
         onClick={onClose}
       >
         <div 
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-light-200 p-8 text-center"
+          className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-md border border-light-200 p-8 text-center"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-700/30">
@@ -145,7 +145,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
       role="presentation"
     >
       <div 
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
+        className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
         onClick={(e) => e.stopPropagation()}
         data-testid="email-composer-modal"
         role="dialog"

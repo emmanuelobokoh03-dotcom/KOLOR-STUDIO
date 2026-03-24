@@ -294,7 +294,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                         selected
                           ? `border-${color}-500 bg-${color}-500/10`
-                          : 'border-light-200 bg-white hover:border-gray-600'
+                          : 'border-light-200 bg-surface-base hover:border-gray-600'
                       }`}
                     >
                       <Icon className={`w-5 h-5 mb-1.5 ${selected ? `text-${color}-400` : 'text-text-secondary'}`} />
@@ -340,7 +340,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                     <label className={labelClass}>Project Category *</label>
                     <select name="serviceType" value={formData.serviceType} onChange={handleChange} className={selectClass} data-testid="add-lead-service-type">
                       {SERVICE_TYPES.map((type) => (
-                        <option key={type} value={type} className="text-text-primary bg-white py-2">{SERVICE_TYPE_LABELS[type]}</option>
+                        <option key={type} value={type} className="text-text-primary bg-surface-base py-2">{SERVICE_TYPE_LABELS[type]}</option>
                       ))}
                     </select>
                   </div>
@@ -353,9 +353,9 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       className={selectClass}
                       data-testid="add-lead-industry"
                     >
-                      <option value="" className="text-text-tertiary bg-white">Select industry...</option>
+                      <option value="" className="text-text-tertiary bg-surface-base">Select industry...</option>
                       {(Object.keys(INDUSTRY_TYPE_LABELS) as IndustryType[]).map((ind) => (
-                        <option key={ind} value={ind} className="text-text-primary bg-white">{INDUSTRY_TYPE_LABELS[ind]}</option>
+                        <option key={ind} value={ind} className="text-text-primary bg-surface-base">{INDUSTRY_TYPE_LABELS[ind]}</option>
                       ))}
                     </select>
                   </div>
@@ -365,7 +365,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                     <label className={labelClass}>Lead Source</label>
                     <select name="source" value={formData.source} onChange={handleChange} className={selectClass}>
                       {LEAD_SOURCES.map((source) => (
-                        <option key={source} value={source} className="text-text-primary bg-white">{source.charAt(0) + source.slice(1).toLowerCase().replace('_', ' ')}</option>
+                        <option key={source} value={source} className="text-text-primary bg-surface-base">{source.charAt(0) + source.slice(1).toLowerCase().replace('_', ' ')}</option>
                       ))}
                     </select>
                   </div>
@@ -404,7 +404,7 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                       className={`p-3 rounded-xl border-2 text-center transition-all duration-200 ${
                         selected
                           ? `border-${color}-500 bg-${color}-500/10`
-                          : 'border-light-200 bg-white hover:border-gray-600'
+                          : 'border-light-200 bg-surface-base hover:border-gray-600'
                       }`}
                     >
                       <Icon className={`w-4 h-4 mx-auto mb-1 ${selected ? `text-${color}-400` : 'text-text-secondary'}`} />

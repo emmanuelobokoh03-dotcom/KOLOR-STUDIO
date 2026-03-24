@@ -70,7 +70,7 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
   const finalPaid = status?.finalPaid
 
   return (
-    <div className="mt-3 bg-white rounded-xl border border-light-200 p-3" data-testid="payment-tracker">
+    <div className="mt-3 bg-surface-base rounded-xl border border-light-200 p-3" data-testid="payment-tracker">
       <div className="flex items-center gap-2 mb-3">
         <CreditCard className="w-4 h-4 text-emerald-600" />
         <span className="text-xs font-semibold text-text-primary uppercase tracking-wider">Payment Collection</span>
@@ -132,7 +132,7 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
             ? 'border-emerald-500/30 bg-emerald-500/5'
             : depositPaid
               ? 'border-light-200 bg-light-50'
-              : 'border-light-200 bg-white opacity-50'
+              : 'border-light-200 bg-surface-base opacity-50'
         }`}>
           <div className="flex items-center gap-2.5">
             {finalPaid ? (

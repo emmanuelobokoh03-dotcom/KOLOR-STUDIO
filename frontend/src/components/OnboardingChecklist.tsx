@@ -153,8 +153,8 @@ export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings
               item.completed
                 ? 'bg-emerald-50/70 border border-emerald-200'
                 : item.action
-                  ? 'bg-white border border-light-200 hover:border-purple-300 cursor-pointer'
-                  : 'bg-white border border-light-200'
+                  ? 'bg-surface-base border border-light-200 hover:border-purple-300 cursor-pointer'
+                  : 'bg-surface-base border border-light-200'
             }`}
             data-testid={`onboarding-item-${item.id}`}
           >

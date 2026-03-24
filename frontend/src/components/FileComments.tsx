@@ -100,7 +100,7 @@ export default function FileComments({ fileId }: { fileId: string }) {
           value={newComment}
           onChange={e => setNewComment(e.target.value)}
           placeholder="Add a comment..."
-          className="flex-1 text-xs rounded-lg border border-gray-200 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-400 focus:border-purple-400 bg-white"
+          className="flex-1 text-xs rounded-lg border border-gray-200 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-400 focus:border-purple-400 bg-surface-base"
           disabled={submitting}
           data-testid="file-comment-input"
         />

@@ -30,7 +30,7 @@ function adjustBrightness(hex: string, amt: number): string {
 
 function PortfolioPreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
   return (
-    <div className="bg-white rounded-lg overflow-hidden text-gray-900 h-full" data-testid="preview-portfolio">
+    <div className="bg-surface-base rounded-lg overflow-hidden text-gray-900 h-full" data-testid="preview-portfolio">
       {/* Header */}
       <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -98,7 +98,7 @@ function PortfolioPreview({ primary, accent, font, logoUrl }: BrandPreviewProps)
 
 function QuotePreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
   return (
-    <div className="bg-white rounded-lg overflow-hidden text-gray-900 h-full" data-testid="preview-quote">
+    <div className="bg-surface-base rounded-lg overflow-hidden text-gray-900 h-full" data-testid="preview-quote">
       {/* Header */}
       <div className="px-4 py-3 flex items-center justify-between border-b border-gray-100">
         <div className="flex items-center gap-2">
@@ -167,7 +167,7 @@ function PortalPreview({ primary, accent, font, logoUrl }: BrandPreviewProps) {
   ]
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden text-gray-900 h-full" data-testid="preview-portal">
+    <div className="bg-surface-base rounded-lg overflow-hidden text-gray-900 h-full" data-testid="preview-portal">
       {/* Header */}
       <div className="px-4 py-3" style={{ background: `linear-gradient(135deg, ${primary}, ${adjustBrightness(primary, 30)})` }}>
         <div className="flex items-center gap-2 mb-2">
@@ -251,7 +251,7 @@ export default function BrandPreview({ primary, accent, font, logoUrl }: BrandPr
   return (
     <div className="flex flex-col h-full" data-testid="brand-preview-panel">
       {/* Tab Bar */}
-      <div className="flex gap-1 mb-3 p-1 bg-white rounded-lg">
+      <div className="flex gap-1 mb-3 p-1 bg-surface-base rounded-lg">
         {tabs.map(t => (
           <button
             key={t.key}
@@ -277,7 +277,7 @@ export default function BrandPreview({ primary, accent, font, logoUrl }: BrandPr
       </div>
 
       {/* Preview Panel */}
-      <div className="flex-1 rounded-xl border border-light-200 overflow-hidden bg-white p-2 min-h-0">
+      <div className="flex-1 rounded-xl border border-light-200 overflow-hidden bg-surface-base p-2 min-h-0">
         <div className="h-full overflow-auto rounded-lg">
           {activeTab === 'portfolio' && <PortfolioPreview primary={primary} accent={accent} font={font} logoUrl={logoUrl} />}
           {activeTab === 'quote' && <QuotePreview primary={primary} accent={accent} font={font} logoUrl={logoUrl} />}

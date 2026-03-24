@@ -327,7 +327,7 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-surface-base">
         <header className="glass-header sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -351,7 +351,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-surface-base">
       <AnnouncementBanner />
       <EmailVerificationBanner user={user} />
 
@@ -543,7 +543,7 @@ const Dashboard = () => {
         {/* Revenue Pipeline Widget */}
         {/* Active Commissions Widget - Universal for all users */}
         {leads.filter(l => l.projectType === 'COMMISSION' && !['BOOKED', 'LOST'].includes(l.status)).length > 0 && (
-          <div className="mb-4 md:mb-6 bg-white border border-light-200 rounded-xl p-5" data-testid="active-commissions-widget">
+          <div className="mb-4 md:mb-6 bg-surface-base border border-light-200 rounded-xl p-5" data-testid="active-commissions-widget">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Crosshair weight="duotone" className="w-5 h-5 text-amber-600" />
@@ -736,7 +736,7 @@ const Dashboard = () => {
                 placeholder="Search leads..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 bg-white border-2 border-border rounded-input focus:border-brand-600 focus:shadow-input-focus text-text-primary placeholder-text-tertiary transition-all duration-fast text-sm"
+                className="w-full pl-9 pr-3 py-2.5 bg-surface-base border-2 border-border rounded-input focus:border-brand-600 focus:shadow-input-focus text-text-primary placeholder-text-tertiary transition-all duration-fast text-sm"
                 data-testid="search-input"
               />
             </div>
@@ -773,7 +773,7 @@ const Dashboard = () => {
             </button>
 
             {/* Desktop view toggles */}
-            <div className="hidden md:flex bg-white rounded-xl p-1 border border-light-200">
+            <div className="hidden md:flex bg-surface-base rounded-xl p-1 border border-light-200">
               {([
                 { mode: 'kanban' as ViewMode, icon: SquaresFour, title: 'Pipeline View' },
                 { mode: 'list' as ViewMode, icon: ListIcon, title: 'List View' },
@@ -801,7 +801,7 @@ const Dashboard = () => {
             <select
               value={projectTypeFilter}
               onChange={(e) => setProjectTypeFilter(e.target.value)}
-              className="hidden md:block px-3 py-2.5 bg-white border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+              className="hidden md:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
               data-testid="filter-project-type"
             >
               <option value="">All Types</option>
@@ -812,7 +812,7 @@ const Dashboard = () => {
             <select
               value={industryFilter}
               onChange={(e) => setIndustryFilter(e.target.value)}
-              className="hidden lg:block px-3 py-2.5 bg-white border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+              className="hidden lg:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
               data-testid="filter-industry"
               title="Filter leads by industry"
             >
@@ -877,7 +877,7 @@ const Dashboard = () => {
                 <select
                   value={projectTypeFilter}
                   onChange={(e) => setProjectTypeFilter(e.target.value)}
-                  className="px-3 py-2.5 bg-white border border-light-200 rounded-xl text-sm text-text-secondary"
+                  className="px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
                   data-testid="mobile-filter-project-type"
                 >
                   <option value="">All Types</option>
@@ -888,7 +888,7 @@ const Dashboard = () => {
                 <select
                   value={industryFilter}
                   onChange={(e) => setIndustryFilter(e.target.value)}
-                  className="px-3 py-2.5 bg-white border border-light-200 rounded-xl text-sm text-text-secondary"
+                  className="px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
                   data-testid="mobile-filter-industry"
                 >
                   <option value="">All Industries</option>
@@ -969,7 +969,7 @@ const Dashboard = () => {
               <p className="text-sm md:text-base text-text-secondary max-w-md mb-6 md:mb-8 leading-relaxed">
                 Create your first project to track communications, send quotes, collect testimonials, share files, and watch your income grow.
               </p>
-              <div className="bg-white rounded-xl p-4 md:p-5 mb-6 md:mb-8 border border-light-200 w-full max-w-md">
+              <div className="bg-surface-base rounded-xl p-4 md:p-5 mb-6 md:mb-8 border border-light-200 w-full max-w-md">
                 <div className="flex items-center gap-2 mb-3 md:mb-4">
                   <input
                     type="text"
@@ -1035,7 +1035,7 @@ const Dashboard = () => {
           <div className="bg-light-50 rounded-xl border border-light-200 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[500px]">
-                <thead className="bg-white border-b border-light-200">
+                <thead className="bg-surface-base border-b border-light-200">
                   <tr>
                     <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Client</th>
                     <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Project</th>

@@ -140,7 +140,7 @@ function SequenceCard({ seq, onToggle, onViewDetail }: {
       </div>
 
       {/* Steps preview */}
-      <div className="bg-white rounded-lg p-4 mb-4 border border-light-200">
+      <div className="bg-surface-base rounded-lg p-4 mb-4 border border-light-200">
         <p className="text-xs text-text-secondary font-medium uppercase tracking-wider mb-2.5">
           {seq.steps.length} emails over {maxDelay} days
         </p>
@@ -306,7 +306,7 @@ function SequenceDetailModal({ seq, onClose }: { seq: SequenceData; onClose: () 
           ) : (
             <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
               {enrollments.map(e => (
-                <div key={e.id} className="flex items-center justify-between p-3 bg-white border border-light-200 rounded-lg">
+                <div key={e.id} className="flex items-center justify-between p-3 bg-surface-base border border-light-200 rounded-lg">
                   <div>
                     <p className="text-sm font-medium text-text-primary">{e.clientName}</p>
                     <p className="text-xs text-text-secondary">
@@ -328,8 +328,8 @@ function SequenceDetailModal({ seq, onClose }: { seq: SequenceData; onClose: () 
       {previewHtml && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" data-testid="email-preview-overlay">
           <div className="absolute inset-0 bg-black/80" onClick={() => setPreviewHtml(null)} />
-          <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-5 py-3 flex items-center justify-between z-10">
+          <div className="relative w-full max-w-2xl bg-surface-base rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-surface-base border-b border-gray-200 px-5 py-3 flex items-center justify-between z-10">
               <h3 className="font-semibold text-gray-900 text-sm">{previewHtml.subject}</h3>
               <button onClick={() => setPreviewHtml(null)} className="p-1.5 hover:bg-gray-100 rounded-lg" data-testid="close-email-preview">
                 <X className="w-4 h-4 text-text-tertiary" />

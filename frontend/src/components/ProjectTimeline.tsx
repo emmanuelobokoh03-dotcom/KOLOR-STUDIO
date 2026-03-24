@@ -175,7 +175,7 @@ export default function ProjectTimeline({ leadId, token, editable = false }: Pro
 
       {/* Add Milestone Form */}
       {showAdd && editable && (
-        <div className="mb-5 p-4 bg-white border border-light-200 rounded-xl space-y-3" data-testid="add-milestone-form">
+        <div className="mb-5 p-4 bg-surface-base border border-light-200 rounded-xl space-y-3" data-testid="add-milestone-form">
           <input
             type="text" value={newName} onChange={e => setNewName(e.target.value)}
             placeholder="Milestone name (e.g., First Look Preview)"

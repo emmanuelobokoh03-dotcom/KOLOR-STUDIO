@@ -157,7 +157,7 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="fixed inset-y-0 right-0 z-[70] w-full sm:w-96 bg-white border-l border-light-200 shadow-2xl flex flex-col"
+            className="fixed inset-y-0 right-0 z-[70] w-full sm:w-96 bg-surface-base border-l border-light-200 shadow-2xl flex flex-col"
             data-testid="help-panel"
           >
             {/* Header */}

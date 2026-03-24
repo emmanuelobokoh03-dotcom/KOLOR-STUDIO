@@ -76,19 +76,19 @@ export default function TestimonialsManagement() {
     <div className="space-y-5" data-testid="testimonials-management">
       {/* Stats Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-white rounded-xl p-3 border border-light-200">
+        <div className="bg-surface-base rounded-xl p-3 border border-light-200">
           <p className="text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-1">Total</p>
           <p className="text-xl font-bold text-text-primary" data-testid="testimonials-total">{stats.total}</p>
         </div>
-        <div className="bg-white rounded-xl p-3 border border-light-200">
+        <div className="bg-surface-base rounded-xl p-3 border border-light-200">
           <p className="text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-1">Pending Review</p>
           <p className="text-xl font-bold text-amber-700" data-testid="testimonials-pending">{stats.pending}</p>
         </div>
-        <div className="bg-white rounded-xl p-3 border border-light-200">
+        <div className="bg-surface-base rounded-xl p-3 border border-light-200">
           <p className="text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-1">Published</p>
           <p className="text-xl font-bold text-emerald-600" data-testid="testimonials-approved">{stats.approved}</p>
         </div>
-        <div className="bg-white rounded-xl p-3 border border-light-200">
+        <div className="bg-surface-base rounded-xl p-3 border border-light-200">
           <p className="text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-1">Avg Rating</p>
           <div className="flex items-center gap-1.5">
             <p className="text-xl font-bold text-text-primary" data-testid="testimonials-rating">{stats.avgRating ? stats.avgRating.toFixed(1) : '—'}</p>
@@ -98,7 +98,7 @@ export default function TestimonialsManagement() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-1 p-1 bg-white rounded-lg border border-light-200">
+      <div className="flex gap-1 p-1 bg-surface-base rounded-lg border border-light-200">
         {(['ALL', 'PENDING', 'APPROVED', 'REJECTED'] as FilterTab[]).map(tab => (
           <button
             key={tab}
@@ -128,7 +128,7 @@ export default function TestimonialsManagement() {
           {filtered.map(t => (
             <div
               key={t.id}
-              className={`bg-white rounded-xl p-4 border transition-colors ${
+              className={`bg-surface-base rounded-xl p-4 border transition-colors ${
                 t.featured ? 'border-brand-primary/30' : 'border-light-200'
               }`}
               data-testid={`testimonial-${t.id}`}

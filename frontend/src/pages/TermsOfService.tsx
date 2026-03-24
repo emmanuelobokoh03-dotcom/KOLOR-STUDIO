@@ -5,7 +5,7 @@ export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-light-50 text-text-secondary">
       {/* Header */}
-      <header className="bg-white border-b border-light-200 sticky top-0 z-10">
+      <header className="bg-surface-base border-b border-light-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-purple-600 hover:text-purple-600 transition">
             <ArrowLeft className="w-5 h-5" />
@@ -35,7 +35,7 @@ export default function TermsOfService() {
         {/* 1. Acceptance of Terms */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4">1. Acceptance of Terms</h2>
-          <div className="bg-white rounded-xl p-5 border border-light-200 space-y-4">
+          <div className="bg-surface-base rounded-xl p-5 border border-light-200 space-y-4">
             <p className="text-text-secondary">
               By creating an account or using KOLOR STUDIO, you agree to these Terms of Service. If you don't agree, please don't use our service.
             </p>
@@ -48,7 +48,7 @@ export default function TermsOfService() {
         {/* 2. Description of Service */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4">2. Description of Service</h2>
-          <div className="bg-white rounded-xl p-5 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-5 border border-light-200">
             <p className="text-text-secondary mb-4">KOLOR STUDIO provides:</p>
             <ul className="grid md:grid-cols-2 gap-2 text-text-secondary">
               <li className="flex items-start gap-2">
@@ -91,7 +91,7 @@ export default function TermsOfService() {
           </h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">You must:</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li className="flex items-start gap-2">
@@ -117,7 +117,7 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">You may not:</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li className="flex items-start gap-2">
@@ -149,7 +149,7 @@ export default function TermsOfService() {
           </h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <div className="flex items-center gap-2 mb-3">
                 <span className="px-2 py-1 bg-gray-700 text-text-secondary text-xs font-medium rounded">FREE</span>
                 <span className="text-white font-semibold">Free Tier</span>
@@ -183,7 +183,7 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold text-white mb-4">5. Payment Terms</h2>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Billing</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• Charged monthly on your signup anniversary</li>
@@ -192,7 +192,7 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Cancellation</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• Cancel anytime from Settings</li>
@@ -210,7 +210,7 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Price Changes</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• We may change pricing with 30 days notice</li>
@@ -226,7 +226,7 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold text-white mb-4">6. Your Content & Data</h2>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Ownership</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• You own all data you enter (leads, quotes, files)</li>
@@ -235,7 +235,7 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">License to Us</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• You grant us permission to store and display your data</li>
@@ -244,7 +244,7 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Your Responsibilities</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• You're responsible for your data accuracy</li>
@@ -261,7 +261,7 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold text-white mb-4">7. Service Availability</h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Uptime</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• We strive for 99.9% uptime</li>
@@ -270,7 +270,7 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Data Backups</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• Automated daily backups</li>
@@ -328,7 +328,7 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold text-white mb-4">9. Intellectual Property</h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Our Property</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• KOLOR STUDIO name and logo</li>
@@ -338,7 +338,7 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Your Use</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• You may not copy, modify, or distribute our IP</li>
@@ -353,7 +353,7 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold text-white mb-4">10. Termination</h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">We May Terminate If:</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• You violate these terms</li>
@@ -363,7 +363,7 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">You May Terminate:</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• Cancel anytime from Settings</li>
@@ -395,7 +395,7 @@ export default function TermsOfService() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-3">Maximum Liability</h3>
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• Our liability limited to amount you paid in last 12 months</li>
@@ -408,7 +408,7 @@ export default function TermsOfService() {
         {/* 12. Indemnification */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4">12. Indemnification</h2>
-          <div className="bg-white rounded-xl p-5 border border-light-200">
+          <div className="bg-surface-base rounded-xl p-5 border border-light-200">
             <p className="text-text-secondary mb-3">You agree to indemnify us against claims arising from:</p>
             <ul className="space-y-2 text-text-secondary text-sm">
               <li>• Your use of the service</li>
@@ -423,21 +423,21 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold text-white mb-4">13. Dispute Resolution</h2>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Governing Law</h3>
               <p className="text-text-secondary text-sm">
                 These terms governed by laws of the State of Delaware, United States.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Informal Resolution</h3>
               <p className="text-text-secondary text-sm">
                 Contact us first: <a href="mailto:legal@kolorstudio.com" className="text-purple-600 hover:underline">legal@kolorstudio.com</a>. We'll try to resolve within 30 days.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Arbitration</h3>
               <p className="text-text-secondary text-sm">
                 If informal resolution fails, binding arbitration (not court). JAMS or AAA arbitration rules apply.
@@ -451,28 +451,28 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold text-white mb-4">14. General Terms</h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Entire Agreement</h3>
               <p className="text-text-secondary text-sm">
                 These terms constitute the full agreement. Supersede any prior agreements.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Severability</h3>
               <p className="text-text-secondary text-sm">
                 If one provision is invalid, others remain valid.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">No Waiver</h3>
               <p className="text-text-secondary text-sm">
                 Our failure to enforce doesn't waive our rights.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-light-200">
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Assignment</h3>
               <p className="text-text-secondary text-sm">
                 We may transfer our rights/obligations. You may not assign your account.

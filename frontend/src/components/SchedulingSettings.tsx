@@ -237,7 +237,7 @@ export default function SchedulingSettings() {
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2">
-          <code className="flex-1 bg-white border border-purple-200 rounded-lg px-3 py-2 text-sm text-text-secondary truncate" data-testid="booking-link">
+          <code className="flex-1 bg-surface-base border border-purple-200 rounded-lg px-3 py-2 text-sm text-text-secondary truncate" data-testid="booking-link">
             {window.location.origin}/book/{userId}
           </code>
           <button
@@ -252,7 +252,7 @@ export default function SchedulingSettings() {
       </div>
 
       {/* Google Calendar Connection */}
-      <div className={`border rounded-xl p-4 ${calendarConnected ? 'border-emerald-200 bg-emerald-50/50' : 'border-light-200 bg-white'}`} data-testid="google-calendar-section">
+      <div className={`border rounded-xl p-4 ${calendarConnected ? 'border-emerald-200 bg-emerald-50/50' : 'border-light-200 bg-surface-base'}`} data-testid="google-calendar-section">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${calendarConnected ? 'bg-emerald-100' : 'bg-gray-100'}`}>
@@ -384,7 +384,7 @@ export default function SchedulingSettings() {
       {/* Meeting Type Form Modal */}
       {showMeetingForm && editingType && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4" onClick={() => { setShowMeetingForm(false); setEditingType(null) }}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()} data-testid="meeting-type-form">
+          <div className="bg-surface-base rounded-xl shadow-xl w-full max-w-md max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()} data-testid="meeting-type-form">
             <div className="p-5 border-b border-light-200">
               <h3 className="text-lg font-bold text-text-primary">
                 {editingType.id ? 'Edit Meeting Type' : 'New Meeting Type'}
@@ -419,7 +419,7 @@ export default function SchedulingSettings() {
                   <select
                     value={editingType.duration}
                     onChange={e => setEditingType({ ...editingType, duration: Number(e.target.value) })}
-                    className="w-full px-3 py-2 border border-light-200 rounded-lg text-text-primary bg-white focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-3 py-2 border border-light-200 rounded-lg text-text-primary bg-surface-base focus:ring-2 focus:ring-purple-500"
                     data-testid="meeting-type-duration"
                   >
                     {DURATION_OPTIONS.map(d => (
@@ -529,7 +529,7 @@ export default function SchedulingSettings() {
                     data-testid={`toggle-day-${dayIndex}`}
                     aria-label={`Toggle ${dayName}`}
                   >
-                    <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${isActive ? 'left-[18px]' : 'left-0.5'}`} />
+                    <span className={`absolute top-0.5 w-5 h-5 bg-surface-base rounded-full shadow transition-transform ${isActive ? 'left-[18px]' : 'left-0.5'}`} />
                   </button>
                   <span className={`w-12 text-sm font-medium ${isActive ? 'text-text-primary' : 'text-text-secondary'}`}>
                     {DAY_SHORTS[dayIndex]}
@@ -540,7 +540,7 @@ export default function SchedulingSettings() {
                         type="time"
                         value={slot.startTime}
                         onChange={e => updateSlotTime(dayIndex, slotIdx, 'startTime', e.target.value)}
-                        className="px-2 py-1 border border-light-200 rounded-md text-sm text-text-primary bg-white focus:ring-1 focus:ring-purple-500"
+                        className="px-2 py-1 border border-light-200 rounded-md text-sm text-text-primary bg-surface-base focus:ring-1 focus:ring-purple-500"
                         data-testid={`start-time-${dayIndex}-${slotIdx}`}
                       />
                       <span className="text-text-secondary text-xs">to</span>
@@ -548,7 +548,7 @@ export default function SchedulingSettings() {
                         type="time"
                         value={slot.endTime}
                         onChange={e => updateSlotTime(dayIndex, slotIdx, 'endTime', e.target.value)}
-                        className="px-2 py-1 border border-light-200 rounded-md text-sm text-text-primary bg-white focus:ring-1 focus:ring-purple-500"
+                        className="px-2 py-1 border border-light-200 rounded-md text-sm text-text-primary bg-surface-base focus:ring-1 focus:ring-purple-500"
                         data-testid={`end-time-${dayIndex}-${slotIdx}`}
                       />
                     </div>

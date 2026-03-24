@@ -730,7 +730,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                 )}
 
                 {/* Add Note */}
-                <div className="bg-white rounded-xl p-4 md:p-5 border border-light-200">
+                <div className="bg-surface-base rounded-xl p-4 md:p-5 border border-light-200">
                   <h3 className="text-sm font-semibold text-text-secondary mb-3 flex items-center gap-2">
                     <ChatText className="w-4 h-4" />
                     Add Note
@@ -790,7 +790,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                                 <Icon className="w-4 h-4" />
                               </div>
                               <div className="flex-1 pb-4">
-                                <div className="bg-white border border-light-200 rounded-xl p-4 hover:border-light-300 transition-all duration-200">
+                                <div className="bg-surface-base border border-light-200 rounded-xl p-4 hover:border-light-300 transition-all duration-200">
                                   <div className="flex items-start justify-between mb-2">
                                     <span className="text-xs font-medium text-text-tertiary uppercase tracking-wide">
                                       {activity.type.replace(/_/g, ' ')}
@@ -837,7 +837,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                   className={`border-2 border-dashed rounded-xl p-6 md:p-8 text-center transition-all duration-200 ${
                     dragOver 
                       ? 'border-brand-primary bg-purple-50' 
-                      : 'border-light-200 hover:border-purple-300 hover:bg-white'
+                      : 'border-light-200 hover:border-purple-300 hover:bg-surface-base'
                   }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -886,7 +886,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                     <button
                       onClick={() => setCategoryFilter(null)}
                       className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors ${
-                        !categoryFilter ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-gray-600 border-gray-200 hover:border-purple-300'
+                        !categoryFilter ? 'bg-purple-600 text-white border-purple-600' : 'bg-surface-base text-gray-600 border-gray-200 hover:border-purple-300'
                       }`}
                       data-testid="filter-all"
                     >
@@ -900,7 +900,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                           key={cat}
                           onClick={() => setCategoryFilter(categoryFilter === cat ? null : cat)}
                           className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors ${
-                            categoryFilter === cat ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-gray-600 border-gray-200 hover:border-purple-300'
+                            categoryFilter === cat ? 'bg-purple-600 text-white border-purple-600' : 'bg-surface-base text-gray-600 border-gray-200 hover:border-purple-300'
                           }`}
                           data-testid={`filter-${cat}`}
                         >
@@ -938,7 +938,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                         return (
                           <div 
                             key={file.id} 
-                            className="rounded-xl border border-light-200 bg-white hover:border-purple-200 transition-all duration-200 overflow-hidden"
+                            className="rounded-xl border border-light-200 bg-surface-base hover:border-purple-200 transition-all duration-200 overflow-hidden"
                             data-testid={`file-${file.id}`}
                           >
                             <div className="flex items-start gap-3 p-4">
@@ -1132,7 +1132,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                     onChange={e => setNewMsg(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSendMessage()}
                     placeholder="Type a message..."
-                    className="flex-1 px-4 py-2.5 bg-white border border-light-200 rounded-xl text-text-primary placeholder-gray-400 text-sm focus:outline-none focus:border-brand-primary"
+                    className="flex-1 px-4 py-2.5 bg-surface-base border border-light-200 rounded-xl text-text-primary placeholder-gray-400 text-sm focus:outline-none focus:border-brand-primary"
                     disabled={sendingMsg}
                     data-testid="creative-message-input"
                   />
@@ -1156,7 +1156,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                       <select
                         value={formData.status}
                         onChange={(e) => setFormData({ ...formData, status: e.target.value as LeadStatus })}
-                        className="px-3 py-1.5 bg-white border border-light-200 rounded-xl text-sm text-text-primary"
+                        className="px-3 py-1.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-primary"
                       >
                         {STATUS_OPTIONS.map((s) => (
                           <option key={s} value={s}>{LEAD_STATUS_LABELS[s]}</option>
@@ -1202,14 +1202,14 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                     Client Information
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                    <div className="flex items-center gap-3 p-3 md:p-4 bg-white rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
+                    <div className="flex items-center gap-3 p-3 md:p-4 bg-surface-base rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
                       <User className="w-5 h-5 text-text-tertiary flex-shrink-0" />
                       <div>
                         <p className="text-xs text-text-tertiary">Name</p>
                         <p className="font-medium text-text-primary">{lead.clientName}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 md:p-4 bg-white rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
+                    <div className="flex items-center gap-3 p-3 md:p-4 bg-surface-base rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
                       <Envelope className="w-5 h-5 text-text-tertiary flex-shrink-0" />
                       <div>
                         <p className="text-xs text-text-tertiary">Email</p>
@@ -1219,7 +1219,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                       </div>
                     </div>
                     {lead.clientPhone && (
-                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
+                      <div className="flex items-center gap-3 p-4 bg-surface-base rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
                         <Phone className="w-5 h-5 text-text-tertiary" />
                         <div>
                           <p className="text-xs text-text-tertiary">Phone</p>
@@ -1228,7 +1228,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                       </div>
                     )}
                     {lead.clientCompany && (
-                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
+                      <div className="flex items-center gap-3 p-4 bg-surface-base rounded-xl border border-light-200 hover:border-light-300 transition-all duration-200">
                         <Building className="w-5 h-5 text-text-tertiary" />
                         <div>
                           <p className="text-xs text-text-tertiary">Company</p>
@@ -1245,12 +1245,12 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                     <FileText className="w-5 h-5 text-purple-600" />
                     Project Details
                   </h3>
-                  <div className="bg-white rounded-xl p-4 md:p-5 mb-3 md:mb-4 border border-light-200">
+                  <div className="bg-surface-base rounded-xl p-4 md:p-5 mb-3 md:mb-4 border border-light-200">
                     <p className="text-text-secondary whitespace-pre-wrap text-sm leading-relaxed">{lead.description}</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     {(editing || lead.budget) && (
-                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                      <div className="flex items-center gap-3 p-4 bg-surface-base rounded-xl border border-light-200">
                         <CurrencyDollar className="w-5 h-5 text-text-tertiary" />
                         <div className="flex-1">
                           <p className="text-xs text-text-tertiary">Budget</p>
@@ -1269,7 +1269,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                       </div>
                     )}
                     {(editing || lead.timeline) && (
-                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                      <div className="flex items-center gap-3 p-4 bg-surface-base rounded-xl border border-light-200">
                         <Clock className="w-5 h-5 text-text-tertiary" />
                         <div className="flex-1">
                           <p className="text-xs text-text-tertiary">Timeline</p>
@@ -1288,7 +1288,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                       </div>
                     )}
                     {lead.eventDate && (
-                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                      <div className="flex items-center gap-3 p-4 bg-surface-base rounded-xl border border-light-200">
                         <CalendarBlank className="w-5 h-5 text-text-tertiary" />
                         <div>
                           <p className="text-xs text-text-tertiary">Event Date</p>
@@ -1297,7 +1297,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                       </div>
                     )}
                     {(editing || lead.estimatedValue) && (
-                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                      <div className="flex items-center gap-3 p-4 bg-surface-base rounded-xl border border-light-200">
                         <CurrencyDollar className="w-5 h-5 text-green-500" />
                         <div className="flex-1">
                           <p className="text-xs text-text-tertiary">Estimated Value</p>
@@ -1327,7 +1327,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                       <ChartBar className="w-5 h-5 text-purple-600" />
                       Client Portal
                     </h3>
-                    <div className="rounded-xl border border-light-200 bg-white p-3 mb-4">
+                    <div className="rounded-xl border border-light-200 bg-surface-base p-3 mb-4">
                       <p className="text-xs text-text-secondary leading-relaxed">
                         <strong className="text-purple-600">Pro tip:</strong> Your client can view quotes, sign contracts, and track progress — all without logging in!
                       </p>
@@ -1375,7 +1375,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
-                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                      <div className="flex items-center gap-3 p-4 bg-surface-base rounded-xl border border-light-200">
                         <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-200">
                           <Eye className="w-5 h-5 text-blue-600" />
                         </div>
@@ -1384,7 +1384,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                           <p className="font-semibold text-lg text-text-primary">{lead.portalViews || 0}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-light-200">
+                      <div className="flex items-center gap-3 p-4 bg-surface-base rounded-xl border border-light-200">
                         <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center border border-purple-200">
                           <Clock className="w-5 h-5 text-purple-600" />
                         </div>

@@ -120,7 +120,7 @@ export default function EmailComposer({
 
           {showPreview ? (
             /* Preview Mode */
-            <div className="bg-white text-gray-900 rounded-xl overflow-hidden" data-testid="email-preview">
+            <div className="bg-surface-base text-gray-900 rounded-xl overflow-hidden" data-testid="email-preview">
               <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
                 <p className="text-sm text-text-tertiary">
                   <span className="font-medium text-gray-700">To:</span> {recipientName} &lt;{recipientEmail}&gt;
@@ -147,7 +147,7 @@ export default function EmailComposer({
               {/* Recipient (read-only) */}
               <div>
                 <label className="block text-xs font-medium text-text-secondary uppercase tracking-wide mb-1.5">To</label>
-                <div className="px-4 py-2.5 bg-white border border-light-200 rounded-xl text-text-secondary text-sm">
+                <div className="px-4 py-2.5 bg-surface-base border border-light-200 rounded-xl text-text-secondary text-sm">
                   {recipientName} ({recipientEmail})
                 </div>
               </div>
@@ -159,7 +159,7 @@ export default function EmailComposer({
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-light-200 rounded-xl text-text-primary text-sm focus:outline-none focus:border-brand-primary transition-colors"
+                  className="w-full px-4 py-2.5 bg-surface-base border border-light-200 rounded-xl text-text-primary text-sm focus:outline-none focus:border-brand-primary transition-colors"
                   placeholder="Email subject..."
                   data-testid="email-subject-input"
                 />
@@ -180,7 +180,7 @@ export default function EmailComposer({
                       key={v.label}
                       type="button"
                       onClick={() => insertVariable(v.value)}
-                      className="px-2.5 py-1 bg-white border border-light-200 hover:border-purple-300 rounded-lg text-xs text-text-secondary hover:text-purple-600 transition-colors"
+                      className="px-2.5 py-1 bg-surface-base border border-light-200 hover:border-purple-300 rounded-lg text-xs text-text-secondary hover:text-purple-600 transition-colors"
                       data-testid={`insert-${v.label.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       {v.label}
@@ -197,7 +197,7 @@ export default function EmailComposer({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={10}
-                  className="w-full px-4 py-3 bg-white border border-light-200 rounded-xl text-text-primary text-sm font-mono leading-relaxed focus:outline-none focus:border-brand-primary transition-colors resize-none"
+                  className="w-full px-4 py-3 bg-surface-base border border-light-200 rounded-xl text-text-primary text-sm font-mono leading-relaxed focus:outline-none focus:border-brand-primary transition-colors resize-none"
                   placeholder="Write your message..."
                   data-testid="email-message-input"
                 />

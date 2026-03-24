@@ -146,7 +146,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
     <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-200 p-5" data-testid="calendar-widget-cta">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex items-start gap-3 flex-1">
-          <div className="w-10 h-10 rounded-lg bg-white border border-purple-200 flex items-center justify-center flex-shrink-0 shadow-sm">
+          <div className="w-10 h-10 rounded-lg bg-surface-base border border-purple-200 flex items-center justify-center flex-shrink-0 shadow-sm">
             <GoogleLogo weight="bold" className="w-5 h-5 text-purple-600" />
           </div>
           <div>

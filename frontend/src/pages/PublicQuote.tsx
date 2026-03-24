@@ -146,7 +146,7 @@ export default function PublicQuote() {
   if (error && !quote) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
+        <div className="bg-surface-base rounded-2xl shadow-xl p-8 max-w-md text-center">
           <WarningCircle weight="duotone" className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Quote Not Found</h1>
           <p className="text-gray-600 mb-6">
@@ -197,7 +197,7 @@ export default function PublicQuote() {
         )}
 
         {/* Quote Document */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden" data-testid="public-quote">
+        <div className="bg-surface-base rounded-2xl shadow-xl overflow-hidden" data-testid="public-quote">
           {/* Header */}
           <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -382,7 +382,7 @@ export default function PublicQuote() {
                 </button>
                 <button
                   onClick={() => setShowDeclineModal(true)}
-                  className="flex items-center justify-center gap-2 px-8 py-3 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition font-semibold"
+                  className="flex items-center justify-center gap-2 px-8 py-3 bg-surface-base text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition font-semibold"
                   data-testid="decline-quote-btn"
                 >
                   <XCircle className="w-5 h-5" />
@@ -413,7 +413,7 @@ export default function PublicQuote() {
       {/* Decline Modal */}
       {showDeclineModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+          <div className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-md p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Decline Quote</h3>
             <p className="text-gray-600 mb-4">
               Are you sure you want to decline this quote? You can optionally provide a reason.

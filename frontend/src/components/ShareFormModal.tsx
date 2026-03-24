@@ -117,7 +117,7 @@ Looking forward to working with you!`
     >
       <div 
         ref={modalRef}
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-light-200 animate-in fade-in duration-200"
+        className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-light-200 animate-in fade-in duration-200"
         onClick={(e) => e.stopPropagation()}
         data-testid="share-form-modal"
         role="dialog"
@@ -219,7 +219,7 @@ Looking forward to working with you!`
               <div className="flex flex-col items-center">
                 <div 
                   ref={qrRef} 
-                  className="bg-white p-4 rounded-lg mb-4"
+                  className="bg-surface-base p-4 rounded-lg mb-4"
                   data-testid="qr-code-container"
                 >
                   <QRCodeSVG 

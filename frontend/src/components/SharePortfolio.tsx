@@ -67,7 +67,7 @@ export default function SharePortfolio() {
           type="text"
           value={portfolioUrl}
           readOnly
-          className="flex-1 px-3 py-2.5 bg-white border border-light-200 rounded-xl text-xs text-text-secondary font-mono"
+          className="flex-1 px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-xs text-text-secondary font-mono"
           data-testid="portfolio-url-input"
         />
         <button
@@ -102,7 +102,7 @@ export default function SharePortfolio() {
         <div className="pt-4 border-t border-brand-primary/20">
           <p className="text-xs font-medium text-text-secondary mb-3">QR Code</p>
           <div className="flex flex-col sm:flex-row items-start gap-4">
-            <img src={qrCodeUrl} alt="Portfolio QR Code" className="w-24 h-24 bg-white rounded-lg p-1.5" data-testid="qr-code-img" />
+            <img src={qrCodeUrl} alt="Portfolio QR Code" className="w-24 h-24 bg-surface-base rounded-lg p-1.5" data-testid="qr-code-img" />
             <div className="flex-1">
               <p className="text-xs text-text-secondary mb-3 leading-relaxed">
                 Print on business cards, posters, or marketing materials. Clients scan to view your portfolio instantly.
