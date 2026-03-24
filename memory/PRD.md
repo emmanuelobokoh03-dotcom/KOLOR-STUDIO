@@ -100,7 +100,16 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - `/mnt/skills/user/kolor-studio/SKILL.md` — Comprehensive dev reference (142 lines)
 - Covers: auth, design system, API patterns, business logic, database, common gotchas
 
-### Production Hardening (Mar 23, 2026) — VERIFIED
+### Design System v3.0 — Inter Font + Token Consolidation (Mar 24, 2026) — VERIFIED
+- **Font Consolidation:** Switched from Raleway+Instrument Sans to Inter-only (single font family, weight-based hierarchy). Removed all non-Inter font imports from index.html and CSS.
+- **Hero Headline:** Increased from ~54px to 60px (text-6xl) on desktop for more impact.
+- **Surface Tokens:** Added `surface-base`, `surface-background`, `surface-hover`, `surface-elevated` to Tailwind config.
+- **Shadow Simplification:** 3-level hierarchy: `shadow-card`, `shadow-hover`, `shadow-modal`.
+- **btn-secondary:** Changed from outline to light-purple fill (`bg-brand-100 text-brand-700`). Old outline style now `btn-outline`.
+- **Accessibility:** `.btn` and `.input` classes enforced `min-height: 44px`.
+- **Focus States:** Global `focus-visible` with brand-purple ring across all interactive elements.
+- **Driver.js Tour:** Updated font references to Inter.
+- Testing: 100% pass rate — All 13 tests passed (iteration_91)
 - **Security:** `validateSecrets()` startup check — server exits if JWT_SECRET, DATABASE_URL, or FRONTEND_URL missing. `helmet()` middleware with CSP (allows plausible.io, fonts.googleapis.com), HSTS (1yr + preload), X-Frame-Options, X-Content-Type-Options.
 - **Performance:** `compression()` middleware (gzip, level 6, threshold 1KB). 8 composite DB indexes on activities (leadId+createdAt, userId+createdAt), leads (assignedToId+status/pipelineStatus/createdAt), quotes (leadId+status, createdById+status/createdAt). Landing page screenshots converted to WebP (50-75% smaller).
 - **Monitoring:** Plausible analytics script tag in index.html (data-domain="kolor-studio.vercel.app"). `analytics.ts` rewritten to use `window.plausible()` instead of Vercel Analytics. Sentry init stubs in main.tsx (frontend) and server.ts (backend) — reads from env vars, gracefully disabled when DSN absent.
@@ -142,6 +151,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_88: Remember Me Toggle (backend 9/9 100%, frontend 7/7 100%)
 - iteration_89: Landing Page V2 (frontend 18/18 100%)
 - iteration_90: Production Hardening — Security + Performance + Monitoring (backend 14/14 100%, frontend 100%)
+- iteration_91: Design System v3.0 — Inter Font + Token Consolidation (all 13 tests passed 100%)
 
 ## Test Credentials
 - bookingtest@test.com / password123
