@@ -111,21 +111,25 @@ function Nav({ onCta }: { onCta: () => void }) {
   return (
     <nav
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-100' : 'bg-transparent'
+        scrolled ? 'bg-surface-base/80 backdrop-blur-xl shadow-sm border-b border-gray-100' : 'bg-transparent'
       }`}
       data-testid="landing-nav"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <Link to="/" className="font-heading font-extrabold text-xl tracking-tight text-brand-700">
-          KOLOR <span className="text-text-primary">STUDIO</span>
+        <Link to="/" className={`font-heading font-extrabold text-xl tracking-tight transition-colors duration-300 ${scrolled ? 'text-brand-700' : 'text-white'}`}>
+          KOLOR <span className={scrolled ? 'text-text-primary' : 'text-white/90'}>STUDIO</span>
         </Link>
         <div className="flex items-center gap-3">
-          <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors" data-testid="nav-login">
+          <Link to="/login" className={`text-sm font-medium transition-colors ${scrolled ? 'text-text-secondary hover:text-text-primary' : 'text-white/80 hover:text-white'}`} data-testid="nav-login">
             Log in
           </Link>
           <button
             onClick={onCta}
-            className="bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-all hover:shadow-lg hover:shadow-brand-600/25"
+            className={`text-sm font-semibold px-5 py-2.5 rounded-lg transition-all ${
+              scrolled
+                ? 'bg-brand-600 hover:bg-brand-700 text-white hover:shadow-lg hover:shadow-brand-600/25'
+                : 'bg-white text-brand-700 hover:bg-brand-50 shadow-lg shadow-black/10'
+            }`}
             data-testid="nav-cta"
           >
             Start Free Trial
@@ -289,24 +293,85 @@ function SolutionSection() {
 function FeaturesSection() {
   const { ref, visible } = useReveal()
   const features = [
-    { icon: Users, title: 'Smart Lead Management', desc: 'Never lose a potential client. Every lead gets a timeline, status tracking, and automated follow-up reminders.', img: null },
-    { icon: Sparkle, title: 'Lightning-Fast Quotes', desc: 'Custom-branded quotes with line items, totals, and validity dates. Send them in seconds, not half an hour.', img: '/screenshots/quote-builder.webp' },
-    { icon: PhoneCall, title: 'Discovery Call Workflow', desc: 'Book discovery calls to understand scope before quoting. 78% higher acceptance rates when you qualify first.', img: null },
-    { icon: CalendarBlank, title: 'Google Calendar Sync', desc: 'Two-way sync with Google Calendar. Your availability updates in real-time. No more scheduling conflicts.', img: null },
-    { icon: Globe, title: 'Client Portal', desc: 'Beautiful portal where clients review quotes, sign contracts, upload files, and track progress — all branded to you.', img: '/screenshots/client-portal.webp' },
-    { icon: PencilSimple, title: 'E-Signatures Built In', desc: 'Industry-specific contracts with built-in e-signature. No more printing, scanning, or chasing signatures.', img: null },
+    { icon: Users, title: 'Smart Lead Management', desc: 'Never lose a potential client. Every lead gets a timeline, status tracking, and automated follow-up reminders.' },
+    { icon: Sparkle, title: 'Lightning-Fast Quotes', desc: 'Custom-branded quotes with line items, totals, and validity dates. Send them in seconds, not half an hour.' },
+    { icon: PhoneCall, title: 'Discovery Call Workflow', desc: 'Book discovery calls to understand scope before quoting. 78% higher acceptance rates when you qualify first.' },
+    { icon: CalendarBlank, title: 'Google Calendar Sync', desc: 'Two-way sync with Google Calendar. Your availability updates in real-time. No more scheduling conflicts.' },
+    { icon: Globe, title: 'Client Portal', desc: 'Beautiful portal where clients review quotes, sign contracts, upload files, and track progress — all branded to you.' },
+    { icon: PencilSimple, title: 'E-Signatures Built In', desc: 'Industry-specific contracts with built-in e-signature. No more printing, scanning, or chasing signatures.' },
   ]
 
   return (
     <section className="py-20 lg:py-28 bg-surface-base" data-testid="features-section">
-      <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div ref={ref} className={`max-w-7xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="text-center mb-16">
           <h2 className="font-heading font-bold text-3xl sm:text-4xl text-text-primary mb-4">
             Everything You Need to Run Your Creative Business
           </h2>
+          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+            From first inquiry to final payment, KOLOR handles it all — so you can focus on your craft.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Bento Grid — 3 Screenshots */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-16" data-testid="screenshot-bento-grid">
+          {/* Dashboard — Large card, left 2/3 */}
+          <div className="lg:col-span-2 lg:row-span-2 bg-surface-base rounded-2xl shadow-card overflow-hidden group border border-gray-100 hover:border-brand-200 hover:shadow-hover transition-all duration-300">
+            <div className="relative">
+              <img
+                src="/screenshots/dashboard-overview.webp"
+                alt="KOLOR Studio Dashboard — See all your leads, quotes, and contracts at a glance"
+                className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                loading="lazy"
+                data-testid="screenshot-dashboard"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <h3 className="font-bold text-xl mb-1">Dashboard Overview</h3>
+                <p className="text-sm text-white/90">Your entire business at a glance — leads, quotes, contracts, and upcoming meetings.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Quote Builder — Top right */}
+          <div className="bg-surface-base rounded-2xl shadow-card overflow-hidden group border border-gray-100 hover:border-brand-200 hover:shadow-hover transition-all duration-300">
+            <div className="relative aspect-[4/3]">
+              <img
+                src="/screenshots/quote-builder.webp"
+                alt="KOLOR Studio Quote Builder — Create professional quotes in 2 minutes"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                loading="lazy"
+                data-testid="screenshot-quotes"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 p-5 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <h3 className="font-bold text-lg mb-1">Quote Builder</h3>
+                <p className="text-xs text-white/90">Professional quotes in 2 minutes with line items, packages, and discounts.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Client Portal — Bottom right */}
+          <div className="bg-surface-base rounded-2xl shadow-card overflow-hidden group border border-gray-100 hover:border-brand-200 hover:shadow-hover transition-all duration-300">
+            <div className="relative aspect-[4/3]">
+              <img
+                src="/screenshots/client-portal.webp"
+                alt="KOLOR Studio Client Portal — Clients approve quotes and sign contracts online"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                loading="lazy"
+                data-testid="screenshot-portal"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 p-5 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <h3 className="font-bold text-lg mb-1">Client Portal</h3>
+                <p className="text-xs text-white/90">Clients approve quotes and sign contracts online — no printing, no scanning.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Feature list cards — 6 compact features */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((f, i) => (
             <div key={i} className="bg-gray-50/80 border border-gray-100 rounded-2xl p-6 hover:shadow-md hover:border-brand-200 transition-all duration-300 group flex flex-col">
               <div className="w-11 h-11 rounded-xl bg-brand-50 flex items-center justify-center mb-4 group-hover:bg-brand-100 transition-colors">
@@ -314,9 +379,6 @@ function FeaturesSection() {
               </div>
               <h3 className="font-heading font-bold text-lg text-text-primary mb-2">{f.title}</h3>
               <p className="text-text-secondary text-sm leading-relaxed flex-1">{f.desc}</p>
-              {f.img && (
-                <img src={f.img} alt={f.title} className="mt-4 rounded-lg border border-gray-200 shadow-sm w-full" loading="lazy" />
-              )}
             </div>
           ))}
         </div>
