@@ -533,6 +533,98 @@ select:focus {
   }
 }
 
+/* ===== Landing Page — Dark Atmospheric Animations ===== */
+
+/* Scroll reveal */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-section {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  .reveal-section.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-section { opacity: 1; transform: none; }
+}
+
+/* Marquee */
+@keyframes landing-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .landing-marquee-track {
+    animation: landing-marquee 22s linear infinite;
+  }
+}
+
+/* Pulsing dot */
+@keyframes landing-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .landing-pulse-dot {
+    animation: landing-pulse 2s infinite;
+  }
+}
+
+/* Floating pills (landing hero) */
+@keyframes landing-float-kf {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .landing-float {
+    animation: landing-float-kf 4s ease-in-out infinite;
+  }
+}
+
+/* Pain card hover glow */
+.landing-pain-card {
+  position: relative;
+  transition: background-color 200ms ease;
+}
+.landing-pain-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(108,46,219,0.4), transparent);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.landing-pain-card:hover {
+  background-color: rgba(255,255,255,0.04) !important;
+}
+.landing-pain-card:hover::before {
+  opacity: 1;
+}
+
+/* Landing countdown dark overrides */
+.landing-countdown .glass-card {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+.landing-countdown .text-brand-600,
+.landing-countdown .font-heading.font-bold {
+  color: #fff !important;
+}
+.landing-countdown .text-text-tertiary {
+  color: rgba(255,255,255,0.3) !important;
+}
+.landing-countdown .text-brand-400 {
+  color: rgba(255,255,255,0.2) !important;
+}
+
 /* ===== Motion Language ===== */
 
 /* Animation 1 — Card hover lift */

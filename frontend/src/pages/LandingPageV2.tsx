@@ -1,64 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import {
-  EnvelopeSimple,
-  FileText,
-  CalendarBlank,
-  Users,
-  Sparkle,
-  ArrowRight,
-  Check,
-  X,
-  Star,
-  Timer,
-  Play,
-} from '@phosphor-icons/react'
+import { ArrowRight } from '@phosphor-icons/react'
 import { CountdownTimer } from '../components/CountdownTimer'
-
-/* ---------- scroll-reveal hook ---------- */
-function useReveal(threshold = 0.15) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [threshold])
-  return { ref, visible }
-}
-
-/* ---------- animated counter ---------- */
-function Counter({ end, suffix = '', prefix = '', duration = 2000 }: { end: number; suffix?: string; prefix?: string; duration?: number }) {
-  const [count, setCount] = useState(0)
-  const { ref, visible } = useReveal(0.3)
-  useEffect(() => {
-    if (!visible) return
-    let start: number
-    let frame: number
-    const animate = (ts: number) => {
-      if (!start) start = ts
-      const p = Math.min((ts - start) / duration, 1)
-      setCount(Math.floor(p * end))
-      if (p < 1) frame = requestAnimationFrame(animate)
-    }
-    frame = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(frame)
-  }, [visible, end, duration])
-  return <span ref={ref}>{prefix}{count}{suffix}</span>
-}
-
-/* ---------- star rating ---------- */
-function Stars({ count = 5 }: { count?: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: count }).map((_, i) => (
-        <Star key={i} weight="fill" className="w-4 h-4 text-amber-400" />
-      ))}
-    </div>
-  )
-}
+import DashboardMock from '../components/illustrations/DashboardMock'
+import QuoteMock from '../components/illustrations/QuoteMock'
+import PortalMock from '../components/illustrations/PortalMock'
 
 /* ---------- BETA end date (7 days from now, persisted in localStorage) ---------- */
 function getBetaEndDate(): Date {
@@ -73,22 +19,53 @@ function getBetaEndDate(): Date {
   return d
 }
 
+/* ---------- Section label with purple rule ---------- */
+function SectionLabel({ children }: { children: string }) {
+  return (
+    <div className="flex items-center gap-3 mb-8">
+      <span className="block w-4 h-px" style={{ background: '#a78bfa' }} />
+      <span className="text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: '#a78bfa' }}>
+        {children}
+      </span>
+    </div>
+  )
+}
+
 /* ================================================================
-   LANDING PAGE
+   LANDING PAGE — Dark Atmospheric Rebuild
    ================================================================ */
 export default function LandingPageV2() {
   const navigate = useNavigate()
   const goSignup = () => navigate('/signup')
 
+  /* Scroll-reveal observer */
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.classList.add('revealed')
+            }, i * 80)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+    document.querySelectorAll('.reveal-section').forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <div className="min-h-screen bg-[#fafafa] overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden" style={{ background: '#080612' }}>
       <Nav onCta={goSignup} />
       <HeroSection onCta={goSignup} />
+      <MarqueeSection />
       <ProblemSection />
-      <SolutionSection />
+      <WorkflowSection />
       <FeaturesSection />
       <TestimonialsSection />
-      <StatsSection />
       <UrgencySection onCta={goSignup} />
       <FinalCTA onCta={goSignup} />
       <Footer />
@@ -100,36 +77,63 @@ export default function LandingPageV2() {
 function Nav({ onCta }: { onCta: () => void }) {
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 20)
+    const h = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', h, { passive: true })
     return () => window.removeEventListener('scroll', h)
   }, [])
 
   return (
     <nav
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-surface-base/80 backdrop-blur-xl shadow-sm border-b border-gray-100' : 'bg-transparent'
-      }`}
+      className="fixed top-0 inset-x-0 z-50 transition-all duration-200"
+      style={{
+        background: 'rgba(8,6,18,0.85)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}
       data-testid="landing-nav"
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <Link to="/" className={`font-heading font-extrabold text-xl tracking-tight transition-colors duration-300 ${scrolled ? 'text-brand-700' : 'text-white'}`}>
-          KOLOR <span className={scrolled ? 'text-text-primary' : 'text-white/90'}>STUDIO</span>
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-3.5">
+        <Link
+          to="/"
+          className="font-extrabold text-lg tracking-[0.08em]"
+          style={{ background: 'linear-gradient(180deg, #fff, rgba(255,255,255,0.7))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+        >
+          KOLOR
         </Link>
+
+        <div className="hidden md:flex items-center gap-8">
+          {['Features', 'Pricing', 'Stories', 'Changelog'].map(label => (
+            <a
+              key={label}
+              href={`#${label.toLowerCase()}`}
+              className="text-[13px] font-medium transition-colors duration-150"
+              style={{ color: 'rgba(255,255,255,0.5)' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+
         <div className="flex items-center gap-3">
-          <Link to="/login" className={`text-sm font-medium transition-colors ${scrolled ? 'text-text-secondary hover:text-text-primary' : 'text-white/80 hover:text-white'}`} data-testid="nav-login">
+          <Link
+            to="/login"
+            className="text-[13px] font-medium transition-colors duration-150 hidden sm:block"
+            style={{ color: 'rgba(255,255,255,0.5)' }}
+            data-testid="nav-login"
+          >
             Log in
           </Link>
           <button
             onClick={onCta}
-            className={`text-sm font-semibold px-5 py-2.5 rounded-lg transition-all ${
-              scrolled
-                ? 'bg-brand-600 hover:bg-brand-700 text-white hover:shadow-lg hover:shadow-brand-600/25'
-                : 'bg-white text-brand-700 hover:bg-brand-50 shadow-lg shadow-black/10'
-            }`}
+            className="text-[13px] font-semibold text-white rounded-lg transition-colors duration-150"
+            style={{ background: '#6C2EDB', padding: '8px 18px' }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#5522B8')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#6C2EDB')}
             data-testid="nav-cta"
           >
-            Start Free Trial
+            Start free <span className="inline-block ml-0.5">&rarr;</span>
           </button>
         </div>
       </div>
@@ -140,228 +144,270 @@ function Nav({ onCta }: { onCta: () => void }) {
 /* ---------- SECTION 1: HERO ---------- */
 function HeroSection({ onCta }: { onCta: () => void }) {
   return (
-    <section className="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden" data-testid="hero-section">
-      {/* gradient bg */}
-      <div className="absolute inset-0 bg-gradient-to-br from-brand-600 via-brand-700 to-indigo-800" />
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA3KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNnKSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg==')] opacity-60" />
+    <section className="relative overflow-hidden" style={{ padding: '100px 0 80px' }} data-testid="hero-section">
+      {/* Ambient glows */}
+      <div className="absolute pointer-events-none" style={{ top: '10%', left: '50%', transform: 'translateX(-50%)', width: 800, height: 600, background: 'radial-gradient(ellipse, rgba(108,46,219,0.28) 0%, rgba(108,46,219,0.06) 50%, transparent 70%)', zIndex: 0 }} />
+      <div className="absolute pointer-events-none" style={{ top: '20%', left: '30%', transform: 'translateX(-50%)', width: 400, height: 300, background: 'radial-gradient(ellipse, rgba(232,137,26,0.07) 0%, transparent 60%)', zIndex: 0 }} />
 
-      <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-        {/* copy */}
-        <div className="text-white">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-xs font-medium text-white/90 mb-6">
-            <Sparkle weight="fill" className="w-3.5 h-3.5 text-amber-300" /> Now in Beta — Free for Early Adopters
-          </div>
-          <h1 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight mb-6" data-testid="hero-headline">
-            Stop Losing Clients to&nbsp;Messy&nbsp;Workflows
-          </h1>
-          <p className="text-lg sm:text-xl text-white/80 leading-relaxed mb-8 max-w-xl">
-            KOLOR Studio manages your leads, quotes, and bookings automatically — so you can focus on creating stunning work, not chasing invoices.
-          </p>
-
-          <div className="flex flex-wrap gap-3 mb-10">
-            <button
-              onClick={onCta}
-              className="bg-surface-base text-brand-700 font-bold px-7 py-3.5 rounded-xl text-base hover:bg-brand-50 transition-all shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/15 hover:-translate-y-0.5"
-              data-testid="hero-cta-primary"
-            >
-              Start Free Trial <ArrowRight weight="bold" className="w-4 h-4 inline ml-1" />
-            </button>
-            <button
-              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/25 text-white font-semibold px-6 py-3.5 rounded-xl text-base transition-all"
-              data-testid="hero-cta-secondary"
-            >
-              <Play weight="fill" className="w-4 h-4" /> Watch 60s Demo
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4 text-sm text-white/70">
-            <div className="flex -space-x-2">
-              {['bg-pink-400','bg-amber-400','bg-teal-400','bg-sky-400'].map((c, i) => (
-                <div key={i} className={`w-8 h-8 rounded-full ${c} border-2 border-white/30 flex items-center justify-center text-xs font-bold text-white`}>
-                  {['S','M','E','D'][i]}
-                </div>
-              ))}
-            </div>
-            <div>
-              <span className="text-white font-medium">Trusted by 100+ creatives</span>
-              <div className="flex items-center gap-1"><Stars /> <span>4.9/5</span></div>
-            </div>
-          </div>
+      <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-10 text-center">
+        {/* Announcement pill */}
+        <div
+          className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 mb-8"
+          style={{ background: 'rgba(108,46,219,0.15)', border: '1px solid rgba(108,46,219,0.3)' }}
+        >
+          <span className="landing-pulse-dot w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
+          <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            Beta is live &middot; First 20 users get free access forever
+          </span>
+          <span style={{ color: 'rgba(255,255,255,0.4)' }}>&rarr;</span>
         </div>
 
-        {/* hero image */}
-        <div className="hidden lg:block">
-          <div className="relative">
-            <div className="absolute -inset-4 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10" />
-            <img
-              src="/screenshots/dashboard-overview.webp"
-              alt="KOLOR Studio Dashboard"
-              className="relative rounded-xl shadow-2xl shadow-black/30 border border-white/10 w-full"
-              data-testid="hero-image"
-              loading="eager"
-            />
-          </div>
+        {/* H1 */}
+        <h1
+          className="font-display font-extrabold leading-[1.05] tracking-[-0.03em] mb-6"
+          style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}
+          data-testid="hero-headline"
+        >
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            The studio behind{'\n'}
+          </span>
+          <br />
+          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            your best work.
+          </span>
+        </h1>
+
+        {/* Subheadline */}
+        <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 18, color: 'rgba(255,255,255,0.5)', maxWidth: 520 }}>
+          CRM built for photographers and designers who are done managing clients from a spreadsheet. Leads, quotes, contracts, and calendar — one beautiful tool.
+        </p>
+
+        {/* CTA row */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+          <button
+            onClick={onCta}
+            className="inline-flex items-center gap-2 text-white font-semibold rounded-[10px] transition-colors duration-150"
+            style={{ background: '#6C2EDB', padding: '14px 28px', fontSize: 15 }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#5522B8')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#6C2EDB')}
+            data-testid="hero-cta-primary"
+          >
+            Start for free <ArrowRight weight="bold" className="w-4 h-4" />
+          </button>
+          <button
+            className="font-medium rounded-[10px] transition-all duration-150"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', padding: '14px 28px', fontSize: 15 }}
+            data-testid="hero-cta-secondary"
+          >
+            See how it works
+          </button>
         </div>
-      </div>
-    </section>
-  )
-}
 
-/* ---------- SECTION 2: PROBLEM ---------- */
-function ProblemSection() {
-  const { ref, visible } = useReveal()
-  const pains = [
-    'Forgetting to follow up with inquiries (and losing money)',
-    'Spending 30 minutes crafting each quote manually',
-    'Double-booking client meetings and scrambling to reschedule',
-    'Chasing clients for signatures on email-attached contracts',
-    'Juggling Gmail, Google Sheets, and 5 different tools',
-  ]
+        {/* Trust line */}
+        <p className="text-xs mb-14" style={{ color: 'rgba(255,255,255,0.3)' }}>
+          No credit card required &nbsp;&middot;&nbsp; Set up in 5 minutes &nbsp;&middot;&nbsp; Cancel anytime
+        </p>
 
-  return (
-    <section className="py-20 lg:py-28 bg-surface-base" data-testid="problem-section">
-      <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-12">Sound Familiar?</h2>
-
-        <div className="space-y-4 text-left max-w-xl mx-auto mb-12">
-          {pains.map((p, i) => (
-            <div key={i} className="flex items-start gap-3 group" style={{ transitionDelay: `${i * 80}ms` }}>
-              <div className="mt-0.5 flex-shrink-0 w-6 h-6 rounded-full bg-red-100 flex items-center justify-center">
-                <X weight="bold" className="w-3.5 h-3.5 text-red-500" />
+        {/* Dashboard product frame */}
+        <div className="relative max-w-[900px] mx-auto">
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{
+              background: '#100D20',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 0 0 1px rgba(108,46,219,0.15), 0 40px 80px rgba(0,0,0,0.7), 0 0 120px rgba(108,46,219,0.08)',
+            }}
+          >
+            {/* Chrome bar */}
+            <div className="flex items-center gap-2 px-4 h-10" style={{ background: '#0C0A1A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <div className="flex items-center gap-[5px]">
+                <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#FF5F57' }} />
+                <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#FFBD2E' }} />
+                <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#28CA41' }} />
               </div>
-              <p className="text-text-secondary leading-relaxed">{p}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="bg-gradient-to-r from-brand-50 to-purple-50 rounded-2xl p-8 border border-brand-100">
-          <p className="text-text-primary font-medium leading-relaxed text-lg">
-            Every missed follow-up is lost revenue.<br />
-            Every double-booking dents your credibility.
-          </p>
-          <p className="text-brand-700 font-semibold mt-4">
-            You didn't become a creative professional to be buried in workflows.
-          </p>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ---------- SECTION 3: SOLUTION ---------- */
-function SolutionSection() {
-  const { ref, visible } = useReveal()
-  const steps = [
-    { icon: EnvelopeSimple, title: 'Capture Every Inquiry', desc: 'Leads flow into your dashboard automatically. Never lose another inquiry to a cluttered inbox.' },
-    { icon: FileText, title: 'Quote in 2 Minutes', desc: 'Professional quotes with your branding, sent in clicks. No more custom Word docs or manual calculations.' },
-    { icon: CalendarBlank, title: 'Book & Get Paid', desc: 'Clients book calls, sign contracts, and pay deposits — all from a stunning client portal.' },
-  ]
-
-  return (
-    <section className="py-20 lg:py-28 bg-[#fafafa]" data-testid="solution-section">
-      <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="text-center mb-16">
-          <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
-            KOLOR Studio Handles the Business,<br className="hidden sm:block" /> So You Can Focus on the Craft
-          </h2>
-          <p className="text-text-secondary text-lg max-w-2xl mx-auto">
-            Automated workflows, intelligent scheduling, and professional client experiences — all in one beautifully designed platform.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {steps.map((s, i) => (
-            <div key={i} className="relative bg-surface-base rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-              <div className="absolute top-6 right-6 text-5xl font-heading font-extrabold text-brand-100 select-none">{i + 1}</div>
-              <div className="w-14 h-14 rounded-2xl bg-brand-50 flex items-center justify-center mb-5 group-hover:bg-brand-100 transition-colors">
-                <s.icon weight="duotone" className="w-7 h-7 text-brand-600" />
-              </div>
-              <h3 className="font-heading font-bold text-xl text-text-primary mb-2">{s.title}</h3>
-              <p className="text-text-secondary leading-relaxed">{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ---------- SECTION 4: FEATURES ---------- */
-function FeaturesSection() {
-  const { ref, visible } = useReveal()
-
-  return (
-    <section className="py-20 lg:py-28 bg-surface-base" data-testid="features-section">
-      <div ref={ref} className={`max-w-7xl mx-auto px-6 transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="text-center mb-16">
-          <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
-            Everything You Need to Run Your Creative Business
-          </h2>
-          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-            From first inquiry to final payment, KOLOR handles it all — so you can focus on your craft.
-          </p>
-        </div>
-
-        {/* Hero screenshot with browser chrome + floating pills */}
-        <div className="relative max-w-4xl mx-auto mb-20" data-testid="screenshot-hero-frame">
-          {/* Browser chrome frame */}
-          <div className="rounded-xl border border-border shadow-hover overflow-hidden bg-surface-base">
-            {/* Title bar */}
-            <div className="flex items-center gap-2 px-4 h-9 bg-surface-hover border-b border-border">
-              <span className="w-3 h-3 rounded-full" style={{ background: '#FF5F57' }} />
-              <span className="w-3 h-3 rounded-full" style={{ background: '#FFBD2E' }} />
-              <span className="w-3 h-3 rounded-full" style={{ background: '#28CA41' }} />
               <div className="flex-1 flex justify-center">
-                <span className="text-xs text-text-tertiary font-medium bg-surface-base border border-border rounded-md px-3 py-0.5">app.kolorstudio.com/dashboard</span>
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-[5px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                  <span className="w-2 h-2 rounded-full" style={{ background: '#28CA41' }} />
+                  <span className="font-mono text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>app.kolorstudio.com/dashboard</span>
+                </div>
               </div>
             </div>
-            {/* Screenshot */}
-            <img
-              src="/screenshots/dashboard-overview.webp"
-              alt="KOLOR Studio Dashboard — leads, quotes, contracts at a glance"
-              className="w-full"
-              loading="lazy"
-              data-testid="screenshot-dashboard"
-            />
+
+            {/* App content mock */}
+            <div className="grid" style={{ gridTemplateColumns: '180px 1fr' }}>
+              {/* Sidebar */}
+              <div className="hidden md:block py-4 px-3" style={{ background: '#0C0A1A', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
+                <div className="font-extrabold text-sm mb-5 px-2" style={{ color: '#a78bfa' }}>KOLOR</div>
+                {['Dashboard', 'Leads', 'Quotes', 'Contracts', 'Calendar', 'Settings'].map((item, i) => (
+                  <div
+                    key={item}
+                    className="text-xs font-medium rounded-md px-2 py-1.5 mb-0.5"
+                    style={{
+                      background: i === 0 ? 'rgba(108,46,219,0.2)' : 'transparent',
+                      color: i === 0 ? '#c4b5fd' : 'rgba(255,255,255,0.3)',
+                    }}
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              {/* Main content */}
+              <div className="p-4 md:p-5 min-h-[280px] md:min-h-[340px]" style={{ background: '#100D20' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <div className="text-sm font-semibold text-white/80">Good morning, Sarah <span style={{ color: '#a78bfa' }}>&#10022;</span></div>
+                  </div>
+                  <div className="text-[10px] font-semibold text-white rounded-md px-2.5 py-1" style={{ background: '#6C2EDB' }}>+ New Lead</div>
+                </div>
+
+                {/* 4-stat row */}
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  {[
+                    { label: 'Total Leads', val: '24' },
+                    { label: 'New', val: '8' },
+                    { label: 'Quoted', val: '6' },
+                    { label: 'Booked', val: '10' },
+                  ].map(s => (
+                    <div key={s.label} className="rounded-lg px-2.5 py-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div className="text-sm font-bold text-white/90">{s.val}</div>
+                      <div className="text-[9px] text-white/30">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Mini table */}
+                <div className="rounded-lg overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
+                  {[
+                    { name: 'Jessica Liu', project: 'Wedding', status: 'Quoted', amount: '$4,200', statusColor: '#D97706', bg: 'rgba(217,119,6,0.1)' },
+                    { name: 'Marcus Reid', project: 'Portrait', status: 'Signed', amount: '$850', statusColor: '#059669', bg: 'rgba(5,150,105,0.1)' },
+                    { name: 'Anika Kapoor', project: 'Commercial', status: 'Inquiry', amount: '$6,500', statusColor: 'rgba(255,255,255,0.25)', bg: 'rgba(255,255,255,0.03)' },
+                  ].map((row, i) => (
+                    <div
+                      key={row.name}
+                      className="flex items-center justify-between px-3 py-2.5 text-[11px]"
+                      style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="font-medium text-white/70">{row.name}</span>
+                        <span className="text-white/25">{row.project}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="font-medium rounded px-1.5 py-0.5"
+                          style={{ borderLeft: `2px solid ${row.statusColor}`, background: row.bg, color: row.statusColor }}
+                        >
+                          {row.status}
+                        </span>
+                        <span className="text-white/40 tabular-nums">{row.amount}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Floating activity pills */}
-          <div className="hidden lg:block absolute -bottom-4 -left-6 animate-float z-10" style={{ animationDelay: '0s' }}>
-            <div className="flex items-center gap-2 bg-surface-base border border-border rounded-full px-4 py-2 shadow-card">
-              <span className="w-2 h-2 rounded-full bg-success flex-shrink-0" />
-              <span className="text-sm font-medium text-text-primary whitespace-nowrap">Quote accepted &middot; $4,200</span>
-            </div>
+          <div className="hidden lg:flex items-center gap-2 absolute landing-float z-10 rounded-full px-4 py-2.5" style={{ bottom: -16, left: 40, animationDelay: '0s', background: 'rgba(16,13,32,0.92)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#059669' }} />
+            <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>Quote accepted &middot; $4,200</span>
           </div>
-          <div className="hidden lg:block absolute -top-3 -right-6 animate-float z-10" style={{ animationDelay: '1s' }}>
-            <div className="flex items-center gap-2 bg-surface-base border border-border rounded-full px-4 py-2 shadow-card">
-              <span className="w-2 h-2 rounded-full bg-brand-600 flex-shrink-0" />
-              <span className="text-sm font-medium text-text-primary whitespace-nowrap">New inquiry &middot; Anika K.</span>
-            </div>
+          <div className="hidden lg:flex items-center gap-2 absolute landing-float z-10 rounded-full px-4 py-2.5" style={{ top: 60, right: 0, animationDelay: '1.3s', background: 'rgba(16,13,32,0.92)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
+            <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>New inquiry from Anika K.</span>
           </div>
-          <div className="hidden lg:block absolute -bottom-4 -right-6 animate-float z-10" style={{ animationDelay: '2s' }}>
-            <div className="flex items-center gap-2 bg-surface-base border border-border rounded-full px-4 py-2 shadow-card">
-              <span className="w-2 h-2 rounded-full bg-info flex-shrink-0" />
-              <span className="text-sm font-medium text-text-primary whitespace-nowrap">Contract signed &#10003;</span>
-            </div>
+          <div className="hidden lg:flex items-center gap-2 absolute landing-float z-10 rounded-full px-4 py-2.5" style={{ bottom: 80, right: -10, animationDelay: '2.6s', background: 'rgba(16,13,32,0.92)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#3B82F6' }} />
+            <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>Contract signed &#10003;</span>
           </div>
         </div>
+      </div>
+    </section>
+  )
+}
 
-        {/* Three feature cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6" data-testid="feature-cards">
-          {[
-            { img: '/screenshots/dashboard-overview.webp', label: 'Lead Management', title: 'Every lead, always visible', desc: 'From first inquiry to signed contract. No spreadsheet, no sticky notes, no lost clients.', color: 'text-brand-600' },
-            { img: '/screenshots/quote-builder.webp', label: 'Quote Builder', title: 'Professional quotes in 2 minutes', desc: "Line items, packages, discounts. Send a polished proposal before your competitor finds their spreadsheet.", color: 'text-brand-600' },
-            { img: '/screenshots/client-portal.webp', label: 'Online Contracts', title: 'Clients sign from any device', desc: "No printing. No scanning. No back-and-forth. They click, sign, and you get paid.", color: 'text-brand-600' },
-          ].map((card, i) => (
-            <div key={i} className="bg-surface-base border border-border rounded-xl overflow-hidden shadow-card hover:shadow-hover transition-all duration-300 group">
-              <div className="overflow-hidden aspect-video">
-                <img src={card.img} alt={card.title} className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" />
+/* ---------- SECTION 2: SOCIAL PROOF MARQUEE ---------- */
+function MarqueeSection() {
+  const items = [
+    'Wedding Photography', 'Brand Design', 'Commercial Photography', 'Interior Design',
+    'Fashion Photography', 'Graphic Design', 'Portrait Studios', 'Creative Agencies',
+    'Event Photography', 'Illustration', 'Architecture', 'Video Production',
+  ]
+  const doubled = [...items, ...items]
+
+  return (
+    <section
+      className="py-10 overflow-hidden reveal-section"
+      style={{ borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+    >
+      <p className="text-center mb-5 uppercase tracking-[0.12em]" style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)' }}>
+        Trusted by creative professionals
+      </p>
+      <div className="landing-marquee-track flex gap-12 whitespace-nowrap">
+        {doubled.map((item, i) => (
+          <span key={i} className="flex items-center gap-2.5 flex-shrink-0" style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.2)' }}>
+            <span className="w-[5px] h-[5px] rounded-full flex-shrink-0" style={{ background: 'rgba(108,46,219,0.4)' }} />
+            {item}
+          </span>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ---------- SECTION 3: PROBLEM ---------- */
+function ProblemSection() {
+  const painCards = [
+    { num: '01', title: 'Spreadsheet chaos', body: "Leads in Google Sheets. Contracts lost in email threads. Payments tracked in PayPal. Nothing talks to anything. Something always falls through the cracks." },
+    { num: '02', title: 'Double bookings', body: "Two clients. Same Saturday. One furious email. Every double-booking costs you a referral, a review, and a piece of your reputation." },
+    { num: '03', title: 'Quote paralysis', body: "Opening Canva or Word every time. 45 minutes building something your client glances at for 10 seconds — before going with whoever replied faster." },
+    { num: '04', title: 'The follow-up you forgot', body: "That inquiry three weeks ago. You meant to reply. Life happened. They booked your competitor. That's not a client lost — that's $3,000 gone." },
+  ]
+
+  return (
+    <section className="reveal-section" style={{ padding: '100px 24px' }} data-testid="problem-section" id="stories">
+      <div className="max-w-[1000px] mx-auto">
+        <SectionLabel>The problem</SectionLabel>
+
+        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-4" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Your work is world-class.{'\n'}
+          </span>
+          <br />
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Your <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>workflow</span> shouldn't hold it back.
+          </span>
+        </h2>
+
+        <p className="mb-12" style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 480, lineHeight: 1.7 }}>
+          Every creative professional knows the feeling. The art is there. The clients are there. The admin is a disaster.
+        </p>
+
+        {/* Pain grid */}
+        <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 2 }}>
+          {/* Featured card */}
+          <div
+            className="p-8 md:p-10 landing-pain-card"
+            style={{ background: 'rgba(108,46,219,0.08)', gridColumn: '1 / -1' }}
+          >
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10">
+              <div className="text-[52px] font-extrabold flex-shrink-0" style={{ color: '#6C2EDB' }}>73%</div>
+              <div>
+                <p className="font-semibold text-white/90 mb-2">of freelance creatives lose clients to poor follow-up — not poor work.</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                  The most talented photographers and designers lose bookings because they forgot to reply, sent a messy invoice, or double-booked a shoot. KOLOR makes sure that never happens to you.
+                </p>
+                <p className="text-xs mt-3" style={{ color: 'rgba(255,255,255,0.25)' }}>Based on KOLOR user research &middot; 2024</p>
               </div>
-              <div className="p-6">
-                <span className={`text-xs font-bold uppercase tracking-wider ${card.color}`}>{card.label}</span>
-                <h3 className="font-bold text-lg text-text-primary mt-1 mb-2">{card.title}</h3>
-                <p className="text-sm text-text-secondary leading-relaxed">{card.desc}</p>
-              </div>
+            </div>
+          </div>
+
+          {painCards.map(card => (
+            <div key={card.num} className="p-7 landing-pain-card" style={{ background: '#080612' }}>
+              <div className="text-[11px] font-bold uppercase tracking-[0.08em] mb-3" style={{ color: 'rgba(108,46,219,0.5)' }}>{card.num}</div>
+              <h3 className="text-base font-semibold text-white/90 mb-2">{card.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>{card.body}</p>
             </div>
           ))}
         </div>
@@ -370,111 +416,143 @@ function FeaturesSection() {
   )
 }
 
-/* ---------- SECTION 5: TESTIMONIALS ---------- */
-function TestimonialsSection() {
-  const { ref, visible } = useReveal()
-  const testimonials = [
-    {
-      quote: "Honestly? KOLOR changed everything. I used to send quotes via Google Docs and pray they'd respond. Now I book discovery calls first, understand exactly what they want, then send a custom quote through the portal. My acceptance rate went from 42% to 81%. That's not a typo. 81%.",
-      name: 'Sarah Chen',
-      title: 'Wedding Photographer, Los Angeles, CA',
-      sub: '15 years experience | 200+ weddings',
-      color: 'bg-pink-100 text-pink-600',
-      initial: 'S',
-    },
-    {
-      quote: "I was drowning in spreadsheets. Literally spending 2 hours a day on admin — follow-ups, quotes, scheduling. KOLOR automated all of it. Now? 15 minutes. That's 10 extra hours per week. I booked 8 additional sessions last month with that time. Do the math.",
-      name: 'Marcus Williams',
-      title: 'Portrait & Headshot Photographer, Austin, TX',
-      sub: '500+ corporate clients | Featured in PDN',
-      color: 'bg-amber-100 text-amber-600',
-      initial: 'M',
-    },
-    {
-      quote: "My clients think I'm way more established than I am. The portal makes me look like a million-dollar agency. They click one link, review the proposal, sign the contract, pay the deposit — all in 5 minutes. THREE clients told me they chose me because of how professional my process was.",
-      name: 'Elena Rodriguez',
-      title: 'Brand & Identity Designer, Miami, FL',
-      sub: 'Branding for startups | 50+ clients',
-      color: 'bg-emerald-100 text-emerald-600',
-      initial: 'E',
-    },
-    {
-      quote: "I shoot 3-4 events a week. Keeping track of deposits, contracts, deliverables — it was chaos. Now everything's in one place. Client uploads event details, I deliver photos through the portal, they approve, I get paid. No more 'did you get my email?' messages.",
-      name: 'David Kim',
-      title: 'Event & Conference Photographer, Seattle, WA',
-      sub: '250+ corporate events | 20 years in business',
-      color: 'bg-sky-100 text-sky-600',
-      initial: 'D',
-    },
-    {
-      quote: "The discovery call feature is GENIUS. I used to quote everyone who emailed, then spend 30 min explaining my process. Now I book a 15-min call, qualify them, and THEN send a detailed quote to serious clients. My close rate is insane now. KOLOR basically runs my business.",
-      name: 'Aisha Patel',
-      title: 'Fashion & Editorial Photographer, NYC',
-      sub: 'Published in Vogue, Harper\'s',
-      color: 'bg-violet-100 text-violet-600',
-      initial: 'A',
-    },
-    {
-      quote: "Real talk: I made an extra $6,200 last month because KOLOR gave me back my time. I was spending 12 hours a week on proposals, invoices, and chasing signatures. Now it's automated. I took those 12 hours and booked 3 more clients. The ROI is stupid good.",
-      name: 'Jordan Miller',
-      title: 'Graphic & Web Designer, Denver, CO',
-      sub: '100+ small business clients',
-      color: 'bg-rose-100 text-rose-600',
-      initial: 'J',
-    },
+/* ---------- SECTION 4: WORKFLOW ---------- */
+function WorkflowSection() {
+  const steps = [
+    { num: '01', title: 'Capture the lead', body: "Every inquiry lands in your pipeline automatically. Lead forms, email parsing, or manual entry. Nothing falls through the cracks — every potential client is visible, tracked, and followed up." },
+    { num: '02', title: 'Send the quote', body: "Build a professional quote in under 2 minutes. Your packages, your rates, your brand. The client approves it with one click — no PDF attachments, no back-and-forth, no printing." },
+    { num: '03', title: 'Close the booking', body: "Contract sent, signed online, and filed automatically. Your calendar updates. You're booked. The whole process takes less time than finding a parking spot." },
   ]
 
   return (
-    <section className="py-20 lg:py-28 bg-[#fafafa]" data-testid="testimonials-section">
-      <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="text-center mb-16">
-          <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
-            Join 100+ Creative Professionals Who've Taken Back Their&nbsp;Time
-          </h2>
-        </div>
+    <section
+      className="reveal-section"
+      style={{ padding: '100px 24px', background: 'rgba(255,255,255,0.015)', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+    >
+      <div className="max-w-[1000px] mx-auto">
+        <SectionLabel>How it works</SectionLabel>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
-            <div key={i} className="bg-surface-base rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col">
-              <Stars />
-              <p className="text-text-secondary text-sm leading-relaxed mt-4 flex-1">"{t.quote}"</p>
-              <div className="flex items-center gap-3 mt-5 pt-4 border-t border-gray-100">
-                <div className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center font-bold text-sm`}>{t.initial}</div>
-                <div>
-                  <p className="text-sm font-semibold text-text-primary">{t.name}</p>
-                  <p className="text-xs text-text-tertiary">{t.title}</p>
-                  <p className="text-xs text-text-tertiary">{t.sub}</p>
+        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-4" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Capture. Quote. Book.
+          </span>
+          <br />
+          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            In that order. Every time.
+          </span>
+        </h2>
+
+        <p className="mb-14" style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 480, lineHeight: 1.7 }}>
+          Three steps between a stranger's inquiry and a signed contract in your inbox.
+        </p>
+
+        {/* 3-step grid */}
+        <div className="rounded-2xl overflow-hidden" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 1, background: 'rgba(255,255,255,0.06)' }}>
+          {steps.map((step, i) => (
+            <div
+              key={step.num}
+              className="relative p-8 md:p-9 transition-colors duration-200"
+              style={{ background: '#080612' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(108,46,219,0.06)')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#080612')}
+            >
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-lg mb-5 text-[13px] font-bold"
+                style={{ background: 'rgba(108,46,219,0.15)', border: '1px solid rgba(108,46,219,0.3)', color: '#a78bfa' }}
+              >
+                {step.num}
+              </div>
+              <h3 className="text-lg font-semibold text-white/90 mb-3">{step.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>{step.body}</p>
+
+              {/* Connector arrow */}
+              {i < steps.length - 1 && (
+                <div className="hidden lg:flex absolute top-1/2 -right-3 z-10 w-6 h-6 rounded-full items-center justify-center" style={{ background: '#6C2EDB', transform: 'translateY(-50%)' }}>
+                  <ArrowRight weight="bold" className="w-3 h-3 text-white" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ---------- SECTION 5: FEATURES ---------- */
+function FeaturesSection() {
+  const cards: { component: React.ComponentType<{ className?: string }>; label: string; title: string; body: string }[] = [
+    { component: DashboardMock, label: 'Lead Management', title: 'Every lead, always visible', body: "From first inquiry to signed contract. Know exactly where every potential client is in your pipeline — without building a spreadsheet to track your spreadsheet." },
+    { component: QuoteMock, label: 'Quote Builder', title: 'Quotes that close', body: "Professional proposals in 2 minutes. Your packages, your pricing, your brand. Clients approve online — no attachments, no printing, no excuses not to reply." },
+    { component: PortalMock, label: 'Online Contracts', title: 'Signed before they change their mind', body: 'Send a contract and get it back signed — from any device, in minutes. No printing. No scanning. No "I\'ll get it back to you this week."' },
+  ]
+
+  return (
+    <section className="reveal-section" style={{ padding: '100px 24px' }} data-testid="features-section" id="features">
+      <div className="max-w-[1000px] mx-auto">
+        <SectionLabel>Everything in one place</SectionLabel>
+
+        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-4" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Your whole studio.
+          </span>
+          <br />
+          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            One tab.
+          </span>
+        </h2>
+
+        <p className="mb-12" style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 540, lineHeight: 1.7 }}>
+          No switching between apps. No copy-pasting. No "where did I put that contract." Everything is connected — and it remembers, so you don't have to.
+        </p>
+
+        {/* Hero screenshot frame */}
+        <div className="max-w-[860px] mx-auto mb-12">
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{
+              background: '#100D20',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 0 0 1px rgba(108,46,219,0.15), 0 40px 80px rgba(0,0,0,0.7), 0 0 120px rgba(108,46,219,0.08)',
+            }}
+          >
+            <div className="flex items-center gap-2 px-4 h-10" style={{ background: '#0C0A1A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <div className="flex items-center gap-[5px]">
+                <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#FF5F57' }} />
+                <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#FFBD2E' }} />
+                <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#28CA41' }} />
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-[5px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                  <span className="w-2 h-2 rounded-full" style={{ background: '#28CA41' }} />
+                  <span className="font-mono text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>app.kolorstudio.com/dashboard</span>
                 </div>
               </div>
             </div>
-          ))}
+            <div style={{ minHeight: 340 }}>
+              <DashboardMock data-testid="screenshot-dashboard" />
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-  )
-}
 
-/* ---------- SECTION 6: STATS ---------- */
-function StatsSection() {
-  const { ref, visible } = useReveal()
-  const stats = [
-    { value: 78, suffix: '%', label: 'Average Quote Acceptance Rate', sub: '(Industry average: 40%)' },
-    { value: 10, suffix: ' hrs', label: 'Saved Per Week on Admin', sub: "(That's 2 extra shoots/month)" },
-    { value: 2, suffix: ' min', label: 'Average Quote Creation Time', sub: '(Down from 30 minutes)' },
-    { value: 4, prefix: '$', suffix: ',000+', label: 'Average Monthly Revenue Increase', sub: '(From reclaimed time)' },
-  ]
-
-  return (
-    <section className="py-20 lg:py-28 bg-surface-base" data-testid="stats-section">
-      <div ref={ref} className={`max-w-5xl mx-auto px-6 transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((s, i) => (
-            <div key={i} className="text-center p-6 rounded-2xl bg-gradient-to-b from-brand-50/60 to-white border border-brand-100">
-              <div className="text-3xl sm:text-4xl font-heading font-extrabold text-brand-600 mb-2">
-                {visible ? <Counter end={s.value} prefix={s.prefix || ''} suffix={s.suffix} /> : `${s.prefix || ''}0${s.suffix}`}
+        {/* 3 feature cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4" data-testid="feature-cards">
+          {cards.map((card, i) => (
+            <div
+              key={i}
+              className="rounded-[14px] overflow-hidden group transition-all duration-200"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)'; e.currentTarget.style.background = 'rgba(108,46,219,0.05)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
+            >
+              <div className="overflow-hidden" style={{ aspectRatio: '16/10', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <card.component />
               </div>
-              <p className="text-sm font-medium text-text-primary">{s.label}</p>
-              <p className="text-xs text-text-tertiary mt-1">{s.sub}</p>
+              <div className="p-5">
+                <span className="text-[10px] font-bold uppercase tracking-[0.08em]" style={{ color: '#a78bfa' }}>{card.label}</span>
+                <h3 className="text-base font-semibold text-white/90 mt-1 mb-2">{card.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>{card.body}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -483,56 +561,162 @@ function StatsSection() {
   )
 }
 
-/* ---------- SECTION 7: URGENCY ---------- */
+/* ---------- SECTION 6: TESTIMONIALS ---------- */
+function TestimonialsSection() {
+  return (
+    <section className="reveal-section" style={{ padding: '100px 24px' }} data-testid="testimonials-section">
+      <div className="max-w-[1000px] mx-auto">
+        <SectionLabel>From the studio</SectionLabel>
+
+        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-10" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Real creatives.
+          </span>
+          <br />
+          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Real results.
+          </span>
+        </h2>
+
+        {/* Featured + 2 stacked */}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4 mb-4">
+          <TestimonialCard
+            quote="I used to spend Sunday nights drowning in spreadsheets and unanswered emails. Now I open KOLOR on Monday morning and everything is just — there. My leads, my quotes, what needs attention. I booked 4 weddings in my first month."
+            name="Sophie L."
+            title="Wedding photographer, Cape Town"
+            featured
+          />
+          <div className="flex flex-col gap-4">
+            <TestimonialCard
+              quote="Sent my first quote in literally 90 seconds. Client signed the contract the same afternoon. That's never happened with my old process."
+              name="James M."
+              title="Commercial photographer, London"
+            />
+            <TestimonialCard
+              quote="Finally a CRM that doesn't look like it was designed for a car dealership. My clients notice the difference when they receive a KOLOR quote."
+              name="Nadia D."
+              title="Brand designer, Paris"
+            />
+          </div>
+        </div>
+
+        {/* Bottom row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          {[
+            { q: '"I haven\'t missed a follow-up in three months. My booking rate went from 30% to over 60%."', n: 'Marcus T.', t: 'Portrait photographer, New York' },
+            { q: '"Dubsado was powerful but I needed a PhD to set it up. KOLOR was running in an afternoon."', n: 'Priya S.', t: 'Interior designer, Mumbai' },
+            { q: '"The discovery call workflow alone is worth the price. My clients book themselves."', n: 'Léa K.', t: 'Fashion photographer, Paris' },
+          ].map((item, i) => (
+            <div key={i}>
+              <p className="text-sm italic leading-relaxed mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>{item.q}</p>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>— {item.n}, <span className="italic">{item.t}</span></p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function TestimonialCard({ quote, name, title, featured = false }: { quote: string; name: string; title: string; featured?: boolean }) {
+  return (
+    <div
+      className="relative rounded-[14px] p-7 transition-all duration-200 flex flex-col"
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.06)',
+      }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)')}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)')}
+    >
+      <span className="absolute top-4 right-6 font-display font-extrabold select-none" style={{ fontSize: 60, color: 'rgba(108,46,219,0.07)', lineHeight: 1 }}>&ldquo;</span>
+      <p className={`relative z-10 italic leading-relaxed flex-1 ${featured ? 'text-[17px]' : 'text-sm'}`} style={{ color: 'rgba(255,255,255,0.5)' }}>
+        &ldquo;{quote}&rdquo;
+      </p>
+      <div className="mt-5 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <p className="text-sm font-medium text-white/70">— {name}</p>
+        <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>{title}</p>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- SECTION 7: URGENCY / BETA PRICING ---------- */
 function UrgencySection({ onCta }: { onCta: () => void }) {
-  const { ref, visible } = useReveal()
   const endDate = getBetaEndDate()
 
   return (
-    <section className="py-20 lg:py-28 bg-gradient-to-br from-brand-700 via-brand-800 to-indigo-900 relative overflow-hidden" data-testid="urgency-section">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA3KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNnKSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg==')] opacity-40" />
+    <section className="reveal-section px-6 md:px-10 mb-20" data-testid="urgency-section" id="pricing">
+      <div
+        className="relative overflow-hidden rounded-3xl max-w-[1000px] mx-auto text-center"
+        style={{
+          background: 'linear-gradient(135deg, rgba(108,46,219,0.12) 0%, rgba(108,46,219,0.04) 50%, rgba(232,137,26,0.05) 100%)',
+          border: '1px solid rgba(108,46,219,0.2)',
+          padding: 'clamp(40px, 5vw, 72px) clamp(24px, 4vw, 64px)',
+        }}
+      >
+        {/* Ambient glows */}
+        <div className="absolute pointer-events-none" style={{ top: -100, right: -100, width: 400, height: 400, background: 'radial-gradient(ellipse, rgba(108,46,219,0.18), transparent)', zIndex: 0 }} />
+        <div className="absolute pointer-events-none" style={{ bottom: -100, left: -100, width: 300, height: 300, background: 'radial-gradient(ellipse, rgba(232,137,26,0.08), transparent)', zIndex: 0 }} />
 
-      <div ref={ref} className={`relative max-w-3xl mx-auto px-6 text-center transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-xs font-semibold text-white/90 mb-6 uppercase tracking-wider">
-          <Timer weight="fill" className="w-4 h-4 text-amber-300" /> Beta Launch Special
-        </div>
+        <div className="relative z-10">
+          <SectionLabel>Beta access</SectionLabel>
 
-        <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-white mb-3">
-          Limited Beta Access — Lock In Your&nbsp;Spot
-        </h2>
-        <p className="text-white/70 mb-8">Beta pricing expires in:</p>
+          <h2 className="font-display font-extrabold tracking-[-0.025em] mb-8 mx-auto" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15, maxWidth: 560, background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Limited spots. Unlimited upside.
+          </h2>
 
-        <CountdownTimer endDate={endDate} />
+          <p className="text-[15px] mb-2" style={{ color: 'rgba(255,255,255,0.4)' }}>Beta pricing closes in</p>
 
-        <div className="mt-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8">
-          <div className="space-y-3 text-left max-w-sm mx-auto mb-8">
-            {[
-              { label: 'First 20 Users:', value: 'FREE FOREVER', bold: true },
-              { label: 'Users 21–50:', value: '$9/month (Regular price: $29/month)', bold: false },
-              { label: '', value: 'No credit card required to start', bold: false },
-              { label: '', value: "Cancel anytime (but you won't want to)", bold: false },
-            ].map((b, i) => (
-              <div key={i} className="flex items-start gap-2.5">
-                <Check weight="bold" className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <p className="text-white/90 text-sm">
-                  {b.label && <span className={b.bold ? 'font-bold text-white' : 'font-medium'}>{b.label} </span>}
-                  {b.bold ? <span className="text-emerald-300 font-bold">{b.value}</span> : b.value}
-                </p>
-              </div>
-            ))}
+          {/* Countdown with dark overrides */}
+          <div className="landing-countdown">
+            <CountdownTimer endDate={endDate} />
           </div>
 
-          <button
-            onClick={onCta}
-            className="bg-surface-base text-brand-700 font-bold px-8 py-4 rounded-xl text-base hover:bg-brand-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 w-full sm:w-auto"
-            data-testid="urgency-cta"
-          >
-            Claim Your Free Account <ArrowRight weight="bold" className="w-4 h-4 inline ml-1" />
-          </button>
+          {/* Pricing cards row */}
+          <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 mt-10">
+            {/* Free tier */}
+            <div className="rounded-2xl p-7 text-left flex-1 max-w-[280px] mx-auto sm:mx-0" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div className="text-[10px] uppercase tracking-[0.08em] mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>First 20 spots</div>
+              <div className="text-4xl font-extrabold text-white mb-1">Free</div>
+              <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>Free forever — no catch, no credit card, no expiry</p>
+              <div
+                className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold mb-5"
+                style={{ background: 'rgba(232,137,26,0.15)', border: '1px solid rgba(232,137,26,0.3)', color: '#fbbf24' }}
+              >
+                3 spots remaining
+              </div>
+              <button
+                onClick={onCta}
+                className="w-full text-white font-semibold py-3 rounded-lg text-sm transition-colors duration-150"
+                style={{ background: '#6C2EDB' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#5522B8')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#6C2EDB')}
+                data-testid="urgency-cta"
+              >
+                Claim your spot &rarr;
+              </button>
+            </div>
 
-          <p className="text-amber-300/80 text-xs mt-4 font-medium">
-            <Timer weight="fill" className="w-3.5 h-3.5 inline mr-1" /> Only 12 spots remaining
-          </p>
+            {/* Paid tier */}
+            <div className="rounded-2xl p-7 text-left flex-1 max-w-[280px] mx-auto sm:mx-0" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div className="text-[10px] uppercase tracking-[0.08em] mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>Spots 21–50</div>
+              <div className="mb-1">
+                <span className="text-4xl font-extrabold text-white">$9</span>
+                <span className="text-base" style={{ color: 'rgba(255,255,255,0.3)' }}>/mo</span>
+              </div>
+              <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>Beta rate, locked in for life</p>
+              <div className="h-[26px] mb-5" /> {/* spacer to align with scarcity badge */}
+              <button
+                className="w-full font-medium py-3 rounded-lg text-sm transition-all duration-150"
+                style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+              >
+                Join the waitlist
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -541,52 +725,39 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
 
 /* ---------- SECTION 8: FINAL CTA ---------- */
 function FinalCTA({ onCta }: { onCta: () => void }) {
-  const { ref, visible } = useReveal()
-  const badges = [
-    'Set up in 5 minutes',
-    'No credit card needed',
-    'Import your existing leads',
-    'Free onboarding support',
-  ]
-  const snippets = [
-    { text: '"Best CRM for creatives I\'ve ever used"', name: 'Jessica M.' },
-    { text: '"Paid for itself in week one"', name: 'David K.' },
-    { text: '"My clients love the portal"', name: 'Aisha P.' },
-  ]
-
   return (
-    <section className="py-20 lg:py-28 bg-surface-base" data-testid="final-cta-section">
-      <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
-          Ready to Stop Losing Time and Money on&nbsp;Admin?
+    <section className="reveal-section text-center" style={{ padding: '100px 24px' }} data-testid="final-cta-section">
+      <div className="max-w-2xl mx-auto">
+        <h2
+          className="font-display font-extrabold tracking-[-0.025em] mb-6"
+          style={{ fontSize: 'clamp(32px, 4vw, 52px)', lineHeight: 1.1 }}
+        >
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.5))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Your clients deserve<br />a better experience.<br />
+          </span>
+          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            So do you.
+          </span>
         </h2>
-        <p className="text-text-secondary text-lg mb-10 max-w-xl mx-auto">
-          Join 100+ photographers and designers who've automated their business and reclaimed 10+ hours per week.
+
+        <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 440 }}>
+          Join 20+ creative professionals already running their studio with KOLOR. Start free — no credit card, no setup fee, no spreadsheets.
         </p>
 
         <button
           onClick={onCta}
-          className="bg-brand-600 hover:bg-brand-700 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg shadow-brand-600/25 hover:shadow-xl hover:shadow-brand-600/30 hover:-translate-y-0.5"
+          className="inline-flex items-center gap-2 text-white font-semibold rounded-[10px] transition-colors duration-150"
+          style={{ background: '#6C2EDB', padding: '16px 36px', fontSize: 16 }}
+          onMouseEnter={e => (e.currentTarget.style.background = '#5522B8')}
+          onMouseLeave={e => (e.currentTarget.style.background = '#6C2EDB')}
           data-testid="final-cta-btn"
         >
-          Start Your Free Account <ArrowRight weight="bold" className="w-5 h-5 inline ml-1" />
+          Start building your studio &rarr;
         </button>
 
-        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mt-8">
-          {badges.map((b, i) => (
-            <div key={i} className="flex items-center gap-1.5 text-sm text-text-secondary">
-              <Check weight="bold" className="w-4 h-4 text-emerald-500" /> {b}
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-6 mt-12 pt-8 border-t border-gray-100">
-          {snippets.map((s, i) => (
-            <div key={i} className="text-sm text-text-tertiary">
-              <Stars /><span className="italic">{s.text}</span> — <span className="font-medium text-text-secondary">{s.name}</span>
-            </div>
-          ))}
-        </div>
+        <p className="mt-5 text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
+          Free forever for the first 20 &nbsp;&middot;&nbsp; No credit card &nbsp;&middot;&nbsp; 5-minute setup
+        </p>
       </div>
     </section>
   )
@@ -595,18 +766,13 @@ function FinalCTA({ onCta }: { onCta: () => void }) {
 /* ---------- FOOTER ---------- */
 function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-400 py-12" data-testid="footer">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div>
-            <span className="font-heading font-extrabold text-lg text-white tracking-tight">KOLOR <span className="text-brand-400">STUDIO</span></span>
-            <p className="text-sm mt-1">&copy; {new Date().getFullYear()} KOLOR Studio. All rights reserved.</p>
-          </div>
-          <div className="flex gap-6 text-sm">
-            <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
-            <a href="mailto:hello@kolorstudio.app" className="hover:text-white transition-colors">Contact</a>
-          </div>
+    <footer className="px-6 md:px-10" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '40px 24px' }} data-testid="footer">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.3)' }}>KOLOR Studio</span>
+        <span className="text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>&copy; {new Date().getFullYear()} KOLOR Studio. Built for creatives.</span>
+        <div className="flex gap-4 text-xs">
+          <Link to="/privacy" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => (e.currentTarget.style.color = '#fff')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}>Privacy</Link>
+          <Link to="/terms" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => (e.currentTarget.style.color = '#fff')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}>Terms</Link>
         </div>
       </div>
     </footer>
