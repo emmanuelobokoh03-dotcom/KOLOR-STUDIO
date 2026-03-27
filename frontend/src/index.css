@@ -51,6 +51,20 @@ textarea:focus-visible {
   box-shadow: 0 0 0 3px rgba(108, 46, 219, 0.1);
 }
 
+/* Animated focus glow for form elements (respects reduced-motion) */
+@media (prefers-reduced-motion: no-preference) {
+  input, textarea, select {
+    transition: border-color 150ms ease-in-out, box-shadow 150ms ease-in-out;
+  }
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #6C2EDB;
+  box-shadow: 0 0 0 3px rgba(108, 46, 219, 0.10);
+}
+
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -368,13 +382,13 @@ textarea:focus-visible {
 
   /* ── Shadow Utilities (simplified 3-level hierarchy) ── */
   .shadow-card {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
   }
   .shadow-hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 24px rgba(108, 46, 219, 0.10), 0 2px 6px rgba(0, 0, 0, 0.06);
   }
   .shadow-modal {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.25), 0 12px 24px -8px rgba(0, 0, 0, 0.12);
   }
   .shadow-card,
   .shadow-hover,
