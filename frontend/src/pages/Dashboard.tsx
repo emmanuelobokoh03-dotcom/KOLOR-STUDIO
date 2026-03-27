@@ -56,6 +56,8 @@ import { trackLogout, trackViewChanged } from '../utils/analytics'
 import { StatusBadge } from '../components/StatusBadge'
 import { EmptyState } from '../components/EmptyState'
 import { StatCard } from '../components/StatCard'
+import { SmartNudgeBanner } from '../components/SmartNudgeBanner'
+import { ActivityFeed } from '../components/ActivityFeed'
 import { UserPlus } from '@phosphor-icons/react'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
@@ -344,7 +346,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface-base">
+    <div className="min-h-screen bg-surface-base lg:grid" style={{ gridTemplateColumns: '220px 1fr' }}>
       <AnnouncementBanner />
       <EmailVerificationBanner user={user} />
 
@@ -353,9 +355,119 @@ const Dashboard = () => {
         <OnboardingWizard onComplete={() => setShowWizard(false)} />
       )}
 
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex flex-col bg-surface-base border-r border-light-200 h-screen sticky top-0 overflow-y-auto" style={{ padding: '16px 12px' }} data-testid="desktop-sidebar">
+        {/* Logo */}
+        <button
+          onClick={() => { setViewMode('kanban'); setStatusFilter(null) }}
+          className="block mb-4 px-2"
+          style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.08em', background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+          data-testid="sidebar-logo"
+        >
+          KOLOR
+        </button>
+
+        {/* User block */}
+        <div
+          className="flex items-center gap-2.5 rounded-[10px] p-2.5 mb-4 cursor-pointer transition-all duration-150 border border-transparent hover:border-purple-200"
+          style={{ background: 'var(--surface-background)' }}
+          onClick={() => setShowSettings(true)}
+          data-testid="sidebar-user-block"
+        >
+          <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)' }}>
+            {user?.firstName?.[0]}{user?.lastName?.[0]}
+          </span>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-bold text-text-primary truncate">{user?.firstName} {user?.lastName}</div>
+            <div className="text-[10px] text-text-secondary">Beta · Free plan</div>
+          </div>
+          <CaretDown weight="bold" className="w-3 h-3 text-text-tertiary" />
+        </div>
+
+        {/* Workspace nav */}
+        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-2">Workspace</div>
+        {([
+          { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Dashboard' },
+          { mode: 'list' as ViewMode, icon: ListIcon, label: 'Leads', badge: stats?.total },
+          { mode: 'analytics' as ViewMode, icon: ChartBar, label: 'Analytics' },
+        ]).map(({ mode, icon: Icon, label, badge }) => (
+          <button
+            key={mode}
+            onClick={() => handleViewChange(mode)}
+            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 mb-0.5 relative ${
+              viewMode === mode ? 'text-brand-600 font-semibold' : 'text-text-secondary hover:bg-surface-background hover:text-text-primary'
+            }`}
+            style={viewMode === mode ? { background: 'rgba(108,46,219,0.08)' } : undefined}
+            data-testid={`sidebar-${mode}`}
+          >
+            {viewMode === mode && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r bg-brand-600" />}
+            <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-[14px] h-[14px]" />
+            {label}
+            {badge !== undefined && badge > 0 && (
+              <span className="ml-auto text-[9px] font-bold rounded-full px-1.5 py-px" style={{ background: 'rgba(108,46,219,0.12)', color: '#6C2EDB' }}>{badge}</span>
+            )}
+          </button>
+        ))}
+
+        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Schedule</div>
+        <button
+          onClick={() => handleViewChange('calendar')}
+          className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 mb-0.5 relative ${
+            viewMode === 'calendar' ? 'text-brand-600 font-semibold' : 'text-text-secondary hover:bg-surface-background hover:text-text-primary'
+          }`}
+          style={viewMode === 'calendar' ? { background: 'rgba(108,46,219,0.08)' } : undefined}
+          data-testid="sidebar-calendar"
+        >
+          {viewMode === 'calendar' && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r bg-brand-600" />}
+          <CalendarDots weight={viewMode === 'calendar' ? 'fill' : 'regular'} className="w-[14px] h-[14px]" />
+          Calendar
+        </button>
+
+        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Account</div>
+        {([
+          { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
+          { mode: 'sequences' as ViewMode, icon: Envelope, label: 'Sequences' },
+        ]).map(({ mode, icon: Icon, label }) => (
+          <button
+            key={mode}
+            onClick={() => handleViewChange(mode)}
+            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 mb-0.5 relative ${
+              viewMode === mode ? 'text-brand-600 font-semibold' : 'text-text-secondary hover:bg-surface-background hover:text-text-primary'
+            }`}
+            style={viewMode === mode ? { background: 'rgba(108,46,219,0.08)' } : undefined}
+            data-testid={`sidebar-${mode}`}
+          >
+            {viewMode === mode && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r bg-brand-600" />}
+            <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-[14px] h-[14px]" />
+            {label}
+          </button>
+        ))}
+
+        <div className="flex-1" />
+
+        {/* Beta plan card */}
+        <div className="rounded-[9px] p-3 mb-2" style={{ background: 'linear-gradient(135deg, rgba(108,46,219,0.07), rgba(108,46,219,0.03))', border: '0.5px solid rgba(108,46,219,0.18)' }}>
+          <div className="text-[9px] font-bold uppercase tracking-[0.06em]" style={{ color: '#6C2EDB' }}>Beta Plan</div>
+          <div className="text-xs font-bold text-text-primary">Free Forever</div>
+          <div className="text-[10px] text-text-secondary">One of the first 20 &#10022;</div>
+        </div>
+
+        {/* Help */}
+        <button
+          onClick={() => setShowFeedback(true)}
+          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[11px] text-text-secondary hover:bg-surface-background transition-all duration-150"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.3" /><path d="M6 6.2c0-1.1.9-2 2-2s2 .9 2 2c0 .7-.4 1.3-1 1.7-.3.2-.5.4-.6.6-.1.2-.2.3-.2.5M8 11v.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
+          Help &amp; feedback
+        </button>
+      </aside>
+
+      {/* Main column */}
+      <div className="flex flex-col min-h-screen">
+
       {/* Header */}
       <header className="glass-header sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-5 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-4 flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3">
             {/* Mobile hamburger */}
             <button
@@ -365,9 +477,10 @@ const Dashboard = () => {
             >
               <ListIcon className="w-5 h-5" />
             </button>
+            {/* Mobile logo */}
             <button
               onClick={() => { setViewMode('kanban'); setStatusFilter(null); }}
-              className="flex items-center gap-2 md:gap-3 group transition-all duration-200 hover:opacity-80"
+              className="flex items-center gap-2 md:gap-3 group transition-all duration-200 hover:opacity-80 lg:hidden"
               data-testid="header-logo-link"
             >
               {user?.brandLogoUrl ? (
@@ -379,22 +492,53 @@ const Dashboard = () => {
                 {user?.studioName || 'KOLOR STUDIO'}
               </span>
             </button>
+
+            {/* Desktop greeting */}
+            <div className="hidden lg:block">
+              <h1 className="text-[17px] font-extrabold tracking-[-0.015em] text-text-primary">
+                {getGreeting()}, {user?.firstName} <span style={{ color: '#a78bfa' }}>&#10022;</span>
+              </h1>
+              <p className="text-[11px] text-text-secondary">
+                {leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length > 0
+                  ? `${leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length} lead${leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length > 1 ? 's' : ''} awaiting quotes`
+                  : leads.length === 0
+                    ? 'Add your first lead to get started'
+                    : 'Welcome back to your studio'
+                } · {formatCurrentDate()}
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
-            <span className="text-sm text-text-secondary hidden lg:inline" data-testid="user-greeting">
-              {user?.studioName || `${user?.firstName}'s Studio`}
-            </span>
             <div className="hidden lg:flex items-center gap-2">
+              <div className="relative">
+                <MagnifyingGlass className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+                <input
+                  type="text"
+                  placeholder="Search anything…"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-[200px] h-8 rounded-[7px] border border-light-200 bg-surface-background text-[11px] pl-8 pr-3 text-text-primary placeholder:text-text-tertiary outline-none focus:border-brand-400"
+                  data-testid="dashboard-search"
+                />
+              </div>
               <HelpMenu onOpenFeedback={() => setShowFeedback(true)} />
               <button
                 onClick={() => setShowSettings(true)}
-                className="p-2.5 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl transition-all duration-200"
+                className="p-2 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl transition-all duration-200"
                 data-testid="settings-button"
                 title="Settings"
               >
-                <GearSix className="w-5 h-5" />
+                <GearSix className="w-4 h-4" />
               </button>
             </div>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="hidden lg:flex items-center gap-1.5 h-8 px-3 rounded-[7px] text-white text-[11px] font-semibold transition-colors duration-fast"
+              style={{ background: '#6C2EDB' }}
+              data-testid="add-lead-topbar"
+            >
+              <Plus weight="bold" className="w-3.5 h-3.5" /> New Lead
+            </button>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
@@ -479,23 +623,23 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-8 pb-24 lg:pb-8">
-        {/* Welcome Message */}
-        <div className="mb-4 md:mb-8" data-testid="welcome-section">
+        {/* Welcome Message — mobile only (desktop uses topbar greeting) */}
+        <div className="mb-4 lg:hidden" data-testid="welcome-section">
           {isFirstLogin ? (
             <div className="animate-fade-in">
-              <h1 className="text-2xl md:text-3xl font-bold text-text-primary font-heading" data-testid="welcome-first-login">
-                Welcome to KOLOR STUDIO, {user?.firstName}!
+              <h1 className="text-2xl font-bold text-text-primary font-heading" data-testid="welcome-first-login">
+                Welcome to KOLOR, {user?.firstName}!
               </h1>
-              <p className="text-sm md:text-base text-text-secondary mt-1 md:mt-2">
-                Your creative workspace is ready. Start by adding your first lead or sharing your inquiry form.
+              <p className="text-sm text-text-secondary mt-1">
+                Your creative workspace is ready.
               </p>
             </div>
           ) : (
             <div className="animate-fade-in">
-              <h1 className="text-2xl md:text-3xl font-bold text-text-primary font-heading" data-testid="welcome-back">
+              <h1 className="text-2xl font-bold text-text-primary font-heading" data-testid="welcome-back">
                 {getGreeting()}, {user?.firstName}
               </h1>
-              <p className="text-xs md:text-sm text-text-secondary mt-1">{formatCurrentDate()}</p>
+              <p className="text-xs text-text-secondary mt-1">{formatCurrentDate()}</p>
             </div>
           )}
         </div>
@@ -508,6 +652,9 @@ const Dashboard = () => {
             onDeleted={() => { setShowDemoBanner(false); fetchLeads(); }}
           />
         )}
+
+        {/* Smart Nudge Banner — stale leads needing follow-up */}
+        <SmartNudgeBanner leads={leads} onLeadClick={setSelectedLead} />
 
         {/* Smart Suggestion */}
         <SmartSuggestion
@@ -529,9 +676,6 @@ const Dashboard = () => {
             else if (action === 'open-brand-settings') setShowSettings(true)
           }}
         />
-
-        {/* Onboarding Checklist */}
-        <OnboardingChecklist onOpenSettings={() => setShowSettings(true)} />
 
         {/* Revenue Pipeline Widget */}
         {/* Active Commissions Widget - Universal for all users */}
@@ -625,34 +769,10 @@ const Dashboard = () => {
           <RevenuePipelineWidget />
         </div>
 
-        {/* Google Calendar Connection Widget */}
-        {!calendarHintDismissed && (
-          <div className="mb-4 md:mb-6" data-testid="calendar-widget-section">
-            <CalendarConnectionWidget
-              onStatusChange={(connected) => {
-                setCalendarConnected(connected)
-                if (connected) {
-                  setCalendarHintDismissed(true)
-                  localStorage.setItem('kolor_calendar_hint_dismissed', 'true')
-                }
-              }}
-            />
-            {!calendarConnected && (
-              <div className="flex justify-end mt-1.5">
-                <button
-                  onClick={() => {
-                    setCalendarHintDismissed(true)
-                    localStorage.setItem('kolor_calendar_hint_dismissed', 'true')
-                  }}
-                  className="text-[11px] text-text-tertiary hover:text-text-secondary transition"
-                  data-testid="dismiss-calendar-widget"
-                >
-                  Dismiss
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+        {/* ═══ Two-column layout: Main + Right sidebar ═══ */}
+        <div className={`${(viewMode === 'kanban' || viewMode === 'list') ? 'lg:grid lg:gap-6' : ''}`} style={(viewMode === 'kanban' || viewMode === 'list') ? { gridTemplateColumns: '1fr 280px' } : undefined}>
+          {/* Left: Main content */}
+          <div className="min-w-0">
 
         {/* CRM Alerts + Revenue Dashboard */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
@@ -1036,6 +1156,73 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+
+          </div>{/* /Left column */}
+
+          {/* Right sidebar — visible on desktop for kanban/list views */}
+          {(viewMode === 'kanban' || viewMode === 'list') && (
+            <aside className="hidden lg:block space-y-4" data-testid="dashboard-right-sidebar">
+              {/* Onboarding Checklist */}
+              <OnboardingChecklist onOpenSettings={() => setShowSettings(true)} />
+
+              {/* Activity Feed */}
+              <div className="glass-card rounded-xl border border-light-200 p-4" data-testid="activity-feed-card">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary">Recent Activity</h3>
+                </div>
+                <ActivityFeed onLeadClick={(leadId) => {
+                  const lead = leads.find(l => l.id === leadId)
+                  if (lead) setSelectedLead(lead)
+                  else leadsApi.getOne(leadId).then(r => { if (r.data?.lead) setSelectedLead(r.data.lead) })
+                }} />
+              </div>
+
+              {/* Google Calendar Connection Widget */}
+              {!calendarHintDismissed && (
+                <div data-testid="calendar-widget-section">
+                  <CalendarConnectionWidget
+                    onStatusChange={(connected) => {
+                      setCalendarConnected(connected)
+                      if (connected) {
+                        setCalendarHintDismissed(true)
+                        localStorage.setItem('kolor_calendar_hint_dismissed', 'true')
+                      }
+                    }}
+                  />
+                  {!calendarConnected && (
+                    <div className="flex justify-end mt-1.5">
+                      <button
+                        onClick={() => {
+                          setCalendarHintDismissed(true)
+                          localStorage.setItem('kolor_calendar_hint_dismissed', 'true')
+                        }}
+                        className="text-[11px] text-text-tertiary hover:text-text-secondary transition"
+                        data-testid="dismiss-calendar-widget"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </aside>
+          )}
+        </div>{/* /Two-column layout */}
+
+        {/* Mobile-only: Onboarding + Activity Feed (stacked below content) */}
+        {(viewMode === 'kanban' || viewMode === 'list') && (
+          <div className="lg:hidden mt-4 space-y-4">
+            <OnboardingChecklist onOpenSettings={() => setShowSettings(true)} />
+            <div className="glass-card rounded-xl border border-light-200 p-4" data-testid="activity-feed-card-mobile">
+              <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-3">Recent Activity</h3>
+              <ActivityFeed onLeadClick={(leadId) => {
+                const lead = leads.find(l => l.id === leadId)
+                if (lead) setSelectedLead(lead)
+                else leadsApi.getOne(leadId).then(r => { if (r.data?.lead) setSelectedLead(r.data.lead) })
+              }} />
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Mobile Bottom Nav */}
@@ -1100,6 +1287,7 @@ const Dashboard = () => {
         show={showCelebration}
         onClose={() => setShowCelebration(false)}
       />
+    </div>
     </div>
   )
 }
