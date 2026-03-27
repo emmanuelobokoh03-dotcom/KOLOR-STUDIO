@@ -138,6 +138,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [x] Step 5: StatusBadge System — Linear-style left-border badges replacing hardcoded spans across Dashboard, LeadDetailModal, IndustryWidgets (DONE — 100% pass, iteration_94)
 - [x] Step 6: Motion Language — 6 purposeful animations: card hover lift, modal entrance (spring), button press, toast slide-in, landing reveals (400ms standard), timing tokens (instant/fast/base/slow + standard/spring easings) + global smooth transitions. All wrapped in prefers-reduced-motion (DONE — 100% pass, iteration_95)
 - [x] Step 7: Empty States — Reusable EmptyState component with Phosphor icon, headline, description, CTA. Integrated in Leads (UserPlus), Quotes (FileText), Contracts (Signature), Calendar (CalendarBlank). All CTAs wired to existing handlers. (DONE — 100% pass, iteration_96)
+- [x] Step 8: Dashboard Intelligence Layer — StatCard component with trend indicator (up/down/neutral arrows) + sparkline micro-chart (inline SVG 80x28, 7-point line with fill area). Replaced all 4 stat cards. Accent colors: brand purple (leads), amber (quoted), green (booked). Placeholder sparkline data with TODO comments. (DONE — 100% pass, iteration_97)
 
 ### P1
 - [ ] Mobile responsiveness polish (landing page + app on various sizes)
@@ -166,6 +167,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_94: StatusBadge System Integration (frontend 100% — 7/7 tests passed)
 - iteration_95: Motion Language — 6 animations (frontend 100% — 8/8 tests passed)
 - iteration_96: Empty States — 4 views (frontend 100% — 9/9 tests passed)
+- iteration_97: Dashboard Intelligence Layer — StatCard with sparklines (frontend 100% — 11/11 tests passed)
 
 ## Test Credentials
 - bookingtest@test.com / password123
