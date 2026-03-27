@@ -7,36 +7,54 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ── Brand Colors (Purple) ─────────────────────────
+        // ── Brand Colors (Deeper Purple — #6C2EDB primary) ──────
         brand: {
-          50: '#FAF5FF',
-          100: '#F3E8FF',
-          200: '#E9D5FF',
-          300: '#D8B4FE',
-          400: '#C084FC',
-          500: '#A855F7',
-          600: '#7C3AED',
-          700: '#6D28D9',
-          800: '#5B21B6',
-          900: '#4C1D95',
-          DEFAULT: '#7C3AED',
+          50: '#F8F5FF',
+          100: '#EDE5FF',
+          200: '#DBC8FF',
+          300: '#C5A3FE',
+          400: '#AB79FC',
+          500: '#9250F5',
+          600: '#6C2EDB',
+          700: '#5B22C4',
+          800: '#4A1BA3',
+          900: '#3D1584',
+          DEFAULT: '#6C2EDB',
         },
 
-        // Purple Scale (backwards compat — used by 267+ existing refs)
+        // Purple Scale (backwards compat — mirrors brand)
         purple: {
-          50: '#FAF5FF',
-          100: '#F3E8FF',
-          200: '#E9D5FF',
-          300: '#D8B4FE',
-          400: '#C084FC',
-          500: '#A855F7',
-          600: '#7C3AED',
-          700: '#6D28D9',
-          800: '#5B21B6',
-          900: '#4C1D95',
+          50: '#F8F5FF',
+          100: '#EDE5FF',
+          200: '#DBC8FF',
+          300: '#C5A3FE',
+          400: '#AB79FC',
+          500: '#9250F5',
+          600: '#6C2EDB',
+          700: '#5B22C4',
+          800: '#4A1BA3',
+          900: '#3D1584',
         },
 
-        // Dark Neutrals (Purple undertone) — backwards compat
+        // ── Accent Warm (Amber — #E8891A primary) ───────────────
+        accent: {
+          50: '#FFF6E8',
+          100: '#FFECC6',
+          200: '#FDDFA0',
+          300: '#F8C960',
+          400: '#F0AD30',
+          500: '#E8891A',
+          600: '#C46E0E',
+          700: '#A05408',
+          800: '#7D3F05',
+          900: '#5A2C03',
+          DEFAULT: '#E8891A',
+          hover: '#C46E0E',
+          light: '#FFF6E8',
+          tint: '#FDDFA0',
+        },
+
+        // Dark Neutrals (Purple undertone)
         dark: {
           950: '#0A0A0F',
           900: '#1A1A2E',
@@ -45,45 +63,45 @@ export default {
           600: '#4B4B6B',
         },
 
-        // Light Neutrals — backwards compat
+        // Light Neutrals — warm-tinted
         light: {
-          0: '#FFFFFF',
-          50: '#FAFAFA',
-          100: '#F5F5F5',
-          200: '#E5E5E5',
-          300: '#D4D4D4',
+          0: '#FDFCFF',
+          50: '#F9F7FE',
+          100: '#F4F1FA',
+          200: '#EDE8F5',
+          300: '#DDD6EA',
         },
 
-        // ── Surface Colors ────────────────────────────────
+        // ── Surface Colors (warm purple-tinted) ─────────────────
         surface: {
-          base: '#FFFFFF',        // Cards, panels, elevated content
-          white: '#FFFFFF',       // backwards compat alias
-          background: '#FAFAFA',  // Page background
-          card: '#FFFFFF',        // backwards compat alias
-          hover: '#F5F5F5',       // Hover state backgrounds
-          elevated: '#FFFFFF',    // Modals, popovers
+          base: '#FDFCFF',
+          white: '#FDFCFF',
+          background: '#F9F7FE',
+          card: '#FDFCFF',
+          hover: '#F4F1FA',
+          elevated: '#FDFCFF',
         },
 
-        // ── Border Colors ─────────────────────────────────
+        // ── Border Colors (warm purple-tinted) ──────────────────
         border: {
-          light: '#F3F4F6',
-          DEFAULT: '#E5E7EB',
-          strong: '#D1D5DB',
-          dark: '#D1D5DB',        // alias for strong
-          brand: '#E9D5FF',
+          light: '#F2EEF8',
+          DEFAULT: '#EDE8F5',
+          strong: '#DDD6EA',
+          dark: '#DDD6EA',
+          brand: '#DBC8FF',
         },
 
-        // ── Text Colors ───────────────────────────────────
+        // ── Text Colors ─────────────────────────────────────────
         text: {
           primary: '#1A1A2E',
           secondary: '#4B5563',
           tertiary: '#6B7280',
           disabled: '#9CA3AF',
           inverse: '#FFFFFF',
-          brand: '#7C3AED',
+          brand: '#6C2EDB',
         },
 
-        // ── Semantic Colors ───────────────────────────────
+        // ── Semantic Colors ─────────────────────────────────────
         success: {
           DEFAULT: '#10B981',
           hover: '#059669',
@@ -129,22 +147,20 @@ export default {
 
         // Brand Theme (CSS variable-driven for BrandThemeContext)
         'brand-primary': {
-          DEFAULT: 'rgb(var(--color-brand-primary-rgb, 124 58 237) / <alpha-value>)',
-          dark: 'rgb(var(--color-brand-primary-dark-rgb, 109 40 217) / <alpha-value>)',
-          light: 'rgb(var(--color-brand-primary-light-rgb, 192 132 252) / <alpha-value>)',
+          DEFAULT: 'rgb(var(--color-brand-primary-rgb, 108 46 219) / <alpha-value>)',
+          dark: 'rgb(var(--color-brand-primary-dark-rgb, 91 34 196) / <alpha-value>)',
+          light: 'rgb(var(--color-brand-primary-light-rgb, 171 121 252) / <alpha-value>)',
         },
         'brand-accent': {
-          DEFAULT: 'rgb(var(--color-brand-accent-rgb, 236 72 153) / <alpha-value>)',
-          dark: 'rgb(var(--color-brand-accent-dark-rgb, 219 39 119) / <alpha-value>)',
-          light: 'rgb(var(--color-brand-accent-light-rgb, 244 114 182) / <alpha-value>)',
+          DEFAULT: 'rgb(var(--color-brand-accent-rgb, 232 137 26) / <alpha-value>)',
+          dark: 'rgb(var(--color-brand-accent-dark-rgb, 196 110 14) / <alpha-value>)',
+          light: 'rgb(var(--color-brand-accent-light-rgb, 253 223 160) / <alpha-value>)',
         },
       },
 
       // ── Typography ────────────────────────────────────
       fontFamily: {
-        // Single font family — Inter everywhere
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        // Deprecated aliases — all resolve to Inter for backward compat
         heading: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         body: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         display: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
@@ -184,26 +200,25 @@ export default {
         '3xl': '64px',
       },
 
-      // ── Gradients ─────────────────────────────────────
+      // ── Gradients (updated to deeper purple) ──────────
       backgroundImage: {
-        'gradient-brand': 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C084FC 100%)',
-        'gradient-creative': 'linear-gradient(135deg, #7C3AED 0%, #06B6D4 50%, #10B981 100%)',
-        'gradient-hero': 'linear-gradient(135deg, #1A1A2E 0%, #7C3AED 100%)',
+        'gradient-brand': 'linear-gradient(135deg, #6C2EDB 0%, #9250F5 50%, #AB79FC 100%)',
+        'gradient-creative': 'linear-gradient(135deg, #6C2EDB 0%, #06B6D4 50%, #10B981 100%)',
+        'gradient-hero': 'linear-gradient(135deg, #1A1A2E 0%, #6C2EDB 100%)',
       },
 
-      // ── Elevation / Shadows (simplified 3-level hierarchy) ──
+      // ── Elevation / Shadows ───────────────────────────
       boxShadow: {
         'elevation-0': 'none',
         'elevation-1': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
         'elevation-2': '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         'elevation-3': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
         'elevation-4': '0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        // Simplified 3-level: card → hover → modal
         'card': '0 1px 3px rgba(0, 0, 0, 0.1)',
         'card-hover': '0 4px 12px rgba(0, 0, 0, 0.12)',
         'modal': '0 20px 40px rgba(0, 0, 0, 0.15)',
         'button': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'input-focus': '0 0 0 3px rgba(124, 58, 237, 0.1)',
+        'input-focus': '0 0 0 3px rgba(108, 46, 219, 0.1)',
         'input-error': '0 0 0 3px rgba(239, 68, 68, 0.1)',
       },
 
