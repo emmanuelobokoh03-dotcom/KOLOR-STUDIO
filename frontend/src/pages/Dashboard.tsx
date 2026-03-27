@@ -58,6 +58,7 @@ import { EmptyState } from '../components/EmptyState'
 import { StatCard } from '../components/StatCard'
 import { SmartNudgeBanner } from '../components/SmartNudgeBanner'
 import { ActivityFeed } from '../components/ActivityFeed'
+import { QuickActions } from '../components/QuickActions'
 import { UserPlus } from '@phosphor-icons/react'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
@@ -134,6 +135,7 @@ const Dashboard = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [showHelpPanel, setShowHelpPanel] = useState(false)
+  const [staleFilter, setStaleFilter] = useState(false)
   const [celebration, setCelebration] = useState<Achievement | null>(null)
   const [showCelebration, setShowCelebration] = useState(false)
   const [showDemoBanner, setShowDemoBanner] = useState(true)
@@ -252,6 +254,7 @@ const Dashboard = () => {
   const handleViewChange = (view: ViewMode) => {
     setViewMode(view)
     setMobileMenuOpen(false)
+    setStaleFilter(false)
     trackViewChanged(view)
   }
 
@@ -302,6 +305,11 @@ const Dashboard = () => {
 
   const filteredLeads = leads.filter(lead => {
     if (statusFilter && lead.status !== statusFilter) return false
+    if (staleFilter) {
+      const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+      if (new Date(lead.updatedAt).getTime() >= sevenDaysAgo) return false
+      if (['BOOKED', 'LOST'].includes(lead.status)) return false
+    }
     if (!searchQuery) return true
     const query = searchQuery.toLowerCase()
     return (
@@ -318,7 +326,32 @@ const Dashboard = () => {
 
   const clearStatusFilter = () => setStatusFilter(null)
 
-  const activeFilterCount = [statusFilter, projectTypeFilter, industryFilter].filter(Boolean).length;
+  // Quick Actions handlers
+  const handleQuickSendQuote = (lead: Lead | null) => {
+    if (lead) {
+      setSelectedLead(lead)
+      setSelectedLeadInitialTab('quotes')
+    } else {
+      setShowAddModal(true)
+    }
+  }
+
+  const handleQuickFollowUp = (staleLeads: Lead[]) => {
+    if (staleLeads.length > 0) {
+      setStaleFilter(true)
+      setStatusFilter(null)
+      setViewMode('list')
+    } else {
+      setStaleFilter(false)
+      setViewMode('list')
+    }
+  }
+
+  const handleQuickCheckSchedule = () => {
+    handleViewChange('calendar')
+  }
+
+  const activeFilterCount = [statusFilter, projectTypeFilter, industryFilter, staleFilter].filter(Boolean).length;
 
   if (loading) {
     return (
@@ -981,6 +1014,14 @@ const Dashboard = () => {
               {/* Active filter tags */}
               {activeFilterCount > 0 && (
                 <div className="flex items-center gap-2 flex-wrap">
+                  {staleFilter && (
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg">
+                      <span className="text-xs text-amber-700 font-medium">Stale (7+ days)</span>
+                      <button onClick={() => setStaleFilter(false)} className="p-0.5 hover:bg-amber-100 rounded" data-testid="clear-stale-filter">
+                        <X className="w-3 h-3 text-amber-500" />
+                      </button>
+                    </div>
+                  )}
                   {statusFilter && (
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 border border-purple-200 rounded-lg">
                       <span className="text-xs text-purple-700 font-medium">{LEAD_STATUS_LABELS[statusFilter as LeadStatus]}</span>
@@ -1177,6 +1218,15 @@ const Dashboard = () => {
                 }} />
               </div>
 
+              {/* Quick Actions */}
+              <QuickActions
+                leads={leads}
+                onSendQuote={handleQuickSendQuote}
+                onFollowUpStale={handleQuickFollowUp}
+                onCheckSchedule={handleQuickCheckSchedule}
+                onAddLead={() => setShowAddModal(true)}
+              />
+
               {/* Google Calendar Connection Widget */}
               {!calendarHintDismissed && (
                 <div data-testid="calendar-widget-section">
@@ -1209,7 +1259,7 @@ const Dashboard = () => {
           )}
         </div>{/* /Two-column layout */}
 
-        {/* Mobile-only: Onboarding + Activity Feed (stacked below content) */}
+        {/* Mobile-only: Onboarding + Activity Feed + Quick Actions (stacked below content) */}
         {(viewMode === 'kanban' || viewMode === 'list') && (
           <div className="lg:hidden mt-4 space-y-4">
             <OnboardingChecklist onOpenSettings={() => setShowSettings(true)} />
@@ -1221,6 +1271,13 @@ const Dashboard = () => {
                 else leadsApi.getOne(leadId).then(r => { if (r.data?.lead) setSelectedLead(r.data.lead) })
               }} />
             </div>
+            <QuickActions
+              leads={leads}
+              onSendQuote={handleQuickSendQuote}
+              onFollowUpStale={handleQuickFollowUp}
+              onCheckSchedule={handleQuickCheckSchedule}
+              onAddLead={() => setShowAddModal(true)}
+            />
           </div>
         )}
       </main>
