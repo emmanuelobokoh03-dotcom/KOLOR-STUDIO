@@ -55,6 +55,7 @@ import DemoProjectBanner from '../components/DemoProjectBanner'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 import { StatusBadge } from '../components/StatusBadge'
 import { EmptyState } from '../components/EmptyState'
+import { StatCard } from '../components/StatCard'
 import { UserPlus } from '@phosphor-icons/react'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
@@ -688,31 +689,54 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
-          {([
-            { key: null, label: 'Total Leads', count: stats?.total || 0, icon: Users, iconBg: 'bg-purple-50 border-purple-200', iconColor: 'text-purple-500', testId: 'stat-total-leads' },
-            { key: 'NEW', label: 'New Leads', count: stats?.statusCounts?.NEW || 0, icon: TrendUp, iconBg: 'bg-blue-50 border-blue-200', iconColor: 'text-blue-500', testId: 'stat-new-leads' },
-            { key: 'QUOTED', label: 'Quoted', count: stats?.statusCounts?.QUOTED || 0, icon: CalendarBlank, iconBg: 'bg-amber-50 border-amber-200', iconColor: 'text-amber-500', testId: 'stat-quoted' },
-            { key: 'BOOKED', label: 'Booked', count: stats?.statusCounts?.BOOKED || 0, icon: CurrencyDollar, iconBg: 'bg-emerald-50 border-emerald-200', iconColor: 'text-emerald-500', testId: 'stat-booked' },
-          ]).map(({ key, label, count, icon: Icon, iconBg, iconColor, testId }) => (
-            <div
-              key={testId}
-              className={`glass-card rounded-xl p-4 md:p-6 border cursor-pointer hover:border-purple-300 transition-all duration-200 group hover:shadow-lg hover:shadow-brand-primary/5 active:scale-[0.98] ${
-                statusFilter === key ? `border-brand-primary bg-brand-primary/10` : 'border-light-200'
-              }`}
-              onClick={() => key === null ? clearStatusFilter() : handleFilterByStatus(statusFilter === key ? null : key)}
-              data-testid={testId}
-            >
-              <div className="flex items-center gap-3 md:gap-4">
-                <div className={`p-2 md:p-3 ${iconBg} rounded-xl border group-hover:scale-110 transition-all duration-200`}>
-                  <Icon weight="duotone" className={`w-4 h-4 md:w-5 md:h-5 ${iconColor}`} />
-                </div>
-                <div>
-                  <p className="text-xl md:text-2xl font-bold text-text-primary">{count}</p>
-                  <p className="text-xs md:text-sm text-text-secondary">{label}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+          <StatCard
+            icon={Users}
+            label="Total Leads"
+            value={stats?.total || 0}
+            trend={{ direction: 'neutral', label: 'all time' }}
+            // TODO: wire to API — replace placeholder with real weekly history
+            sparkline={[{ value: 2 }, { value: 3 }, { value: 3 }, { value: 4 }, { value: 4 }, { value: 5 }, { value: stats?.total || 5 }]}
+            accentColor="brand"
+            active={statusFilter === null}
+            onClick={() => clearStatusFilter()}
+            testId="stat-total-leads"
+          />
+          <StatCard
+            icon={TrendUp}
+            label="New Leads"
+            value={stats?.statusCounts?.NEW || 0}
+            trend={{ direction: 'neutral', label: 'awaiting review' }}
+            // TODO: wire to API — replace placeholder with real weekly history
+            sparkline={[{ value: 1 }, { value: 2 }, { value: 1 }, { value: 3 }, { value: 2 }, { value: 2 }, { value: stats?.statusCounts?.NEW || 2 }]}
+            accentColor="brand"
+            active={statusFilter === 'NEW'}
+            onClick={() => handleFilterByStatus(statusFilter === 'NEW' ? null : 'NEW')}
+            testId="stat-new-leads"
+          />
+          <StatCard
+            icon={CalendarBlank}
+            label="Quoted"
+            value={stats?.statusCounts?.QUOTED || 0}
+            trend={{ direction: 'neutral', label: 'pending approval' }}
+            // TODO: wire to API — replace placeholder with real weekly history
+            sparkline={[{ value: 0 }, { value: 1 }, { value: 1 }, { value: 2 }, { value: 1 }, { value: 1 }, { value: stats?.statusCounts?.QUOTED || 1 }]}
+            accentColor="amber"
+            active={statusFilter === 'QUOTED'}
+            onClick={() => handleFilterByStatus(statusFilter === 'QUOTED' ? null : 'QUOTED')}
+            testId="stat-quoted"
+          />
+          <StatCard
+            icon={CurrencyDollar}
+            label="Booked"
+            value={stats?.statusCounts?.BOOKED || 0}
+            trend={{ direction: 'neutral', label: 'confirmed' }}
+            // TODO: wire to API — replace placeholder with real weekly history
+            sparkline={[{ value: 0 }, { value: 0 }, { value: 1 }, { value: 1 }, { value: 1 }, { value: 0 }, { value: stats?.statusCounts?.BOOKED || 0 }]}
+            accentColor="green"
+            active={statusFilter === 'BOOKED'}
+            onClick={() => handleFilterByStatus(statusFilter === 'BOOKED' ? null : 'BOOKED')}
+            testId="stat-booked"
+          />
         </div>
 
         {/* Toolbar */}
