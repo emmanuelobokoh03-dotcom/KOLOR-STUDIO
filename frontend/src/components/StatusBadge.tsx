@@ -1,98 +1,107 @@
-import { IconProps } from '@phosphor-icons/react';
-import { 
-  Envelope, 
-  FileText, 
-  PencilSimple, 
-  CurrencyDollar, 
-  Camera, 
-  CheckCircle,
-  User,
-  Clock
-} from '@phosphor-icons/react';
+// Left-border accent badge for lead statuses.
+// Follows the Linear-style pattern: colored left border, tinted background, dark text.
 
-type LeadStatus = 
-  | 'NEW' 
-  | 'CONTACTED' 
-  | 'QUOTED' 
-  | 'BOOKED' 
-  | 'IN_PROGRESS' 
-  | 'COMPLETED' 
-  | 'LOST';
+type LeadStatus =
+  | 'NEW'
+  | 'REVIEWING'
+  | 'CONTACTED'
+  | 'QUALIFIED'
+  | 'QUOTED'
+  | 'NEGOTIATING'
+  | 'BOOKED'
+  | 'LOST'
+  | 'COMPLETED';
 
-const STATUS_CONFIG: Record<string, {
+interface StatusConfig {
   label: string;
-  bg: string;
-  text: string;
-  border: string;
-  icon: React.ComponentType<IconProps>;
-}> = {
+  border: string;   // border-l color
+  bg: string;        // tinted background
+  text: string;      // text color
+}
+
+const STATUS_CONFIG: Record<LeadStatus, StatusConfig> = {
+  // Inquiry stage — slate / gray
   NEW: {
-    label: 'New Lead',
-    bg: 'bg-blue-50',
-    text: 'text-blue-700',
-    border: 'border-blue-200',
-    icon: User,
+    label: 'New',
+    border: 'border-l-slate-400',
+    bg: 'bg-slate-50',
+    text: 'text-slate-700',
+  },
+  // Discovery stages — brand purple
+  REVIEWING: {
+    label: 'Reviewing',
+    border: 'border-l-brand-600',
+    bg: 'bg-brand-50',
+    text: 'text-brand-700',
   },
   CONTACTED: {
     label: 'Contacted',
-    bg: 'bg-indigo-50',
-    text: 'text-indigo-700',
-    border: 'border-indigo-200',
-    icon: Envelope,
+    border: 'border-l-brand-500',
+    bg: 'bg-brand-50',
+    text: 'text-brand-700',
   },
+  QUALIFIED: {
+    label: 'Qualified',
+    border: 'border-l-brand-600',
+    bg: 'bg-brand-50',
+    text: 'text-brand-700',
+  },
+  // Quoted — accent warm (amber)
   QUOTED: {
-    label: 'Quote Sent',
-    bg: 'bg-amber-50',
-    text: 'text-amber-700',
-    border: 'border-amber-200',
-    icon: FileText,
+    label: 'Quoted',
+    border: 'border-l-accent-500',
+    bg: 'bg-accent-50',
+    text: 'text-accent-700',
   },
+  // Negotiating — blue
+  NEGOTIATING: {
+    label: 'Negotiating',
+    border: 'border-l-blue-500',
+    bg: 'bg-blue-50',
+    text: 'text-blue-700',
+  },
+  // Contracted / Booked — green
   BOOKED: {
     label: 'Booked',
+    border: 'border-l-emerald-500',
     bg: 'bg-emerald-50',
     text: 'text-emerald-700',
-    border: 'border-emerald-200',
-    icon: CheckCircle,
   },
-  IN_PROGRESS: {
-    label: 'In Progress',
-    bg: 'bg-cyan-50',
-    text: 'text-cyan-700',
-    border: 'border-cyan-200',
-    icon: Camera,
-  },
+  // Completed — deep green
   COMPLETED: {
     label: 'Completed',
+    border: 'border-l-green-600',
     bg: 'bg-green-50',
-    text: 'text-green-700',
-    border: 'border-green-200',
-    icon: CheckCircle,
+    text: 'text-green-800',
   },
+  // Lost — muted slate
   LOST: {
     label: 'Lost',
-    bg: 'bg-gray-50',
-    text: 'text-text-tertiary',
-    border: 'border-gray-200',
-    icon: Clock,
+    border: 'border-l-slate-300',
+    bg: 'bg-slate-50/70',
+    text: 'text-slate-500',
   },
 };
 
 interface StatusBadgeProps {
   status: string;
   className?: string;
+  size?: 'sm' | 'md';
 }
 
-export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
-  const config = STATUS_CONFIG[status] || STATUS_CONFIG.NEW;
-  const Icon = config.icon;
-  
+export function StatusBadge({ status, className = '', size = 'md' }: StatusBadgeProps) {
+  const config = STATUS_CONFIG[status as LeadStatus] || STATUS_CONFIG.NEW;
+
+  const sizeClasses = size === 'sm'
+    ? 'text-[10px] px-2 py-0.5'
+    : 'text-xs px-3 py-1';
+
   return (
-    <div 
-      className={`px-3 py-1 ${config.bg} ${config.text} rounded-full text-xs font-medium flex items-center gap-1.5 border ${config.border} ${className}`}
+    <span
+      className={`inline-flex items-center font-medium border-l-[3px] rounded-r-md ${config.border} ${config.bg} ${config.text} ${sizeClasses} ${className}`}
       data-testid={`status-badge-${status.toLowerCase()}`}
     >
-      <Icon weight="fill" className="w-3.5 h-3.5" />
       {config.label}
-    </div>
+    </span>
   );
 }

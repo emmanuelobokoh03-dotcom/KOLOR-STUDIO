@@ -24,6 +24,7 @@ import {
   Booking, Lead, LeadStatus,
   LEAD_STATUS_LABELS, SERVICE_TYPE_LABELS,
 } from '../services/api'
+import { StatusBadge } from './StatusBadge'
 
 // ─── Shared helpers ────────────────────────────────────────
 
@@ -197,9 +198,7 @@ export function PhotographyWidgets({ onViewCalendar, onLeadClick }: PhotographyW
                   <p className="text-sm font-medium text-text-primary truncate group-hover:text-purple-600 transition-colors">{lead.projectTitle}</p>
                   <p className="text-xs text-text-secondary">{lead.clientName}</p>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-200 flex-shrink-0">
-                  {LEAD_STATUS_LABELS[lead.status]}
-                </span>
+                <StatusBadge status={lead.status} size="sm" />
               </div>
             ))}
           </div>
@@ -286,9 +285,7 @@ export function FineArtWidgets({ onLeadClick, onAddLead }: FineArtWidgetsProps) 
                   <p className="text-sm font-medium text-text-primary truncate group-hover:text-amber-300 transition-colors">{lead.projectTitle}</p>
                   <p className="text-xs text-text-secondary">{lead.clientName}</p>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-300 border border-amber-200 flex-shrink-0">
-                  {LEAD_STATUS_LABELS[lead.status]}
-                </span>
+                <StatusBadge status={lead.status} size="sm" />
               </div>
             ))}
           </div>

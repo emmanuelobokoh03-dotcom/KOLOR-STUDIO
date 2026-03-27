@@ -53,19 +53,9 @@ import SequencesDashboard from './SequencesDashboard'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import DemoProjectBanner from '../components/DemoProjectBanner'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
+import { StatusBadge } from '../components/StatusBadge'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
-
-const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
-  NEW: 'bg-blue-50 text-blue-700 border border-blue-200',
-  REVIEWING: 'bg-purple-50 text-purple-700 border border-purple-200',
-  CONTACTED: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
-  QUALIFIED: 'bg-violet-50 text-violet-700 border border-violet-200',
-  QUOTED: 'bg-amber-50 text-amber-700 border border-amber-200',
-  NEGOTIATING: 'bg-sky-50 text-sky-700 border border-sky-200',
-  BOOKED: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  LOST: 'bg-gray-100 text-text-tertiary border border-gray-200',
-};
 
 // Skeleton components for loading states
 const StatCardSkeleton = () => (
@@ -582,9 +572,7 @@ const Dashboard = () => {
                       <p className="text-sm font-medium text-text-primary truncate group-hover:text-purple-600 transition-colors">{lead.projectTitle}</p>
                       <p className="text-xs text-text-secondary">{lead.clientName}</p>
                     </div>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full flex-shrink-0 ${DARK_STATUS_COLORS[lead.status]}`}>
-                      {LEAD_STATUS_LABELS[lead.status]}
-                    </span>
+                    <StatusBadge status={lead.status} size="sm" />
                   </div>
                 ))}
             </div>
@@ -1060,9 +1048,7 @@ const Dashboard = () => {
                         <p className="text-xs text-text-secondary">{lead.budget || 'No budget'}</p>
                       </td>
                       <td className="px-4 md:px-6 py-3 md:py-5">
-                        <span className={`px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-medium ${DARK_STATUS_COLORS[lead.status]}`}>
-                          {LEAD_STATUS_LABELS[lead.status]}
-                        </span>
+                        <StatusBadge status={lead.status} size="sm" />
                       </td>
                       <td className="px-4 md:px-6 py-3 md:py-5 text-sm text-text-secondary hidden sm:table-cell">
                         {new Date(lead.createdAt).toLocaleDateString()}

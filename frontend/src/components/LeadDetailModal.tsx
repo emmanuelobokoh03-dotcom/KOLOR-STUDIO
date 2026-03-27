@@ -60,6 +60,7 @@ import ProjectTimeline from './ProjectTimeline'
 import MarkAsDeliveredButton from './MarkAsDeliveredButton'
 import FileCategoryBadge from './FileCategoryBadge'
 import FileComments from './FileComments'
+import { StatusBadge } from './StatusBadge'
 import { 
   trackFileUploaded, 
   trackFileDownloaded, 
@@ -77,17 +78,6 @@ interface LeadDetailModalProps {
 }
 
 const STATUS_OPTIONS: LeadStatus[] = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
-
-const DARK_STATUS_COLORS: Record<LeadStatus, string> = {
-  NEW: 'bg-purple-50 text-purple-600 border border-purple-200',
-  REVIEWING: 'bg-purple-50 text-purple-600 border border-purple-200',
-  CONTACTED: 'bg-purple-50 text-purple-600 border border-purple-200',
-  QUALIFIED: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
-  QUOTED: 'bg-pink-50 text-pink-600 border border-pink-200',
-  NEGOTIATING: 'bg-blue-50 text-blue-700 border border-blue-200',
-  BOOKED: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  LOST: 'bg-slate-900/30 text-text-secondary border border-light-200/50',
-};
 
 const ACTIVITY_ICONS: Record<string, React.ElementType> = {
   NOTE_ADDED: Note,
@@ -1163,9 +1153,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                         ))}
                       </select>
                     ) : (
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${DARK_STATUS_COLORS[lead.status]}`}>
-                        {LEAD_STATUS_LABELS[lead.status]}
-                      </span>
+                      <StatusBadge status={lead.status} />
                     )}
                   </div>
                   {editing ? (
