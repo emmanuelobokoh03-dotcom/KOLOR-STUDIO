@@ -16,7 +16,8 @@ import {
   Package,
   Plus,
   ArrowsClockwise,
-  Funnel
+  Funnel,
+  CalendarBlank
 } from '@phosphor-icons/react'
 
 // Cast to work around React 18 types issue
@@ -31,6 +32,7 @@ import {
   Booking 
 } from '../services/api'
 import BookingModal from './BookingModal'
+import { EmptyState } from './EmptyState'
 
 // Date-fns localizer for react-big-calendar
 const locales = { 'en-US': enUS }
@@ -318,6 +320,22 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
           <div className="h-full flex items-center justify-center">
             <SpinnerGap className="w-8 h-8 animate-spin text-purple-600" />
           </div>
+        ) : !loading && events.length === 0 ? (
+          <EmptyState
+            icon={CalendarBlank}
+            headline="See your whole schedule at a glance."
+            description="Book discovery calls and sessions. Connect Google Calendar and everything stays in sync automatically."
+            ctaLabel="Connect Google Calendar"
+            onCta={async () => {
+              try {
+                const resp = await fetch('/api/google-calendar/auth-url', { credentials: 'include' });
+                if (resp.ok) {
+                  const data = await resp.json();
+                  if (data.authUrl) window.location.href = data.authUrl;
+                }
+              } catch { /* ignore */ }
+            }}
+          />
         ) : (
           <CalendarComponent
             localizer={localizer}

@@ -29,6 +29,7 @@ import { formatCurrency, getMergedCurrencySettings, CurrencySettings } from '../
 import QuoteBuilderModal from './QuoteBuilderModal'
 import EmailComposer from './EmailComposer'
 import PaymentTracker from './PaymentTracker'
+import { EmptyState } from './EmptyState'
 import { 
   trackQuoteCreated, 
   trackQuoteSent, 
@@ -236,24 +237,13 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
 
       {/* Quotes List */}
       {quotes.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 md:py-20 px-6 text-center" data-testid="quotes-empty-state">
-          <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4B0;</div>
-          <h3 className="text-xl md:text-2xl font-semibold text-text-primary mb-2 md:mb-3">No quotes yet</h3>
-          <p className="text-sm md:text-base text-text-secondary max-w-md mb-5 md:mb-6 leading-relaxed">
-            Send a professional quote to lock in this project and get paid what you're worth.
-          </p>
-          <button
-            onClick={() => setShowBuilder(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-white rounded-xl hover:bg-brand-primary transition font-medium"
-            data-testid="quotes-empty-cta"
-          >
-            <FileText className="w-5 h-5" />
-            Create Quote
-          </button>
-          <p className="text-xs text-gray-500 mt-4 max-w-sm">
-            <strong>Pro tip:</strong> Use quote templates to save time on similar projects.
-          </p>
-        </div>
+        <EmptyState
+          icon={FileText}
+          headline="Send your first quote in 2 minutes."
+          description="Build a professional quote with your packages and rates. Clients approve it online — no email attachments, no PDFs lost in inboxes."
+          ctaLabel="+ Create Quote"
+          onCta={() => setShowBuilder(true)}
+        />
       ) : (
         <div className="space-y-4">
           {quotes.map((quote) => {

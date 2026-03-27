@@ -31,6 +31,8 @@ import {
   CaretDown
 } from '@phosphor-icons/react'
 import EmailComposer from './EmailComposer'
+import { EmptyState } from './EmptyState'
+import { Signature } from '@phosphor-icons/react'
 
 interface ContractsTabProps {
   leadId: string;
@@ -334,24 +336,13 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
           ))}
         </div>
       ) : contracts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="contracts-empty-state">
-          <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4DD;</div>
-          <h3 className="text-lg md:text-xl font-semibold text-text-primary mb-2">Protect yourself legally</h3>
-          <p className="text-sm text-text-secondary max-w-md mb-5 leading-relaxed">
-            Create a contract to set clear expectations and protect both you and your client.
-          </p>
-          <button
-            onClick={() => setShowTemplateSelector(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-white rounded-xl hover:bg-brand-primary transition font-medium"
-            data-testid="contracts-empty-cta"
-          >
-            <FileText className="w-5 h-5" />
-            Create Contract
-          </button>
-          <p className="text-xs text-text-tertiary mt-4 max-w-sm">
-            <strong>Pro tip:</strong> Use a template to get started quickly. You can customize it before sending.
-          </p>
-        </div>
+        <EmptyState
+          icon={Signature}
+          headline="Get your first contract signed today."
+          description="Send a contract for online signing. No printing, no scanning, no chasing clients for paperwork."
+          ctaLabel="+ New Contract"
+          onCta={() => setShowTemplateSelector(true)}
+        />
       ) : (
         <div className="space-y-3">
           {contracts.map((contract) => {

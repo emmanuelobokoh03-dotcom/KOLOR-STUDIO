@@ -54,6 +54,8 @@ import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import DemoProjectBanner from '../components/DemoProjectBanner'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 import { StatusBadge } from '../components/StatusBadge'
+import { EmptyState } from '../components/EmptyState'
+import { UserPlus } from '@phosphor-icons/react'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
 
@@ -951,63 +953,13 @@ const Dashboard = () => {
           <PortfolioPage user={user} />
         ) : filteredLeads.length === 0 && !loading ? (
           <div className="bg-light-50 rounded-xl border border-light-200 p-6 md:p-12">
-            <div className="flex flex-col items-center justify-center py-4 md:py-8 px-4 text-center" data-testid="dashboard-empty-state">
-              <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F3A8;</div>
-              <h3 className="text-xl md:text-2xl font-semibold text-text-primary mb-2 md:mb-3">Your creative projects start here</h3>
-              <p className="text-sm md:text-base text-text-secondary max-w-md mb-6 md:mb-8 leading-relaxed">
-                Create your first project to track communications, send quotes, collect testimonials, share files, and watch your income grow.
-              </p>
-              <div className="bg-surface-base rounded-xl p-4 md:p-5 mb-6 md:mb-8 border border-light-200 w-full max-w-md">
-                <div className="flex items-center gap-2 mb-3 md:mb-4">
-                  <input
-                    type="text"
-                    value={`${window.location.origin}/inquiry`}
-                    readOnly
-                    className="flex-1 px-3 md:px-4 py-2.5 bg-light-50 border border-light-200 rounded-xl text-text-secondary text-sm min-w-0"
-                  />
-                  <button
-                    onClick={() => navigator.clipboard.writeText(`${window.location.origin}/inquiry`)}
-                    className="px-3 md:px-4 py-2.5 bg-brand-primary text-white rounded-xl hover:bg-brand-primary text-sm font-medium flex items-center gap-1.5 flex-shrink-0 touch-target"
-                    data-testid="empty-copy-link"
-                  >
-                    <Copy className="w-4 h-4" />
-                    <span className="hidden sm:inline">Copy</span>
-                  </button>
-                </div>
-                <div className="flex gap-2 md:gap-3">
-                  <button
-                    onClick={() => {
-                      const subject = encodeURIComponent('Submit Your Project Request');
-                      const body = encodeURIComponent(`Hi,\n\nPlease submit your details through this form:\n\n${window.location.origin}/inquiry\n\nLooking forward to working with you!`);
-                      window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
-                    }}
-                    className="flex-1 px-3 py-2.5 border border-light-200 text-text-secondary rounded-xl hover:bg-light-100 text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
-                    data-testid="empty-email-link"
-                  >
-                    <Envelope className="w-4 h-4 text-purple-600" />
-                    <span className="hidden sm:inline">Email Link</span>
-                  </button>
-                  <button
-                    onClick={() => setShowShareModal(true)}
-                    className="flex-1 px-3 py-2.5 border border-light-200 text-text-secondary rounded-xl hover:bg-light-100 text-sm font-medium flex items-center justify-center gap-1.5 touch-target"
-                    data-testid="empty-more-options"
-                  >
-                    <LinkIcon className="w-4 h-4 text-purple-600" />
-                    <span className="hidden sm:inline">More Options</span>
-                  </button>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="px-6 md:px-8 py-3 bg-brand-primary text-white rounded-xl hover:bg-brand-primary font-medium touch-target"
-                data-testid="dashboard-empty-cta"
-              >
-                Create Your First Project
-              </button>
-              <p className="text-xs text-text-tertiary mt-4 max-w-sm">
-                <strong>Pro tip:</strong> Start with a real client project for the best experience. You can always delete it later!
-              </p>
-            </div>
+            <EmptyState
+              icon={UserPlus}
+              headline="Your first lead is one click away."
+              description="Add a potential client and track them from first inquiry to signed contract — all in one place."
+              ctaLabel="+ Add Lead"
+              onCta={() => setShowAddModal(true)}
+            />
           </div>
         ) : viewMode === 'kanban' ? (
           <div data-tour="kanban-board">
