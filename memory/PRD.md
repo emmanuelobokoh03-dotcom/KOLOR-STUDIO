@@ -142,6 +142,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 
 ### P0 — Landing Page Dark Atmospheric Rebuild (Mar 27, 2026)
 - [x] Complete 8-section dark landing page: Hero w/ dashboard product mock + floating pills, Social Proof Marquee, Problem pain grid, Workflow 3-step, Features screenshot + 3 cards, Testimonials featured layout, Urgency/Beta Pricing w/ countdown + pricing cards, Final CTA, Footer. All CTAs route to /signup, login to /login. CSS animations: scroll reveal, marquee, pulsing dot, float, pain card hover glow, countdown dark overrides. (DONE — 100% pass, 21/21 tests, iteration_98)
+- [x] Screenshot → Illustration Swap: Replaced all WebP screenshot images with 3 inline React UI illustration components — DashboardMock (sidebar, stats, leads table, activity feed), QuoteMock (line items, totals, client preview), PortalMock (light-mode client portal with quote, timeline, signature). Used in hero frame and 3 feature cards. (DONE — 100% pass, 11/11 tests, iteration_99)
 
 ### P1
 - [ ] Mobile responsiveness polish (landing page + app on various sizes)
@@ -172,6 +173,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_96: Empty States — 4 views (frontend 100% — 9/9 tests passed)
 - iteration_97: Dashboard Intelligence Layer — StatCard with sparklines (frontend 100% — 11/11 tests passed)
 - iteration_98: Landing Page Dark Atmospheric Rebuild (frontend 100% — 21/21 tests passed)
+- iteration_99: Screenshot → Illustration Swap (frontend 100% — 11/11 tests passed)
 
 ## Test Credentials
 - bookingtest@test.com / password123
