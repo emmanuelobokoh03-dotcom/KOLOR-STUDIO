@@ -52,7 +52,14 @@ function App() {
       </Routes>
       </div>
       <CookieConsent />
-      <Toaster theme="dark" position="top-center" richColors />
+      <Toaster
+        theme="dark"
+        position="top-center"
+        richColors
+        toastOptions={{
+          className: 'animate-toast-in',
+        }}
+      />
       <Analytics />
     </Router>
     </BrandThemeProvider>

@@ -233,11 +233,13 @@ export default {
 
       // ── Transitions ───────────────────────────────────
       transitionDuration: {
+        'instant': '80ms',
         'fast': '150ms',
         'base': '250ms',
-        'slow': '350ms',
+        'slow': '400ms',
       },
       transitionTimingFunction: {
+        'standard': 'cubic-bezier(0.4, 0, 0.2, 1)',
         'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
 
@@ -251,6 +253,8 @@ export default {
         'slide-left': 'slideLeft 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
         'bounce-subtle': 'bounceSubtle 2s infinite',
         'scale-in': 'scaleIn 150ms ease-out',
+        'modal-enter': 'modalEnter 250ms cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        'toast-in': 'toastSlideIn 250ms cubic-bezier(0.4, 0, 0.2, 1) both',
       },
       keyframes: {
         slideIn: {
@@ -284,6 +288,14 @@ export default {
         scaleIn: {
           '0%': { transform: 'scale(0.95)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        modalEnter: {
+          '0%': { opacity: '0', transform: 'translateY(8px) scale(0.98)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+        toastSlideIn: {
+          '0%': { opacity: '0', transform: 'translateX(100%)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
         },
       },
     },

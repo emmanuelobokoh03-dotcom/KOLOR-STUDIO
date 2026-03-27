@@ -220,7 +220,7 @@ function ProblemSection() {
 
   return (
     <section className="py-20 lg:py-28 bg-surface-base" data-testid="problem-section">
-      <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-12">Sound Familiar?</h2>
 
         <div className="space-y-4 text-left max-w-xl mx-auto mb-12">
@@ -259,7 +259,7 @@ function SolutionSection() {
 
   return (
     <section className="py-20 lg:py-28 bg-[#fafafa]" data-testid="solution-section">
-      <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="text-center mb-16">
           <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
             KOLOR Studio Handles the Business,<br className="hidden sm:block" /> So You Can Focus on the Craft
@@ -292,7 +292,7 @@ function FeaturesSection() {
 
   return (
     <section className="py-20 lg:py-28 bg-surface-base" data-testid="features-section">
-      <div ref={ref} className={`max-w-7xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div ref={ref} className={`max-w-7xl mx-auto px-6 transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="text-center mb-16">
           <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
             Everything You Need to Run Your Creative Business
@@ -426,7 +426,7 @@ function TestimonialsSection() {
 
   return (
     <section className="py-20 lg:py-28 bg-[#fafafa]" data-testid="testimonials-section">
-      <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="text-center mb-16">
           <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
             Join 100+ Creative Professionals Who've Taken Back Their&nbsp;Time
@@ -466,7 +466,7 @@ function StatsSection() {
 
   return (
     <section className="py-20 lg:py-28 bg-surface-base" data-testid="stats-section">
-      <div ref={ref} className={`max-w-5xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div ref={ref} className={`max-w-5xl mx-auto px-6 transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((s, i) => (
             <div key={i} className="text-center p-6 rounded-2xl bg-gradient-to-b from-brand-50/60 to-white border border-brand-100">
@@ -492,7 +492,7 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
     <section className="py-20 lg:py-28 bg-gradient-to-br from-brand-700 via-brand-800 to-indigo-900 relative overflow-hidden" data-testid="urgency-section">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA3KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNnKSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg==')] opacity-40" />
 
-      <div ref={ref} className={`relative max-w-3xl mx-auto px-6 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div ref={ref} className={`relative max-w-3xl mx-auto px-6 text-center transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-xs font-semibold text-white/90 mb-6 uppercase tracking-wider">
           <Timer weight="fill" className="w-4 h-4 text-amber-300" /> Beta Launch Special
         </div>
@@ -556,7 +556,7 @@ function FinalCTA({ onCta }: { onCta: () => void }) {
 
   return (
     <section className="py-20 lg:py-28 bg-surface-base" data-testid="final-cta-section">
-      <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-slow ease-standard ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
           Ready to Stop Losing Time and Money on&nbsp;Admin?
         </h2>

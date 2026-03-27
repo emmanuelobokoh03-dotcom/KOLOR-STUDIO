@@ -535,7 +535,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     <>
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose} role="presentation">
         <div 
-          className="glass-modal w-full md:rounded-2xl md:shadow-2xl md:max-w-3xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
+          className="glass-modal w-full md:rounded-2xl md:shadow-2xl md:max-w-3xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 animate-slide-up-full md:animate-modal-enter rounded-t-2xl md:rounded-2xl"
           onClick={(e) => e.stopPropagation()}
           data-testid="lead-detail-modal"
           role="dialog"
