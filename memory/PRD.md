@@ -140,6 +140,9 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [x] Step 7: Empty States — Reusable EmptyState component with Phosphor icon, headline, description, CTA. Integrated in Leads (UserPlus), Quotes (FileText), Contracts (Signature), Calendar (CalendarBlank). All CTAs wired to existing handlers. (DONE — 100% pass, iteration_96)
 - [x] Step 8: Dashboard Intelligence Layer — StatCard component with trend indicator (up/down/neutral arrows) + sparkline micro-chart (inline SVG 80x28, 7-point line with fill area). Replaced all 4 stat cards. Accent colors: brand purple (leads), amber (quoted), green (booked). Placeholder sparkline data with TODO comments. (DONE — 100% pass, iteration_97)
 
+### P0 — Landing Page Dark Atmospheric Rebuild (Mar 27, 2026)
+- [x] Complete 8-section dark landing page: Hero w/ dashboard product mock + floating pills, Social Proof Marquee, Problem pain grid, Workflow 3-step, Features screenshot + 3 cards, Testimonials featured layout, Urgency/Beta Pricing w/ countdown + pricing cards, Final CTA, Footer. All CTAs route to /signup, login to /login. CSS animations: scroll reveal, marquee, pulsing dot, float, pain card hover glow, countdown dark overrides. (DONE — 100% pass, 21/21 tests, iteration_98)
+
 ### P1
 - [ ] Mobile responsiveness polish (landing page + app on various sizes)
 - [ ] Launch prep — configure production domains, DNS records (SPF/DKIM) for Resend email
@@ -168,6 +171,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_95: Motion Language — 6 animations (frontend 100% — 8/8 tests passed)
 - iteration_96: Empty States — 4 views (frontend 100% — 9/9 tests passed)
 - iteration_97: Dashboard Intelligence Layer — StatCard with sparklines (frontend 100% — 11/11 tests passed)
+- iteration_98: Landing Page Dark Atmospheric Rebuild (frontend 100% — 21/21 tests passed)
 
 ## Test Credentials
 - bookingtest@test.com / password123
