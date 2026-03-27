@@ -12,7 +12,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - **Icons:** @phosphor-icons/react
 - **Tours:** Driver.js
 - **Calendar:** googleapis (Google Calendar API)
-- **Fonts:** Raleway (headings), Instrument Sans (body)
+- **Fonts:** Inter (app UI), Fraunces (marketing display headings)
 - **Auth:** HTTP-Only cookie-based JWT (migrated from localStorage)
 
 ## What's Been Implemented
@@ -130,6 +130,13 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [x] Landing Page V2 (DONE — Mar 23, 2026)
 - [x] Production Hardening: Security + Performance + Monitoring (DONE — Mar 23, 2026)
 
+### P0 — Design System Elevation (Mar 27, 2026)
+- [x] Step 1: Deeper brand purple #6C2EDB + warm surface tints + amber accent (DONE)
+- [x] Step 2: Fraunces display font for Landing Page H1/H2s (DONE)
+- [x] Step 3: Shadow depth + global input focus ring glow (DONE)
+- [x] Step 4: Features section redesign (browser chrome, floating pills, bento cards) (DONE)
+- [x] Step 5: StatusBadge System — Linear-style left-border badges replacing hardcoded spans across Dashboard, LeadDetailModal, IndustryWidgets (DONE — 100% pass, iteration_94)
+
 ### P1
 - [ ] Mobile responsiveness polish (landing page + app on various sizes)
 - [ ] Launch prep — configure production domains, DNS records (SPF/DKIM) for Resend email
@@ -153,6 +160,8 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_90: Production Hardening — Security + Performance + Monitoring (backend 14/14 100%, frontend 100%)
 - iteration_91: Design System v3.0 — Inter Font + Token Consolidation (all 13 tests passed 100%)
 - iteration_92: bg-white → bg-surface-base Migration (all 12 frontend tests passed 100%)
+- iteration_93: Design System Elevation Steps 1-4 (100%)
+- iteration_94: StatusBadge System Integration (frontend 100% — 7/7 tests passed)
 
 ## Test Credentials
 - bookingtest@test.com / password123
