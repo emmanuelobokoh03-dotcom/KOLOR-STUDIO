@@ -136,6 +136,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - [x] Step 3: Shadow depth + global input focus ring glow (DONE)
 - [x] Step 4: Features section redesign (browser chrome, floating pills, bento cards) (DONE)
 - [x] Step 5: StatusBadge System — Linear-style left-border badges replacing hardcoded spans across Dashboard, LeadDetailModal, IndustryWidgets (DONE — 100% pass, iteration_94)
+- [x] Step 6: Motion Language — 6 purposeful animations: card hover lift, modal entrance (spring), button press, toast slide-in, landing reveals (400ms standard), timing tokens (instant/fast/base/slow + standard/spring easings) + global smooth transitions. All wrapped in prefers-reduced-motion (DONE — 100% pass, iteration_95)
 
 ### P1
 - [ ] Mobile responsiveness polish (landing page + app on various sizes)
@@ -162,6 +163,7 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 - iteration_92: bg-white → bg-surface-base Migration (all 12 frontend tests passed 100%)
 - iteration_93: Design System Elevation Steps 1-4 (100%)
 - iteration_94: StatusBadge System Integration (frontend 100% — 7/7 tests passed)
+- iteration_95: Motion Language — 6 animations (frontend 100% — 8/8 tests passed)
 
 ## Test Credentials
 - bookingtest@test.com / password123
