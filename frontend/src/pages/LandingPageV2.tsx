@@ -154,7 +154,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-xs font-medium text-white/90 mb-6">
             <Sparkle weight="fill" className="w-3.5 h-3.5 text-amber-300" /> Now in Beta — Free for Early Adopters
           </div>
-          <h1 className="font-heading font-extrabold text-4xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tight mb-6" data-testid="hero-headline">
+          <h1 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight mb-6" data-testid="hero-headline">
             Stop Losing Clients to&nbsp;Messy&nbsp;Workflows
           </h1>
           <p className="text-lg sm:text-xl text-white/80 leading-relaxed mb-8 max-w-xl">
@@ -224,7 +224,7 @@ function ProblemSection() {
   return (
     <section className="py-20 lg:py-28 bg-surface-base" data-testid="problem-section">
       <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <h2 className="font-heading font-bold text-3xl sm:text-4xl text-text-primary mb-12">Sound Familiar?</h2>
+        <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-12">Sound Familiar?</h2>
 
         <div className="space-y-4 text-left max-w-xl mx-auto mb-12">
           {pains.map((p, i) => (
@@ -264,7 +264,7 @@ function SolutionSection() {
     <section className="py-20 lg:py-28 bg-[#fafafa]" data-testid="solution-section">
       <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="text-center mb-16">
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl text-text-primary mb-4">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
             KOLOR Studio Handles the Business,<br className="hidden sm:block" /> So You Can Focus on the Craft
           </h2>
           <p className="text-text-secondary text-lg max-w-2xl mx-auto">
@@ -305,7 +305,7 @@ function FeaturesSection() {
     <section className="py-20 lg:py-28 bg-surface-base" data-testid="features-section">
       <div ref={ref} className={`max-w-7xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="text-center mb-16">
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl text-text-primary mb-4">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
             Everything You Need to Run Your Creative Business
           </h2>
           <p className="text-lg text-text-secondary max-w-2xl mx-auto">
@@ -445,7 +445,7 @@ function TestimonialsSection() {
     <section className="py-20 lg:py-28 bg-[#fafafa]" data-testid="testimonials-section">
       <div ref={ref} className={`max-w-6xl mx-auto px-6 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="text-center mb-16">
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl text-text-primary mb-4">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
             Join 100+ Creative Professionals Who've Taken Back Their&nbsp;Time
           </h2>
         </div>
@@ -514,7 +514,7 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
           <Timer weight="fill" className="w-4 h-4 text-amber-300" /> Beta Launch Special
         </div>
 
-        <h2 className="font-heading font-bold text-3xl sm:text-4xl text-white mb-3">
+        <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-white mb-3">
           Limited Beta Access — Lock In Your&nbsp;Spot
         </h2>
         <p className="text-white/70 mb-8">Beta pricing expires in:</p>
@@ -574,7 +574,7 @@ function FinalCTA({ onCta }: { onCta: () => void }) {
   return (
     <section className="py-20 lg:py-28 bg-surface-base" data-testid="final-cta-section">
       <div ref={ref} className={`max-w-3xl mx-auto px-6 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <h2 className="font-heading font-bold text-3xl sm:text-4xl text-text-primary mb-4">
+        <h2 className="font-display font-bold text-3xl sm:text-4xl tracking-tight text-text-primary mb-4">
           Ready to Stop Losing Time and Money on&nbsp;Admin?
         </h2>
         <p className="text-text-secondary text-lg mb-10 max-w-xl mx-auto">

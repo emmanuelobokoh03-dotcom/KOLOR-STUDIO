@@ -161,9 +161,9 @@ export default {
       // ── Typography ────────────────────────────────────
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['"Fraunces"', 'Georgia', 'serif'],
         heading: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         body: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         brand: ['var(--font-brand, "Inter")', 'system-ui', 'sans-serif'],
       },
       fontSize: {
