@@ -522,6 +522,17 @@ select:focus {
   border-color: #EDE8F5 !important;
 }
 
+/* Floating pill animation */
+@keyframes kolor-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .animate-float {
+    animation: kolor-float 3s ease-in-out infinite;
+  }
+}
+
 /* Enhanced loading spinner */
 @keyframes kolor-spin {
   0% { transform: rotate(0deg); }

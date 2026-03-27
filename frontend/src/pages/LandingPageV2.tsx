@@ -6,9 +6,6 @@ import {
   CalendarBlank,
   Users,
   Sparkle,
-  PhoneCall,
-  Globe,
-  PencilSimple,
   ArrowRight,
   Check,
   X,
@@ -292,14 +289,6 @@ function SolutionSection() {
 /* ---------- SECTION 4: FEATURES ---------- */
 function FeaturesSection() {
   const { ref, visible } = useReveal()
-  const features = [
-    { icon: Users, title: 'Smart Lead Management', desc: 'Never lose a potential client. Every lead gets a timeline, status tracking, and automated follow-up reminders.' },
-    { icon: Sparkle, title: 'Lightning-Fast Quotes', desc: 'Custom-branded quotes with line items, totals, and validity dates. Send them in seconds, not half an hour.' },
-    { icon: PhoneCall, title: 'Discovery Call Workflow', desc: 'Book discovery calls to understand scope before quoting. 78% higher acceptance rates when you qualify first.' },
-    { icon: CalendarBlank, title: 'Google Calendar Sync', desc: 'Two-way sync with Google Calendar. Your availability updates in real-time. No more scheduling conflicts.' },
-    { icon: Globe, title: 'Client Portal', desc: 'Beautiful portal where clients review quotes, sign contracts, upload files, and track progress — all branded to you.' },
-    { icon: PencilSimple, title: 'E-Signatures Built In', desc: 'Industry-specific contracts with built-in e-signature. No more printing, scanning, or chasing signatures.' },
-  ]
 
   return (
     <section className="py-20 lg:py-28 bg-surface-base" data-testid="features-section">
@@ -313,72 +302,66 @@ function FeaturesSection() {
           </p>
         </div>
 
-        {/* Bento Grid — 3 Screenshots */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-16" data-testid="screenshot-bento-grid">
-          {/* Dashboard — Large card, left 2/3 */}
-          <div className="lg:col-span-2 lg:row-span-2 bg-surface-base rounded-2xl shadow-card overflow-hidden group border border-gray-100 hover:border-brand-200 hover:shadow-hover transition-all duration-300">
-            <div className="relative">
-              <img
-                src="/screenshots/dashboard-overview.webp"
-                alt="KOLOR Studio Dashboard — See all your leads, quotes, and contracts at a glance"
-                className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-                loading="lazy"
-                data-testid="screenshot-dashboard"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <h3 className="font-bold text-xl mb-1">Dashboard Overview</h3>
-                <p className="text-sm text-white/90">Your entire business at a glance — leads, quotes, contracts, and upcoming meetings.</p>
+        {/* Hero screenshot with browser chrome + floating pills */}
+        <div className="relative max-w-4xl mx-auto mb-20" data-testid="screenshot-hero-frame">
+          {/* Browser chrome frame */}
+          <div className="rounded-xl border border-border shadow-hover overflow-hidden bg-surface-base">
+            {/* Title bar */}
+            <div className="flex items-center gap-2 px-4 h-9 bg-surface-hover border-b border-border">
+              <span className="w-3 h-3 rounded-full" style={{ background: '#FF5F57' }} />
+              <span className="w-3 h-3 rounded-full" style={{ background: '#FFBD2E' }} />
+              <span className="w-3 h-3 rounded-full" style={{ background: '#28CA41' }} />
+              <div className="flex-1 flex justify-center">
+                <span className="text-xs text-text-tertiary font-medium bg-surface-base border border-border rounded-md px-3 py-0.5">app.kolorstudio.com/dashboard</span>
               </div>
             </div>
+            {/* Screenshot */}
+            <img
+              src="/screenshots/dashboard-overview.webp"
+              alt="KOLOR Studio Dashboard — leads, quotes, contracts at a glance"
+              className="w-full"
+              loading="lazy"
+              data-testid="screenshot-dashboard"
+            />
           </div>
 
-          {/* Quote Builder — Top right */}
-          <div className="bg-surface-base rounded-2xl shadow-card overflow-hidden group border border-gray-100 hover:border-brand-200 hover:shadow-hover transition-all duration-300">
-            <div className="relative aspect-[4/3]">
-              <img
-                src="/screenshots/quote-builder.webp"
-                alt="KOLOR Studio Quote Builder — Create professional quotes in 2 minutes"
-                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-                loading="lazy"
-                data-testid="screenshot-quotes"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <h3 className="font-bold text-lg mb-1">Quote Builder</h3>
-                <p className="text-xs text-white/90">Professional quotes in 2 minutes with line items, packages, and discounts.</p>
-              </div>
+          {/* Floating activity pills */}
+          <div className="hidden lg:block absolute -bottom-4 -left-6 animate-float z-10" style={{ animationDelay: '0s' }}>
+            <div className="flex items-center gap-2 bg-surface-base border border-border rounded-full px-4 py-2 shadow-card">
+              <span className="w-2 h-2 rounded-full bg-success flex-shrink-0" />
+              <span className="text-sm font-medium text-text-primary whitespace-nowrap">Quote accepted &middot; $4,200</span>
             </div>
           </div>
-
-          {/* Client Portal — Bottom right */}
-          <div className="bg-surface-base rounded-2xl shadow-card overflow-hidden group border border-gray-100 hover:border-brand-200 hover:shadow-hover transition-all duration-300">
-            <div className="relative aspect-[4/3]">
-              <img
-                src="/screenshots/client-portal.webp"
-                alt="KOLOR Studio Client Portal — Clients approve quotes and sign contracts online"
-                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-                loading="lazy"
-                data-testid="screenshot-portal"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <h3 className="font-bold text-lg mb-1">Client Portal</h3>
-                <p className="text-xs text-white/90">Clients approve quotes and sign contracts online — no printing, no scanning.</p>
-              </div>
+          <div className="hidden lg:block absolute -top-3 -right-6 animate-float z-10" style={{ animationDelay: '1s' }}>
+            <div className="flex items-center gap-2 bg-surface-base border border-border rounded-full px-4 py-2 shadow-card">
+              <span className="w-2 h-2 rounded-full bg-brand-600 flex-shrink-0" />
+              <span className="text-sm font-medium text-text-primary whitespace-nowrap">New inquiry &middot; Anika K.</span>
+            </div>
+          </div>
+          <div className="hidden lg:block absolute -bottom-4 -right-6 animate-float z-10" style={{ animationDelay: '2s' }}>
+            <div className="flex items-center gap-2 bg-surface-base border border-border rounded-full px-4 py-2 shadow-card">
+              <span className="w-2 h-2 rounded-full bg-info flex-shrink-0" />
+              <span className="text-sm font-medium text-text-primary whitespace-nowrap">Contract signed &#10003;</span>
             </div>
           </div>
         </div>
 
-        {/* Feature list cards — 6 compact features */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {features.map((f, i) => (
-            <div key={i} className="bg-gray-50/80 border border-gray-100 rounded-2xl p-6 hover:shadow-md hover:border-brand-200 transition-all duration-300 group flex flex-col">
-              <div className="w-11 h-11 rounded-xl bg-brand-50 flex items-center justify-center mb-4 group-hover:bg-brand-100 transition-colors">
-                <f.icon weight="duotone" className="w-6 h-6 text-brand-600" />
+        {/* Three feature cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6" data-testid="feature-cards">
+          {[
+            { img: '/screenshots/dashboard-overview.webp', label: 'Lead Management', title: 'Every lead, always visible', desc: 'From first inquiry to signed contract. No spreadsheet, no sticky notes, no lost clients.', color: 'text-brand-600' },
+            { img: '/screenshots/quote-builder.webp', label: 'Quote Builder', title: 'Professional quotes in 2 minutes', desc: "Line items, packages, discounts. Send a polished proposal before your competitor finds their spreadsheet.", color: 'text-brand-600' },
+            { img: '/screenshots/client-portal.webp', label: 'Online Contracts', title: 'Clients sign from any device', desc: "No printing. No scanning. No back-and-forth. They click, sign, and you get paid.", color: 'text-brand-600' },
+          ].map((card, i) => (
+            <div key={i} className="bg-surface-base border border-border rounded-xl overflow-hidden shadow-card hover:shadow-hover transition-all duration-300 group">
+              <div className="overflow-hidden aspect-video">
+                <img src={card.img} alt={card.title} className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" />
               </div>
-              <h3 className="font-heading font-bold text-lg text-text-primary mb-2">{f.title}</h3>
-              <p className="text-text-secondary text-sm leading-relaxed flex-1">{f.desc}</p>
+              <div className="p-6">
+                <span className={`text-xs font-bold uppercase tracking-wider ${card.color}`}>{card.label}</span>
+                <h3 className="font-bold text-lg text-text-primary mt-1 mb-2">{card.title}</h3>
+                <p className="text-sm text-text-secondary leading-relaxed">{card.desc}</p>
+              </div>
             </div>
           ))}
         </div>
