@@ -6,124 +6,84 @@ Build a full-stack CRM, "KOLOR STUDIO," for creative professionals (photographer
 ## Tech Stack
 - **Frontend:** React + TypeScript + Vite + Tailwind CSS
 - **Backend:** Node.js + Express + Prisma + PostgreSQL (Supabase)
-- **Email:** Resend (sandbox mode — verify domain for production)
-- **Payments:** Stripe
-- **Storage:** Supabase Storage
-- **Icons:** @phosphor-icons/react
-- **Tours:** Driver.js
-- **Calendar:** googleapis (Google Calendar API)
+- **Email:** Resend (sandbox mode), **Payments:** Stripe, **Storage:** Supabase Storage
+- **Icons:** @phosphor-icons/react, **Tours:** Driver.js, **Calendar:** googleapis
 - **Fonts:** Inter (app UI), Fraunces (marketing display headings)
-- **Auth:** HTTP-Only cookie-based JWT (migrated from localStorage)
+- **Auth:** HTTP-Only cookie-based JWT
 
 ## What's Been Implemented
 
 ### Core CRM (Complete)
-- Landing page, full auth, lead management, quote builder, email sending
-- Client portal, contract auto-generation, booking management
-- Portfolio, email sequences, Stripe deposits, dashboard analytics
-- Security audit, GDPR, onboarding wizard, email signature settings
-- Inquiry form, project timeline, scheduled review emails
+Landing page, full auth, lead management, quote builder, email sending, client portal, contract auto-generation, booking management, portfolio, email sequences, Stripe deposits, dashboard analytics, security audit, GDPR, onboarding wizard, inquiry form, project timeline, scheduled review emails
 
 ### Meeting Booking System (Complete)
-- MeetingType, AvailabilitySchedule, MeetingBooking models
-- Full CRUD APIs, public booking page `/book/:userId`
-- Slot generation with buffer/conflict detection, confirmation + reminder emails
+MeetingType, AvailabilitySchedule, MeetingBooking models, public booking page, slot generation
 
 ### Google Calendar Integration (Complete)
-- OAuth 2.0 flow, secure token management with refresh logic
-- Auto-create calendar events on booking, real-time availability sync
+OAuth 2.0, auto-create events on booking, real-time availability sync
 
 ### Design System v3.0 (Complete)
-- Inter-only font system, Fraunces for display headings
-- Deep brand purple #6C2EDB, surface tokens, shadow hierarchy
-- StatusBadge, motion language, empty states, StatCard with sparklines
-- Scroll reveal system, dark atmospheric landing page with React illustrations
+Inter/Fraunces fonts, deep purple #6C2EDB, StatusBadge, motion language, empty states, StatCard sparklines, scroll reveal
 
 ### Premium Auth Screens (Complete)
-- Split-panel layout: dark brand panel (left) + form (right)
-- Login.tsx and Signup.tsx with testimonials, Google SSO button, trust indicators
+Split-panel layout, Login + Signup with industry selection (2-step), trust indicators
 
 ### Dashboard Premium Upgrade (Complete)
-- Persistent desktop sidebar, topbar with contextual greetings/nudges
-- Smart Nudge Banner for stale leads, two-column layout
-- Activity Feed with `/api/activities/recent` endpoint
+Persistent sidebar, topbar with contextual greetings, Smart Nudge Banner, two-column layout, Activity Feed, Quick Actions Panel
 
-### Iteration 101 — Quick Actions Panel + Industry Language Utility (Complete — Mar 27, 2026)
+### Iteration 101 — Quick Actions + Industry Language (Complete)
+QuickActions.tsx (4 contextual actions), industryLanguage.ts (3-industry mapping), 2-step signup with industry selection, Dashboard uses industry language
 
-**Workstream 1: Quick Actions Panel**
-- Persistent panel in right sidebar below Activity Feed with 4 contextualised actions:
-  - **Send a quote**: Opens lead detail with Quotes tab for first lead without a quote
-  - **Follow up on stale leads**: Switches to list view with stale filter (7+ days inactive, amber chip indicator)
-  - **Check today's schedule**: Switches to calendar view
-  - **Add a lead**: Opens new lead modal (reuses existing handler)
-- All actions carry context (pre-filtered, pre-populated) rather than being simple navigation links
-- Renders in both desktop right sidebar and mobile stacked layout
-- Component: `QuickActions.tsx` with dynamic sub-labels, status dots (amber/green), Phosphor icons
+### Iteration 102 — Landing Page Enhancements (Complete — Mar 29, 2026)
 
-**Workstream 2: Industry Language Utility**
-- **Schema**: Added `CreativeIndustry` enum (PHOTOGRAPHY, DESIGN, FINE_ART) + User.industry field (default PHOTOGRAPHY) + Lead fields (keyDate, medium, dimensions, edition)
-- **Backend**: Signup accepts `industry` field, login/me return it. Validated to only accept valid enum values.
-- **Utility**: `industryLanguage.ts` — comprehensive mapping of all UI strings per industry (lead/quote/contract names, stages, empty states, email subjects, portal copy, quick action labels, onboarding steps, project types)
-- **Dashboard integration**: All hardcoded strings replaced with `lang.*` references (topbar, stat cards, empty states, buttons)
-- **Signup 2-step flow**: Step 1 = account details (name, email, password), Step 2 = industry selection (3 cards: Photography/Design/Fine Art with distinct colors and icons). Submit disabled until industry selected. Progress indicator (2-step bar).
-- **Testing**: 100% pass rate (Backend 7/7, Frontend 100%) — iteration_101
+**7 surgical upgrades, all additive:**
+
+1. **Hero Perspective Tilt** — CSS 3D perspective transform on browser chrome frame wrapper (rotateX(2deg) rotateY(-1.5deg), hover: near-flat). Disabled on mobile. `.hero-frame-tilt` class.
+2. **Third Ambient Glow** — Low-opacity purple radial gradient at bottom-center of hero (rgba(108,46,219,0.08)), grounding the product frame in the space.
+3. **Within-Section Stagger** — `.stagger-children` CSS class applied to card grids in Problem, Features, Testimonials, and Workflow sections. Children stagger by 80ms intervals when parent `.reveal-section` enters viewport. All wrapped in `prefers-reduced-motion` media query.
+4. **Workflow Connector Lines** — Animated horizontal lines between workflow steps using CSS `scaleX(0)→scaleX(1)` with 400ms/800ms delay. `.workflow-connector-line` class.
+5. **Star Ratings + Verified Label** — 5 amber SVG stars and "Verified KOLOR user" micro-label on featured testimonial (Sophie L.) only. Non-featured cards untouched.
+6. **FAQ Accordion Section** — NEW 8-question section between Testimonials and Urgency. Accordion uses `useState<number|null>`, only one item open at a time. Questions address: free pricing, industry support, legal binding, data ownership, contract templates, Google Calendar sync, mobile portal, post-beta pricing. `.reveal-section` + `.stagger-children` applied.
+7. **Dot Grid Texture on Final CTA** — `radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px)` background with `mask-image` gradient fade at edges.
+
+**Testing:** 100% pass rate — 24/24 frontend tests (iteration_102).
 
 ### Production Hardening (Complete)
-- Security: `validateSecrets()`, `helmet()`, HTTP-Only cookies
-- Performance: `compression()`, composite DB indexes, WebP images
-- Monitoring: Plausible analytics, Sentry stubs
+Security: `validateSecrets()`, `helmet()`, HTTP-Only cookies. Performance: `compression()`, composite DB indexes, WebP images. Monitoring: Plausible, Sentry stubs.
 
 ## Prioritized Backlog
 
 ### P0 — All Done
-- [x] All core CRM features
-- [x] Google Calendar integration
-- [x] Design System v3.0 elevation
-- [x] Dark atmospheric landing page + illustrations
-- [x] Premium auth screens (split-panel)
-- [x] Dashboard Premium Upgrade (sidebar, two-column, activity feed)
-- [x] Quick Actions Panel
-- [x] Industry Language Utility (schema, utility, signup, dashboard integration)
+- [x] Core CRM, Google Calendar, Design System v3.0
+- [x] Landing page rebuild + 7 enhancements (FAQ, stars, tilt, stagger, glows, connectors, dots)
+- [x] Premium auth (split-panel + industry selection)
+- [x] Dashboard upgrade (sidebar, activity feed, quick actions, industry language)
 - [x] Production hardening
 
 ### P1
-- [ ] Mobile responsiveness polish (landing page + app on various sizes)
 - [ ] Full industry language rollout across ALL screens (Lead Modal, Quotes, Contracts, Calendar, etc.)
-- [ ] Launch prep — configure production domains, DNS records (SPF/DKIM) for Resend
-- [ ] Push & Deploy to production
+- [ ] Mobile responsiveness polish (landing page + app)
+- [ ] Launch prep — production domains, DNS/SPF/DKIM for Resend
+- [ ] Push & Deploy
 
 ### P2 (Future)
 - [ ] Wire real sparkline trend data from backend to StatCard
 - [ ] Meeting booking widget embed code
-- [ ] Design Tokens Reference Page (`/design-system`)
-- [ ] "Smart Inbox" view for files needing review
-- [ ] "File Request" feature
-- [ ] "Smart Scheduling" feature (suggests optimal meeting times)
-- [ ] Visual Sequence Builder
-- [ ] A/B test landing page hero copy variants
+- [ ] "Smart Inbox" view, "File Request" feature, "Smart Scheduling"
+- [ ] Visual Sequence Builder, A/B test hero copy
 
 ## Test Reports
-- iteration_87-99: All previous features (auth, landing page, design system, illustrations) — all 100%
-- iteration_100: Dashboard Premium Upgrade — backend 7/7, frontend 100%
-- iteration_101: Quick Actions + Industry Language — backend 7/7, frontend 100%
+- iteration_100: Dashboard upgrade — 100%
+- iteration_101: Quick Actions + Industry Language — 100%
+- iteration_102: Landing Page 7 Enhancements — 24/24 100%
 
 ## Test Credentials
 - bookingtest@test.com / password123
 
-## Key Architecture Notes
-- Auth cookie name: `auth_token`, httpOnly=true, secure=conditional, sameSite=lax
-- Industry language: `getIndustryLanguage(user?.industry)` returns typed `IndustryLanguage` object
-- Dashboard layout: CSS Grid — 220px sidebar + main (inner 2-col: 1fr + 280px right sidebar for kanban/list)
-- Quick Actions derive data from existing `leads` state — no extra API calls
-- Stale filter: `staleFilter` boolean state, clears on view change
-
 ## Key Files
+- `/frontend/src/pages/LandingPageV2.tsx` — 9-section landing page (hero, problem, features, workflow, testimonials, FAQ, urgency, final CTA, footer)
+- `/frontend/src/index.css` — hero-frame-tilt, stagger-children, workflow-connector-line CSS
 - `/frontend/src/pages/Dashboard.tsx` — Dashboard with sidebar, topbar, quick actions, industry language
 - `/frontend/src/components/QuickActions.tsx` — 4 contextual quick actions
-- `/frontend/src/utils/industryLanguage.ts` — Industry language mapping utility
+- `/frontend/src/utils/industryLanguage.ts` — Industry language mapping
 - `/frontend/src/pages/Signup.tsx` — 2-step signup with industry selection
-- `/frontend/src/components/ActivityFeed.tsx` — Cross-lead activity feed
-- `/frontend/src/components/SmartNudgeBanner.tsx` — Stale lead nudge banner
-- `/backend/src/routes/auth.ts` — Signup/login/me with industry field
-- `/backend/src/routes/recentActivities.ts` — GET /api/activities/recent
-- `/backend/prisma/schema.prisma` — CreativeIndustry enum, User.industry, Lead fields
