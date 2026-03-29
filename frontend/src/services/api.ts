@@ -50,6 +50,7 @@ export const authApi = {
     firstName: string;
     lastName: string;
     studioName?: string;
+    industry?: string;
   }) => {
     return request<{ message: string; user: User }>('/api/auth/signup', {
       method: 'POST',
@@ -320,6 +321,9 @@ export interface User {
   logo?: string;
   timezone?: string;
   primaryIndustry?: IndustryType;
+  industry?: 'PHOTOGRAPHY' | 'DESIGN' | 'FINE_ART';
+  businessName?: string;
+  speciality?: string;
   // Currency settings
   currency?: string;
   currencySymbol?: string;

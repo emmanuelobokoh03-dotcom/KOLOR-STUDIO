@@ -7,9 +7,11 @@ import {
   CaretRight,
 } from '@phosphor-icons/react'
 import { Lead } from '../services/api'
+import { IndustryLanguage } from '../utils/industryLanguage'
 
 interface QuickActionsProps {
   leads: Lead[]
+  lang: IndustryLanguage
   onSendQuote: (lead: Lead | null) => void
   onFollowUpStale: (staleLeads: Lead[]) => void
   onCheckSchedule: () => void
@@ -35,6 +37,7 @@ function isToday(dateStr: string | undefined | null): boolean {
 
 export function QuickActions({
   leads,
+  lang,
   onSendQuote,
   onFollowUpStale,
   onCheckSchedule,
@@ -56,8 +59,8 @@ export function QuickActions({
     {
       key: 'send-quote',
       icon: FileText,
-      label: 'Send a quote',
-      sub: noQuoteLead ? 'To a lead with no quote yet' : 'Create a new quote',
+      label: lang.quoteVerb,
+      sub: noQuoteLead ? lang.quickActions.sendQuoteSub : `Create a new ${lang.quote.toLowerCase()}`,
       dot: null,
       onClick: () => onSendQuote(noQuoteLead),
     },
@@ -66,8 +69,8 @@ export function QuickActions({
       icon: Clock,
       label: 'Follow up on stale leads',
       sub: staleCount > 0
-        ? `${staleCount} lead${staleCount > 1 ? 's' : ''} with no activity in 7+ days`
-        : 'All leads are up to date',
+        ? `${staleCount} ${lang.leads.toLowerCase()} with no activity in 7+ days`
+        : `All ${lang.leads.toLowerCase()} are up to date`,
       dot: staleCount > 0 ? '#E8891A' : null,
       onClick: () => onFollowUpStale(staleLeads),
     },
@@ -84,8 +87,8 @@ export function QuickActions({
     {
       key: 'add-lead',
       icon: UserPlus,
-      label: 'Add a lead',
-      sub: 'Start tracking a new client',
+      label: `Add a ${lang.lead.toLowerCase()}`,
+      sub: lang.quickActions.addLeadSub,
       dot: null,
       onClick: onAddLead,
     },

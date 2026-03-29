@@ -59,6 +59,7 @@ import { StatCard } from '../components/StatCard'
 import { SmartNudgeBanner } from '../components/SmartNudgeBanner'
 import { ActivityFeed } from '../components/ActivityFeed'
 import { QuickActions } from '../components/QuickActions'
+import { getIndustryLanguage } from '../utils/industryLanguage'
 import { UserPlus } from '@phosphor-icons/react'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
@@ -146,6 +147,7 @@ const Dashboard = () => {
   )
   const { startTour, tourComplete } = useOnboardingTour()
   const { showWizard, setShowWizard, resetWizard } = useOnboardingWizard(leads.length)
+  const lang = getIndustryLanguage(user?.industry)
 
   useEffect(() => {
     const init = async () => {
@@ -532,12 +534,12 @@ const Dashboard = () => {
                 {getGreeting()}, {user?.firstName} <span style={{ color: '#a78bfa' }}>&#10022;</span>
               </h1>
               <p className="text-[11px] text-text-secondary">
-                {leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length > 0
-                  ? `${leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length} lead${leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length > 1 ? 's' : ''} awaiting quotes`
-                  : leads.length === 0
-                    ? 'Add your first lead to get started'
-                    : 'Welcome back to your studio'
-                } · {formatCurrentDate()}
+                {(() => {
+                  const awaitingCount = leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length
+                  if (awaitingCount > 0) return `${awaitingCount} ${awaitingCount === 1 ? lang.lead.toLowerCase() : lang.leads.toLowerCase()} awaiting ${lang.quotes.toLowerCase()}`
+                  if (leads.length === 0) return `Add your first ${lang.lead.toLowerCase()} to get started`
+                  return 'Welcome back to your studio'
+                })()} · {formatCurrentDate()}
               </p>
             </div>
           </div>
@@ -570,7 +572,7 @@ const Dashboard = () => {
               style={{ background: '#6C2EDB' }}
               data-testid="add-lead-topbar"
             >
-              <Plus weight="bold" className="w-3.5 h-3.5" /> New Lead
+              <Plus weight="bold" className="w-3.5 h-3.5" /> {lang.newLead.replace('+ ', '')}
             </button>
             <button
               onClick={handleLogout}
@@ -727,7 +729,7 @@ const Dashboard = () => {
                 className="text-xs text-purple-600 hover:text-purple-700 font-medium transition-colors"
                 data-testid="new-commission-btn"
               >
-                + New Commission
+                + {lang.newLead.replace('+ ', '')}
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -844,7 +846,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
           <StatCard
             icon={Users}
-            label="Total Leads"
+            label={`Total ${lang.leads}`}
             value={stats?.total || 0}
             trend={{ direction: 'neutral', label: 'all time' }}
             // TODO: wire to API — replace placeholder with real weekly history
@@ -856,7 +858,7 @@ const Dashboard = () => {
           />
           <StatCard
             icon={TrendUp}
-            label="New Leads"
+            label={`New ${lang.leads}`}
             value={stats?.statusCounts?.NEW || 0}
             trend={{ direction: 'neutral', label: 'awaiting review' }}
             // TODO: wire to API — replace placeholder with real weekly history
@@ -1004,7 +1006,7 @@ const Dashboard = () => {
               data-tour="add-lead"
             >
               <Plus weight="bold" className="w-4 h-4" />
-              <span className="hidden sm:inline">Add Lead</span>
+              <span className="hidden sm:inline">{lang.newLead.replace('+ ', '')}</span>
             </button>
           </div>
 
@@ -1140,9 +1142,9 @@ const Dashboard = () => {
           <div className="bg-light-50 rounded-xl border border-light-200 p-6 md:p-12">
             <EmptyState
               icon={UserPlus}
-              headline="Your first lead is one click away."
-              description="Add a potential client and track them from first inquiry to signed contract — all in one place."
-              ctaLabel="+ Add Lead"
+              headline={lang.emptyLeads}
+              description={`Add a potential ${lang.client.toLowerCase()} and track them from first ${lang.lead.toLowerCase()} to signed ${lang.contract.toLowerCase()} — all in one place.`}
+              ctaLabel={lang.newLead}
               onCta={() => setShowAddModal(true)}
             />
           </div>
@@ -1221,6 +1223,7 @@ const Dashboard = () => {
               {/* Quick Actions */}
               <QuickActions
                 leads={leads}
+                lang={lang}
                 onSendQuote={handleQuickSendQuote}
                 onFollowUpStale={handleQuickFollowUp}
                 onCheckSchedule={handleQuickCheckSchedule}
@@ -1273,6 +1276,7 @@ const Dashboard = () => {
             </div>
             <QuickActions
               leads={leads}
+              lang={lang}
               onSendQuote={handleQuickSendQuote}
               onFollowUpStale={handleQuickFollowUp}
               onCheckSchedule={handleQuickCheckSchedule}

@@ -19,7 +19,7 @@ const MAX_ATTEMPTS = 3;
 // POST /api/auth/signup - Create new user account
 router.post('/signup', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password, firstName, lastName, studioName } = req.body;
+    const { email, password, firstName, lastName, studioName, industry } = req.body;
 
     // Validate required fields
     if (!email || !password || !firstName || !lastName) {
@@ -29,6 +29,10 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
+
+    // Validate industry if provided
+    const validIndustries = ['PHOTOGRAPHY', 'DESIGN', 'FINE_ART'];
+    const userIndustry = validIndustries.includes(industry) ? industry : 'PHOTOGRAPHY';
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -65,6 +69,7 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
         firstName,
         lastName,
         studioName: studioName || null,
+        industry: userIndustry,
       },
       select: {
         id: true,
@@ -73,6 +78,7 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
         lastName: true,
         studioName: true,
         role: true,
+        industry: true,
         createdAt: true,
       }
     });
@@ -232,6 +238,9 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
         studioName: user.studioName,
         role: user.role,
         primaryIndustry: user.primaryIndustry,
+        industry: user.industry,
+        businessName: user.businessName,
+        speciality: user.speciality,
         isFirstLogin,
       }
     });
@@ -279,6 +288,9 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response): Promi
         numberFormat: true,
         defaultTaxRate: true,
         primaryIndustry: true,
+        industry: true,
+        businessName: true,
+        speciality: true,
         brandPrimaryColor: true,
         brandAccentColor: true,
         brandLogoUrl: true,

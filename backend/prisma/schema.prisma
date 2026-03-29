@@ -288,6 +288,10 @@ model Lead {
   deliveryDate      DateTime?
   editingDeadline   DateTime?
   shootingDate      DateTime?
+  keyDate           DateTime?
+  medium            String?
+  dimensions        String?
+  edition           String?
   
   // Discovery Call workflow
   discoveryCallScheduled    Boolean   @default(false)
@@ -510,6 +514,9 @@ model User {
   defaultTaxRate       Float                @default(0)
   numberFormat         String               @default("1,000.00")
   primaryIndustry      IndustryType?
+  industry             CreativeIndustry     @default(PHOTOGRAPHY)
+  businessName         String?
+  speciality           String?
   brandAccentColor     String               @default("#EC4899")
   brandFontFamily      String               @default("Inter")
   brandLogoUrl         String?
@@ -1013,4 +1020,10 @@ enum MeetingStatus {
   COMPLETED
   CANCELLED
   NO_SHOW
+}
+
+enum CreativeIndustry {
+  PHOTOGRAPHY
+  DESIGN
+  FINE_ART
 }
