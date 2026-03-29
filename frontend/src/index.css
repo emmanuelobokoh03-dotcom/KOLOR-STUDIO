@@ -535,6 +535,24 @@ select:focus {
 
 /* ===== Landing Page — Dark Atmospheric Animations ===== */
 
+/* Enhancement 1 — Hero perspective tilt (desktop only) */
+@media (prefers-reduced-motion: no-preference) and (min-width: 769px) {
+  .hero-frame-tilt {
+    perspective: 1200px;
+    transform: rotateX(2deg) rotateY(-1.5deg);
+    transform-style: preserve-3d;
+    transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hero-frame-tilt:hover {
+    transform: rotateX(1deg) rotateY(-0.5deg);
+  }
+}
+@media (max-width: 768px) {
+  .hero-frame-tilt {
+    transform: none;
+  }
+}
+
 /* Scroll reveal */
 @media (prefers-reduced-motion: no-preference) {
   .reveal-section {
@@ -549,6 +567,45 @@ select:focus {
 }
 @media (prefers-reduced-motion: reduce) {
   .reveal-section { opacity: 1; transform: none; }
+}
+
+/* Enhancement 3 — Within-section child stagger on reveal */
+@media (prefers-reduced-motion: no-preference) {
+  .stagger-children > * {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 400ms ease, transform 400ms ease;
+  }
+  .reveal-section.revealed .stagger-children > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0ms; }
+  .reveal-section.revealed .stagger-children > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 80ms; }
+  .reveal-section.revealed .stagger-children > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 160ms; }
+  .reveal-section.revealed .stagger-children > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 240ms; }
+  .reveal-section.revealed .stagger-children > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 320ms; }
+  .reveal-section.revealed .stagger-children > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 400ms; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stagger-children > * {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Enhancement 4 — Workflow connector line draw animation */
+@media (prefers-reduced-motion: no-preference) {
+  .workflow-connector-line {
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .reveal-section.revealed .workflow-connector-line {
+    transform: scaleX(1);
+  }
+  .reveal-section.revealed .workflow-connector-line:nth-of-type(1) {
+    transition-delay: 400ms;
+  }
+  .reveal-section.revealed .workflow-connector-line:nth-of-type(2) {
+    transition-delay: 800ms;
+  }
 }
 
 /* Marquee */

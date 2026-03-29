@@ -66,6 +66,7 @@ export default function LandingPageV2() {
       <WorkflowSection />
       <FeaturesSection />
       <TestimonialsSection />
+      <FAQSection />
       <UrgencySection onCta={goSignup} />
       <FinalCTA onCta={goSignup} />
       <Footer />
@@ -148,6 +149,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
       {/* Ambient glows */}
       <div className="absolute pointer-events-none" style={{ top: '10%', left: '50%', transform: 'translateX(-50%)', width: 800, height: 600, background: 'radial-gradient(ellipse, rgba(108,46,219,0.28) 0%, rgba(108,46,219,0.06) 50%, transparent 70%)', zIndex: 0 }} />
       <div className="absolute pointer-events-none" style={{ top: '20%', left: '30%', transform: 'translateX(-50%)', width: 400, height: 300, background: 'radial-gradient(ellipse, rgba(232,137,26,0.07) 0%, transparent 60%)', zIndex: 0 }} />
+      <div className="absolute pointer-events-none" style={{ bottom: -60, left: '50%', transform: 'translateX(-50%)', width: 600, height: 300, background: 'radial-gradient(ellipse, rgba(108,46,219,0.08) 0%, transparent 65%)', zIndex: 0 }} />
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-10 text-center">
         {/* Announcement pill */}
@@ -211,7 +213,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
         {/* Dashboard product frame */}
         <div className="relative max-w-[900px] mx-auto">
           <div
-            className="rounded-2xl overflow-hidden"
+            className="rounded-2xl overflow-hidden hero-frame-tilt"
             style={{
               background: '#100D20',
               border: '1px solid rgba(255,255,255,0.08)',
@@ -385,7 +387,7 @@ function ProblemSection() {
         </p>
 
         {/* Pain grid */}
-        <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 2 }}>
+        <div className="stagger-children rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 2 }}>
           {/* Featured card */}
           <div
             className="p-8 md:p-10 landing-pain-card"
@@ -447,7 +449,7 @@ function WorkflowSection() {
         </p>
 
         {/* 3-step grid */}
-        <div className="rounded-2xl overflow-hidden" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 1, background: 'rgba(255,255,255,0.06)' }}>
+        <div className="stagger-children rounded-2xl overflow-hidden" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 1, background: 'rgba(255,255,255,0.06)' }}>
           {steps.map((step, i) => (
             <div
               key={step.num}
@@ -465,11 +467,17 @@ function WorkflowSection() {
               <h3 className="text-lg font-semibold text-white/90 mb-3">{step.title}</h3>
               <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>{step.body}</p>
 
-              {/* Connector arrow */}
+              {/* Connector arrow with animated line */}
               {i < steps.length - 1 && (
-                <div className="hidden lg:flex absolute top-1/2 -right-3 z-10 w-6 h-6 rounded-full items-center justify-center" style={{ background: '#6C2EDB', transform: 'translateY(-50%)' }}>
-                  <ArrowRight weight="bold" className="w-3 h-3 text-white" />
-                </div>
+                <>
+                  <div
+                    className="hidden lg:block absolute top-1/2 z-[5] workflow-connector-line"
+                    style={{ right: 0, width: 24, height: 2, background: 'rgba(108,46,219,0.5)', marginTop: -1 }}
+                  />
+                  <div className="hidden lg:flex absolute top-1/2 -right-3 z-10 w-6 h-6 rounded-full items-center justify-center" style={{ background: '#6C2EDB', transform: 'translateY(-50%)' }}>
+                    <ArrowRight weight="bold" className="w-3 h-3 text-white" />
+                  </div>
+                </>
               )}
             </div>
           ))}
@@ -536,7 +544,7 @@ function FeaturesSection() {
         </div>
 
         {/* 3 feature cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4" data-testid="feature-cards">
+        <div className="stagger-children grid grid-cols-1 md:grid-cols-3 gap-4" data-testid="feature-cards">
           {cards.map((card, i) => (
             <div
               key={i}
@@ -579,7 +587,7 @@ function TestimonialsSection() {
         </h2>
 
         {/* Featured + 2 stacked */}
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4 mb-4">
+        <div className="stagger-children grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4 mb-4">
           <TestimonialCard
             quote="I used to spend Sunday nights drowning in spreadsheets and unanswered emails. Now I open KOLOR on Monday morning and everything is just — there. My leads, my quotes, what needs attention. I booked 4 weddings in my first month."
             name="Sophie L."
@@ -630,18 +638,185 @@ function TestimonialCard({ quote, name, title, featured = false }: { quote: stri
       onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)')}
     >
       <span className="absolute top-4 right-6 font-display font-extrabold select-none" style={{ fontSize: 60, color: 'rgba(108,46,219,0.07)', lineHeight: 1 }}>&ldquo;</span>
+      {/* Enhancement 5 — Star ratings on featured card */}
+      {featured && (
+        <div style={{ display: 'flex', gap: 3, marginBottom: 12 }}>
+          {[...Array(5)].map((_, i) => (
+            <svg key={i} width="13" height="13" viewBox="0 0 13 13" fill="#E8891A">
+              <path d="M6.5 1l1.59 3.22L12 4.91l-2.75 2.68.65 3.79L6.5 9.77l-3.4 1.61.65-3.79L1 4.91l3.91-.69L6.5 1z"/>
+            </svg>
+          ))}
+        </div>
+      )}
       <p className={`relative z-10 italic leading-relaxed flex-1 ${featured ? 'text-[17px]' : 'text-sm'}`} style={{ color: 'rgba(255,255,255,0.5)' }}>
         &ldquo;{quote}&rdquo;
       </p>
       <div className="mt-5 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <p className="text-sm font-medium text-white/70">— {name}</p>
         <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>{title}</p>
+        {featured && (
+          <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.04em', marginTop: 2, display: 'block' }}>
+            Verified KOLOR user
+          </span>
+        )}
       </div>
     </div>
   )
 }
 
-/* ---------- SECTION 7: URGENCY / BETA PRICING ---------- */
+/* ---------- SECTION 7: FAQ ACCORDION ---------- */
+const FAQ_ITEMS: { question: string; answer: string }[] = [
+  {
+    question: 'Is KOLOR really free for the first 20 users?',
+    answer: 'Yes \u2014 completely free, forever. No credit card required at signup, no trial period, no hidden costs. The first 20 users who create an account during beta get full access to every feature, permanently. After those 20 spots are claimed, new users pay $9/month during the beta period.',
+  },
+  {
+    question: 'Which creative industries does KOLOR support?',
+    answer: 'KOLOR is built for three industries: photography (wedding, portrait, commercial, fashion), design (brand, UI/UX, graphic, interior, motion, illustration), and fine art (painting, sculpture, print, mixed media, installation). When you sign up, you choose your industry and KOLOR adapts its language, workflows, and templates to match \u2014 so a fine artist sees \u201cCommission\u201d and \u201cCollector\u201d where a photographer sees \u201cBooking\u201d and \u201cClient.\u201d',
+  },
+  {
+    question: 'Are the contracts legally binding?',
+    answer: 'Yes. KOLOR\u2019s e-signature system complies with the Electronic Signatures in Global and National Commerce Act (ESIGN) in the US and the eIDAS regulation in the EU. Every signed contract includes a timestamped audit trail \u2014 when it was sent, when it was first opened, and when each party signed. We recommend consulting a lawyer to review your specific contract clauses, but the signing mechanism itself is legally enforceable.',
+  },
+  {
+    question: 'What happens to my data if I leave?',
+    answer: 'You own your data entirely. You can export all your leads, quotes, contracts, and client records at any time from Settings \u2192 Export. If you close your account, your data is permanently deleted from our servers within 30 days. We never sell your data or share it with third parties.',
+  },
+  {
+    question: 'Does KOLOR replace my existing contract?',
+    answer: 'Not necessarily. You can upload your existing contract template and KOLOR will auto-fill the client name, project details, and agreed price from your quote. If you don\u2019t have a contract yet, KOLOR provides industry-specific starting templates for photography, design, and fine art \u2014 which your lawyer can review and customise before you use them with clients.',
+  },
+  {
+    question: 'How does Google Calendar sync work?',
+    answer: 'Connect your Google account in Settings and KOLOR automatically creates calendar events for every shoot date, deadline, or discovery call you schedule through the app. Changes made in KOLOR update your Google Calendar in real time. The sync is one-way by default (KOLOR \u2192 Google) but two-way sync is on our roadmap.',
+  },
+  {
+    question: 'Can my clients use the portal on their phone?',
+    answer: 'Yes \u2014 the client portal is fully mobile-responsive. Most clients open quote and contract links directly from their email on a phone. The approval button is always above the fold, the quote is readable at any screen size, and signing works with a finger on touch screens.',
+  },
+  {
+    question: 'What\u2019s coming after the beta?',
+    answer: 'The public launch will introduce three tiers: Free (up to 3 active projects), Pro at $29/month (unlimited projects, priority support), and Studio at $79/month (team features, client portal white-labelling, email sequence automation). Beta users keep their free or $9/month rate locked in permanently \u2014 regardless of what the public pricing becomes.',
+  },
+]
+
+function FAQSection() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
+
+  // Inject FAQPage JSON-LD structured data for Google rich snippets
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.text = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: FAQ_ITEMS.map(item => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    })
+    document.head.appendChild(script)
+    return () => { document.head.removeChild(script) }
+  }, [])
+
+  return (
+    <section
+      className="reveal-section"
+      style={{
+        padding: 'clamp(64px, 8vw, 96px) clamp(16px, 4vw, 40px)',
+        background: 'rgba(255,255,255,0.015)',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}
+      data-testid="faq-section"
+    >
+      <div style={{ maxWidth: 720, margin: '0 auto' }}>
+        <SectionLabel>Answers</SectionLabel>
+
+        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-3" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Everything you need to know.
+          </span>
+        </h2>
+
+        <p className="mb-10" style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7 }}>
+          Questions before you commit are good. Here are the ones we hear most.
+        </p>
+
+        <div className="stagger-children">
+          {FAQ_ITEMS.map((item, i) => (
+            <div
+              key={i}
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', overflow: 'hidden' }}
+              data-testid={`faq-item-${i}`}
+            >
+              <button
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '20px 0',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  gap: 16,
+                }}
+                data-testid={`faq-toggle-${i}`}
+              >
+                <span style={{
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: openFaq === i ? '#a78bfa' : 'rgba(255,255,255,0.85)',
+                  transition: 'color 200ms ease',
+                }}>
+                  {item.question}
+                </span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  style={{
+                    flexShrink: 0,
+                    transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    color: 'rgba(255,255,255,0.3)',
+                  }}
+                >
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <div style={{
+                maxHeight: openFaq === i ? 300 : 0,
+                overflow: 'hidden',
+                transition: 'max-height 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+              }}>
+                <p style={{
+                  fontSize: 14,
+                  color: 'rgba(255,255,255,0.5)',
+                  lineHeight: 1.75,
+                  paddingBottom: 20,
+                  maxWidth: 600,
+                }}>
+                  {item.answer}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ---------- SECTION 8: URGENCY / BETA PRICING ---------- */
 function UrgencySection({ onCta }: { onCta: () => void }) {
   const endDate = getBetaEndDate()
 
@@ -726,8 +901,18 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
 /* ---------- SECTION 8: FINAL CTA ---------- */
 function FinalCTA({ onCta }: { onCta: () => void }) {
   return (
-    <section className="reveal-section text-center" style={{ padding: '100px 24px' }} data-testid="final-cta-section">
-      <div className="max-w-2xl mx-auto">
+    <section
+      className="reveal-section text-center"
+      style={{
+        padding: '100px 24px',
+        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px)',
+        backgroundSize: '28px 28px',
+        backgroundPosition: 'center center',
+        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)',
+        maskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)',
+      }}
+      data-testid="final-cta-section"
+    >      <div className="max-w-2xl mx-auto">
         <h2
           className="font-display font-extrabold tracking-[-0.025em] mb-6"
           style={{ fontSize: 'clamp(32px, 4vw, 52px)', lineHeight: 1.1 }}
