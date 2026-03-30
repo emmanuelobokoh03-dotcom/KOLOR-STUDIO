@@ -371,7 +371,7 @@ export default function ContractsPage({ lang, user, leads, onLeadClick, onLeadCl
 
   const handleEdit = (contract: Contract) => {
     if (contract.lead && onLeadClickTab) {
-      const lead = leads?.find(l => l.id === contract.leadId) || { id: contract.leadId, ...contract.lead } as Lead
+      const lead = leads?.find(l => l.id === contract.leadId) || { ...contract.lead, id: contract.leadId } as Lead
       onLeadClickTab(lead, 'contracts')
     }
   }
@@ -433,6 +433,12 @@ export default function ContractsPage({ lang, user, leads, onLeadClick, onLeadCl
             icon={ShieldCheck}
             headline={`No ${lang.contracts.toLowerCase()} yet`}
             description={`${lang.contracts} are auto-generated when clients accept a ${lang.quote.toLowerCase()}. Send your first ${lang.quote.toLowerCase()} to get started.`}
+            ctaLabel={`+ New ${lang.contract}`}
+            onCta={() => {
+              if (leads && leads.length > 0 && onLeadClickTab) {
+                onLeadClickTab(leads[0], 'contracts')
+              }
+            }}
           />
         ) : (
           <div className="py-16 text-center rounded-[10px] bg-[var(--surface-base)]" style={{ border: '0.5px solid var(--border)' }} data-testid="contracts-empty-filter">
