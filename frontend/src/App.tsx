@@ -17,6 +17,7 @@ import SubmitTestimonial from './pages/SubmitTestimonial'
 import VerifyEmail from './pages/VerifyEmail'
 import PublicBookingPage from './pages/PublicBookingPage'
 import IndustryOnboarding from './components/IndustryOnboarding'
+import CalendarPage from './pages/Calendar'
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
 import { Toaster } from 'sonner'
@@ -40,6 +41,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/inquiry" element={<SubmitInquiry />} />
         <Route path="/portal/:token" element={<ClientPortal />} />

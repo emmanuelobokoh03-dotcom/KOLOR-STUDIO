@@ -315,6 +315,7 @@ model Lead {
   onboardingEnrollments ClientOnboardingEnrollment[]
   emailTracking         EmailTracking[]
   scheduledEmails       ScheduledEmail[]
+  calendarEvents        CalendarEvent[]
 
   @@index([assignedToId])
   @@index([createdAt])
@@ -541,6 +542,7 @@ model User {
   meetingBookings      MeetingBooking[]
   fileComments         FileComment[]
   calendarConnections  CalendarConnection[]
+  calendarEvents       CalendarEvent[]
   weeklyReportEnabled    Boolean              @default(true)
   staleLeadEmailEnabled  Boolean              @default(true)
   quoteNudgeEmailEnabled Boolean              @default(true)
@@ -1016,6 +1018,29 @@ model CalendarConnection {
   @@unique([userId, provider])
   @@index([userId])
   @@map("calendar_connections")
+}
+
+model CalendarEvent {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leadId        String?
+  lead          Lead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  title         String
+  eventType     String    @default("MANUAL")
+  date          DateTime
+  startTime     DateTime?
+  endTime       DateTime?
+  allDay        Boolean   @default(true)
+  notes         String?
+  googleEventId String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([userId, date])
+  @@index([date])
+  @@map("calendar_events")
 }
 
 enum MeetingStatus {

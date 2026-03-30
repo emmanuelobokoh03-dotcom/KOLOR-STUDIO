@@ -1587,4 +1587,40 @@ export const meetingBookingsApi = {
 };
 
 
-export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi, contractsApi, paymentsApi, meetingTypesApi, availabilityApi, publicBookingApi, meetingBookingsApi };
+// Calendar Page Types
+export interface CalendarDerivedEvent {
+  id: string;
+  title: string;
+  date: string;
+  startTime?: string | null;
+  endTime?: string | null;
+  allDay: boolean;
+  type: 'key_date' | 'event_date' | 'shooting' | 'delivery' | 'editing_deadline' | 'booking' | 'quote_expiry' | 'contract' | 'manual' | 'google';
+  color: string;
+  leadId?: string | null;
+  clientName?: string;
+  notes?: string | null;
+  location?: string | null;
+  description?: string | null;
+  meta?: Record<string, any>;
+}
+
+export const calendarApi = {
+  getEvents: async (start: string, end: string) => {
+    return request<{ events: CalendarDerivedEvent[] }>(`/api/calendar/events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
+  },
+  getGoogleEvents: async (start: string, end: string) => {
+    return request<{ connected: boolean; events: CalendarDerivedEvent[]; error?: string }>(`/api/calendar/google-events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
+  },
+  createEvent: async (data: { title: string; date: string; startTime?: string; endTime?: string; allDay?: boolean; notes?: string; eventType?: string; leadId?: string }) => {
+    return request<{ event: CalendarDerivedEvent; googleSynced: boolean }>('/api/calendar/events', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  deleteEvent: async (id: string) => {
+    return request<{ success: boolean }>(`/api/calendar/events/${id}`, { method: 'DELETE' });
+  },
+};
+
+export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi, contractsApi, paymentsApi, meetingTypesApi, availabilityApi, publicBookingApi, meetingBookingsApi, calendarApi };

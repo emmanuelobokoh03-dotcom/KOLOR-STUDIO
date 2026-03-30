@@ -353,7 +353,7 @@ const Dashboard = () => {
   }
 
   const handleQuickCheckSchedule = () => {
-    handleViewChange('calendar')
+    navigate('/calendar')
   }
 
   const activeFilterCount = [statusFilter, projectTypeFilter, industryFilter, staleFilter].filter(Boolean).length;
@@ -451,15 +451,11 @@ const Dashboard = () => {
 
         <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Schedule</div>
         <button
-          onClick={() => handleViewChange('calendar')}
-          className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 mb-0.5 relative ${
-            viewMode === 'calendar' ? 'text-brand-600 font-semibold' : 'text-text-secondary hover:bg-surface-background hover:text-text-primary'
-          }`}
-          style={viewMode === 'calendar' ? { background: 'rgba(108,46,219,0.08)' } : undefined}
+          onClick={() => navigate('/calendar')}
+          className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 mb-0.5 relative text-text-secondary hover:bg-surface-background hover:text-text-primary`}
           data-testid="sidebar-calendar"
         >
-          {viewMode === 'calendar' && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r bg-brand-600" />}
-          <CalendarDots weight={viewMode === 'calendar' ? 'fill' : 'regular'} className="w-[14px] h-[14px]" />
+          <CalendarDots weight="regular" className="w-[14px] h-[14px]" />
           Calendar
         </button>
 
@@ -633,7 +629,6 @@ const Dashboard = () => {
                 { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Pipeline' },
                 { mode: 'list' as ViewMode, icon: ListIcon, label: 'List View' },
                 { mode: 'analytics' as ViewMode, icon: ChartBar, label: 'Analytics' },
-                { mode: 'calendar' as ViewMode, icon: CalendarDots, label: 'Calendar' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
                 { mode: 'sequences' as ViewMode, icon: Envelope, label: 'Sequences' },
               ]).map(({ mode, icon: Icon, label }) => (
@@ -651,6 +646,14 @@ const Dashboard = () => {
                   {label}
                 </button>
               ))}
+              <button
+                onClick={() => { setMobileMenuOpen(false); navigate('/calendar') }}
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 touch-target text-text-secondary hover:bg-light-100 hover:text-text-primary"
+                data-testid="sidebar-calendar"
+              >
+                <CalendarDots weight="regular" className="w-5 h-5" aria-hidden="true" />
+                Calendar
+              </button>
             </div>
             {/* Sidebar Footer */}
             <div className="p-4 border-t border-light-200 space-y-2">
@@ -977,7 +980,6 @@ const Dashboard = () => {
                 { mode: 'kanban' as ViewMode, icon: SquaresFour, title: 'Pipeline View' },
                 { mode: 'list' as ViewMode, icon: ListIcon, title: 'List View' },
                 { mode: 'analytics' as ViewMode, icon: ChartBar, title: 'Analytics' },
-                { mode: 'calendar' as ViewMode, icon: CalendarDots, title: 'Calendar' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, title: 'Portfolio' },
                 { mode: 'sequences' as ViewMode, icon: Envelope, title: 'Sequences' },
               ]).map(({ mode, icon: Icon, title }) => (
@@ -986,7 +988,7 @@ const Dashboard = () => {
                   onClick={() => handleViewChange(mode)}
                   className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === mode ? 'bg-purple-50 shadow-sm text-purple-500' : 'text-text-secondary hover:text-text-primary'}`}
                   data-testid={`view-${mode}`}
-                  data-tour={mode === 'portfolio' ? 'view-portfolio' : mode === 'calendar' ? 'view-calendar' : undefined}
+                  data-tour={mode === 'portfolio' ? 'view-portfolio' : undefined}
                   title={title}
                   aria-label={title}
                   aria-pressed={viewMode === mode}
@@ -994,6 +996,16 @@ const Dashboard = () => {
                   <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-4 h-4" aria-hidden="true" />
                 </button>
               ))}
+              <button
+                onClick={() => navigate('/calendar')}
+                className="p-2.5 rounded-lg transition-all duration-200 text-text-secondary hover:text-text-primary"
+                data-testid="view-calendar"
+                data-tour="view-calendar"
+                title="Calendar"
+                aria-label="Calendar"
+              >
+                <CalendarDots weight="regular" className="w-4 h-4" aria-hidden="true" />
+              </button>
             </div>
 
             {/* Desktop filters */}
@@ -1152,20 +1164,6 @@ const Dashboard = () => {
           <SequencesDashboard />
         ) : viewMode === 'analytics' ? (
           <AnalyticsDashboard user={user} onFilterByStatus={handleFilterByStatus} />
-        ) : viewMode === 'calendar' ? (
-          <CalendarViewNew 
-            user={user} 
-            onLeadClick={(leadId) => {
-              const lead = leads.find(l => l.id === leadId)
-              if (lead) {
-                setSelectedLead(lead)
-              } else {
-                leadsApi.getOne(leadId).then(result => {
-                  if (result.data?.lead) setSelectedLead(result.data.lead)
-                })
-              }
-            }}
-          />
         ) : viewMode === 'portfolio' ? (
           <PortfolioPage user={user} />
         ) : filteredLeads.length === 0 && !loading ? (
