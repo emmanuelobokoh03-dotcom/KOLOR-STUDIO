@@ -785,6 +785,9 @@ export interface Quote {
     projectTitle: string;
     serviceType?: ServiceType;
     description?: string;
+    projectType?: string;
+    keyDate?: string;
+    eventDate?: string;
   };
   createdBy?: {
     firstName: string;
@@ -850,6 +853,11 @@ export const PAYMENT_TERMS_LABELS: Record<string, string> = {
 
 // Quotes API
 export const quotesApi = {
+  // Get ALL quotes for current user
+  getAll: async () => {
+    return request<{ quotes: Quote[] }>('/api/quotes/all');
+  },
+
   // Get all quotes for a lead
   getByLead: async (leadId: string) => {
     return request<{ quotes: Quote[] }>(`/api/leads/${leadId}/quotes`);

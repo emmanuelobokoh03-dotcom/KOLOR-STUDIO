@@ -60,10 +60,11 @@ import { SmartNudgeBanner } from '../components/SmartNudgeBanner'
 import { ActivityFeed } from '../components/ActivityFeed'
 import { QuickActions } from '../components/QuickActions'
 import { getIndustryLanguage } from '../utils/industryLanguage'
-import { UserPlus } from '@phosphor-icons/react'
+import { UserPlus, Receipt } from '@phosphor-icons/react'
 import LeadsListView from '../components/LeadsListView'
+import QuotesPage from './Quotes'
 
-type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
+type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes';
 
 // Skeleton components for loading states
 const StatCardSkeleton = () => (
@@ -425,6 +426,7 @@ const Dashboard = () => {
         {([
           { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Dashboard' },
           { mode: 'list' as ViewMode, icon: ListIcon, label: 'Leads', badge: stats?.total },
+          { mode: 'quotes' as ViewMode, icon: Receipt, label: lang.quotes },
           { mode: 'analytics' as ViewMode, icon: ChartBar, label: 'Analytics' },
         ]).map(({ mode, icon: Icon, label, badge }) => (
           <button
@@ -690,9 +692,10 @@ const Dashboard = () => {
         )}
 
         {/* Smart Nudge Banner — stale leads needing follow-up */}
-        <SmartNudgeBanner leads={leads} onLeadClick={setSelectedLead} />
+        {viewMode !== 'quotes' && <SmartNudgeBanner leads={leads} onLeadClick={setSelectedLead} />}
 
         {/* Smart Suggestion */}
+        {viewMode !== 'quotes' && (
         <SmartSuggestion
           leadCount={leads.length}
           hasQuotes={leads.some(l => (l.quotesCount || 0) > 0)}
@@ -712,6 +715,12 @@ const Dashboard = () => {
             else if (action === 'open-brand-settings') setShowSettings(true)
           }}
         />
+        )}
+
+        {viewMode === 'quotes' ? (
+          <QuotesPage lang={lang} user={user} leads={leads} />
+        ) : (
+        <>
 
         {/* Revenue Pipeline Widget */}
         {/* Active Commissions Widget - Universal for all users */}
@@ -1232,6 +1241,8 @@ const Dashboard = () => {
             </aside>
           )}
         </div>{/* /Two-column layout */}
+        </>
+        )}
 
         {/* Mobile-only: Onboarding + Activity Feed + Quick Actions (stacked below content) */}
         {(viewMode === 'kanban' || viewMode === 'list') && (

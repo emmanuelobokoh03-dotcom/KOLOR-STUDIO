@@ -324,6 +324,50 @@ router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Res
   }
 });
 
+// GET /api/quotes/all - Get ALL quotes for the authenticated user
+router.get('/all', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId!;
+
+    const quotes = await prisma.quote.findMany({
+      where: {
+        lead: { assignedToId: userId }
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        lead: {
+          select: {
+            clientName: true,
+            clientEmail: true,
+            projectTitle: true,
+            serviceType: true,
+            projectType: true,
+            keyDate: true,
+            eventDate: true,
+          }
+        },
+        createdBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            studioName: true,
+            email: true,
+            currency: true,
+            currencySymbol: true,
+            currencyPosition: true,
+            numberFormat: true,
+          }
+        }
+      }
+    });
+
+    res.json({ quotes });
+  } catch (error) {
+    console.error('Get all quotes error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to get quotes' });
+  }
+});
+
 // GET /api/leads/:leadId/quotes - Get all quotes for a lead
 router.get('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {

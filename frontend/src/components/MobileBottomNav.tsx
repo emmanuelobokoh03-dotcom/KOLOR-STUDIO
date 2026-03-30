@@ -1,6 +1,6 @@
 import { SquaresFour, CalendarDots, Briefcase, GearSix } from '@phosphor-icons/react'
 
-type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
+type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes';
 
 interface MobileBottomNavProps {
   viewMode: ViewMode;
