@@ -637,6 +637,10 @@ export interface Lead {
   discoveryCallBookingId?: string | null;
   discoveryCallCompletedAt?: string | null;
   discoveryCallNotes?: string | null;
+  keyDate?: string;
+  medium?: string;
+  dimensions?: string;
+  edition?: string;
   createdAt: string;
   updatedAt: string;
 }

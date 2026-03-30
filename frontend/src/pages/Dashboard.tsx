@@ -61,6 +61,7 @@ import { ActivityFeed } from '../components/ActivityFeed'
 import { QuickActions } from '../components/QuickActions'
 import { getIndustryLanguage } from '../utils/industryLanguage'
 import { UserPlus } from '@phosphor-icons/react'
+import LeadsListView from '../components/LeadsListView'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences';
 
@@ -1158,46 +1159,16 @@ const Dashboard = () => {
             />
           </div>
         ) : (
-          /* List view with responsive table */
-          <div className="bg-light-50 rounded-xl border border-light-200 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[500px]">
-                <thead className="bg-surface-base border-b border-light-200">
-                  <tr>
-                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Client</th>
-                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Project</th>
-                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
-                    <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider hidden sm:table-cell">Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-light-200">
-                  {filteredLeads.map((lead) => (
-                    <tr 
-                      key={lead.id} 
-                      className="hover:bg-light-100 cursor-pointer transition-all duration-200 active:bg-light-200"
-                      onClick={() => setSelectedLead(lead)}
-                      data-testid={`lead-row-${lead.id}`}
-                    >
-                      <td className="px-4 md:px-6 py-3 md:py-5">
-                        <p className="font-medium text-text-primary text-sm">{lead.clientName}</p>
-                        <p className="text-xs text-text-secondary truncate max-w-[120px] md:max-w-none">{lead.clientEmail}</p>
-                      </td>
-                      <td className="px-4 md:px-6 py-3 md:py-5">
-                        <p className="font-medium text-text-primary text-sm truncate max-w-[120px] md:max-w-none">{lead.projectTitle}</p>
-                        <p className="text-xs text-text-secondary">{lead.budget || 'No budget'}</p>
-                      </td>
-                      <td className="px-4 md:px-6 py-3 md:py-5">
-                        <StatusBadge status={lead.status} size="sm" />
-                      </td>
-                      <td className="px-4 md:px-6 py-3 md:py-5 text-sm text-text-secondary hidden sm:table-cell">
-                        {new Date(lead.createdAt).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <LeadsListView
+            leads={filteredLeads}
+            lang={lang}
+            currencySymbol={user?.currencySymbol}
+            onLeadClick={setSelectedLead}
+            onLeadClickTab={(lead, tab) => {
+              setSelectedLeadInitialTab(tab)
+              setSelectedLead(lead)
+            }}
+          />
         )}
 
           </div>{/* /Left column */}
@@ -1301,6 +1272,7 @@ const Dashboard = () => {
           onUpdate={handleLeadUpdate}
           onCelebrate={triggerCelebration}
           initialTab={selectedLeadInitialTab}
+          userIndustry={user?.industry as any}
         />
       )}
       {showAddModal && (

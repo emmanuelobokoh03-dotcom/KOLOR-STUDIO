@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
 import { 
   Lead, 
@@ -9,6 +9,7 @@ import {
   SERVICE_TYPE_LABELS,
   leadsApi 
 } from '../services/api'
+import { getIndustryLanguage, IndustryType } from '../utils/industryLanguage'
 import {
   X,
   User,
@@ -75,6 +76,7 @@ interface LeadDetailModalProps {
   onUpdate: (updatedLead: Lead) => void;
   onCelebrate?: (key: string, achievementKey: string) => void;
   initialTab?: string;
+  userIndustry?: IndustryType;
 }
 
 const STATUS_OPTIONS: LeadStatus[] = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
@@ -157,15 +159,17 @@ const FileGridSkeleton = () => (
   </div>
 );
 
-export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, initialTab }: LeadDetailModalProps) {
+export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, initialTab, userIndustry }: LeadDetailModalProps) {
+  const lang = getIndustryLanguage(userIndustry)
+  const modalRef = useModalA11y(true, onClose)
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [newNote, setNewNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
-  const [activeTab, setActiveTab] = useState<'activity' | 'quotes' | 'files' | 'details' | 'deliverables' | 'contracts' | 'messages' | 'timeline'>(
-    (initialTab as any) || 'activity'
+  const [activeTab, setActiveTab] = useState<'overview' | 'quotes' | 'files' | 'details' | 'deliverables' | 'contracts' | 'messages' | 'timeline' | 'activity' | 'notes'>(
+    (initialTab === 'details' ? 'overview' : initialTab === 'activity' ? 'activity' : initialTab as any) || 'overview'
   );
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -531,119 +535,449 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
       console.error('Complete discovery call error:', error);
     }
   };
+
+  // ── Status gradient helpers ──
+  const getStatusGradient = (status: LeadStatus) => {
+    if (['NEW', 'REVIEWING'].includes(status)) return { bg: 'linear-gradient(135deg, rgba(251,191,36,0.06) 0%, rgba(251,191,36,0.02) 100%)', glow: 'radial-gradient(circle at 85% 20%, rgba(251,191,36,0.08), transparent 60%)', avatarBg: '#D97706' }
+    if (['CONTACTED', 'QUALIFIED'].includes(status)) return { bg: 'linear-gradient(135deg, rgba(108,46,219,0.06) 0%, rgba(108,46,219,0.02) 100%)', glow: 'radial-gradient(circle at 85% 20%, rgba(108,46,219,0.08), transparent 60%)', avatarBg: '#6C2EDB' }
+    if (['QUOTED', 'NEGOTIATING'].includes(status)) return { bg: 'linear-gradient(135deg, rgba(251,191,36,0.06) 0%, rgba(251,191,36,0.02) 100%)', glow: 'radial-gradient(circle at 85% 20%, rgba(251,191,36,0.08), transparent 60%)', avatarBg: '#D97706' }
+    if (status === 'BOOKED') return { bg: 'linear-gradient(135deg, rgba(5,150,105,0.06) 0%, rgba(5,150,105,0.02) 100%)', glow: 'radial-gradient(circle at 85% 20%, rgba(5,150,105,0.08), transparent 60%)', avatarBg: '#059669' }
+    return { bg: 'linear-gradient(135deg, rgba(156,163,175,0.06) 0%, rgba(156,163,175,0.02) 100%)', glow: 'radial-gradient(circle at 85% 20%, rgba(156,163,175,0.08), transparent 60%)', avatarBg: '#9CA3AF' }
+  }
+
+  const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+
+  const getTimelineDotColor = (type: string) => {
+    if (['STATUS_CHANGED', 'CONTRACT_SIGNED'].includes(type)) return '#6C2EDB'
+    if (['CALL_MADE', 'CALL_RECEIVED', 'MEETING_SCHEDULED', 'DISCOVERY_CALL_SCHEDULED'].includes(type)) return '#3B82F6'
+    if (['MEETING_COMPLETED', 'DISCOVERY_CALL_COMPLETED', 'PAYMENT_RECEIVED'].includes(type)) return '#059669'
+    if (['QUOTE_SENT', 'EMAIL_SENT', 'FILE_UPLOADED'].includes(type)) return '#D97706'
+    if (['NOTE_ADDED'].includes(type)) return '#9CA3AF'
+    return '#9CA3AF'
+  }
+
+  const getTimelineTitle = (activity: Activity) => {
+    const type = activity.type as string
+    if (type === 'STATUS_CHANGED') return 'Status updated'
+    if (type === 'NOTE_ADDED') return 'Note added'
+    if (type === 'EMAIL_SENT') return 'Email sent'
+    if (type === 'EMAIL_RECEIVED') return 'Email received'
+    if (type === 'CALL_MADE' || type === 'CALL_RECEIVED') return `${lang.discoveryCall}`
+    if (type === 'MEETING_SCHEDULED') return 'Meeting scheduled'
+    if (type === 'MEETING_COMPLETED') return 'Meeting completed'
+    if (type === 'QUOTE_SENT') return `${lang.quote} sent`
+    if (type === 'PAYMENT_RECEIVED') return 'Payment received'
+    if (type === 'CONTRACT_SIGNED') return `${lang.contract} signed`
+    if (type === 'DISCOVERY_CALL_SCHEDULED') return `${lang.discoveryCall} scheduled`
+    if (type === 'DISCOVERY_CALL_COMPLETED') return `${lang.discoveryCall} completed`
+    if (type === 'FILE_UPLOADED') return 'File uploaded'
+    if (type === 'BOOKING_CREATED') return `${lang.booking} created`
+    return type.replace(/_/g, ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase())
+  }
+
+  const getNextStep = (status: LeadStatus) => {
+    if (['NEW', 'REVIEWING'].includes(status)) return `Schedule ${lang.discoveryCall.toLowerCase()}`
+    if (['CONTACTED', 'QUALIFIED'].includes(status)) return `Send ${lang.quote.toLowerCase()}`
+    if (['QUOTED', 'NEGOTIATING'].includes(status)) return `Send ${lang.contract.toLowerCase()}`
+    if (status === 'BOOKED') return `${lang.bookingConfirmed}`
+    return 'Next step'
+  }
+
+  const getPrimaryActionLabel = (status: LeadStatus) => {
+    if (['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED'].includes(status)) return `Send ${lang.quote}`
+    if (['QUOTED', 'NEGOTIATING'].includes(status)) return `Send ${lang.contract}`
+    return 'View signed'
+  }
+
+  const getPrimaryActionTab = (status: LeadStatus) => {
+    if (['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED'].includes(status)) return 'quotes'
+    return 'contracts'
+  }
+
+  const statusGradient = getStatusGradient(lead.status)
+  const clientInitials = getInitials(lead.clientName)
+
+  // Derive industry-specific client fields
+  const getClientFields = () => {
+    const base = [
+      { label: 'Email', value: lead.clientEmail, isLink: true },
+      { label: 'Phone', value: lead.clientPhone },
+    ]
+    const industry = userIndustry || 'PHOTOGRAPHY'
+    if (industry === 'PHOTOGRAPHY') {
+      return [...base,
+        { label: 'Project type', value: lead.projectType?.replace(/_/g, ' ') },
+        { label: lang.keyDate, value: lead.keyDate ? new Date(lead.keyDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : undefined },
+        { label: 'Location', value: lead.timeline },
+        { label: 'Source', value: lead.source?.replace(/_/g, ' ') },
+      ]
+    }
+    if (industry === 'FINE_ART') {
+      return [...base,
+        { label: 'Work type', value: lead.projectType?.replace(/_/g, ' ') },
+        { label: lang.keyDate, value: lead.keyDate ? new Date(lead.keyDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : undefined },
+        { label: 'Medium', value: lead.medium },
+        { label: 'Dimensions', value: lead.dimensions },
+        { label: 'Edition', value: lead.edition },
+      ]
+    }
+    // DESIGN default
+    return [...base,
+      { label: 'Project type', value: lead.projectType?.replace(/_/g, ' ') },
+      { label: lang.keyDate, value: lead.keyDate ? new Date(lead.keyDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : undefined },
+      { label: 'Company', value: lead.clientCompany },
+      { label: 'Source', value: lead.source?.replace(/_/g, ' ') },
+    ]
+  }
   return (
     <>
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose} role="presentation">
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-0 md:p-4" onClick={onClose} role="presentation">
         <div 
-          className="glass-modal w-full md:rounded-2xl md:shadow-2xl md:max-w-3xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col border-t md:border border-light-200 animate-slide-up-full md:animate-modal-enter rounded-t-2xl md:rounded-2xl"
+          ref={modalRef}
+          className="bg-[var(--surface-base)] w-screen h-screen md:w-auto md:h-auto md:rounded-2xl overflow-hidden flex flex-col animate-modal-enter motion-reduce:animate-none"
+          style={{ maxWidth: 'min(760px, 95vw)', maxHeight: 'min(600px, 90vh)', width: '100%', height: '100%', border: '0.5px solid var(--border-dark, var(--border))', boxShadow: '0 24px 64px rgba(0,0,0,0.18)' }}
           onClick={(e) => e.stopPropagation()}
           data-testid="lead-detail-modal"
           role="dialog"
           aria-modal="true"
           aria-labelledby="lead-detail-title"
         >
-          {/* Header */}
-          <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-4 md:p-6 flex-shrink-0">
-            <div className="flex items-start justify-between">
-              <div className="flex-1 min-w-0 mr-3">
-                <span className="text-xs px-2.5 py-1 bg-white/20 rounded-full backdrop-blur-sm">
-                  {SERVICE_TYPE_LABELS[lead.serviceType]}
-                </span>
-                <h2 id="lead-detail-title" className="text-xl md:text-2xl font-bold mt-2 truncate">{lead.projectTitle}</h2>
-                <p className="text-purple-600 mt-0.5 md:mt-1 text-xs md:text-sm">Submitted {formatDate(lead.createdAt)}</p>
+          {/* ═══ Header — status-colored gradient ═══ */}
+          <div className="relative flex-shrink-0 px-5 pt-5 pb-4" style={{ background: statusGradient.bg }}>
+            <div className="absolute inset-0 pointer-events-none" style={{ background: statusGradient.glow }} />
+            <div className="relative flex items-start gap-3.5">
+              {/* Avatar */}
+              <div className="w-12 h-12 rounded-full flex items-center justify-center text-white text-base font-bold flex-shrink-0" style={{ background: `linear-gradient(135deg, ${statusGradient.avatarBg}, ${statusGradient.avatarBg}dd)` }} data-testid="lead-avatar">
+                {clientInitials}
               </div>
-              <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
-                <button 
-                  onClick={() => setShowBookingModal(true)}
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm touch-target"
-                  data-testid="create-booking-btn"
-                  title="Create Booking"
-                >
-                  <CalendarBlank className="w-4 h-4" />
-                  <span className="hidden md:inline">Book</span>
-                </button>
-                <button 
-                  onClick={() => setShowEmailComposer(true)}
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm touch-target"
-                  data-testid="email-client-btn"
-                  title="Email Client"
-                >
-                  <EnvelopeSimple className="w-4 h-4" />
-                  <span className="hidden md:inline">Email</span>
-                </button>
-                <button 
-                  onClick={handleRequestTestimonial}
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm touch-target"
-                  data-testid="request-testimonial-btn"
-                  title="Request Testimonial"
-                >
-                  <StarIcon className="w-4 h-4" />
-                  <span className="hidden lg:inline">Review</span>
-                </button>
-                <button 
+              {/* Client info */}
+              <div className="flex-1 min-w-0">
+                <h2 id="lead-detail-title" className="text-lg font-extrabold text-text-primary truncate" style={{ letterSpacing: '-0.02em' }}>{lead.clientName}</h2>
+                <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[var(--text-secondary)]">
+                  <span className="truncate">{lead.projectTitle}</span>
+                  <span className="opacity-40">·</span>
+                  <span>{SERVICE_TYPE_LABELS[lead.serviceType]}</span>
+                  <span className="opacity-40">·</span>
+                  <span>{formatTimeAgo(lead.createdAt)}</span>
+                </div>
+              </div>
+              {/* Value chip + Close */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {lead.estimatedValue && (
+                  <span className="px-2.5 py-1 rounded-full text-xs font-semibold tabular-nums" style={{ background: `${statusGradient.avatarBg}18`, color: statusGradient.avatarBg }} data-testid="lead-value-chip">
+                    ${lead.estimatedValue.toLocaleString()}
+                  </span>
+                )}
+                <button
                   onClick={onClose}
-                  className="p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 touch-target"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/5 transition-colors text-[var(--text-secondary)]"
                   aria-label="Close lead details" title="Close (Esc)"
+                  data-testid="close-modal-btn"
                 >
-                  <X className="w-6 h-6" aria-hidden="true" />
+                  <X className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
             </div>
-            {/* Mobile action buttons */}
-            <div className="flex gap-2 mt-3 sm:hidden">
-              <button 
-                onClick={() => setShowBookingModal(true)}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white/20 rounded-xl text-sm font-medium touch-target"
+
+            {/* Action row */}
+            <div className="relative flex items-center gap-2 mt-3.5" data-testid="modal-action-row">
+              <button
+                onClick={() => setActiveTab(getPrimaryActionTab(lead.status) as any)}
+                className="h-8 px-3.5 rounded-lg text-[11px] font-semibold text-white transition-colors"
+                style={{ background: '#6C2EDB' }}
+                data-testid="modal-primary-action"
               >
-                <CalendarBlank className="w-4 h-4" /> Book
+                {getPrimaryActionLabel(lead.status)}
               </button>
-              <button 
-                onClick={() => setShowEmailComposer(true)}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white/20 rounded-xl text-sm font-medium touch-target"
+              <button
+                onClick={() => {
+                  if (!lead.discoveryCallScheduled) handleScheduleDiscoveryCall()
+                  else if (!lead.discoveryCallCompletedAt) handleCompleteDiscoveryCall()
+                }}
+                className="h-8 px-3 rounded-lg text-[11px] font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors"
+                data-testid="modal-schedule-call"
               >
-                <EnvelopeSimple className="w-4 h-4" /> Email
+                <PhoneCall className="w-3.5 h-3.5 inline mr-1" />
+                {!lead.discoveryCallScheduled ? 'Schedule call' : !lead.discoveryCallCompletedAt ? 'Complete call' : 'Call done'}
+              </button>
+              <button
+                onClick={() => setShowEmailComposer(true)}
+                className="h-8 px-3 rounded-lg text-[11px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors"
+                data-testid="modal-email-action"
+              >
+                Email
+              </button>
+              <button
+                onClick={handleRequestTestimonial}
+                className="h-8 px-3 rounded-lg text-[11px] font-medium text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50 transition-colors ml-auto"
+                data-testid="modal-archive-action"
+              >
+                Archive
               </button>
             </div>
           </div>
 
-          {/* Tab Navigation */}
-          <div className="flex border-b border-light-200 flex-shrink-0 overflow-x-auto scrollbar-hide">
+          {/* ═══ Tab Navigation — underline style ═══ */}
+          <div className="flex-shrink-0 flex items-center gap-0 overflow-x-auto scrollbar-hide px-5" style={{ borderBottom: '0.5px solid var(--border)' }}>
             {([
-              { key: 'activity' as const, icon: ClockCounterClockwise, label: 'Activity' },
-              { key: 'timeline' as const, icon: Flag, label: 'Timeline' },
-              { key: 'contracts' as const, icon: Scroll, label: 'Contracts' },
-              { key: 'quotes' as const, icon: Receipt, label: 'Quotes' },
-              { key: 'files' as const, icon: Paperclip, label: 'Files', badge: files.length },
-              { key: 'messages' as const, icon: ChatCircle, label: 'Messages', badge: messages.filter(m => m.from === 'CLIENT' && !m.read).length },
-              { key: 'details' as const, icon: User, label: 'Details' },
-              { key: 'deliverables' as const, icon: Package, label: 'Deliver.' },
-            ]).map(({ key, icon: Icon, label, badge }) => (
+              { key: 'overview' as const, label: 'Overview' },
+              { key: 'quotes' as const, label: lang.quotes },
+              { key: 'contracts' as const, label: lang.contracts },
+              { key: 'notes' as const, label: 'Notes' },
+              { key: 'activity' as const, label: 'Activity' },
+              { key: 'files' as const, label: 'Files', badge: files.length },
+              { key: 'messages' as const, label: 'Messages', badge: messages.filter(m => m.from === 'CLIENT' && !m.read).length },
+              { key: 'deliverables' as const, label: 'Deliver.' },
+            ]).map(({ key, label, badge }) => (
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`flex-shrink-0 flex-1 min-w-0 px-2 md:px-4 py-3 md:py-3.5 text-xs md:text-sm font-medium transition-all duration-200 touch-target ${
-                  activeTab === key 
-                    ? 'text-purple-600 border-b-2 border-brand-primary bg-purple-50' 
-                    : 'text-text-secondary hover:text-text-primary hover:bg-light-100'
+                className={`relative px-3 py-2.5 text-xs font-medium whitespace-nowrap transition-colors ${
+                  activeTab === key
+                    ? 'text-[#6C2EDB] font-semibold'
+                    : 'text-[var(--text-secondary)] hover:text-text-primary'
                 }`}
                 data-testid={`tab-${key}`}
               >
-                <div className="flex items-center justify-center gap-1 md:gap-2">
-                  <Icon className="w-4 h-4 flex-shrink-0" />
-                  <span className="truncate">{label}</span>
-                  {badge !== undefined && badge > 0 && (
-                    <span className="bg-purple-100 text-purple-600 text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full flex-shrink-0">
-                      {badge}
-                    </span>
-                  )}
-                </div>
+                {label}
+                {badge !== undefined && badge > 0 && (
+                  <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-600">{badge}</span>
+                )}
+                {activeTab === key && <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#6C2EDB] rounded-full" />}
               </button>
             ))}
           </div>
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto">
-            {activeTab === 'activity' ? (
+            {activeTab === 'overview' ? (
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_240px] h-full" data-testid="overview-split-panel">
+                {/* ═══ Left Panel ═══ */}
+                <div className="p-5 overflow-y-auto space-y-5 border-r-0 md:border-r" style={{ borderColor: 'var(--border)' }}>
+
+                  {/* Client Details — 2-col field grid */}
+                  <div data-testid="client-details-section">
+                    <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">{lang.client} Details</h4>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                      {getClientFields().map(field => field.value ? (
+                        <div key={field.label}>
+                          <p className="text-[10px] text-[var(--text-tertiary)] mb-0.5">{field.label}</p>
+                          {field.isLink ? (
+                            <a href={`mailto:${field.value}`} className="text-xs font-medium text-[#6C2EDB] hover:underline truncate block">{field.value}</a>
+                          ) : (
+                            <p className="text-xs font-medium text-text-primary truncate">{field.value}</p>
+                          )}
+                        </div>
+                      ) : null)}
+                    </div>
+                    {lead.description && (
+                      <p className="text-xs text-[var(--text-secondary)] mt-3 leading-relaxed">{lead.description}</p>
+                    )}
+                  </div>
+
+                  {/* Discovery Call — 3-step vertical timeline */}
+                  {['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED'].includes(lead.status) && (
+                    <div data-testid="discovery-call-section">
+                      <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">{lang.discoveryCall}</h4>
+                      <div className="space-y-0">
+                        {/* Step 1: Schedule */}
+                        <div className="flex gap-3 relative">
+                          <div className="flex flex-col items-center">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${lead.discoveryCallScheduled ? 'bg-emerald-100' : !lead.discoveryCallScheduled && !lead.discoveryCallCompletedAt ? 'bg-purple-100' : 'border-2 border-[var(--border)]'}`}>
+                              {lead.discoveryCallScheduled ? (
+                                <CheckCircle weight="fill" className="w-4 h-4 text-emerald-600" />
+                              ) : (
+                                <div className="w-2 h-2 rounded-full bg-[#6C2EDB]" />
+                              )}
+                            </div>
+                            <div className="w-px flex-1 bg-[var(--border)] min-h-[16px]" />
+                          </div>
+                          <div className="flex-1 pb-4 flex items-start justify-between min-w-0">
+                            <div>
+                              <p className={`text-xs font-semibold ${lead.discoveryCallScheduled ? 'text-text-primary opacity-70' : 'text-text-primary'}`}>Schedule {lang.discoveryCall.toLowerCase()}</p>
+                              <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">{lead.discoveryCallScheduled ? 'Scheduled' : 'Book a call to discuss project details'}</p>
+                            </div>
+                            {!lead.discoveryCallScheduled && !lead.discoveryCallCompletedAt && (
+                              <button onClick={handleScheduleDiscoveryCall} className="h-7 px-2.5 rounded-md text-[10px] font-semibold text-white bg-[#6C2EDB] hover:brightness-110 transition flex-shrink-0" data-testid="schedule-discovery-btn">Schedule</button>
+                            )}
+                          </div>
+                        </div>
+                        {/* Step 2: Complete */}
+                        <div className="flex gap-3 relative">
+                          <div className="flex flex-col items-center">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${lead.discoveryCallCompletedAt ? 'bg-emerald-100' : lead.discoveryCallScheduled ? 'bg-purple-100' : 'border-2 border-[var(--border)]'}`}>
+                              {lead.discoveryCallCompletedAt ? (
+                                <CheckCircle weight="fill" className="w-4 h-4 text-emerald-600" />
+                              ) : lead.discoveryCallScheduled ? (
+                                <div className="w-2 h-2 rounded-full bg-[#6C2EDB]" />
+                              ) : (
+                                <div className="w-2 h-2 rounded-full bg-[var(--border)]" />
+                              )}
+                            </div>
+                            <div className="w-px flex-1 bg-[var(--border)] min-h-[16px]" />
+                          </div>
+                          <div className="flex-1 pb-4 flex items-start justify-between min-w-0">
+                            <div>
+                              <p className={`text-xs font-semibold ${lead.discoveryCallCompletedAt ? 'text-text-primary opacity-70' : lead.discoveryCallScheduled ? 'text-text-primary' : 'text-[var(--text-tertiary)]'}`}>Complete {lang.discoveryCall.toLowerCase()}</p>
+                              <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">
+                                {lead.discoveryCallCompletedAt
+                                  ? `${new Date(lead.discoveryCallCompletedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}${lead.discoveryCallNotes ? ` — ${lead.discoveryCallNotes}` : ''}`
+                                  : 'Mark as done after the call'}
+                              </p>
+                            </div>
+                            {lead.discoveryCallScheduled && !lead.discoveryCallCompletedAt && (
+                              <button onClick={handleCompleteDiscoveryCall} className="h-7 px-2.5 rounded-md text-[10px] font-semibold text-white bg-[#6C2EDB] hover:brightness-110 transition flex-shrink-0" data-testid="complete-discovery-btn">Mark done</button>
+                            )}
+                          </div>
+                        </div>
+                        {/* Step 3: Send quote */}
+                        <div className="flex gap-3 relative">
+                          <div className="flex flex-col items-center">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${lead.discoveryCallCompletedAt ? 'bg-purple-100' : 'border-2 border-[var(--border)]'}`}>
+                              {lead.discoveryCallCompletedAt ? (
+                                <div className="w-2 h-2 rounded-full bg-[#6C2EDB]" />
+                              ) : (
+                                <div className="w-2 h-2 rounded-full bg-[var(--border)]" />
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex-1 flex items-start justify-between min-w-0">
+                            <div>
+                              <p className={`text-xs font-semibold ${lead.discoveryCallCompletedAt ? 'text-text-primary' : 'text-[var(--text-tertiary)]'}`}>Send {lang.quote.toLowerCase()}</p>
+                              <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">Create and send a {lang.quote.toLowerCase()} to {lead.clientName.split(' ')[0]}</p>
+                            </div>
+                            {lead.discoveryCallCompletedAt && (
+                              <button onClick={() => setActiveTab('quotes')} className="h-7 px-2.5 rounded-md text-[10px] font-semibold text-white bg-[#6C2EDB] hover:brightness-110 transition flex-shrink-0" data-testid="send-quote-after-discovery-btn">Send {lang.quote}</button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Notes — quick add */}
+                  <div data-testid="overview-notes-section">
+                    <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-2">Notes</h4>
+                    <textarea
+                      value={newNote}
+                      onChange={(e) => setNewNote(e.target.value)}
+                      placeholder={`Add a note about ${lead.clientName.split(' ')[0]}...`}
+                      className="w-full bg-[var(--surface-background)] text-text-primary text-xs placeholder:text-[var(--text-tertiary)] resize-none rounded-lg px-3 py-2.5"
+                      style={{ border: '0.5px solid var(--border-dark, var(--border))', minHeight: '80px' }}
+                      rows={3}
+                      data-testid="note-input"
+                    />
+                    <div className="flex justify-end mt-2">
+                      <button
+                        onClick={handleAddNote}
+                        disabled={addingNote || !newNote.trim()}
+                        className="h-7 px-3 rounded-md text-[10px] font-semibold text-white bg-[#6C2EDB] transition disabled:opacity-40 flex items-center gap-1.5"
+                        data-testid="save-note-button"
+                      >
+                        {addingNote ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <FloppyDisk className="w-3 h-3" />}
+                        Save note
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Portal link — compact */}
+                  {portalUrl && (
+                    <div data-testid="overview-portal-section">
+                      <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-2">{lang.client} Portal</h4>
+                      <div className="flex items-center gap-2">
+                        <input readOnly value={portalUrl} className="flex-1 text-[10px] px-2.5 py-1.5 rounded-md bg-[var(--surface-background)] border border-[var(--border)] text-[var(--text-secondary)] truncate" />
+                        <button onClick={handleCopyPortalLink} className="h-7 px-2 rounded-md text-[10px] font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition" data-testid="copy-portal-link-btn">
+                          {copiedLink ? 'Copied' : 'Copy'}
+                        </button>
+                        <button onClick={handleSendPortalLink} disabled={sendingPortalLink} className="h-7 px-2 rounded-md text-[10px] font-medium bg-[#6C2EDB] text-white transition disabled:opacity-50" data-testid="send-portal-link-btn">
+                          {sendingPortalLink ? '...' : portalLinkSent ? 'Sent' : 'Send'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* ═══ Right Panel — Relationship Timeline ═══ */}
+                <div className="bg-[var(--surface-background)] p-4 overflow-y-auto" data-testid="relationship-timeline">
+                  <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">Timeline</h4>
+                  {loadingActivities ? (
+                    <ActivitySkeleton />
+                  ) : (
+                    <div className="space-y-0">
+                      {activities.slice(0, 15).map((activity, idx) => {
+                        const dotColor = getTimelineDotColor(activity.type)
+                        const isLast = idx === Math.min(activities.length, 15) - 1
+                        return (
+                          <div key={activity.id} className="flex gap-2.5 relative" data-testid={`timeline-item-${activity.id}`}>
+                            <div className="flex flex-col items-center">
+                              <div className="w-[9px] h-[9px] rounded-full flex-shrink-0 mt-1" style={{ background: dotColor }} />
+                              {!isLast && <div className="w-px flex-1 bg-[var(--border)] min-h-[12px]" />}
+                            </div>
+                            <div className="flex-1 pb-3 min-w-0">
+                              <p className="text-xs font-semibold text-text-primary leading-tight">{getTimelineTitle(activity)}</p>
+                              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 line-clamp-2">{activity.description}</p>
+                              <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">{formatTimeAgo(activity.createdAt)}</p>
+                            </div>
+                          </div>
+                        )
+                      })}
+                      {/* Next step indicator */}
+                      <div className="flex gap-2.5 relative">
+                        <div className="flex flex-col items-center">
+                          <div className="w-[9px] h-[9px] rounded-full flex-shrink-0 mt-1 border-2" style={{ borderColor: 'var(--border)', borderStyle: 'dashed' }} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-[var(--text-secondary)]">{getNextStep(lead.status)}</p>
+                          <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">Upcoming</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : activeTab === 'notes' ? (
+              <div className="p-5 space-y-4" data-testid="notes-tab">
+                {/* Add Note */}
+                <div>
+                  <textarea
+                    value={newNote}
+                    onChange={(e) => setNewNote(e.target.value)}
+                    placeholder={`Write a note about this ${lang.lead.toLowerCase()}...`}
+                    className="w-full bg-[var(--surface-background)] text-text-primary text-sm placeholder:text-[var(--text-tertiary)] resize-none rounded-lg px-3 py-3"
+                    style={{ border: '0.5px solid var(--border-dark, var(--border))', minHeight: '100px' }}
+                    rows={4}
+                    data-testid="notes-tab-input"
+                  />
+                  <div className="flex justify-end mt-2">
+                    <button
+                      onClick={handleAddNote}
+                      disabled={addingNote || !newNote.trim()}
+                      className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-[#6C2EDB] transition disabled:opacity-40 flex items-center gap-1.5"
+                      data-testid="notes-tab-save"
+                    >
+                      {addingNote ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk className="w-3.5 h-3.5" />}
+                      Save Note
+                    </button>
+                  </div>
+                </div>
+                {/* Note history */}
+                <div className="space-y-2">
+                  {activities.filter(a => a.type === 'NOTE_ADDED').length === 0 ? (
+                    <p className="text-sm text-[var(--text-tertiary)] text-center py-8">No notes yet</p>
+                  ) : (
+                    activities.filter(a => a.type === 'NOTE_ADDED').map(activity => (
+                      <div key={activity.id} className="bg-[var(--surface-background)] rounded-lg p-3 border border-[var(--border)]" data-testid={`note-${activity.id}`}>
+                        <p className="text-sm text-text-primary whitespace-pre-wrap">{activity.description}</p>
+                        <div className="flex items-center gap-2 mt-2 text-[10px] text-[var(--text-tertiary)]">
+                          {activity.user && <span>by {activity.user.firstName} {activity.user.lastName}</span>}
+                          <span>{formatTimeAgo(activity.createdAt)}</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            ) : activeTab === 'activity' ? (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
                 {/* Discovery Call Card */}
                 {['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED'].includes(lead.status) && (
