@@ -1357,6 +1357,17 @@ export interface Contract {
   viewedAt?: string;
   createdAt: string;
   updatedAt: string;
+  lead?: {
+    id: string;
+    clientName: string;
+    clientEmail: string;
+    projectTitle: string;
+    portalToken?: string;
+    serviceType?: string;
+    projectType?: string;
+    eventDate?: string;
+    keyDate?: string;
+  };
 }
 
 export interface ContractTemplate {
@@ -1366,6 +1377,9 @@ export interface ContractTemplate {
 }
 
 export const contractsApi = {
+  getAll: async () => {
+    return request<{ contracts: Contract[] }>('/api/contracts/all');
+  },
   getPending: async () => {
     return request<{ contracts: Contract[] }>('/api/contracts/pending');
   },
@@ -1402,7 +1416,7 @@ export const contractsApi = {
     });
   },
   agree: async (id: string, portalToken: string) => {
-    return request<{ contract: { id: string; status: string; clientAgreedAt: string } }>(`/api/contracts/${id}/agree`, {
+    return request<{ success: boolean; celebration: boolean; contract: { id: string; status: string; clientAgreedAt: string } }>(`/api/contracts/${id}/agree`, {
       method: 'POST',
       body: JSON.stringify({ portalToken }),
     });

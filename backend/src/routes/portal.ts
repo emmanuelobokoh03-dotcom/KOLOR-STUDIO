@@ -126,6 +126,7 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
             firstName: true,
             lastName: true,
             email: true,
+            studioName: true,
           }
         },
         contracts: {
@@ -185,6 +186,18 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
       },
     });
 
+    // Auto-mark SENT contracts as VIEWED on first portal load
+    const unviewedContracts = ((lead as any).contracts || []).filter(
+      (c: any) => c.status === 'SENT' && !c.viewedAt
+    );
+    for (const c of unviewedContracts) {
+      await prisma.contract.update({
+        where: { id: c.id },
+        data: { status: 'VIEWED', viewedAt: new Date() },
+      });
+      await logActivity(lead.id, null, 'NOTE_ADDED', `Client ${lead.clientName} viewed contract "${c.title}"`);
+    }
+
     // Calculate progress percentage based on status
     const statusOrder = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED'];
     const currentIndex = statusOrder.indexOf(lead.status);
@@ -213,7 +226,7 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
     }));
 
     // Build sanitized response (no internal data)
-    const assignedTo = lead.assignedTo as { firstName: string; lastName: string; email: string } | null;
+    const assignedTo = lead.assignedTo as { firstName: string; lastName: string; email: string; studioName?: string } | null;
     
     const portalData = {
       project: {
@@ -247,6 +260,7 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
         name: assignedTo 
           ? `${assignedTo.firstName} ${assignedTo.lastName}`
           : 'KOLOR STUDIO Team',
+        studioName: assignedTo?.studioName || 'KOLOR STUDIO',
       },
       meta: {
         portalViews: lead.portalViews + 1, // Including this view

@@ -146,6 +146,38 @@ function fillTemplate(template: string, data: Record<string, string>): string {
 // AUTHENTICATED: USER-LEVEL
 // =====================
 
+// GET /api/contracts/all — Fetch ALL contracts for the user with lead info
+router.get('/contracts/all', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const contracts = await prisma.contract.findMany({
+      where: {
+        lead: { assignedToId: userId },
+      },
+      include: {
+        lead: {
+          select: {
+            id: true,
+            clientName: true,
+            clientEmail: true,
+            projectTitle: true,
+            portalToken: true,
+            serviceType: true,
+            projectType: true,
+            eventDate: true,
+            keyDate: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json({ contracts });
+  } catch (error) {
+    console.error('[CONTRACTS] Failed to fetch all:', error);
+    res.status(500).json({ error: 'Failed to fetch contracts' });
+  }
+});
+
 // GET /api/contracts/pending — Fetch DRAFT contracts awaiting user review
 router.get('/contracts/pending', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -503,10 +535,39 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
       console.error('[CONTRACT] Failed to enroll in onboarding:', err);
     }
 
-    res.json({ contract: { id: updated.id, status: updated.status, clientAgreedAt: updated.clientAgreedAt } });
+    res.json({ success: true, celebration: true, contract: { id: updated.id, status: updated.status, clientAgreedAt: updated.clientAgreedAt } });
   } catch (error) {
     console.error('Error processing agreement:', error);
     res.status(500).json({ error: 'Failed to process agreement' });
+  }
+});
+
+// PATCH /api/contracts/:id/viewed — Mark contract as viewed (PUBLIC, called from portal)
+router.patch('/contracts/:id/viewed', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+    const { portalToken } = req.body;
+    if (!portalToken) { res.status(400).json({ error: 'Portal token required' }); return; }
+
+    const contract = await prisma.contract.findUnique({
+      where: { id },
+      include: { lead: { select: { portalToken: true, id: true, clientName: true } } },
+    });
+    if (!contract || contract.lead.portalToken !== portalToken) {
+      res.status(404).json({ error: 'Contract not found' }); return;
+    }
+    // Only update if not already viewed/agreed
+    if (contract.status === 'SENT' && !contract.viewedAt) {
+      await prisma.contract.update({
+        where: { id },
+        data: { status: 'VIEWED', viewedAt: new Date() },
+      });
+      await logActivity(contract.lead.id, null, 'NOTE_ADDED', `Client ${contract.lead.clientName} viewed contract "${contract.title}"`);
+    }
+    res.json({ success: true });
+  } catch (error) {
+    console.error('[CONTRACTS] Failed to mark viewed:', error);
+    res.status(500).json({ error: 'Failed to update' });
   }
 });
 

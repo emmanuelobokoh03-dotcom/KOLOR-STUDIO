@@ -60,11 +60,12 @@ import { SmartNudgeBanner } from '../components/SmartNudgeBanner'
 import { ActivityFeed } from '../components/ActivityFeed'
 import { QuickActions } from '../components/QuickActions'
 import { getIndustryLanguage } from '../utils/industryLanguage'
-import { UserPlus, Receipt } from '@phosphor-icons/react'
+import { UserPlus, Receipt, ShieldCheck } from '@phosphor-icons/react'
 import LeadsListView from '../components/LeadsListView'
 import QuotesPage from './Quotes'
+import ContractsPage from './Contracts'
 
-type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes';
+type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
 
 // Skeleton components for loading states
 const StatCardSkeleton = () => (
@@ -427,6 +428,7 @@ const Dashboard = () => {
           { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Dashboard' },
           { mode: 'list' as ViewMode, icon: ListIcon, label: 'Leads', badge: stats?.total },
           { mode: 'quotes' as ViewMode, icon: Receipt, label: lang.quotes },
+          { mode: 'contracts' as ViewMode, icon: ShieldCheck, label: lang.contracts },
           { mode: 'analytics' as ViewMode, icon: ChartBar, label: 'Analytics' },
         ]).map(({ mode, icon: Icon, label, badge }) => (
           <button
@@ -692,10 +694,10 @@ const Dashboard = () => {
         )}
 
         {/* Smart Nudge Banner — stale leads needing follow-up */}
-        {viewMode !== 'quotes' && <SmartNudgeBanner leads={leads} onLeadClick={setSelectedLead} />}
+        {viewMode !== 'quotes' && viewMode !== 'contracts' && <SmartNudgeBanner leads={leads} onLeadClick={setSelectedLead} />}
 
         {/* Smart Suggestion */}
-        {viewMode !== 'quotes' && (
+        {viewMode !== 'quotes' && viewMode !== 'contracts' && (
         <SmartSuggestion
           leadCount={leads.length}
           hasQuotes={leads.some(l => (l.quotesCount || 0) > 0)}
@@ -719,6 +721,14 @@ const Dashboard = () => {
 
         {viewMode === 'quotes' ? (
           <QuotesPage lang={lang} user={user} leads={leads} />
+        ) : viewMode === 'contracts' ? (
+          <ContractsPage
+            lang={lang}
+            user={user}
+            leads={leads}
+            onLeadClick={setSelectedLead}
+            onLeadClickTab={(lead, tab) => { setSelectedLeadInitialTab(tab); setSelectedLead(lead); }}
+          />
         ) : (
         <>
 
