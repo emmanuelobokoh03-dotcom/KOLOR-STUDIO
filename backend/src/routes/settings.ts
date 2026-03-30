@@ -55,6 +55,8 @@ const SETTINGS_SELECT = {
   firstName: true,
   lastName: true,
   studioName: true,
+  businessName: true,
+  primaryIndustry: true,
   phone: true,
   website: true,
   timezone: true,
@@ -68,6 +70,9 @@ const SETTINGS_SELECT = {
   brandLogoUrl: true,
   brandFontFamily: true,
   emailSignature: true,
+  weeklyReportEnabled: true,
+  staleLeadEmailEnabled: true,
+  quoteNudgeEmailEnabled: true,
 };
 
 // GET /api/settings - Get current user settings
@@ -104,10 +109,11 @@ router.patch('/', authMiddleware, async (req: AuthRequest, res: Response): Promi
     }
 
     const updateData: any = {};
-    const profileFields = ['firstName', 'lastName', 'studioName', 'phone', 'website', 'timezone', 'emailSignature'];
+    const profileFields = ['firstName', 'lastName', 'studioName', 'phone', 'website', 'timezone', 'emailSignature', 'businessName', 'primaryIndustry'];
     const currencyFields = ['currency', 'currencySymbol', 'currencyPosition', 'numberFormat', 'defaultTaxRate'];
+    const notificationFields = ['weeklyReportEnabled', 'staleLeadEmailEnabled', 'quoteNudgeEmailEnabled'];
 
-    [...profileFields, ...currencyFields].forEach(field => {
+    [...profileFields, ...currencyFields, ...notificationFields].forEach(field => {
       if (body[field] !== undefined) updateData[field] = body[field];
     });
 

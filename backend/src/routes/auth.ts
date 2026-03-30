@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { sendPasswordResetEmail, sendVerificationEmail } from '../services/email';
+import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail, sendBetaWelcomeEmail, sendNewUserSignupAlert, sendPasswordChangedEmail } from '../services/email';
 import { seedTemplatesForUser } from '../seeds/systemTemplates';
 import { createDemoProject } from '../scripts/createDemoProject';
 import { seedDefaultSequences } from '../scripts/seedSequences';
@@ -143,6 +143,19 @@ router.post('/onboarding', authMiddleware, async (req: AuthRequest, res: Respons
     // Create industry-specific demo project and email sequences (non-blocking)
     createDemoProject(userId, primaryIndustry as any).catch(e => console.error('Demo project creation failed:', e));
     seedDefaultSequences(userId, primaryIndustry as any).catch(e => console.error('Sequence seed failed:', e));
+
+    // Send welcome or beta welcome email (non-blocking)
+    const userCount = await prisma.user.count();
+    const fullUser = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, firstName: true, lastName: true, primaryIndustry: true } });
+    if (fullUser) {
+      const industry = primaryIndustry || fullUser.primaryIndustry;
+      if (userCount <= 20) {
+        sendBetaWelcomeEmail({ email: fullUser.email, firstName: fullUser.firstName, industry }, userCount).catch(e => console.error('Beta welcome email failed:', e));
+      } else {
+        sendWelcomeEmail({ email: fullUser.email, firstName: fullUser.firstName, industry }, userCount).catch(e => console.error('Welcome email failed:', e));
+      }
+      sendNewUserSignupAlert({ firstName: fullUser.firstName, lastName: fullUser.lastName || undefined, email: fullUser.email, industry }, userCount).catch(e => console.error('Signup alert failed:', e));
+    }
 
     res.json({
       message: 'Onboarding complete',
@@ -496,7 +509,8 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
       req,
     });
 
-
+    // Send password changed confirmation email
+    sendPasswordChangedEmail({ email: user.email, firstName: user.firstName }).catch(e => console.error('Password changed email failed:', e));
 
     res.json({
       message: 'Password has been reset successfully. You can now log in with your new password.'
@@ -599,6 +613,45 @@ router.get('/verify-email/:token', async (req: Request, res: Response): Promise<
   } catch (error) {
     console.error('Verify email error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Verification failed. Please try again or request a new verification email.' });
+  }
+});
+
+// POST /api/auth/change-password - Change password (authenticated)
+router.post('/change-password', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ error: 'Bad Request', message: 'Current and new password are required' });
+      return;
+    }
+    if (newPassword.length < 8) {
+      res.status(400).json({ error: 'Bad Request', message: 'New password must be at least 8 characters' });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) { res.status(404).json({ error: 'User not found' }); return; }
+
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+      res.status(401).json({ error: 'Unauthorized', message: 'Current password is incorrect' });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    sendPasswordChangedEmail({ email: user.email, firstName: user.firstName }).catch(e => console.error('Password changed email failed:', e));
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to change password' });
   }
 });
 

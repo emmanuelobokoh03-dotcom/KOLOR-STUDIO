@@ -541,6 +541,9 @@ model User {
   meetingBookings      MeetingBooking[]
   fileComments         FileComment[]
   calendarConnections  CalendarConnection[]
+  weeklyReportEnabled    Boolean              @default(true)
+  staleLeadEmailEnabled  Boolean              @default(true)
+  quoteNudgeEmailEnabled Boolean              @default(true)
 
   @@map("users")
 }

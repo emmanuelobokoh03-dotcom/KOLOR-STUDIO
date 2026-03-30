@@ -401,6 +401,14 @@ app.listen(PORT, () => {
     }, MEETING_REMINDER_INTERVAL);
   }, 35000);
   console.log('📅 Meeting reminder processor started (every hour)');
+
+  // node-cron scheduler for daily + weekly automated emails
+  if (process.env.NODE_ENV === 'production') {
+    const { startScheduler } = require('./scheduler');
+    startScheduler();
+  } else {
+    console.log('[Scheduler] Skipped in development mode. Set NODE_ENV=production to enable.');
+  }
 });
 
 export default app;

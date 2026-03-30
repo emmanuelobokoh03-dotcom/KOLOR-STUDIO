@@ -1,8 +1,9 @@
 import { Resend } from 'resend';
 import {
-  EmailColors, EmailFonts, EmailSpacing, EmailRadius, EmailShadows,
+  EmailColors, EmailFonts, EmailSpacing, EmailRadius,
   primaryButtonStyle, successButtonStyle,
-  highlightBox, successBox, warningBox, cardBlock, detailRow,
+  highlightBox, successBox, warningBox, errorBox, cardBlock, detailRow,
+  buildEmailTemplate, statRow, formatCurrency, formatDate, formatDateShort,
 } from './emailDesignSystem';
 
 // Initialize Resend
@@ -44,78 +45,16 @@ const SERVICE_TYPE_LABELS: Record<string, string> = {
 };
 
 // KOLOR STUDIO branded email template — v2.0
-export const getEmailTemplate = (content: string, title: string) => `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>${title}</title>
-  <!--[if mso]>
-  <style type="text/css">body,table,td{font-family:Arial,Helvetica,sans-serif !important;}</style>
-  <![endif]-->
-  <style>
-    body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
-    table,td{mso-table-lspace:0pt;mso-table-rspace:0pt;}
-    img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none;}
-    body{margin:0;padding:0;width:100%!important;background-color:${EmailColors.surfaceBackground};font-family:${EmailFonts.body};color:${EmailColors.textPrimary};line-height:1.6;}
-    h1,h2,h3,h4{font-family:${EmailFonts.heading};margin:0;padding:0;color:${EmailColors.textPrimary};}
-    h1{font-size:24px;line-height:32px;font-weight:700;letter-spacing:-0.02em;}
-    h2{font-size:20px;line-height:28px;font-weight:600;letter-spacing:-0.01em;}
-    h3{font-size:16px;line-height:24px;font-weight:600;}
-    p{margin:0 0 16px 0;font-size:14px;line-height:22px;}
-    @media only screen and (max-width:600px){
-      .email-container{width:100%!important;}
-      .email-body{padding:24px 16px!important;}
-      h1{font-size:22px!important;line-height:28px!important;}
-      .cta-btn{display:block!important;width:100%!important;text-align:center!important;box-sizing:border-box!important;}
-    }
-  </style>
-</head>
-<body>
-  <div style="display:none;max-height:0;overflow:hidden;">${title}</div>
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:${EmailColors.surfaceBackground};padding:${EmailSpacing.xl} 0;">
-    <tr>
-      <td align="center">
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="email-container" style="max-width:600px;width:100%;background-color:${EmailColors.surfaceWhite};border-radius:${EmailRadius.card};box-shadow:${EmailShadows.card};">
-          <!-- Header -->
-          <tr>
-            <td style="background-color:${EmailColors.brandPrimary};padding:${EmailSpacing.xl} ${EmailSpacing.lg};text-align:center;border-radius:${EmailRadius.card} ${EmailRadius.card} 0 0;">
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center">
-                    <span style="font-size:24px;font-weight:800;color:${EmailColors.textInverse};letter-spacing:-0.5px;font-family:${EmailFonts.heading};">KOLOR STUDIO</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center" style="padding-top:${EmailSpacing.sm};">
-                    <span style="font-size:13px;color:rgba(255,255,255,0.8);font-family:${EmailFonts.body};">Your CRM should work harder than you do</span>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <!-- Content -->
-          <tr>
-            <td class="email-body" style="padding:${EmailSpacing.xl} ${EmailSpacing.lg};">
-              ${content}
-            </td>
-          </tr>
-          <!-- Footer -->
-          <tr>
-            <td style="background-color:${EmailColors.surfaceBackground};padding:${EmailSpacing.lg};border-top:1px solid ${EmailColors.borderDefault};border-radius:0 0 ${EmailRadius.card} ${EmailRadius.card};text-align:center;">
-              <p style="font-size:13px;font-weight:600;color:${EmailColors.brandPrimary};margin:0 0 ${EmailSpacing.xs} 0;font-family:${EmailFonts.heading};">KOLOR STUDIO</p>
-              <p style="font-size:12px;color:${EmailColors.textTertiary};margin:0;font-family:${EmailFonts.body};">&#169; ${new Date().getFullYear()} KOLOR STUDIO. All rights reserved.</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>
-`;
+export const getEmailTemplate = (content: string, _title: string, studioName?: string) =>
+  buildEmailTemplate({
+    headline: '',
+    body: content,
+    studioName,
+    emailType: 'workflow',
+  }).replace(
+    '<h1 style="font-size:22px;font-weight:700;color:#1A1A2E;margin:0 0 8px;line-height:1.3;font-family:Arial,Helvetica,sans-serif;"></h1>',
+    ''
+  );
 
 // Send notification email to studio owner
 export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> {
@@ -677,68 +616,35 @@ interface VerificationEmailData {
 }
 
 export async function sendVerificationEmail(data: VerificationEmailData): Promise<boolean> {
-  if (!resend) {
-
-    return false;
-  }
+  if (!resend) return false;
 
   const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
   const verifyUrl = `${baseUrl}/verify-email/${data.verificationToken}`;
 
-  const content = `
-    <div style="text-align: center; margin-bottom: ${EmailSpacing.xl};">
-      <span style="font-size: 48px;">&#x2709;&#xFE0F;</span>
-    </div>
-    
-    <h1 style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 24px; font-weight: 700; color: ${EmailColors.textPrimary}; text-align: center; font-family: ${EmailFonts.heading};">
-      Verify Your Email
-    </h1>
-    
-    <p style="margin: 0 0 ${EmailSpacing.md} 0; font-size: 16px; color: ${EmailColors.textSecondary}; line-height: 1.7; font-family: ${EmailFonts.body};">
-      Hi ${data.firstName},
-    </p>
-    
-    <p style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 16px; color: ${EmailColors.textSecondary}; line-height: 1.7; font-family: ${EmailFonts.body};">
-      Welcome to KOLOR STUDIO! Please verify your email address to unlock all features and secure your account.
-    </p>
-    
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: ${EmailSpacing.lg};">
-      <tr>
-        <td align="center">
-          <a href="${verifyUrl}" class="cta-btn" style="${primaryButtonStyle}">
-            Verify Email Address
-          </a>
-        </td>
-      </tr>
-    </table>
-    
-    <p style="margin: 0 0 ${EmailSpacing.md} 0; font-size: 14px; color: ${EmailColors.textTertiary}; line-height: 1.7; font-family: ${EmailFonts.body};">
-      If the button doesn't work, copy and paste this link into your browser:
-    </p>
-    
-    <p style="margin: 0 0 ${EmailSpacing.lg} 0; font-size: 12px; color: ${EmailColors.textTertiary}; word-break: break-all; background-color: ${EmailColors.surfaceHover}; padding: 12px; border-radius: ${EmailRadius.button}; font-family: ${EmailFonts.body};">
-      ${verifyUrl}
-    </p>
-    
-    <p style="margin: ${EmailSpacing.lg} 0 0 0; font-size: 16px; color: ${EmailColors.textSecondary}; font-family: ${EmailFonts.body};">
-      Stay creative,<br>
-      <strong style="color: ${EmailColors.brandPrimary};">The KOLOR STUDIO Team</strong>
-    </p>
-  `;
-
   try {
-    const { error } = await resend.emails.send({
-      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
-      to: [data.email],
-      subject: 'Verify your KOLOR STUDIO email',
-      html: getEmailTemplate(content, 'Email Verification'),
+    const html = buildEmailTemplate({
+      headline: 'Verify your email to get started',
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Hi ${data.firstName}, you're one step away from your KOLOR Studio account. Click the button below to verify your email address.
+        </p>
+        ${warningBox('This link expires in 24 hours.')}
+        <p style="font-size:12px;color:#9CA3AF;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          If you didn't create a KOLOR Studio account, you can safely ignore this email.
+        </p>`,
+      ctaText: 'Verify my email \u2192',
+      ctaUrl: verifyUrl,
+      plainLink: verifyUrl,
+      emailType: 'auth',
     });
 
-    if (error) {
-      console.error('Failed to send verification email:', error);
-      return false;
-    }
-
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [data.email],
+      subject: 'Verify your KOLOR Studio email',
+      html,
+    });
+    if (error) { console.error('Failed to send verification email:', error); return false; }
     return true;
   } catch (error) {
     console.error('Failed to send verification email:', error);
@@ -2834,6 +2740,623 @@ export async function sendFileUploadNotification(data: FileUploadNotificationDat
     return true;
   } catch (error) {
     console.error('[EMAIL] File upload notification error:', error);
+    return false;
+  }
+}
+
+
+// ===================================================================
+// ITERATION 106 — NEW EMAIL FUNCTIONS
+// ===================================================================
+
+import { getIndustryLanguage } from '../utils/industryLanguage';
+
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+
+// ── #02 — Welcome Email (industry-adaptive) ──
+export async function sendWelcomeEmail(user: {
+  email: string; firstName: string; industry?: string | null;
+}, userCount?: number): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const lang = getIndustryLanguage(user.industry);
+    const industryLabel = user.industry === 'DESIGN' ? 'design' : user.industry === 'FINE_ART' ? 'fine art' : 'photography';
+    const isFounder = userCount !== undefined && userCount <= 20;
+    const founderNote = isFounder
+      ? highlightBox(`You're one of KOLOR Studio's ${userCount} founding members. Your account is free, forever.`)
+      : '';
+
+    const stepsTable = `
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0;">
+        <tr>
+          <td style="padding:12px 16px;border-bottom:1px solid #EDE8F5;">
+            <p style="font-size:14px;color:#6C2EDB;font-weight:700;margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;">Step 1</p>
+            <p style="font-size:14px;color:#1A1A2E;margin:0;font-family:Arial,Helvetica,sans-serif;">Add your first ${lang.lead.toLowerCase()}</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 16px;border-bottom:1px solid #EDE8F5;">
+            <p style="font-size:14px;color:#6C2EDB;font-weight:700;margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;">Step 2</p>
+            <p style="font-size:14px;color:#1A1A2E;margin:0;font-family:Arial,Helvetica,sans-serif;">Send your first ${lang.quote.toLowerCase()}</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 16px;">
+            <p style="font-size:14px;color:#6C2EDB;font-weight:700;margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;">Step 3</p>
+            <p style="font-size:14px;color:#1A1A2E;margin:0;font-family:Arial,Helvetica,sans-serif;">Get your first ${lang.contract.toLowerCase()} signed</p>
+          </td>
+        </tr>
+      </table>`;
+
+    const subjectMap: Record<string, string> = {
+      PHOTOGRAPHY: `Your studio is ready, ${user.firstName}`,
+      DESIGN: `Your workspace is ready, ${user.firstName}`,
+      FINE_ART: `Your commission studio is ready, ${user.firstName}`,
+    };
+
+    const html = buildEmailTemplate({
+      headline: `Welcome to KOLOR Studio, ${user.firstName}`,
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Everything you need to run your ${industryLabel} business is ready. Here's where to start:
+        </p>
+        ${stepsTable}
+        ${founderNote}`,
+      ctaText: 'Go to your dashboard \u2192',
+      ctaUrl: `${FRONTEND_URL}/dashboard`,
+      emailType: 'auth',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: subjectMap[user.industry || 'PHOTOGRAPHY'] || subjectMap.PHOTOGRAPHY,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Welcome email failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Welcome email error:', error);
+    return false;
+  }
+}
+
+// ── #04 — Password Changed ──
+export async function sendPasswordChangedEmail(user: {
+  email: string; firstName: string;
+}): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const html = buildEmailTemplate({
+      headline: 'Your password was updated',
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Your KOLOR Studio password was successfully changed.
+        </p>
+        ${errorBox('If you didn\'t make this change, secure your account immediately.')}
+        <p style="font-size:12px;color:#9CA3AF;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          Changed at ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}
+        </p>`,
+      ctaText: 'Sign in to KOLOR Studio \u2192',
+      ctaUrl: `${FRONTEND_URL}/login`,
+      emailType: 'auth',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: 'Your KOLOR Studio password was changed',
+      html,
+    });
+    if (error) { console.error('[EMAIL] Password changed email failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Password changed email error:', error);
+    return false;
+  }
+}
+
+// ── #05 — New Device Login (scaffold) ──
+export async function sendNewDeviceLoginEmail(user: {
+  email: string; firstName: string;
+}, deviceInfo?: { ip?: string; timestamp?: string; location?: string }): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const infoLines = [
+      deviceInfo?.ip ? `IP Address: ${deviceInfo.ip}` : null,
+      deviceInfo?.timestamp ? `Time: ${deviceInfo.timestamp}` : `Time: ${new Date().toLocaleString('en-US')}`,
+      deviceInfo?.location ? `Location: ${deviceInfo.location}` : null,
+    ].filter(Boolean).join('<br>');
+
+    const html = buildEmailTemplate({
+      headline: 'New sign-in detected',
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Your account was accessed from a new device or location.
+        </p>
+        ${highlightBox(infoLines || 'A new sign-in was detected.')}
+        ${errorBox('If this wasn\'t you, reset your password immediately.')}`,
+      ctaText: 'Secure my account \u2192',
+      ctaUrl: `${FRONTEND_URL}/login`,
+      emailType: 'auth',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: 'New sign-in to your KOLOR Studio account',
+      html,
+    });
+    if (error) { console.error('[EMAIL] New device login email failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] New device login email error:', error);
+    return false;
+  }
+}
+
+// ── #06 — Beta Welcome (first 20 users) ──
+export async function sendBetaWelcomeEmail(user: {
+  email: string; firstName: string; industry?: string | null;
+}, userNumber: number): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const lang = getIndustryLanguage(user.industry);
+    const html = buildEmailTemplate({
+      headline: 'You made it. You\'re in the first 20.',
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          KOLOR Studio is yours free, forever. No trial. No expiry. As one of the founding members, you get full access to every feature \u2014 now and as the product grows.
+        </p>
+        ${successBox(`Free forever \u00b7 Full access \u00b7 Founding member #${userNumber} of 20`)}
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          Your feedback shapes what we build next. When something doesn't work or could be better, tell us \u2014 reply to this email directly.
+        </p>`,
+      ctaText: `Start with your first ${lang.lead.toLowerCase()} \u2192`,
+      ctaUrl: `${FRONTEND_URL}/dashboard`,
+      emailType: 'auth',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: `You're in \u2014 KOLOR Studio beta is yours, ${user.firstName}`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Beta welcome email failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Beta welcome email error:', error);
+    return false;
+  }
+}
+
+// ── #08 — Lead Stale Nudge ──
+export async function sendLeadStaleNudge(user: {
+  email: string; firstName?: string;
+}, lead: { id: string; clientName: string; status: string; }, daysSinceUpdate: number): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const html = buildEmailTemplate({
+      headline: `Time to follow up with ${lead.clientName}`,
+      body: `
+        ${warningBox(`Last contact: ${daysSinceUpdate} days ago \u00b7 Status: ${lead.status}`)}
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          A quick check-in keeps ${lead.clientName} warm. Leads contacted within a week book at 3\u00d7 the rate.
+        </p>`,
+      ctaText: 'Follow up now \u2192',
+      ctaUrl: `${FRONTEND_URL}/leads`,
+      emailType: 'workflow',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: `${lead.clientName} hasn't heard from you in ${daysSinceUpdate} days`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Stale lead nudge failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Stale lead nudge error:', error);
+    return false;
+  }
+}
+
+// ── #13 — Quote Viewed Nudge ──
+export async function sendQuoteViewedNudge(user: {
+  email: string; firstName?: string; industry?: string | null;
+}, quote: { id: string; total?: number; viewedAt?: Date | null; validUntil?: Date | null; },
+lead: { clientName: string; }): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const lang = getIndustryLanguage(user.industry);
+    const viewedDays = quote.viewedAt ? Math.floor((Date.now() - new Date(quote.viewedAt).getTime()) / 86400000) : 0;
+    const total = quote.total ? formatCurrency(quote.total) : 'N/A';
+    const expiry = quote.validUntil ? formatDateShort(quote.validUntil) : 'N/A';
+
+    const html = buildEmailTemplate({
+      headline: `${lead.clientName} is still thinking it over`,
+      body: `
+        ${warningBox(`Viewed ${viewedDays} days ago \u00b7 ${lang.quote} value: ${total} \u00b7 Expires: ${expiry}`)}
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          A brief personal message can break the silence. Try: "Hi ${lead.clientName.split(' ')[0]}, just checking if you had any questions about the ${lang.quote.toLowerCase()}."
+        </p>`,
+      ctaText: `View ${lang.quote} \u2192`,
+      ctaUrl: `${FRONTEND_URL}/quotes`,
+      emailType: 'workflow',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: `${lead.clientName} viewed their ${lang.quote.toLowerCase()} 2 days ago \u2014 no response yet`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Quote viewed nudge failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Quote viewed nudge error:', error);
+    return false;
+  }
+}
+
+// ── #14 — Contract Unsigned Warning ──
+export async function sendContractUnsignedWarning(user: {
+  email: string; firstName?: string; industry?: string | null;
+}, contract: { id: string; sentAt?: Date | null; },
+lead: { clientName: string; }): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const lang = getIndustryLanguage(user.industry);
+    const daysSinceSent = contract.sentAt ? Math.floor((Date.now() - new Date(contract.sentAt).getTime()) / 86400000) : 0;
+
+    const html = buildEmailTemplate({
+      headline: `${lead.clientName}'s ${lang.contract.toLowerCase()} is still waiting`,
+      body: `
+        ${warningBox(`Sent ${daysSinceSent} days ago`)}
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          A gentle reminder to ${lead.clientName.split(' ')[0]} often resolves this. Send it from inside KOLOR.
+        </p>`,
+      ctaText: 'Send reminder \u2192',
+      ctaUrl: `${FRONTEND_URL}/contracts`,
+      emailType: 'workflow',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: `${lead.clientName} hasn't signed their ${lang.contract.toLowerCase()} \u2014 ${daysSinceSent} days`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Contract unsigned warning failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Contract unsigned warning error:', error);
+    return false;
+  }
+}
+
+// ── #16 — Weekly Pipeline Report ──
+export async function sendWeeklyPipelineReport(user: {
+  email: string; firstName: string; id: string;
+}, data: {
+  newLeads: number; quotesSent: number; revenue: number; acceptanceRate: number;
+  staleLeads: Array<{ clientName: string; updatedAt: Date }>;
+  weekStartDate: Date;
+}): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const mondayStr = formatDateShort(data.weekStartDate);
+    const staleSection = data.staleLeads.length > 0
+      ? warningBox(data.staleLeads.map(l => {
+          const days = Math.floor((Date.now() - new Date(l.updatedAt).getTime()) / 86400000);
+          return `${l.clientName} \u2014 ${days} days stale`;
+        }).join('<br>'))
+      : '';
+
+    const html = buildEmailTemplate({
+      headline: `Your week, ${user.firstName}`,
+      body: `
+        ${statRow([
+          { label: 'New leads', value: String(data.newLeads) },
+          { label: 'Quotes sent', value: String(data.quotesSent) },
+          { label: 'Accept rate', value: `${data.acceptanceRate}%` },
+          { label: 'Revenue', value: formatCurrency(data.revenue) },
+        ])}
+        ${staleSection}
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">Have a great week.</p>`,
+      ctaText: 'Open KOLOR Studio \u2192',
+      ctaUrl: `${FRONTEND_URL}/dashboard`,
+      unsubscribeUrl: `${FRONTEND_URL}/settings?tab=notifications`,
+      emailType: 'workflow',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: `Your studio this week \u2014 ${mondayStr}`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Weekly pipeline report failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Weekly pipeline report error:', error);
+    return false;
+  }
+}
+
+// ── #17 — Quote Expiry Warning (to photographer) ──
+export async function sendQuoteExpiryWarning(user: {
+  email: string; industry?: string | null;
+}, quote: { total?: number; validUntil?: Date | null; },
+lead: { clientName: string; }): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const lang = getIndustryLanguage(user.industry);
+    const expiry = quote.validUntil ? formatDate(quote.validUntil) : 'soon';
+    const total = quote.total ? formatCurrency(quote.total) : 'N/A';
+
+    const html = buildEmailTemplate({
+      headline: 'Quote expiring soon',
+      body: `
+        ${warningBox(`${lead.clientName} \u00b7 Expires: ${expiry} \u00b7 Value: ${total}`)}
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          Extend the deadline or follow up now to close before it expires.
+        </p>`,
+      ctaText: `View ${lang.quote} \u2192`,
+      ctaUrl: `${FRONTEND_URL}/quotes`,
+      emailType: 'workflow',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: `${lead.clientName}'s ${lang.quote.toLowerCase()} expires in 3 days`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Quote expiry warning failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Quote expiry warning error:', error);
+    return false;
+  }
+}
+
+// ── #18 — Calendar Disconnected Alert ──
+export async function sendCalendarDisconnectedAlert(user: {
+  email: string; firstName: string;
+}): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const html = buildEmailTemplate({
+      headline: 'Your Google Calendar needs reconnecting',
+      body: `
+        ${warningBox('Calendar sync is paused. New bookings won\'t appear in your calendar until you reconnect.')}`,
+      ctaText: 'Reconnect Google Calendar \u2192',
+      ctaUrl: `${FRONTEND_URL}/settings?tab=integrations`,
+      emailType: 'workflow',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: 'Action needed \u2014 reconnect your Google Calendar',
+      html,
+    });
+    if (error) { console.error('[EMAIL] Calendar disconnected alert failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Calendar disconnected alert error:', error);
+    return false;
+  }
+}
+
+// ── #21 — Quote Expiry Notice to Client ──
+export async function sendQuoteExpiryNoticeToClient(user: {
+  email: string; businessName?: string | null; industry?: string | null;
+}, quote: { total?: number; validUntil?: Date | null; },
+lead: { clientName: string; clientEmail: string; portalToken?: string | null; }): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const lang = getIndustryLanguage(user.industry);
+    const businessName = user.businessName || 'Your photographer';
+    const clientFirst = lead.clientName.split(' ')[0];
+    const expiry = quote.validUntil ? formatDate(quote.validUntil) : 'soon';
+    const portalUrl = lead.portalToken ? `${FRONTEND_URL}/portal/${lead.portalToken}` : FRONTEND_URL;
+
+    const html = buildEmailTemplate({
+      headline: `Hi ${clientFirst}, your ${lang.quote.toLowerCase()} expires soon`,
+      body: `
+        ${warningBox(`This ${lang.quote.toLowerCase()} expires on ${expiry}. After this date, pricing may change.`)}`,
+      ctaText: `Review your ${lang.quote.toLowerCase()} \u2192`,
+      ctaUrl: portalUrl,
+      studioName: businessName,
+      emailType: 'client',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `${businessName} via KOLOR <${SENDER_EMAIL}>`,
+      to: [lead.clientEmail],
+      replyTo: user.email,
+      subject: `Your ${lang.quote.toLowerCase()} from ${businessName} expires in 3 days`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Quote expiry notice to client failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Quote expiry notice to client error:', error);
+    return false;
+  }
+}
+
+// ── #23 — Contract Reminder to Client ──
+export async function sendContractReminderToClient(user: {
+  email: string; businessName?: string | null; industry?: string | null;
+}, lead: { clientName: string; clientEmail: string; portalToken?: string | null; }): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const lang = getIndustryLanguage(user.industry);
+    const businessName = user.businessName || 'Your photographer';
+    const clientFirst = lead.clientName.split(' ')[0];
+    const portalUrl = lead.portalToken ? `${FRONTEND_URL}/portal/${lead.portalToken}` : FRONTEND_URL;
+
+    const html = buildEmailTemplate({
+      headline: `Hi ${clientFirst}, just a quick reminder`,
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          ${businessName} is holding your ${lang.booking.toLowerCase()} date. Signing your ${lang.contract.toLowerCase()} confirms it.
+        </p>`,
+      ctaText: 'Sign now \u2192',
+      ctaUrl: portalUrl,
+      studioName: businessName,
+      emailType: 'client',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `${businessName} via KOLOR <${SENDER_EMAIL}>`,
+      to: [lead.clientEmail],
+      replyTo: user.email,
+      subject: `Reminder: your ${lang.contract.toLowerCase()} is ready to sign`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Contract reminder to client failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Contract reminder to client error:', error);
+    return false;
+  }
+}
+
+// ── #24 — Discovery Call Invite to Client ──
+export async function sendDiscoveryCallInviteToClient(user: {
+  email: string; firstName: string; businessName?: string | null; industry?: string | null;
+}, lead: { clientName: string; clientEmail: string; portalToken?: string | null; projectType?: string; }): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const lang = getIndustryLanguage(user.industry);
+    const businessName = user.businessName || user.firstName;
+    const clientFirst = lead.clientName.split(' ')[0];
+    const portalUrl = lead.portalToken ? `${FRONTEND_URL}/portal/${lead.portalToken}` : FRONTEND_URL;
+
+    const html = buildEmailTemplate({
+      headline: `Hi ${clientFirst},`,
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          ${user.firstName} at ${businessName} would love to schedule a ${lang.discoveryCall.toLowerCase()} to discuss your ${lead.projectType || 'project'}. It's a quick call to make sure they're the right fit.
+        </p>`,
+      ctaText: 'Schedule your call \u2192',
+      ctaUrl: portalUrl,
+      studioName: businessName,
+      emailType: 'client',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `${businessName} via KOLOR <${SENDER_EMAIL}>`,
+      to: [lead.clientEmail],
+      replyTo: user.email,
+      subject: `${businessName} would love to schedule a call with you`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Discovery call invite failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Discovery call invite error:', error);
+    return false;
+  }
+}
+
+// ── #27 — New User Signup Alert (admin) ──
+export async function sendNewUserSignupAlert(newUser: {
+  firstName: string; lastName?: string; email: string; industry?: string | null;
+}, userNumber: number): Promise<boolean> {
+  if (!resend || !ADMIN_EMAIL) return false;
+  try {
+    const betaStatus = userNumber <= 20
+      ? `${userNumber} of 20 spots claimed`
+      : 'BETA FULL \u2014 over 20 users';
+
+    const html = buildEmailTemplate({
+      headline: `New signup #${userNumber}`,
+      body: `
+        <p style="font-size:14px;color:#1A1A2E;line-height:1.65;margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;">
+          <strong>Name:</strong> ${newUser.firstName} ${newUser.lastName || ''}<br>
+          <strong>Email:</strong> ${newUser.email}<br>
+          <strong>Industry:</strong> ${newUser.industry || 'Not set'}<br>
+          <strong>Signed up:</strong> ${new Date().toLocaleString('en-US')}<br>
+          <strong>Beta status:</strong> ${betaStatus}
+        </p>`,
+      emailType: 'system',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR System <${SENDER_EMAIL}>`,
+      to: [ADMIN_EMAIL],
+      subject: `New signup #${userNumber} \u2014 ${newUser.firstName} \u00b7 ${newUser.industry || 'N/A'}`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] New user signup alert failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] New user signup alert error:', error);
+    return false;
+  }
+}
+
+// ── #28 — Beta Full Alert (admin) ──
+export async function sendBetaFullAlert(user21: {
+  firstName: string; email: string;
+}): Promise<boolean> {
+  if (!resend || !ADMIN_EMAIL) return false;
+  try {
+    const html = buildEmailTemplate({
+      headline: 'Beta is full \u2014 20/20 free spots claimed',
+      body: `
+        <p style="font-size:14px;color:#1A1A2E;line-height:1.65;margin:0;font-family:Arial,Helvetica,sans-serif;">
+          The 21st user just signed up: <strong>${user21.firstName}</strong> (${user21.email}) at ${new Date().toLocaleString('en-US')}.<br>
+          Pricing tier now shifts to $9/month for users 21\u201350.
+        </p>`,
+      emailType: 'system',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR System <${SENDER_EMAIL}>`,
+      to: [ADMIN_EMAIL],
+      subject: 'Beta is full \u2014 20/20 free spots claimed',
+      html,
+    });
+    if (error) { console.error('[EMAIL] Beta full alert failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Beta full alert error:', error);
+    return false;
+  }
+}
+
+// ── #29 — Health Check Failure Alert (admin, scaffold) ──
+// TODO: Wire to uptime monitoring webhook or cron
+export async function sendHealthCheckFailureAlert(info: {
+  endpoint: string; errorMessage: string; failureTime?: Date;
+}): Promise<boolean> {
+  if (!resend || !ADMIN_EMAIL) return false;
+  try {
+    const html = buildEmailTemplate({
+      headline: 'KOLOR Studio \u2014 health check failed',
+      body: errorBox(`Endpoint: ${info.endpoint}<br>Time: ${(info.failureTime || new Date()).toLocaleString('en-US')}<br>Error: ${info.errorMessage}`),
+      emailType: 'system',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR System <${SENDER_EMAIL}>`,
+      to: [ADMIN_EMAIL],
+      subject: 'KOLOR Studio \u2014 health check failed',
+      html,
+    });
+    if (error) { console.error('[EMAIL] Health check failure alert failed:', error); return false; }
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Health check failure alert error:', error);
     return false;
   }
 }

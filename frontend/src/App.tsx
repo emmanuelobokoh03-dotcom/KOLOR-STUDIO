@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import LandingPageV2 from './pages/LandingPageV2'
 import Dashboard from './pages/Dashboard'
+import Settings from './pages/Settings'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import SubmitInquiry from './pages/SubmitInquiry'
@@ -39,6 +40,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/inquiry" element={<SubmitInquiry />} />
         <Route path="/portal/:token" element={<ClientPortal />} />
         <Route path="/quote/:quoteToken" element={<PublicQuote />} />

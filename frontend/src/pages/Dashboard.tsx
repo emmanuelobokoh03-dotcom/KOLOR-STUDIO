@@ -492,6 +492,16 @@ const Dashboard = () => {
           <div className="text-[10px] text-text-secondary">One of the first 20 &#10022;</div>
         </div>
 
+        {/* Settings */}
+        <button
+          onClick={() => window.location.href = '/settings'}
+          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[11px] text-text-secondary hover:bg-surface-background transition-all duration-150 mb-0.5"
+          data-testid="sidebar-settings"
+        >
+          <GearSix className="w-[14px] h-[14px]" />
+          Settings
+        </button>
+
         {/* Help */}
         <button
           onClick={() => setShowFeedback(true)}
