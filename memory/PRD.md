@@ -12,10 +12,10 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 - Secure HTTP-Only cookie authentication with "Remember Me"
 - Industry-specific UI language (via `industryLanguage.ts`)
 - 2-step signup with industry selection
-- Dashboard with Kanban, List, Analytics, Calendar, Portfolio, Quotes views
+- Dashboard with Kanban, List, Analytics, Calendar, Portfolio, Quotes, Contracts views
 - Lead management with CRUD, status tracking, discovery calls
 - Quote builder, contract management, file sharing
-- Client portal with approval workflow
+- Client portal with approval workflow, celebration states
 - Email integration (Resend)
 - Calendar integration (Google Calendar)
 
@@ -31,24 +31,27 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 │   ├── prisma/schema.prisma
 │   └── src/
 │       ├── routes/
-│       │   ├── quotes.ts       ← Added GET /api/quotes/all (Iter 104)
+│       │   ├── quotes.ts
+│       │   ├── contracts.ts    ← GET /all, PATCH /viewed, POST /agree (celebration flag)
+│       │   ├── portal.ts       ← Auto viewedAt on portal load
 │       │   └── ...
-│       └── server.ts
+│       └── services/
+│           ├── email.ts        ← sendQuoteAcceptedNotification, sendContractAgreedNotification
+│           └── emailDesignSystem.ts
 └── frontend/
     ├── src/
     │   ├── components/
-    │   │   ├── LeadsListView.tsx     (Iter 103)
-    │   │   ├── LeadDetailModal.tsx   (Iter 103)
-    │   │   ├── QuoteBuilderModal.tsx ← REBUILT (Iter 104)
-    │   │   ├── QuotesTab.tsx
-    │   │   ├── QuickActions.tsx
-    │   │   ├── StatCard.tsx
-    │   │   └── StatusBadge.tsx
+    │   │   ├── LeadsListView.tsx
+    │   │   ├── LeadDetailModal.tsx
+    │   │   ├── QuoteBuilderModal.tsx
+    │   │   ├── ContractsTab.tsx
+    │   │   └── ...
     │   ├── pages/
-    │   │   ├── Dashboard.tsx
-    │   │   ├── Quotes.tsx            ← NEW (Iter 104)
-    │   │   ├── LandingPageV2.tsx
-    │   │   └── Signup.tsx
+    │   │   ├── Dashboard.tsx       ← ViewMode includes 'contracts'
+    │   │   ├── Contracts.tsx       ← NEW (Iter 105)
+    │   │   ├── Quotes.tsx
+    │   │   ├── ClientPortal.tsx    ← REDESIGNED (Iter 105)
+    │   │   └── ...
     │   └── utils/
     │       └── industryLanguage.ts
     └── public/
@@ -58,50 +61,54 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 
 ## What's Been Implemented
 
-### Iteration 100: Dashboard Premium Upgrade ✅
-### Iteration 101: Quick Actions + Industry Language Utility ✅
-### Iteration 102: 7 Surgical Landing Page Enhancements + JSON-LD ✅
-### Iteration 103: Leads Page + Lead Detail Modal Full Rebuild ✅
-- Extracted LeadsListView.tsx, stats strip, pill tabs, hover quick-actions
-- Split-panel Lead Detail Modal with relationship timeline
-- 20/20 tests passing
+### Iteration 100: Dashboard Premium Upgrade
+### Iteration 101: Quick Actions + Industry Language Utility
+### Iteration 102: 7 Surgical Landing Page Enhancements + JSON-LD
+### Iteration 103: Leads Page + Lead Detail Modal Full Rebuild
+### Iteration 104: Quote Builder Premium UI + Quotes List View
 
-### Iteration 104: Quote Builder Premium UI + Quotes List View ✅
-**Workstream 1 — Quotes List View:**
-- Created full-page `Quotes.tsx` with sidebar navigation
-- Added `GET /api/quotes/all` backend endpoint (with lead join data)
-- Stats strip: Sent, Total value, Awaiting approval, Acceptance rate
-- Pill tabs: All/Draft/Sent/Viewed/Approved/Declined with count badges
-- Quote list table with hover quick-actions, "Viewed · Nd ago" urgency badges
-- Empty state with EmptyState component
-- Client-side filtering, no new API calls on tab switch
+### Iteration 105: Contracts Page + Client Portal Redesign + Automation Wiring (Mar 30, 2026)
+**Workstream 1 — Contracts Page:**
+- Created full-page `Contracts.tsx` with sidebar navigation (`sidebar-contracts`)
+- Added `GET /api/contracts/all` backend endpoint (with lead join data)
+- Stats strip: Total, Awaiting Signature, Signed, Sign Rate
+- Pill tabs: All/Draft/Sent/Viewed/Signed with count badges
+- Contract rows with client avatar, status badges, urgency badges ("Viewed Nd ago", "Nd no response")
+- Celebration badge for signed contracts (green Confetti icon)
+- Empty state explaining contracts are auto-generated from accepted quotes
+- Industry language integration (`lang.contracts`, `lang.contract`)
 
-**Workstream 2 — Quote Builder:**
-- Rebuilt QuoteBuilderModal with two-column layout (left builder + right 220px sidebar)
-- Status pipeline bar: 4-step visual indicator (Client → Line items → Review → Send)
-- Premium client card with avatar, 3-col details grid, project type badge
-- Line items card with inline editing, add/remove, "Load package" template system
-- Totals card: subtotal, discount, tax (editable), total with real-time recalculation
-- Right sidebar: value summary (live total + status pill), "Send to [name] →" button, client preview thumbnail, saved packages panel
-- Industry language integration throughout (`lang.quote`, `lang.client`, `lang.keyDate`, etc.)
-- All existing save/send/template handlers preserved
-- 24/24 tests passing
+**Workstream 2 — Client Portal Redesign:**
+- Complete UI overhaul of `ClientPortal.tsx` with dark header, minimal card-based layout
+- Studio branding with `contact.studioName` from backend
+- Premium quote approval view with accept/decline buttons
+- `QuoteAcceptedConfirmation` component for post-approval state
+- `CelebrationOverlay` full-screen celebration for contract signing (triggered by `celebration: true` API flag)
+- Contract signing view with checkbox and sign button
+- Signed contract confirmation state
+
+**Workstream 3 — Automation Wiring:**
+- Quote approval → `sendQuoteAcceptedNotification` already wired in quotes.ts
+- Contract signing → `sendContractAgreedNotification` already wired in contracts.ts, added `celebration: true` to response
+- Portal load → auto-marks SENT contracts as VIEWED with `viewedAt` timestamp
+- `PATCH /api/contracts/:id/viewed` endpoint for explicit viewedAt marking
+- `logActivity` called for contract viewed and signed events
+
+**Testing: 100% pass — 9 backend tests, full frontend verification**
 
 ---
 
 ## Prioritized Backlog
 
-### P0 (None currently)
-
 ### P1
+- Weekly Pipeline Report auto-email
 - Pipeline/Kanban view build (LeadsPipelineView.tsx sibling component)
-- Industry language rollout to Contracts, Calendar screens
-- Mobile responsiveness polish for Quotes page + builder
+- Industry language rollout to Calendar screen
+- Mobile responsiveness polish for Contracts page + Client Portal
 - Launch Prep: Production domains, DNS records (SPF/DKIM for Resend)
 
 ### P2
 - Wire real historical trend data to StatCard sparklines
-- Quote "Viewed · Nd ago" badge testing with real viewed quotes
 - Meeting booking widget embed code
 - "Smart Inbox" view for files needing review
 - "File Request" feature
@@ -113,9 +120,10 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 - email: `bookingtest@test.com`, password: `password123`
 
 ## Key API Endpoints
-- `GET /api/quotes/all` — All quotes for authenticated user (with lead data)
-- `GET /api/leads/:leadId/quotes` — Quotes for a specific lead
-- `POST /api/leads/:leadId/quotes` — Create quote
-- `PUT /api/quotes/:id` — Update quote
-- `POST /api/quotes/:id/send` — Send quote
-- `GET /api/quote-templates` — Get saved packages/templates
+- `GET /api/contracts/all` — All contracts for authenticated user (with lead data)
+- `GET /api/contracts/pending` — DRAFT contracts for authenticated user
+- `POST /api/contracts/:id/agree` — Sign contract (returns celebration: true)
+- `PATCH /api/contracts/:id/viewed` — Mark contract as viewed (public, needs portalToken)
+- `GET /api/quotes/all` — All quotes for authenticated user
+- `POST /api/quotes/public/:quoteToken/accept` — Client accepts quote (triggers notification)
+- `GET /api/portal/:token` — Portal data (auto-marks contracts viewed)
