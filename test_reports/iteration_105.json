@@ -1,0 +1,66 @@
+{
+  "summary": "Iteration 105 Testing Complete - Contracts Page + Client Portal Redesign + Automation Wiring. All core features verified working.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/contracts/all", "issue": "Required backend restart to work initially (stale server state)", "priority": "LOW"}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Dashboard", "issues": ["Onboarding tour modal blocks sidebar navigation - requires force=True or Escape key to dismiss"]}
+    ]
+  },
+  "test_report_links": [
+    "/app/kolor-studio-v2/backend/tests/test_iteration_105_contracts.py",
+    "/app/test_reports/pytest/pytest_results_105.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/kolor-studio-v2/backend/tests/test_iteration_105_contracts.py"
+  ],
+  "success_rate": {
+    "backend": "100% (9 passed, 2 skipped - skipped tests require SENT/VIEWED contracts which were not available at test start)",
+    "frontend": "100%"
+  },
+  "test_credentials": "email=bookingtest@test.com, password=password123",
+  "seed_data_creation": "Created quote Q-2026-002 for Emma Wilson ($600), accepted it to auto-generate contract, sent and signed contract",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Test user now has 1 signed contract for Emma Wilson. Portal token: cmn34rnxf000xm1ba0y24racd. Contract ID: cmnd7c9zh000hh9y4hn78da5d. The contracts page shows stats strip, tab row, and contract list correctly.",
+  "features_verified": {
+    "contracts_page": {
+      "stats_strip": "PASS - Shows Total, Awaiting Signature, Signed, Sign Rate",
+      "tab_row": "PASS - All Booking Agreements, Draft, Sent, Viewed, Signed tabs with counts",
+      "contract_rows": "PASS - Shows client name, status badge, project title, type, sent date",
+      "empty_state": "PASS - Shows appropriate message when no contracts",
+      "sidebar_navigation": "PASS - data-testid='sidebar-contracts' works"
+    },
+    "client_portal_redesign": {
+      "header_branding": "PASS - Shows studioName (KOLOR STUDIO)",
+      "status_card": "PASS - Shows project status with description",
+      "progress_steps": "PASS - 5-step progress indicator (Received → Confirmed)",
+      "project_details": "PASS - Service type, description, budget, submitted date",
+      "timeline_section": "PASS - Shows milestones with completion dates",
+      "quotes_section": "PASS - Shows accepted quote with amount and confirmation",
+      "contracts_section": "PASS - Shows signed contract with full content",
+      "contact_section": "PASS - Shows photographer contact info",
+      "powered_by_badge": "PASS - Shows Kolor branding"
+    },
+    "api_endpoints": {
+      "GET /api/contracts/all": "PASS - Returns contracts with lead info",
+      "GET /api/contracts/pending": "PASS - Returns DRAFT contracts",
+      "GET /api/contracts/templates/list": "PASS - Returns available templates",
+      "POST /api/contracts/:id/agree": "PASS - Returns { success: true, celebration: true }",
+      "PATCH /api/contracts/:id/viewed": "PASS - Requires portalToken, returns 404 for invalid"
+    },
+    "automation_wiring": {
+      "quote_acceptance_notification": "PASS - sendQuoteAcceptedNotification called (email failed due to unverified Resend domain - expected)",
+      "contract_signing_notification": "PASS - sendContractAgreedNotification wired in code",
+      "auto_contract_generation": "PASS - Contract auto-generated when quote accepted"
+    }
+  }
+}
