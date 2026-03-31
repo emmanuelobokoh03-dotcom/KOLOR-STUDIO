@@ -14,13 +14,14 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 - 2-step signup with industry selection
 - Dashboard with Kanban, List, Analytics, Portfolio, Quotes, Contracts views
 - Standalone Calendar page with Month/Week/List views
-- Brand-adaptive public portfolio + inquiry form (creator's brand, not KOLOR's)
+- Brand-adaptive public portfolio, inquiry form, and booking page (creator's brand tokens)
+- Brand Settings tab: logo upload, color pickers, font selector, live preview
 - Lead management with CRUD, status tracking, discovery calls
 - Quote builder, contract management, file sharing
 - Client portal with approval workflow, celebration states
 - Email integration (Resend) with V2.0 branded design system
 - Calendar integration (Google Calendar)
-- Settings page with profile, notifications, integrations, account
+- Settings page: Profile, Brand, Notifications, Integrations, Account
 
 ## Tech Stack
 - **Frontend**: React 19 + Vite + TypeScript + TailwindCSS + Phosphor Icons
@@ -31,31 +32,30 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 ```
 /app/kolor-studio-v2/
 ├── backend/
-│   ├── prisma/schema.prisma
+│   ├── prisma/schema.prisma          ← Brand defaults: #6C2EDB / #E8891A
 │   ├── src/
 │   │   ├── routes/
-│   │   │   ├── calendar.ts           ← Calendar events API
-│   │   │   ├── portfolio.ts          ← UPDATED: brand fields in public endpoint
-│   │   │   ├── googleCalendar.ts
-│   │   │   ├── auth.ts
+│   │   │   ├── calendar.ts
+│   │   │   ├── portfolio.ts          ← Brand fields in public endpoint
+│   │   │   ├── settings.ts           ← PATCH accepts brand fields
+│   │   │   ├── public-booking.ts     ← Returns brand tokens
 │   │   │   └── ...
-│   │   ├── services/
-│   │   │   ├── googleCalendarService.ts
-│   │   │   ├── email.ts
-│   │   │   └── emailDesignSystem.ts
-│   │   └── scheduler.ts
-│   └── package.json
+│   │   └── services/
 └── frontend/
+    ├── index.html                    ← Google Fonts: Inter, Fraunces, Playfair, Montserrat, Libre Baskerville
     ├── src/
     │   ├── pages/
-    │   │   ├── PublicPortfolio.tsx     ← REDESIGNED: brand-adaptive
-    │   │   ├── SubmitInquiry.tsx       ← REDESIGNED: industry-adaptive forms
+    │   │   ├── PublicBookingPage.tsx  ← REDESIGNED: brand-adaptive, branded header
+    │   │   ├── PublicPortfolio.tsx    ← REDESIGNED: brand-adaptive
+    │   │   ├── SubmitInquiry.tsx      ← REDESIGNED: industry-adaptive
+    │   │   ├── Settings.tsx          ← UPDATED: Brand tab with BrandPreview, PortfolioSettings, SharePortfolio
     │   │   ├── Calendar.tsx
     │   │   ├── Dashboard.tsx
-    │   │   ├── Contracts.tsx
-    │   │   ├── Settings.tsx
     │   │   └── ...
-    │   ├── App.tsx
+    │   ├── components/
+    │   │   ├── BrandPreview.tsx       ← Wired into Brand tab
+    │   │   ├── PortfolioSettings.tsx  ← Bug fixes: modal bg, text artifacts
+    │   │   └── SharePortfolio.tsx     ← Wired into Brand tab
     │   └── services/
     │       └── api.ts
     └── public/
@@ -66,49 +66,44 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 ## What's Been Implemented
 
 ### Iterations 100-104: Dashboard, Leads, Quote Builder
-### Iteration 105: Contracts Page + Client Portal Redesign + Automation Wiring (Mar 30)
-### Iteration 106: Email Design System V2.0 + 29 Templates + Settings + Scheduler (Mar 30)
+### Iteration 105: Contracts Page + Client Portal Redesign (Mar 30)
+### Iteration 106: Email Design System V2.0 + 29 Templates + Scheduler (Mar 30)
 ### Iteration 107: Calendar Page (Mar 30)
-
-- Full calendar with Month/Week/List views, event creation modal, side panel
-- Backend: Dynamic KOLOR event derivation + manual CalendarEvent model
-- Google Calendar integration with graceful token refresh
-- Testing: 100% backend (11/11), 100% frontend
-
 ### Iteration 108a: Public Portfolio + Inquiry Form — Brand-Adaptive Redesign (Mar 31)
+### Iteration 108b: Public Booking Page — Brand Token Integration (Mar 31)
+
+**Changes:**
+- Branded header: logo/initials + studio name, always visible across all 4 booking steps
+- Page background → `#F9F7FE` (warm off-white, consistent across all public surfaces)
+- Step indicator: 4 minimal dots (filled=complete, ring=current, muted=future)
+- All hardcoded `purple-*` Tailwind classes → inline styles using `primaryColor`
+- Input focus: `focusedField` state with `borderColor: primaryColor` + `boxShadow`
+- Time slot hover: React state `hoveredTime` + inline styles (no Tailwind hover classes)
+- Timezone display on date step + confirmation screen
+- Confirmation footer: "Powered by KOLOR Studio" (not studio name)
+- `accentColor`, `brandLogoUrl` derived from API response
+- 44px min touch targets, mobile stacking at ≤375px
+
+### Iteration 108c: Brand Settings Tab (Mar 31)
 
 **Backend:**
-- `GET /api/portfolio/public/:userId` now returns brand fields: `brandPrimaryColor`, `brandAccentColor`, `brandFontFamily`, `brandLogoUrl`, `industry`, `speciality`, `studioName`, `businessName`, `firstName`, `lastName`
+- `PATCH /api/settings` now accepts and persists: `brandPrimaryColor`, `brandAccentColor`, `brandFontFamily`, `brandLogoUrl`
+- Prisma schema defaults updated: `#A855F7` → `#6C2EDB`, `#EC4899` → `#E8891A`
+- `GET /api/settings/brand` default values updated to match
 
-**Frontend — PublicPortfolio.tsx (complete redesign):**
-- Warm light background (#F9F7FE) replaces dark theme
-- All colors use creator's brand tokens via inline styles (no hardcoded KOLOR purple)
-- Sticky nav bar with brand logo/initials, Work/Contact links, mobile hamburger
-- Hero section: studio name, speciality, "Work with me" + "Book a call" CTAs
-- Filter bar: category pills + Featured toggle with brand-colored active states
-- Portfolio grid: cards with hover border color in brandPrimary, featured badges
-- Testimonials section: industry-aware heading ("What clients/collectors say")
-- Inquiry CTA section: "Send an inquiry" → /inquiry?studio=:userId
-- Footer: "Powered by KOLOR Studio" — mailto:contact@example.com REMOVED (P0 fix)
-- Lightbox: brand-colored category pills
-- hasMeetingTypes fetch to conditionally show "Book a call" CTA
+**Frontend — Settings.tsx:**
+- 5 tabs: Profile → **Brand** → Notifications → Integrations → Account
+- **Brand identity section**: Logo upload (via `/api/settings/brand/logo`), Primary/Accent color pickers (native color input + hex text input), Font picker (5 curated Google Fonts as pill radio buttons)
+- **Live preview section**: BrandPreview component (Portfolio/Quotes/Portal tabs)
+- **Portfolio management section**: PortfolioSettings (upload/manage works) + SharePortfolio (link + QR code)
+- "Save brand" button reuses existing `saveSettings()` function
 
-**Frontend — SubmitInquiry.tsx (complete redesign):**
-- Two-column layout: left panel (creator identity + 3-step timeline), right panel (form)
-- Fetches creator brand info on mount via /api/portfolio/public/:studioId
-- Industry-adaptive form fields:
-  - PHOTOGRAPHY: Type of shoot, Shoot date, Location, How did you find us
-  - DESIGN: Type of project, Desired deadline, Budget, Company name
-  - FINE_ART: Commission type, Medium, Size, Delivery timeline, Budget
-  - Generic fallback: Project Category, Project Type, Project Title, Budget, Timeline
-- Industry-adaptive labels ("Tell me about your shoot/project/commission")
-- Success state: "Inquiry sent!" / "Brief received!" / "Commission inquiry sent!"
-- Success back link goes to /portfolio/:studioId (not "/" home)
-- "Book a discovery call" link on success page if meeting types available
+**Bug fixes:**
+- PortfolioSettings: modal `bg-slate-900` → `bg-[var(--surface-base)]`
+- PortfolioSettings: "UploadSimple Your First Work" → "Upload Your First Work"
+- PortfolioSettings: "UploadSimple your best work..." → "Upload your best work..."
 
-**Connected system:**
-- `/portfolio/:userId` → `/inquiry?studio=:userId` → lead created in KOLOR
-- `/portfolio/:userId` → `/book/:userId` → meeting booked in KOLOR
+**Google Fonts added to index.html**: Playfair Display, Montserrat, Libre Baskerville
 
 **Testing: 100% backend (10/10), 100% frontend — All tests passed**
 
@@ -136,11 +131,11 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 ## Key API Endpoints
 - `GET /api/portfolio/public/:userId` — Public portfolio with brand fields
 - `POST /api/portal/submit` — Submit inquiry (creates lead)
+- `GET /api/book/:userId` — Public booking page data (brand tokens + meeting types)
+- `PATCH /api/settings` — Save settings (now includes brand fields)
+- `GET /api/settings/brand` — Get brand settings
+- `POST /api/settings/brand/logo` — Upload brand logo
 - `GET /api/calendar/events` — Derived + manual calendar events
 - `GET /api/calendar/google-events` — Google Calendar events
 - `POST /api/calendar/events` — Create manual event
 - `DELETE /api/calendar/events/:id` — Delete manual event
-- `GET /api/settings` — User settings with notification prefs
-- `PATCH /api/settings` — Save profile + notification prefs
-- `POST /api/auth/change-password` — Change password
-- `GET /api/contracts/all` — All contracts for user
