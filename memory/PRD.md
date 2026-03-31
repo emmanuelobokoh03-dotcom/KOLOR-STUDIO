@@ -14,6 +14,7 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 - 2-step signup with industry selection
 - Dashboard with Kanban, List, Analytics, Portfolio, Quotes, Contracts views
 - Standalone Calendar page with Month/Week/List views
+- Brand-adaptive public portfolio + inquiry form (creator's brand, not KOLOR's)
 - Lead management with CRUD, status tracking, discovery calls
 - Quote builder, contract management, file sharing
 - Client portal with approval workflow, celebration states
@@ -30,16 +31,16 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 ```
 /app/kolor-studio-v2/
 ├── backend/
-│   ├── prisma/schema.prisma          ← CalendarEvent model added
+│   ├── prisma/schema.prisma
 │   ├── src/
 │   │   ├── routes/
-│   │   │   ├── calendar.ts           ← NEW: Calendar events API
-│   │   │   ├── googleCalendar.ts     ← Google OAuth flows
+│   │   │   ├── calendar.ts           ← Calendar events API
+│   │   │   ├── portfolio.ts          ← UPDATED: brand fields in public endpoint
+│   │   │   ├── googleCalendar.ts
 │   │   │   ├── auth.ts
-│   │   │   ├── contracts.ts
 │   │   │   └── ...
 │   │   ├── services/
-│   │   │   ├── googleCalendarService.ts ← Token refresh logic
+│   │   │   ├── googleCalendarService.ts
 │   │   │   ├── email.ts
 │   │   │   └── emailDesignSystem.ts
 │   │   └── scheduler.ts
@@ -47,16 +48,16 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 └── frontend/
     ├── src/
     │   ├── pages/
-    │   │   ├── Calendar.tsx           ← NEW: Standalone calendar page
+    │   │   ├── PublicPortfolio.tsx     ← REDESIGNED: brand-adaptive
+    │   │   ├── SubmitInquiry.tsx       ← REDESIGNED: industry-adaptive forms
+    │   │   ├── Calendar.tsx
     │   │   ├── Dashboard.tsx
     │   │   ├── Contracts.tsx
     │   │   ├── Settings.tsx
     │   │   └── ...
-    │   ├── App.tsx                    ← /calendar route added
-    │   ├── components/
-    │   │   └── MobileBottomNav.tsx    ← Calendar navigates to /calendar
+    │   ├── App.tsx
     │   └── services/
-    │       └── api.ts                 ← calendarApi added
+    │       └── api.ts
     └── public/
 ```
 
@@ -64,30 +65,52 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 
 ## What's Been Implemented
 
-### Iterations 100-102: Dashboard, Quick Actions, Landing Page Enhancements
-### Iteration 103: Leads Page + Lead Detail Modal Full Rebuild
-### Iteration 104: Quote Builder Premium UI + Quotes List View
+### Iterations 100-104: Dashboard, Leads, Quote Builder
 ### Iteration 105: Contracts Page + Client Portal Redesign + Automation Wiring (Mar 30)
 ### Iteration 106: Email Design System V2.0 + 29 Templates + Settings + Scheduler (Mar 30)
 ### Iteration 107: Calendar Page (Mar 30)
 
+- Full calendar with Month/Week/List views, event creation modal, side panel
+- Backend: Dynamic KOLOR event derivation + manual CalendarEvent model
+- Google Calendar integration with graceful token refresh
+- Testing: 100% backend (11/11), 100% frontend
+
+### Iteration 108a: Public Portfolio + Inquiry Form — Brand-Adaptive Redesign (Mar 31)
+
 **Backend:**
-- New `CalendarEvent` Prisma model (id, userId, leadId, title, eventType, date, startTime, endTime, allDay, notes, googleEventId)
-- `GET /api/calendar/events` — Dynamically derives KOLOR events from Leads (keyDate, shootingDate, deliveryDate, editingDeadline, eventDate), Quotes (validUntil expiry), Contracts (sentAt), Bookings, and manual CalendarEvents
-- `GET /api/calendar/google-events` — Fetches personal Google Calendar events with graceful token refresh; returns `{ connected: false, events: [] }` if not connected or token expired
-- `POST /api/calendar/events` — Creates manual events in CalendarEvent table; auto-syncs to Google Calendar if connected
-- `DELETE /api/calendar/events/:id` — Deletes manual events; also removes from Google Calendar if synced
+- `GET /api/portfolio/public/:userId` now returns brand fields: `brandPrimaryColor`, `brandAccentColor`, `brandFontFamily`, `brandLogoUrl`, `industry`, `speciality`, `studioName`, `businessName`, `firstName`, `lastName`
 
-**Frontend:**
-- New standalone `/calendar` route with `Calendar.tsx` page
-- Month view (grid with day cells showing events), Week view (7-column with time indicators), List view (events grouped by date)
-- Side panel for event details (title, date, time, client, notes, meta info, actions)
-- Event creation modal (title, date, all-day toggle, start/end time, notes)
-- Google Calendar toggle (show/hide external events)
-- Industry-aware event labels using `getIndustryLanguage()`
-- Dashboard sidebar, toolbar, and MobileBottomNav all navigate to `/calendar` route
+**Frontend — PublicPortfolio.tsx (complete redesign):**
+- Warm light background (#F9F7FE) replaces dark theme
+- All colors use creator's brand tokens via inline styles (no hardcoded KOLOR purple)
+- Sticky nav bar with brand logo/initials, Work/Contact links, mobile hamburger
+- Hero section: studio name, speciality, "Work with me" + "Book a call" CTAs
+- Filter bar: category pills + Featured toggle with brand-colored active states
+- Portfolio grid: cards with hover border color in brandPrimary, featured badges
+- Testimonials section: industry-aware heading ("What clients/collectors say")
+- Inquiry CTA section: "Send an inquiry" → /inquiry?studio=:userId
+- Footer: "Powered by KOLOR Studio" — mailto:contact@example.com REMOVED (P0 fix)
+- Lightbox: brand-colored category pills
+- hasMeetingTypes fetch to conditionally show "Book a call" CTA
 
-**Testing: 100% backend (11/11), 100% frontend — All tests passed**
+**Frontend — SubmitInquiry.tsx (complete redesign):**
+- Two-column layout: left panel (creator identity + 3-step timeline), right panel (form)
+- Fetches creator brand info on mount via /api/portfolio/public/:studioId
+- Industry-adaptive form fields:
+  - PHOTOGRAPHY: Type of shoot, Shoot date, Location, How did you find us
+  - DESIGN: Type of project, Desired deadline, Budget, Company name
+  - FINE_ART: Commission type, Medium, Size, Delivery timeline, Budget
+  - Generic fallback: Project Category, Project Type, Project Title, Budget, Timeline
+- Industry-adaptive labels ("Tell me about your shoot/project/commission")
+- Success state: "Inquiry sent!" / "Brief received!" / "Commission inquiry sent!"
+- Success back link goes to /portfolio/:studioId (not "/" home)
+- "Book a discovery call" link on success page if meeting types available
+
+**Connected system:**
+- `/portfolio/:userId` → `/inquiry?studio=:userId` → lead created in KOLOR
+- `/portfolio/:userId` → `/book/:userId` → meeting booked in KOLOR
+
+**Testing: 100% backend (10/10), 100% frontend — All tests passed**
 
 ---
 
@@ -108,13 +131,16 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 
 ## Test Credentials
 - email: `bookingtest@test.com`, password: `password123`
+- userId: `cmn0umxwx0000k8sy48g5le5u`
 
 ## Key API Endpoints
+- `GET /api/portfolio/public/:userId` — Public portfolio with brand fields
+- `POST /api/portal/submit` — Submit inquiry (creates lead)
 - `GET /api/calendar/events` — Derived + manual calendar events
-- `GET /api/calendar/google-events` — Google Calendar events (graceful fallback)
+- `GET /api/calendar/google-events` — Google Calendar events
 - `POST /api/calendar/events` — Create manual event
 - `DELETE /api/calendar/events/:id` — Delete manual event
 - `GET /api/settings` — User settings with notification prefs
 - `PATCH /api/settings` — Save profile + notification prefs
-- `POST /api/auth/change-password` — Change password (authenticated)
+- `POST /api/auth/change-password` — Change password
 - `GET /api/contracts/all` — All contracts for user
