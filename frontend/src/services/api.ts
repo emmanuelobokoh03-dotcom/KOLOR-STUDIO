@@ -1228,7 +1228,7 @@ export const portfolioApi = {
   // Get public portfolio
   getPublic: async (userId: string, params?: { category?: string; featured?: string }) => {
     const query = params ? '?' + new URLSearchParams(params as Record<string, string>).toString() : '';
-    return request<{ user: { id: string; name: string; studioName?: string }; portfolio: PortfolioItem[]; count: number }>(`/api/portfolio/public/${userId}${query}`);
+    return request<{ user: { id: string; firstName: string; lastName: string; name: string; studioName?: string; businessName?: string; speciality?: string; industry?: string; brandPrimaryColor?: string; brandAccentColor?: string; brandFontFamily?: string; brandLogoUrl?: string }; portfolio: PortfolioItem[]; count: number }>(`/api/portfolio/public/${userId}${query}`);
   },
 
   // Get single item

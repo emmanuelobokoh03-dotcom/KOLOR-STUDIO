@@ -175,6 +175,13 @@ router.get('/public/:userId', async (req, res: Response): Promise<void> => {
         firstName: true,
         lastName: true,
         studioName: true,
+        businessName: true,
+        speciality: true,
+        industry: true,
+        brandPrimaryColor: true,
+        brandAccentColor: true,
+        brandFontFamily: true,
+        brandLogoUrl: true,
       },
     });
 
@@ -216,8 +223,17 @@ router.get('/public/:userId', async (req, res: Response): Promise<void> => {
     res.json({ 
       user: {
         id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         name: `${user.firstName} ${user.lastName}`.trim(),
         studioName: user.studioName,
+        businessName: user.businessName,
+        speciality: user.speciality,
+        industry: user.industry,
+        brandPrimaryColor: user.brandPrimaryColor,
+        brandAccentColor: user.brandAccentColor,
+        brandFontFamily: user.brandFontFamily,
+        brandLogoUrl: user.brandLogoUrl,
       },
       portfolio, 
       count: portfolio.length 
