@@ -239,14 +239,14 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
           </div>
           <h3 className="text-lg font-semibold text-text-primary mb-2">No Portfolio Items Yet</h3>
           <p className="text-text-secondary mb-6 max-w-md mx-auto">
-            UploadSimple your best work to showcase your skills and impress potential clients.
+            Upload your best work to showcase your skills and impress potential clients.
           </p>
           <button
             onClick={handleAddNew}
             className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition font-medium"
           >
             <UploadSimple weight="bold" className="w-5 h-5" />
-            UploadSimple Your First Work
+            Upload Your First Work
           </button>
         </div>
       ) : (
@@ -322,7 +322,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
       {/* Upload/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-900 rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl">
+          <div className="bg-[var(--surface-base)] rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-light-200">
               <h3 className="text-lg font-semibold text-text-primary">

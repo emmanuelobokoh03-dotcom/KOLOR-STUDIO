@@ -112,8 +112,9 @@ router.patch('/', authMiddleware, async (req: AuthRequest, res: Response): Promi
     const profileFields = ['firstName', 'lastName', 'studioName', 'phone', 'website', 'timezone', 'emailSignature', 'businessName', 'primaryIndustry'];
     const currencyFields = ['currency', 'currencySymbol', 'currencyPosition', 'numberFormat', 'defaultTaxRate'];
     const notificationFields = ['weeklyReportEnabled', 'staleLeadEmailEnabled', 'quoteNudgeEmailEnabled'];
+    const brandFields = ['brandPrimaryColor', 'brandAccentColor', 'brandFontFamily', 'brandLogoUrl'];
 
-    [...profileFields, ...currencyFields, ...notificationFields].forEach(field => {
+    [...profileFields, ...currencyFields, ...notificationFields, ...brandFields].forEach(field => {
       if (body[field] !== undefined) updateData[field] = body[field];
     });
 
@@ -152,8 +153,8 @@ router.get('/brand', authMiddleware, async (req: AuthRequest, res: Response): Pr
 
     res.json({
       brand: {
-        primaryColor: user?.brandPrimaryColor || '#A855F7',
-        accentColor: user?.brandAccentColor || '#EC4899',
+        primaryColor: user?.brandPrimaryColor || '#6C2EDB',
+        accentColor: user?.brandAccentColor || '#E8891A',
         logoUrl: user?.brandLogoUrl || null,
         fontFamily: user?.brandFontFamily || 'Inter',
       },

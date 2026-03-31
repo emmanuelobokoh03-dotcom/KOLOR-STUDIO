@@ -17,10 +17,13 @@ import {
   EyeSlash,
   WarningCircle,
 } from '@phosphor-icons/react'
+import BrandPreview from '../components/BrandPreview'
+import PortfolioSettings from '../components/PortfolioSettings'
+import SharePortfolio from '../components/SharePortfolio'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
-type Tab = 'profile' | 'notifications' | 'integrations' | 'account'
+type Tab = 'profile' | 'brand' | 'notifications' | 'integrations' | 'account'
 
 interface UserSettings {
   id: string
@@ -68,6 +71,14 @@ export default function Settings() {
   const [calendarConnected, setCalendarConnected] = useState(false)
   const [calendarEmail, setCalendarEmail] = useState('')
 
+  // Brand state
+  const [brandPrimary, setBrandPrimary] = useState('#6C2EDB')
+  const [brandAccent, setBrandAccent] = useState('#E8891A')
+  const [brandFont, setBrandFont] = useState('Inter')
+  const [brandLogoUrl, setBrandLogoUrl] = useState<string | null>(null)
+  const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [savingBrand, setSavingBrand] = useState(false)
+
   useEffect(() => {
     fetchSettings()
     fetchCalendarStatus()
@@ -83,6 +94,10 @@ export default function Settings() {
       setFirstName(s.firstName || '')
       setBusinessName(s.businessName || s.studioName || '')
       setIndustry(s.primaryIndustry || 'PHOTOGRAPHY')
+      setBrandPrimary(s.brandPrimaryColor || '#6C2EDB')
+      setBrandAccent(s.brandAccentColor || '#E8891A')
+      setBrandFont(s.brandFontFamily || 'Inter')
+      setBrandLogoUrl(s.brandLogoUrl || null)
     } catch {
       navigate('/login')
     }
@@ -156,6 +171,7 @@ export default function Settings() {
 
   const TABS: { key: Tab; label: string; icon: any }[] = [
     { key: 'profile', label: 'Profile', icon: User },
+    { key: 'brand', label: 'Brand', icon: PaintBrush },
     { key: 'notifications', label: 'Notifications', icon: Bell },
     { key: 'integrations', label: 'Integrations', icon: Plugs },
     { key: 'account', label: 'Account', icon: Shield },
@@ -228,6 +244,35 @@ export default function Settings() {
 
           {/* Content area */}
           <div className="flex-1 min-w-0">
+            {/* Brand tab renders outside the card wrapper — it has its own sections */}
+            {activeTab === 'brand' && (
+              <BrandTab
+                settings={settings}
+                brandPrimary={brandPrimary}
+                setBrandPrimary={setBrandPrimary}
+                brandAccent={brandAccent}
+                setBrandAccent={setBrandAccent}
+                brandFont={brandFont}
+                setBrandFont={setBrandFont}
+                brandLogoUrl={brandLogoUrl}
+                setBrandLogoUrl={setBrandLogoUrl}
+                uploadingLogo={uploadingLogo}
+                setUploadingLogo={setUploadingLogo}
+                savingBrand={savingBrand}
+                saveBrand={async () => {
+                  setSavingBrand(true)
+                  await saveSettings({
+                    brandPrimaryColor: brandPrimary,
+                    brandAccentColor: brandAccent,
+                    brandFontFamily: brandFont,
+                    brandLogoUrl: brandLogoUrl,
+                  })
+                  setSavingBrand(false)
+                }}
+              />
+            )}
+
+            {activeTab !== 'brand' && (
             <div className="bg-[var(--surface-base)] rounded-xl p-5 sm:p-6" style={{ border: '0.5px solid var(--border)' }}>
 
               {/* ── Profile Tab ── */}
@@ -529,7 +574,208 @@ export default function Settings() {
                 </div>
               )}
             </div>
+            )}
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
+const FONT_OPTIONS = [
+  { value: 'Inter', label: 'Inter' },
+  { value: 'Fraunces', label: 'Fraunces' },
+  { value: 'Playfair Display', label: 'Playfair' },
+  { value: 'Montserrat', label: 'Montserrat' },
+  { value: 'Libre Baskerville', label: 'Libre Bask.' },
+]
+
+function BrandTab({
+  settings, brandPrimary, setBrandPrimary, brandAccent, setBrandAccent,
+  brandFont, setBrandFont, brandLogoUrl, setBrandLogoUrl,
+  uploadingLogo, setUploadingLogo, savingBrand, saveBrand,
+}: {
+  settings: UserSettings | null
+  brandPrimary: string
+  setBrandPrimary: (v: string) => void
+  brandAccent: string
+  setBrandAccent: (v: string) => void
+  brandFont: string
+  setBrandFont: (v: string) => void
+  brandLogoUrl: string | null
+  setBrandLogoUrl: (v: string | null) => void
+  uploadingLogo: boolean
+  setUploadingLogo: (v: boolean) => void
+  savingBrand: boolean
+  saveBrand: () => void
+}) {
+  const initials = (settings?.studioName || settings?.firstName || 'K')[0].toUpperCase()
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) { toast.error('Logo must be under 5MB'); return }
+    setUploadingLogo(true)
+    try {
+      const formData = new FormData()
+      formData.append('logo', file)
+      const res = await fetch(`${API_URL}/api/settings/brand/logo`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setBrandLogoUrl(data.logoUrl)
+        toast.success('Logo updated')
+      } else {
+        toast.error('Failed to upload logo')
+      }
+    } catch {
+      toast.error('Upload failed')
+    }
+    setUploadingLogo(false)
+  }
+
+  return (
+    <div data-testid="settings-brand-tab">
+      {/* Section 1 — Brand identity */}
+      <div className="bg-[var(--surface-base)] rounded-xl p-5 sm:p-6" style={{ border: '0.5px solid var(--border)', marginBottom: 16 }}>
+        <h2 className="text-sm font-bold text-text-primary mb-1">Brand identity</h2>
+        <p className="text-xs text-[var(--text-secondary)] mb-5">
+          These colours and logo appear on your public portfolio, inquiry form, and booking page.
+        </p>
+
+        {/* Logo upload */}
+        <label className="block text-[11px] font-semibold uppercase text-[var(--text-secondary)] mb-2">Logo</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+          <div style={{ width: 64, height: 64, borderRadius: 12, border: '0.5px solid var(--border)', background: 'var(--surface-background)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            {brandLogoUrl ? (
+              <img src={brandLogoUrl} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} data-testid="brand-logo-preview" />
+            ) : (
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: brandPrimary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ color: '#fff', fontSize: 14, fontWeight: 700 }}>{initials}</span>
+              </div>
+            )}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <label style={{ cursor: 'pointer' }} data-testid="brand-logo-upload-btn">
+              <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLogoUpload} />
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--surface-base)', fontSize: 12, fontWeight: 600, color: 'var(--text-primary)', cursor: 'pointer' }}>
+                {uploadingLogo ? <SpinnerGap style={{ width: 14, height: 14 }} className="animate-spin" /> : null}
+                {uploadingLogo ? 'Uploading...' : 'Upload logo'}
+              </span>
+            </label>
+            {brandLogoUrl && (
+              <button
+                onClick={() => setBrandLogoUrl(null)}
+                style={{ fontSize: 11, color: '#DC2626', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0 }}
+                data-testid="brand-logo-remove-btn"
+              >
+                Remove logo
+              </button>
+            )}
+            <p style={{ fontSize: 11, color: 'var(--text-secondary)', margin: 0 }}>
+              PNG or SVG · Max 5MB · Appears on portfolio, forms, and booking page
+            </p>
+          </div>
+        </div>
+
+        {/* Colour pickers */}
+        {[
+          { label: 'Primary colour', value: brandPrimary, setter: setBrandPrimary, id: 'primary' },
+          { label: 'Accent colour', value: brandAccent, setter: setBrandAccent, id: 'accent' },
+        ].map(({ label, value, setter, id }) => (
+          <div key={id} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', width: 120, flexShrink: 0 }}>{label}</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
+              <input
+                type="color"
+                value={value}
+                onChange={e => setter(e.target.value)}
+                style={{ width: 36, height: 36, borderRadius: 8, border: '0.5px solid var(--border)', cursor: 'pointer', padding: 2 }}
+                data-testid={`brand-color-${id}`}
+              />
+              <input
+                type="text"
+                value={value}
+                onChange={e => { const v = e.target.value; if (/^#[0-9A-Fa-f]{0,6}$/.test(v)) setter(v) }}
+                maxLength={7}
+                style={{ width: 96, height: 36, borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--surface-background)', padding: '0 10px', fontSize: 12, fontWeight: 600, fontFamily: 'monospace', color: 'var(--text-primary)' }}
+                data-testid={`brand-hex-${id}`}
+              />
+            </div>
+          </div>
+        ))}
+
+        {/* Font picker */}
+        <div style={{ marginTop: 16 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 8 }}>Font</label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {FONT_OPTIONS.map(f => (
+              <button
+                key={f.value}
+                onClick={() => setBrandFont(f.value)}
+                style={{
+                  padding: '6px 14px', borderRadius: 999, fontSize: 12, cursor: 'pointer',
+                  fontFamily: f.value, fontWeight: brandFont === f.value ? 600 : 400,
+                  border: `0.5px solid ${brandFont === f.value ? '#6C2EDB' : 'var(--border)'}`,
+                  background: brandFont === f.value ? 'rgba(108,46,219,0.08)' : 'transparent',
+                  color: brandFont === f.value ? '#6C2EDB' : 'var(--text-secondary)',
+                  transition: 'all 150ms',
+                }}
+                data-testid={`brand-font-${f.value}`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Save brand button */}
+        <button
+          onClick={saveBrand}
+          disabled={savingBrand}
+          style={{
+            marginTop: 20, height: 40, padding: '0 20px',
+            background: '#6C2EDB', color: '#fff',
+            borderRadius: 8, fontSize: 13, fontWeight: 600,
+            border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 8,
+            opacity: savingBrand ? 0.6 : 1,
+          }}
+          data-testid="brand-save-btn"
+        >
+          {savingBrand ? <><SpinnerGap style={{ width: 14, height: 14 }} className="animate-spin" /> Saving...</> : 'Save brand'}
+        </button>
+      </div>
+
+      {/* Section 2 — Live preview */}
+      <div className="bg-[var(--surface-base)] rounded-xl p-5 sm:p-6" style={{ border: '0.5px solid var(--border)', marginBottom: 16 }}>
+        <h2 className="text-sm font-bold text-text-primary mb-1">Live preview</h2>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">
+          This is how your portfolio, quote, and booking page look with your brand.
+        </p>
+        <div style={{ height: 420 }}>
+          <BrandPreview
+            primary={brandPrimary}
+            accent={brandAccent}
+            font={brandFont}
+            logoUrl={brandLogoUrl}
+          />
+        </div>
+      </div>
+
+      {/* Section 3 — Portfolio management */}
+      <div className="bg-[var(--surface-base)] rounded-xl p-5 sm:p-6" style={{ border: '0.5px solid var(--border)' }}>
+        <h2 className="text-sm font-bold text-text-primary mb-1">Portfolio</h2>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">
+          Upload and manage the work that appears on your public portfolio page.
+        </p>
+        <PortfolioSettings />
+        <div style={{ borderTop: '0.5px solid var(--border)', marginTop: 24, paddingTop: 24 }}>
+          <SharePortfolio />
         </div>
       </div>
     </div>

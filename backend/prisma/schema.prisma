@@ -518,10 +518,10 @@ model User {
   industry             CreativeIndustry     @default(PHOTOGRAPHY)
   businessName         String?
   speciality           String?
-  brandAccentColor     String               @default("#EC4899")
+  brandAccentColor     String               @default("#E8891A")
   brandFontFamily      String               @default("Inter")
   brandLogoUrl         String?
-  brandPrimaryColor    String               @default("#A855F7")
+  brandPrimaryColor    String               @default("#6C2EDB")
   emailSignature       String?
   verificationSentAt   DateTime?
   verificationToken    String?              @unique
