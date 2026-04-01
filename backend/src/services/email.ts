@@ -1821,6 +1821,51 @@ export async function sendPaymentReceivedNotification(data: PaymentReceivedNotif
   }
 }
 
+// Post-Discovery-Call Quote Reminder — sent to studio owner 24h after call completion
+export async function sendPostCallQuoteReminderEmail(data: {
+  ownerEmail: string;
+  ownerFirstName: string;
+  clientName: string;
+  projectTitle: string;
+  leadId: string;
+}): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const dashboardUrl = `${process.env.FRONTEND_URL || ''}/leads/${data.leadId}`;
+
+    const html = buildEmailTemplate({
+      headline: `Time to send ${data.clientName} a quote`,
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Hi ${data.ownerFirstName}, your discovery call with <strong>${data.clientName}</strong> for <strong>"${data.projectTitle}"</strong> was completed yesterday.
+        </p>
+        ${highlightBox(`Leads who receive a quote within 24 hours of a call close at 2&times; the rate.`)}
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          Open their lead page and send a personalized quote while the conversation is still fresh.
+        </p>`,
+      ctaText: 'Create Quote \u2192',
+      ctaUrl: dashboardUrl,
+      emailType: 'workflow',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [data.ownerEmail],
+      subject: `Send ${data.clientName} a quote — your call was yesterday`,
+      html,
+    });
+    if (error) {
+      console.error('[EMAIL] Post-call quote reminder failed:', error);
+      return false;
+    }
+    console.log(`[EMAIL] Post-call quote reminder sent to ${data.ownerEmail} for lead ${data.leadId}`);
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Post-call quote reminder error:', error);
+    return false;
+  }
+}
+
 // 9. Follow-up Sequence Email (generic wrapper)
 interface SequenceEmailData {
   clientEmail: string;
@@ -1829,6 +1874,7 @@ interface SequenceEmailData {
   subject: string;
   body: string;
   portalUrl?: string;
+  unsubscribeUrl?: string;
 }
 export async function sendSequenceEmail(data: SequenceEmailData): Promise<boolean> {
   if (!resend) {
@@ -1843,11 +1889,15 @@ export async function sendSequenceEmail(data: SequenceEmailData): Promise<boolea
         <a href="${data.portalUrl}" style="${buttonStyle}">View Your Quote</a>
       </div>` : ''}
     `;
+    const html = getEmailTemplate(content, data.subject);
+    const finalHtml = data.unsubscribeUrl
+      ? html.replace('</body>', `<div style="text-align:center;padding:16px 0;"><a href="${data.unsubscribeUrl}" style="color:#9CA3AF;font-size:12px;text-decoration:underline;">Unsubscribe from these emails</a></div></body>`)
+      : html;
     const { error } = await resend.emails.send({
       from: `${data.studioName} <${SENDER_EMAIL}>`,
       to: data.clientEmail,
       subject: data.subject,
-      html: getEmailTemplate(content, data.subject),
+      html: finalHtml,
     });
     if (error) throw error;
     return true;
@@ -2173,6 +2223,7 @@ interface OnboardingEmailParams {
   portalUrl: string;
   daysUntilDeadline?: number;
   leadId?: string;
+  unsubscribeUrl?: string;
 }
 
 export async function sendClientOnboardingEmail(
@@ -2332,6 +2383,10 @@ export async function sendClientOnboardingEmail(
     if (trackingPixelHtml) {
       html = html.replace('</body>', `${trackingPixelHtml}</body>`);
     }
+    // Inject unsubscribe link
+    if (params.unsubscribeUrl) {
+      html = html.replace('</body>', `<div style="text-align:center;padding:16px 0;"><a href="${params.unsubscribeUrl}" style="color:#9CA3AF;font-size:12px;text-decoration:underline;">Unsubscribe from these emails</a></div></body>`);
+    }
     const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
       to: [to],
@@ -2367,6 +2422,7 @@ interface QuoteFollowUpParams {
   portalUrl: string;
   expirationDays?: number;
   leadId?: string;
+  unsubscribeUrl?: string;
 }
 
 export async function sendQuoteFollowUpEmail(
@@ -2490,6 +2546,10 @@ export async function sendQuoteFollowUpEmail(
     let html = getEmailTemplate(template.content, `Quote Follow-Up: ${stepLabels[step]}`);
     if (trackingPixelHtml) {
       html = html.replace('</body>', `${trackingPixelHtml}</body>`);
+    }
+    // Inject unsubscribe link
+    if (params.unsubscribeUrl) {
+      html = html.replace('</body>', `<div style="text-align:center;padding:16px 0;"><a href="${params.unsubscribeUrl}" style="color:#9CA3AF;font-size:12px;text-decoration:underline;">Unsubscribe from these emails</a></div></body>`);
     }
     const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,

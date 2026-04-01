@@ -32,9 +32,10 @@ export function startScheduler(): void {
 
 async function runStaleLeadNudges(): Promise<void> {
   try {
+    // Tier 1: 7-day stale leads
     const sevenDaysAgo = new Date(Date.now() - 7 * 86400000);
     const eightDaysAgo = new Date(Date.now() - 8 * 86400000);
-    const staleLeads = await prisma.lead.findMany({
+    const tier1Leads = await prisma.lead.findMany({
       where: {
         updatedAt: { gte: eightDaysAgo, lt: sevenDaysAgo },
         status: { notIn: ['BOOKED', 'LOST'] },
@@ -42,7 +43,7 @@ async function runStaleLeadNudges(): Promise<void> {
       include: { assignedTo: true },
     });
 
-    for (const lead of staleLeads) {
+    for (const lead of tier1Leads) {
       if (!lead.assignedTo || !(lead.assignedTo as any).staleLeadEmailEnabled) continue;
       const daysSinceUpdate = Math.floor((Date.now() - lead.updatedAt.getTime()) / 86400000);
       await sendLeadStaleNudge(
@@ -51,7 +52,29 @@ async function runStaleLeadNudges(): Promise<void> {
         daysSinceUpdate
       );
     }
-    console.log(`[Scheduler] Stale lead nudges: ${staleLeads.length} checked`);
+    console.log(`[Scheduler] Stale lead nudges (7-day): ${tier1Leads.length} checked`);
+
+    // Tier 2: 14-day stale leads (more urgent tone)
+    const fourteenDaysAgo = new Date(Date.now() - 14 * 86400000);
+    const fifteenDaysAgo = new Date(Date.now() - 15 * 86400000);
+    const tier2Leads = await prisma.lead.findMany({
+      where: {
+        updatedAt: { gte: fifteenDaysAgo, lt: fourteenDaysAgo },
+        status: { notIn: ['BOOKED', 'LOST'] },
+      },
+      include: { assignedTo: true },
+    });
+
+    for (const lead of tier2Leads) {
+      if (!lead.assignedTo || !(lead.assignedTo as any).staleLeadEmailEnabled) continue;
+      const daysSinceUpdate = Math.floor((Date.now() - lead.updatedAt.getTime()) / 86400000);
+      await sendLeadStaleNudge(
+        { email: lead.assignedTo.email, firstName: lead.assignedTo.firstName },
+        { id: lead.id, clientName: lead.clientName, status: lead.status },
+        daysSinceUpdate
+      );
+    }
+    console.log(`[Scheduler] Stale lead nudges (14-day): ${tier2Leads.length} checked`);
   } catch (err) {
     console.error('[Scheduler] staleLeadNudges error:', err);
   }

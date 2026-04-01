@@ -73,6 +73,7 @@ export async function processQuoteFollowUpSequences() {
     const { quote } = e;
     const baseUrl = process.env.FRONTEND_URL || '';
     const portalUrl = `${baseUrl}/portal/${quote.lead.portalToken}`;
+    const unsubscribeUrl = e.unsubscribeToken ? `${baseUrl}/api/unsubscribe/${e.unsubscribeToken}` : undefined;
     const creativeName = quote.lead.assignedTo?.studioName
       || `${quote.lead.assignedTo?.firstName || ''} ${quote.lead.assignedTo?.lastName || ''}`.trim()
       || 'Your Creative';
@@ -87,6 +88,7 @@ export async function processQuoteFollowUpSequences() {
         currencySymbol: quote.currencySymbol || '$',
         portalUrl,
         leadId: quote.leadId,
+        unsubscribeUrl,
       });
       if (sent) {
         await prisma.quoteFollowUpEnrollment.update({
@@ -123,6 +125,7 @@ export async function processQuoteFollowUpSequences() {
     const { quote } = e;
     const baseUrl = process.env.FRONTEND_URL || '';
     const portalUrl = `${baseUrl}/portal/${quote.lead.portalToken}`;
+    const unsubscribeUrl = e.unsubscribeToken ? `${baseUrl}/api/unsubscribe/${e.unsubscribeToken}` : undefined;
     const creativeName = quote.lead.assignedTo?.studioName
       || `${quote.lead.assignedTo?.firstName || ''} ${quote.lead.assignedTo?.lastName || ''}`.trim()
       || 'Your Creative';
@@ -137,6 +140,7 @@ export async function processQuoteFollowUpSequences() {
         currencySymbol: quote.currencySymbol || '$',
         portalUrl,
         leadId: quote.leadId,
+        unsubscribeUrl,
       });
       if (sent) {
         await prisma.quoteFollowUpEnrollment.update({
@@ -173,6 +177,7 @@ export async function processQuoteFollowUpSequences() {
     const { quote } = e;
     const baseUrl = process.env.FRONTEND_URL || '';
     const portalUrl = `${baseUrl}/portal/${quote.lead.portalToken}`;
+    const unsubscribeUrl = e.unsubscribeToken ? `${baseUrl}/api/unsubscribe/${e.unsubscribeToken}` : undefined;
     const creativeName = quote.lead.assignedTo?.studioName
       || `${quote.lead.assignedTo?.firstName || ''} ${quote.lead.assignedTo?.lastName || ''}`.trim()
       || 'Your Creative';
@@ -191,6 +196,7 @@ export async function processQuoteFollowUpSequences() {
         portalUrl,
         expirationDays: daysUntilExpiry,
         leadId: quote.leadId,
+        unsubscribeUrl,
       });
       if (sent) {
         await prisma.quoteFollowUpEnrollment.update({

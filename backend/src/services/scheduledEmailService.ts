@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import { sendTestimonialRequestEmail, sendFileReviewReminderEmail } from './email';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
+import { sendTestimonialRequestEmail, sendFileReviewReminderEmail, sendPostCallQuoteReminderEmail } from './email';
 
 export async function processScheduledEmails(): Promise<void> {
   try {
@@ -58,6 +56,16 @@ export async function processScheduledEmails(): Promise<void> {
             fileCount: meta.fileCount || 1,
             portalUrl: `${frontendUrl}/portal?token=${lead.portalToken}`,
           });
+        } else if (type === 'POST_CALL_QUOTE_REMINDER') {
+          if (owner) {
+            await sendPostCallQuoteReminderEmail({
+              ownerEmail: owner.email,
+              ownerFirstName: owner.firstName,
+              clientName: lead.clientName,
+              projectTitle: lead.projectTitle,
+              leadId: lead.id,
+            });
+          }
         }
 
         await prisma.scheduledEmail.update({

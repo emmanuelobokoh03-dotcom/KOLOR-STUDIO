@@ -117,6 +117,7 @@ export async function processSequences(): Promise<{ sent: number; completed: num
           subject,
           body,
           portalUrl,
+          unsubscribeUrl: `${process.env.FRONTEND_URL}/api/unsubscribe/${enrollment.unsubscribeToken}`,
         });
 
 

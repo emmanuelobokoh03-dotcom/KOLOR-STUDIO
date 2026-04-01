@@ -31,6 +31,7 @@ export async function enrollInOnboarding(leadId: string) {
   // Send first email immediately
   const baseUrl = process.env.FRONTEND_URL || process.env.VITE_API_URL?.replace('/api', '') || '';
   const portalUrl = `${baseUrl}/portal/${lead.portalToken}`;
+  const unsubscribeUrl = `${baseUrl}/api/unsubscribe/${enrollment.unsubscribeToken}`;
   const creativeName = lead.assignedTo?.studioName
     || `${lead.assignedTo?.firstName || ''} ${lead.assignedTo?.lastName || ''}`.trim()
     || 'Your Creative';
@@ -43,6 +44,7 @@ export async function enrollInOnboarding(leadId: string) {
       projectType: lead.serviceType || 'Project',
       portalUrl,
       leadId,
+      unsubscribeUrl,
     });
 
     if (sent) {
@@ -57,6 +59,23 @@ export async function enrollInOnboarding(leadId: string) {
 
   return enrollment;
 }
+
+export async function stopOnboardingForLead(leadId: string, reason: string): Promise<number> {
+  try {
+    const result = await prisma.clientOnboardingEnrollment.updateMany({
+      where: { leadId, completed: false, stoppedAt: null },
+      data: { completed: true, stoppedAt: new Date(), stopReason: reason },
+    });
+    if (result.count > 0) {
+      console.log(`[ONBOARDING] Stopped ${result.count} enrollment(s) for lead ${leadId}: ${reason}`);
+    }
+    return result.count;
+  } catch (error) {
+    console.error('[ONBOARDING] Stop error:', error);
+    return 0;
+  }
+}
+
 
 export async function processOnboardingSequences() {
   const now = new Date();
@@ -82,6 +101,7 @@ export async function processOnboardingSequences() {
   for (const e of readyForStep2) {
     const baseUrl = process.env.FRONTEND_URL || '';
     const portalUrl = `${baseUrl}/portal/${e.lead.portalToken}`;
+    const unsubscribeUrl = e.unsubscribeToken ? `${baseUrl}/api/unsubscribe/${e.unsubscribeToken}` : undefined;
     const creativeName = e.lead.assignedTo?.studioName
       || `${e.lead.assignedTo?.firstName || ''} ${e.lead.assignedTo?.lastName || ''}`.trim()
       || 'Your Creative';
@@ -94,6 +114,7 @@ export async function processOnboardingSequences() {
         projectType: e.lead.serviceType || 'Project',
         portalUrl,
         leadId: e.leadId,
+        unsubscribeUrl,
       });
       if (sent) {
         await prisma.clientOnboardingEnrollment.update({
@@ -127,6 +148,7 @@ export async function processOnboardingSequences() {
   for (const e of readyForStep3) {
     const baseUrl = process.env.FRONTEND_URL || '';
     const portalUrl = `${baseUrl}/portal/${e.lead.portalToken}`;
+    const unsubscribeUrl = e.unsubscribeToken ? `${baseUrl}/api/unsubscribe/${e.unsubscribeToken}` : undefined;
     const creativeName = e.lead.assignedTo?.studioName
       || `${e.lead.assignedTo?.firstName || ''} ${e.lead.assignedTo?.lastName || ''}`.trim()
       || 'Your Creative';
@@ -146,6 +168,7 @@ export async function processOnboardingSequences() {
         portalUrl,
         daysUntilDeadline,
         leadId: e.leadId,
+        unsubscribeUrl,
       });
       if (sent) {
         await prisma.clientOnboardingEnrollment.update({

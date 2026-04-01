@@ -79,6 +79,7 @@ import fileCommentRoutes from './routes/fileComments';
 import googleCalendarRoutes from './routes/googleCalendar';
 import calendarRoutes from './routes/calendar';
 import recentActivitiesRoutes from './routes/recentActivities';
+import unsubscribeRoutes from './routes/unsubscribe';
 
 // dotenv already loaded at the top of this file
 
@@ -249,6 +250,7 @@ app.use('/api/meeting-bookings', authMiddleware as any, meetingBookingsRouter); 
 app.use('/api/google-calendar', googleCalendarRoutes); // Google Calendar OAuth + status (auth inside)
 app.use('/api/calendar', calendarRoutes); // Calendar events: /api/calendar/*
 app.use('/api/activities', recentActivitiesRoutes); // Recent activities: /api/activities/recent
+app.use('/api/unsubscribe', unsubscribeRoutes); // Public unsubscribe: /api/unsubscribe/:token (no auth)
 
 // Email preview endpoint (development/staging only)
 if (process.env.NODE_ENV !== 'production') {

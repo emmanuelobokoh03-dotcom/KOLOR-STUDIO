@@ -440,18 +440,19 @@ model Quote {
 }
 
 model SequenceEnrollment {
-  id            String           @id @default(cuid())
-  sequenceId    String
-  leadId        String
-  currentStep   Int              @default(0)
-  status        EnrollmentStatus @default(ACTIVE)
-  enrolledAt    DateTime         @default(now())
-  completedAt   DateTime?
-  stoppedAt     DateTime?
-  stoppedReason String?
-  nextEmailAt   DateTime?
-  lead          Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  sequence      EmailSequence    @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  id               String           @id @default(cuid())
+  sequenceId       String
+  leadId           String
+  currentStep      Int              @default(0)
+  status           EnrollmentStatus @default(ACTIVE)
+  enrolledAt       DateTime         @default(now())
+  completedAt      DateTime?
+  stoppedAt        DateTime?
+  stoppedReason    String?
+  nextEmailAt      DateTime?
+  unsubscribeToken String           @unique @default(cuid())
+  lead             Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  sequence         EmailSequence    @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
 
   @@unique([sequenceId, leadId])
   @@index([leadId])
@@ -842,23 +843,24 @@ enum UserRole {
 
 
 model ClientOnboardingEnrollment {
-  id           String    @id @default(cuid())
-  leadId       String
-  lead         Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  id               String    @id @default(cuid())
+  leadId           String
+  lead             Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
-  enrolledAt   DateTime  @default(now())
-  currentStep  Int       @default(1)
-  completed    Boolean   @default(false)
+  enrolledAt       DateTime  @default(now())
+  currentStep      Int       @default(1)
+  completed        Boolean   @default(false)
 
-  email1SentAt DateTime?
-  email2SentAt DateTime?
-  email3SentAt DateTime?
+  email1SentAt     DateTime?
+  email2SentAt     DateTime?
+  email3SentAt     DateTime?
 
-  stoppedAt    DateTime?
-  stopReason   String?
+  stoppedAt        DateTime?
+  stopReason       String?
+  unsubscribeToken String?   @unique @default(cuid())
 
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@index([leadId])
   @@index([completed])
@@ -868,23 +870,24 @@ model ClientOnboardingEnrollment {
 
 
 model QuoteFollowUpEnrollment {
-  id           String    @id @default(cuid())
-  quoteId      String    @unique
-  quote        Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  id               String    @id @default(cuid())
+  quoteId          String    @unique
+  quote            Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
 
-  enrolledAt   DateTime  @default(now())
-  currentStep  Int       @default(0)
-  completed    Boolean   @default(false)
+  enrolledAt       DateTime  @default(now())
+  currentStep      Int       @default(0)
+  completed        Boolean   @default(false)
 
-  email1SentAt DateTime?
-  email2SentAt DateTime?
-  email3SentAt DateTime?
+  email1SentAt     DateTime?
+  email2SentAt     DateTime?
+  email3SentAt     DateTime?
 
-  stoppedAt    DateTime?
-  stopReason   String?
+  stoppedAt        DateTime?
+  stopReason       String?
+  unsubscribeToken String?   @unique @default(cuid())
 
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@index([quoteId])
   @@index([completed])

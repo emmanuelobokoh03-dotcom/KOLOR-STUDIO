@@ -5,6 +5,7 @@ import { logActivity } from './activities';
 import { uploadFile, ensureBucketExists } from '../services/storage';
 import { paymentService } from '../services/paymentService';
 import { logAudit, AUDIT_ACTIONS } from '../services/auditService';
+import { stopOnboardingForLead } from '../services/onboardingService';
 import multer from 'multer';
 
 const router = Router();
@@ -637,6 +638,11 @@ router.patch('/:id', authMiddleware, async (req: AuthRequest, res: Response): Pr
 
     // Send notification if status changed via edit
     if (updates.status && oldStatus !== updates.status) {
+      // WS5: Auto-stop onboarding sequences when lead is LOST
+      if (updates.status === 'LOST') {
+        stopOnboardingForLead(id, 'lead_lost').catch(err => console.error('[AutoStop] Onboarding stop error:', err));
+      }
+
       sendStatusChangeNotification({
         clientName: existingLead.clientName,
         clientEmail: existingLead.clientEmail,
@@ -713,6 +719,11 @@ router.patch('/:id/status', authMiddleware, async (req: AuthRequest, res: Respon
         `Status changed from ${oldStatus} to ${status}`,
         { oldStatus, newStatus: status }
       );
+
+      // WS5: Auto-stop onboarding sequences when lead is LOST
+      if (status === 'LOST') {
+        stopOnboardingForLead(id, 'lead_lost').catch(err => console.error('[AutoStop] Onboarding stop error:', err));
+      }
 
       // Send email notification to client (non-blocking)
       sendStatusChangeNotification({
@@ -1180,6 +1191,17 @@ router.patch('/:id/discovery-call', authMiddleware, async (req: AuthRequest, res
     }
     if (discoveryCallCompletedAt) {
       await logActivity(id, userId, 'DISCOVERY_CALL_COMPLETED', discoveryCallNotes ? `Discovery call completed. Notes: ${discoveryCallNotes}` : 'Discovery call completed');
+
+      // WS4: Schedule a quote reminder 24 hours after discovery call completion
+      try {
+        const twentyFourHoursLater = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        await prisma.scheduledEmail.create({
+          data: { leadId: id, type: 'POST_CALL_QUOTE_REMINDER', scheduledFor: twentyFourHoursLater },
+        });
+        console.log(`[SCHEDULED] Post-call quote reminder for lead ${id} in 24 hours`);
+      } catch (schedErr) {
+        console.error('[SCHEDULED] Failed to schedule post-call quote reminder:', schedErr);
+      }
     }
 
     res.json({
