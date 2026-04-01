@@ -103,7 +103,7 @@ function Nav({ onCta }: { onCta: () => void }) {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          {['Features', 'Pricing', 'Stories', 'Changelog'].map(label => (
+          {['Features', 'Pricing', 'Stories'].map(label => (
             <a
               key={label}
               href={`#${label.toLowerCase()}`}
@@ -200,6 +200,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
             className="font-medium rounded-[10px] transition-all duration-150"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', padding: '14px 28px', fontSize: 15 }}
             data-testid="hero-cta-secondary"
+            onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
           >
             See how it works
           </button>
@@ -489,10 +490,10 @@ function WorkflowSection() {
 
 /* ---------- SECTION 5: FEATURES ---------- */
 function FeaturesSection() {
-  const cards: { component: React.ComponentType<{ className?: string }>; label: string; title: string; body: string }[] = [
+  const cards: { component: React.ComponentType<{ className?: string }>; label: string; title: string; body: string; containerStyle?: React.CSSProperties }[] = [
     { component: DashboardMock, label: 'Lead Management', title: 'Every lead, always visible', body: "From first inquiry to signed contract. Know exactly where every potential client is in your pipeline — without building a spreadsheet to track your spreadsheet." },
     { component: QuoteMock, label: 'Quote Builder', title: 'Quotes that close', body: "Professional proposals in 2 minutes. Your packages, your pricing, your brand. Clients approve online — no attachments, no printing, no excuses not to reply." },
-    { component: PortalMock, label: 'Online Contracts', title: 'Signed before they change their mind', body: 'Send a contract and get it back signed — from any device, in minutes. No printing. No scanning. No "I\'ll get it back to you this week."' },
+    { component: PortalMock, label: 'Online Contracts', title: 'Signed before they change their mind', body: 'Send a contract and get it back signed — from any device, in minutes. No printing. No scanning. No "I\'ll get it back to you this week."', containerStyle: { overflow: 'hidden', height: 280, borderRadius: 10, border: '0.5px solid rgba(255,255,255,0.08)' } },
   ]
 
   return (
@@ -553,7 +554,7 @@ function FeaturesSection() {
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)'; e.currentTarget.style.background = 'rgba(108,46,219,0.05)' }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
             >
-              <div className="overflow-hidden" style={{ aspectRatio: '16/10', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <div className="overflow-hidden" style={{ aspectRatio: '16/10', borderBottom: '1px solid rgba(255,255,255,0.05)', ...card.containerStyle }}>
                 <card.component />
               </div>
               <div className="p-5">

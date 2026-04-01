@@ -103,7 +103,7 @@ const Signup = () => {
     if (result.error) { setError(result.message || 'Failed to create account'); return }
     trackSignup('email')
     const loginResult = await authApi.login({ email: formData.email, password: formData.password, rememberMe: true })
-    if (loginResult.data?.token) {
+    if (loginResult.data?.user) {
       localStorage.removeItem('token')
       setSuccess('Account created! Setting up your workspace...')
       setTimeout(() => navigate('/onboarding'), 1000)

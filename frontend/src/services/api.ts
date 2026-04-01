@@ -59,7 +59,7 @@ export const authApi = {
   },
 
   login: async (credentials: { email: string; password: string; rememberMe?: boolean }) => {
-    return request<{ message: string; token: string; user: User }>('/api/auth/login', {
+    return request<{ message: string; user: User }>('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });

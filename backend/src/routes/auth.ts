@@ -217,7 +217,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     }
 
     const token = jwt.sign(
-      { userId: user.id },
+      { userId: user.id, tokenVersion: user.tokenVersion },
       jwtSecret,
       { expiresIn: rememberMe ? '7d' : '24h' }
     );
@@ -242,7 +242,6 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 
     res.json({
       message: 'Login successful',
-      token, // Keep for backward compat during migration
       user: {
         id: user.id,
         email: user.email,
@@ -494,7 +493,8 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
       data: {
         password: hashedPassword,
         passwordResetToken: null,
-        passwordResetExpires: null
+        passwordResetExpires: null,
+        tokenVersion: { increment: 1 },
       }
     });
 
@@ -643,7 +643,7 @@ router.post('/change-password', authMiddleware, async (req: AuthRequest, res: Re
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
       where: { id: userId },
-      data: { password: hashedPassword },
+      data: { password: hashedPassword, tokenVersion: { increment: 1 } },
     });
 
     sendPasswordChangedEmail({ email: user.email, firstName: user.firstName }).catch(e => console.error('Password changed email failed:', e));

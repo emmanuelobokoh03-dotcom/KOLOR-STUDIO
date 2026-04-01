@@ -43,7 +43,7 @@ const Login = () => {
     const result = await authApi.login({ email: formData.email, password: formData.password, rememberMe })
     setLoading(false)
     if (result.error) { setError(result.message || 'Failed to sign in'); return }
-    if (result.data?.token) {
+    if (result.data?.user) {
       localStorage.removeItem('token')
       localStorage.setItem('user', JSON.stringify(result.data.user))
       trackLogin('email')

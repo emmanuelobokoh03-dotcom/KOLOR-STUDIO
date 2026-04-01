@@ -520,6 +520,7 @@ model User {
   speciality           String?
   brandAccentColor     String               @default("#E8891A")
   brandFontFamily      String               @default("Inter")
+  tokenVersion         Int                  @default(0)
   brandLogoUrl         String?
   brandPrimaryColor    String               @default("#6C2EDB")
   emailSignature       String?
