@@ -107,6 +107,38 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 
 **Testing: 100% backend (10/10), 100% frontend — All tests passed**
 
+### Iteration 109: Security Hardening (Mar 31)
+- JWT token removal from response body
+- Session invalidation via `tokenVersion` on password change
+- `sameSite: 'none'` cookies for cross-origin access
+
+### Iteration 110: Automation System Improvements (Apr 1)
+
+**WS1: Prisma Connection Leak Fix**
+- Replaced `new PrismaClient()` in `scheduledEmailService.ts` with singleton `import prisma from '../lib/prisma'`
+
+**WS2: Public Unsubscribe Endpoint (CAN-SPAM Compliance)**
+- Added `unsubscribeToken` (String? @unique @default(cuid())) to `SequenceEnrollment`, `QuoteFollowUpEnrollment`, `ClientOnboardingEnrollment`
+- Created `GET /api/unsubscribe/:token` — public, no auth, searches all 3 enrollment tables, renders HTML confirmation page
+- Injected unsubscribe footer links into all automated email templates (sequences, onboarding, quote follow-ups)
+
+**WS3: Inquiry Acknowledgement Email**
+- Already implemented via `sendClientConfirmation` in `POST /api/leads/submit`
+
+**WS4: Post-Discovery-Call Quote Reminder**
+- `PATCH /api/leads/:id/discovery-call` now schedules `POST_CALL_QUOTE_REMINDER` 24h after call completion
+- `scheduledEmailService.ts` handles the new type, sending reminder to studio owner
+- New `sendPostCallQuoteReminderEmail` function in `email.ts`
+
+**WS5: Auto-Stop Onboarding on LOST**
+- Both `PATCH /api/leads/:id` and `PATCH /api/leads/:id/status` call `stopOnboardingForLead('lead_lost')` when status changes to LOST
+- New `stopOnboardingForLead()` function in `onboardingService.ts`
+
+**WS6: Multi-Tier Stale Lead Nudges**
+- Scheduler `runStaleLeadNudges()` expanded to Tier 1 (7-day) and Tier 2 (14-day) checks with proper date range filtering
+
+**Testing: 100% backend (14/14) — All tests passed (iteration_110.json)**
+
 ---
 
 ## Prioritized Backlog
@@ -139,3 +171,5 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 - `GET /api/calendar/google-events` — Google Calendar events
 - `POST /api/calendar/events` — Create manual event
 - `DELETE /api/calendar/events/:id` — Delete manual event
+- `GET /api/unsubscribe/:token` — Public CAN-SPAM unsubscribe (no auth)
+- `PATCH /api/leads/:id/discovery-call` — Update discovery call (schedules quote reminder)
