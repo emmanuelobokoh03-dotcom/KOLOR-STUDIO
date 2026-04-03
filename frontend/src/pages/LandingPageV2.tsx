@@ -669,56 +669,152 @@ function FeaturesSection() {
   )
 }
 
+/* ---------- TESTIMONIALS DATA ---------- */
+const TESTIMONIALS: {
+  quote: string
+  name: string
+  title: string
+  industry: 'photography' | 'design' | 'fine-art'
+  featured?: boolean
+}[] = [
+  // ── PHOTOGRAPHY ──────────────────────────────────────────────────────────
+  {
+    quote: "I used to spend Sunday nights rebuilding my inquiry spreadsheet. Now I open KOLOR on Monday morning and it's all just there — sorted, followed up, nothing dropped. Booked 4 weddings in the first month.",
+    name: "Sophie L.",
+    title: "Wedding photographer, Cape Town",
+    industry: "photography",
+    featured: true,
+  },
+  {
+    quote: "90 seconds to send a quote. Client signed the contract the same afternoon. That's never happened with my old process.",
+    name: "James M.",
+    title: "Commercial photographer, London",
+    industry: "photography",
+  },
+  {
+    quote: "Three months without missing a follow-up. My booking rate went from 30% to 62%. The pipeline view alone changed how I run my business.",
+    name: "Marcus T.",
+    title: "Portrait photographer, New York",
+    industry: "photography",
+  },
+
+  // ── DESIGN ───────────────────────────────────────────────────────────────
+  {
+    quote: "Finally a CRM that doesn't look like it was built for a car dealership. My clients notice when they get a KOLOR proposal. It's the first tool that feels like it was made for someone like me.",
+    name: "Nadia D.",
+    title: "Brand designer, Paris",
+    industry: "design",
+  },
+  {
+    quote: "Dubsado was powerful but I needed a PhD to set it up. KOLOR was running inside an afternoon, and my first Statement of Work went out the same day.",
+    name: "Priya S.",
+    title: "Interior designer, Mumbai",
+    industry: "design",
+  },
+  {
+    quote: "I was losing briefs in my inbox and chasing clients for signatures for weeks. The scoping call workflow sorted both problems at once. My clients book themselves now.",
+    name: "Léa K.",
+    title: "Motion designer, Berlin",
+    industry: "design",
+  },
+
+  // ── FINE ART ─────────────────────────────────────────────────────────────
+  {
+    quote: "I didn't expect a CRM to understand that my collectors don't get 'quotes' — they get offers. KOLOR uses the right language. Small thing, but it changes the whole tone of the conversation.",
+    name: "Tomás R.",
+    title: "Painter, São Paulo",
+    industry: "fine-art",
+  },
+  {
+    quote: "Commission tracking used to be a stack of notebooks and two email threads I'd inevitably lose. Now every piece, every collector, every deposit request is in one place. Three commissions delivered on time this quarter.",
+    name: "Yuki M.",
+    title: "Ceramic sculptor, Kyoto",
+    industry: "fine-art",
+  },
+  {
+    quote: "The contract template for commissions actually covered deposit terms and reproduction rights out of the box. My lawyer reviewed it in 20 minutes. That alone was worth it.",
+    name: "Amara O.",
+    title: "Mixed media artist, Lagos",
+    industry: "fine-art",
+  },
+]
+
 /* ---------- SECTION 6: TESTIMONIALS ---------- */
 function TestimonialsSection() {
+  const track = [...TESTIMONIALS, ...TESTIMONIALS]
+
   return (
-    <section className="reveal-section" style={{ padding: '100px 24px' }} data-testid="testimonials-section">
-      <div className="max-w-[1000px] mx-auto">
+    <section
+      className="reveal-section"
+      style={{ padding: '100px 0' }}
+      data-testid="testimonials-section"
+    >
+      {/* Section header — constrained width */}
+      <div className="max-w-[1000px] mx-auto px-6 md:px-10 mb-14">
         <SectionLabel>From the studio</SectionLabel>
 
-        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-10" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
-          <span style={{ color: '#ffffff' }}>
-            Real creatives.
-          </span>
+        <h2
+          className="font-display font-extrabold tracking-[-0.025em]"
+          style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}
+        >
+          <span style={{ color: '#ffffff' }}>Real creatives.</span>
           <br />
-          <span style={{ color: '#6C2EDB' }}>
-            Real results.
-          </span>
+          <span style={{ color: '#6C2EDB' }}>Real results.</span>
         </h2>
 
-        {/* Featured + 2 stacked */}
-        <div className="stagger-children grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4 mb-4">
-          <TestimonialCard
-            quote="I used to spend Sunday nights drowning in spreadsheets and unanswered emails. Now I open KOLOR on Monday morning and everything is just — there. My leads, my quotes, what needs attention. I booked 4 weddings in my first month."
-            name="Sophie L."
-            title="Wedding photographer, Cape Town"
-            featured
-          />
-          <div className="flex flex-col gap-4">
-            <TestimonialCard
-              quote="Sent my first quote in literally 90 seconds. Client signed the contract the same afternoon. That's never happened with my old process."
-              name="James M."
-              title="Commercial photographer, London"
-            />
-            <TestimonialCard
-              quote="Finally a CRM that doesn't look like it was designed for a car dealership. My clients notice the difference when they receive a KOLOR quote."
-              name="Nadia D."
-              title="Brand designer, Paris"
-            />
-          </div>
+        {/* Industry pill row */}
+        <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+          {(
+            [
+              { label: 'Photography', color: 'rgba(232,137,26,0.15)', text: '#E8891A' },
+              { label: 'Design', color: 'rgba(108,46,219,0.15)', text: '#a78bfa' },
+              { label: 'Fine Art', color: 'rgba(255,255,255,0.06)', text: 'rgba(255,255,255,0.5)' },
+            ] as const
+          ).map(({ label, color, text }) => (
+            <span
+              key={label}
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                padding: '4px 10px',
+                borderRadius: 20,
+                background: color,
+                color: text,
+                letterSpacing: '0.04em',
+              }}
+            >
+              {label}
+            </span>
+          ))}
         </div>
+      </div>
 
-        {/* Bottom row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-          {[
-            { q: '"I haven\'t missed a follow-up in three months. My booking rate went from 30% to over 60%."', n: 'Marcus T.', t: 'Portrait photographer, New York' },
-            { q: '"Dubsado was powerful but I needed a PhD to set it up. KOLOR was running in an afternoon."', n: 'Priya S.', t: 'Interior designer, Mumbai' },
-            { q: '"The discovery call workflow alone is worth the price. My clients book themselves."', n: 'Léa K.', t: 'Fashion photographer, Paris' },
-          ].map((item, i) => (
-            <div key={i}>
-              <p className="text-sm italic leading-relaxed mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>{item.q}</p>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>— {item.n}, <span className="italic">{item.t}</span></p>
-            </div>
+      {/* Marquee track — full viewport width */}
+      <div
+        style={{
+          overflow: 'hidden',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+          maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+        }}
+        onMouseEnter={e => {
+          const t = e.currentTarget.querySelector('.marquee-track') as HTMLElement
+          if (t) t.style.animationPlayState = 'paused'
+        }}
+        onMouseLeave={e => {
+          const t = e.currentTarget.querySelector('.marquee-track') as HTMLElement
+          if (t) t.style.animationPlayState = 'running'
+        }}
+      >
+        <div
+          className="marquee-track"
+          style={{
+            display: 'flex',
+            gap: 16,
+            width: 'max-content',
+          }}
+        >
+          {track.map((t, i) => (
+            <MarqueeCard key={i} {...t} />
           ))}
         </div>
       </div>
@@ -726,33 +822,115 @@ function TestimonialsSection() {
   )
 }
 
-function TestimonialCard({ quote, name, title, featured = false }: { quote: string; name: string; title: string; featured?: boolean }) {
+function MarqueeCard({
+  quote,
+  name,
+  title,
+  industry,
+  featured,
+}: {
+  quote: string
+  name: string
+  title: string
+  industry: 'photography' | 'design' | 'fine-art'
+  featured?: boolean
+}) {
+  const industryAccent: Record<string, string> = {
+    photography: '#E8891A',
+    design: '#a78bfa',
+    'fine-art': 'rgba(255,255,255,0.4)',
+  }
+  const accent = industryAccent[industry]
+
   return (
     <div
-      className="landing-feature-card relative rounded-[14px] p-7 flex flex-col"
+      style={{
+        width: 320,
+        flexShrink: 0,
+        borderRadius: 14,
+        padding: '24px 24px 20px',
+        background: featured ? 'rgba(108,46,219,0.08)' : 'rgba(255,255,255,0.03)',
+        border: `1px solid ${featured ? 'rgba(108,46,219,0.25)' : 'rgba(255,255,255,0.06)'}`,
+        display: 'flex',
+        flexDirection: 'column' as const,
+        gap: 0,
+      }}
     >
-      <span className="absolute top-4 right-6 font-display font-extrabold select-none" style={{ fontSize: 60, color: 'rgba(108,46,219,0.07)', lineHeight: 1 }}>&ldquo;</span>
-      {/* Enhancement 5 — Star ratings on featured card */}
-      {featured && (
-        <div style={{ display: 'flex', gap: 3, marginBottom: 12 }}>
-          {[...Array(5)].map((_, i) => (
-            <svg key={i} width="13" height="13" viewBox="0 0 13 13" fill="#E8891A">
-              <path d="M6.5 1l1.59 3.22L12 4.91l-2.75 2.68.65 3.79L6.5 9.77l-3.4 1.61.65-3.79L1 4.91l3.91-.69L6.5 1z"/>
-            </svg>
-          ))}
-        </div>
-      )}
-      <p className={`relative z-10 italic leading-relaxed flex-1 ${featured ? 'text-[17px]' : 'text-sm'}`} style={{ color: 'rgba(255,255,255,0.5)' }}>
-        &ldquo;{quote}&rdquo;
-      </p>
-      <div className="mt-5 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <p className="text-sm font-medium text-white/70">— {name}</p>
-        <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>{title}</p>
+      {/* Industry dot */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 14 }}>
+        <span
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: '50%',
+            background: accent,
+            flexShrink: 0,
+          }}
+        />
+        <span
+          className="font-mono-kolor"
+          style={{
+            fontSize: 10,
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase' as const,
+            color: accent,
+          }}
+        >
+          {industry === 'fine-art' ? 'Fine Art' : industry.charAt(0).toUpperCase() + industry.slice(1)}
+        </span>
         {featured && (
-          <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.04em', marginTop: 2, display: 'block' }}>
-            Verified KOLOR user
+          <span
+            className="font-mono-kolor"
+            style={{
+              marginLeft: 'auto',
+              fontSize: 9,
+              fontWeight: 600,
+              letterSpacing: '0.06em',
+              color: 'rgba(255,255,255,0.25)',
+              textTransform: 'uppercase' as const,
+            }}
+          >
+            Featured
           </span>
         )}
+      </div>
+
+      {/* Quote */}
+      <p
+        style={{
+          fontSize: featured ? 15 : 13,
+          lineHeight: 1.7,
+          color: 'rgba(255,255,255,0.55)',
+          fontStyle: 'italic',
+          flex: 1,
+          margin: 0,
+        }}
+      >
+        &ldquo;{quote}&rdquo;
+      </p>
+
+      {/* Attribution */}
+      <div
+        style={{
+          marginTop: 16,
+          paddingTop: 14,
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+        }}
+      >
+        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.75)' }}>
+          {name}
+        </p>
+        <p
+          className="font-mono-kolor"
+          style={{
+            margin: '2px 0 0',
+            fontSize: 11,
+            color: 'rgba(255,255,255,0.3)',
+          }}
+        >
+          {title}
+        </p>
       </div>
     </div>
   )

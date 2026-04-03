@@ -24,11 +24,24 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .marquee-track {
+    animation: marquee-scroll 52s linear infinite;
+  }
 }
 
 /* Fallback: no-motion users see text immediately */
 @media (prefers-reduced-motion: reduce) {
   .hero-word { opacity: 1; transform: none; }
+  .marquee-track {
+    animation: none !important;
+    flex-wrap: wrap;
+    width: auto !important;
+    padding: 0 24px;
+  }
 }
 
 /* ===== Structural hover: left-border accent ===== */
