@@ -6,7 +6,7 @@ export async function enrollInOnboarding(leadId: string) {
   const lead = await prisma.lead.findUnique({
     where: { id: leadId },
     include: {
-      assignedTo: { select: { firstName: true, lastName: true, studioName: true } },
+      assignedTo: { select: { firstName: true, lastName: true, studioName: true, industry: true } },
     },
   });
 
@@ -45,6 +45,7 @@ export async function enrollInOnboarding(leadId: string) {
       portalUrl,
       leadId,
       unsubscribeUrl,
+      industry: lead.assignedTo?.industry,
     });
 
     if (sent) {
@@ -93,7 +94,7 @@ export async function processOnboardingSequences() {
     },
     include: {
       lead: {
-        include: { assignedTo: { select: { firstName: true, lastName: true, studioName: true } } },
+        include: { assignedTo: { select: { firstName: true, lastName: true, studioName: true, industry: true } } },
       },
     },
   });
@@ -115,6 +116,7 @@ export async function processOnboardingSequences() {
         portalUrl,
         leadId: e.leadId,
         unsubscribeUrl,
+        industry: e.lead.assignedTo?.industry,
       });
       if (sent) {
         await prisma.clientOnboardingEnrollment.update({
@@ -140,7 +142,7 @@ export async function processOnboardingSequences() {
     },
     include: {
       lead: {
-        include: { assignedTo: { select: { firstName: true, lastName: true, studioName: true } } },
+        include: { assignedTo: { select: { firstName: true, lastName: true, studioName: true, industry: true } } },
       },
     },
   });
@@ -169,6 +171,7 @@ export async function processOnboardingSequences() {
         daysUntilDeadline,
         leadId: e.leadId,
         unsubscribeUrl,
+        industry: e.lead.assignedTo?.industry,
       });
       if (sent) {
         await prisma.clientOnboardingEnrollment.update({

@@ -64,6 +64,7 @@ export async function processScheduledEmails(): Promise<void> {
               clientName: lead.clientName,
               projectTitle: lead.projectTitle,
               leadId: lead.id,
+              ownerIndustry: owner.industry,
             });
           }
         }

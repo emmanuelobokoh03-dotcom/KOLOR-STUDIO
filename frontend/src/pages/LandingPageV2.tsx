@@ -181,7 +181,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
 
         {/* Subheadline */}
         <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 18, color: 'rgba(255,255,255,0.5)', maxWidth: 520 }}>
-          CRM built for photographers and designers who are done managing clients from a spreadsheet. Leads, quotes, contracts, and calendar — one beautiful tool.
+          CRM built for photographers, designers, and artists who are done managing clients from a spreadsheet. Leads, quotes, contracts, and calendar — one beautiful tool.
         </p>
 
         {/* CTA row */}
@@ -399,7 +399,7 @@ function ProblemSection() {
               <div>
                 <p className="font-semibold text-white/90 mb-2">of freelance creatives lose clients to poor follow-up — not poor work.</p>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                  The most talented photographers and designers lose bookings because they forgot to reply, sent a messy invoice, or double-booked a shoot. KOLOR makes sure that never happens to you.
+                  The most talented photographers, designers, and fine artists lose commissions because they forgot to reply, sent a messy invoice, or missed a deadline. KOLOR makes sure that never happens to you.
                 </p>
                 <p className="text-xs mt-3" style={{ color: 'rgba(255,255,255,0.25)' }}>Based on KOLOR user research &middot; 2024</p>
               </div>

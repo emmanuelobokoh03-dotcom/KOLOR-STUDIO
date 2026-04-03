@@ -1828,22 +1828,32 @@ export async function sendPostCallQuoteReminderEmail(data: {
   clientName: string;
   projectTitle: string;
   leadId: string;
+  ownerIndustry?: string | null;
 }): Promise<boolean> {
   if (!resend) return false;
+
+  const industryQuoteWord: Record<string, string> = {
+    PHOTOGRAPHY: 'quote',
+    DESIGN: 'proposal',
+    FINE_ART: 'offer',
+  };
+  const quoteWord = industryQuoteWord[data.ownerIndustry || ''] ?? 'quote';
+  const quoteWordCap = quoteWord.charAt(0).toUpperCase() + quoteWord.slice(1);
+
   try {
     const dashboardUrl = `${process.env.FRONTEND_URL || ''}/leads/${data.leadId}`;
 
     const html = buildEmailTemplate({
-      headline: `Time to send ${data.clientName} a quote`,
+      headline: `Time to send ${data.clientName} a ${quoteWord}`,
       body: `
         <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
           Hi ${data.ownerFirstName}, your discovery call with <strong>${data.clientName}</strong> for <strong>"${data.projectTitle}"</strong> was completed yesterday.
         </p>
-        ${highlightBox(`Leads who receive a quote within 24 hours of a call close at 2&times; the rate.`)}
+        ${highlightBox(`Leads who receive a ${quoteWord} within 24 hours of a call close at 2&times; the rate.`)}
         <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
-          Open their lead page and send a personalized quote while the conversation is still fresh.
+          Open their lead page and send a personalized ${quoteWord} while the conversation is still fresh.
         </p>`,
-      ctaText: 'Create Quote \u2192',
+      ctaText: `Create ${quoteWordCap} \u2192`,
       ctaUrl: dashboardUrl,
       emailType: 'workflow',
     });
@@ -1851,7 +1861,7 @@ export async function sendPostCallQuoteReminderEmail(data: {
     const { error } = await resend.emails.send({
       from: `KOLOR Studio <${SENDER_EMAIL}>`,
       to: [data.ownerEmail],
-      subject: `Send ${data.clientName} a quote — your call was yesterday`,
+      subject: `Send ${data.clientName} a ${quoteWord} — your call was yesterday`,
       html,
     });
     if (error) {
@@ -2224,6 +2234,7 @@ interface OnboardingEmailParams {
   daysUntilDeadline?: number;
   leadId?: string;
   unsubscribeUrl?: string;
+  industry?: string | null;
 }
 
 export async function sendClientOnboardingEmail(
@@ -2231,6 +2242,14 @@ export async function sendClientOnboardingEmail(
   params: OnboardingEmailParams
 ): Promise<boolean> {
   const { to, clientName, creativeName, projectType, portalUrl, daysUntilDeadline, leadId } = params;
+
+  // Industry language — inline (no shared backend util)
+  const industryLang: Record<string, { quote: string; update: string; files: string; call: string }> = {
+    PHOTOGRAPHY: { quote: 'quote', update: 'gallery', files: 'photos', call: 'shoot' },
+    DESIGN:      { quote: 'proposal', update: 'draft', files: 'files', call: 'project' },
+    FINE_ART:    { quote: 'offer', update: 'work-in-progress', files: 'artwork', call: 'commission' },
+  };
+  const iLang = industryLang[params.industry || ''] ?? industryLang['PHOTOGRAPHY'];
 
   if (!resend) {
 
@@ -2270,10 +2289,10 @@ export async function sendClientOnboardingEmail(
         <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 20px; margin: 24px 0; border-radius: 8px;">
           <h3 style="margin: 0 0 12px 0; color: #1A1A2E; font-size: 16px;">What Happens Next</h3>
           <ul style="margin: 0; padding-left: 20px; color: #6B7280; line-height: 2;">
-            <li>I'll start working on your project right away</li>
+            <li>I'll start working on your ${iLang.call} right away</li>
             <li>You'll receive updates through your client portal</li>
             <li>Feel free to message me anytime with questions</li>
-            <li>I'll notify you when files are ready for review</li>
+            <li>I'll notify you when ${iLang.files} are ready for review</li>
           </ul>
         </div>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
@@ -2310,7 +2329,7 @@ export async function sendClientOnboardingEmail(
           </div>
           <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 16px; margin-bottom: 12px; border-radius: 6px;">
             <h4 style="margin: 0 0 6px 0; color: #065f46; font-size: 15px;">View Files</h4>
-            <p style="margin: 0; color: #475569; font-size: 14px;">Download your files as soon as they're ready</p>
+            <p style="margin: 0; color: #475569; font-size: 14px;">Download your ${iLang.files} as soon as they're ready</p>
           </div>
           <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin-bottom: 12px; border-radius: 6px;">
             <h4 style="margin: 0 0 6px 0; color: #92400e; font-size: 15px;">Track Progress</h4>
@@ -2353,9 +2372,9 @@ export async function sendClientOnboardingEmail(
         </div>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;"><strong>What you can do:</strong></p>
         <ul style="color: #6B7280; line-height: 2; padding-left: 24px;">
-          <li>Check your portal for work-in-progress updates</li>
+          <li>Check your portal for ${iLang.update} updates</li>
           <li>Send me a message if you have questions or ideas</li>
-          <li>Review any files I've shared for feedback</li>
+          <li>Review any ${iLang.files} I've shared for feedback</li>
           <li>Stay tuned for the final delivery notification!</li>
         </ul>
         <table width="100%" cellpadding="0" cellspacing="0">
