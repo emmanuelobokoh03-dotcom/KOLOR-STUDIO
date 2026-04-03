@@ -1,0 +1,110 @@
+{
+  "summary": "Iteration 113: Mobile Responsiveness Polish testing for Calendar, Contracts, and Settings pages at 375px (iPhone) and 768px (iPad) breakpoints. Key findings: Calendar and Settings pages pass all touch target tests (44px min). Contracts page passes mobile card layout and visible quick actions. CRITICAL ISSUE: Horizontal overflow detected on Dashboard at 375px (656px vs 375px) and 768px (1280px vs 768px), and on Contracts page at 375px (493px vs 375px). Desktop (1920px) regression tests pass.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Dashboard",
+        "issue": "Horizontal overflow at 375px mobile viewport (656px body width vs 375px window)",
+        "selector": "body",
+        "priority": "HIGH"
+      },
+      {
+        "component": "Dashboard",
+        "issue": "Horizontal overflow at 768px tablet viewport (1280px body width vs 768px window)",
+        "selector": "body",
+        "priority": "HIGH"
+      },
+      {
+        "component": "Contracts",
+        "issue": "Horizontal overflow at 375px mobile viewport (493px body width vs 375px window)",
+        "selector": "body",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Dashboard mobile hamburger menu",
+        "issues": ["Quotes and Contracts (Booking Agreements) are correctly added to mobile nav - PASS"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_113.json"
+  ],
+  "action_items": [
+    "FIX: Dashboard horizontal overflow at 375px and 768px - likely caused by a component with fixed width or overflow-x not hidden",
+    "FIX: Contracts page horizontal overflow at 375px - check tab row or stats strip for fixed widths",
+    "Investigate which component is causing the overflow (RevenuePipelineWidget, CRMAlerts, or StatCards may have fixed widths)"
+  ],
+  "critical_code_review_comments": [
+    "Calendar page at 375px: All touch targets >= 44px (view switcher, nav arrows, week mobile prev/next) - PASS",
+    "Calendar week view at 375px: Shows 3-day layout with prev/next navigation (data-testid week-mobile-prev, week-mobile-next) - PASS",
+    "Settings page at 375px: Mobile tabs have 44px min height, horizontally scrollable - PASS",
+    "Settings Profile tab at 375px: Industry buttons stack to single column (301px width each) - PASS",
+    "Settings Brand tab at 375px: Color pickers 44x44px, hex inputs 44px height, font pills 44px min height - PASS",
+    "Settings Notifications tab at 375px: Toggle buttons have 44x44px touch area - PASS",
+    "Contracts tab row at 375px: Tab buttons have min-h-[44px] - PASS",
+    "Contracts view at 375px: Contract rows render as flex column (card layout) - PASS",
+    "Contracts view at 375px: Quick action buttons always visible (flex display, not hover-only) - PASS",
+    "Desktop (1920px): No horizontal overflow, desktop sidebar visible, week view shows all 7 days - PASS"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only testing)",
+    "frontend": "75% (touch targets and layouts pass, but horizontal overflow issues on Dashboard and Contracts)"
+  },
+  "test_credentials": "email=bookingtest@test.com, password=password123",
+  "seed_data_creation": "",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 113 tested mobile responsiveness at 375px and 768px. All touch target requirements (44px min) are met for Calendar, Settings, and Contracts pages. The main issue is horizontal overflow on Dashboard (at both 375px and 768px) and Contracts page (at 375px). The overflow is likely caused by fixed-width components like RevenuePipelineWidget, StatCards, or CRMAlerts. Calendar and Settings pages have no overflow issues. Desktop regression tests at 1920px pass.",
+  "verified_features": {
+    "calendar_375px": {
+      "no_horizontal_overflow": true,
+      "view_switcher_44px": true,
+      "nav_arrows_44px": true,
+      "week_view_3_day_mobile": true,
+      "week_mobile_prev_next_44px": true
+    },
+    "settings_375px": {
+      "no_horizontal_overflow": true,
+      "mobile_tabs_scrollable": true,
+      "tab_buttons_44px": true,
+      "industry_buttons_single_column": true,
+      "color_pickers_44px": true,
+      "hex_inputs_44px": true,
+      "font_pills_44px": true,
+      "toggle_buttons_44px": true
+    },
+    "contracts_375px": {
+      "no_horizontal_overflow": false,
+      "tab_buttons_44px": true,
+      "card_layout_flex_column": true,
+      "quick_actions_visible": true
+    },
+    "dashboard_375px": {
+      "no_horizontal_overflow": false,
+      "hamburger_menu_has_quotes_contracts": true
+    },
+    "dashboard_768px": {
+      "no_horizontal_overflow": false
+    },
+    "calendar_768px": {
+      "no_horizontal_overflow": true
+    },
+    "settings_768px": {
+      "no_horizontal_overflow": true
+    },
+    "desktop_1920px": {
+      "no_horizontal_overflow": true,
+      "desktop_sidebar_visible": true,
+      "week_view_7_days": true,
+      "desktop_vertical_tabs": true
+    }
+  }
+}
