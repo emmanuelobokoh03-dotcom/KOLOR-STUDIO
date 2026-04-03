@@ -105,7 +105,7 @@ export function StatCard({
           </div>
           <div className="min-w-0">
             <p className="text-xl md:text-2xl font-bold text-text-primary tabular-nums">{value}</p>
-            <p className="text-xs text-text-secondary mb-1">{label}</p>
+            <p className="font-mono-kolor text-[10px] uppercase tracking-[0.08em] text-text-secondary mb-1">{label}</p>
             <TrendIndicator trend={trend} />
           </div>
         </div>

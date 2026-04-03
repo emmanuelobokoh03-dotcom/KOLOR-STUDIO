@@ -65,16 +65,18 @@ export default function SubmitTestimonial() {
     setSubmitting(false)
   }
 
-  const primary = request?.user?.brandPrimaryColor || '#A855F7'
+  const primary = request?.user?.brandPrimaryColor || '#6C2EDB'
 
   if (loading) return (
-    <div className="min-h-screen bg-surface-base flex items-center justify-center">
-      <div className="animate-spin w-8 h-8 border-2 border-gray-200 border-t-gray-600 rounded-full" />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F9F7FE' }}>
+      <p className="font-mono-kolor" style={{ fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.3)' }}>
+        Loading...
+      </p>
     </div>
   )
 
   if (submitted) return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: '#F9F7FE' }}>
       <div className="max-w-md w-full text-center">
         <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: `${primary}15` }}>
           <Heart weight="duotone" className="w-10 h-10" style={{ color: primary }} />
@@ -91,20 +93,40 @@ export default function SubmitTestimonial() {
   const studioName = request?.user?.studioName || `${request?.user?.firstName || ''} ${request?.user?.lastName || ''}`.trim() || 'Studio'
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-12 px-4" data-testid="submit-testimonial-page">
+    <div className="min-h-screen py-12 px-4" style={{ background: '#F9F7FE' }} data-testid="submit-testimonial-page">
       <div className="max-w-lg mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
+        {/* Studio header — brand-first */}
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
           {request?.user?.brandLogoUrl ? (
-            <img src={request.user.brandLogoUrl} alt="" className="h-12 w-12 rounded-xl mx-auto mb-4 object-contain" />
+            <img src={request.user.brandLogoUrl} alt={studioName} style={{ height: 44, marginBottom: 16, objectFit: 'contain', margin: '0 auto 16px' }} />
           ) : (
-            <div className="h-12 w-12 rounded-xl mx-auto mb-4 flex items-center justify-center" style={{ background: primary }}>
-              <Sparkle className="w-6 h-6 text-white" />
+            <div style={{
+              width: 56,
+              height: 56,
+              borderRadius: '50%',
+              background: primary,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 22,
+              fontWeight: 700,
+              color: '#fff',
+              margin: '0 auto 16px',
+            }}>
+              {studioName.charAt(0).toUpperCase()}
             </div>
           )}
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Share Your Experience</h1>
-          <p className="text-text-tertiary">
-            How was your experience with <span className="font-semibold" style={{ color: primary }}>{studioName}</span>?
+          <h1 style={{
+            fontFamily: 'Fraunces, serif',
+            fontSize: 28,
+            fontWeight: 700,
+            color: '#1A1A2E',
+            margin: '0 0 6px',
+          }}>
+            {studioName}
+          </h1>
+          <p className="font-mono-kolor" style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.35)' }}>
+            share your experience
           </p>
         </div>
 
@@ -216,9 +238,8 @@ export default function SubmitTestimonial() {
           </button>
         </div>
 
-        <p className="text-center text-xs text-text-secondary mt-6" data-testid="powered-by-badge">
-          Powered by{' '}
-          <a href="/" className="text-brand-primary hover:underline transition">Kolor Studio</a>
+        <p className="font-mono-kolor" style={{ fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.2)', textAlign: 'center', marginTop: 32 }} data-testid="powered-by-badge">
+          Powered by KOLOR Studio
         </p>
       </div>
     </div>

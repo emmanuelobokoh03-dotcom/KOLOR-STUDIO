@@ -24,7 +24,7 @@ function SectionLabel({ children }: { children: string }) {
   return (
     <div className="flex items-center gap-3 mb-8">
       <span className="block w-4 h-px" style={{ background: '#a78bfa' }} />
-      <span className="text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: '#a78bfa' }}>
+      <span className="font-mono-kolor text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: '#a78bfa' }}>
         {children}
       </span>
     </div>
@@ -97,7 +97,7 @@ function Nav({ onCta }: { onCta: () => void }) {
         <Link
           to="/"
           className="font-extrabold text-lg tracking-[0.08em]"
-          style={{ background: 'linear-gradient(180deg, #fff, rgba(255,255,255,0.7))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+          style={{ color: 'rgba(255,255,255,0.85)' }}
         >
           KOLOR
         </Link>
@@ -151,6 +151,49 @@ function HeroSection({ onCta }: { onCta: () => void }) {
       <div className="absolute pointer-events-none" style={{ top: '20%', left: '30%', transform: 'translateX(-50%)', width: 400, height: 300, background: 'radial-gradient(ellipse, rgba(232,137,26,0.07) 0%, transparent 60%)', zIndex: 0 }} />
       <div className="absolute pointer-events-none" style={{ bottom: -60, left: '50%', transform: 'translateX(-50%)', width: 600, height: 300, background: 'radial-gradient(ellipse, rgba(108,46,219,0.08) 0%, transparent 65%)', zIndex: 0 }} />
 
+      {/* Rotating radial grid — ambient layer */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 700,
+          height: 700,
+          maxWidth: '100vw',
+          zIndex: 0,
+          opacity: 0.04,
+        }}
+      >
+        <svg
+          viewBox="0 0 700 700"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{
+            width: '100%',
+            height: '100%',
+            animation: 'radial-grid-rotate 45s linear infinite',
+          }}
+        >
+          {[80, 140, 200, 260, 320].map(r => (
+            <circle key={r} cx="350" cy="350" r={r} fill="none" stroke="white" strokeWidth="0.5" />
+          ))}
+          {Array.from({ length: 12 }, (_, i) => {
+            const angle = (i * 30 * Math.PI) / 180
+            return (
+              <line
+                key={i}
+                x1={350 + Math.cos(angle) * 80}
+                y1={350 + Math.sin(angle) * 80}
+                x2={350 + Math.cos(angle) * 320}
+                y2={350 + Math.sin(angle) * 320}
+                stroke="white"
+                strokeWidth="0.5"
+              />
+            )
+          })}
+        </svg>
+      </div>
+
       <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-10 text-center">
         {/* Announcement pill */}
         <div
@@ -164,19 +207,31 @@ function HeroSection({ onCta }: { onCta: () => void }) {
           <span style={{ color: 'rgba(255,255,255,0.4)' }}>&rarr;</span>
         </div>
 
-        {/* H1 */}
+        {/* H1 — staggered word reveal */}
         <h1
           className="font-display font-extrabold leading-[1.05] tracking-[-0.03em] mb-6"
           style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}
           data-testid="hero-headline"
         >
-          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            The studio behind{'\n'}
-          </span>
+          {'The studio behind'.split(' ').map((word, i) => (
+            <span
+              key={i}
+              className="hero-word inline-block mr-[0.25em]"
+              style={{ animationDelay: `${i * 80}ms`, color: '#ffffff' }}
+            >
+              {word}
+            </span>
+          ))}
           <br />
-          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            your best work.
-          </span>
+          {'your best work.'.split(' ').map((word, i) => (
+            <span
+              key={i}
+              className="hero-word inline-block mr-[0.25em]"
+              style={{ animationDelay: `${(i + 3) * 80}ms`, color: '#6C2EDB' }}
+            >
+              {word}
+            </span>
+          ))}
         </h1>
 
         {/* Subheadline */}
@@ -231,7 +286,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
               <div className="flex-1 flex justify-center">
                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-[5px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
                   <span className="w-2 h-2 rounded-full" style={{ background: '#28CA41' }} />
-                  <span className="font-mono text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>app.kolorstudio.com/dashboard</span>
+                  <span className="font-mono-kolor text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>app.kolorstudio.com/dashboard</span>
                 </div>
               </div>
             </div>
@@ -374,12 +429,12 @@ function ProblemSection() {
         <SectionLabel>The problem</SectionLabel>
 
         <h2 className="font-display font-extrabold tracking-[-0.025em] mb-4" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
-          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ color: '#ffffff' }}>
             Your work is world-class.{'\n'}
           </span>
           <br />
-          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Your <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>workflow</span> shouldn't hold it back.
+          <span style={{ color: '#ffffff' }}>
+            Your <span style={{ color: '#6C2EDB' }}>workflow</span> shouldn't hold it back.
           </span>
         </h2>
 
@@ -436,11 +491,11 @@ function WorkflowSection() {
         <SectionLabel>How it works</SectionLabel>
 
         <h2 className="font-display font-extrabold tracking-[-0.025em] mb-4" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
-          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ color: '#ffffff' }}>
             Capture. Quote. Book.
           </span>
           <br />
-          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ color: '#6C2EDB' }}>
             In that order. Every time.
           </span>
         </h2>
@@ -454,13 +509,11 @@ function WorkflowSection() {
           {steps.map((step, i) => (
             <div
               key={step.num}
-              className="relative p-8 md:p-9 transition-colors duration-200"
+              className="landing-workflow-step relative p-8 md:p-9"
               style={{ background: '#080612' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(108,46,219,0.06)')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#080612')}
             >
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-lg mb-5 text-[13px] font-bold"
+                className="w-8 h-8 flex items-center justify-center rounded-lg mb-5 font-mono-kolor text-[13px] font-bold"
                 style={{ background: 'rgba(108,46,219,0.15)', border: '1px solid rgba(108,46,219,0.3)', color: '#a78bfa' }}
               >
                 {step.num}
@@ -489,42 +542,70 @@ function WorkflowSection() {
 }
 
 /* ---------- SECTION 5: FEATURES ---------- */
-function FeaturesSection() {
-  const cards: { component: React.ComponentType<{ className?: string }>; label: string; title: string; body: string; containerStyle?: React.CSSProperties }[] = [
-    { component: DashboardMock, label: 'Lead Management', title: 'Every lead, always visible', body: "From first inquiry to signed contract. Know exactly where every potential client is in your pipeline — without building a spreadsheet to track your spreadsheet." },
-    { component: QuoteMock, label: 'Quote Builder', title: 'Quotes that close', body: "Professional proposals in 2 minutes. Your packages, your pricing, your brand. Clients approve online — no attachments, no printing, no excuses not to reply." },
-    { component: PortalMock, label: 'Online Contracts', title: 'Signed before they change their mind', body: 'Send a contract and get it back signed — from any device, in minutes. No printing. No scanning. No "I\'ll get it back to you this week."', containerStyle: { overflow: 'hidden', height: 280, borderRadius: 10, border: '0.5px solid rgba(255,255,255,0.08)' } },
+function QuotePipelineBar() {
+  const stages = [
+    { label: 'Sent', pct: 100 },
+    { label: 'Viewed', pct: 78 },
+    { label: 'Approved', pct: 52 },
+    { label: 'Signed', pct: 31 },
   ]
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {stages.map((s) => (
+        <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span className="font-mono-kolor" style={{ fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', minWidth: 52 }}>
+            {s.label}
+          </span>
+          <div style={{ flex: 1, height: 3, background: 'rgba(255,255,255,0.07)', borderRadius: 2 }}>
+            <div
+              style={{
+                height: '100%',
+                width: `${s.pct}%`,
+                background: '#6C2EDB',
+                borderRadius: 2,
+                opacity: s.pct / 100,
+              }}
+            />
+          </div>
+          <span className="font-mono-kolor" style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', minWidth: 28, textAlign: 'right' }}>
+            {s.pct}%
+          </span>
+        </div>
+      ))}
+    </div>
+  )
+}
 
+function FeaturesSection() {
   return (
     <section className="reveal-section" style={{ padding: '100px 24px' }} data-testid="features-section" id="features">
       <div className="max-w-[1000px] mx-auto">
         <SectionLabel>Everything in one place</SectionLabel>
 
         <h2 className="font-display font-extrabold tracking-[-0.025em] mb-4" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
-          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Your whole studio.
-          </span>
+          <span style={{ color: '#ffffff' }}>Your whole studio.</span>
           <br />
-          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            One tab.
-          </span>
+          <span style={{ color: '#6C2EDB' }}>One tab.</span>
         </h2>
 
         <p className="mb-12" style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 540, lineHeight: 1.7 }}>
-          No switching between apps. No copy-pasting. No "where did I put that contract." Everything is connected — and it remembers, so you don't have to.
+          No switching between apps. No copy-pasting. No "where did I put that contract." Everything connected — it remembers, so you don't have to.
         </p>
 
-        {/* Hero screenshot frame */}
-        <div className="max-w-[860px] mx-auto mb-12">
+        {/* Bento grid — asymmetric: hero full-width top, two supporting below */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'auto auto', gap: 12 }} data-testid="feature-cards">
+
+          {/* Hero cell — full width, spans both columns */}
           <div
-            className="rounded-2xl overflow-hidden"
             style={{
+              gridColumn: '1 / -1',
+              borderRadius: 16,
+              overflow: 'hidden',
               background: '#100D20',
               border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: '0 0 0 1px rgba(108,46,219,0.15), 0 40px 80px rgba(0,0,0,0.7), 0 0 120px rgba(108,46,219,0.08)',
             }}
           >
+            {/* Browser chrome bar */}
             <div className="flex items-center gap-2 px-4 h-10" style={{ background: '#0C0A1A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
               <div className="flex items-center gap-[5px]">
                 <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#FF5F57' }} />
@@ -534,36 +615,54 @@ function FeaturesSection() {
               <div className="flex-1 flex justify-center">
                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-[5px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
                   <span className="w-2 h-2 rounded-full" style={{ background: '#28CA41' }} />
-                  <span className="font-mono text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>app.kolorstudio.com/dashboard</span>
+                  <span className="font-mono-kolor text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>app.kolorstudio.com/dashboard</span>
                 </div>
               </div>
             </div>
-            <div style={{ minHeight: 340 }}>
-              <DashboardMock data-testid="screenshot-dashboard" />
+            <div style={{ minHeight: 320 }}>
+              <DashboardMock />
             </div>
           </div>
-        </div>
 
-        {/* 3 feature cards */}
-        <div className="stagger-children grid grid-cols-1 md:grid-cols-3 gap-4" data-testid="feature-cards">
-          {cards.map((card, i) => (
-            <div
-              key={i}
-              className="rounded-[14px] overflow-hidden group transition-all duration-200"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)'; e.currentTarget.style.background = 'rgba(108,46,219,0.05)' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
-            >
-              <div className="overflow-hidden" style={{ aspectRatio: '16/10', borderBottom: '1px solid rgba(255,255,255,0.05)', ...card.containerStyle }}>
-                <card.component />
-              </div>
-              <div className="p-5">
-                <span className="text-[10px] font-bold uppercase tracking-[0.08em]" style={{ color: '#a78bfa' }}>{card.label}</span>
-                <h3 className="text-base font-semibold text-white/90 mt-1 mb-2">{card.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>{card.body}</p>
-              </div>
+          {/* Supporting cell 1 — Quote builder */}
+          <div
+            className="landing-feature-card rounded-[14px] overflow-hidden group"
+            style={{ padding: '28px 28px 0' }}
+          >
+            <span className="font-mono-kolor" style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(108,46,219,0.6)' }}>
+              Quote builder
+            </span>
+            <h3 className="text-lg font-semibold mt-2 mb-2" style={{ color: 'rgba(255,255,255,0.9)' }}>
+              Quotes that close
+            </h3>
+            <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              Professional proposals in 2 minutes. Clients approve online — no attachments, no printing, no excuses not to reply.
+            </p>
+            <QuotePipelineBar />
+            <div style={{ overflow: 'hidden', height: 160, marginTop: 16, borderRadius: '10px 10px 0 0' }}>
+              <QuoteMock />
             </div>
-          ))}
+          </div>
+
+          {/* Supporting cell 2 — Contracts */}
+          <div
+            className="landing-feature-card rounded-[14px] overflow-hidden group"
+            style={{ padding: '28px 28px 0' }}
+          >
+            <span className="font-mono-kolor" style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(108,46,219,0.6)' }}>
+              Online contracts
+            </span>
+            <h3 className="text-lg font-semibold mt-2 mb-2" style={{ color: 'rgba(255,255,255,0.9)' }}>
+              Signed before they change their mind
+            </h3>
+            <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              Send a contract and get it back signed from any device in minutes. No printing. No scanning. No "I'll get it back to you."
+            </p>
+            <div style={{ overflow: 'hidden', height: 200, borderRadius: '10px 10px 0 0' }}>
+              <PortalMock />
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -578,11 +677,11 @@ function TestimonialsSection() {
         <SectionLabel>From the studio</SectionLabel>
 
         <h2 className="font-display font-extrabold tracking-[-0.025em] mb-10" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
-          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ color: '#ffffff' }}>
             Real creatives.
           </span>
           <br />
-          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ color: '#6C2EDB' }}>
             Real results.
           </span>
         </h2>
@@ -630,13 +729,7 @@ function TestimonialsSection() {
 function TestimonialCard({ quote, name, title, featured = false }: { quote: string; name: string; title: string; featured?: boolean }) {
   return (
     <div
-      className="relative rounded-[14px] p-7 transition-all duration-200 flex flex-col"
-      style={{
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.06)',
-      }}
-      onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)')}
-      onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)')}
+      className="landing-feature-card relative rounded-[14px] p-7 flex flex-col"
     >
       <span className="absolute top-4 right-6 font-display font-extrabold select-none" style={{ fontSize: 60, color: 'rgba(108,46,219,0.07)', lineHeight: 1 }}>&ldquo;</span>
       {/* Enhancement 5 — Star ratings on featured card */}
@@ -739,7 +832,7 @@ function FAQSection() {
         <SectionLabel>Answers</SectionLabel>
 
         <h2 className="font-display font-extrabold tracking-[-0.025em] mb-3" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
-          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ color: '#ffffff' }}>
             Everything you need to know.
           </span>
         </h2>
@@ -838,7 +931,7 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
         <div className="relative z-10">
           <SectionLabel>Beta access</SectionLabel>
 
-          <h2 className="font-display font-extrabold tracking-[-0.025em] mb-8 mx-auto" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15, maxWidth: 560, background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <h2 className="font-display font-extrabold tracking-[-0.025em] mb-8 mx-auto" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15, maxWidth: 560, color: '#ffffff' }}>
             Limited spots. Unlimited upside.
           </h2>
 
@@ -918,10 +1011,10 @@ function FinalCTA({ onCta }: { onCta: () => void }) {
           className="font-display font-extrabold tracking-[-0.025em] mb-6"
           style={{ fontSize: 'clamp(32px, 4vw, 52px)', lineHeight: 1.1 }}
         >
-          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.5))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ color: '#ffffff' }}>
             Your clients deserve<br />a better experience.<br />
           </span>
-          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ color: '#6C2EDB' }}>
             So do you.
           </span>
         </h2>

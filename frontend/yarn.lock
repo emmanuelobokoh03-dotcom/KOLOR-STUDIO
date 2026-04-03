@@ -451,6 +451,14 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@number-flow/react@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@number-flow/react/-/react-0.6.0.tgz#343c522b3ebe118eaf631524351d2c4a17bd6ad2"
+  integrity sha512-77Yfc9+zkV2UDSP8phhZzxJGuwxi/Tt1TikmipL+1r3e9GFKEYDZ1XwInj67NoSt3OnOB0KLvvcl3lfPZgBHVQ==
+  dependencies:
+    esm-env "^1.1.4"
+    number-flow "0.6.0"
+
 "@phosphor-icons/react@^2.1.10":
   version "2.1.10"
   resolved "https://registry.npmjs.org/@phosphor-icons/react/-/react-2.1.10.tgz"
@@ -1608,6 +1616,11 @@ eslint@^9.17.0:
     natural-compare "^1.4.0"
     optionator "^0.9.3"
 
+esm-env@^1.1.4:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/esm-env/-/esm-env-1.2.2.tgz#263c9455c55861f41618df31b20cb571fc20b75e"
+  integrity sha512-Epxrv+Nr/CaL4ZcFGPJIYLWFom+YeV1DqMLHJoEd9SYRxNbaFruBwfEX/kkHUJf55j2+TUbmDcmuilbP1TmXHA==
+
 espree@^10.0.1, espree@^10.4.0:
   version "10.4.0"
   resolved "https://registry.npmjs.org/espree/-/espree-10.4.0.tgz"
@@ -2231,6 +2244,13 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
+
+number-flow@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/number-flow/-/number-flow-0.6.0.tgz#449240fac2f2ef250aee529ec6f2ec03307f3aea"
+  integrity sha512-K8flNq2Wqus53vjp/btVo3qXFkagF8dIdYavreBfE7hlvFFG/b1HMGEH6nZL+mlrJ+4lbLP9OmPv3t2rmRkpSQ==
+  dependencies:
+    esm-env "^1.1.4"
 
 object-assign@^4.0.1, object-assign@^4.1.1:
   version "4.1.1"

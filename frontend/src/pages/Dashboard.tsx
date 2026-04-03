@@ -64,6 +64,7 @@ import { UserPlus, Receipt, ShieldCheck } from '@phosphor-icons/react'
 import LeadsListView from '../components/LeadsListView'
 import QuotesPage from './Quotes'
 import ContractsPage from './Contracts'
+import NumberFlow from '@number-flow/react'
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
 
@@ -876,6 +877,30 @@ const Dashboard = () => {
         )}
 
         {/* Stats Cards */}
+        {/* Hero metric — dominant pipeline stat */}
+        <div
+          className="mb-6 px-2"
+          style={{
+            borderLeft: '3px solid #6C2EDB',
+            paddingLeft: '16px',
+          }}
+          data-testid="hero-pipeline-stat"
+        >
+          <p
+            className="font-mono-kolor"
+            style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: 'rgba(108,46,219,0.6)', textTransform: 'uppercase', marginBottom: 4 }}
+          >
+            Active pipeline
+          </p>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+            <NumberFlow
+              value={leads.filter(l => !['BOOKED', 'LOST'].includes(l.status)).length}
+              style={{ fontSize: 56, fontWeight: 700, color: '#1A1A2E', lineHeight: 1 }}
+            />
+            <span style={{ fontSize: 14, color: 'rgba(0,0,0,0.35)' }}>{lang.leads.toLowerCase()} in pipeline</span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
           <StatCard
             icon={Users}

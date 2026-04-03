@@ -98,7 +98,7 @@ export function StatusBadge({ status, className = '', size = 'md' }: StatusBadge
 
   return (
     <span
-      className={`inline-flex items-center font-medium border-l-[3px] rounded-r-md ${config.border} ${config.bg} ${config.text} ${sizeClasses} ${className}`}
+      className={`inline-flex items-center font-mono-kolor font-medium border-l-[3px] rounded-r-md uppercase tracking-[0.04em] ${config.border} ${config.bg} ${config.text} ${sizeClasses} ${className}`}
       data-testid={`status-badge-${status.toLowerCase()}`}
     >
       {config.label}

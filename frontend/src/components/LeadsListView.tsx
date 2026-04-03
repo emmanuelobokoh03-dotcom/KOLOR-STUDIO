@@ -119,7 +119,7 @@ function StatsStrip({ leads, lang, currencySymbol = '$' }: { leads: Lead[]; lang
           style={{ borderWidth: '0.5px' }}
           data-testid={`stat-${chip.label.toLowerCase().replace(/\s+/g, '-')}`}
         >
-          <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-1">{chip.label}</p>
+          <p className="font-mono-kolor text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-1">{chip.label}</p>
           <p className="text-xl font-extrabold tabular-nums text-text-primary" style={{ color: chip.color === '#D97706' ? '#D97706' : undefined }}>{chip.value}</p>
           <p className="text-[10px] mt-0.5" style={{ color: chip.color }}>{chip.trend}</p>
         </div>
@@ -198,7 +198,7 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
 
   return (
     <div
-      className="grid items-center px-4 py-[11px] cursor-pointer transition-all duration-150 group border-b border-[var(--border)] last:border-b-0 hover:bg-[var(--surface-background)]"
+      className="lead-card-hover grid items-center px-4 py-[11px] cursor-pointer transition-all duration-150 group border-b border-[var(--border)] last:border-b-0"
       style={{ gridTemplateColumns: '1fr 80px 96px 72px 80px' }}
       onClick={() => onLeadClick(lead)}
       data-testid={`lead-row-${lead.id}`}

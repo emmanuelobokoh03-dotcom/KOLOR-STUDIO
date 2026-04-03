@@ -5,6 +5,63 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== Space Mono metadata font ===== */
+.font-mono-kolor {
+  font-family: 'Space Mono', monospace;
+}
+
+/* ===== Landing page animations ===== */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-word {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: word-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes word-reveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes radial-grid-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+}
+
+/* Fallback: no-motion users see text immediately */
+@media (prefers-reduced-motion: reduce) {
+  .hero-word { opacity: 1; transform: none; }
+}
+
+/* ===== Structural hover: left-border accent ===== */
+.landing-feature-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-left: 3px solid transparent;
+  transition: border-left-color 200ms cubic-bezier(0.16, 1, 0.3, 1), background 200ms ease;
+}
+.landing-feature-card:hover {
+  border-left-color: #6C2EDB;
+  background: rgba(108,46,219,0.05);
+}
+
+/* App lead card hover */
+.lead-card-hover {
+  border-left: 3px solid transparent;
+  transition: border-left-color 150ms ease, background 150ms ease;
+}
+.lead-card-hover:hover {
+  border-left-color: #6C2EDB;
+  background: rgba(108,46,219,0.04);
+}
+
+/* Landing workflow step hover */
+.landing-workflow-step {
+  transition: background 200ms ease;
+}
+.landing-workflow-step:hover {
+  background: rgba(108,46,219,0.06) !important;
+}
+
+
 /* ===== Accessibility ===== */
 
 /* Screen Reader Only - visually hidden but accessible */
