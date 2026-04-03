@@ -139,6 +139,26 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 
 **Testing: 100% backend (14/14) — All tests passed (iteration_110.json)**
 
+### Iteration 111: Industry-Parity Fixes — Email Copy + Landing Page (Apr 1)
+
+**Task 1: `sendPostCallQuoteReminderEmail` industry adaptation**
+- Added `ownerIndustry` param, inline `industryQuoteWord` map (PHOTOGRAPHY→quote, DESIGN→proposal, FINE_ART→offer)
+- All hardcoded "quote" in headline, body, CTA, subject replaced with dynamic `quoteWord`
+- `scheduledEmailService.ts` caller updated to pass `owner.industry`
+
+**Task 2: `sendClientOnboardingEmail` industry adaptation**
+- Added `industry` to `OnboardingEmailParams`, inline `industryLang` map with `quote/update/files/call` per industry
+- Email 1 (Welcome): bullets use `iLang.call` and `iLang.files`
+- Email 2 (Portal Guide): "View Files" card uses `iLang.files`
+- Email 3 (Update Reminder): bullets use `iLang.update` and `iLang.files`
+- All 4 call sites in `onboardingService.ts` updated to pass `industry`, queries include `industry: true` in select
+
+**Task 3: Landing page copy fix**
+- Hero subheading: "photographers and designers" → "photographers, designers, and artists"
+- Social proof: "photographers and designers lose bookings...double-booked a shoot" → "photographers, designers, and fine artists lose commissions...missed a deadline"
+
+**Validation: TSC 0 errors, Vite build clean, all search verifications pass**
+
 ---
 
 ## Prioritized Backlog
