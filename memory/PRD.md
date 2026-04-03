@@ -159,6 +159,27 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 
 **Validation: TSC 0 errors, Vite build clean, all search verifications pass**
 
+### Iteration 112: Automation Wiring + File Delivery Hardening (Apr 1)
+
+**Task 2: Wire Testimonial Request to Contract Signing**
+- `POST /api/contracts/:id/agree` now schedules `TESTIMONIAL_REQUEST` 7 days after signing
+- Dedup guard prevents duplicate scheduling
+
+**Task 4: File Review Reminder — Deliverables Only**
+- `FILE_REVIEW_REMINDER` now only scheduled when uploaded files have `requiresReview=true` (DELIVERABLE/REVISION category)
+
+**Task 5: Industry-Adaptive Inquiry Acknowledgement Email**
+- New `sendInquiryAcknowledgementEmail()` in email.ts with per-industry copy (inquiry/brief/commission inquiry)
+- Wired into both `POST /api/leads/submit` and `POST /portal/submit` (non-blocking)
+- Sent from `${studioName} via KOLOR` — creator's studio identity, not generic KOLOR
+
+**Task 6: Post-Call Quote Reminder — Dedup Guard Added**
+- Dedup check prevents double-scheduling when discovery call is updated multiple times
+
+**Tasks 1, 3, 7, 8, 9: Verified already complete from prior iteration**
+
+**Testing: 100% backend (15/15) — All tests passed (iteration_111.json)**
+
 ---
 
 ## Prioritized Backlog
