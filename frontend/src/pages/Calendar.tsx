@@ -72,6 +72,14 @@ export default function Calendar() {
 
   const lang = useMemo(() => getIndustryLanguage(user?.industry), [user?.industry])
 
+  // Mobile detection for responsive layout
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   // Auth check
   useEffect(() => {
     const init = async () => {
@@ -229,18 +237,18 @@ export default function Calendar() {
         {/* Calendar toolbar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 md:mb-6">
           <div className="flex items-center gap-2 md:gap-3">
-            <button onClick={goPrev} className="p-2 hover:bg-light-100 rounded-lg transition" data-testid="calendar-prev">
-              <CaretLeft className="w-4 h-4 text-text-secondary" />
+            <button onClick={goPrev} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-light-100 rounded-lg transition" data-testid="calendar-prev">
+              <CaretLeft className="w-5 h-5 text-text-secondary" />
             </button>
-            <h2 className="text-lg md:text-xl font-bold text-text-primary min-w-[180px] text-center" data-testid="calendar-title">
+            <h2 className="text-base md:text-xl font-bold text-text-primary min-w-[120px] md:min-w-[180px] text-center" data-testid="calendar-title">
               {headerTitle}
             </h2>
-            <button onClick={goNext} className="p-2 hover:bg-light-100 rounded-lg transition" data-testid="calendar-next">
-              <CaretRight className="w-4 h-4 text-text-secondary" />
+            <button onClick={goNext} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-light-100 rounded-lg transition" data-testid="calendar-next">
+              <CaretRight className="w-5 h-5 text-text-secondary" />
             </button>
             <button
               onClick={goToday}
-              className="px-3 py-1.5 text-xs font-medium text-brand-600 border border-brand-200 rounded-lg hover:bg-brand-50 transition"
+              className="px-3 py-2 md:py-1.5 min-h-[44px] md:min-h-0 text-xs font-medium text-brand-600 border border-brand-200 rounded-lg hover:bg-brand-50 transition flex items-center justify-center"
               data-testid="calendar-today"
             >
               Today
@@ -252,13 +260,13 @@ export default function Calendar() {
             {googleConnected && (
               <button
                 onClick={() => setShowGoogle(!showGoogle)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition ${
+                className={`flex items-center gap-1.5 px-3 py-2 md:py-1.5 min-h-[44px] md:min-h-0 text-xs font-medium rounded-lg border transition ${
                   showGoogle ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-light-200 text-text-tertiary'
                 }`}
                 data-testid="calendar-toggle-google"
               >
                 <GoogleLogo className="w-3.5 h-3.5" />
-                Google
+                <span className="hidden sm:inline">Google</span>
               </button>
             )}
 
@@ -272,12 +280,12 @@ export default function Calendar() {
                 <button
                   key={mode}
                   onClick={() => setView(mode)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition ${
+                  className={`flex items-center justify-center gap-1.5 px-3 py-2 md:py-1.5 min-h-[44px] md:min-h-0 min-w-[44px] rounded-md text-xs font-medium transition ${
                     view === mode ? 'bg-brand-50 text-brand-600 shadow-sm' : 'text-text-secondary hover:text-text-primary'
                   }`}
                   data-testid={`calendar-view-${mode}`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-4 h-4 md:w-3.5 md:h-3.5" />
                   <span className="hidden sm:inline">{label}</span>
                 </button>
               ))}
@@ -285,10 +293,10 @@ export default function Calendar() {
 
             <button
               onClick={() => { setCreateDate(format(new Date(), 'yyyy-MM-dd')); setShowCreateModal(true) }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary text-white text-xs font-semibold rounded-lg hover:brightness-110 transition"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 md:py-1.5 min-h-[44px] md:min-h-0 bg-brand-primary text-white text-xs font-semibold rounded-lg hover:brightness-110 transition"
               data-testid="calendar-add-event"
             >
-              <Plus weight="bold" className="w-3.5 h-3.5" />
+              <Plus weight="bold" className="w-4 h-4 md:w-3.5 md:h-3.5" />
               <span className="hidden sm:inline">Event</span>
             </button>
           </div>
@@ -312,6 +320,7 @@ export default function Calendar() {
                 getEventsForDay={getEventsForDay}
                 onDayClick={handleDayClick}
                 onEventClick={setSelectedEvent}
+                isMobile={isMobile}
               />
             )}
             {view === 'list' && (
@@ -414,7 +423,7 @@ function MonthView({
                   <button
                     key={evt.id}
                     onClick={(e) => { e.stopPropagation(); onEventClick(evt) }}
-                    className="w-full text-left px-1.5 py-0.5 rounded text-[10px] md:text-[11px] font-medium truncate transition-opacity hover:opacity-80"
+                    className="w-full text-left px-1.5 py-1 md:py-0.5 rounded text-[10px] md:text-[11px] font-medium truncate transition-opacity hover:opacity-80"
                     style={{ backgroundColor: `${evt.color}18`, color: evt.color, borderLeft: `2px solid ${evt.color}` }}
                     data-testid={`calendar-event-${evt.id}`}
                   >
@@ -437,17 +446,45 @@ function MonthView({
 // WEEK VIEW
 // ═══════════════════════════════════════
 function WeekView({
-  days, getEventsForDay, onDayClick, onEventClick,
+  days, getEventsForDay, onDayClick, onEventClick, isMobile,
 }: {
   days: Date[]
   getEventsForDay: (day: Date) => CalendarDerivedEvent[]
   onDayClick: (day: Date) => void
   onEventClick: (event: CalendarDerivedEvent) => void
+  isMobile: boolean
 }) {
+  const [mobileStart, setMobileStart] = useState(0)
+  const visibleDays = isMobile ? days.slice(mobileStart, mobileStart + 3) : days
+
   return (
     <div className="bg-light-50 rounded-xl border border-light-200 overflow-hidden" data-testid="calendar-week-view">
-      <div className="grid grid-cols-7">
-        {days.map((day, i) => {
+      {/* Mobile 3-day navigation */}
+      {isMobile && (
+        <div className="flex items-center justify-between px-3 py-1.5 border-b border-light-200 bg-light-50">
+          <button
+            onClick={() => setMobileStart(Math.max(0, mobileStart - 1))}
+            disabled={mobileStart === 0}
+            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-light-100 transition disabled:opacity-30"
+            data-testid="week-mobile-prev"
+          >
+            <CaretLeft className="w-4 h-4 text-text-secondary" />
+          </button>
+          <span className="text-xs font-medium text-text-secondary">
+            {format(visibleDays[0], 'EEE d')} — {format(visibleDays[visibleDays.length - 1], 'EEE d')}
+          </span>
+          <button
+            onClick={() => setMobileStart(Math.min(4, mobileStart + 1))}
+            disabled={mobileStart >= 4}
+            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-light-100 transition disabled:opacity-30"
+            data-testid="week-mobile-next"
+          >
+            <CaretRight className="w-4 h-4 text-text-secondary" />
+          </button>
+        </div>
+      )}
+      <div className={`grid ${isMobile ? 'grid-cols-3' : 'grid-cols-7'}`}>
+        {visibleDays.map((day, i) => {
           const dayEvents = getEventsForDay(day)
           const today = isToday(day)
 
@@ -459,12 +496,12 @@ function WeekView({
               {/* Day header */}
               <div
                 onClick={() => onDayClick(day)}
-                className="p-2 md:p-3 border-b border-light-200 text-center cursor-pointer hover:bg-light-100 transition"
+                className="p-2 md:p-3 border-b border-light-200 text-center cursor-pointer hover:bg-light-100 transition min-h-[44px]"
               >
-                <div className="text-[10px] md:text-xs text-text-tertiary font-medium uppercase">
+                <div className="text-xs text-text-tertiary font-medium uppercase">
                   {format(day, 'EEE')}
                 </div>
-                <div className={`text-sm md:text-lg font-bold mt-0.5 w-8 h-8 mx-auto flex items-center justify-center rounded-full ${
+                <div className={`text-base md:text-lg font-bold mt-0.5 w-8 h-8 mx-auto flex items-center justify-center rounded-full ${
                   today ? 'bg-brand-primary text-white' : 'text-text-primary'
                 }`}>
                   {format(day, 'd')}
@@ -476,13 +513,13 @@ function WeekView({
                   <button
                     key={evt.id}
                     onClick={() => onEventClick(evt)}
-                    className="w-full text-left p-1.5 md:p-2 rounded-lg text-[10px] md:text-[11px] font-medium transition-all hover:shadow-sm"
+                    className="w-full text-left p-2 rounded-lg text-[11px] font-medium transition-all hover:shadow-sm min-h-[44px]"
                     style={{ backgroundColor: `${evt.color}15`, borderLeft: `3px solid ${evt.color}` }}
                     data-testid={`calendar-week-event-${evt.id}`}
                   >
                     <div className="truncate" style={{ color: evt.color }}>{evt.title}</div>
                     {evt.startTime && (
-                      <div className="text-text-tertiary mt-0.5 text-[9px] md:text-[10px]">
+                      <div className="text-text-tertiary mt-0.5 text-[10px]">
                         {format(parseISO(evt.startTime), 'h:mm a')}
                       </div>
                     )}

@@ -165,7 +165,7 @@ function TabRow({ tabs, active, onTabChange, contracts }: {
         <button
           key={tab.key}
           onClick={() => onTabChange(tab.key)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] text-xs font-medium whitespace-nowrap transition-all duration-150 ${
+          className={`flex items-center gap-1.5 px-3 py-2.5 md:py-1.5 min-h-[44px] md:min-h-0 rounded-[7px] text-xs font-medium whitespace-nowrap transition-all duration-150 ${
             active === tab.key
               ? 'font-bold text-[#6C2EDB]'
               : 'text-[var(--text-secondary)] hover:text-text-primary hover:bg-[var(--surface-background)]'
@@ -213,8 +213,8 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
 
   return (
     <div
-      className="grid items-center px-3.5 py-[10px] cursor-pointer transition-all duration-150 group border-b last:border-b-0 hover:bg-[var(--surface-background)]"
-      style={{ gridTemplateColumns: '1fr 120px 100px 72px', borderColor: 'var(--border)' }}
+      className="flex flex-col gap-2.5 p-3.5 md:grid md:grid-cols-[1fr_120px_100px_72px] md:items-center md:px-3.5 md:py-[10px] cursor-pointer transition-all duration-150 group border-b last:border-b-0 hover:bg-[var(--surface-background)]"
+      style={{ borderColor: 'var(--border)' }}
       onClick={() => onEdit(contract)}
       data-testid={`contract-row-${contract.id}`}
     >
@@ -252,31 +252,34 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
         </div>
       </div>
 
-      {/* Status cell */}
-      <div>
-        <span
-          className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold"
-          style={{ borderLeft: `3px solid ${statusStyle.border}`, background: statusStyle.bg, color: statusStyle.text }}
-        >
-          {CONTRACT_STATUS_LABELS[contract.status]}
-        </span>
-      </div>
-
-      {/* Template type cell */}
-      <div className="text-[11px] text-[var(--text-secondary)] truncate">
-        {CONTRACT_TYPE_LABELS[contract.templateType] || contract.templateType}
-      </div>
-
-      {/* Sent date cell + hover actions */}
-      <div className="relative flex items-center justify-end">
-        <span className="text-[11px] text-[var(--text-secondary)] tabular-nums group-hover:hidden">
+      {/* Status + type: inline on mobile, separate grid cells on desktop */}
+      <div className="flex items-center gap-2 md:contents">
+        <div>
+          <span
+            className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold"
+            style={{ borderLeft: `3px solid ${statusStyle.border}`, background: statusStyle.bg, color: statusStyle.text }}
+          >
+            {CONTRACT_STATUS_LABELS[contract.status]}
+          </span>
+        </div>
+        <div className="text-[11px] text-[var(--text-secondary)] truncate">
+          {CONTRACT_TYPE_LABELS[contract.templateType] || contract.templateType}
+        </div>
+        <span className="text-[11px] text-[var(--text-secondary)] tabular-nums ml-auto md:hidden">
           {contract.sentAt ? formatShortDate(contract.sentAt) : '\u2014'}
         </span>
-        <div className="hidden group-hover:flex items-center gap-1" data-testid={`contract-quick-actions-${contract.id}`}>
+      </div>
+
+      {/* Actions: always visible on mobile, hover on desktop */}
+      <div className="relative flex items-center justify-end">
+        <span className="text-[11px] text-[var(--text-secondary)] tabular-nums hidden md:inline md:group-hover:hidden">
+          {contract.sentAt ? formatShortDate(contract.sentAt) : '\u2014'}
+        </span>
+        <div className="flex md:hidden md:group-hover:flex items-center gap-1" data-testid={`contract-quick-actions-${contract.id}`}>
           {isDraft && (
             <button
               onClick={(e) => { e.stopPropagation(); onSend(contract) }}
-              className="h-7 px-2 rounded-md text-[10px] font-semibold text-white whitespace-nowrap transition-colors"
+              className="h-9 md:h-7 px-3 md:px-2 rounded-md text-[11px] md:text-[10px] font-semibold text-white whitespace-nowrap transition-colors"
               style={{ background: '#6C2EDB' }}
               data-testid={`contract-send-${contract.id}`}
             >
@@ -286,7 +289,7 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
           {(contract.status === 'SENT' || contract.status === 'VIEWED') && (
             <button
               onClick={(e) => { e.stopPropagation(); onSend(contract) }}
-              className="h-7 px-2 rounded-md text-[10px] font-semibold text-white whitespace-nowrap transition-colors"
+              className="h-9 md:h-7 px-3 md:px-2 rounded-md text-[11px] md:text-[10px] font-semibold text-white whitespace-nowrap transition-colors"
               style={{ background: '#6C2EDB' }}
               data-testid={`contract-resend-${contract.id}`}
             >
@@ -296,7 +299,7 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
           <div className="relative">
             <button
               onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen) }}
-              className="h-7 w-7 rounded-md flex items-center justify-center text-[var(--text-tertiary)] hover:text-text-primary hover:bg-[var(--surface-base)] transition-colors"
+              className="h-9 w-9 md:h-7 md:w-7 rounded-md flex items-center justify-center text-[var(--text-tertiary)] hover:text-text-primary hover:bg-[var(--surface-base)] transition-colors"
             >
               <DotsThree className="w-3.5 h-3.5" weight="bold" />
             </button>
@@ -412,7 +415,7 @@ export default function ContractsPage({ lang, user, leads, onLeadClick, onLeadCl
   }
 
   return (
-    <div data-testid="contracts-page">
+    <div data-testid="contracts-page" className="overflow-x-hidden">
       {/* Topbar */}
       <div className="flex items-start justify-between mb-5" data-testid="contracts-topbar">
         <div>
@@ -448,8 +451,8 @@ export default function ContractsPage({ lang, user, leads, onLeadClick, onLeadCl
         )
       ) : (
         <div className="rounded-[10px] bg-[var(--surface-base)] overflow-hidden" style={{ border: '0.5px solid var(--border)' }} data-testid="contracts-list-table">
-          {/* Header */}
-          <div className="grid items-center px-3.5 py-2.5 bg-[var(--surface-background)]" style={{ gridTemplateColumns: '1fr 120px 100px 72px', borderBottom: '0.5px solid var(--border)' }}>
+          {/* Header - desktop only */}
+          <div className="hidden md:grid items-center px-3.5 py-2.5 bg-[var(--surface-background)]" style={{ gridTemplateColumns: '1fr 120px 100px 72px', borderBottom: '0.5px solid var(--border)' }}>
             <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
             <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Status</span>
             <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Type</span>

@@ -385,7 +385,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface-base lg:grid" style={{ gridTemplateColumns: '220px 1fr' }}>
+    <div className="min-h-screen bg-surface-base lg:grid overflow-x-hidden" style={{ gridTemplateColumns: '220px 1fr' }}>
       <AnnouncementBanner />
       <EmailVerificationBanner user={user} />
 
@@ -629,6 +629,8 @@ const Dashboard = () => {
               {([
                 { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Pipeline' },
                 { mode: 'list' as ViewMode, icon: ListIcon, label: 'List View' },
+                { mode: 'quotes' as ViewMode, icon: Receipt, label: lang.quotes },
+                { mode: 'contracts' as ViewMode, icon: ShieldCheck, label: lang.contracts },
                 { mode: 'analytics' as ViewMode, icon: ChartBar, label: 'Analytics' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
                 { mode: 'sequences' as ViewMode, icon: Envelope, label: 'Sequences' },

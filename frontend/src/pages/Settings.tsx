@@ -198,21 +198,21 @@ export default function Settings() {
           {/* Sidebar tabs */}
           <nav className="md:w-48 flex-shrink-0">
             {/* Mobile: horizontal tabs */}
-            <div className="md:hidden flex gap-1 rounded-lg bg-[var(--surface-base)] p-1 mb-4" style={{ border: '0.5px solid var(--border)' }}>
+            <div className="md:hidden flex gap-1 rounded-lg bg-[var(--surface-base)] p-1 mb-4 overflow-x-auto scrollbar-hide" style={{ border: '0.5px solid var(--border)' }}>
               {TABS.map(tab => {
                 const Icon = tab.icon
                 return (
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition ${
+                    className={`flex-shrink-0 flex items-center justify-center gap-1.5 px-3 min-h-[44px] rounded-md text-xs font-medium transition ${
                       activeTab === tab.key
                         ? 'bg-[rgba(108,46,219,0.10)] text-[#6C2EDB] font-bold'
                         : 'text-[var(--text-secondary)]'
                     }`}
                     data-testid={`settings-tab-${tab.key}`}
                   >
-                    <Icon weight={activeTab === tab.key ? 'fill' : 'regular'} className="w-3.5 h-3.5" />
+                    <Icon weight={activeTab === tab.key ? 'fill' : 'regular'} className="w-4 h-4" />
                     {tab.label}
                   </button>
                 )
@@ -306,7 +306,7 @@ export default function Settings() {
 
                     <div>
                       <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Industry</label>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {INDUSTRY_OPTIONS.map(opt => {
                           const Icon = opt.icon
                           const isActive = industry === opt.value
@@ -395,16 +395,18 @@ export default function Settings() {
                             const newVal = !(settings as any)?.[item.key]
                             saveSettings({ [item.key]: newVal })
                           }}
-                          className={`relative w-10 h-6 rounded-full transition-colors flex-shrink-0 ${
-                            (settings as any)?.[item.key] ? 'bg-[#6C2EDB]' : 'bg-gray-300'
-                          }`}
+                          className="flex-shrink-0 flex items-center justify-center min-w-[44px] min-h-[44px]"
                           data-testid={`toggle-${item.key}`}
                         >
-                          <span
-                            className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                              (settings as any)?.[item.key] ? 'translate-x-[18px]' : 'translate-x-0.5'
-                            }`}
-                          />
+                          <div className={`relative w-10 h-6 rounded-full transition-colors ${
+                            (settings as any)?.[item.key] ? 'bg-[#6C2EDB]' : 'bg-gray-300'
+                          }`}>
+                            <span
+                              className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                                (settings as any)?.[item.key] ? 'translate-x-[18px]' : 'translate-x-0.5'
+                              }`}
+                            />
+                          </div>
                         </button>
                       </div>
                     ))}
@@ -694,7 +696,7 @@ function BrandTab({
                 type="color"
                 value={value}
                 onChange={e => setter(e.target.value)}
-                style={{ width: 36, height: 36, borderRadius: 8, border: '0.5px solid var(--border)', cursor: 'pointer', padding: 2 }}
+                style={{ width: 44, height: 44, borderRadius: 8, border: '0.5px solid var(--border)', cursor: 'pointer', padding: 2 }}
                 data-testid={`brand-color-${id}`}
               />
               <input
@@ -702,7 +704,7 @@ function BrandTab({
                 value={value}
                 onChange={e => { const v = e.target.value; if (/^#[0-9A-Fa-f]{0,6}$/.test(v)) setter(v) }}
                 maxLength={7}
-                style={{ width: 96, height: 36, borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--surface-background)', padding: '0 10px', fontSize: 12, fontWeight: 600, fontFamily: 'monospace', color: 'var(--text-primary)' }}
+                style={{ width: 96, height: 44, borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--surface-background)', padding: '0 10px', fontSize: 12, fontWeight: 600, fontFamily: 'monospace', color: 'var(--text-primary)' }}
                 data-testid={`brand-hex-${id}`}
               />
             </div>
@@ -718,7 +720,7 @@ function BrandTab({
                 key={f.value}
                 onClick={() => setBrandFont(f.value)}
                 style={{
-                  padding: '6px 14px', borderRadius: 999, fontSize: 12, cursor: 'pointer',
+                  padding: '10px 14px', borderRadius: 999, fontSize: 12, cursor: 'pointer', minHeight: 44,
                   fontFamily: f.value, fontWeight: brandFont === f.value ? 600 : 400,
                   border: `0.5px solid ${brandFont === f.value ? '#6C2EDB' : 'var(--border)'}`,
                   background: brandFont === f.value ? 'rgba(108,46,219,0.08)' : 'transparent',
@@ -757,7 +759,7 @@ function BrandTab({
         <p className="text-xs text-[var(--text-secondary)] mb-4">
           This is how your portfolio, quote, and booking page look with your brand.
         </p>
-        <div style={{ height: 420 }}>
+        <div className="h-[300px] sm:h-[380px] md:h-[420px]">
           <BrandPreview
             primary={brandPrimary}
             accent={brandAccent}
