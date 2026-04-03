@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotification, sendPortalLinkEmail, sendAutoResponseEmail, sendDeliveryNotificationEmail, sendTestimonialRequestEmail } from '../services/email';
+import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotification, sendPortalLinkEmail, sendAutoResponseEmail, sendDeliveryNotificationEmail, sendTestimonialRequestEmail, sendInquiryAcknowledgementEmail } from '../services/email';
 import { logActivity } from './activities';
 import { uploadFile, ensureBucketExists } from '../services/storage';
 import { paymentService } from '../services/paymentService';
@@ -583,6 +583,25 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         }
       })
       .catch(err => console.error('Client confirmation error:', err));
+
+    // Industry-adaptive inquiry acknowledgement (from studio, not KOLOR)
+    if (assignedToId) {
+      prisma.user.findUnique({
+        where: { id: assignedToId },
+        select: { studioName: true, firstName: true, industry: true },
+      }).then(assignedUser => {
+        if (assignedUser) {
+          sendInquiryAcknowledgementEmail({
+            clientName,
+            clientEmail,
+            projectTitle,
+            studioName: assignedUser.studioName || assignedUser.firstName,
+            industry: assignedUser.industry,
+            portalToken: lead.portalToken,
+          }).catch(err => console.error('[LEADS] Inquiry acknowledgement email failed (non-blocking):', err));
+        }
+      }).catch(err => console.error('[LEADS] Failed to fetch assigned user for acknowledgement:', err));
+    }
 
     // Auto-response with portfolio link (non-blocking)
     sendAutoResponse(lead).catch(err => console.error('Auto-response error:', err));
@@ -1194,11 +1213,16 @@ router.patch('/:id/discovery-call', authMiddleware, async (req: AuthRequest, res
 
       // WS4: Schedule a quote reminder 24 hours after discovery call completion
       try {
-        const twentyFourHoursLater = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        await prisma.scheduledEmail.create({
-          data: { leadId: id, type: 'POST_CALL_QUOTE_REMINDER', scheduledFor: twentyFourHoursLater },
+        const existingReminder = await prisma.scheduledEmail.findFirst({
+          where: { leadId: id, type: 'POST_CALL_QUOTE_REMINDER', sentAt: null },
         });
-        console.log(`[SCHEDULED] Post-call quote reminder for lead ${id} in 24 hours`);
+        if (!existingReminder) {
+          const twentyFourHoursLater = new Date(Date.now() + 24 * 60 * 60 * 1000);
+          await prisma.scheduledEmail.create({
+            data: { leadId: id, type: 'POST_CALL_QUOTE_REMINDER', scheduledFor: twentyFourHoursLater },
+          });
+          console.log(`[SCHEDULED] Post-call quote reminder for lead ${id} in 24 hours`);
+        }
       } catch (schedErr) {
         console.error('[SCHEDULED] Failed to schedule post-call quote reminder:', schedErr);
       }

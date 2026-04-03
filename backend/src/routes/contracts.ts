@@ -535,6 +535,25 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
       console.error('[CONTRACT] Failed to enroll in onboarding:', err);
     }
 
+    // Schedule testimonial request email — 7 days after signing
+    try {
+      const existing = await prisma.scheduledEmail.findFirst({
+        where: { leadId: contract.lead.id, type: 'TESTIMONIAL_REQUEST', sentAt: null },
+      });
+      if (!existing) {
+        await prisma.scheduledEmail.create({
+          data: {
+            type: 'TESTIMONIAL_REQUEST',
+            leadId: contract.lead.id,
+            scheduledFor: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          },
+        });
+        console.log(`[CONTRACT] Testimonial request scheduled for lead ${contract.lead.id} in 7 days`);
+      }
+    } catch (err) {
+      console.error('[CONTRACT] Failed to schedule testimonial request:', err);
+    }
+
     res.json({ success: true, celebration: true, contract: { id: updated.id, status: updated.status, clientAgreedAt: updated.clientAgreedAt } });
   } catch (error) {
     console.error('Error processing agreement:', error);

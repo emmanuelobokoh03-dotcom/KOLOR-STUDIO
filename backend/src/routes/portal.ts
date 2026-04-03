@@ -771,6 +771,17 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
           clientName, clientEmail, clientPhone, serviceType, projectTitle,
           description: description || '', leadId: lead.id, portalToken,
         }).catch(e => console.error('[Portal] Owner notification error:', e));
+
+        // Industry-adaptive inquiry acknowledgement (from studio)
+        const { sendInquiryAcknowledgementEmail } = await import('../services/email');
+        sendInquiryAcknowledgementEmail({
+          clientName,
+          clientEmail,
+          projectTitle,
+          studioName: owner.studioName || owner.firstName,
+          industry: owner.industry,
+          portalToken: lead.portalToken,
+        }).catch(e => console.error('[Portal] Inquiry acknowledgement error:', e));
       }
     }
 

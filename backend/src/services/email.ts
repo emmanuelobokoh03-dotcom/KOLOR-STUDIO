@@ -276,6 +276,68 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   }
 }
 
+// Industry-adaptive inquiry acknowledgement email (sent to client from creator's studio)
+export async function sendInquiryAcknowledgementEmail(params: {
+  clientName: string;
+  clientEmail: string;
+  projectTitle: string;
+  studioName: string;
+  industry: string | null;
+  portalToken?: string | null;
+}): Promise<boolean> {
+  if (!resend) return false;
+
+  const industryLang: Record<string, { inquiry: string; next: string }> = {
+    PHOTOGRAPHY:  { inquiry: 'inquiry',            next: 'getting in touch' },
+    DESIGN:       { inquiry: 'brief',              next: 'scoping your project' },
+    FINE_ART:     { inquiry: 'commission inquiry',  next: 'learning more about your vision' },
+  };
+  const iLang = industryLang[params.industry ?? ''] ?? industryLang['PHOTOGRAPHY'];
+
+  const clientFirst = params.clientName.split(' ')[0];
+  const baseUrl = process.env.FRONTEND_URL || '';
+  const portalUrl = params.portalToken ? `${baseUrl}/portal/${params.portalToken}` : null;
+
+  const html = buildEmailTemplate({
+    headline: `Thank you, ${clientFirst}`,
+    body: `
+      <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+        ${params.studioName} received your ${iLang.inquiry} for <strong>"${params.projectTitle}"</strong>. Someone will be in touch within 24\u201348 hours.
+      </p>
+      <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+        We're looking forward to ${iLang.next}!
+      </p>
+      ${portalUrl ? `
+      <p style="font-size:14px;color:#6B7280;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+        Track your project status at your <a href="${portalUrl}" style="color:#7C3AED;text-decoration:underline;">client portal</a>.
+      </p>` : ''}
+      <p style="font-size:15px;color:#6B7280;margin:24px 0 0;font-family:Arial,Helvetica,sans-serif;">
+        Warm regards,<br><strong style="color:#1A1A2E;">${params.studioName}</strong>
+      </p>`,
+    ctaText: portalUrl ? 'View My Portal' : undefined,
+    ctaUrl: portalUrl || undefined,
+    emailType: 'client',
+  });
+
+  try {
+    const { error } = await resend.emails.send({
+      from: `${params.studioName} via KOLOR <${SENDER_EMAIL}>`,
+      to: [params.clientEmail],
+      subject: `We received your ${iLang.inquiry}, ${clientFirst}`,
+      html,
+    });
+    if (error) {
+      console.error('[EMAIL] Inquiry acknowledgement failed:', error);
+      return false;
+    }
+    console.log(`[EMAIL] Inquiry acknowledgement sent to ${params.clientEmail}`);
+    return true;
+  } catch (error) {
+    console.error('[EMAIL] Inquiry acknowledgement error:', error);
+    return false;
+  }
+}
+
 // Status labels and messages for client notifications
 const STATUS_CLIENT_MESSAGES: Record<string, { subject: string; title: string; message: string; emoji: string }> = {
   REVIEWING: {
