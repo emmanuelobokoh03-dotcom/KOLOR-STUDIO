@@ -204,6 +204,16 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 
 **Testing: 95% frontend verified (iteration_112.json)**
 
+### Iteration 114: Testimonials Parity + Marquee Scroll (Apr 3)
+
+**Industry Parity Fix:** Replaced 6 testimonials (4 photographers, 2 designers, 0 fine artists) with 9 balanced testimonials (3 per industry). Léa K. corrected from "Fashion photographer, Paris" to "Motion designer, Berlin"
+
+**Marquee Scroll:** Static grid replaced with infinite CSS marquee (52s loop, 9 cards duplicated for seamless scroll). Fade edges via CSS mask-image. Pause on hover. `prefers-reduced-motion: reduce` fallback shows static wrapping grid
+
+**Components:** `TestimonialCard` deleted, replaced by `MarqueeCard` with industry accent dots (orange=photography, purple=design, muted white=fine art), Space Mono metadata labels
+
+**Validation: TSC 0 errors, Vite build 0 errors, 3 fine-art testimonials verified**
+
 ---
 
 ## Prioritized Backlog
