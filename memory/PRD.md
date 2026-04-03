@@ -180,6 +180,30 @@ A full-stack CRM for creative professionals (photographers, designers, fine arti
 
 **Testing: 100% backend (15/15) — All tests passed (iteration_111.json)**
 
+### Iteration 113: Design Elevation — 8 Visual Steps (Apr 3)
+
+**Step 1: Kill Gradient Text** — All `WebkitBackgroundClip: 'text'` instances removed from LandingPageV2.tsx. Headings use solid white (#ffffff) and solid brand purple (#6C2EDB)
+
+**Step 2A: Dashboard Dominant Stat** — Added hero-pipeline-stat with NumberFlow animated counter above the stat grid, showing active pipeline count with Space Mono label
+
+**Step 2B: Bento Grid Features** — Replaced 3-equal-card grid with asymmetric bento layout: full-width DashboardMock hero card + two half-width supporting cards (QuotePipelineBar + PortalMock)
+
+**Step 3: Space Mono Metadata Font** — Added 'Space Mono' to Google Fonts, created `.font-mono-kolor` CSS class. Applied to: SectionLabel, workflow step numbers, browser URL bar, StatCard labels, StatusBadge, LeadsListView stat chips
+
+**Step 4: Staggered Word Reveal** — Hero H1 words animate in with 80ms stagger, `prefers-reduced-motion` respected
+
+**Step 5: Structural Hover** — Landing cards and LeadsListView rows use CSS `.landing-feature-card` / `.lead-card-hover` class with left-border accent on hover (no JS handlers)
+
+**Step 6: Rotating Radial Grid** — SVG with 5 circles + 12 spokes behind hero at 0.04 opacity, 45s rotation
+
+**Step 7: SubmitTestimonial Redesign** — Fraunces headline, Space Mono metadata, flat #F9F7FE background, primary color fallback corrected to #6C2EDB
+
+**Step 8: Empty States** — EmptyState component redesigned with Space Mono uppercase labels, minimal copy + CTA
+
+**Step 9: ViewTransition** — Skipped (requires react@canary upgrade from React 18.3, which risks breaking all existing deps and violates "no breaking changes" constraint)
+
+**Testing: 95% frontend verified (iteration_112.json)**
+
 ---
 
 ## Prioritized Backlog
