@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import LandingPageV2 from './pages/LandingPageV2'
@@ -20,9 +21,23 @@ import IndustryOnboarding from './components/IndustryOnboarding'
 import CalendarPage from './pages/Calendar'
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
+import NotFound from './pages/NotFound'
 import { Toaster } from 'sonner'
 
 function App() {
+  // AUDIT FIX [9.1]: Gate analytics behind cookie consent
+  const [analyticsConsented, setAnalyticsConsented] = useState(
+    localStorage.getItem('analytics_consent') === 'true'
+  )
+
+  useEffect(() => {
+    const handler = () => {
+      setAnalyticsConsented(localStorage.getItem('analytics_consent') === 'true')
+    }
+    window.addEventListener('kolor-consent-update', handler)
+    return () => window.removeEventListener('kolor-consent-update', handler)
+  }, [])
+
   return (
     <BrandThemeProvider>
       <Router>
@@ -53,6 +68,8 @@ function App() {
         <Route path="/onboarding" element={<IndustryOnboarding />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
+        {/* AUDIT FIX [10.1]: Custom 404 page */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       </div>
       <CookieConsent />
@@ -64,7 +81,8 @@ function App() {
           className: 'animate-toast-in',
         }}
       />
-      <Analytics />
+      {/* AUDIT FIX [9.1]: Only render Analytics after consent */}
+      {analyticsConsented && <Analytics />}
     </Router>
     </BrandThemeProvider>
   )

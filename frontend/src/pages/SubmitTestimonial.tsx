@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { Star as StarIcon, PaperPlaneTilt, Check, Heart, Sparkle } from '@phosphor-icons/react'
 
@@ -29,6 +29,8 @@ export default function SubmitTestimonial() {
   const [recommend, setRecommend] = useState(true)
   const [clientName, setClientName] = useState('')
   const [consentGiven, setConsentGiven] = useState(false)
+  // AUDIT FIX [U5.3]: Scroll to error on validation failure
+  const errorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const fetchRequest = async () => {
@@ -47,9 +49,9 @@ export default function SubmitTestimonial() {
   }, [token])
 
   const handleSubmit = async () => {
-    if (!rating) { setError('Please select a rating'); return }
-    if (!content.trim()) { setError('Please share your experience'); return }
-    if (!consentGiven) { setError('Please agree to share your testimonial'); return }
+    if (!rating) { setError('Please select a rating'); setTimeout(() => errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50); return }
+    if (!content.trim()) { setError('Please share your experience'); setTimeout(() => errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50); return }
+    if (!consentGiven) { setError('Please agree to share your testimonial'); setTimeout(() => errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50); return }
     setError('')
     setSubmitting(true)
     try {
@@ -134,7 +136,7 @@ export default function SubmitTestimonial() {
         <div className="bg-surface-base rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
           {/* Star Rating */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">Rating</label>
+            <label htmlFor="star-rating" className="block text-sm font-medium text-gray-700 mb-3">Rating</label>
             <div className="flex items-center gap-1.5 justify-center" data-testid="star-rating">
               {[1, 2, 3, 4, 5].map(star => (
                 <button
@@ -164,8 +166,9 @@ export default function SubmitTestimonial() {
 
           {/* Content */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Your Experience</label>
+            <label htmlFor="testimonial-content" className="block text-sm font-medium text-gray-700 mb-2">Your Experience</label>
             <textarea
+              id="testimonial-content"
               value={content}
               onChange={e => setContent(e.target.value)}
               placeholder="Tell us about your experience..."
@@ -178,8 +181,9 @@ export default function SubmitTestimonial() {
 
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+            <label htmlFor="testimonial-name" className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
             <input
+              id="testimonial-name"
               type="text"
               value={clientName}
               onChange={e => setClientName(e.target.value)}
@@ -219,8 +223,10 @@ export default function SubmitTestimonial() {
             </span>
           </div>
 
-          {/* Error */}
-          {error && <p className="text-sm text-red-600 text-center" data-testid="submit-error">{error}</p>}
+          {/* AUDIT FIX [U5.3]: Error with scroll target */}
+          <div ref={errorRef}>
+            {error && <p className="text-sm text-red-600 text-center" data-testid="submit-error">{error}</p>}
+          </div>
 
           {/* Submit */}
           <button

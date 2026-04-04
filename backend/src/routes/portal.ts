@@ -406,6 +406,12 @@ router.post('/:token/messages', async (req: Request, res: Response): Promise<voi
       return;
     }
 
+    // AUDIT FIX [7.4]: Input max-length validation
+    if (content.length > 2000) {
+      res.status(400).json({ error: 'Message cannot exceed 2000 characters' });
+      return;
+    }
+
     const lead = await prisma.lead.findUnique({
       where: { portalToken: String(req.params.token) },
     });
@@ -590,6 +596,11 @@ router.post('/:token/upload', clientUpload.array('files', 5), async (req: Reques
 
     // Log client message if provided
     const clientMessage = req.body.message;
+    // AUDIT FIX [7.4]: Input max-length validation
+    if (clientMessage && typeof clientMessage === 'string' && clientMessage.length > 2000) {
+      res.status(400).json({ error: 'Message cannot exceed 2000 characters' });
+      return;
+    }
     if (clientMessage && typeof clientMessage === 'string' && clientMessage.trim()) {
       await logActivity(
         lead.id,

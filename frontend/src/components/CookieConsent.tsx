@@ -18,12 +18,16 @@ export default function CookieConsent() {
   const handleAcceptAll = () => {
     localStorage.setItem('cookie_consent', 'all')
     localStorage.setItem('analytics_consent', 'true')
+    // AUDIT FIX [9.1]: Notify App component that consent was granted
+    window.dispatchEvent(new Event('kolor-consent-update'))
     setShowBanner(false)
   }
 
   const handleEssentialOnly = () => {
     localStorage.setItem('cookie_consent', 'essential')
     localStorage.setItem('analytics_consent', 'false')
+    // AUDIT FIX [9.1]: Notify App component of consent decision
+    window.dispatchEvent(new Event('kolor-consent-update'))
     setShowBanner(false)
   }
 

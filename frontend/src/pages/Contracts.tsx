@@ -198,6 +198,8 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
   onDelete: (c: Contract) => void
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  // AUDIT FIX [U3.1]: Destructive action confirmation state
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
   const clientName = contract.lead?.clientName || 'Unknown'
   const initials = getInitials(clientName)
   const avatarColor = STATUS_AVATAR_COLORS[contract.status] || '#9CA3AF'
@@ -316,9 +318,21 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
                   </button>
                 )}
                 {isDraft && (
-                  <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDelete(contract) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-red-50 text-red-500 flex items-center gap-2">
-                    <Trash className="w-3 h-3" /> Delete
-                  </button>
+                  deleteConfirm ? (
+                    <div className="flex items-center gap-1.5 px-3 py-2" data-testid={`contract-delete-confirm-${contract.id}`}>
+                      <span className="text-[10px] text-red-500 flex-1">Delete permanently?</span>
+                      <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); setDeleteConfirm(false); onDelete(contract) }} className="px-2 py-1 text-[10px] font-semibold text-white bg-red-500 rounded">
+                        Delete
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); setDeleteConfirm(false) }} className="px-2 py-1 text-[10px] text-[var(--text-secondary)] border border-[var(--border)] rounded">
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-red-50 text-red-500 flex items-center gap-2">
+                      <Trash className="w-3 h-3" /> Delete
+                    </button>
+                  )
                 )}
               </div>
             )}
@@ -398,8 +412,8 @@ export default function ContractsPage({ lang, user, leads, onLeadClick, onLeadCl
     }
   }
 
+  // AUDIT FIX [U3.1]: Remove browser confirm() — confirmation now handled in ContractRow UI
   const handleDelete = async (contract: Contract) => {
-    if (!confirm(`Delete this draft ${lang.contract.toLowerCase()}?`)) return
     const result = await contractsApi.delete(contract.id)
     if (!result.error) fetchContracts()
   }

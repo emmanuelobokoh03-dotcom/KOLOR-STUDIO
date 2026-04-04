@@ -398,6 +398,16 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
       return;
     }
 
+    // AUDIT FIX [7.4]: Input max-length validation
+    const MAX_LENGTHS: Record<string, number> = { clientName: 200, projectTitle: 200, description: 5000, clientCompany: 200, serviceType: 100, budget: 100, timeline: 200 }
+    for (const [field, max] of Object.entries(MAX_LENGTHS)) {
+      const val = req.body[field]
+      if (val && typeof val === 'string' && val.length > max) {
+        res.status(400).json({ error: 'Validation Error', message: `${field} cannot exceed ${max} characters` })
+        return
+      }
+    }
+
     const lead = await prisma.lead.create({
       data: {
         clientName,

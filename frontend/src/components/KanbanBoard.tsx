@@ -46,6 +46,8 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
   const [dragOverColumn, setDragOverColumn] = useState<LeadStatus | null>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const [mobileColumn, setMobileColumn] = useState(0);
+  // AUDIT FIX [U3.1]: Destructive action confirmation state
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const getLeadsByStatus = (status: LeadStatus) => leads.filter(lead => lead.status === status);
 
@@ -71,12 +73,16 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
     setDraggedLead(null);
   };
 
+  // AUDIT FIX [U3.1]: Two-tap delete confirmation — remove browser confirm()
   const handleDelete = async (leadId: string) => {
-    if (confirm('Are you sure you want to delete this lead?')) {
+    if (deleteConfirmId === leadId) {
       trackLeadDeleted();
       onLeadDelete(leadId);
+      setDeleteConfirmId(null);
+      setMenuOpen(null);
+    } else {
+      setDeleteConfirmId(leadId);
     }
-    setMenuOpen(null);
   };
 
   const formatDate = (dateString: string) => {
@@ -143,9 +149,9 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); handleDelete(lead.id); }}
-                  className="w-full px-3 py-2.5 text-left text-sm hover:bg-red-50 text-red-400 flex items-center gap-2 touch-target"
+                  className={`w-full px-3 py-2.5 text-left text-sm flex items-center gap-2 touch-target ${deleteConfirmId === lead.id ? 'bg-red-50 text-red-600 font-semibold' : 'hover:bg-red-50 text-red-400'}`}
                 >
-                  <Trash className="w-4 h-4" /> Delete
+                  <Trash className="w-4 h-4" /> {deleteConfirmId === lead.id ? 'Tap to confirm' : 'Delete'}
                 </button>
               </div>
             )}

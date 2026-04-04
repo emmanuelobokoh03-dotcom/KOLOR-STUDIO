@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /portal/
+Disallow: /api/
+
+Sitemap: https://kolorstudio.app/sitemap.xml

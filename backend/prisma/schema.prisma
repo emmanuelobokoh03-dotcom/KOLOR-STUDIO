@@ -948,7 +948,7 @@ model MeetingType {
   name        String
   description String?
   duration    Int      @default(30)   // minutes
-  color       String   @default("#A855F7")
+  color       String   @default("#6C2EDB")  // AUDIT FIX [U8.5]: Aligned with brand primary
   location    String?                 // e.g. "Zoom", "Studio", "Phone"
   isActive    Boolean  @default(true)
   order       Int      @default(0)

@@ -865,6 +865,15 @@ export default function ClientPortal() {
                             <><ShieldCheck weight="bold" className="w-4 h-4" /> Sign Agreement</>
                           )}
                         </button>
+                        {/* AUDIT FIX [U8.3]: Security trust signal near contract signing */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 12, padding: '8px 12px', background: 'rgba(29,158,117,0.08)', borderRadius: 8 }} data-testid="signing-trust-signal">
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                            <path d="M7 1L9 5H13L10 8L11 12L7 10L3 12L4 8L1 5H5L7 1Z" fill="#1D9E75"/>
+                          </svg>
+                          <span style={{ fontSize: 11, color: '#1D9E75', fontFamily: "'Space Mono', monospace", letterSpacing: '0.04em' }}>
+                            E-SIGNATURE · LEGALLY BINDING · TIMESTAMPED AUDIT TRAIL
+                          </span>
+                        </div>
                       </div>
                     )}
                   </div>

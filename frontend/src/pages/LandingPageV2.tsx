@@ -742,12 +742,15 @@ const TESTIMONIALS: {
 /* ---------- SECTION 6: TESTIMONIALS ---------- */
 function TestimonialsSection() {
   const track = [...TESTIMONIALS, ...TESTIMONIALS]
+  // AUDIT FIX [5.2, 5.3]: Keyboard accessible marquee with pause control
+  const [paused, setPaused] = useState(false)
 
   return (
     <section
       className="reveal-section"
       style={{ padding: '100px 0' }}
       data-testid="testimonials-section"
+      aria-label="Testimonials from KOLOR Studio users"
     >
       {/* Section header — constrained width */}
       <div className="max-w-[1000px] mx-auto px-6 md:px-10 mb-14">
@@ -791,19 +794,17 @@ function TestimonialsSection() {
 
       {/* Marquee track — full viewport width */}
       <div
+        role="region"
+        aria-label="Scrolling testimonials"
         style={{
           overflow: 'hidden',
           WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
           maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
         }}
-        onMouseEnter={e => {
-          const t = e.currentTarget.querySelector('.marquee-track') as HTMLElement
-          if (t) t.style.animationPlayState = 'paused'
-        }}
-        onMouseLeave={e => {
-          const t = e.currentTarget.querySelector('.marquee-track') as HTMLElement
-          if (t) t.style.animationPlayState = 'running'
-        }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
       >
         <div
           className="marquee-track"
@@ -811,12 +812,25 @@ function TestimonialsSection() {
             display: 'flex',
             gap: 16,
             width: 'max-content',
+            animationPlayState: paused ? 'paused' : 'running',
           }}
         >
           {track.map((t, i) => (
             <MarqueeCard key={i} {...t} />
           ))}
         </div>
+      </div>
+
+      {/* AUDIT FIX [5.2]: Screen-reader accessible pause button */}
+      <div className="max-w-[1000px] mx-auto px-6 md:px-10 mt-4">
+        <button
+          onClick={() => setPaused(p => !p)}
+          aria-label={paused ? 'Resume testimonial scroll' : 'Pause testimonial scroll'}
+          className="sr-only-focusable"
+          data-testid="marquee-pause-btn"
+        >
+          {paused ? 'Resume' : 'Pause'} testimonials
+        </button>
       </div>
     </section>
   )
@@ -1230,6 +1244,9 @@ function Footer() {
         <div className="flex gap-4 text-xs">
           <Link to="/privacy" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => (e.currentTarget.style.color = '#fff')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}>Privacy</Link>
           <Link to="/terms" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => (e.currentTarget.style.color = '#fff')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}>Terms</Link>
+          {/* AUDIT FIX [8.5]: Social media links — TODO: Replace with actual account URLs */}
+          <a href="https://twitter.com/kolorstudio" target="_blank" rel="noopener noreferrer" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => ((e.target as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(255,255,255,0.3)')}>X</a>
+          <a href="https://instagram.com/kolorstudio" target="_blank" rel="noopener noreferrer" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => ((e.target as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(255,255,255,0.3)')}>Instagram</a>
         </div>
       </div>
     </footer>

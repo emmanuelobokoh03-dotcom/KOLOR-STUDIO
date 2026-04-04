@@ -52,6 +52,12 @@ router.post('/:leadId/messages', authMiddleware, async (req: AuthRequest, res: R
       return;
     }
 
+    // AUDIT FIX [7.4]: Input max-length validation
+    if (content.length > 2000) {
+      res.status(400).json({ error: 'Message cannot exceed 2000 characters' });
+      return;
+    }
+
     const lead = await prisma.lead.findUnique({
       where: { id: leadId },
       select: { assignedToId: true, clientEmail: true, clientName: true, projectTitle: true, portalToken: true },
