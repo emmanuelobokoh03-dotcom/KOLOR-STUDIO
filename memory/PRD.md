@@ -18,9 +18,9 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 ```
 
 ## Tech Stack
-- **Frontend**: React 19 (canary with ViewTransitions), Vite, Tailwind CSS, Shadcn/UI, @number-flow/react, Space Mono + Raleway fonts
-- **Backend**: Express, Prisma ORM, PostgreSQL
-- **Integrations**: Resend (email), Google Calendar (OAuth)
+- **Frontend**: React 19 (canary with ViewTransitions), Vite, Tailwind CSS, Shadcn/UI, @number-flow/react, Space Mono + Raleway + Fraunces fonts
+- **Backend**: Express, Prisma ORM, PostgreSQL (Supabase)
+- **Integrations**: Resend (email), Google Calendar (OAuth), Supabase Storage (files), Vercel Analytics (consent-gated)
 - **Auth**: HTTP-Only cookie-based sessions with "Remember Me"
 
 ## What's Been Implemented
@@ -37,35 +37,49 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Industry-specific language (Photography/Design/Fine Art)
 
 ### Design Elevation (Complete — Iteration 111)
-- Eliminated generic AI gradients
-- NumberFlow animated dashboard stats
-- Asymmetric bento grid for features
-- Structural left-border card hovers
-- Radial SVG hero background
-- React ViewTransitions between views
-- Infinite CSS marquee testimonials
+- NumberFlow animated dashboard stats, bento grid, structural hovers
+- React ViewTransitions, infinite CSS marquee testimonials
 
 ### Landing Page (Complete — LandingPageV2)
-- 8-section conversion-optimized page
-- Animated stats, countdown timer
-- Real screenshot mockups (WebP)
-- Fine Art testimonial parity
-
-### Automation Hardening (Complete — Iteration 110)
-- Fixed Prisma connection leaks (singleton)
-- Unsubscribe token endpoints
-- Inquiry acknowledgement emails
-- Quote reminder scheduling
-- Stale lead nudge emails
+- 8-section conversion-optimized page with animated stats, countdown timer
 
 ### Mobile Responsiveness Polish (Complete — Iteration 113)
-- **Calendar**: Month view 44px touch targets, Week view 3-day mobile mode with navigation, view switcher 44px buttons
-- **Contracts**: Card layout on mobile (flex col), hidden table header, always-visible quick actions, 44px tab/button targets
-- **Settings**: Scrollable mobile tabs, single-column industry buttons, 44px color pickers/toggles/font pills, responsive brand preview height
-- **Dashboard**: Added Quotes + Contracts to mobile hamburger nav, fixed horizontal overflow at 375px and 768px
-- **All pages**: Zero horizontal overflow at 375px (iPhone) and 768px (iPad), 44px minimum touch targets
+- Calendar 3-day mobile week view, Settings scrollable tabs, Contracts card layout
+- 44px touch targets, zero horizontal overflow at 375px/768px
+
+### Full-Stack Audit & Fix Pass (Complete — Iteration 114)
+**CRITICAL:**
+- [9.1] Vercel Analytics gated behind cookie consent (renders only after Accept All)
+- [6.2/6.6] Supabase RLS: TODO — manual SQL documented in `SUPABASE_RLS_TODO.md`
+- [6.9] Stripe webhook HMAC: Already implemented in paymentService.ts ✅
+
+**HIGH:**
+- [8.1] Open Graph + Twitter Card meta tags added to index.html
+- [10.2] Custom KOLOR favicon.svg + manifest.webmanifest (replaced vite.svg)
+- [3.5] Google Fonts: `display=swap` already present; all 6 families kept (used in brand picker)
+- [2.4/U1.1] Contract signing loading state: Already implemented ✅
+
+**MEDIUM:**
+- [10.1] Custom 404 page (NotFound.tsx) with Back to home / Go back buttons
+- [7.4] Input max-length validation: description 5000, message 2000, projectTitle 200 chars
+- [8.3] robots.txt + sitemap.xml created
+- [U3.1/U5.4] Destructive action confirmations: Two-tap delete in Contracts + KanbanBoard
+- [U7.2/U5.3] SubmitTestimonial: htmlFor labels + scroll-to-error
+- [U8.3] Contract signing trust signal: "E-SIGNATURE · LEGALLY BINDING · TIMESTAMPED AUDIT TRAIL"
+- [U4.2] .env.example: Updated from SendGrid to Resend
+- [5.2/5.3] Marquee keyboard accessibility: pause on hover/focus, sr-only-focusable button
+
+**LOW:**
+- [U8.5] MeetingType default color: #A855F7 → #6C2EDB (aligned with brand primary)
+- [8.5] Footer social links: X (Twitter) + Instagram (TODO: replace with actual URLs)
+- [U6.4] Onboarding resume: Already handled by auto-starting tour for new users
 
 ## Prioritized Backlog
+
+### P0 — TODO: MANUAL
+- **Supabase RLS**: Run SQL from `SUPABASE_RLS_TODO.md` in Supabase dashboard
+- **OG Image**: Current generated image works; optionally replace with Figma-designed version
+- **Favicon PNGs**: Generate 32x32, 180x180, 192x192, 512x512 PNGs from favicon.svg
 
 ### P1 — Upcoming
 - Launch Prep: Production domains, DNS (SPF/DKIM for Resend)
@@ -83,10 +97,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Password: password123
 
 ## Key API Endpoints
+- `GET /api/health` — Health check
 - `GET /api/unsubscribe/:token` — Public unsubscribe
-- `GET /health` — Health check
 - All `/api/` routes protected by auth middleware
 
 ## 3rd Party Integrations
 - Resend (transactional emails)
 - Google Calendar (OAuth scheduling)
+- Supabase Storage (file uploads)
+- Vercel Analytics (consent-gated)
+- Stripe (webhook with HMAC verification)
