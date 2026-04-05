@@ -53,7 +53,7 @@ export function SmartNudgeBanner({ leads, onLeadClick }: SmartNudgeBannerProps) 
               <button
                 key={lead.id}
                 onClick={() => onLeadClick(lead)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white border border-amber-200/60 text-text-primary hover:border-purple-300 hover:bg-purple-50/50 transition-all duration-150 group"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-surface-base border border-amber-200/60 text-text-primary hover:border-purple-300 hover:bg-purple-50/50 transition-all duration-150 group"
                 data-testid={`nudge-lead-${lead.id}`}
               >
                 <span className="truncate max-w-[120px]">{lead.clientName}</span>

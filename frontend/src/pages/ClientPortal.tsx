@@ -422,7 +422,7 @@ export default function ClientPortal() {
   if (error || !data) {
     return (
       <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-md w-full text-center border border-gray-100">
+        <div className="bg-surface-base rounded-2xl shadow-xl p-6 md:p-8 max-w-md w-full text-center border border-gray-100">
           <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <WarningCircle weight="duotone" className="w-7 h-7 text-red-400" />
           </div>
@@ -491,7 +491,7 @@ export default function ClientPortal() {
           <div className={`rounded-xl p-5 ${
             data.status.isBooked
               ? 'bg-emerald-600 text-white'
-              : 'bg-white border border-gray-200'
+              : 'bg-surface-base border border-gray-200'
           }`} data-testid="portal-status-card">
             <div className="flex items-start gap-3.5">
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
@@ -513,7 +513,7 @@ export default function ClientPortal() {
 
         {/* Progress Steps */}
         {!data.status.isLost && (
-          <div className="bg-white rounded-xl border border-gray-200 p-5" data-testid="portal-progress">
+          <div className="bg-surface-base rounded-xl border border-gray-200 p-5" data-testid="portal-progress">
             <h3 className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-5">Project Progress</h3>
 
             {/* Desktop */}
@@ -564,7 +564,7 @@ export default function ClientPortal() {
         )}
 
         {/* Project Details */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5" data-testid="portal-project-details">
+        <div className="bg-surface-base rounded-xl border border-gray-200 p-5" data-testid="portal-project-details">
           <h3 className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-4">Project Details</h3>
           <div className="space-y-3">
             <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-lg">
@@ -632,7 +632,7 @@ export default function ClientPortal() {
         </div>
 
         {/* Project Timeline */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5" data-testid="portal-timeline-section">
+        <div className="bg-surface-base rounded-xl border border-gray-200 p-5" data-testid="portal-timeline-section">
           <ProjectTimeline token={token || ''} editable={false} />
         </div>
 
@@ -659,7 +659,7 @@ export default function ClientPortal() {
               return (
                 <div
                   key={quote.id}
-                  className={`bg-white rounded-xl border overflow-hidden ${
+                  className={`bg-surface-base rounded-xl border overflow-hidden ${
                     isDeclined ? 'border-red-200 opacity-70' : 'border-[#6C2EDB]/20'
                   }`}
                   data-testid={`portal-quote-${quote.id}`}
@@ -754,7 +754,7 @@ export default function ClientPortal() {
                       </button>
                       <button
                         onClick={() => handleDeclineQuote(quote.quoteToken)}
-                        className="px-5 py-3 bg-white border border-gray-200 text-gray-600 rounded-lg font-medium text-sm hover:bg-gray-50 transition"
+                        className="px-5 py-3 bg-surface-base border border-gray-200 text-gray-600 rounded-lg font-medium text-sm hover:bg-gray-50 transition"
                         data-testid={`decline-quote-${quote.id}`}
                       >
                         Decline
@@ -776,7 +776,7 @@ export default function ClientPortal() {
               return (
                 <div
                   key={contract.id}
-                  className={`bg-white rounded-xl border overflow-hidden transition-all ${
+                  className={`bg-surface-base rounded-xl border overflow-hidden transition-all ${
                     isAgreed ? 'border-emerald-200' : 'border-[#6C2EDB]/20'
                   }`}
                   data-testid={`portal-contract-${contract.id}`}
@@ -885,7 +885,7 @@ export default function ClientPortal() {
 
         {/* Activity Timeline */}
         {data.timeline.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-5" data-testid="portal-activity-timeline">
+          <div className="bg-surface-base rounded-xl border border-gray-200 p-5" data-testid="portal-activity-timeline">
             <h3 className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-4">Recent Updates</h3>
             <div className="relative">
               <div className="absolute left-3.5 top-0 bottom-0 w-px bg-gray-100" />
@@ -906,7 +906,7 @@ export default function ClientPortal() {
 
         {/* Shared Files */}
         {data.files && data.files.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-5" data-testid="shared-files-section">
+          <div className="bg-surface-base rounded-xl border border-gray-200 p-5" data-testid="shared-files-section">
             <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
               <Paperclip className="w-4 h-4 text-[#6C2EDB]" />
               Project Files

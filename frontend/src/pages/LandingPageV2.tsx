@@ -1244,9 +1244,9 @@ function Footer() {
         <div className="flex gap-4 text-xs">
           <Link to="/privacy" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => (e.currentTarget.style.color = '#fff')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}>Privacy</Link>
           <Link to="/terms" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => (e.currentTarget.style.color = '#fff')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}>Terms</Link>
-          {/* AUDIT FIX [8.5]: Social media links — TODO: Replace with actual account URLs */}
-          <a href="https://twitter.com/kolorstudio" target="_blank" rel="noopener noreferrer" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => ((e.target as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(255,255,255,0.3)')}>X</a>
-          <a href="https://instagram.com/kolorstudio" target="_blank" rel="noopener noreferrer" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => ((e.target as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(255,255,255,0.3)')}>Instagram</a>
+          <a href="https://x.com/kolor_studio" target="_blank" rel="noopener noreferrer" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => ((e.target as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(255,255,255,0.3)')}>X</a>
+          <a href="https://instagram.com/kolorcreativestudio" target="_blank" rel="noopener noreferrer" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => ((e.target as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(255,255,255,0.3)')}>Instagram</a>
+          <a href="https://tiktok.com/@kolorcreativestudio" target="_blank" rel="noopener noreferrer" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => ((e.target as HTMLElement).style.color = '#fff')} onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(255,255,255,0.3)')}>TikTok</a>
         </div>
       </div>
     </footer>
