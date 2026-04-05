@@ -71,8 +71,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 
 **LOW:**
 - [U8.5] MeetingType default color: #A855F7 → #6C2EDB (aligned with brand primary)
-- [8.5] Footer social links: X (Twitter) + Instagram (TODO: replace with actual URLs)
+- [8.5] Footer social links: X, Instagram, TikTok — updated with real URLs ✅
 - [U6.4] Onboarding resume: Already handled by auto-starting tour for new users
+
+### Iteration 115 — Targeted Fixes (Complete)
+- Title tag updated to `KOLOR Studio—CRM for Photographers, Designers & Artists`
+- Footer social links: X (`x.com/kolor_studio`), Instagram (`instagram.com/kolorcreativestudio`), TikTok (`tiktok.com/@kolorcreativestudio`)
+- `bg-white` → `bg-surface-base` sweep: 10 replacements across ClientPortal, QuoteBuilderModal, SmartNudgeBanner; intentional contrast elements preserved
 
 ## Prioritized Backlog
 
