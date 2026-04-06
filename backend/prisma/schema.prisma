@@ -527,6 +527,7 @@ model User {
   emailSignature       String?
   verificationSentAt   DateTime?
   verificationToken    String?              @unique
+  googleId             String?              @unique
   leads                Lead[]
   activities           Activity[]
   messages             Message[]

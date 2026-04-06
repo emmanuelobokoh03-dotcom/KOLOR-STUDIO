@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { google } from 'googleapis';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail, sendBetaWelcomeEmail, sendNewUserSignupAlert, sendPasswordChangedEmail } from '../services/email';
 import { seedTemplatesForUser } from '../seeds/systemTemplates';
@@ -652,6 +653,125 @@ router.post('/change-password', authMiddleware, async (req: AuthRequest, res: Re
   } catch (error) {
     console.error('Change password error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to change password' });
+  }
+});
+
+// ── Google OAuth Login ──
+
+// GET /api/auth/google — Redirect to Google consent screen (PUBLIC, no auth)
+router.get('/google', (_req: Request, res: Response): void => {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const redirectUri = process.env.GOOGLE_AUTH_REDIRECT_URI;
+
+  if (!clientId || !redirectUri) {
+    res.status(503).json({ error: 'Google login not configured' });
+    return;
+  }
+
+  const oauth2Client = new google.auth.OAuth2(clientId, process.env.GOOGLE_CLIENT_SECRET, redirectUri);
+
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: ['openid', 'https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'],
+    prompt: 'select_account',
+  });
+
+  res.redirect(authUrl);
+});
+
+// GET /api/auth/google/callback — Handle OAuth callback (PUBLIC, no auth)
+router.get('/google/callback', async (req: Request, res: Response): Promise<void> => {
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  try {
+    const { code } = req.query;
+    if (!code || typeof code !== 'string') {
+      res.redirect(`${frontendUrl}/login?error=google_denied`);
+      return;
+    }
+
+    const clientId = process.env.GOOGLE_CLIENT_ID!;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET!;
+    const redirectUri = process.env.GOOGLE_AUTH_REDIRECT_URI!;
+
+    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUri);
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+
+    // Fetch user profile from Google
+    const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
+    const { data: profile } = await oauth2.userinfo.get();
+
+    if (!profile.email) {
+      res.redirect(`${frontendUrl}/login?error=google_no_email`);
+      return;
+    }
+
+    const googleId = profile.id!;
+    const email = profile.email.toLowerCase();
+
+    // Find existing user by googleId or email
+    let user = await prisma.user.findFirst({
+      where: { OR: [{ googleId }, { email }] },
+    });
+
+    if (user) {
+      // Link googleId if not yet linked
+      if (!user.googleId) {
+        user = await prisma.user.update({
+          where: { id: user.id },
+          data: { googleId, emailVerified: true },
+        });
+      }
+      // Update lastLoginAt
+      await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
+    } else {
+      // Create new user — generate a random unusable password
+      const randomPassword = await bcrypt.hash(crypto.randomUUID(), 10);
+      user = await prisma.user.create({
+        data: {
+          email,
+          password: randomPassword,
+          firstName: profile.given_name || profile.name?.split(' ')[0] || 'User',
+          lastName: profile.family_name || profile.name?.split(' ').slice(1).join(' ') || '',
+          googleId,
+          emailVerified: true,
+          lastLoginAt: new Date(),
+        },
+      });
+
+      // Seed templates & demo project for new users (non-blocking)
+      seedTemplatesForUser(user.id, 'PHOTOGRAPHY').catch(() => {});
+      createDemoProject(user.id, 'PHOTOGRAPHY' as any).catch(() => {});
+      seedDefaultSequences(user.id, 'PHOTOGRAPHY' as any).catch(() => {});
+
+      // Send welcome notification (non-blocking)
+      const userCount = await prisma.user.count();
+      if (userCount <= 20) {
+        sendBetaWelcomeEmail({ email, firstName: user.firstName, industry: 'PHOTOGRAPHY' }, userCount).catch(() => {});
+      } else {
+        sendWelcomeEmail({ email, firstName: user.firstName, industry: 'PHOTOGRAPHY' }, userCount).catch(() => {});
+      }
+      sendNewUserSignupAlert({ firstName: user.firstName, lastName: user.lastName || undefined, email, industry: 'PHOTOGRAPHY' }, userCount).catch(() => {});
+    }
+
+    // Generate JWT and set cookie — same as normal login
+    const jwtSecret = process.env.JWT_SECRET!;
+    const token = jwt.sign({ userId: user.id, tokenVersion: user.tokenVersion }, jwtSecret, { expiresIn: '7d' });
+
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production' || req.protocol === 'https',
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
+    });
+
+    // Redirect to frontend dashboard — do NOT call next()
+    const isFirstLogin = !user.lastLoginAt || user.createdAt.getTime() === user.lastLoginAt.getTime();
+    res.redirect(`${frontendUrl}/dashboard${isFirstLogin ? '?welcome=1' : ''}`);
+  } catch (error) {
+    console.error('[Google Auth] Callback error:', error);
+    res.redirect(`${frontendUrl}/login?error=google_failed`);
   }
 });
 

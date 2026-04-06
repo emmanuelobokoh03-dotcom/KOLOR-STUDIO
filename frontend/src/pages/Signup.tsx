@@ -200,7 +200,7 @@ const Signup = () => {
           {step === 1 && (
             <>
               {/* Google */}
-              <button className="w-full flex items-center justify-center gap-2.5 rounded-[10px] border border-light-200 bg-surface-base hover:bg-surface-background transition-colors duration-fast" style={{ height: 46 }} data-testid="google-sso">
+              <button onClick={() => { window.location.href = `${import.meta.env.VITE_API_URL || ''}/api/auth/google`; }} className="w-full flex items-center justify-center gap-2.5 rounded-[10px] border border-light-200 bg-surface-base hover:bg-surface-background transition-colors duration-fast" style={{ height: 46 }} data-testid="google-sso">
                 <GoogleIcon />
                 <span className="text-[13px] font-medium text-text-primary">Continue with Google</span>
               </button>

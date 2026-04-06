@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { SpinnerGap } from '@phosphor-icons/react'
 import { authApi } from '../services/api'
 import { trackLogin } from '../utils/analytics'
@@ -20,11 +20,20 @@ const GoogleIcon = () => (
 
 const Login = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [rememberMe, setRememberMe] = useState(true)
   const [showPw, setShowPw] = useState(false)
   const [formData, setFormData] = useState({ email: '', password: '' })
+
+  // Handle Google OAuth error redirects
+  useEffect(() => {
+    const googleError = searchParams.get('error')
+    if (googleError === 'google_denied') setError('Google sign-in was cancelled')
+    else if (googleError === 'google_no_email') setError('Could not retrieve email from Google')
+    else if (googleError === 'google_failed') setError('Google sign-in failed. Please try again.')
+  }, [searchParams])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -107,7 +116,7 @@ const Login = () => {
           </p>
 
           {/* Google SSO */}
-          <button className="w-full flex items-center justify-center gap-2.5 rounded-[10px] border border-light-200 bg-surface-base hover:bg-surface-background transition-colors duration-fast" style={{ height: 46 }} data-testid="google-sso">
+          <button onClick={() => { window.location.href = `${import.meta.env.VITE_API_URL || ''}/api/auth/google`; }} className="w-full flex items-center justify-center gap-2.5 rounded-[10px] border border-light-200 bg-surface-base hover:bg-surface-background transition-colors duration-fast" style={{ height: 46 }} data-testid="google-sso">
             <GoogleIcon />
             <span className="text-[13px] font-medium text-text-primary">Continue with Google</span>
           </button>
