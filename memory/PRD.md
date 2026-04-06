@@ -83,7 +83,9 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Added `googleId` field to User model (optional, unique)
 - Created `/api/auth/google` (redirects to Google consent screen) and `/api/auth/google/callback` (handles token exchange, user creation/linking, cookie set, redirect)
 - Wired "Continue with Google" buttons on Login + Signup pages
-- Google users auto-linked if email already exists; new users get demo project seeded
+- New Google users → redirected to `/onboarding` (industry selection) before dashboard
+- Existing Google users → redirected to `/dashboard` directly
+- Dashboard defensive fallback: shows "Personalise your workspace" banner when `primaryIndustry` is null
 - Error handling with user-friendly messages on login page for denied/failed flows
 
 ## Prioritized Backlog
