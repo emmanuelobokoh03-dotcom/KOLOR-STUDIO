@@ -877,6 +877,22 @@ const Dashboard = () => {
             onAddLead={() => setShowAddModal(true)}
           />
         )}
+        {/* Defensive fallback: prompt user to complete onboarding if industry not set */}
+        {!user?.primaryIndustry && (
+          <div className="mb-4 md:mb-6 bg-purple-50 border border-purple-200 rounded-xl p-4 md:p-5 flex items-center justify-between gap-4" data-testid="complete-onboarding-banner">
+            <div>
+              <h3 className="text-sm font-semibold text-purple-900">Personalise your workspace</h3>
+              <p className="text-xs text-purple-700 mt-0.5">Tell us your creative discipline to unlock tailored workflows and widgets.</p>
+            </div>
+            <button
+              onClick={() => navigate('/onboarding')}
+              className="flex-shrink-0 px-4 py-2 bg-brand-primary text-white text-xs font-semibold rounded-lg hover:brightness-110 transition"
+              data-testid="complete-onboarding-btn"
+            >
+              Set up now
+            </button>
+          </div>
+        )}
 
         {/* Stats Cards */}
         {/* Hero metric — dominant pipeline stat */}

@@ -739,19 +739,8 @@ router.get('/google/callback', async (req: Request, res: Response): Promise<void
         },
       });
 
-      // Seed templates & demo project for new users (non-blocking)
-      seedTemplatesForUser(user.id, 'PHOTOGRAPHY').catch(() => {});
-      createDemoProject(user.id, 'PHOTOGRAPHY' as any).catch(() => {});
-      seedDefaultSequences(user.id, 'PHOTOGRAPHY' as any).catch(() => {});
-
-      // Send welcome notification (non-blocking)
-      const userCount = await prisma.user.count();
-      if (userCount <= 20) {
-        sendBetaWelcomeEmail({ email, firstName: user.firstName, industry: 'PHOTOGRAPHY' }, userCount).catch(() => {});
-      } else {
-        sendWelcomeEmail({ email, firstName: user.firstName, industry: 'PHOTOGRAPHY' }, userCount).catch(() => {});
-      }
-      sendNewUserSignupAlert({ firstName: user.firstName, lastName: user.lastName || undefined, email, industry: 'PHOTOGRAPHY' }, userCount).catch(() => {});
+      // Do NOT seed templates/demo data here — onboarding flow handles it
+      // after the user selects their industry
     }
 
     // Generate JWT and set cookie — same as normal login
@@ -766,9 +755,9 @@ router.get('/google/callback', async (req: Request, res: Response): Promise<void
       path: '/',
     });
 
-    // Redirect to frontend dashboard — do NOT call next()
-    const isFirstLogin = !user.lastLoginAt || user.createdAt.getTime() === user.lastLoginAt.getTime();
-    res.redirect(`${frontendUrl}/dashboard${isFirstLogin ? '?welcome=1' : ''}`);
+    // New users → onboarding to select industry; existing users → dashboard
+    const isNewUser = !user.primaryIndustry;
+    res.redirect(`${frontendUrl}${isNewUser ? '/onboarding' : '/dashboard'}`);
   } catch (error) {
     console.error('[Google Auth] Callback error:', error);
     res.redirect(`${frontendUrl}/login?error=google_failed`);
