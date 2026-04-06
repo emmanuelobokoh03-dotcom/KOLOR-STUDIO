@@ -79,6 +79,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Footer social links: X (`x.com/kolor_studio`), Instagram (`instagram.com/kolorcreativestudio`), TikTok (`tiktok.com/@kolorcreativestudio`)
 - `bg-white` → `bg-surface-base` sweep: 10 replacements across ClientPortal, QuoteBuilderModal, SmartNudgeBanner; intentional contrast elements preserved
 
+### Google OAuth Login (Complete — Iteration 116)
+- Added `googleId` field to User model (optional, unique)
+- Created `/api/auth/google` (redirects to Google consent screen) and `/api/auth/google/callback` (handles token exchange, user creation/linking, cookie set, redirect)
+- Wired "Continue with Google" buttons on Login + Signup pages
+- Google users auto-linked if email already exists; new users get demo project seeded
+- Error handling with user-friendly messages on login page for denied/failed flows
+
 ## Prioritized Backlog
 
 ### P0 — TODO: MANUAL
