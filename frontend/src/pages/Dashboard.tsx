@@ -385,9 +385,10 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface-base lg:grid overflow-x-hidden" style={{ gridTemplateColumns: '220px 1fr' }}>
+    <>
       <AnnouncementBanner />
       <EmailVerificationBanner user={user} />
+    <div className="min-h-screen bg-surface-base flex overflow-x-hidden">
 
       {/* Onboarding Wizard for new users */}
       {showWizard && (
@@ -395,7 +396,7 @@ const Dashboard = () => {
       )}
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col bg-surface-base border-r border-light-200 h-screen sticky top-0 overflow-y-auto" style={{ padding: '16px 12px' }} data-testid="desktop-sidebar">
+      <aside className="hidden lg:flex flex-col bg-surface-base border-r border-light-200 h-screen sticky top-0 overflow-y-auto" style={{ width: '220px', minWidth: '220px', padding: '16px 12px' }} data-testid="desktop-sidebar">
         {/* Logo */}
         <button
           onClick={() => { setViewMode('kanban'); setStatusFilter(null) }}
@@ -510,7 +511,7 @@ const Dashboard = () => {
       </aside>
 
       {/* Main column */}
-      <div className="flex flex-col min-h-screen">
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen overflow-x-hidden">
 
       {/* Header */}
       <header className="glass-header sticky top-0 z-40">
@@ -678,7 +679,7 @@ const Dashboard = () => {
       )}
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-8 pb-24 lg:pb-8">
+      <main className="px-4 md:px-8 py-4 md:py-8 pb-24 lg:pb-8">
         {/* Welcome Message — mobile only (desktop uses topbar greeting) */}
         <div className="mb-4 lg:hidden" data-testid="welcome-section">
           {isFirstLogin ? (
@@ -1394,6 +1395,7 @@ const Dashboard = () => {
       />
     </div>
     </div>
+    </>
   )
 }
 
