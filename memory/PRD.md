@@ -88,6 +88,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Dashboard defensive fallback: shows "Personalise your workspace" banner when `primaryIndustry` is null
 - Error handling with user-friendly messages on login page for denied/failed flows
 
+### Dashboard Layout Fix (Complete)
+- Outer wrapper changed from `lg:grid` to `flex` layout — eliminates the narrow-strip rendering bug
+- `AnnouncementBanner` and `EmailVerificationBanner` moved outside the flex container (rendered above via fragment)
+- Sidebar `<aside>` gets explicit `width: 220px; minWidth: 220px`
+- Main column wrapper set to `flex-1 min-w-0` to fill remaining space
+- Removed `max-w-7xl mx-auto` from `<main>` — content fills the flex child properly
+
 ## Prioritized Backlog
 
 ### P0 — TODO: MANUAL
