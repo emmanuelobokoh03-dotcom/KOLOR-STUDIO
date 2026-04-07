@@ -123,7 +123,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
             Disconnect
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+        <div className="grid grid-cols-1 gap-3 mt-4">
           {[
             { label: 'Auto-sync availability', sub: 'No double-bookings' },
             { label: 'Auto-create events', sub: 'When clients book' },
@@ -143,13 +143,13 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
   }
 
   return (
-    <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-200 p-5" data-testid="calendar-widget-cta">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <div className="flex items-start gap-3 flex-1">
+    <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-200 p-5 w-full max-w-full" data-testid="calendar-widget-cta">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-surface-base border border-purple-200 flex items-center justify-center flex-shrink-0 shadow-sm">
             <GoogleLogo weight="bold" className="w-5 h-5 text-purple-600" />
           </div>
-          <div>
+          <div className="min-w-0">
             <h3 className="font-semibold text-text-primary text-sm">Connect Google Calendar</h3>
             <p className="text-xs text-text-secondary mt-0.5">Sync availability automatically and prevent double-bookings</p>
             <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
@@ -162,7 +162,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
           </div>
         </div>
         <button onClick={handleConnect} disabled={actionLoading}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-all hover:shadow-lg hover:shadow-purple-600/20 flex-shrink-0"
+          className="w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-all hover:shadow-lg hover:shadow-purple-600/20"
           data-testid="calendar-widget-connect">
           {actionLoading ? (
             <SpinnerGap className="w-4 h-4 animate-spin" />

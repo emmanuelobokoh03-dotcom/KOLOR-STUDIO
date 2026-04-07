@@ -202,7 +202,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
         >
           <span className="landing-pulse-dot w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
           <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Beta is live &middot; First 20 users get free access forever
+            Beta is live &middot; First 20 spots &mdash; $97 one-time, lifetime access
           </span>
           <span style={{ color: 'rgba(255,255,255,0.4)' }}>&rarr;</span>
         </div>
@@ -236,7 +236,7 @@ function HeroSection({ onCta }: { onCta: () => void }) {
 
         {/* Subheadline */}
         <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 18, color: 'rgba(255,255,255,0.5)', maxWidth: 520 }}>
-          CRM built for photographers, designers, and artists who are done managing clients from a spreadsheet. Leads, quotes, contracts, and calendar — one beautiful tool.
+          CRM built for photographers, designers, and fine artists who are done managing clients from a spreadsheet. Leads, quotes, contracts, and calendar — one beautiful tool.
         </p>
 
         {/* CTA row */}
@@ -954,7 +954,7 @@ function MarqueeCard({
 const FAQ_ITEMS: { question: string; answer: string }[] = [
   {
     question: 'Is KOLOR really free for the first 20 users?',
-    answer: 'Yes \u2014 completely free, forever. No credit card required at signup, no trial period, no hidden costs. The first 20 users who create an account during beta get full access to every feature, permanently. After those 20 spots are claimed, new users pay $9/month during the beta period.',
+    answer: 'The first 20 users pay a one-time fee of $97 \u2014 that\u2019s lifetime access with no monthly fees, ever. No credit card required to sign up and browse; payment is collected when you claim a spot. After those 20 spots, users 21\u201350 pay $19/month (locked in as a permanent beta rate). The public launch price will be $29/month.',
   },
   {
     question: 'Which creative industries does KOLOR support?',
@@ -982,7 +982,7 @@ const FAQ_ITEMS: { question: string; answer: string }[] = [
   },
   {
     question: 'What\u2019s coming after the beta?',
-    answer: 'The public launch will introduce three tiers: Free (up to 3 active projects), Pro at $29/month (unlimited projects, priority support), and Studio at $79/month (team features, client portal white-labelling, email sequence automation). Beta users keep their free or $9/month rate locked in permanently \u2014 regardless of what the public pricing becomes.',
+    answer: 'After the beta, KOLOR will move to a $29/month public launch price. Beta users \u2014 whether they paid the $97 one-time fee or the $19/month beta rate \u2014 keep their pricing locked in permanently, regardless of what happens to public pricing.',
   },
 ]
 
@@ -1136,11 +1136,11 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
 
           {/* Pricing cards row */}
           <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 mt-10">
-            {/* Free tier */}
-            <div className="rounded-2xl p-7 text-left flex-1 max-w-[280px] mx-auto sm:mx-0" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            {/* $97 lifetime tier (highlighted) */}
+            <div className="rounded-2xl p-7 text-left flex-1 max-w-[280px] mx-auto sm:mx-0" style={{ background: 'rgba(108,46,219,0.10)', border: '2px solid rgba(108,46,219,0.35)' }}>
               <div className="text-[10px] uppercase tracking-[0.08em] mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>First 20 spots</div>
-              <div className="text-4xl font-extrabold text-white mb-1">Free</div>
-              <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>Free forever — no catch, no credit card, no expiry</p>
+              <div className="text-4xl font-extrabold text-white mb-1">$97</div>
+              <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>One-time payment. Lifetime access. No monthly fees.</p>
               <div
                 className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold mb-5"
                 style={{ background: 'rgba(232,137,26,0.15)', border: '1px solid rgba(232,137,26,0.3)', color: '#fbbf24' }}
@@ -1159,15 +1159,15 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
               </button>
             </div>
 
-            {/* Paid tier */}
+            {/* $19/mo beta tier */}
             <div className="rounded-2xl p-7 text-left flex-1 max-w-[280px] mx-auto sm:mx-0" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <div className="text-[10px] uppercase tracking-[0.08em] mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>Spots 21–50</div>
               <div className="mb-1">
-                <span className="text-4xl font-extrabold text-white">$9</span>
-                <span className="text-base" style={{ color: 'rgba(255,255,255,0.3)' }}>/mo</span>
+                <span className="text-4xl font-extrabold text-white">$19</span>
+                <span className="text-base" style={{ color: 'rgba(255,255,255,0.3)' }}>/month</span>
               </div>
-              <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>Beta rate, locked in for life</p>
-              <div className="h-[26px] mb-5" /> {/* spacer to align with scarcity badge */}
+              <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>Beta rate, locked in permanently.</p>
+              <div className="h-[26px] mb-5" />
               <button
                 className="w-full font-medium py-3 rounded-lg text-sm transition-all duration-150"
                 style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)' }}
@@ -1175,6 +1175,24 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
               >
                 Join the waitlist
+              </button>
+            </div>
+
+            {/* $29/mo public tier (ghost/dimmed) */}
+            <div className="rounded-2xl p-7 text-left flex-1 max-w-[280px] mx-auto sm:mx-0" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', opacity: 0.5 }}>
+              <div className="text-[10px] uppercase tracking-[0.08em] mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>After beta</div>
+              <div className="mb-1">
+                <span className="text-4xl font-extrabold text-white">$29</span>
+                <span className="text-base" style={{ color: 'rgba(255,255,255,0.3)' }}>/month</span>
+              </div>
+              <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>Public launch price.</p>
+              <div className="h-[26px] mb-5" />
+              <button
+                disabled
+                className="w-full font-medium py-3 rounded-lg text-sm cursor-not-allowed"
+                style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.3)' }}
+              >
+                Coming soon
               </button>
             </div>
           </div>
@@ -1212,7 +1230,7 @@ function FinalCTA({ onCta }: { onCta: () => void }) {
         </h2>
 
         <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 440 }}>
-          Join 20+ creative professionals already running their studio with KOLOR. Start free — no credit card, no setup fee, no spreadsheets.
+          Join creative professionals already running their studio with KOLOR. No spreadsheets. No monthly SaaS trap. One payment, lifetime access.
         </p>
 
         <button
@@ -1227,7 +1245,7 @@ function FinalCTA({ onCta }: { onCta: () => void }) {
         </button>
 
         <p className="mt-5 text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
-          Free forever for the first 20 &nbsp;&middot;&nbsp; No credit card &nbsp;&middot;&nbsp; 5-minute setup
+          $97 one-time for the first 20 &nbsp;&middot;&nbsp; Lifetime access &nbsp;&middot;&nbsp; 5-minute setup
         </p>
       </div>
     </section>
