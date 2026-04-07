@@ -23,7 +23,7 @@ async function request<T>(
     });
 
     // Handle 401 — session expired
-    if (response.status === 401) {
+    if (response.status === 401 && !endpoint.startsWith('/api/auth/')) {
       // Clean up stale localStorage from migration
       localStorage.removeItem('token');
       return { error: 'Unauthorized', message: 'Authentication required' };
