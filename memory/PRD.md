@@ -95,6 +95,16 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Main column wrapper set to `flex-1 min-w-0` to fill remaining space
 - Removed `max-w-7xl mx-auto` from `<main>` — content fills the flex child properly
 
+### Iteration 116 — P0/P1 Bug Fixes + Pricing + Copy (Complete)
+- Verified login & signup endpoints work (no router-level authMiddleware blocking public routes)
+- CalendarConnectionWidget: fixed overflow in 280px sidebar — always stacks vertically, button is `w-full`, connected grid is 1-column
+- Verified Google Calendar auth-url returns JSON (not HTML redirect)
+- Landing page pricing: $97 one-time (highlighted card), $19/month beta, $29/month ghost card
+- Hero subheadline: added "fine artists" as first-class citizen
+- FAQ answers updated for new pricing model ($97 one-time / $19/mo / $29/mo)
+- FinalCTA copy updated — "No monthly SaaS trap. One payment, lifetime access."
+- Announcement pill: "$97 one-time, lifetime access"
+
 ## Prioritized Backlog
 
 ### P0 — TODO: MANUAL
