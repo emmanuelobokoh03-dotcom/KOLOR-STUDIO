@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 import { useState, useEffect, useRef } from 'react'
 import {
   Check, X, CalendarBlank, Clock, FileText, Sparkle, ArrowRight, UserCircle
@@ -27,7 +29,7 @@ export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings
 
     try {
       const [calRes, mtRes, availRes, leadsRes] = await Promise.all([
-        fetch('/api/google-calendar/status', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(`${API_URL}/api/google-calendar/status`, { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
         fetch('/api/meeting-types', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
         fetch('/api/availability', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
         fetch('/api/leads', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),

@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 import { useState, useEffect } from 'react'
 import {
   Clock, Plus, Trash, FloppyDisk, SpinnerGap, Copy, Check,
@@ -62,7 +64,7 @@ export default function SchedulingSettings() {
 
     // Check Google Calendar status
     try {
-      const resp = await fetch('/api/google-calendar/status', { credentials: 'include' })
+      const resp = await fetch(`${API_URL}/api/google-calendar/status`, { credentials: 'include' })
       if (resp.ok) {
         const data = await resp.json()
         setCalendarConnected(data.connected)
@@ -178,7 +180,7 @@ export default function SchedulingSettings() {
   const connectGoogleCalendar = async () => {
     setCalendarLoading(true)
     try {
-      const configResp = await fetch('/api/google-calendar/config-check', { credentials: 'include' })
+      const configResp = await fetch(`${API_URL}/api/google-calendar/config-check`, { credentials: 'include' })
       if (configResp.ok) {
         const config = await configResp.json()
         if (!config.configured) {
@@ -188,7 +190,7 @@ export default function SchedulingSettings() {
         }
       }
 
-      const resp = await fetch('/api/google-calendar/auth-url', { credentials: 'include' })
+      const resp = await fetch(`${API_URL}/api/google-calendar/auth-url`, { credentials: 'include' })
       if (resp.ok) {
         const data = await resp.json()
         if (data.authUrl) {
@@ -209,7 +211,7 @@ export default function SchedulingSettings() {
   const disconnectGoogleCalendar = async () => {
     setCalendarLoading(true)
     try {
-      const resp = await fetch('/api/google-calendar/disconnect', {
+      const resp = await fetch(`${API_URL}/api/google-calendar/disconnect`, {
         method: 'DELETE',
         credentials: 'include',
       })

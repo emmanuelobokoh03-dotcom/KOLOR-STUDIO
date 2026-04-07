@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Calendar as BigCalendar, dateFnsLocalizer, Views, SlotInfo } from 'react-big-calendar'
 import type { CalendarProps } from 'react-big-calendar'
@@ -328,7 +330,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
             ctaLabel="Connect Google Calendar"
             onCta={async () => {
               try {
-                const resp = await fetch('/api/google-calendar/auth-url', { credentials: 'include' });
+                const resp = await fetch(`${API_URL}/api/google-calendar/auth-url`, { credentials: 'include' });
                 if (resp.ok) {
                   const data = await resp.json();
                   if (data.authUrl) window.location.href = data.authUrl;

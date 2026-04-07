@@ -3,6 +3,8 @@ import {
   GoogleLogo, Check, ArrowRight, SpinnerGap, LinkBreak, CalendarCheck
 } from '@phosphor-icons/react'
 
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 interface CalendarConnectionWidgetProps {
   onStatusChange?: (connected: boolean) => void
 }
@@ -18,7 +20,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
 
   const checkStatus = async () => {
     try {
-      const resp = await fetch('/api/google-calendar/status', { credentials: 'include' })
+      const resp = await fetch(`${API_URL}/api/google-calendar/status`, { credentials: 'include' })
       if (resp.ok) {
         const data = await resp.json()
         setConnected(data.connected)
@@ -39,7 +41,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
   const handleConnect = async () => {
     setActionLoading(true)
     try {
-      const configResp = await fetch('/api/google-calendar/config-check', { credentials: 'include' })
+      const configResp = await fetch(`${API_URL}/api/google-calendar/config-check`, { credentials: 'include' })
       if (configResp.ok) {
         const config = await configResp.json()
         if (!config.configured) {
@@ -49,7 +51,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
         }
       }
 
-      const resp = await fetch('/api/google-calendar/auth-url', { credentials: 'include' })
+      const resp = await fetch(`${API_URL}/api/google-calendar/auth-url`, { credentials: 'include' })
       if (!resp.ok) {
         const errText = await resp.text()
         console.error('[CALENDAR] Auth URL error:', resp.status, errText)
@@ -77,7 +79,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
     if (!confirm('Disconnect Google Calendar? Bookings still work, but calendar sync will stop.')) return
     setActionLoading(true)
     try {
-      const resp = await fetch('/api/google-calendar/disconnect', {
+      const resp = await fetch(`${API_URL}/api/google-calendar/disconnect`, {
         method: 'DELETE',
         credentials: 'include',
       })
