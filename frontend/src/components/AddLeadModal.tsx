@@ -424,12 +424,16 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Dimensions</label>
-                    <input type="text" name="dimensions" onChange={handleChange} className={inputClass} placeholder="24x36 inches" />
+                    <input type="text" name="dimensions" onChange={handleChange} className={inputClass} placeholder="e.g. 24x36 inches" />
                   </div>
                   <div>
-                    <label className={labelClass}>Material / Medium</label>
-                    <input type="text" name="material" onChange={handleChange} className={inputClass} placeholder="Oil on canvas" />
+                    <label className={labelClass}>Medium</label>
+                    <input type="text" name="medium" onChange={handleChange} className={inputClass} placeholder="e.g. Oil on canvas" />
                   </div>
+                </div>
+                <div>
+                  <label className={labelClass}>Edition</label>
+                  <input type="text" name="edition" onChange={handleChange} className={inputClass} placeholder="e.g. 1/10, Artist's proof, Unique" />
                 </div>
               </div>
             )}
@@ -443,8 +447,8 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                     <input type="text" onChange={handleChange} name="dimensions" className={inputClass} placeholder="12x16 inches" />
                   </div>
                   <div>
-                    <label className={labelClass}>Material</label>
-                    <input type="text" onChange={handleChange} name="material" className={inputClass} placeholder="Glossy photo paper" />
+                    <label className={labelClass}>Medium</label>
+                    <input type="text" onChange={handleChange} name="medium" className={inputClass} placeholder="e.g. Archival pigment print" />
                   </div>
                 </div>
               </div>
