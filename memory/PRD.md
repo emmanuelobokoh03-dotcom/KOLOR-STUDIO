@@ -103,7 +103,11 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Hero subheadline: added "fine artists" as first-class citizen
 - FAQ answers updated for new pricing model ($97 one-time / $19/mo / $29/mo)
 - FinalCTA copy updated — "No monthly SaaS trap. One payment, lifetime access."
-- Announcement pill: "$97 one-time, lifetime access"
+### Landing Page Redesign — Stat + Workflow + Features Bento (Complete)
+- ProblemSection: 78% stat with MIT/HBR Lead Response Study citation (replaced unverified 73% claim)
+- WorkflowSection: Redesigned with gradient headings, purple connector line, and embedded UI mockups (lead card, quote breakdown, signed contract with signature)
+- FeaturesSection: Rebuilt as bento grid — kanban hero card (full-width), quotes + contracts (medium), client portal + calendar sync + automation (small)
+- Removed unused DashboardMock/QuoteMock/PortalMock imports and QuotePipelineBar helper
 
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
