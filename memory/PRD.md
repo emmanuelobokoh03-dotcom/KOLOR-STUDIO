@@ -105,6 +105,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - FinalCTA copy updated — "No monthly SaaS trap. One payment, lifetime access."
 - Announcement pill: "$97 one-time, lifetime access"
 
+### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
+- `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
+- `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
+- `systemTemplates.ts`: Added "Reproduction Rights" stage (order 9, type AGREEMENT) to FINE_ART Portrait Commission template with full copyright/IP clause
+- Landing page pricing + copy: Verified already applied ($97/$19/$29 cards, "fine artists" in hero, FAQ updated)
+
 ## Prioritized Backlog
 
 ### P0 — TODO: MANUAL
