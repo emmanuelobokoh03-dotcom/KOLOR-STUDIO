@@ -2,9 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { ArrowRight } from '@phosphor-icons/react'
 import { CountdownTimer } from '../components/CountdownTimer'
-import DashboardMock from '../components/illustrations/DashboardMock'
-import QuoteMock from '../components/illustrations/QuoteMock'
-import PortalMock from '../components/illustrations/PortalMock'
 
 /* ---------- BETA end date (7 days from now, persisted in localStorage) ---------- */
 function getBetaEndDate(): Date {
@@ -450,13 +447,13 @@ function ProblemSection() {
             style={{ background: 'rgba(108,46,219,0.08)', gridColumn: '1 / -1' }}
           >
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10">
-              <div className="text-[52px] font-extrabold flex-shrink-0" style={{ color: '#6C2EDB' }}>73%</div>
+              <div className="text-[52px] font-extrabold flex-shrink-0" style={{ color: '#6C2EDB' }}>78%</div>
               <div>
-                <p className="font-semibold text-white/90 mb-2">of freelance creatives lose clients to poor follow-up — not poor work.</p>
+                <p className="font-semibold text-white/90 mb-2">of buyers choose the first business that responds — not the best-reviewed, not the cheapest.</p>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                  The most talented photographers, designers, and fine artists lose commissions because they forgot to reply, sent a messy invoice, or missed a deadline. KOLOR makes sure that never happens to you.
+                  Speed wins the booking. Photographers and designers lose clients every day — not because of their work, but because a competitor replied first. KOLOR makes sure you're always first.
                 </p>
-                <p className="text-xs mt-3" style={{ color: 'rgba(255,255,255,0.25)' }}>Based on KOLOR user research &middot; 2024</p>
+                <p className="text-xs mt-3" style={{ color: 'rgba(255,255,255,0.25)' }}>MIT / Harvard Business Review Lead Response Study &middot; Dr. James Oldroyd &middot; 2,241 firms audited</p>
               </div>
             </div>
           </div>
@@ -476,12 +473,6 @@ function ProblemSection() {
 
 /* ---------- SECTION 4: WORKFLOW ---------- */
 function WorkflowSection() {
-  const steps = [
-    { num: '01', title: 'Capture the lead', body: "Every inquiry lands in your pipeline automatically. Lead forms, email parsing, or manual entry. Nothing falls through the cracks — every potential client is visible, tracked, and followed up." },
-    { num: '02', title: 'Send the quote', body: "Build a professional quote in under 2 minutes. Your packages, your rates, your brand. The client approves it with one click — no PDF attachments, no back-and-forth, no printing." },
-    { num: '03', title: 'Close the booking', body: "Contract sent, signed online, and filed automatically. Your calendar updates. You're booked. The whole process takes less time than finding a parking spot." },
-  ]
-
   return (
     <section
       className="reveal-section"
@@ -491,11 +482,11 @@ function WorkflowSection() {
         <SectionLabel>How it works</SectionLabel>
 
         <h2 className="font-display font-extrabold tracking-[-0.025em] mb-4" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
-          <span style={{ color: '#ffffff' }}>
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Capture. Quote. Book.
           </span>
           <br />
-          <span style={{ color: '#6C2EDB' }}>
+          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             In that order. Every time.
           </span>
         </h2>
@@ -504,37 +495,102 @@ function WorkflowSection() {
           Three steps between a stranger's inquiry and a signed contract in your inbox.
         </p>
 
-        {/* 3-step grid */}
-        <div className="stagger-children rounded-2xl overflow-hidden" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 1, background: 'rgba(255,255,255,0.06)' }}>
-          {steps.map((step, i) => (
-            <div
-              key={step.num}
-              className="landing-workflow-step relative p-8 md:p-9"
-              style={{ background: '#080612' }}
-            >
-              <div
-                className="w-8 h-8 flex items-center justify-center rounded-lg mb-5 font-mono-kolor text-[13px] font-bold"
-                style={{ background: 'rgba(108,46,219,0.15)', border: '1px solid rgba(108,46,219,0.3)', color: '#a78bfa' }}
-              >
-                {step.num}
-              </div>
-              <h3 className="text-lg font-semibold text-white/90 mb-3">{step.title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>{step.body}</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+          {/* Connector line — desktop only */}
+          <div className="hidden md:block absolute" style={{ top: 28, left: 'calc(16.66% + 20px)', right: 'calc(16.66% + 20px)', height: 1, background: 'linear-gradient(90deg, rgba(108,46,219,0.7), rgba(108,46,219,0.3), rgba(108,46,219,0.7))', zIndex: 0 }} />
 
-              {/* Connector arrow with animated line */}
-              {i < steps.length - 1 && (
-                <>
-                  <div
-                    className="hidden lg:block absolute top-1/2 z-[5] workflow-connector-line"
-                    style={{ right: 0, width: 24, height: 2, background: 'rgba(108,46,219,0.5)', marginTop: -1 }}
-                  />
-                  <div className="hidden lg:flex absolute top-1/2 -right-3 z-10 w-6 h-6 rounded-full items-center justify-center" style={{ background: '#6C2EDB', transform: 'translateY(-50%)' }}>
-                    <ArrowRight weight="bold" className="w-3 h-3 text-white" />
-                  </div>
-                </>
-              )}
+          {/* Step 01 */}
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-8">
+              <span className="text-[11px] font-bold tracking-[0.1em] uppercase" style={{ color: '#a78bfa' }}>01</span>
+              <div className="w-2 h-2 rounded-full" style={{ background: '#6C2EDB', border: '1px solid #a78bfa' }} />
             </div>
-          ))}
+            <h3 className="text-[17px] font-bold text-white/90 mb-2">Capture the lead</h3>
+            <p className="text-[13px] leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              Every inquiry lands in your pipeline automatically. Share a form link — leads arrive directly in your dashboard.
+            </p>
+            {/* Lead card mockup */}
+            <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.8)', border: '1px solid rgba(255,255,255,0.08)', padding: '14px' }}>
+              <div className="flex items-center gap-[5px] mb-3">
+                <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FF5F57' }} />
+                <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
+                <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
+              </div>
+              <div className="inline-block text-[9px] font-bold tracking-[0.07em] uppercase px-[7px] py-[2px] rounded mb-2" style={{ background: 'rgba(108,46,219,0.2)', color: '#a78bfa' }}>New inquiry</div>
+              <div className="rounded-lg p-3 mb-2" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <div className="text-[12px] font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.85)' }}>Amara Okonkwo</div>
+                <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Wedding &middot; Cape Town &middot; Jun 14</div>
+              </div>
+              <div className="rounded-lg p-3 opacity-60" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <div className="text-[12px] font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.85)' }}>Sophie Laurent</div>
+                <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Brand identity &middot; Paris &middot; Jul 2</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 02 */}
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-8">
+              <span className="text-[11px] font-bold tracking-[0.1em] uppercase" style={{ color: '#a78bfa' }}>02</span>
+              <div className="w-2 h-2 rounded-full" style={{ background: '#6C2EDB', border: '1px solid #a78bfa' }} />
+            </div>
+            <h3 className="text-[17px] font-bold text-white/90 mb-2">Send the quote</h3>
+            <p className="text-[13px] leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              Professional proposals in 2 minutes. Clients approve online — no PDF attachments, no back-and-forth.
+            </p>
+            {/* Quote mockup */}
+            <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.8)', border: '1px solid rgba(255,255,255,0.08)', padding: '14px' }}>
+              <div className="flex items-center gap-[5px] mb-3">
+                <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FF5F57' }} />
+                <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
+                <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
+              </div>
+              {[
+                { label: 'Full-day coverage', val: '\u00a31,800' },
+                { label: 'Second shooter', val: '\u00a3350' },
+                { label: 'Gallery delivery', val: '\u00a3120' },
+              ].map((row, i) => (
+                <div key={i} className="flex justify-between py-[5px] text-[10px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.5)' }}>{row.label}</span>
+                  <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>{row.val}</span>
+                </div>
+              ))}
+              <div className="flex justify-between mt-2 pt-2 text-[13px] font-bold" style={{ borderTop: '1px solid rgba(108,46,219,0.3)' }}>
+                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11 }}>Total</span>
+                <span style={{ color: '#a78bfa' }}>{'\u00a3'}2,270</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 03 */}
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-8">
+              <span className="text-[11px] font-bold tracking-[0.1em] uppercase" style={{ color: '#a78bfa' }}>03</span>
+              <div className="w-2 h-2 rounded-full" style={{ background: '#6C2EDB', border: '1px solid #a78bfa' }} />
+            </div>
+            <h3 className="text-[17px] font-bold text-white/90 mb-2">Close the booking</h3>
+            <p className="text-[13px] leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              Contract sent, signed online, and filed automatically. You're booked before they change their mind.
+            </p>
+            {/* Contract mockup */}
+            <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.8)', border: '1px solid rgba(255,255,255,0.08)', padding: '14px' }}>
+              <div className="flex items-center gap-[5px] mb-3">
+                <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FF5F57' }} />
+                <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
+                <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
+              </div>
+              <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-3" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)' }}>
+                <span className="w-[6px] h-[6px] rounded-full flex-shrink-0" style={{ background: '#22c55e' }} />
+                <span className="text-[10px] font-semibold" style={{ color: 'rgba(34,197,94,0.9)' }}>Contract signed &middot; 2 mins ago</span>
+              </div>
+              <div className="text-[10px] mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>Booking Agreement — Amara Okonkwo</div>
+              <div style={{ borderTop: '1px dashed rgba(255,255,255,0.15)', paddingTop: 8 }}>
+                <div className="text-[9px] mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>Client signature</div>
+                <div className="text-[11px] font-semibold italic" style={{ color: 'rgba(255,255,255,0.8)' }}>Amara Okonkwo</div>
+              </div>
+              <div className="text-[9px] mt-3" style={{ color: 'rgba(34,197,94,0.6)' }}>Deposit of {'\u00a3'}454 received</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -583,83 +639,202 @@ function FeaturesSection() {
         <SectionLabel>Everything in one place</SectionLabel>
 
         <h2 className="font-display font-extrabold tracking-[-0.025em] mb-4" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
-          <span style={{ color: '#ffffff' }}>Your whole studio.</span>
+          <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Your whole studio.
+          </span>
           <br />
-          <span style={{ color: '#6C2EDB' }}>One tab.</span>
+          <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            One tab.
+          </span>
         </h2>
 
         <p className="mb-12" style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 540, lineHeight: 1.7 }}>
           No switching between apps. No copy-pasting. No "where did I put that contract." Everything connected — it remembers, so you don't have to.
         </p>
 
-        {/* Bento grid — asymmetric: hero full-width top, two supporting below */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'auto auto', gap: 12 }} data-testid="feature-cards">
+        {/* Bento grid */}
+        <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(12, 1fr)' }} data-testid="feature-cards">
 
-          {/* Hero cell — full width, spans both columns */}
+          {/* HERO CARD — Kanban pipeline (full width) */}
           <div
-            style={{
-              gridColumn: '1 / -1',
-              borderRadius: 16,
-              overflow: 'hidden',
-              background: '#100D20',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}
+            className="rounded-2xl overflow-hidden transition-all duration-300"
+            style={{ gridColumn: 'span 12', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '22px' }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+            data-testid="feature-kanban"
           >
-            {/* Browser chrome bar */}
-            <div className="flex items-center gap-2 px-4 h-10" style={{ background: '#0C0A1A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-              <div className="flex items-center gap-[5px]">
-                <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#FF5F57' }} />
-                <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#FFBD2E' }} />
-                <span className="w-[11px] h-[11px] rounded-full" style={{ background: '#28CA41' }} />
-              </div>
-              <div className="flex-1 flex justify-center">
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-[5px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                  <span className="w-2 h-2 rounded-full" style={{ background: '#28CA41' }} />
-                  <span className="font-mono-kolor text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>app.kolorstudio.com/dashboard</span>
+            <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Lead management</div>
+            <h3 className="text-base font-semibold text-white/90 mb-1">Every lead, always visible</h3>
+            <p className="text-[13px] mb-5" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>From first inquiry to signed contract. Know exactly where every potential client is — without a spreadsheet.</p>
+
+            {/* Mini kanban */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {[
+                { col: 'New', count: 2, cards: [{ name: 'Amara O.', meta: 'Wedding \u00b7 Jun 14' }, { name: 'Marcus T.', meta: 'Portrait \u00b7 Jun 21' }] },
+                { col: 'Contacted', count: 1, cards: [{ name: 'Priya S.', meta: 'Brand \u00b7 Jul 2', amt: '\u00a32,800' }] },
+                { col: 'Quoted', count: 2, cards: [{ name: 'Sophie L.', meta: 'Editorial', amt: '\u00a31,400' }, { name: 'L\u00e9a K.', meta: 'Fashion', amt: '\u00a33,200' }] },
+                { col: 'Booked', count: 1, cards: [{ name: 'David M.', meta: 'Commercial', amt: '\u00a34,500', booked: true }] },
+              ].map(col => (
+                <div key={col.col}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[9px] font-bold tracking-[0.07em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>{col.col}</span>
+                    <span className="flex items-center justify-center w-4 h-4 rounded text-[9px]" style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>{col.count}</span>
+                  </div>
+                  {col.cards.map((card, i) => (
+                    <div
+                      key={i}
+                      className="rounded-lg p-2 mb-1 cursor-pointer transition-all duration-200"
+                      style={{ background: 'rgba(255,255,255,0.05)', border: (card as any).booked ? '1px solid rgba(34,197,94,0.25)' : '1px solid rgba(255,255,255,0.07)' }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(108,46,219,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = (card as any).booked ? 'rgba(34,197,94,0.25)' : 'rgba(255,255,255,0.07)'; e.currentTarget.style.transform = 'none' }}
+                    >
+                      <div className="text-[10px] font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{card.name}</div>
+                      <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{card.meta}</div>
+                      {(card as any).amt && <div className="text-[9px] font-semibold mt-1" style={{ color: (card as any).booked ? 'rgba(34,197,94,0.9)' : 'rgba(34,197,94,0.7)' }}>{(card as any).amt}</div>}
+                    </div>
+                  ))}
                 </div>
+              ))}
+            </div>
+          </div>
+
+          {/* MEDIUM CARD — Quotes */}
+          <div
+            className="rounded-2xl overflow-hidden transition-all duration-300 col-span-12 md:col-span-6"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '22px' }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+            data-testid="feature-quotes"
+          >
+            <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Quotes</div>
+            <h3 className="text-base font-semibold text-white/90 mb-1">Proposals that close</h3>
+            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>Build, send, and get approved online. Clients approve in one tap from any device.</p>
+            <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.8)', border: '1px solid rgba(255,255,255,0.08)', padding: '14px' }}>
+              {[
+                { label: 'Full-day shoot', val: '\u00a31,800' },
+                { label: 'Second shooter', val: '\u00a3350' },
+                { label: 'Gallery delivery', val: '\u00a3120' },
+              ].map((row, i) => (
+                <div key={i} className="flex justify-between text-[11px] py-[5px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.5)' }}>{row.label}</span>
+                  <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>{row.val}</span>
+                </div>
+              ))}
+              <div className="flex justify-between mt-2 pt-2" style={{ borderTop: '1px solid rgba(108,46,219,0.25)' }}>
+                <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Total</span>
+                <span className="text-[13px] font-bold" style={{ color: '#a78bfa' }}>{'\u00a3'}2,270</span>
+              </div>
+              <div className="mt-3 w-full text-center text-white text-[11px] font-semibold py-2 rounded-lg" style={{ background: '#6C2EDB' }}>Approve quote &rarr;</div>
+            </div>
+          </div>
+
+          {/* MEDIUM CARD — Contracts */}
+          <div
+            className="rounded-2xl overflow-hidden transition-all duration-300 col-span-12 md:col-span-6"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '22px' }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+            data-testid="feature-contracts"
+          >
+            <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Contracts</div>
+            <h3 className="text-base font-semibold text-white/90 mb-1">Signed before they change their mind</h3>
+            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>E-signature compliant with ESIGN and eIDAS. Industry-specific templates for photography, design, and fine art.</p>
+            <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.8)', border: '1px solid rgba(255,255,255,0.08)', padding: '14px' }}>
+              <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-3" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)' }}>
+                <span className="w-[6px] h-[6px] rounded-full flex-shrink-0" style={{ background: '#22c55e' }} />
+                <span className="text-[10px] font-semibold" style={{ color: 'rgba(34,197,94,0.9)' }}>Contract signed &middot; timestamped audit trail</span>
+              </div>
+              <div className="text-[10px] mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>Booking Agreement — David Mensah</div>
+              <div style={{ borderTop: '1px dashed rgba(255,255,255,0.15)', paddingTop: 8, marginBottom: 10 }}>
+                <div className="text-[9px] mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>Client signature</div>
+                <div className="text-[11px] font-semibold italic" style={{ color: 'rgba(255,255,255,0.8)' }}>David Mensah</div>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {['Photography', 'Fine Art', 'Design'].map(t => (
+                  <span key={t} className="text-[9px] px-2 py-1 rounded" style={{ background: 'rgba(108,46,219,0.15)', border: '1px solid rgba(108,46,219,0.25)', color: '#a78bfa' }}>{t}</span>
+                ))}
               </div>
             </div>
-            <div style={{ minHeight: 320 }}>
-              <DashboardMock />
+          </div>
+
+          {/* SMALL CARD — Client portal */}
+          <div
+            className="rounded-2xl overflow-hidden transition-all duration-300 col-span-12 md:col-span-4"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '22px' }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+            data-testid="feature-portal"
+          >
+            <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Client portal</div>
+            <h3 className="text-base font-semibold text-white/90 mb-1">Your client's home base</h3>
+            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>One link. Quote, contract, and messages — all in one place your clients love.</p>
+            <div className="rounded-lg p-3 mb-2 text-center" style={{ background: 'rgba(108,46,219,0.12)', border: '1px solid rgba(108,46,219,0.2)' }}>
+              <div className="text-[11px] font-bold mb-1" style={{ color: '#a78bfa' }}>Studio L{'\u00e9'}a K.</div>
+              <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Your project portal</div>
+            </div>
+            <div className="flex items-center gap-2 rounded-lg px-3 py-2" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
+              <span className="w-[5px] h-[5px] rounded-full" style={{ background: '#22c55e' }} />
+              <span className="text-[10px]" style={{ color: 'rgba(34,197,94,0.8)' }}>Contract signed &middot; Deposit paid</span>
             </div>
           </div>
 
-          {/* Supporting cell 1 — Quote builder */}
+          {/* SMALL CARD — Calendar */}
           <div
-            className="landing-feature-card rounded-[14px] overflow-hidden group"
-            style={{ padding: '28px 28px 0' }}
+            className="rounded-2xl overflow-hidden transition-all duration-300 col-span-12 md:col-span-4"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '22px' }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+            data-testid="feature-calendar"
           >
-            <span className="font-mono-kolor" style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(108,46,219,0.6)' }}>
-              Quote builder
-            </span>
-            <h3 className="text-lg font-semibold mt-2 mb-2" style={{ color: 'rgba(255,255,255,0.9)' }}>
-              Quotes that close
-            </h3>
-            <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
-              Professional proposals in 2 minutes. Clients approve online — no attachments, no printing, no excuses not to reply.
-            </p>
-            <QuotePipelineBar />
-            <div style={{ overflow: 'hidden', height: 160, marginTop: 16, borderRadius: '10px 10px 0 0' }}>
-              <QuoteMock />
+            <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Calendar sync</div>
+            <h3 className="text-base font-semibold text-white/90 mb-1">No more double-bookings</h3>
+            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>Google Calendar sync. Every shoot, call, and deadline blocked automatically.</p>
+            <div className="grid grid-cols-7 gap-1">
+              {[
+                { d: 'M', n: '10' }, { d: 'T', n: '11', event: 'Shoot' }, { d: 'W', n: '12' },
+                { d: 'T', n: '13', today: true }, { d: 'F', n: '14', event: 'Wedding' },
+                { d: 'S', n: '15' }, { d: 'S', n: '16' }
+              ].map((day, i) => (
+                <div key={i} className="text-center">
+                  <div className="text-[8px] mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{day.d}</div>
+                  <div className="text-[10px] font-semibold w-[22px] h-[22px] flex items-center justify-center rounded-md mx-auto"
+                    style={{ background: day.today ? '#6C2EDB' : day.event ? 'rgba(108,46,219,0.2)' : 'transparent', color: day.today ? '#fff' : day.event ? '#a78bfa' : 'rgba(255,255,255,0.5)' }}>
+                    {day.n}
+                  </div>
+                  {day.event && <div className="text-[7px] rounded px-1 mt-1 truncate" style={{ background: 'rgba(108,46,219,0.2)', color: '#a78bfa' }}>{day.event}</div>}
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Supporting cell 2 — Contracts */}
+          {/* SMALL CARD — Automation */}
           <div
-            className="landing-feature-card rounded-[14px] overflow-hidden group"
-            style={{ padding: '28px 28px 0' }}
+            className="rounded-2xl overflow-hidden transition-all duration-300 col-span-12 md:col-span-4"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '22px' }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(108,46,219,0.3)')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+            data-testid="feature-automation"
           >
-            <span className="font-mono-kolor" style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(108,46,219,0.6)' }}>
-              Online contracts
-            </span>
-            <h3 className="text-lg font-semibold mt-2 mb-2" style={{ color: 'rgba(255,255,255,0.9)' }}>
-              Signed before they change their mind
-            </h3>
-            <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
-              Send a contract and get it back signed from any device in minutes. No printing. No scanning. No "I'll get it back to you."
-            </p>
-            <div style={{ overflow: 'hidden', height: 200, borderRadius: '10px 10px 0 0' }}>
-              <PortalMock />
+            <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Automation</div>
+            <h3 className="text-base font-semibold text-white/90 mb-1">Follow-ups on autopilot</h3>
+            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>Automated sequences keep leads warm so nothing falls through the cracks.</p>
+            <div>
+              {[
+                { label: 'Inquiry received — instant reply', day: 'Day 0', color: '#22c55e' },
+                { label: 'Quote follow-up sent', day: 'Day 3', color: '#a78bfa' },
+                { label: 'Contract reminder', day: 'Day 7', color: 'rgba(255,255,255,0.25)' },
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-3 mb-3">
+                  <div className="flex flex-col items-center flex-shrink-0">
+                    <div className="w-[7px] h-[7px] rounded-full mt-1" style={{ background: item.color }} />
+                    {i < 2 && <div className="w-px mt-1" style={{ height: 18, background: 'rgba(255,255,255,0.1)' }} />}
+                  </div>
+                  <div>
+                    <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>{item.label}</div>
+                    <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.day}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
