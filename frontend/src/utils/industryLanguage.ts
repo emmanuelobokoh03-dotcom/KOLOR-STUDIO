@@ -40,6 +40,9 @@ export interface IndustryLanguage {
     completed: string;
   };
 
+  // Fine-grained pipeline stage names (for Kanban column headers)
+  pipelineStages: string[];
+
   // Dashboard nudge text
   nudgePrefix: string;
   nudgeQuote: string;
@@ -116,6 +119,18 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
       contracted: 'Contracted',
       completed: 'Booked',
     },
+
+    pipelineStages: [
+      'Inquiry',
+      'Discovery Call',
+      'Quote Sent',
+      'Contract Signed',
+      'Deposit Received',
+      'Shoot Scheduled',
+      'Editing',
+      'Gallery Delivered',
+      'Complete',
+    ],
 
     nudgePrefix: 'is waiting on their quote',
     nudgeQuote: 'quote',
@@ -196,6 +211,19 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
       completed: 'Delivered',
     },
 
+    pipelineStages: [
+      'Brief Received',
+      'Brief Call',
+      'Proposal Sent',
+      'Agreement Signed',
+      'Deposit Received',
+      'In Progress',
+      'Client Review',
+      'Revisions',
+      'Final Delivery',
+      'Complete',
+    ],
+
     nudgePrefix: 'is waiting on their proposal',
     nudgeQuote: 'proposal',
 
@@ -275,6 +303,19 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
       completed: 'Delivered',
     },
 
+    pipelineStages: [
+      'Inquiry',
+      'Portfolio Review',
+      'Commission Scope',
+      'Offer Sent',
+      'Agreement Signed',
+      'Deposit Received',
+      'Work In Progress',
+      'Collector Review',
+      'Final Payment',
+      'Delivered',
+    ],
+
     nudgePrefix: 'is waiting on their offer',
     nudgeQuote: 'offer',
 
@@ -323,6 +364,12 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
   },
 };
 
-export function getIndustryLanguage(industry: IndustryType | undefined | null): IndustryLanguage {
-  return industryLanguage[industry ?? 'PHOTOGRAPHY'];
+export function getIndustryLanguage(industry: IndustryType | string | undefined | null): IndustryLanguage {
+  if (industry === 'FINE_ART') return industryLanguage.FINE_ART;
+  if (industry === 'DESIGN' ||
+      industry === 'GRAPHIC_DESIGN' ||
+      industry === 'WEB_DESIGN' ||
+      industry === 'ILLUSTRATION' ||
+      industry === 'BRANDING') return industryLanguage.DESIGN;
+  return industryLanguage.PHOTOGRAPHY;
 }
