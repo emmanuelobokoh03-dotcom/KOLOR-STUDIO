@@ -63,7 +63,7 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
     return false;
   }
 
-  const dashboardUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const dashboardUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
 
   const content = `
@@ -157,7 +157,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
   }
 
   const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
-  const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
   const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null;
 
   const content = `
@@ -401,7 +401,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -496,7 +496,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
   const portalUrl = `${baseUrl}/portal/${data.portalToken}`;
   const firstName = data.clientName.split(' ')[0];
 
@@ -590,7 +590,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
   const resetUrl = `${baseUrl}/reset-password/${data.resetToken}`;
 
   const content = `
@@ -680,7 +680,7 @@ interface VerificationEmailData {
 export async function sendVerificationEmail(data: VerificationEmailData): Promise<boolean> {
   if (!resend) return false;
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
   const verifyUrl = `${baseUrl}/verify-email/${data.verificationToken}`;
 
   try {
@@ -743,7 +743,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
   console.log('[EMAIL] SENDER_EMAIL:', SENDER_EMAIL);
   console.log('[EMAIL] Recipient:', data.clientEmail);
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
   // Link to portal if portalToken is available, otherwise fallback to public quote page
   const quoteUrl = data.portalToken
     ? `${baseUrl}/portal/${data.portalToken}`
@@ -874,7 +874,7 @@ export async function sendQuoteAcceptedNotification(data: QuoteAcceptedData): Pr
 
   console.log('[EMAIL] SENDER_EMAIL:', SENDER_EMAIL, '| Recipient:', data.ownerEmail);
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const sym = data.currencySymbol || '$';
   const formattedTotal = `${sym}${data.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -972,7 +972,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     return false;
   }
 
-  const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
   const dashboardUrl = `${baseUrl}/dashboard`;
   const formattedTotal = data.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
@@ -2136,7 +2136,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
   const sym = stats.currencySymbol;
   const startStr = period.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const endStr = period.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const baseUrl = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
 
   // Build stat cards
   const statCards = [
@@ -2892,7 +2892,7 @@ export async function sendFileUploadNotification(data: FileUploadNotificationDat
 
 import { getIndustryLanguage } from '../utils/industryLanguage';
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://hardened-crm-2.preview.emergentagent.com';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://kolorstudio.app';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 // ── #02 — Welcome Email (industry-adaptive) ──
