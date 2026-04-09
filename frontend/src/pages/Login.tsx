@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { SpinnerGap } from '@phosphor-icons/react'
 import { authApi } from '../services/api'
 import { trackLogin } from '../utils/analytics'
+import KolorLogo from '../components/KolorLogo'
 
 /* SVG helpers */
 const StarIcon = () => <svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 0l1.12 3.45H10L6.94 5.59l1.18 3.41L5 6.91 1.88 9l1.18-3.41L0 3.45h3.88z" fill="#E8891A" /></svg>
@@ -71,7 +72,7 @@ const Login = () => {
         <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.03 }}><filter id="g"><feTurbulence baseFrequency="0.65" /></filter><rect width="100%" height="100%" filter="url(#g)" /></svg>
 
         <div className="relative z-10">
-          <Link to="/" className="block mb-12" style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.08em', background: 'linear-gradient(135deg, #ffffff 40%, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>KOLOR</Link>
+          <KolorLogo variant="light" size="md" linkTo="/" className="mb-12" />
 
           <h2 className="font-display font-extrabold leading-[1.1] tracking-[-0.025em] mb-4" style={{ fontSize: 34 }}>
             <span style={{ color: '#fff' }}>Welcome back to</span><br />
@@ -107,7 +108,7 @@ const Login = () => {
       <div className="flex flex-col justify-center bg-surface-base overflow-y-auto" style={{ padding: 'clamp(32px, 5vh, 52px) clamp(24px, 4vw, 48px)' }}>
         <div className="max-w-[400px] w-full mx-auto">
           {/* Mobile logo */}
-          <Link to="/" className="md:hidden block mb-8" style={{ fontSize: 16, fontWeight: 800, letterSpacing: '0.08em', background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>KOLOR</Link>
+          <KolorLogo variant="dark" size="md" linkTo="/" className="md:hidden mb-8" />
 
           <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-text-primary mb-1">Sign in</h1>
           <p className="text-[13px] text-text-secondary mb-6">

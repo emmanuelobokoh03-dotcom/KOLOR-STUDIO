@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { ArrowRight } from '@phosphor-icons/react'
+import KolorLogo from '../components/KolorLogo'
 import { CountdownTimer } from '../components/CountdownTimer'
 
 /* ---------- BETA end date (7 days from now, persisted in localStorage) ---------- */
@@ -91,13 +92,7 @@ function Nav({ onCta }: { onCta: () => void }) {
       data-testid="landing-nav"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-3.5">
-        <Link
-          to="/"
-          className="font-extrabold text-lg tracking-[0.08em]"
-          style={{ color: 'rgba(255,255,255,0.85)' }}
-        >
-          KOLOR
-        </Link>
+        <KolorLogo variant="light" size="md" />
 
         <div className="hidden md:flex items-center gap-8">
           {['Features', 'Pricing', 'Stories'].map(label => (

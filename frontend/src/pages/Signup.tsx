@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { SpinnerGap, CheckCircle, Camera, PencilSimple, PaintBrush, ArrowLeft } from '@phosphor-icons/react'
 import { authApi } from '../services/api'
 import { trackSignup } from '../utils/analytics'
+import KolorLogo from '../components/KolorLogo'
 
 /* SVG helpers */
 const CheckSvg = () => <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3" fill="none" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -122,7 +123,7 @@ const Signup = () => {
         <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.03 }}><filter id="gs"><feTurbulence baseFrequency="0.65" /></filter><rect width="100%" height="100%" filter="url(#gs)" /></svg>
 
         <div className="relative z-10">
-          <Link to="/" className="block mb-12" style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.08em', background: 'linear-gradient(135deg, #ffffff 40%, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>KOLOR</Link>
+          <KolorLogo variant="light" size="md" linkTo="/" className="mb-12" />
 
           <h2 className="font-display font-extrabold leading-[1.1] tracking-[-0.025em] mb-4" style={{ fontSize: 34 }}>
             <span style={{ color: '#fff' }}>Your studio starts</span><br />
@@ -164,7 +165,7 @@ const Signup = () => {
       {/* Right panel — form */}
       <div className="flex flex-col justify-center bg-surface-base overflow-y-auto" style={{ padding: 'clamp(24px, 4vh, 52px) clamp(24px, 4vw, 48px)' }}>
         <div className="max-w-[400px] w-full mx-auto">
-          <Link to="/" className="md:hidden block mb-6" style={{ fontSize: 16, fontWeight: 800, letterSpacing: '0.08em', background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>KOLOR</Link>
+          <KolorLogo variant="dark" size="md" linkTo="/" className="md:hidden mb-6" />
 
           <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-text-primary mb-1">
             {step === 1 ? 'Create your account' : 'What do you create?'}
