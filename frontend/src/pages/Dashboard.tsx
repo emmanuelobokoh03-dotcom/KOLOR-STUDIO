@@ -419,13 +419,13 @@ const Dashboard = () => {
           </span>
           <div className="flex-1 min-w-0">
             <div className="text-xs font-bold text-text-primary truncate">{user?.firstName} {user?.lastName}</div>
-            <div className="text-[10px] text-text-secondary">Beta · Free plan</div>
+            <div className="text-[11px] text-text-secondary">Beta · Free plan</div>
           </div>
           <CaretDown weight="bold" className="w-3 h-3 text-text-tertiary" />
         </div>
 
         {/* Workspace nav */}
-        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-2">Workspace</div>
+        <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-2">Workspace</div>
         {([
           { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Dashboard' },
           { mode: 'list' as ViewMode, icon: ListIcon, label: 'Leads', badge: stats?.total },
@@ -451,7 +451,7 @@ const Dashboard = () => {
           </button>
         ))}
 
-        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Schedule</div>
+        <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Schedule</div>
         <button
           onClick={() => navigate('/calendar')}
           className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 mb-0.5 relative text-text-secondary hover:bg-surface-background hover:text-text-primary`}
@@ -461,7 +461,7 @@ const Dashboard = () => {
           Calendar
         </button>
 
-        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Account</div>
+        <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Account</div>
         {([
           { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
           { mode: 'sequences' as ViewMode, icon: Envelope, label: 'Sequences' },
@@ -485,9 +485,9 @@ const Dashboard = () => {
 
         {/* Beta plan card */}
         <div className="rounded-[9px] p-3 mb-2" style={{ background: 'linear-gradient(135deg, rgba(108,46,219,0.07), rgba(108,46,219,0.03))', border: '0.5px solid rgba(108,46,219,0.18)' }}>
-          <div className="text-[9px] font-bold uppercase tracking-[0.06em]" style={{ color: '#6C2EDB' }}>Beta Plan</div>
-          <div className="text-xs font-bold text-text-primary">Free Forever</div>
-          <div className="text-[10px] text-text-secondary">One of the first 20 &#10022;</div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.06em]" style={{ color: '#6C2EDB' }}>Beta Access</div>
+          <div className="text-xs font-bold text-text-primary">$97 one-time</div>
+          <div className="text-[10px] text-text-secondary">Founding member &#10022;</div>
         </div>
 
         {/* Settings */}
@@ -1346,6 +1346,7 @@ const Dashboard = () => {
           onCelebrate={triggerCelebration}
           initialTab={selectedLeadInitialTab}
           userIndustry={user?.industry as any}
+          currencySymbol={user?.currencySymbol || '$'}
         />
       )}
       {showAddModal && (

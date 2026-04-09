@@ -158,7 +158,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           </div>
         </div>
 
-        <h4 className="font-semibold text-text-primary mb-2 md:mb-3 cursor-pointer hover:text-purple-600 transition-colors duration-200 text-sm leading-snug line-clamp-2" onClick={() => onLeadClick(lead)}>
+        <h4 className="font-bold text-text-primary mb-2 md:mb-3 cursor-pointer hover:text-purple-600 transition-colors duration-200 text-sm leading-snug line-clamp-2" onClick={() => onLeadClick(lead)}>
           {lead.projectTitle}
         </h4>
 
