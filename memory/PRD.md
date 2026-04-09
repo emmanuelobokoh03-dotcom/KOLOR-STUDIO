@@ -109,6 +109,14 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - FeaturesSection: Rebuilt as bento grid — kanban hero card (full-width), quotes + contracts (medium), client portal + calendar sync + automation (small)
 - Removed unused DashboardMock/QuoteMock/PortalMock imports and QuotePipelineBar helper
 
+### Logo + Auth + Automation Fixes (Complete)
+- Created `KolorLogo.tsx` SVG component with light/dark/auto variants, sm/md/lg sizes, optional mark-only mode
+- Replaced text logos in Nav, Login.tsx, Signup.tsx with `<KolorLogo>` component (React Router `<Link>` internally)
+- Fixed hardcoded `hardened-crm-2` preview URL in contracts.ts → `kolorstudio.app` (0 remaining)
+- Fixed `scheduledEmailService.ts` portal URL from `?token=` (query) to `/${token}` (path param) matching App.tsx route
+- Added BOOKED status to onboarding auto-stop (was only LOST) in both general PATCH and Kanban drag handlers
+- Verified Google OAuth correctly sets `emailVerified: true` and redirects to `/onboarding` for new users
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
