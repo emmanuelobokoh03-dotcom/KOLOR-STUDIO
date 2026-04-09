@@ -671,6 +671,9 @@ router.patch('/:id', authMiddleware, async (req: AuthRequest, res: Response): Pr
       if (updates.status === 'LOST') {
         stopOnboardingForLead(id, 'lead_lost').catch(err => console.error('[AutoStop] Onboarding stop error:', err));
       }
+      if (updates.status === 'BOOKED') {
+        stopOnboardingForLead(id, 'lead_booked').catch(err => console.error('[AutoStop] Onboarding stop error:', err));
+      }
 
       sendStatusChangeNotification({
         clientName: existingLead.clientName,
@@ -749,9 +752,12 @@ router.patch('/:id/status', authMiddleware, async (req: AuthRequest, res: Respon
         { oldStatus, newStatus: status }
       );
 
-      // WS5: Auto-stop onboarding sequences when lead is LOST
+      // WS5: Auto-stop onboarding sequences when lead is LOST or BOOKED
       if (status === 'LOST') {
         stopOnboardingForLead(id, 'lead_lost').catch(err => console.error('[AutoStop] Onboarding stop error:', err));
+      }
+      if (status === 'BOOKED') {
+        stopOnboardingForLead(id, 'lead_booked').catch(err => console.error('[AutoStop] Onboarding stop error:', err));
       }
 
       // Send email notification to client (non-blocking)

@@ -43,7 +43,7 @@ export async function processScheduledEmails(): Promise<void> {
             creativeName,
             studioName,
             projectTitle: lead.projectTitle,
-            testimonialUrl: `${frontendUrl}/portal?token=${lead.portalToken}`,
+            testimonialUrl: `${frontendUrl}/portal/${lead.portalToken}`,
           });
         } else if (type === 'FILE_REVIEW_REMINDER') {
           const meta = (metadata as any) || {};
@@ -54,7 +54,7 @@ export async function processScheduledEmails(): Promise<void> {
             studioName,
             projectTitle: lead.projectTitle,
             fileCount: meta.fileCount || 1,
-            portalUrl: `${frontendUrl}/portal?token=${lead.portalToken}`,
+            portalUrl: `${frontendUrl}/portal/${lead.portalToken}`,
           });
         } else if (type === 'POST_CALL_QUOTE_REMINDER') {
           if (owner) {
