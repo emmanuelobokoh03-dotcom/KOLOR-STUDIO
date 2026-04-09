@@ -25,10 +25,10 @@ const PHOTO_SERVICE_TYPES: { value: ServiceType; label: string }[] = [
 
 const DESIGN_SERVICE_TYPES: { value: ServiceType; label: string }[] = [
   { value: 'BRANDING', label: 'Brand Identity' },
-  { value: 'WEB_DESIGN', label: 'UI/UX Design' },
+  { value: 'GRAPHIC_DESIGN', label: 'UI/UX Design' },
   { value: 'GRAPHIC_DESIGN', label: 'Graphic Design' },
   { value: 'WEB_DESIGN', label: 'Web Design' },
-  { value: 'OTHER', label: 'Motion Design' },
+  { value: 'ILLUSTRATION', label: 'Motion Design' },
   { value: 'ILLUSTRATION', label: 'Illustration' },
   { value: 'OTHER', label: 'Other' },
 ]

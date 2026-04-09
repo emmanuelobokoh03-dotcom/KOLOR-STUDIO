@@ -104,6 +104,8 @@ interface PortalData {
     email: string;
     name: string;
     studioName?: string;
+    brandPrimaryColor?: string | null;
+    brandLogoUrl?: string | null;
   };
   meta: {
     portalViews: number;
@@ -405,6 +407,8 @@ export default function ClientPortal() {
   };
 
   const studioName = data?.contact?.studioName || 'KOLOR STUDIO';
+  const brandColor = data?.contact?.brandPrimaryColor || '#6C2EDB';
+  const brandLogo = data?.contact?.brandLogoUrl || null;
 
   // ── Loading ──
   if (loading) {
@@ -448,12 +452,18 @@ export default function ClientPortal() {
       )}
 
       {/* ── Header ── */}
-      <header className="relative bg-[#1a1625] text-white overflow-hidden" data-testid="portal-header">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#6C2EDB]/30 to-transparent" />
+      <header className="relative text-white overflow-hidden" style={{ background: '#1a1625' }} data-testid="portal-header">
+        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${brandColor}30 0%, transparent 70%)` }} />
         <div className="relative max-w-3xl mx-auto px-5 pt-8 pb-7">
           <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-              <Sparkle weight="fill" className="w-4 h-4 text-[#A78BFA]" />
+            <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              {brandLogo ? (
+                <img src={brandLogo} alt={studioName} className="w-full h-full object-contain" />
+              ) : (
+                <span className="text-[11px] font-extrabold text-white/90">
+                  {studioName.charAt(0).toUpperCase()}
+                </span>
+              )}
             </div>
             <span className="text-sm font-bold tracking-widest text-white/80 uppercase">{studioName}</span>
           </div>
@@ -870,7 +880,7 @@ export default function ClientPortal() {
                           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                             <path d="M7 1L9 5H13L10 8L11 12L7 10L3 12L4 8L1 5H5L7 1Z" fill="#1D9E75"/>
                           </svg>
-                          <span style={{ fontSize: 11, color: '#1D9E75', fontFamily: "'Space Mono', monospace", letterSpacing: '0.04em' }}>
+                          <span style={{ fontSize: 11, color: '#1D9E75', fontFamily: 'Inter, system-ui, sans-serif', fontWeight: 600, letterSpacing: '0.06em' }}>
                             E-SIGNATURE · LEGALLY BINDING · TIMESTAMPED AUDIT TRAIL
                           </span>
                         </div>
@@ -979,7 +989,7 @@ export default function ClientPortal() {
 
         {/* Footer */}
         <footer className="text-center text-gray-400 text-xs py-8">
-          <p>Thank you for choosing us for your creative project.</p>
+          <p>Thank you for working with {studioName}.</p>
           <p className="mt-2 text-[10px] text-gray-300" data-testid="powered-by-badge">
             Powered by{' '}
             <Link to="/" className="text-[#6C2EDB] hover:text-[#5B27B5] transition font-semibold">

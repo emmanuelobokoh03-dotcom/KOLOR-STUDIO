@@ -205,7 +205,7 @@ export default function PublicQuote() {
                 <h1 className="text-2xl md:text-3xl font-bold mb-1">
                   {quote.createdBy?.studioName || 'Quote'}
                 </h1>
-                <p className="text-purple-600 font-mono text-sm">
+                <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>
                   Quote #{quote.quoteNumber}
                 </p>
               </div>
@@ -227,8 +227,8 @@ export default function PublicQuote() {
                   {quote.status === 'ACCEPTED' ? 'Accepted' :
                    quote.status === 'DECLINED' ? 'Declined' :
                    isExpired ? 'Expired' :
-                   quote.status === 'VIEWED' ? 'Pending Response' :
-                   'Pending Review'}
+                   quote.status === 'VIEWED' ? 'Awaiting your response' :
+                   'Awaiting your review'}
                 </div>
               </div>
             </div>

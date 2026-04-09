@@ -77,6 +77,7 @@ interface LeadDetailModalProps {
   onCelebrate?: (key: string, achievementKey: string) => void;
   initialTab?: string;
   userIndustry?: IndustryType;
+  currencySymbol?: string;
 }
 
 const STATUS_OPTIONS: LeadStatus[] = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
@@ -159,7 +160,7 @@ const FileGridSkeleton = () => (
   </div>
 );
 
-export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, initialTab, userIndustry }: LeadDetailModalProps) {
+export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, initialTab, userIndustry, currencySymbol = '$' }: LeadDetailModalProps) {
   const lang = getIndustryLanguage(userIndustry)
   const modalRef = useModalA11y(true, onClose)
   const [editing, setEditing] = useState(false);
@@ -665,7 +666,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               <div className="flex items-center gap-2 flex-shrink-0">
                 {lead.estimatedValue && (
                   <span className="px-2.5 py-1 rounded-full text-xs font-semibold tabular-nums" style={{ background: `${statusGradient.avatarBg}18`, color: statusGradient.avatarBg }} data-testid="lead-value-chip">
-                    ${lead.estimatedValue.toLocaleString()}
+                    {currencySymbol}{lead.estimatedValue.toLocaleString()}
                   </span>
                 )}
                 <button
@@ -1633,7 +1634,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                             />
                           ) : (
                             <p className="font-medium text-green-400">
-                              ${lead.estimatedValue?.toLocaleString()}
+                              {currencySymbol}{lead.estimatedValue?.toLocaleString()}
                             </p>
                           )}
                         </div>

@@ -401,6 +401,8 @@ export type PortfolioCategory =
   | 'VIDEOGRAPHY'
   | 'GRAPHIC_DESIGN'
   | 'WEB_DESIGN'
+  | 'ILLUSTRATION'
+  | 'FINE_ART'
   | 'BRANDING'
   | 'CONTENT_CREATION'
   | 'OTHER';
@@ -480,6 +482,8 @@ export const PORTFOLIO_CATEGORY_LABELS: Record<PortfolioCategory, string> = {
   VIDEOGRAPHY: 'Videography',
   GRAPHIC_DESIGN: 'Graphic Design',
   WEB_DESIGN: 'Web Design',
+  ILLUSTRATION: 'Illustration',
+  FINE_ART: 'Fine Art',
   BRANDING: 'Branding',
   CONTENT_CREATION: 'Content Creation',
   OTHER: 'Other',
@@ -664,6 +668,9 @@ export interface CreateLeadData {
   industry?: IndustryType;
   deliverableType?: DeliverableType;
   coverImage?: string;
+  medium?: string;
+  dimensions?: string;
+  edition?: string;
 }
 
 export interface SubmitLeadData {
