@@ -75,24 +75,24 @@ const Login = () => {
           <KolorLogo variant="light" size="md" linkTo="/" className="mb-12" />
 
           <h2 className="font-display font-extrabold leading-[1.1] tracking-[-0.025em] mb-4" style={{ fontSize: 34 }}>
-            <span style={{ color: '#fff' }}>Welcome back to</span><br />
-            <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>your studio.</span>
+            <span style={{ color: '#fff' }}>Your clients are waiting.</span><br />
+            <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Let's get to work.</span>
           </h2>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.65, maxWidth: 300, marginBottom: 32 }}>
-            Everything you left is exactly where you left it. Your leads, your quotes, your next booking.
+            Everything you left is exactly where you left it — your leads, your pipeline, your next deal waiting to be closed.
           </p>
 
           {/* Testimonial */}
           <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: 18 }}>
             <div className="flex gap-[3px] mb-2.5">{[...Array(5)].map((_, i) => <StarIcon key={i} />)}</div>
             <p className="italic" style={{ fontSize: 11, color: 'rgba(255,255,255,0.62)', lineHeight: 1.65, marginBottom: 12 }}>
-              "I booked 4 weddings in my first month using KOLOR. It's the first CRM that actually feels designed for photographers."
+              "I haven't missed a follow-up in three months. My booking rate went from 30% to over 60%."
             </p>
             <div className="flex items-center gap-2.5">
-              <span style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(167,139,250,0.2)', color: '#a78bfa', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700 }}>SL</span>
+              <span style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(167,139,250,0.2)', color: '#a78bfa', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700 }}>MT</span>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.75)' }}>Sophie L.</div>
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>Wedding photographer · Cape Town</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.75)' }}>Marcus T.</div>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>Portrait photographer · New York</div>
               </div>
             </div>
           </div>
@@ -110,7 +110,7 @@ const Login = () => {
           {/* Mobile logo */}
           <KolorLogo variant="dark" size="md" linkTo="/" className="md:hidden mb-8" />
 
-          <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-text-primary mb-1">Sign in</h1>
+          <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-text-primary mb-1">Sign in to KOLOR</h1>
           <p className="text-[13px] text-text-secondary mb-6">
             No account yet?{' '}
             <Link to="/signup" className="font-medium" style={{ color: '#6C2EDB' }}>Start for free →</Link>

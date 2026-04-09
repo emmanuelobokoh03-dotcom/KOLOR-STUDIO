@@ -107,7 +107,13 @@ const Signup = () => {
     if (loginResult.data?.user) {
       localStorage.removeItem('token')
       setSuccess('Account created! Setting up your workspace...')
-      setTimeout(() => navigate('/onboarding'), 1000)
+      const industryMap: Record<IndustryChoice, string> = {
+        PHOTOGRAPHY: 'PHOTOGRAPHY',
+        DESIGN: 'GRAPHIC_DESIGN',
+        FINE_ART: 'FINE_ART',
+      }
+      try { await authApi.onboarding(industryMap[industry]) } catch {}
+      setTimeout(() => navigate('/dashboard'), 1000)
     } else {
       setSuccess('Account created! Please log in.')
       setTimeout(() => navigate('/login'), 2000)
@@ -126,16 +132,16 @@ const Signup = () => {
           <KolorLogo variant="light" size="md" linkTo="/" className="mb-12" />
 
           <h2 className="font-display font-extrabold leading-[1.1] tracking-[-0.025em] mb-4" style={{ fontSize: 34 }}>
-            <span style={{ color: '#fff' }}>Your studio starts</span><br />
-            <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>right here.</span>
+            <span style={{ color: '#fff' }}>Every client. Every quote.</span><br />
+            <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>One place.</span>
           </h2>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.65, maxWidth: 300, marginBottom: 28 }}>
-            Free forever for the first 20 creators. Leads, quotes, contracts — in one place that fits your workflow.
+            First 20 spots: $97, lifetime access. No monthly fees. Leads, quotes, and signed contracts — before your next client changes their mind.
           </p>
 
           {/* Feature checklist */}
           <div className="flex flex-col gap-2.5 mb-7">
-            {['No credit card required, ever', 'Set up fully in under 5 minutes', 'Free forever for beta creators', 'Cancel or leave anytime'].map(item => (
+            {['Every lead tracked from first inquiry to signed contract', 'Quotes that clients approve in one click', 'Contracts signed online — no PDF, no printing', 'Calendar sync so you never double-book again'].map(item => (
               <div key={item} className="flex items-center gap-2.5" style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
                 <span className="flex items-center justify-center flex-shrink-0" style={{ width: 18, height: 18, borderRadius: 5, background: 'rgba(108,46,219,0.18)', border: '1px solid rgba(108,46,219,0.3)' }}><CheckSvg /></span>
                 {item}
@@ -168,13 +174,13 @@ const Signup = () => {
           <KolorLogo variant="dark" size="md" linkTo="/" className="md:hidden mb-6" />
 
           <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-text-primary mb-1">
-            {step === 1 ? 'Create your account' : 'What do you create?'}
+            {step === 1 ? 'Create your account' : 'Choose your discipline'}
           </h1>
           <p className="text-[13px] text-text-secondary mb-5">
             {step === 1 ? (
               <>Already have one?{' '}<Link to="/login" className="font-medium" style={{ color: '#6C2EDB' }}>Sign in &rarr;</Link></>
             ) : (
-              "We'll tailor the experience to your craft."
+              "KOLOR adapts its language and templates to how you actually work."
             )}
           </p>
 
@@ -324,7 +330,7 @@ const Signup = () => {
                 onMouseLeave={e => { if (industry && !loading) e.currentTarget.style.background = '#6C2EDB' }}
                 data-testid="signup-submit"
               >
-                {loading ? <span className="inline-flex items-center gap-2"><SpinnerGap className="w-4 h-4 animate-spin" />Creating account...</span> : 'Create free account \u2192'}
+                {loading ? <span className="inline-flex items-center gap-2"><SpinnerGap className="w-4 h-4 animate-spin" />Setting up your studio...</span> : 'Set up my studio \u2192'}
               </button>
             </>
           )}
