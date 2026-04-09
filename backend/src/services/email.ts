@@ -170,12 +170,12 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
     </p>
     
     <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
-      <strong style="color: #1A1A2E;">What happens next?</strong> We'll review your project details and get back to you within <strong style="color: #7c3aed;">24-48 hours</strong> with next steps and any questions we might have.
+      <strong style="color: #1A1A2E;">What happens next?</strong> We'll review your project details and get back to you within <strong style="color: #6C2EDB;">24-48 hours</strong> with next steps and any questions we might have.
     </p>
     
     ${portalUrl ? `
     <!-- Portal Access Card -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); border-radius: 12px; margin-bottom: 24px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #6C2EDB 0%, #a855f7 100%); border-radius: 12px; margin-bottom: 24px;">
       <tr>
         <td style="padding: 24px; text-align: center;">
           <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #ffffff;">
@@ -184,7 +184,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
           <p style="margin: 0 0 16px 0; font-size: 14px; color: rgba(255,255,255,0.9);">
             Bookmark this link to check your project progress anytime
           </p>
-          <a href="${portalUrl}" style="display: inline-block; background-color: #ffffff; color: #7c3aed; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 24px; border-radius: 8px;">
+          <a href="${portalUrl}" style="display: inline-block; background-color: #ffffff; color: #6C2EDB; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 24px; border-radius: 8px;">
             View My Project Portal
           </a>
         </td>
@@ -196,7 +196,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
       <tr>
         <td style="padding: 24px;">
-          <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: 600; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">
+          <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: 600; color: #6C2EDB; text-transform: uppercase; letter-spacing: 0.5px;">
             Your Inquiry Summary
           </h3>
           <table width="100%" cellpadding="0" cellspacing="0">
@@ -251,7 +251,7 @@ export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
     
     <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Warm regards,<br>
-      <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
+      <strong style="color: #6C2EDB;">The KOLOR STUDIO Team</strong>
     </p>
   `;
 
@@ -309,7 +309,7 @@ export async function sendInquiryAcknowledgementEmail(params: {
       </p>
       ${portalUrl ? `
       <p style="font-size:14px;color:#6B7280;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
-        Track your project status at your <a href="${portalUrl}" style="color:#7C3AED;text-decoration:underline;">client portal</a>.
+        Track your project status at your <a href="${portalUrl}" style="color:#6C2EDB;text-decoration:underline;">client portal</a>.
       </p>` : ''}
       <p style="font-size:15px;color:#6B7280;margin:24px 0 0;font-family:Arial,Helvetica,sans-serif;">
         Warm regards,<br><strong style="color:#1A1A2E;">${params.studioName}</strong>
@@ -426,7 +426,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
       <tr>
         <td style="padding: 20px;">
-          <p style="margin: 0; font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+          <p style="margin: 0; font-size: 12px; color: #6C2EDB; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
             Your Project
           </p>
           <p style="margin: 8px 0 0 0; font-size: 18px; font-weight: 700; color: #1A1A2E;">
@@ -440,7 +440,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center">
-          <a href="${portalUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${portalUrl}" style="display: inline-block; background-color: #6C2EDB; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             View Project Portal
           </a>
         </td>
@@ -457,7 +457,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
     
     <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Best regards,<br>
-      <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
+      <strong style="color: #6C2EDB;">The KOLOR STUDIO Team</strong>
     </p>
   `;
 
@@ -521,7 +521,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
       <tr>
         <td style="padding: 20px;">
-          <p style="margin: 0; font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+          <p style="margin: 0; font-size: 12px; color: #6C2EDB; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
             Your Project
           </p>
           <p style="margin: 8px 0 0 0; font-size: 18px; font-weight: 700; color: #1A1A2E;">
@@ -535,7 +535,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center">
-          <a href="${portalUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${portalUrl}" style="display: inline-block; background-color: #6C2EDB; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             View My Project Portal
           </a>
         </td>
@@ -552,7 +552,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
     
     <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Best regards,<br>
-      <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
+      <strong style="color: #6C2EDB;">The KOLOR STUDIO Team</strong>
     </p>
   `;
 
@@ -614,7 +614,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
       <tr>
         <td align="center">
-          <a href="${resetUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${resetUrl}" style="display: inline-block; background-color: #6C2EDB; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             Reset Password
           </a>
         </td>
@@ -646,7 +646,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData): Promise<b
     
     <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Stay creative,<br>
-      <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
+      <strong style="color: #6C2EDB;">The KOLOR STUDIO Team</strong>
     </p>
   `;
 
@@ -1030,7 +1030,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center">
-          <a href="${dashboardUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${dashboardUrl}" style="display: inline-block; background-color: #6C2EDB; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             View Lead in Dashboard
           </a>
         </td>
@@ -1039,7 +1039,7 @@ export async function sendQuoteDeclinedNotification(data: QuoteDeclinedData): Pr
     
     <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
       Don't give up! 💪<br>
-      <strong style="color: #7c3aed;">The KOLOR STUDIO Team</strong>
+      <strong style="color: #6C2EDB;">The KOLOR STUDIO Team</strong>
     </p>
   `;
 
@@ -1090,7 +1090,7 @@ export async function sendCustomEmail(data: CustomEmailData): Promise<boolean> {
     <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;" />
     
     <p style="margin: 0; font-size: 14px; color: #9CA3AF;">
-      Sent via <strong style="color: #7c3aed;">KOLOR STUDIO</strong>
+      Sent via <strong style="color: #6C2EDB;">KOLOR STUDIO</strong>
     </p>
   `;
 
@@ -1185,14 +1185,14 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
     </p>
     
     <!-- Booking Details Card -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; margin-bottom: 24px; border: 2px solid #7c3aed;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; margin-bottom: 24px; border: 2px solid #6C2EDB;">
       <tr>
         <td style="padding: 24px;">
           <table width="100%" cellpadding="0" cellspacing="0">
             <!-- Project Title -->
             <tr>
               <td style="padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
-                <span style="font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                <span style="font-size: 12px; color: #6C2EDB; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
                   PROJECT
                 </span>
                 <h2 style="margin: 8px 0 0 0; font-size: 20px; font-weight: 700; color: #1A1A2E;">
@@ -1207,7 +1207,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
                 <table width="100%" cellpadding="0" cellspacing="0">
                   <tr>
                     <td width="40" valign="top">
-                      <div style="width: 36px; height: 36px; background-color: #7c3aed; border-radius: 8px; text-align: center; line-height: 36px;">
+                      <div style="width: 36px; height: 36px; background-color: #6C2EDB; border-radius: 8px; text-align: center; line-height: 36px;">
                         <span style="font-size: 18px;">&#128197;</span>
                       </div>
                     </td>
@@ -1301,7 +1301,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
     <p style="margin: 0; font-size: 16px; color: #6B7280; line-height: 1.6;">
       We're looking forward to creating something amazing together!<br><br>
       Best regards,<br>
-      <strong style="color: #7c3aed;">${studioName}</strong>
+      <strong style="color: #6C2EDB;">${studioName}</strong>
     </p>
   `;
 
@@ -1375,7 +1375,7 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
         <tr>
           <td style="padding: 20px;">
-            <p style="margin: 0 0 8px 0; font-size: 12px; color: #7c3aed; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+            <p style="margin: 0 0 8px 0; font-size: 12px; color: #6C2EDB; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
               Agreement Details
             </p>
             <p style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #1A1A2E;">
@@ -1392,7 +1392,7 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
       <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
         <tr>
           <td align="center">
-            <a href="${data.portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; font-size: 18px; font-weight: 600; text-decoration: none; padding: 18px 48px; border-radius: 12px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
+            <a href="${data.portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #6C2EDB 0%, #a855f7 100%); color: #ffffff; font-size: 18px; font-weight: 600; text-decoration: none; padding: 18px 48px; border-radius: 12px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
               Review &amp; Sign Agreement
             </a>
           </td>
@@ -1410,7 +1410,7 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
       
       <p style="margin: 24px 0 0 0; font-size: 16px; color: #1A1A2E;">
         Looking forward to working together,<br>
-        <strong style="color: #7c3aed;">${data.studioName}</strong>
+        <strong style="color: #6C2EDB;">${data.studioName}</strong>
       </p>
     `;
 
@@ -2001,11 +2001,11 @@ export async function sendNewMessageNotification(data: {
       </div>
       <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1A1A2E; text-align: center;">New Message from ${data.from}</h2>
       <p style="text-align: center; color: #6B7280; margin-bottom: 24px;">Regarding: ${data.projectTitle}</p>
-      <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;">
+      <div style="background: #f9fafb; border-left: 4px solid #6C2EDB; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;">
         <p style="margin: 0; color: #1A1A2E; font-style: italic; line-height: 1.6;">"${preview}"</p>
       </div>
       <div style="text-align: center; margin-top: 28px;">
-        <a href="${data.dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+        <a href="${data.dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #6C2EDB, #6d28d9); color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
           View & Reply
         </a>
       </div>
@@ -2043,11 +2043,11 @@ export async function sendClientMessageNotification(data: {
         <span style="font-size: 48px;">💬</span>
       </div>
       <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #1A1A2E; text-align: center;">New Message from ${data.creativeName}</h2>
-      <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;">
+      <div style="background: #f9fafb; border-left: 4px solid #6C2EDB; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;">
         <p style="margin: 0; color: #1A1A2E; font-style: italic; line-height: 1.6;">"${preview}"</p>
       </div>
       <div style="text-align: center; margin-top: 28px;">
-        <a href="${data.portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+        <a href="${data.portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #6C2EDB, #6d28d9); color: white; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
           Open Portal & Reply
         </a>
       </div>
@@ -2156,7 +2156,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td style="color: #1A1A2E; font-size: 14px;">${a.label}</td>
-              <td align="right" style="font-weight: 700; color: #7c3aed; font-size: 14px;">${a.count}</td>
+              <td align="right" style="font-weight: 700; color: #6C2EDB; font-size: 14px;">${a.count}</td>
             </tr>
           </table>
         </td>
@@ -2199,7 +2199,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
       ${startStr} — ${endStr}
     </p>
     <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.6;">
-      Hi ${userName}, here's how your pipeline performed this week at <strong style="color: #7c3aed;">${studioName}</strong>.
+      Hi ${userName}, here's how your pipeline performed this week at <strong style="color: #6C2EDB;">${studioName}</strong>.
     </p>
 
     ${revenueSection}
@@ -2227,7 +2227,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
     <!-- Next Actions -->
     <table width="100%" cellpadding="0" cellspacing="0" style="background: #fafafa; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
       <tr>
-        <td style="padding: 14px 16px; background: #7c3aed; color: white; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+        <td style="padding: 14px 16px; background: #6C2EDB; color: white; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
           Action Items
         </td>
       </tr>
@@ -2249,7 +2249,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
     <table width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center" style="padding: 8px 0 24px;">
-          <a href="${baseUrl}/dashboard" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+          <a href="${baseUrl}/dashboard" style="display: inline-block; background-color: #6C2EDB; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
             Open Dashboard
           </a>
         </td>
@@ -2258,7 +2258,7 @@ export async function sendWeeklyDigestEmail(digest: DigestData): Promise<boolean
 
     <p style="margin: 0; font-size: 12px; color: #9CA3AF; text-align: center; line-height: 1.6;">
       This is your weekly autopilot digest from KOLOR STUDIO.<br>
-      To adjust email preferences, visit your <a href="${baseUrl}/dashboard" style="color: #7c3aed; text-decoration: underline;">dashboard settings</a>.
+      To adjust email preferences, visit your <a href="${baseUrl}/dashboard" style="color: #6C2EDB; text-decoration: underline;">dashboard settings</a>.
     </p>
   `;
 
@@ -2348,7 +2348,7 @@ export async function sendClientOnboardingEmail(
           I'm excited to work with you on your <strong>${projectType}</strong>.
           Here's what to expect over the coming days:
         </p>
-        <div style="background: #f9fafb; border-left: 4px solid #7c3aed; padding: 20px; margin: 24px 0; border-radius: 8px;">
+        <div style="background: #f9fafb; border-left: 4px solid #6C2EDB; padding: 20px; margin: 24px 0; border-radius: 8px;">
           <h3 style="margin: 0 0 12px 0; color: #1A1A2E; font-size: 16px;">What Happens Next</h3>
           <ul style="margin: 0; padding-left: 20px; color: #6B7280; line-height: 2;">
             <li>I'll start working on your ${iLang.call} right away</li>
@@ -2363,7 +2363,7 @@ export async function sendClientOnboardingEmail(
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td align="center" style="padding: 16px 0;">
-              <a href="${portalUrl}" style="display: inline-block; background-color: #7C3AED; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+              <a href="${portalUrl}" style="display: inline-block; background-color: #6C2EDB; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
                 Open Your Portal
               </a>
             </td>
@@ -2385,7 +2385,7 @@ export async function sendClientOnboardingEmail(
           Quick tip: your client portal is where everything lives! Here's what you can do:
         </p>
         <div style="margin: 24px 0;">
-          <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 16px; margin-bottom: 12px; border-radius: 6px;">
+          <div style="background: #F3EEFF; border-left: 4px solid #6C2EDB; padding: 16px; margin-bottom: 12px; border-radius: 6px;">
             <h4 style="margin: 0 0 6px 0; color: #1e40af; font-size: 15px;">Send Messages</h4>
             <p style="margin: 0; color: #475569; font-size: 14px;">Ask questions, share ideas, or request changes anytime</p>
           </div>
@@ -2405,7 +2405,7 @@ export async function sendClientOnboardingEmail(
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td align="center" style="padding: 16px 0;">
-              <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+              <a href="${portalUrl}" style="display: inline-block; background-color: #6C2EDB; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
                 Explore Your Portal
               </a>
             </td>
@@ -2545,7 +2545,7 @@ export async function sendQuoteFollowUpEmail(
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           I wanted to follow up on the quote I sent you for your <strong>${projectType}</strong>.
         </p>
-        <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 20px; margin: 24px 0; border-radius: 8px;">
+        <div style="background: #F3EEFF; border-left: 4px solid #6C2EDB; padding: 20px; margin: 24px 0; border-radius: 8px;">
           <p style="margin: 0; color: #1e40af; font-size: 20px; font-weight: 700;">${formattedAmount}</p>
           <p style="margin: 4px 0 0 0; color: #475569; font-size: 14px;">Investment for ${projectType}</p>
         </div>
@@ -2554,7 +2554,7 @@ export async function sendQuoteFollowUpEmail(
         </p>
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr><td align="center" style="padding: 16px 0;">
-            <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">Review Your Quote</a>
+            <a href="${portalUrl}" style="display: inline-block; background-color: #6C2EDB; color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">Review Your Quote</a>
           </td></tr>
         </table>
         <p style="color: #6B7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
@@ -2584,7 +2584,7 @@ export async function sendQuoteFollowUpEmail(
         </p>
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr><td align="center" style="padding: 16px 0;">
-            <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">View Quote & Ask Questions</a>
+            <a href="${portalUrl}" style="display: inline-block; background: linear-gradient(135deg, #8b5cf6, #6C2EDB); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">View Quote & Ask Questions</a>
           </td></tr>
         </table>
         <p style="color: #6B7280; font-size: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">

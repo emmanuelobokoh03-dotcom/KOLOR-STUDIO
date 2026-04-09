@@ -127,6 +127,8 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
             lastName: true,
             email: true,
             studioName: true,
+            brandPrimaryColor: true,
+            brandLogoUrl: true,
           }
         },
         contracts: {
@@ -226,7 +228,7 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
     }));
 
     // Build sanitized response (no internal data)
-    const assignedTo = lead.assignedTo as { firstName: string; lastName: string; email: string; studioName?: string } | null;
+    const assignedTo = lead.assignedTo as { firstName: string; lastName: string; email: string; studioName?: string; brandPrimaryColor?: string | null; brandLogoUrl?: string | null } | null;
     
     const portalData = {
       project: {
@@ -261,6 +263,8 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
           ? `${assignedTo.firstName} ${assignedTo.lastName}`
           : 'KOLOR STUDIO Team',
         studioName: assignedTo?.studioName || 'KOLOR STUDIO',
+        brandPrimaryColor: assignedTo?.brandPrimaryColor || null,
+        brandLogoUrl: assignedTo?.brandLogoUrl || null,
       },
       meta: {
         portalViews: lead.portalViews + 1, // Including this view
