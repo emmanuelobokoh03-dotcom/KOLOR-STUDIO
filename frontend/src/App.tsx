@@ -1,24 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
-import LandingPageV2 from './pages/LandingPageV2'
-import Dashboard from './pages/Dashboard'
-import Settings from './pages/Settings'
-import Login from './pages/Login'
-import Signup from './pages/Signup'
-import SubmitInquiry from './pages/SubmitInquiry'
-import ClientPortal from './pages/ClientPortal'
-import ForgotPassword from './pages/ForgotPassword'
-import ResetPassword from './pages/ResetPassword'
-import PublicQuote from './pages/PublicQuote'
-import PrivacyPolicy from './pages/PrivacyPolicy'
-import TermsOfService from './pages/TermsOfService'
-import PublicPortfolio from './pages/PublicPortfolio'
-import SubmitTestimonial from './pages/SubmitTestimonial'
-import VerifyEmail from './pages/VerifyEmail'
-import PublicBookingPage from './pages/PublicBookingPage'
-import IndustryOnboarding from './components/IndustryOnboarding'
-import CalendarPage from './pages/Calendar'
+const LandingPageV2 = lazy(() => import('./pages/LandingPageV2'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Settings = lazy(() => import('./pages/Settings'))
+const Login = lazy(() => import('./pages/Login'))
+const Signup = lazy(() => import('./pages/Signup'))
+const SubmitInquiry = lazy(() => import('./pages/SubmitInquiry'))
+const ClientPortal = lazy(() => import('./pages/ClientPortal'))
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
+const ResetPassword = lazy(() => import('./pages/ResetPassword'))
+const PublicQuote = lazy(() => import('./pages/PublicQuote'))
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
+const TermsOfService = lazy(() => import('./pages/TermsOfService'))
+const PublicPortfolio = lazy(() => import('./pages/PublicPortfolio'))
+const SubmitTestimonial = lazy(() => import('./pages/SubmitTestimonial'))
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'))
+const PublicBookingPage = lazy(() => import('./pages/PublicBookingPage'))
+const IndustryOnboarding = lazy(() => import('./components/IndustryOnboarding'))
+const CalendarPage = lazy(() => import('./pages/Calendar'))
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
 import NotFound from './pages/NotFound'
@@ -49,6 +49,11 @@ function App() {
         Skip to main content
       </a>
       <div id="main-content">
+      <Suspense fallback={
+        <div className="min-h-screen bg-surface-base flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full border-2 border-light-200 border-t-[#6C2EDB] animate-spin" />
+        </div>
+      }>
       <Routes>
         <Route path="/" element={<LandingPageV2 />} />
         <Route path="/login" element={<Login />} />
@@ -71,6 +76,7 @@ function App() {
         {/* AUDIT FIX [10.1]: Custom 404 page */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </Suspense>
       </div>
       <CookieConsent />
       <Toaster

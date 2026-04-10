@@ -48,7 +48,8 @@ interface AddLeadModalProps {
 
 const SERVICE_TYPES: ServiceType[] = [
   'PHOTOGRAPHY', 'VIDEOGRAPHY', 'GRAPHIC_DESIGN', 'WEB_DESIGN', 
-  'BRANDING', 'CONTENT_CREATION', 'CONSULTING', 'OTHER'
+  'BRANDING', 'ILLUSTRATION', 'FINE_ART',
+  'CONTENT_CREATION', 'CONSULTING', 'OTHER'
 ];
 
 const LEAD_SOURCES: LeadSource[] = [
@@ -57,10 +58,10 @@ const LEAD_SOURCES: LeadSource[] = [
 ];
 
 const PROJECT_TYPE_CONFIG: { type: ProjectType; icon: React.ElementType; desc: string; color: string }[] = [
-  { type: 'SERVICE', icon: Camera, desc: 'Session or event', color: 'violet' },
-  { type: 'COMMISSION', icon: Palette, desc: 'Custom artwork', color: 'amber' },
-  { type: 'PROJECT', icon: Briefcase, desc: 'Multi-phase work', color: 'blue' },
-  { type: 'PRODUCT_SALE', icon: ShoppingBag, desc: 'Product or print', color: 'emerald' },
+  { type: 'SERVICE', icon: Camera, desc: 'Session, shoot or event', color: 'violet' },
+  { type: 'COMMISSION', icon: Palette, desc: 'Custom artwork or piece', color: 'amber' },
+  { type: 'PROJECT', icon: Briefcase, desc: 'Multi-phase or ongoing', color: 'blue' },
+  { type: 'PRODUCT_SALE', icon: ShoppingBag, desc: 'Print, product or edition', color: 'emerald' },
 ];
 
 const INDUSTRY_ICONS: Record<IndustryType, React.ElementType> = {
@@ -420,15 +421,25 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
             {/* Conditional Fields */}
             {formData.projectType === 'COMMISSION' && (
               <div className="p-5 bg-amber-50 border border-amber-800/30 rounded-xl space-y-4">
-                <h4 className="text-sm font-medium text-amber-700">Commission Details</h4>
+                <h4 className="text-sm font-medium text-amber-700">
+                  {formData.serviceType === 'FINE_ART' ? 'Fine Art Commission Details' : 'Commission Details'}
+                </h4>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Dimensions</label>
                     <input type="text" name="dimensions" onChange={handleChange} className={inputClass} placeholder="e.g. 24x36 inches" />
                   </div>
                   <div>
-                    <label className={labelClass}>Medium</label>
-                    <input type="text" name="medium" onChange={handleChange} className={inputClass} placeholder="e.g. Oil on canvas" />
+                    <label className={labelClass}>
+                      {formData.serviceType === 'FINE_ART' ? 'Medium / technique' : 'Medium'}
+                    </label>
+                    <input
+                      type="text"
+                      name="medium"
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder={formData.serviceType === 'FINE_ART' ? 'Oil on canvas, watercolour, bronze...' : 'e.g. Oil on canvas'}
+                    />
                   </div>
                 </div>
                 <div>
