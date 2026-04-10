@@ -771,7 +771,6 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       const owner = await prisma.user.findUnique({ where: { id: assignedToId } });
       if (owner) {
         const { sendNewLeadNotification } = await import('../services/email');
-        const creativeName = `${owner.firstName || ''} ${owner.lastName || ''}`.trim() || 'Studio';
         sendNewLeadNotification({
           clientName, clientEmail, clientPhone, serviceType, projectTitle,
           description: description || '', leadId: lead.id, portalToken,
