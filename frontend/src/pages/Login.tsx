@@ -57,7 +57,7 @@ const Login = () => {
       localStorage.removeItem('token')
       localStorage.setItem('user', JSON.stringify(result.data.user))
       trackLogin('email')
-      navigate('/dashboard')
+      window.location.href = '/dashboard'
     }
   }
 

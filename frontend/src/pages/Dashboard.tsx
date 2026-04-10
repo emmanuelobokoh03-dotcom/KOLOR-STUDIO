@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import KolorLogo from '../components/KolorLogo'
 import {
-  Sparkle,
   SignOut,
   Plus,
   SquaresFour,
@@ -400,11 +400,11 @@ const Dashboard = () => {
         {/* Logo */}
         <button
           onClick={() => { setViewMode('kanban'); setStatusFilter(null) }}
-          className="block mb-4 px-2"
-          style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.08em', background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+          className="block mb-4 px-1"
           data-testid="sidebar-logo"
+          aria-label="Go to dashboard"
         >
-          KOLOR
+          <KolorLogo variant="dark" size="sm" markOnly={false} linkTo={null} />
         </button>
 
         {/* User block */}
@@ -528,17 +528,11 @@ const Dashboard = () => {
             {/* Mobile logo */}
             <button
               onClick={() => { setViewMode('kanban'); setStatusFilter(null); }}
-              className="flex items-center gap-2 md:gap-3 group transition-all duration-200 hover:opacity-80 lg:hidden"
+              className="flex items-center group transition-all duration-200 hover:opacity-80 lg:hidden"
               data-testid="header-logo-link"
+              aria-label="Go to dashboard"
             >
-              {user?.brandLogoUrl ? (
-                <img src={user.brandLogoUrl} alt="" className="w-6 h-6 md:w-8 md:h-8 rounded-lg object-contain" />
-              ) : (
-                <Sparkle className="w-6 h-6 md:w-8 md:h-8 text-brand-primary group-hover:brightness-110 transition-colors duration-200" />
-              )}
-              <span className="text-lg md:text-xl font-bold text-brand-primary font-brand">
-                {user?.studioName || 'KOLOR STUDIO'}
-              </span>
+              <KolorLogo variant="dark" size="sm" linkTo={null} />
             </button>
 
             {/* Desktop greeting */}
@@ -606,12 +600,7 @@ const Dashboard = () => {
           <div className="absolute left-0 top-0 bottom-0 w-72 bg-light-50 border-r border-light-200 animate-slide-left flex flex-col">
             {/* Sidebar Header */}
             <div className="flex items-center justify-between p-4 border-b border-light-200">
-              <div className="flex items-center gap-2">
-                <Sparkle className="w-6 h-6 text-brand-primary" />
-                <span className="font-bold text-lg bg-gradient-to-r from-brand-primary-light to-brand-primary-light bg-clip-text text-transparent">
-                  KOLOR STUDIO
-                </span>
-              </div>
+              <KolorLogo variant="dark" size="sm" linkTo={null} />
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-2 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl touch-target"

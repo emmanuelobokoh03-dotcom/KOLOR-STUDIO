@@ -42,7 +42,11 @@ export default function PublicPortfolio() {
   const industry = (userInfo?.industry || 'PHOTOGRAPHY') as IndustryType
   const lang = getIndustryLanguage(industry)
 
-  const studioDisplayName = userInfo?.studioName || userInfo?.businessName || userInfo?.name || 'Portfolio'
+  const studioDisplayName = userInfo?.studioName || userInfo?.businessName
+    || (userInfo?.firstName && userInfo?.lastName
+        ? `${userInfo.firstName} ${userInfo.lastName}`
+        : userInfo?.name)
+    || 'Portfolio'
   const initials = (userInfo?.firstName?.[0] || userInfo?.name?.[0] || 'K').toUpperCase()
   const featuredCount = useMemo(() => items.filter(i => i.featured).length, [items])
 
@@ -225,12 +229,13 @@ export default function PublicPortfolio() {
         </h1>
 
         {userInfo?.speciality && (
-          <p style={{ fontSize: 16, color: '#6B7280', marginTop: 8 }} data-testid="portfolio-speciality">{userInfo.speciality}</p>
+          <p
+            style={{ fontSize: 13, color: '#9CA3AF', marginTop: 6, letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 500 }}
+            data-testid="portfolio-speciality"
+          >
+            {userInfo.speciality}
+          </p>
         )}
-
-        <p style={{ fontSize: 15, color: '#6B7280', maxWidth: 520, margin: '16px auto 0', lineHeight: 1.65 }}>
-          Explore our creative work
-        </p>
 
         {/* CTA row */}
         <div style={{ marginTop: 32, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>

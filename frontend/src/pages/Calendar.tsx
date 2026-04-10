@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import KolorLogo from '../components/KolorLogo'
 import {
   CaretLeft,
   CaretRight,
@@ -16,7 +17,6 @@ import {
   SpinnerGap,
   SignOut,
   GearSix,
-  Sparkle,
   SquaresFour,
   Camera,
   Video,
@@ -202,13 +202,11 @@ export default function Calendar() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/dashboard')}
-              className="flex items-center gap-2 group"
+              className="flex items-center gap-2 group hover:opacity-80 transition-opacity"
               data-testid="calendar-back-to-dashboard"
+              aria-label="Back to dashboard"
             >
-              <Sparkle className="w-6 h-6 text-brand-primary" />
-              <span className="text-base font-extrabold tracking-wide" style={{ background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                KOLOR
-              </span>
+              <KolorLogo variant="dark" size="sm" linkTo={null} />
             </button>
             <span className="text-light-300 hidden md:inline">|</span>
             <h1 className="text-sm md:text-base font-semibold text-text-primary hidden md:block">Calendar</h1>

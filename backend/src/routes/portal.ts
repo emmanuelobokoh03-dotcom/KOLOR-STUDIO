@@ -770,18 +770,8 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
     if (assignedToId) {
       const owner = await prisma.user.findUnique({ where: { id: assignedToId } });
       if (owner) {
-        const { sendAutoResponseEmail, sendNewLeadNotification } = await import('../services/email');
+        const { sendNewLeadNotification } = await import('../services/email');
         const creativeName = `${owner.firstName || ''} ${owner.lastName || ''}`.trim() || 'Studio';
-        const portfolioUrl = `${process.env.FRONTEND_URL}/portfolio/${owner.id}`;
-        const message = `Thanks for reaching out about your project!\n\nI'll review your inquiry and send you a custom quote within 24 hours.\n\nCheck out my work: ${portfolioUrl}\n\nI'm excited to potentially work with you!`;
-        sendAutoResponseEmail({
-          clientName,
-          clientEmail,
-          creativeName,
-          studioName: owner.studioName || undefined,
-          message,
-          portalUrl: portfolioUrl,
-        }).catch(e => console.error('[Portal] Auto-response error:', e));
         sendNewLeadNotification({
           clientName, clientEmail, clientPhone, serviceType, projectTitle,
           description: description || '', leadId: lead.id, portalToken,
