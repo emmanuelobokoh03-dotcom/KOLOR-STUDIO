@@ -44,6 +44,7 @@ import { trackLeadCreated } from '../utils/analytics'
 interface AddLeadModalProps {
   onClose: () => void;
   onLeadCreated: () => void;
+  user?: { industry?: string; primaryIndustry?: string };
 }
 
 const SERVICE_TYPES: ServiceType[] = [
@@ -86,7 +87,7 @@ const DELIVERABLE_CONFIG: { type: DeliverableType; icon: React.ElementType; colo
   { type: 'MIXED', icon: Package, color: 'pink' },
 ];
 
-export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalProps) {
+export default function AddLeadModal({ onClose, onLeadCreated, user }: AddLeadModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -419,10 +420,12 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
             </div>
 
             {/* Conditional Fields */}
-            {formData.projectType === 'COMMISSION' && (
+            {formData.projectType === 'COMMISSION' &&
+              (user?.primaryIndustry === 'FINE_ART' || user?.industry === 'FINE_ART') && (
               <div className="p-5 bg-amber-50 border border-amber-800/30 rounded-xl space-y-4">
-                <h4 className="text-sm font-medium text-amber-700">
-                  {formData.serviceType === 'FINE_ART' ? 'Fine Art Commission Details' : 'Commission Details'}
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.12em] text-text-secondary"
+                    style={{ fontFamily: "'Space Mono', monospace" }}>
+                  Commission Details
                 </h4>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
@@ -430,15 +433,13 @@ export default function AddLeadModal({ onClose, onLeadCreated }: AddLeadModalPro
                     <input type="text" name="dimensions" onChange={handleChange} className={inputClass} placeholder="e.g. 24x36 inches" />
                   </div>
                   <div>
-                    <label className={labelClass}>
-                      {formData.serviceType === 'FINE_ART' ? 'Medium / technique' : 'Medium'}
-                    </label>
+                    <label className={labelClass}>Medium / technique</label>
                     <input
                       type="text"
                       name="medium"
                       onChange={handleChange}
                       className={inputClass}
-                      placeholder={formData.serviceType === 'FINE_ART' ? 'Oil on canvas, watercolour, bronze...' : 'e.g. Oil on canvas'}
+                      placeholder="Oil on canvas, watercolour, bronze..."
                     />
                   </div>
                 </div>

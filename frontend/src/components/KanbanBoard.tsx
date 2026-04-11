@@ -20,12 +20,14 @@ import {
   CaretRight
 } from '@phosphor-icons/react'
 import { trackLeadStatusChanged, trackLeadDeleted } from '../utils/analytics'
+import { getIndustryLanguage } from '../utils/industryLanguage'
 
 interface KanbanBoardProps {
   leads: Lead[];
   onLeadClick: (lead: Lead) => void;
   onStatusChange: (leadId: string, newStatus: LeadStatus) => void;
   onLeadDelete: (leadId: string) => void;
+  user?: { industry?: string; primaryIndustry?: string };
 }
 
 const KANBAN_COLUMNS: LeadStatus[] = ['NEW', 'CONTACTED', 'QUOTED', 'NEGOTIATING', 'BOOKED'];
@@ -41,7 +43,10 @@ const COLUMN_COLORS: Record<LeadStatus, { bg: string; border: string; header: st
   LOST: { bg: 'bg-slate-950/20', border: 'border-light-200/40', header: 'bg-slate-500' },
 };
 
-export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLeadDelete }: KanbanBoardProps) {
+export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLeadDelete, user }: KanbanBoardProps) {
+  const lang = getIndustryLanguage(user?.industry || user?.primaryIndustry);
+  const stageLabel = (status: LeadStatus): string =>
+    lang.pipelineStageLabels?.[status] ?? LEAD_STATUS_LABELS[status];
   const [draggedLead, setDraggedLead] = useState<Lead | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<LeadStatus | null>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
@@ -210,7 +215,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
                   }`}
                   data-testid={`mobile-tab-${status.toLowerCase()}`}
                 >
-                  {LEAD_STATUS_LABELS[status]}
+                  {stageLabel(status)}
                   <span className={`ml-1.5 ${mobileColumn === idx ? 'bg-white/20' : 'bg-light-200'} px-1.5 py-0.5 rounded-full text-[10px]`}>
                     {count}
                   </span>
@@ -243,7 +248,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
             >
               <div className={`${colors.header} text-white px-4 py-3 rounded-t-[10px]`}>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-sm">{LEAD_STATUS_LABELS[status]}</h3>
+                  <h3 className="font-semibold text-sm">{stageLabel(status)}</h3>
                   <span className="bg-white/20 px-2.5 py-0.5 rounded-full text-xs font-medium">{columnLeads.length}</span>
                 </div>
               </div>
@@ -278,7 +283,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
             >
               <div className={`${colors.header} text-white px-5 py-3.5 rounded-t-[10px]`}>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-sm">{LEAD_STATUS_LABELS[status]}</h3>
+                  <h3 className="font-semibold text-sm">{stageLabel(status)}</h3>
                   <span className="bg-white/20 px-2.5 py-0.5 rounded-full text-xs font-medium">{columnLeads.length}</span>
                 </div>
               </div>

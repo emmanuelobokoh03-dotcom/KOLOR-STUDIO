@@ -43,6 +43,9 @@ export interface IndustryLanguage {
   // Fine-grained pipeline stage names (for Kanban column headers)
   pipelineStages: string[];
 
+  // Pipeline stage labels keyed by LeadStatus (for Kanban column headers)
+  pipelineStageLabels: Record<string, string>;
+
   // Dashboard nudge text
   nudgePrefix: string;
   nudgeQuote: string;
@@ -131,6 +134,17 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
       'Gallery Delivered',
       'Complete',
     ],
+
+    pipelineStageLabels: {
+      NEW: 'Inquiry',
+      CONTACTED: 'Discovery Call',
+      QUOTED: 'Quoted',
+      NEGOTIATING: 'Negotiating',
+      BOOKED: 'Booked',
+      REVIEWING: 'Reviewing',
+      QUALIFIED: 'Qualified',
+      LOST: 'Lost',
+    },
 
     nudgePrefix: 'is waiting on their quote',
     nudgeQuote: 'quote',
@@ -224,6 +238,17 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
       'Complete',
     ],
 
+    pipelineStageLabels: {
+      NEW: 'Brief',
+      CONTACTED: 'Scoping Call',
+      QUOTED: 'Proposal Sent',
+      NEGOTIATING: 'Revisions',
+      BOOKED: 'Signed',
+      REVIEWING: 'Reviewing',
+      QUALIFIED: 'Qualified',
+      LOST: 'Lost',
+    },
+
     nudgePrefix: 'is waiting on their proposal',
     nudgeQuote: 'proposal',
 
@@ -315,6 +340,17 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
       'Final Payment',
       'Delivered',
     ],
+
+    pipelineStageLabels: {
+      NEW: 'Inquiry',
+      CONTACTED: 'Portfolio Review',
+      QUOTED: 'Offer Sent',
+      NEGOTIATING: 'Negotiating',
+      BOOKED: 'Agreement Signed',
+      REVIEWING: 'Reviewing',
+      QUALIFIED: 'Qualified',
+      LOST: 'Lost',
+    },
 
     nudgePrefix: 'is waiting on their offer',
     nudgeQuote: 'offer',

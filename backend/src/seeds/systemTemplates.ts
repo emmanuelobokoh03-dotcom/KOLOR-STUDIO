@@ -82,7 +82,7 @@ export const SYSTEM_TEMPLATES: TemplateDefinition[] = [
   {
     name: 'Logo Design Project',
     description: 'End-to-end branding workflow from discovery to file delivery',
-    industry: 'GRAPHIC_DESIGN',
+    industry: 'DESIGN',
     projectType: 'PROJECT',
     stages: [
       { name: 'Brand Discovery', type: 'DISCOVERY', order: 0, required: true,
@@ -113,15 +113,8 @@ export const SYSTEM_TEMPLATES: TemplateDefinition[] = [
 // Map industries to their best-fit template
 export const INDUSTRY_TEMPLATE_MAP: Record<string, string[]> = {
   PHOTOGRAPHY: ['Wedding Photography'],
-  VIDEOGRAPHY: ['Wedding Photography'], // Similar workflow
-  FINE_ART: ['Portrait Commission'],
-  ILLUSTRATION: ['Portrait Commission'],
-  SCULPTURE: ['Portrait Commission'],
-  GRAPHIC_DESIGN: ['Logo Design Project'],
-  WEB_DESIGN: ['Logo Design Project'], // Similar project-based workflow
-  BRANDING: ['Logo Design Project'],
-  CONTENT_CREATION: ['Wedding Photography'], // Service-based
-  OTHER: ['Wedding Photography'],
+  DESIGN:      ['Logo Design Project'],
+  FINE_ART:    ['Portrait Commission'],
 };
 
 /**
@@ -130,7 +123,7 @@ export const INDUSTRY_TEMPLATE_MAP: Record<string, string[]> = {
  */
 export async function seedTemplatesForUser(userId: string, industry?: string): Promise<any[]> {
   const templateNames = industry 
-    ? (INDUSTRY_TEMPLATE_MAP[industry] || INDUSTRY_TEMPLATE_MAP['OTHER'])
+    ? (INDUSTRY_TEMPLATE_MAP[industry] || INDUSTRY_TEMPLATE_MAP['PHOTOGRAPHY'])
     : Object.values(INDUSTRY_TEMPLATE_MAP).flat().filter((v, i, a) => a.indexOf(v) === i);
 
   const templatesToCreate = SYSTEM_TEMPLATES.filter(t => templateNames.includes(t.name));

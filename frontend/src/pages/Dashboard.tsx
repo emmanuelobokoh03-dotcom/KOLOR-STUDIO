@@ -1216,6 +1216,7 @@ const Dashboard = () => {
               onLeadClick={setSelectedLead}
               onStatusChange={handleStatusChange}
               onLeadDelete={handleLeadDelete}
+              user={user || undefined}
             />
           </div>
         ) : (
@@ -1345,6 +1346,7 @@ const Dashboard = () => {
             fetchLeads(); fetchStats()
             triggerCelebration('first_project', 'firstProject')
           }}
+          user={user || undefined}
         />
       )}
       {showShareModal && <ShareFormModal onClose={() => setShowShareModal(false)} userId={user?.id} />}
