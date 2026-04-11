@@ -152,6 +152,11 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Task B**: Renamed `Logo Design Project` → `Creative Design Project` with generalised stages (no logo/SVG/EPS-specific language). Covers brand, UI/UX, graphic, and motion design projects.
 - **Task C**: Removed `Reproduction Rights` stage from Portrait Commission (legal clause, not a workflow step). `Installation Photo` renumbered to order 9. Template now has 10 stages.
 
+### Iteration 122 — PrivacyPolicy: Name all 7 data processors (Complete)
+- Updated Third-Party Data Processors section with all 7 processors: Supabase, Railway, Vercel, Resend, Sentry, Google LLC, Stripe. Each entry includes purpose and transfer mechanism (SCCs / DPF).
+- Added Google Fonts IP disclosure note and SCCs/DPF explanatory paragraph.
+- Closes GDPR audit gap 9.4.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
