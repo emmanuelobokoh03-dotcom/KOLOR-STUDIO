@@ -215,41 +215,81 @@ export default function PrivacyPolicy() {
           </div>
         </section>
 
-        {/* Third-Party Services */}
+        {/* Third-Party Data Processors */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
             <Globe className="w-5 h-5 text-purple-600" />
-            Third-Party Services We Use
+            Third-Party Data Processors
           </h2>
 
           <div className="space-y-4">
             <div className="bg-surface-base rounded-xl p-5 border border-light-200">
-              <h3 className="font-semibold text-white mb-2">Supabase (Database & Storage)</h3>
+              <h3 className="font-semibold text-white mb-2">Supabase, Inc.</h3>
               <ul className="space-y-1 text-text-secondary text-sm">
-                <li>• Hosts your database</li>
-                <li>• Stores uploaded files</li>
-                <li>• Data encrypted at rest and in transit</li>
-                <li>• Location: US/EU</li>
+                <li>• Database hosting and file storage</li>
+                <li>• Transfer mechanism: USA — Standard Contractual Clauses (SCCs)</li>
               </ul>
             </div>
 
             <div className="bg-surface-base rounded-xl p-5 border border-light-200">
-              <h3 className="font-semibold text-white mb-2">Resend (Email Delivery)</h3>
+              <h3 className="font-semibold text-white mb-2">Railway Corp.</h3>
               <ul className="space-y-1 text-text-secondary text-sm">
-                <li>• Sends quote emails to clients</li>
-                <li>• Sends notification emails to you</li>
-                <li>• No marketing emails from Resend</li>
+                <li>• Backend server hosting</li>
+                <li>• Transfer mechanism: USA — Standard Contractual Clauses (SCCs)</li>
               </ul>
             </div>
 
             <div className="bg-surface-base rounded-xl p-5 border border-light-200">
-              <h3 className="font-semibold text-white mb-2">Vercel (Hosting)</h3>
+              <h3 className="font-semibold text-white mb-2">Vercel, Inc.</h3>
               <ul className="space-y-1 text-text-secondary text-sm">
-                <li>• Hosts the application</li>
-                <li>• Provides analytics</li>
-                <li>• CDN for fast loading</li>
+                <li>• Frontend hosting and analytics</li>
+                <li>• Transfer mechanism: USA — SCCs / Data Privacy Framework (DPF)</li>
               </ul>
             </div>
+
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
+              <h3 className="font-semibold text-white mb-2">Resend, Inc.</h3>
+              <ul className="space-y-1 text-text-secondary text-sm">
+                <li>• Transactional email delivery</li>
+                <li>• Transfer mechanism: USA — Standard Contractual Clauses (SCCs)</li>
+              </ul>
+            </div>
+
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
+              <h3 className="font-semibold text-white mb-2">Sentry, Inc.</h3>
+              <ul className="space-y-1 text-text-secondary text-sm">
+                <li>• Error monitoring and crash reporting</li>
+                <li>• Transfer mechanism: USA — Standard Contractual Clauses (SCCs)</li>
+              </ul>
+            </div>
+
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
+              <h3 className="font-semibold text-white mb-2">Google LLC</h3>
+              <ul className="space-y-1 text-text-secondary text-sm">
+                <li>• Fonts CDN (see note below)</li>
+                <li>• Transfer mechanism: USA — SCCs / Data Privacy Framework (DPF)</li>
+              </ul>
+            </div>
+
+            <div className="bg-surface-base rounded-xl p-5 border border-light-200">
+              <h3 className="font-semibold text-white mb-2">Stripe, Inc.</h3>
+              <ul className="space-y-1 text-text-secondary text-sm">
+                <li>• Payment processing</li>
+                <li>• Transfer mechanism: USA — SCCs / Data Privacy Framework (DPF)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-4 bg-surface-base rounded-xl p-5 border border-light-200">
+            <p className="text-sm text-text-tertiary leading-relaxed">
+              <span className="font-semibold text-text-secondary">Google Fonts:</span> When you load any KOLOR Studio page, your browser makes a direct request to fonts.googleapis.com to download typeface files. Google receives your IP address as part of this request. We use Google Fonts to render our interface typography. This request occurs on every page load.
+            </p>
+          </div>
+
+          <div className="mt-4 bg-surface-base rounded-xl p-5 border border-light-200">
+            <p className="text-sm text-text-tertiary leading-relaxed">
+              Standard Contractual Clauses (SCCs) are legal agreements approved by the European Commission that provide appropriate safeguards for transferring personal data outside the UK and EEA. The EU-US Data Privacy Framework (DPF) is a certification scheme that allows certified US companies to receive personal data from the EU/UK/EEA.
+            </p>
           </div>
         </section>
 
