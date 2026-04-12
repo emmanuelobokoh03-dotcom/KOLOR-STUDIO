@@ -24,7 +24,7 @@ import {
   Funnel,
   CaretDown
 } from '@phosphor-icons/react'
-import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi } from '../services/api'
+import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
 import KanbanBoard from '../components/KanbanBoard'
 import LeadDetailModal from '../components/LeadDetailModal'
 import AddLeadModal from '../components/AddLeadModal'
@@ -49,6 +49,8 @@ import RevenueDashboard from '../components/RevenueDashboard'
 import RevenuePipelineWidget from '../components/RevenuePipelineWidget'
 import CalendarConnectionWidget from '../components/CalendarConnectionWidget'
 import OnboardingChecklist from '../components/OnboardingChecklist'
+import NeedsAttentionSection from '../components/NeedsAttentionSection'
+import RevenueGoalWidget from '../components/RevenueGoalWidget'
 import SequencesDashboard from './SequencesDashboard'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import DemoProjectBanner from '../components/DemoProjectBanner'
@@ -149,9 +151,41 @@ const Dashboard = () => {
   const [calendarHintDismissed, setCalendarHintDismissed] = useState(
     () => localStorage.getItem('kolor_calendar_hint_dismissed') === 'true'
   )
+  const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null)
+  const [monthlyTrend, setMonthlyTrend] = useState<MonthlyTrendData[]>([])
   const { startTour, tourComplete } = useOnboardingTour()
   const { showWizard, setShowWizard, resetWizard } = useOnboardingWizard(leads.length)
   const lang = getIndustryLanguage(user?.industry)
+
+  // Sparkline helper — last 7 months of trend data as sparkline points
+  const toSparkline = (data: MonthlyTrendData[], key: 'count' | 'revenue', fallback: number) => {
+    if (!data.length) return [{ value: fallback }]
+    return data.slice(-7).map(d => ({ value: d[key] }))
+  }
+
+  // Booked card trend direction from analytics
+  const bookedTrend: 'up' | 'down' | 'neutral' =
+    (analytics?.overview.bookedThisMonth.changePercent ?? 0) > 0 ? 'up' :
+    (analytics?.overview.bookedThisMonth.changePercent ?? 0) < 0 ? 'down' : 'neutral'
+
+  // Needs Attention derivation — computed from existing leads
+  const DAY = 86_400_000
+  const needsAttention = leads
+    .filter(l => !l.isDemoData && l.status !== 'LOST')
+    .reduce<{ lead: Lead; reason: 'overdue_quote' | 'stale_contact' | 'awaiting_contract' | 'no_response' }[]>((acc, lead) => {
+      const age = Date.now() - new Date(lead.updatedAt).getTime()
+      if (lead.status === 'BOOKED' && (lead.contractsCount ?? 0) === 0) {
+        acc.push({ lead, reason: 'awaiting_contract' })
+      } else if (lead.status === 'QUOTED' && age > 7 * DAY) {
+        acc.push({ lead, reason: 'overdue_quote' })
+      } else if (lead.status === 'QUOTED' && age > 3 * DAY) {
+        acc.push({ lead, reason: 'no_response' })
+      } else if (['NEW', 'CONTACTED'].includes(lead.status) && age > 5 * DAY) {
+        acc.push({ lead, reason: 'stale_contact' })
+      }
+      return acc
+    }, [])
+    .slice(0, 5)
 
   useEffect(() => {
     const init = async () => {
@@ -174,6 +208,15 @@ const Dashboard = () => {
       await fetchLeads()
       await fetchStats()
       await fetchPendingContracts()
+
+      // Fetch analytics and monthly trend for sparklines + revenue goal
+      const [analyticsResult, trendResult] = await Promise.all([
+        analyticsApi.getDashboard(),
+        analyticsApi.getMonthlyTrend(),
+      ])
+      if (analyticsResult.data) setAnalytics(analyticsResult.data)
+      if (trendResult.data?.trend) setMonthlyTrend(trendResult.data.trend)
+
       setLoading(false)
 
       // Handle Google Calendar OAuth callback
@@ -909,14 +952,22 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {(viewMode === 'kanban' || viewMode === 'list') && needsAttention.length > 0 && (
+          <NeedsAttentionSection
+            items={needsAttention}
+            lang={lang}
+            currencySymbol={user?.currencySymbol}
+            onLeadClick={setSelectedLead}
+          />
+        )}
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
           <StatCard
             icon={Users}
             label={`Total ${lang.leads}`}
             value={stats?.total || 0}
             trend={{ direction: 'neutral', label: 'all time' }}
-            // TODO: wire to API — replace placeholder with real weekly history
-            sparkline={[{ value: 2 }, { value: 3 }, { value: 3 }, { value: 4 }, { value: 4 }, { value: 5 }, { value: stats?.total || 5 }]}
+            sparkline={toSparkline(monthlyTrend, 'count', stats?.total || 0)}
             accentColor="brand"
             active={statusFilter === null}
             onClick={() => clearStatusFilter()}
@@ -927,8 +978,7 @@ const Dashboard = () => {
             label={`New ${lang.leads}`}
             value={stats?.statusCounts?.NEW || 0}
             trend={{ direction: 'neutral', label: 'awaiting review' }}
-            // TODO: wire to API — replace placeholder with real weekly history
-            sparkline={[{ value: 1 }, { value: 2 }, { value: 1 }, { value: 3 }, { value: 2 }, { value: 2 }, { value: stats?.statusCounts?.NEW || 2 }]}
+            sparkline={toSparkline(monthlyTrend, 'count', stats?.statusCounts?.NEW || 0)}
             accentColor="brand"
             active={statusFilter === 'NEW'}
             onClick={() => handleFilterByStatus(statusFilter === 'NEW' ? null : 'NEW')}
@@ -939,8 +989,7 @@ const Dashboard = () => {
             label="Quoted"
             value={stats?.statusCounts?.QUOTED || 0}
             trend={{ direction: 'neutral', label: 'pending approval' }}
-            // TODO: wire to API — replace placeholder with real weekly history
-            sparkline={[{ value: 0 }, { value: 1 }, { value: 1 }, { value: 2 }, { value: 1 }, { value: 1 }, { value: stats?.statusCounts?.QUOTED || 1 }]}
+            sparkline={toSparkline(monthlyTrend, 'count', stats?.statusCounts?.QUOTED || 0)}
             accentColor="amber"
             active={statusFilter === 'QUOTED'}
             onClick={() => handleFilterByStatus(statusFilter === 'QUOTED' ? null : 'QUOTED')}
@@ -950,9 +999,8 @@ const Dashboard = () => {
             icon={CurrencyDollar}
             label="Booked"
             value={stats?.statusCounts?.BOOKED || 0}
-            trend={{ direction: 'neutral', label: 'confirmed' }}
-            // TODO: wire to API — replace placeholder with real weekly history
-            sparkline={[{ value: 0 }, { value: 0 }, { value: 1 }, { value: 1 }, { value: 1 }, { value: 0 }, { value: stats?.statusCounts?.BOOKED || 0 }]}
+            trend={{ direction: bookedTrend, label: bookedTrend === 'neutral' ? 'confirmed' : `${Math.abs(analytics?.overview.bookedThisMonth.changePercent ?? 0)}% vs last month` }}
+            sparkline={toSparkline(monthlyTrend, 'revenue', stats?.statusCounts?.BOOKED || 0)}
             accentColor="green"
             active={statusFilter === 'BOOKED'}
             onClick={() => handleFilterByStatus(statusFilter === 'BOOKED' ? null : 'BOOKED')}
@@ -1237,6 +1285,13 @@ const Dashboard = () => {
           {/* Right sidebar — visible on desktop for kanban/list views */}
           {(viewMode === 'kanban' || viewMode === 'list') && (
             <aside className="hidden lg:block space-y-4" data-testid="dashboard-right-sidebar">
+              {/* Revenue Goal Widget */}
+              <RevenueGoalWidget
+                bookedThisYear={analytics?.overview.bookedThisYear.value ?? 0}
+                currencySymbol={user?.currencySymbol ?? '$'}
+                lang={lang}
+              />
+
               {/* Onboarding Checklist */}
               <OnboardingChecklist onOpenSettings={() => setShowSettings(true)} />
 
