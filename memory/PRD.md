@@ -175,6 +175,14 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **FAQ Corrections (Task B)**: Updated FAQ item 0 (pricing: $97 one-time / $19/mo beta / $29/mo launch) and item 7 (post-beta: single Pro plan at $29/mo, team features later). Removed stale "free forever" and three-tier references.
 - **A/B Hero Copy (Task C)**: 50/50 localStorage-based split. Fine art variant: pill "For fine artists", headline "The CRM built for fine artists", subhead about commissions/collectors/reproduction rights. Control variant unchanged. `data-variant` attribute on hero section. Persists across reloads.
 
+### Iteration 124 — Portfolio Polish: PublicPortfolio.tsx Design Elevation (Complete)
+- **Hero**: Industry-aware subline copy (Photography/Design/Fine Art variants) + 3px gradient bar accent below studio name.
+- **Stats strip**: Upgraded from plain text to 3-column card row with bold counts (Works/Categories/Featured).
+- **Grid**: First item gets full-width hero layout (16/7 aspect ratio), remaining in 3-col responsive grid. Image fade-in with skeleton placeholder. `prefers-reduced-motion` respected.
+- **Inquiry CTA**: Industry-aware headline, subline, and button text (e.g., "Ready to book your session?" / "Book a session" for Photography).
+- **Empty state**: Elevated brand-coloured circle with "Coming soon" copy + "Get in touch" link. Filter empty state has "Clear filters" button.
+- **Scroll-reveal**: `IntersectionObserver`-powered fade-in on testimonials and inquiry CTA sections with `prefers-reduced-motion` support.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
