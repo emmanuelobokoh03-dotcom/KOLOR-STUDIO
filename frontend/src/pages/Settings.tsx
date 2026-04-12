@@ -16,6 +16,7 @@ import {
   Eye,
   EyeSlash,
   WarningCircle,
+  Funnel,
 } from '@phosphor-icons/react'
 import BrandPreview from '../components/BrandPreview'
 import PortfolioSettings from '../components/PortfolioSettings'
@@ -23,7 +24,7 @@ import SharePortfolio from '../components/SharePortfolio'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
-type Tab = 'profile' | 'brand' | 'notifications' | 'integrations' | 'account'
+type Tab = 'profile' | 'brand' | 'notifications' | 'integrations' | 'account' | 'pipeline'
 
 interface UserSettings {
   id: string
@@ -46,6 +47,17 @@ const INDUSTRY_OPTIONS = [
   { value: 'FINE_ART', label: 'Fine Art', icon: Palette, desc: 'Commissions, galleries' },
 ]
 
+const ACCENT_COLOURS = [
+  { name: 'KOLOR Purple', value: '#6C2EDB', description: 'Default' },
+  { name: 'Midnight',     value: '#3730A3', description: 'Deep indigo' },
+  { name: 'Ocean',        value: '#0369A1', description: 'Steel blue' },
+  { name: 'Forest',       value: '#15803D', description: 'Deep green' },
+  { name: 'Ember',        value: '#B45309', description: 'Warm amber' },
+  { name: 'Rose',         value: '#BE185D', description: 'Deep rose' },
+  { name: 'Slate',        value: '#374151', description: 'Charcoal' },
+  { name: 'Crimson',      value: '#B91C1C', description: 'Bold red' },
+]
+
 export default function Settings() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -59,6 +71,11 @@ export default function Settings() {
   const [firstName, setFirstName] = useState('')
   const [businessName, setBusinessName] = useState('')
   const [industry, setIndustry] = useState('')
+
+  // App accent colour
+  const [selectedAccent, setSelectedAccent] = useState<string>(() => {
+    return localStorage.getItem('kolor_app_accent') || '#6C2EDB'
+  })
 
   // Password form
   const [currentPassword, setCurrentPassword] = useState('')
@@ -175,6 +192,7 @@ export default function Settings() {
     { key: 'notifications', label: 'Notifications', icon: Bell },
     { key: 'integrations', label: 'Integrations', icon: Plugs },
     { key: 'account', label: 'Account', icon: Shield },
+    { key: 'pipeline', label: 'Pipeline', icon: Funnel },
   ]
 
   return (
@@ -272,7 +290,7 @@ export default function Settings() {
               />
             )}
 
-            {activeTab !== 'brand' && (
+            {activeTab !== 'brand' && activeTab !== 'pipeline' && (
             <div className="bg-[var(--surface-base)] rounded-xl p-5 sm:p-6" style={{ border: '0.5px solid var(--border)' }}>
 
               {/* ── Profile Tab ── */}
@@ -352,6 +370,51 @@ export default function Settings() {
                     >
                       {saving ? <><SpinnerGap className="w-4 h-4 animate-spin" /> Saving...</> : 'Save Changes'}
                     </button>
+
+                    {/* ── App Accent Colour ── */}
+                    <div className="border-t pt-5 mt-5" style={{ borderColor: 'var(--border)' }} data-testid="accent-colour-section">
+                      <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-0.5 uppercase tracking-wide">App Accent Colour</label>
+                      <p className="text-[11px] text-[var(--text-tertiary)] mb-4">Your workspace colour — only visible to you.<br/>Your brand colours for clients are set in the Brand tab.</p>
+                      <div className="flex flex-wrap gap-2.5 mb-2">
+                        {ACCENT_COLOURS.map(colour => (
+                          <button
+                            key={colour.value}
+                            onClick={() => {
+                              document.documentElement.style.setProperty('--brand-primary', colour.value)
+                              localStorage.setItem('kolor_app_accent', colour.value)
+                              setSelectedAccent(colour.value)
+                            }}
+                            className="w-9 h-9 rounded-full border-2 transition-all duration-150 relative flex-shrink-0"
+                            style={{
+                              background: colour.value,
+                              borderColor: selectedAccent === colour.value ? '#1A1A2E' : 'transparent',
+                              boxShadow: selectedAccent === colour.value
+                                ? `0 0 0 2px white, 0 0 0 4px ${colour.value}`
+                                : 'none',
+                              minWidth: 36, minHeight: 36,
+                            }}
+                            title={colour.name}
+                            aria-label={`${colour.name}${selectedAccent === colour.value ? ' (active)' : ''}`}
+                            aria-pressed={selectedAccent === colour.value}
+                            data-testid={`accent-swatch-${colour.name.toLowerCase().replace(/\s+/g, '-')}`}
+                          />
+                        ))}
+                      </div>
+                      <p className="text-xs font-medium text-text-primary mb-2">{ACCENT_COLOURS.find(c => c.value === selectedAccent)?.name || 'Custom'}</p>
+                      {selectedAccent !== '#6C2EDB' && (
+                        <button
+                          onClick={() => {
+                            document.documentElement.style.setProperty('--brand-primary', '#6C2EDB')
+                            localStorage.removeItem('kolor_app_accent')
+                            setSelectedAccent('#6C2EDB')
+                          }}
+                          className="text-xs font-medium text-[var(--text-secondary)] hover:text-text-primary transition"
+                          data-testid="accent-reset-btn"
+                        >
+                          Reset to default
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -577,6 +640,16 @@ export default function Settings() {
               )}
             </div>
             )}
+
+            {activeTab === 'pipeline' && (
+              <div className="bg-[var(--surface-base)] rounded-xl p-5 sm:p-6" style={{ border: '0.5px solid var(--border)' }}>
+                <div data-testid="settings-pipeline-tab">
+                  <h2 className="text-base font-bold text-text-primary mb-1">Pipeline</h2>
+                  <p className="text-xs text-[var(--text-secondary)] mb-6">Customize your pipeline stage names. These appear as column headers on your Kanban board.</p>
+                  <PipelineStageSettings />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -779,6 +852,82 @@ function BrandTab({
         <div style={{ borderTop: '0.5px solid var(--border)', marginTop: 24, paddingTop: 24 }}>
           <SharePortfolio />
         </div>
+      </div>
+    </div>
+  )
+}
+
+
+const PIPELINE_STAGES = ['NEW', 'CONTACTED', 'QUOTED', 'NEGOTIATING', 'BOOKED'] as const
+const DEFAULT_STAGE_LABELS: Record<string, string> = {
+  NEW: 'New',
+  CONTACTED: 'Contacted',
+  QUOTED: 'Quoted',
+  NEGOTIATING: 'Negotiating',
+  BOOKED: 'Booked',
+}
+
+function PipelineStageSettings() {
+  const [stageNames, setStageNames] = useState<Record<string, string>>(() => {
+    try {
+      const stored = localStorage.getItem('kolor_stage_names')
+      return stored ? { ...DEFAULT_STAGE_LABELS, ...JSON.parse(stored) } : { ...DEFAULT_STAGE_LABELS }
+    } catch { return { ...DEFAULT_STAGE_LABELS } }
+  })
+
+  const handleSave = () => {
+    const overrides: Record<string, string> = {}
+    for (const stage of PIPELINE_STAGES) {
+      const val = stageNames[stage]?.trim()
+      if (val && val !== DEFAULT_STAGE_LABELS[stage]) {
+        overrides[stage] = val
+      }
+    }
+    if (Object.keys(overrides).length > 0) {
+      localStorage.setItem('kolor_stage_names', JSON.stringify(overrides))
+    } else {
+      localStorage.removeItem('kolor_stage_names')
+    }
+    toast.success('Pipeline stage names saved')
+  }
+
+  const handleReset = () => {
+    setStageNames({ ...DEFAULT_STAGE_LABELS })
+    localStorage.removeItem('kolor_stage_names')
+    toast.success('Stage names reset to defaults')
+  }
+
+  return (
+    <div className="space-y-4">
+      {PIPELINE_STAGES.map(stage => (
+        <div key={stage} className="flex items-center gap-4" data-testid={`pipeline-stage-${stage.toLowerCase()}`}>
+          <label className="w-28 text-xs font-semibold text-[var(--text-secondary)] flex-shrink-0">{DEFAULT_STAGE_LABELS[stage]}</label>
+          <input
+            value={stageNames[stage] || ''}
+            onChange={e => setStageNames(prev => ({ ...prev, [stage]: e.target.value }))}
+            placeholder={DEFAULT_STAGE_LABELS[stage]}
+            className="flex-1 px-3 py-2.5 rounded-lg text-sm bg-[var(--surface-background)] text-text-primary border focus:ring-2 focus:ring-[#6C2EDB]/20 focus:border-[#6C2EDB] transition"
+            style={{ borderColor: 'var(--border)' }}
+            data-testid={`pipeline-input-${stage.toLowerCase()}`}
+          />
+        </div>
+      ))}
+
+      <div className="flex items-center gap-3 pt-2">
+        <button
+          onClick={handleSave}
+          className="px-5 py-2.5 bg-[#6C2EDB] text-white rounded-lg text-sm font-semibold hover:bg-[#5B27B5] transition"
+          data-testid="pipeline-save-btn"
+        >
+          Save Stage Names
+        </button>
+        <button
+          onClick={handleReset}
+          className="px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-background)] rounded-lg transition"
+          data-testid="pipeline-reset-btn"
+        >
+          Reset to Defaults
+        </button>
       </div>
     </div>
   )

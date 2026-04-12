@@ -32,6 +32,12 @@ const queryClient = new QueryClient({
   },
 })
 
+// Apply user accent colour preference on app boot
+const storedAccent = localStorage.getItem('kolor_app_accent')
+if (storedAccent) {
+  document.documentElement.style.setProperty('--brand-primary', storedAccent)
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>

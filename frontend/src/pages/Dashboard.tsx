@@ -469,6 +469,7 @@ const Dashboard = () => {
 
         {/* Workspace nav */}
         <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-2">Workspace</div>
+        <div className="group">
         {([
           { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Dashboard' },
           { mode: 'list' as ViewMode, icon: ListIcon, label: 'Leads', badge: stats?.total },
@@ -479,8 +480,8 @@ const Dashboard = () => {
           <button
             key={mode}
             onClick={() => handleViewChange(mode)}
-            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 mb-0.5 relative ${
-              viewMode === mode ? 'text-brand-600 font-semibold' : 'text-text-secondary hover:bg-surface-background hover:text-text-primary'
+            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-opacity duration-150 mb-0.5 relative ${
+              viewMode === mode ? 'text-brand-600 font-semibold opacity-100' : 'text-text-secondary group-hover:opacity-60 hover:!opacity-100 hover:bg-surface-background hover:text-text-primary'
             }`}
             style={viewMode === mode ? { background: 'rgba(108,46,219,0.08)' } : undefined}
             data-testid={`sidebar-${mode}`}
@@ -493,18 +494,22 @@ const Dashboard = () => {
             )}
           </button>
         ))}
+        </div>
 
         <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Schedule</div>
+        <div className="group">
         <button
           onClick={() => navigate('/calendar')}
-          className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 mb-0.5 relative text-text-secondary hover:bg-surface-background hover:text-text-primary`}
+          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-opacity duration-150 mb-0.5 relative text-text-secondary group-hover:opacity-60 hover:!opacity-100 hover:bg-surface-background hover:text-text-primary"
           data-testid="sidebar-calendar"
         >
           <CalendarDots weight="regular" className="w-[14px] h-[14px]" />
           Calendar
         </button>
+        </div>
 
         <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Account</div>
+        <div className="group">
         {([
           { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
           { mode: 'sequences' as ViewMode, icon: Envelope, label: 'Sequences' },
@@ -512,8 +517,8 @@ const Dashboard = () => {
           <button
             key={mode}
             onClick={() => handleViewChange(mode)}
-            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 mb-0.5 relative ${
-              viewMode === mode ? 'text-brand-600 font-semibold' : 'text-text-secondary hover:bg-surface-background hover:text-text-primary'
+            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-opacity duration-150 mb-0.5 relative ${
+              viewMode === mode ? 'text-brand-600 font-semibold opacity-100' : 'text-text-secondary group-hover:opacity-60 hover:!opacity-100 hover:bg-surface-background hover:text-text-primary'
             }`}
             style={viewMode === mode ? { background: 'rgba(108,46,219,0.08)' } : undefined}
             data-testid={`sidebar-${mode}`}
@@ -523,6 +528,7 @@ const Dashboard = () => {
             {label}
           </button>
         ))}
+        </div>
 
         <div className="flex-1" />
 
