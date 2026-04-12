@@ -50,7 +50,8 @@ import {
   Star as StarIcon,
   PhoneCall,
   Checks,
-  Megaphone
+  Megaphone,
+  PencilSimple
 } from '@phosphor-icons/react'
 import QuotesTab from './QuotesTab'
 import EmailComposerModal from './EmailComposerModal'
@@ -194,6 +195,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
   const [newMsg, setNewMsg] = useState('');
   const [sendingMsg, setSendingMsg] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>('');
+
+  // ── Inline edit state ──
+  const [inlineEdit, setInlineEdit] = useState<string | null>(null)
+  const [inlineValue, setInlineValue] = useState('')
 
   const handleRequestTestimonial = async () => {
     try {
@@ -478,6 +483,35 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
       setFiles(prev => prev.map(f => f.id === fileId ? { ...f, category: res.data!.file.category } : f));
     }
   };
+
+  // ── Inline edit helpers ──
+  const startInlineEdit = (field: string, currentValue: string) => {
+    setInlineEdit(field)
+    setInlineValue(currentValue)
+  }
+
+  const cancelInlineEdit = () => {
+    setInlineEdit(null)
+    setInlineValue('')
+  }
+
+  const saveInlineEdit = async (field: string) => {
+    const patch: Record<string, any> = {}
+    if (field === 'estimatedValue') {
+      patch.estimatedValue = inlineValue ? parseFloat(inlineValue) : undefined
+    } else if (field === 'status') {
+      patch.status = inlineValue
+    } else {
+      patch[field] = inlineValue
+    }
+
+    const result = await leadsApi.update(lead.id, patch)
+    if (result.data?.lead) {
+      onUpdate(result.data.lead)
+      fetchActivities()
+    }
+    cancelInlineEdit()
+  }
 
   const filteredFiles = categoryFilter
     ? files.filter(f => f.category === categoryFilter)
@@ -771,9 +805,123 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                         </div>
                       ) : null)}
                     </div>
-                    {lead.description && (
-                      <p className="text-xs text-[var(--text-secondary)] mt-3 leading-relaxed">{lead.description}</p>
-                    )}
+                  </div>
+
+                  {/* ── Project Details — inline editable ── */}
+                  <div data-testid="project-details-section">
+                    <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">Project Details</h4>
+
+                    {/* Project Title */}
+                    <div className="group mb-3" data-testid="inline-field-projectTitle">
+                      <p className="text-[10px] text-[var(--text-tertiary)] mb-0.5">Project Title</p>
+                      {inlineEdit === 'projectTitle' ? (
+                        <div className="flex items-center gap-1.5">
+                          <input type="text" value={inlineValue} onChange={(e) => setInlineValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') saveInlineEdit('projectTitle'); if (e.key === 'Escape') cancelInlineEdit() }} className="flex-1 px-2 py-1 text-xs font-medium rounded-md bg-[var(--surface-background)] text-text-primary border border-[#6C2EDB] outline-none" autoFocus data-testid="inline-input-projectTitle" />
+                          <button onClick={() => saveInlineEdit('projectTitle')} className="p-1 text-emerald-600 hover:bg-emerald-50 rounded transition" data-testid="inline-save-projectTitle"><CheckCircle weight="fill" className="w-4 h-4" /></button>
+                          <button onClick={cancelInlineEdit} className="p-1 text-[var(--text-tertiary)] hover:bg-[var(--surface-background)] rounded transition" data-testid="inline-cancel-projectTitle"><X className="w-3.5 h-3.5" /></button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => startInlineEdit('projectTitle', lead.projectTitle || '')}>
+                          <p className="text-xs font-medium text-text-primary">{lead.projectTitle || '\u2014'}</p>
+                          <PencilSimple className="w-3 h-3 text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Description */}
+                    <div className="group mb-3" data-testid="inline-field-description">
+                      <p className="text-[10px] text-[var(--text-tertiary)] mb-0.5">Description</p>
+                      {inlineEdit === 'description' ? (
+                        <div>
+                          <textarea value={inlineValue} onChange={(e) => setInlineValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Escape') cancelInlineEdit() }} className="w-full px-2 py-1.5 text-xs rounded-md bg-[var(--surface-background)] text-text-primary border border-[#6C2EDB] outline-none resize-none" rows={3} autoFocus data-testid="inline-input-description" />
+                          <div className="flex justify-end gap-1.5 mt-1">
+                            <button onClick={cancelInlineEdit} className="px-2 py-0.5 text-[10px] text-[var(--text-tertiary)] hover:bg-[var(--surface-background)] rounded transition" data-testid="inline-cancel-description">Cancel</button>
+                            <button onClick={() => saveInlineEdit('description')} className="px-2 py-0.5 text-[10px] font-semibold text-white bg-[#6C2EDB] rounded transition" data-testid="inline-save-description">Save</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-start gap-1.5 cursor-pointer" onClick={() => startInlineEdit('description', lead.description || '')}>
+                          <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1 line-clamp-3">{lead.description || '\u2014'}</p>
+                          <PencilSimple className="w-3 h-3 text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity mt-0.5 flex-shrink-0" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 2-col grid: Status, Value, Budget, Timeline */}
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                      {/* Status */}
+                      <div className="group" data-testid="inline-field-status">
+                        <p className="text-[10px] text-[var(--text-tertiary)] mb-0.5">Status</p>
+                        {inlineEdit === 'status' ? (
+                          <div className="flex items-center gap-1.5">
+                            <select value={inlineValue} onChange={(e) => setInlineValue(e.target.value)} className="flex-1 px-2 py-1 text-xs font-medium rounded-md bg-[var(--surface-background)] text-text-primary border border-[#6C2EDB] outline-none" autoFocus data-testid="inline-input-status">
+                              {STATUS_OPTIONS.map(s => <option key={s} value={s}>{LEAD_STATUS_LABELS[s]}</option>)}
+                            </select>
+                            <button onClick={() => saveInlineEdit('status')} className="p-1 text-emerald-600 hover:bg-emerald-50 rounded transition" data-testid="inline-save-status"><CheckCircle weight="fill" className="w-4 h-4" /></button>
+                            <button onClick={cancelInlineEdit} className="p-1 text-[var(--text-tertiary)] hover:bg-[var(--surface-background)] rounded transition" data-testid="inline-cancel-status"><X className="w-3.5 h-3.5" /></button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => startInlineEdit('status', lead.status)}>
+                            <StatusBadge status={lead.status} />
+                            <PencilSimple className="w-3 h-3 text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Estimated Value */}
+                      <div className="group" data-testid="inline-field-estimatedValue">
+                        <p className="text-[10px] text-[var(--text-tertiary)] mb-0.5">Estimated Value</p>
+                        {inlineEdit === 'estimatedValue' ? (
+                          <div className="flex items-center gap-1.5">
+                            <div className="flex-1 flex items-center border border-[#6C2EDB] rounded-md bg-[var(--surface-background)] overflow-hidden">
+                              <span className="pl-2 text-xs text-[var(--text-tertiary)]">{currencySymbol}</span>
+                              <input type="number" value={inlineValue} onChange={(e) => setInlineValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') saveInlineEdit('estimatedValue'); if (e.key === 'Escape') cancelInlineEdit() }} className="flex-1 px-1 py-1 text-xs font-medium bg-transparent text-text-primary outline-none" autoFocus data-testid="inline-input-estimatedValue" />
+                            </div>
+                            <button onClick={() => saveInlineEdit('estimatedValue')} className="p-1 text-emerald-600 hover:bg-emerald-50 rounded transition" data-testid="inline-save-estimatedValue"><CheckCircle weight="fill" className="w-4 h-4" /></button>
+                            <button onClick={cancelInlineEdit} className="p-1 text-[var(--text-tertiary)] hover:bg-[var(--surface-background)] rounded transition" data-testid="inline-cancel-estimatedValue"><X className="w-3.5 h-3.5" /></button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => startInlineEdit('estimatedValue', lead.estimatedValue?.toString() || '')}>
+                            <p className="text-xs font-medium text-text-primary">{lead.estimatedValue ? `${currencySymbol}${lead.estimatedValue.toLocaleString()}` : '\u2014'}</p>
+                            <PencilSimple className="w-3 h-3 text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Budget */}
+                      <div className="group" data-testid="inline-field-budget">
+                        <p className="text-[10px] text-[var(--text-tertiary)] mb-0.5">Budget</p>
+                        {inlineEdit === 'budget' ? (
+                          <div className="flex items-center gap-1.5">
+                            <input type="text" value={inlineValue} onChange={(e) => setInlineValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') saveInlineEdit('budget'); if (e.key === 'Escape') cancelInlineEdit() }} className="flex-1 px-2 py-1 text-xs font-medium rounded-md bg-[var(--surface-background)] text-text-primary border border-[#6C2EDB] outline-none" placeholder="e.g., $5,000-$10,000" autoFocus data-testid="inline-input-budget" />
+                            <button onClick={() => saveInlineEdit('budget')} className="p-1 text-emerald-600 hover:bg-emerald-50 rounded transition" data-testid="inline-save-budget"><CheckCircle weight="fill" className="w-4 h-4" /></button>
+                            <button onClick={cancelInlineEdit} className="p-1 text-[var(--text-tertiary)] hover:bg-[var(--surface-background)] rounded transition" data-testid="inline-cancel-budget"><X className="w-3.5 h-3.5" /></button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => startInlineEdit('budget', lead.budget || '')}>
+                            <p className="text-xs font-medium text-text-primary">{lead.budget || '\u2014'}</p>
+                            <PencilSimple className="w-3 h-3 text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Timeline */}
+                      <div className="group" data-testid="inline-field-timeline">
+                        <p className="text-[10px] text-[var(--text-tertiary)] mb-0.5">Timeline</p>
+                        {inlineEdit === 'timeline' ? (
+                          <div className="flex items-center gap-1.5">
+                            <input type="text" value={inlineValue} onChange={(e) => setInlineValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') saveInlineEdit('timeline'); if (e.key === 'Escape') cancelInlineEdit() }} className="flex-1 px-2 py-1 text-xs font-medium rounded-md bg-[var(--surface-background)] text-text-primary border border-[#6C2EDB] outline-none" placeholder="e.g., March 2026" autoFocus data-testid="inline-input-timeline" />
+                            <button onClick={() => saveInlineEdit('timeline')} className="p-1 text-emerald-600 hover:bg-emerald-50 rounded transition" data-testid="inline-save-timeline"><CheckCircle weight="fill" className="w-4 h-4" /></button>
+                            <button onClick={cancelInlineEdit} className="p-1 text-[var(--text-tertiary)] hover:bg-[var(--surface-background)] rounded transition" data-testid="inline-cancel-timeline"><X className="w-3.5 h-3.5" /></button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => startInlineEdit('timeline', lead.timeline || '')}>
+                            <p className="text-xs font-medium text-text-primary">{lead.timeline || '\u2014'}</p>
+                            <PencilSimple className="w-3 h-3 text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Discovery Call — 3-step vertical timeline */}

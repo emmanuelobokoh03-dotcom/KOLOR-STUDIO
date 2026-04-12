@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { 
   Lead, 
   LeadStatus, 
@@ -45,8 +45,14 @@ const COLUMN_COLORS: Record<LeadStatus, { bg: string; border: string; header: st
 
 export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLeadDelete, user }: KanbanBoardProps) {
   const lang = getIndustryLanguage(user?.industry || user?.primaryIndustry);
+  const customStageNames = useMemo<Record<string, string>>(() => {
+    try {
+      const stored = localStorage.getItem('kolor_stage_names')
+      return stored ? JSON.parse(stored) : {}
+    } catch { return {} }
+  }, [])
   const stageLabel = (status: LeadStatus): string =>
-    lang.pipelineStageLabels?.[status] ?? LEAD_STATUS_LABELS[status];
+    customStageNames[status] || lang.pipelineStageLabels?.[status] || LEAD_STATUS_LABELS[status];
   const [draggedLead, setDraggedLead] = useState<Lead | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<LeadStatus | null>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
