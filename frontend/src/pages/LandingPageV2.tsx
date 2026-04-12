@@ -36,6 +36,15 @@ export default function LandingPageV2() {
   const navigate = useNavigate()
   const goSignup = () => navigate('/signup')
 
+  // A/B test: fine art first vs control
+  const [heroVariant] = useState<'control' | 'fine_art'>(() => {
+    const stored = localStorage.getItem('kolor_hero_variant')
+    if (stored === 'control' || stored === 'fine_art') return stored
+    const variant = Math.random() < 0.5 ? 'fine_art' : 'control'
+    localStorage.setItem('kolor_hero_variant', variant)
+    return variant
+  })
+
   /* Scroll-reveal observer */
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -58,13 +67,14 @@ export default function LandingPageV2() {
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ background: '#080612' }}>
       <Nav onCta={goSignup} />
-      <HeroSection onCta={goSignup} />
+      <HeroSection onCta={goSignup} variant={heroVariant} />
       <MarqueeSection />
       <ProblemSection />
       <WorkflowSection />
       <FeaturesSection />
       <TestimonialsSection />
       <FAQSection />
+      <FounderSection />
       <UrgencySection onCta={goSignup} />
       <FinalCTA onCta={goSignup} />
       <Footer />
@@ -135,9 +145,9 @@ function Nav({ onCta }: { onCta: () => void }) {
 }
 
 /* ---------- SECTION 1: HERO ---------- */
-function HeroSection({ onCta }: { onCta: () => void }) {
+function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; variant?: 'control' | 'fine_art' }) {
   return (
-    <section className="relative overflow-hidden" style={{ padding: '100px 0 80px' }} data-testid="hero-section">
+    <section className="relative overflow-hidden" style={{ padding: '100px 0 80px' }} data-testid="hero-section" data-variant={variant}>
       {/* Ambient glows */}
       <div className="absolute pointer-events-none" style={{ top: '10%', left: '50%', transform: 'translateX(-50%)', width: 800, height: 600, background: 'radial-gradient(ellipse, rgba(108,46,219,0.28) 0%, rgba(108,46,219,0.06) 50%, transparent 70%)', zIndex: 0 }} />
       <div className="absolute pointer-events-none" style={{ top: '20%', left: '30%', transform: 'translateX(-50%)', width: 400, height: 300, background: 'radial-gradient(ellipse, rgba(232,137,26,0.07) 0%, transparent 60%)', zIndex: 0 }} />
@@ -194,42 +204,77 @@ function HeroSection({ onCta }: { onCta: () => void }) {
         >
           <span className="landing-pulse-dot w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
           <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Beta is live &middot; First 20 spots &mdash; $97 one-time, lifetime access
+            {variant === 'fine_art'
+              ? 'For fine artists \u00b7 No CRM has been built for you. Until now.'
+              : 'Beta is live \u00b7 First 20 spots \u2014 $97 one-time, lifetime access'}
           </span>
           <span style={{ color: 'rgba(255,255,255,0.4)' }}>&rarr;</span>
         </div>
 
         {/* H1 — staggered word reveal */}
-        <h1
-          className="font-display font-extrabold leading-[1.05] tracking-[-0.03em] mb-6"
-          style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}
-          data-testid="hero-headline"
-        >
-          {'The studio behind'.split(' ').map((word, i) => (
-            <span
-              key={i}
-              className="hero-word inline-block mr-[0.25em]"
-              style={{ animationDelay: `${i * 80}ms`, color: '#ffffff' }}
+        {variant === 'fine_art' ? (
+          <>
+            <h1
+              className="font-display font-extrabold leading-[1.05] tracking-[-0.03em] mb-6"
+              style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}
+              data-testid="hero-headline"
             >
-              {word}
-            </span>
-          ))}
-          <br />
-          {'your best work.'.split(' ').map((word, i) => (
-            <span
-              key={i}
-              className="hero-word inline-block mr-[0.25em]"
-              style={{ animationDelay: `${(i + 3) * 80}ms`, color: '#6C2EDB' }}
+              {'The CRM built for'.split(' ').map((word, i) => (
+                <span
+                  key={i}
+                  className="hero-word inline-block mr-[0.25em]"
+                  style={{ animationDelay: `${i * 80}ms`, color: '#ffffff' }}
+                >
+                  {word}
+                </span>
+              ))}
+              <br />
+              {'fine artists.'.split(' ').map((word, i) => (
+                <span
+                  key={i}
+                  className="hero-word inline-block mr-[0.25em]"
+                  style={{ animationDelay: `${(i + 4) * 80}ms`, color: '#6C2EDB' }}
+                >
+                  {word}
+                </span>
+              ))}
+            </h1>
+            <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 18, color: 'rgba(255,255,255,0.5)', maxWidth: 540 }}>
+              Manage commissions, collectors, and reproduction rights — all in one place. KOLOR is the first CRM purpose-built for independent fine artists. Track commissions from inquiry to delivery. Send professional offers. Sign agreements with built-in reproduction rights clauses. Know what needs attention before a collector goes quiet.
+            </p>
+          </>
+        ) : (
+          <>
+            <h1
+              className="font-display font-extrabold leading-[1.05] tracking-[-0.03em] mb-6"
+              style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}
+              data-testid="hero-headline"
             >
-              {word}
-            </span>
-          ))}
-        </h1>
-
-        {/* Subheadline */}
-        <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 18, color: 'rgba(255,255,255,0.5)', maxWidth: 520 }}>
-          CRM built for photographers, designers, and fine artists who are done managing clients from a spreadsheet. Leads, quotes, contracts, and calendar — one beautiful tool.
-        </p>
+              {'The studio behind'.split(' ').map((word, i) => (
+                <span
+                  key={i}
+                  className="hero-word inline-block mr-[0.25em]"
+                  style={{ animationDelay: `${i * 80}ms`, color: '#ffffff' }}
+                >
+                  {word}
+                </span>
+              ))}
+              <br />
+              {'your best work.'.split(' ').map((word, i) => (
+                <span
+                  key={i}
+                  className="hero-word inline-block mr-[0.25em]"
+                  style={{ animationDelay: `${(i + 3) * 80}ms`, color: '#6C2EDB' }}
+                >
+                  {word}
+                </span>
+              ))}
+            </h1>
+            <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 18, color: 'rgba(255,255,255,0.5)', maxWidth: 520 }}>
+              CRM built for photographers, designers, and fine artists who are done managing clients from a spreadsheet. Leads, quotes, contracts, and calendar — one beautiful tool.
+            </p>
+          </>
+        )}
 
         {/* CTA row */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
@@ -1124,7 +1169,7 @@ function MarqueeCard({
 const FAQ_ITEMS: { question: string; answer: string }[] = [
   {
     question: 'Is KOLOR really free for the first 20 users?',
-    answer: 'The first 20 users pay a one-time fee of $97 \u2014 that\u2019s lifetime access with no monthly fees, ever. No credit card required to sign up and browse; payment is collected when you claim a spot. After those 20 spots, users 21\u201350 pay $19/month (locked in as a permanent beta rate). The public launch price will be $29/month.',
+    answer: 'The first 20 accounts pay a one-time fee of $97 \u2014 not a subscription, a single payment that covers lifetime access with no recurring charges, ever. After those 20 spots fill, users 21\u201350 pay $19/month during the beta period, locked in permanently at that rate. After the beta closes, new users pay the standard $29/month. No hidden fees at any tier, and no credit card is required to start a free trial.',
   },
   {
     question: 'Which creative industries does KOLOR support?',
@@ -1152,7 +1197,7 @@ const FAQ_ITEMS: { question: string; answer: string }[] = [
   },
   {
     question: 'What\u2019s coming after the beta?',
-    answer: 'After the beta, KOLOR will move to a $29/month public launch price. Beta users \u2014 whether they paid the $97 one-time fee or the $19/month beta rate \u2014 keep their pricing locked in permanently, regardless of what happens to public pricing.',
+    answer: 'After the beta closes, KOLOR moves to a single Pro plan at $29/month \u2014 unlimited projects, all features, priority support. We may introduce team features and white-labelling at a higher tier later, but the roadmap is shaped by what beta users actually need. Beta users keep their rate locked in permanently regardless of what public pricing becomes.',
   },
 ]
 
@@ -1266,6 +1311,95 @@ function FAQSection() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ---------- FOUNDER SECTION ---------- */
+function FounderSection() {
+  const signals = [
+    { icon: '\u{1F512}', title: 'GDPR-native', desc: 'from day one' },
+    { icon: '\u{1F30D}', title: 'Global-first', desc: 'UK, EU, Africa, LatAm, Asia' },
+    { icon: '\u26A1', title: 'Built in public', desc: 'Every iteration shipped live' },
+  ]
+
+  return (
+    <section
+      className="reveal-section"
+      style={{ padding: 'clamp(80px, 10vw, 120px) clamp(16px, 4vw, 40px)' }}
+      data-testid="founder-section"
+    >
+      <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+        <SectionLabel>The builder</SectionLabel>
+
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-10 md:gap-14">
+          {/* Left column — copy */}
+          <div className="stagger-children">
+            <h2
+              className="font-display font-extrabold tracking-[-0.025em] mb-8"
+              style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}
+            >
+              <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                Built by someone who
+              </span>
+              <br />
+              <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                lost clients to spreadsheets.
+              </span>
+            </h2>
+
+            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, marginBottom: 16 }}>
+              KOLOR started as a folder of Google Sheets and unanswered emails. Every inquiry
+              that didn't get a quote fast enough became a lost booking. Every contract sent as
+              a Word doc felt unprofessional. The follow-up system was a sticky note on a monitor.
+            </p>
+
+            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, marginBottom: 16 }}>
+              I built KOLOR because HoneyBook and Dubsado aren't built for me. They're US-centric,
+              photographer-first, and designed like enterprise software from 2015. Fine artists
+              managing commissions, designers sending proposals, photographers in Lagos and Berlin —
+              none of them have a tool built specifically for how they work.
+            </p>
+
+            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, marginBottom: 0 }}>
+              KOLOR is that tool. It's built for three industries equally, designed to feel modern,
+              and architected to work for any creative professional on any continent. The first 20
+              people who join are building this with me.
+            </p>
+
+            <div style={{
+              borderLeft: '2px solid rgba(108,46,219,0.5)',
+              paddingLeft: 12,
+              marginTop: 24,
+              fontSize: 13,
+              color: 'rgba(255,255,255,0.35)',
+              fontStyle: 'italic',
+            }}>
+              — Emmanuel, founder of KOLOR Studio
+            </div>
+          </div>
+
+          {/* Right column — credibility signals */}
+          <div className="stagger-children">
+            {signals.map(s => (
+              <div
+                key={s.title}
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: 12,
+                  padding: '16px 20px',
+                  marginBottom: 12,
+                }}
+              >
+                <div style={{ fontSize: 20, marginBottom: 8 }}>{s.icon}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.8)', letterSpacing: '0.02em', marginBottom: 4 }}>{s.title}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6 }}>{s.desc}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
