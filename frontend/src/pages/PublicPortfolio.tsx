@@ -144,6 +144,73 @@ export default function PublicPortfolio() {
   // Hover state for cards
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
 
+  // Image loaded state for fade-in
+  const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({})
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  // Industry-aware copy
+  const heroSubline = ({
+    PHOTOGRAPHY: `Explore ${studioDisplayName}\u2019s photography \u2014 from ${lang.leads.toLowerCase()} to delivered galleries.`,
+    DESIGN: `${studioDisplayName}\u2019s design work \u2014 brand, UI, and creative direction.`,
+    FINE_ART: `Original works and commissions by ${studioDisplayName}.`,
+  } as Record<string, string>)[industry] ?? `Explore ${studioDisplayName}\u2019s creative work.`
+
+  const ctaHeadline = ({
+    PHOTOGRAPHY: 'Ready to book your session?',
+    DESIGN: 'Ready to start your project?',
+    FINE_ART: 'Interested in a commission?',
+  } as Record<string, string>)[industry] ?? 'Ready to work together?'
+
+  const ctaSubline = ({
+    PHOTOGRAPHY: `Tell me about your shoot and I\u2019ll be in touch within 24 hours.`,
+    DESIGN: `Share your brief and I\u2019ll respond within 24 hours.`,
+    FINE_ART: `Tell me about the work you have in mind. I respond to all commission enquiries within 48 hours.`,
+  } as Record<string, string>)[industry] ?? `Tell me about your project and I\u2019ll get back to you within 24 hours.`
+
+  const ctaButton = ({
+    PHOTOGRAPHY: 'Book a session',
+    DESIGN: 'Start a project',
+    FINE_ART: 'Enquire about a commission',
+  } as Record<string, string>)[industry] ?? 'Send an inquiry'
+
+  // Scroll reveal animations
+  useEffect(() => {
+    const style = document.createElement('style')
+    style.textContent = `
+      .portfolio-reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 500ms ease, transform 500ms ease;
+      }
+      .portfolio-revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .portfolio-reveal { opacity: 1; transform: none; transition: none; }
+      }
+    `
+    document.head.appendChild(style)
+    return () => { document.head.removeChild(style) }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('portfolio-revealed')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.08 }
+    )
+    document.querySelectorAll('.portfolio-reveal').forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [loading])
+
   // Loading state
   if (loading) {
     return (
@@ -165,7 +232,7 @@ export default function PublicPortfolio() {
           <p style={{ color: '#6B7280', fontSize: 14, marginBottom: 24 }}>{error}</p>
           <Link
             to="/"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#6C2EDB', color: '#fff', borderRadius: 10, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: brandPrimary, color: '#fff', borderRadius: 10, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}
           >
             Go Home
           </Link>
@@ -199,8 +266,8 @@ export default function PublicPortfolio() {
 
           {/* Right: Links (desktop) */}
           <div className="hidden md:flex" style={{ alignItems: 'center', gap: 24 }}>
-            <a href="#portfolio-grid" style={{ fontSize: 13, fontWeight: 600, color: brandPrimary, borderBottom: `1.5px solid ${brandPrimary}`, paddingBottom: 2, textDecoration: 'none' }}>Work</a>
-            <a href="#inquiry-section" style={{ fontSize: 13, fontWeight: 600, color: '#6B7280', textDecoration: 'none' }}>Contact</a>
+            <a href="#portfolio-grid" style={{ fontSize: 13, fontWeight: 600, color: brandPrimary, borderBottom: `1.5px solid ${brandPrimary}`, paddingBottom: 2, textDecoration: 'none', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>Work</a>
+            <a href="#inquiry-section" style={{ fontSize: 13, fontWeight: 600, color: '#6B7280', textDecoration: 'none', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>Contact</a>
           </div>
 
           {/* Mobile hamburger */}
@@ -228,14 +295,20 @@ export default function PublicPortfolio() {
           {studioDisplayName}
         </h1>
 
+        <div style={{ width: 60, height: 3, borderRadius: 999, background: brandPrimary, opacity: 0.4, margin: '16px auto 0' }} />
+
         {userInfo?.speciality && (
           <p
-            style={{ fontSize: 13, color: '#9CA3AF', marginTop: 6, letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 500 }}
+            style={{ fontSize: 13, color: '#9CA3AF', marginTop: 12, letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 500 }}
             data-testid="portfolio-speciality"
           >
             {userInfo.speciality}
           </p>
         )}
+
+        <p style={{ fontSize: 15, color: '#6B7280', marginTop: 8, lineHeight: 1.6, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
+          {heroSubline}
+        </p>
 
         {/* CTA row */}
         <div style={{ marginTop: 32, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -259,15 +332,22 @@ export default function PublicPortfolio() {
 
         {/* Stats strip */}
         {items.length > 0 && (
-          <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 13, fontWeight: 600, color: '#1A1A2E' }} data-testid="portfolio-stats">
-            <span>{items.length} works</span>
-            <span style={{ color: '#D1D5DB' }}>·</span>
-            <span>{categories.length} categories</span>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', margin: '32px auto 0', maxWidth: 400 }} data-testid="portfolio-stats">
+            <div style={{ textAlign: 'center', padding: '16px 24px', background: '#FFFFFF', border: '0.5px solid #EDE8F5', borderRadius: 12, flex: 1 }}>
+              <div style={{ fontSize: 28, fontWeight: 800, color: '#1A1A2E', letterSpacing: '-0.02em' }}>{items.length}</div>
+              <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, fontWeight: 500 }}>Works</div>
+            </div>
+            <div style={{ textAlign: 'center', padding: '16px 24px', background: '#FFFFFF', border: '0.5px solid #EDE8F5', borderRadius: 12, flex: 1 }}>
+              <div style={{ fontSize: 28, fontWeight: 800, color: '#1A1A2E', letterSpacing: '-0.02em' }}>{categories.length}</div>
+              <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, fontWeight: 500 }}>Categories</div>
+            </div>
             {featuredCount > 0 && (
-              <>
-                <span style={{ color: '#D1D5DB' }}>·</span>
-                <span>{featuredCount} featured</span>
-              </>
+              <div style={{ textAlign: 'center', padding: '16px 24px', background: '#FFFFFF', border: '0.5px solid #EDE8F5', borderRadius: 12, flex: 1 }}>
+                <div style={{ fontSize: 28, fontWeight: 800, color: '#1A1A2E', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                  <Star className="w-5 h-5" style={{ color: '#FBBF24', fill: '#FBBF24' }} /> {featuredCount}
+                </div>
+                <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, fontWeight: 500 }}>Featured</div>
+              </div>
             )}
           </div>
         )}
@@ -332,32 +412,84 @@ export default function PublicPortfolio() {
       {/* ─── Portfolio Grid ─── */}
       <main style={{ padding: '40px', maxWidth: 1280, margin: '0 auto' }} data-testid="portfolio-grid-section">
         {filteredItems.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '64px 16px' }}>
-            <div style={{ width: 64, height: 64, background: '#FFFFFF', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', border: '0.5px solid #EDE8F5' }}>
-              <Star className="w-8 h-8" style={{ color: '#9CA3AF' }} />
+          items.length === 0 ? (
+            /* Empty portfolio state */
+            <div style={{ textAlign: 'center', padding: '80px 16px' }}>
+              <div style={{
+                width: 80, height: 80,
+                background: `${brandPrimary}12`,
+                border: `1.5px solid ${brandPrimary}30`,
+                borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 24px',
+              }}>
+                <Star className="w-8 h-8" style={{ color: brandPrimary }} />
+              </div>
+              <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1A1A2E', marginBottom: 8 }}>
+                Coming soon
+              </h2>
+              <p style={{ color: '#6B7280', fontSize: 15, lineHeight: 1.6, maxWidth: 360, margin: '0 auto 28px' }}>
+                {studioDisplayName} is setting up their portfolio. Check back soon, or get in touch directly.
+              </p>
+              <a
+                href="#inquiry-section"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  height: 44, padding: '0 24px', borderRadius: 10,
+                  background: brandPrimary, color: '#fff',
+                  fontSize: 14, fontWeight: 600, textDecoration: 'none',
+                }}
+              >
+                Get in touch
+              </a>
             </div>
-            <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1A1A2E', marginBottom: 8 }}>
-              {items.length === 0 ? 'Portfolio is Empty' : 'No Items Match Filters'}
-            </h2>
-            <p style={{ color: '#6B7280', fontSize: 14 }}>
-              {items.length === 0 
-                ? 'Check back later for creative work samples' 
-                : 'Try adjusting your filter selection'}
-            </p>
-          </div>
+          ) : (
+            /* No items match filters */
+            <div style={{ textAlign: 'center', padding: '64px 16px' }}>
+              <div style={{
+                width: 80, height: 80,
+                background: `${brandPrimary}12`,
+                border: `1.5px solid ${brandPrimary}30`,
+                borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 24px',
+              }}>
+                <Star className="w-8 h-8" style={{ color: brandPrimary }} />
+              </div>
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1A1A2E', marginBottom: 8 }}>
+                No works match your filter
+              </h2>
+              <p style={{ color: '#6B7280', fontSize: 14, marginBottom: 24 }}>
+                Try adjusting your filter selection
+              </p>
+              <button
+                onClick={() => { setActiveCategory('ALL'); setShowFeaturedOnly(false) }}
+                style={{
+                  height: 44, padding: '0 24px', borderRadius: 10,
+                  background: brandPrimary, color: '#fff',
+                  fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer',
+                }}
+                data-testid="portfolio-clear-filters"
+              >
+                Clear filters
+              </button>
+            </div>
+          )
         ) : (
-          <div className="portfolio-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
             {filteredItems.map((item, index) => {
+              const isHero = index === 0 && filteredItems.length > 1
               const isHovered = hoveredCard === item.id
               return (
                 <div
                   key={item.id}
+                  className={isHero ? 'col-span-1 sm:col-span-2 lg:col-span-3' : ''}
                   style={{
                     background: '#FFFFFF', borderRadius: 12, overflow: 'hidden', cursor: 'pointer',
                     border: `0.5px solid ${isHovered ? brandPrimary : '#EDE8F5'}`,
                     boxShadow: isHovered ? '0 4px 20px rgba(0,0,0,0.08)' : 'none',
-                    transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
-                    transition: 'all 200ms ease',
+                    transform: isHovered && !prefersReducedMotion ? 'translateY(-2px)' : 'translateY(0)',
+                    transition: prefersReducedMotion ? 'none' : 'all 200ms ease',
                   }}
                   onClick={() => openLightbox(index)}
                   onMouseEnter={() => setHoveredCard(item.id)}
@@ -365,25 +497,33 @@ export default function PublicPortfolio() {
                   data-testid={`portfolio-card-${item.id}`}
                 >
                   {/* Image */}
-                  <div style={{ aspectRatio: '4/3', overflow: 'hidden', position: 'relative' }}>
+                  <div style={{ aspectRatio: isHero ? '16/7' : '4/3', overflow: 'hidden', position: 'relative' }}>
+                    <div style={{ position: 'absolute', inset: 0, background: '#F3F4F6', zIndex: 0 }} />
                     <img
                       src={item.imageUrl}
                       alt={item.title}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 500ms', transform: isHovered ? 'scale(1.05)' : 'scale(1)' }}
+                      onLoad={() => setImageLoaded(prev => ({ ...prev, [item.id]: true }))}
+                      style={{
+                        width: '100%', height: '100%', objectFit: 'cover',
+                        position: 'relative', zIndex: 1,
+                        opacity: imageLoaded[item.id] ? 1 : 0,
+                        transform: isHovered && !prefersReducedMotion ? 'scale(1.05)' : 'scale(1)',
+                        transition: prefersReducedMotion ? 'none' : 'opacity 300ms ease, transform 500ms',
+                      }}
                       loading="lazy"
                     />
                     
                     {/* Featured badge */}
                     {item.featured && (
-                      <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px', background: 'rgba(251,191,36,0.9)', color: '#78350F', borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
+                      <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px', background: 'rgba(251,191,36,0.9)', color: '#78350F', borderRadius: 6, fontSize: 11, fontWeight: 600, zIndex: 2 }}>
                         <Star className="w-3 h-3" style={{ fill: '#78350F' }} />
                         Featured
                       </div>
                     )}
                     
                     {/* Hover overlay */}
-                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)', opacity: isHovered ? 1 : 0, transition: 'opacity 200ms', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 16 }}>
-                      <h3 style={{ color: '#fff', fontWeight: 600, fontSize: 16 }}>{item.title}</h3>
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)', opacity: isHovered ? 1 : 0, transition: prefersReducedMotion ? 'none' : 'opacity 200ms', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 16, zIndex: 3 }}>
+                      <h3 style={{ color: '#fff', fontWeight: 600, fontSize: isHero ? 20 : 16 }}>{item.title}</h3>
                       <p style={{ color: brandAccent, fontSize: 12, marginTop: 4 }}>{PORTFOLIO_CATEGORY_LABELS[item.category]}</p>
                     </div>
                   </div>
@@ -402,7 +542,7 @@ export default function PublicPortfolio() {
 
       {/* ─── Testimonials Section ─── */}
       {testimonials.length > 0 && (
-        <section style={{ padding: '80px 40px', background: '#FFFFFF', borderTop: '0.5px solid #EDE8F5' }} data-testid="portfolio-testimonials">
+        <section className="portfolio-reveal" style={{ padding: '80px 40px', background: '#FFFFFF', borderTop: '0.5px solid #EDE8F5' }} data-testid="portfolio-testimonials">
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 48 }}>
               <h2 style={{ fontSize: 28, fontWeight: 800, color: '#1A1A2E', marginBottom: 12 }}>
@@ -427,13 +567,13 @@ export default function PublicPortfolio() {
       )}
 
       {/* ─── Inquiry CTA Section ─── */}
-      <section id="inquiry-section" style={{ padding: '80px 40px', borderTop: `0.5px solid ${brandPrimary}22`, background: `${brandPrimary}08` }} data-testid="portfolio-inquiry-cta">
+      <section id="inquiry-section" className="portfolio-reveal" style={{ padding: '80px 40px', borderTop: `0.5px solid ${brandPrimary}22`, background: `${brandPrimary}08` }} data-testid="portfolio-inquiry-cta">
         <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, color: '#1A1A2E', marginBottom: 12 }}>
-            Ready to work together?
+            {ctaHeadline}
           </h2>
           <p style={{ fontSize: 15, color: '#6B7280', lineHeight: 1.65, marginBottom: 32 }}>
-            Tell me about your project and I'll get back to you within 24 hours.
+            {ctaSubline}
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link
@@ -441,7 +581,7 @@ export default function PublicPortfolio() {
               style={{ height: 50, borderRadius: 10, background: brandPrimary, color: '#fff', fontSize: 15, fontWeight: 700, padding: '0 32px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none', minWidth: 44 }}
               data-testid="portfolio-send-inquiry"
             >
-              Send an inquiry
+              {ctaButton}
             </Link>
             {hasMeetingTypes && (
               <Link
@@ -555,9 +695,6 @@ export default function PublicPortfolio() {
         .testimonial-grid { grid-template-columns: repeat(3, 1fr); }
         @media (max-width: 1024px) { .testimonial-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 640px) { .testimonial-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 480px) {
-          .portfolio-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
-        }
         @media (max-width: 768px) {
           nav[data-testid="portfolio-nav"] { padding: 0 20px !important; }
           section[data-testid="portfolio-hero"] { padding: 40px 20px !important; }
