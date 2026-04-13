@@ -193,6 +193,15 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Bug 3 (P1) — Quote viewed nudge multi-fire**: Narrowed window from 48-98h to 48-72h (24h wide). Renamed `ninetyEightHoursAgo` → `seventyTwoHoursAgo`.
 - **Bug 4 (P1) — Contract unsigned warning multi-fire**: Narrowed window from 72-99h to 72-95h (23h wide). Renamed `ninetyNineHoursAgo` → `ninetyFiveHoursAgo`.
 
+### Iteration 127 — Audit Critical + High Fixes (Complete)
+- **C2 XSS sanitiser**: `sanitiseContractHtml()` added to `ClientPortal.tsx` — strips `<script>`, `on*` handlers, `javascript:` hrefs, `data:` src. Applied to `dangerouslySetInnerHTML`.
+- **L2 Toaster theme**: Changed from `theme="dark"` to `theme="light"` in `App.tsx`.
+- **H1 Dead localStorage write**: Removed `localStorage.setItem('user')` from `Login.tsx`.
+- **H3 Favicon**: Updated `index.html` with full favicon block (ico, svg, png, apple-touch-icon, site.webmanifest). Created `/public/site.webmanifest`.
+- **M2 DESIGN widgets**: Added `user?.industry === 'DESIGN'` check alongside existing sub-type checks. Added `user?.industry || user?.primaryIndustry` fallback for `getIndustryLanguage`.
+- **M3 Beta countdown**: `getBetaEndDate()` now returns fixed `Date('2025-06-30T23:59:59Z')` — no localStorage.
+- **C4 env.example**: Full rewrite with all Railway env vars (Resend, Supabase, Google, Stripe, Sentry, Vite). Removed stale SendGrid references.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
