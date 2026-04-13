@@ -11,8 +11,11 @@ import {
   SpinnerGap,
   EnvelopeOpen,
   TrendUp,
-  Tray
+  Tray,
+  CaretLeft,
+  CaretRight
 } from '@phosphor-icons/react'
+import { sequencesApi } from '../services/api'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -343,12 +346,53 @@ function SequenceDetailModal({ seq, onClose }: { seq: SequenceData; onClose: () 
   )
 }
 
+// ─── Email Log helpers ───────────────────────────────────
+interface EmailLogEntry {
+  id: string
+  emailType: string
+  sequenceId: string | null
+  stepNumber: number | null
+  leadId: string
+  clientName: string
+  projectTitle: string
+  recipientEmail: string
+  sentAt: string
+  opened: boolean
+  openedAt: string | null
+  openCount: number
+}
+
+const formatEmailType = (emailType: string, sequenceId: string | null, stepNumber: number | null): string => {
+  if (sequenceId === 'client-onboarding') return `Client Onboarding \u00b7 ${stepNumber}`
+  if (sequenceId === 'quote-followup') return `Quote Follow-Up \u00b7 ${stepNumber}`
+  return emailType.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+}
+
+const timeAgo = (dateStr: string): string => {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 60) return `${mins}m ago`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return `${hrs}h ago`
+  const days = Math.floor(hrs / 24)
+  if (days < 7) return `${days}d ago`
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
 // ─── Main Dashboard ──────────────────────────────────────
 export default function SequencesDashboard() {
   const [sequences, setSequences] = useState<SequenceData[]>([])
   const [stats, setStats] = useState<StatsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [detailSeq, setDetailSeq] = useState<SequenceData | null>(null)
+  const [activeTab, setActiveTab] = useState<'sequences' | 'log'>('sequences')
+
+  // Email log state
+  const [emailLog, setEmailLog] = useState<EmailLogEntry[]>([])
+  const [emailLogTotal, setEmailLogTotal] = useState(0)
+  const [emailLogPages, setEmailLogPages] = useState(1)
+  const [logPage, setLogPage] = useState(1)
+  const [loadingLog, setLoadingLog] = useState(false)
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
@@ -367,6 +411,21 @@ export default function SequencesDashboard() {
   }, [])
 
   useEffect(() => { fetchAll() }, [fetchAll])
+
+  const fetchEmailLog = useCallback(async (page: number) => {
+    setLoadingLog(true)
+    const result = await sequencesApi.getEmailLog(page)
+    if (result.data) {
+      setEmailLog(result.data.logs)
+      setEmailLogTotal(result.data.total)
+      setEmailLogPages(result.data.totalPages)
+    }
+    setLoadingLog(false)
+  }, [])
+
+  useEffect(() => {
+    if (activeTab === 'log') fetchEmailLog(logPage)
+  }, [activeTab, logPage, fetchEmailLog])
 
   const handleToggle = async (id: string, active: boolean) => {
     try {
@@ -392,6 +451,30 @@ export default function SequencesDashboard() {
       {/* Stats */}
       <StatsBar stats={stats} loading={loading} />
 
+      {/* Tabs */}
+      <div className="flex gap-1 mt-6 mb-6 bg-light-100 rounded-lg p-1 w-fit" data-testid="sequences-tabs">
+        <button
+          onClick={() => setActiveTab('sequences')}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition min-h-[44px] ${
+            activeTab === 'sequences' ? 'bg-surface-base text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
+          }`}
+          data-testid="tab-sequences"
+        >
+          Sequences
+        </button>
+        <button
+          onClick={() => setActiveTab('log')}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition min-h-[44px] ${
+            activeTab === 'log' ? 'bg-surface-base text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
+          }`}
+          data-testid="tab-send-log"
+        >
+          Send Log
+        </button>
+      </div>
+
+      {activeTab === 'sequences' ? (
+      <>
       {/* Built-in Sequences */}
       <div className="mt-8">
         <h2 className="text-base font-semibold text-text-primary mb-4">Built-in Sequences</h2>
@@ -427,6 +510,98 @@ export default function SequencesDashboard() {
           Coming Soon
         </button>
       </div>
+      </>
+      ) : (
+      /* ─── Send Log Tab ─── */
+      <div data-testid="send-log-tab">
+        {loadingLog ? (
+          <div className="flex items-center justify-center py-16">
+            <SpinnerGap className="w-6 h-6 text-purple-400 animate-spin" />
+          </div>
+        ) : emailLog.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '48px 16px' }}>
+            <div style={{ fontSize: 32, marginBottom: 12 }}>
+              <EnvelopeOpen className="w-8 h-8 text-text-secondary mx-auto" />
+            </div>
+            <p style={{ fontSize: 14, fontWeight: 600, color: '#1A1A2E', marginBottom: 6 }}>
+              No emails sent yet
+            </p>
+            <p style={{ fontSize: 13, color: '#6B7280' }}>
+              Emails sent automatically via sequences will appear here.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="bg-light-50 rounded-xl border border-light-200 overflow-hidden">
+              {/* Table header */}
+              <div className="hidden md:grid grid-cols-[140px_1fr_1fr_160px_100px] gap-4 px-5 py-3 text-xs font-semibold text-text-tertiary uppercase tracking-wider border-b border-light-200">
+                <span>Sent</span>
+                <span>Client</span>
+                <span>Email type</span>
+                <span>Recipient</span>
+                <span>Opened</span>
+              </div>
+              {/* Rows */}
+              {emailLog.map(log => (
+                <div
+                  key={log.id}
+                  className="grid grid-cols-1 md:grid-cols-[140px_1fr_1fr_160px_100px] gap-2 md:gap-4 px-5 py-3.5 border-b border-light-200 last:border-b-0 hover:bg-surface-background transition text-sm"
+                  data-testid={`email-log-${log.id}`}
+                >
+                  <span className="text-text-secondary text-xs" title={new Date(log.sentAt).toLocaleString()}>
+                    {timeAgo(log.sentAt)}
+                  </span>
+                  <span className="text-text-primary font-medium truncate">
+                    {log.clientName}
+                  </span>
+                  <span className="text-text-secondary text-xs">
+                    {formatEmailType(log.emailType, log.sequenceId, log.stepNumber)}
+                  </span>
+                  <span className="text-text-tertiary text-xs truncate" title={log.recipientEmail}>
+                    {log.recipientEmail.length > 22 ? log.recipientEmail.slice(0, 20) + '\u2026' : log.recipientEmail}
+                  </span>
+                  <span>
+                    {log.opened ? (
+                      <span className="text-emerald-600 font-semibold text-xs">&check; {log.openCount}&times;</span>
+                    ) : (
+                      <span className="text-text-tertiary text-xs">&mdash;</span>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {emailLogPages > 1 && (
+              <div className="flex items-center justify-between mt-4 px-1">
+                <span className="text-xs text-text-tertiary">{emailLogTotal} emails total</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setLogPage(p => Math.max(1, p - 1))}
+                    disabled={logPage <= 1}
+                    className="p-2 rounded-lg border border-light-200 text-text-secondary hover:bg-light-100 transition disabled:opacity-30 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    data-testid="log-prev-page"
+                  >
+                    <CaretLeft className="w-4 h-4" />
+                  </button>
+                  <span className="text-xs text-text-secondary font-medium">
+                    {logPage} / {emailLogPages}
+                  </span>
+                  <button
+                    onClick={() => setLogPage(p => Math.min(emailLogPages, p + 1))}
+                    disabled={logPage >= emailLogPages}
+                    className="p-2 rounded-lg border border-light-200 text-text-secondary hover:bg-light-100 transition disabled:opacity-30 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    data-testid="log-next-page"
+                  >
+                    <CaretRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      )}
 
       {/* Detail Modal */}
       {detailSeq && (

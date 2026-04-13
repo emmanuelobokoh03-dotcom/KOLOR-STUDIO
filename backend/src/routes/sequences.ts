@@ -164,6 +164,53 @@ router.patch('/dashboard/:id/toggle', authMiddleware, async (req: AuthRequest, r
   }
 });
 
+// GET /api/sequences/email-log — paginated email send log for authenticated user
+// IMPORTANT: This route must be BEFORE parameterized routes like /:seqId/enrollments
+router.get('/email-log', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId!;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = 20;
+    const skip = (page - 1) * limit;
+
+    const [logs, total] = await Promise.all([
+      prisma.emailTracking.findMany({
+        where: { lead: { assignedToId: userId } },
+        include: { lead: { select: { clientName: true, projectTitle: true } } },
+        orderBy: { sentAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.emailTracking.count({
+        where: { lead: { assignedToId: userId } },
+      }),
+    ]);
+
+    res.json({
+      logs: logs.map(l => ({
+        id: l.id,
+        emailType: l.emailType,
+        sequenceId: l.sequenceId,
+        stepNumber: l.stepNumber,
+        leadId: l.leadId,
+        clientName: l.lead.clientName,
+        projectTitle: l.lead.projectTitle,
+        recipientEmail: l.recipientEmail,
+        sentAt: l.sentAt.toISOString(),
+        opened: l.opened,
+        openedAt: l.openedAt?.toISOString() ?? null,
+        openCount: l.openCount,
+      })),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    console.error('[EMAIL LOG] Error:', error);
+    res.status(500).json({ error: 'Failed to load email log' });
+  }
+});
+
 // GET /api/sequences/:id/enrollments — for detail modal
 router.get('/:seqId/enrollments', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {

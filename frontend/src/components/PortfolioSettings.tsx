@@ -10,7 +10,8 @@ import {
   Plus,
   WarningCircle,
   Check,
-  DotsSixVertical
+  DotsSixVertical,
+  Envelope
 } from '@phosphor-icons/react'
 import { 
   portfolioApi, 
@@ -233,21 +234,60 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
         </div>
       ) : items.length === 0 ? (
         /* Empty State */
-        <div className="text-center py-16 bg-light-100 rounded-2xl border border-light-200">
-          <div className="w-16 h-16 bg-light-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Image weight="duotone" className="w-8 h-8 text-text-secondary" />
-          </div>
-          <h3 className="text-lg font-semibold text-text-primary mb-2">No Portfolio Items Yet</h3>
-          <p className="text-text-secondary mb-6 max-w-md mx-auto">
-            Upload your best work to showcase your skills and impress potential clients.
-          </p>
-          <button
-            onClick={handleAddNew}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition font-medium"
+        <div>
+          {/* Testimonial nudge card */}
+          <div
+            style={{
+              background: 'linear-gradient(135deg, rgba(108,46,219,0.06), rgba(108,46,219,0.02))',
+              border: '1px dashed rgba(108,46,219,0.25)',
+              borderRadius: 12,
+              padding: '20px 24px',
+              marginBottom: 20,
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 16,
+            }}
+            data-testid="testimonial-nudge-card"
           >
-            <UploadSimple weight="bold" className="w-5 h-5" />
-            Upload Your First Work
-          </button>
+            <div style={{
+              width: 40, height: 40, flexShrink: 0,
+              background: 'rgba(108,46,219,0.10)',
+              borderRadius: 10,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 18,
+            }}>
+              <Envelope weight="duotone" className="w-5 h-5 text-purple-500" />
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: '#1A1A2E', margin: '0 0 4px' }}>
+                Build social proof first
+              </p>
+              <p style={{ fontSize: 12, color: '#6B7280', margin: '0 0 14px', lineHeight: 1.6 }}>
+                Request testimonials from past clients before uploading work —
+                so your first visitors see reviews alongside your portfolio.
+              </p>
+              <p style={{ fontSize: 11, color: '#9CA3AF', margin: 0 }}>
+                Go to any lead &rarr; overflow menu &rarr; "Request testimonial" to generate a review link.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center py-16 bg-light-100 rounded-2xl border border-light-200">
+            <div className="w-16 h-16 bg-light-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Image weight="duotone" className="w-8 h-8 text-text-secondary" />
+            </div>
+            <h3 className="text-lg font-semibold text-text-primary mb-2">No Portfolio Items Yet</h3>
+            <p className="text-text-secondary mb-6 max-w-md mx-auto">
+              Upload your best work to showcase your skills and impress potential clients.
+            </p>
+            <button
+              onClick={handleAddNew}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary hover:bg-brand-primary text-white rounded-lg transition font-medium"
+            >
+              <UploadSimple weight="bold" className="w-5 h-5" />
+              Upload Your First Work
+            </button>
+          </div>
         </div>
       ) : (
         /* Portfolio Grid */

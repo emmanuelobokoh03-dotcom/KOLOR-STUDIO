@@ -1630,4 +1630,28 @@ export const calendarApi = {
   },
 };
 
-export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi, contractsApi, paymentsApi, meetingTypesApi, availabilityApi, publicBookingApi, meetingBookingsApi, calendarApi };
+export const sequencesApi = {
+  getEmailLog: async (page = 1) => {
+    return request<{
+      logs: Array<{
+        id: string;
+        emailType: string;
+        sequenceId: string | null;
+        stepNumber: number | null;
+        leadId: string;
+        clientName: string;
+        projectTitle: string;
+        recipientEmail: string;
+        sentAt: string;
+        opened: boolean;
+        openedAt: string | null;
+        openCount: number;
+      }>;
+      total: number;
+      page: number;
+      totalPages: number;
+    }>(`/api/sequences/email-log?page=${page}`);
+  },
+};
+
+export default { authApi, leadsApi, quotesApi, settingsApi, analyticsApi, quoteTemplatesApi, bookingsApi, portfolioApi, deliverablesApi, contractsApi, paymentsApi, meetingTypesApi, availabilityApi, publicBookingApi, meetingBookingsApi, calendarApi, sequencesApi };

@@ -442,6 +442,16 @@ export default function PublicPortfolio() {
               >
                 Get in touch
               </a>
+              <p style={{ fontSize: 13, color: '#9CA3AF', marginTop: 20 }}>
+                Already worked with {studioDisplayName.split(' ')[0]}?{' '}
+                <a
+                  href="#inquiry-section"
+                  style={{ color: brandPrimary, fontWeight: 600 }}
+                  data-testid="portfolio-leave-review-link"
+                >
+                  Get in touch to share your experience &rarr;
+                </a>
+              </p>
             </div>
           ) : (
             /* No items match filters */
