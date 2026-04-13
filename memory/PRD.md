@@ -187,6 +187,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Testimonial Nudge (Task A)**: (1) PublicPortfolio empty state: "Get in touch to share your experience" link below main CTA. (2) PortfolioSettings empty state: "Build social proof first" nudge card above upload area, directing creators to use Lead Detail modal for testimonial requests.
 - **Email Send Log (Task B)**: Backend `GET /api/sequences/email-log` endpoint with pagination (20 per page), filtered to authenticated user's leads. New "Send Log" tab in SequencesDashboard with table (Sent, Client, Email type, Recipient, Opened columns), prev/next pagination, and empty state. `formatEmailType` helper for human-readable labels.
 
+### Iteration 126 — Scheduler Bug Fixes (Complete)
+- **Bug 1 (P0) — Duplicate Monday email**: Removed `cron.schedule('0 9 * * 1')` weekly digest cron from `server.ts`. Users now receive one Monday email at 8am from `scheduler.ts` only. Removed unused imports (`generateDigestForUser`, `getAllUsersForDigest`, `sendWeeklyDigestEmail`, `cron`). Digest API routes preserved.
+- **Bug 2 (P1) — Stale lead deduplication**: Added `OR: [null, < 6h ago]` guard on `lastContactedAt` to both Tier 1 and Tier 2 queries. Stamp `lastContactedAt` after successful nudge (non-blocking `.catch()`). Prevents double-fire on same-day restarts.
+- **Bug 3 (P1) — Quote viewed nudge multi-fire**: Narrowed window from 48-98h to 48-72h (24h wide). Renamed `ninetyEightHoursAgo` → `seventyTwoHoursAgo`.
+- **Bug 4 (P1) — Contract unsigned warning multi-fire**: Narrowed window from 72-99h to 72-95h (23h wide). Renamed `ninetyNineHoursAgo` → `ninetyFiveHoursAgo`.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
