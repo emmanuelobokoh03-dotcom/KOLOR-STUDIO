@@ -832,10 +832,19 @@ export default function ClientPortal() {
 
                   {/* Content */}
                   <div className="px-5 py-5 border-t border-gray-100">
-                    {/* AUDIT FIX [C2]: Sanitise contract HTML before rendering */}
-                    <div
-                      className="prose prose-sm max-w-none text-gray-700 [&_h2]:text-gray-900 [&_h2]:text-base [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-gray-900 [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-1 [&_strong]:text-gray-900 [&_p]:leading-relaxed [&_p]:mb-2 [&_p]:text-xs"
-                      dangerouslySetInnerHTML={{ __html: sanitiseContractHtml(contract.content) }}
+                    {/* AUDIT FIX [C2]: Sandboxed iframe for contract HTML — browser-level XSS isolation */}
+                    <iframe
+                      title="Contract content"
+                      srcDoc={sanitiseContractHtml(contract.content)}
+                      sandbox="allow-same-origin"
+                      style={{ width: '100%', border: 'none', minHeight: '300px' }}
+                      className="rounded"
+                      onLoad={(e) => {
+                        const iframe = e.currentTarget
+                        if (iframe.contentDocument?.body) {
+                          iframe.style.height = iframe.contentDocument.body.scrollHeight + 'px'
+                        }
+                      }}
                     />
                   </div>
 
