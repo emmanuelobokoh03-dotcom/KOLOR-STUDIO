@@ -39,6 +39,10 @@ async function runStaleLeadNudges(): Promise<void> {
       where: {
         updatedAt: { gte: eightDaysAgo, lt: sevenDaysAgo },
         status: { notIn: ['BOOKED', 'LOST'] },
+        OR: [
+          { lastContactedAt: null },
+          { lastContactedAt: { lt: new Date(Date.now() - 6 * 3600000) } },
+        ],
       },
       include: { assignedTo: true },
     });
@@ -46,11 +50,17 @@ async function runStaleLeadNudges(): Promise<void> {
     for (const lead of tier1Leads) {
       if (!lead.assignedTo || !(lead.assignedTo as any).staleLeadEmailEnabled) continue;
       const daysSinceUpdate = Math.floor((Date.now() - lead.updatedAt.getTime()) / 86400000);
-      await sendLeadStaleNudge(
+      const sent = await sendLeadStaleNudge(
         { email: lead.assignedTo.email, firstName: lead.assignedTo.firstName },
         { id: lead.id, clientName: lead.clientName, status: lead.status },
         daysSinceUpdate
       );
+      if (sent) {
+        prisma.lead.update({
+          where: { id: lead.id },
+          data: { lastContactedAt: new Date() },
+        }).catch(e => console.error(`[Scheduler] lastContactedAt stamp failed for ${lead.id}:`, e));
+      }
     }
     console.log(`[Scheduler] Stale lead nudges (7-day): ${tier1Leads.length} checked`);
 
@@ -61,6 +71,10 @@ async function runStaleLeadNudges(): Promise<void> {
       where: {
         updatedAt: { gte: fifteenDaysAgo, lt: fourteenDaysAgo },
         status: { notIn: ['BOOKED', 'LOST'] },
+        OR: [
+          { lastContactedAt: null },
+          { lastContactedAt: { lt: new Date(Date.now() - 6 * 3600000) } },
+        ],
       },
       include: { assignedTo: true },
     });
@@ -68,11 +82,17 @@ async function runStaleLeadNudges(): Promise<void> {
     for (const lead of tier2Leads) {
       if (!lead.assignedTo || !(lead.assignedTo as any).staleLeadEmailEnabled) continue;
       const daysSinceUpdate = Math.floor((Date.now() - lead.updatedAt.getTime()) / 86400000);
-      await sendLeadStaleNudge(
+      const sent = await sendLeadStaleNudge(
         { email: lead.assignedTo.email, firstName: lead.assignedTo.firstName },
         { id: lead.id, clientName: lead.clientName, status: lead.status },
         daysSinceUpdate
       );
+      if (sent) {
+        prisma.lead.update({
+          where: { id: lead.id },
+          data: { lastContactedAt: new Date() },
+        }).catch(e => console.error(`[Scheduler] lastContactedAt stamp failed for ${lead.id}:`, e));
+      }
     }
     console.log(`[Scheduler] Stale lead nudges (14-day): ${tier2Leads.length} checked`);
   } catch (err) {
@@ -83,10 +103,10 @@ async function runStaleLeadNudges(): Promise<void> {
 async function runQuoteViewedNudges(): Promise<void> {
   try {
     const fortyEightHoursAgo = new Date(Date.now() - 48 * 3600000);
-    const ninetyEightHoursAgo = new Date(Date.now() - 98 * 3600000);
+    const seventyTwoHoursAgo = new Date(Date.now() - 72 * 3600000);
     const quotes = await prisma.quote.findMany({
       where: {
-        viewedAt: { gte: ninetyEightHoursAgo, lt: fortyEightHoursAgo },
+        viewedAt: { gte: seventyTwoHoursAgo, lt: fortyEightHoursAgo },
         status: { in: ['SENT', 'VIEWED'] },
       },
       include: { lead: { include: { assignedTo: true } } },
@@ -109,10 +129,10 @@ async function runQuoteViewedNudges(): Promise<void> {
 async function runContractUnsignedWarnings(): Promise<void> {
   try {
     const seventyTwoHoursAgo = new Date(Date.now() - 72 * 3600000);
-    const ninetyNineHoursAgo = new Date(Date.now() - 99 * 3600000);
+    const ninetyFiveHoursAgo = new Date(Date.now() - 95 * 3600000);
     const contracts = await prisma.contract.findMany({
       where: {
-        sentAt: { gte: ninetyNineHoursAgo, lt: seventyTwoHoursAgo },
+        sentAt: { gte: ninetyFiveHoursAgo, lt: seventyTwoHoursAgo },
         clientAgreed: false,
         status: { in: ['SENT', 'VIEWED'] },
       },
