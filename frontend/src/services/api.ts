@@ -6,6 +6,36 @@ interface ApiResponse<T = unknown> {
   message?: string;
 }
 
+export interface NewStep {
+  subject: string;
+  body: string;
+  delayDays: number;
+  order: number;
+}
+
+export interface SequenceStepFull {
+  id: string;
+  sequenceId: string;
+  order: number;
+  delayDays: number;
+  subject: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface CustomSequence {
+  id: string;
+  userId: string;
+  name: string;
+  description: string | null;
+  trigger: string;
+  active: boolean;
+  steps: SequenceStepFull[];
+  createdAt: string;
+  updatedAt: string;
+  stats?: { total: number; active: number; completed: number };
+}
+
 async function request<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -1651,6 +1681,50 @@ export const sequencesApi = {
       page: number;
       totalPages: number;
     }>(`/api/sequences/email-log?page=${page}`);
+  },
+
+  listCustom: async () => {
+    return request<{ sequences: CustomSequence[] }>('/api/sequences/');
+  },
+
+  create: async (data: { name: string; description?: string; trigger: string; steps?: NewStep[] }) => {
+    return request<{ sequence: CustomSequence }>('/api/sequences/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  update: async (id: string, data: { name?: string; description?: string; trigger?: string; active?: boolean }) => {
+    return request<{ sequence: CustomSequence }>(`/api/sequences/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  delete: async (id: string) => {
+    return request<{ message: string }>(`/api/sequences/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  addStep: async (sequenceId: string, step: NewStep) => {
+    return request<{ step: SequenceStepFull }>(`/api/sequences/${sequenceId}/steps`, {
+      method: 'POST',
+      body: JSON.stringify(step),
+    });
+  },
+
+  updateStep: async (sequenceId: string, stepId: string, data: Partial<NewStep>) => {
+    return request<{ step: SequenceStepFull }>(`/api/sequences/${sequenceId}/steps/${stepId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  deleteStep: async (sequenceId: string, stepId: string) => {
+    return request<{ message: string }>(`/api/sequences/${sequenceId}/steps/${stepId}`, {
+      method: 'DELETE',
+    });
   },
 };
 

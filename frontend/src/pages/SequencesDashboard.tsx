@@ -13,9 +13,14 @@ import {
   TrendUp,
   Tray,
   CaretLeft,
-  CaretRight
+  CaretRight,
+  Plus,
+  EnvelopeSimple,
+  Trash,
+  PencilSimple
 } from '@phosphor-icons/react'
 import { sequencesApi } from '../services/api'
+import type { CustomSequence, SequenceStepFull, NewStep } from '../services/api'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -387,6 +392,12 @@ export default function SequencesDashboard() {
   const [detailSeq, setDetailSeq] = useState<SequenceData | null>(null)
   const [activeTab, setActiveTab] = useState<'sequences' | 'log'>('sequences')
 
+  // Custom sequences state
+  const [customSequences, setCustomSequences] = useState<CustomSequence[]>([])
+  const [loadingCustom, setLoadingCustom] = useState(false)
+  const [showBuilder, setShowBuilder] = useState(false)
+  const [editingSequence, setEditingSequence] = useState<CustomSequence | null>(null)
+
   // Email log state
   const [emailLog, setEmailLog] = useState<EmailLogEntry[]>([])
   const [emailLogTotal, setEmailLogTotal] = useState(0)
@@ -411,6 +422,15 @@ export default function SequencesDashboard() {
   }, [])
 
   useEffect(() => { fetchAll() }, [fetchAll])
+
+  const fetchCustomSequences = useCallback(async () => {
+    setLoadingCustom(true)
+    const result = await sequencesApi.listCustom()
+    if (result.data?.sequences) setCustomSequences(result.data.sequences)
+    setLoadingCustom(false)
+  }, [])
+
+  useEffect(() => { fetchCustomSequences() }, [fetchCustomSequences])
 
   const fetchEmailLog = useCallback(async (page: number) => {
     setLoadingLog(true)
@@ -493,23 +513,70 @@ export default function SequencesDashboard() {
         )}
       </div>
 
-      {/* Custom Sequences — Coming Soon */}
-      <div className="mt-10 bg-light-50 border-2 border-dashed border-light-200 rounded-xl p-10 text-center">
-        <div className="w-14 h-14 bg-purple-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-          <TrendUp className="w-7 h-7 text-purple-400" />
+      {/* Custom Sequences */}
+      <div className="mt-10">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-semibold text-text-primary">Custom Sequences</h2>
+          <button
+            onClick={() => { setEditingSequence(null); setShowBuilder(true) }}
+            className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg text-sm font-semibold hover:brightness-110 transition min-h-[44px]"
+            data-testid="new-sequence-btn"
+          >
+            <Plus weight="bold" className="w-4 h-4" />
+            New Sequence
+          </button>
         </div>
-        <h3 className="text-lg font-semibold text-text-primary mb-2">Custom Sequences</h3>
-        <p className="text-sm text-text-secondary max-w-md mx-auto mb-5">
-          Build your own email workflows with custom triggers, delays, and templates.
-        </p>
-        <button
-          disabled
-          className="px-6 py-2.5 bg-light-100 text-text-tertiary border border-light-300 rounded-lg text-sm font-medium cursor-not-allowed"
-          data-testid="create-custom-sequence-btn"
-        >
-          Coming Soon
-        </button>
+
+        {loadingCustom ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {[1, 2].map(i => <div key={i} className="bg-light-50 rounded-xl border border-light-200 p-6 animate-pulse h-48" />)}
+          </div>
+        ) : customSequences.length === 0 ? (
+          <div className="bg-light-50 border-2 border-dashed border-light-200 rounded-xl p-10 text-center">
+            <div className="w-14 h-14 bg-purple-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <EnvelopeSimple weight="duotone" className="w-7 h-7 text-purple-400" />
+            </div>
+            <h3 className="text-base font-semibold text-text-primary mb-2">No custom sequences yet</h3>
+            <p className="text-sm text-text-secondary max-w-md mx-auto mb-5">
+              Build automated email workflows with custom triggers, delays, and templates.
+            </p>
+            <button
+              onClick={() => { setEditingSequence(null); setShowBuilder(true) }}
+              className="px-5 py-2.5 bg-brand-primary text-white rounded-lg text-sm font-semibold hover:brightness-110 transition min-h-[44px]"
+              data-testid="create-first-sequence-btn"
+            >
+              Create your first sequence
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {customSequences.map(seq => (
+              <CustomSequenceCard
+                key={seq.id}
+                seq={seq}
+                onEdit={() => { setEditingSequence(seq); setShowBuilder(true) }}
+                onDelete={async () => {
+                  await sequencesApi.delete(seq.id)
+                  fetchCustomSequences()
+                }}
+                onToggle={async (active) => {
+                  await sequencesApi.update(seq.id, { active })
+                  fetchCustomSequences()
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Sequence Builder Modal */}
+      {showBuilder && (
+        <SequenceBuilder
+          sequence={editingSequence}
+          onClose={() => { setShowBuilder(false); setEditingSequence(null) }}
+          onSaved={() => { setShowBuilder(false); setEditingSequence(null); fetchCustomSequences() }}
+        />
+      )}
       </>
       ) : (
       /* ─── Send Log Tab ─── */
@@ -607,6 +674,387 @@ export default function SequencesDashboard() {
       {detailSeq && (
         <SequenceDetailModal seq={detailSeq} onClose={() => setDetailSeq(null)} />
       )}
+    </div>
+  )
+}
+
+
+// ─── Custom Sequence Card ────────────────────────────────
+function CustomSequenceCard({ seq, onEdit, onDelete, onToggle }: {
+  seq: CustomSequence
+  onEdit: () => void
+  onDelete: () => void
+  onToggle: (active: boolean) => void
+}) {
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+
+  const TRIGGER_LABELS: Record<string, string> = {
+    QUOTE_SENT: 'When quote is sent',
+    CONTRACT_SENT: 'When contract is sent',
+    PROJECT_CREATED: 'When project is created',
+    QUOTE_VIEWED_NO_ACTION: 'When quote viewed but not accepted',
+    LEAD_COLD: 'When lead goes cold',
+  }
+
+  return (
+    <div className="bg-light-50 rounded-xl border border-light-200 p-6 hover:border-purple-500/40 transition-all" data-testid={`custom-seq-${seq.id}`}>
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base font-semibold text-text-primary truncate">{seq.name}</h3>
+          <p className="text-xs text-text-secondary mt-0.5">{TRIGGER_LABELS[seq.trigger] ?? seq.trigger}</p>
+        </div>
+        <span className={`ml-3 flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold ${
+          seq.active ? 'bg-emerald-500/15 text-emerald-600 border border-emerald-500/30'
+                     : 'bg-light-100 text-text-tertiary border border-light-300'
+        }`}>
+          {seq.active ? 'Active' : 'Paused'}
+        </span>
+      </div>
+
+      <div className="bg-surface-base rounded-lg px-4 py-3 mb-4 border border-light-200">
+        {seq.steps.length === 0 ? (
+          <p className="text-xs text-text-tertiary">No steps added yet</p>
+        ) : (
+          <div className="space-y-1">
+            {seq.steps.slice(0, 3).map(s => (
+              <div key={s.id} className="flex items-center gap-2 text-xs text-text-secondary">
+                <span className="w-4 h-4 rounded-full bg-purple-500/20 flex items-center justify-center text-[9px] text-purple-400 font-bold flex-shrink-0">
+                  {s.order + 1}
+                </span>
+                <span className="truncate">Day {s.delayDays}: {s.subject || '(no subject)'}</span>
+              </div>
+            ))}
+            {seq.steps.length > 3 && (
+              <p className="text-[10px] text-text-tertiary pl-6">+{seq.steps.length - 3} more steps</p>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-2">
+        <button onClick={onEdit} className="flex-1 px-3 py-2 bg-purple-500/10 text-purple-500 border border-purple-500/30 rounded-lg text-xs font-medium hover:bg-purple-500/20 transition min-h-[44px]" data-testid={`edit-seq-${seq.id}`}>
+          Edit
+        </button>
+        <button
+          onClick={() => onToggle(!seq.active)}
+          className="flex-1 px-3 py-2 bg-light-100 text-text-secondary border border-light-300 rounded-lg text-xs font-medium hover:bg-light-200 transition min-h-[44px]"
+          data-testid={`toggle-seq-${seq.id}`}
+        >
+          {seq.active ? 'Pause' : 'Activate'}
+        </button>
+        {deleteConfirm ? (
+          <button
+            onClick={async () => { await onDelete(); setDeleteConfirm(false) }}
+            className="px-3 py-2 bg-red-600 text-white rounded-lg text-xs font-semibold transition min-h-[44px]"
+            data-testid={`confirm-delete-seq-${seq.id}`}
+          >
+            Confirm delete
+          </button>
+        ) : (
+          <button
+            onClick={() => setDeleteConfirm(true)}
+            className="px-3 py-2 text-text-tertiary hover:text-red-500 hover:bg-red-50 rounded-lg text-xs transition min-h-[44px] min-w-[44px] flex items-center justify-center"
+            data-testid={`delete-seq-${seq.id}`}
+          >
+            <Trash className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Sequence Builder Modal ──────────────────────────────
+function SequenceBuilder({ sequence, onClose, onSaved }: {
+  sequence: CustomSequence | null
+  onClose: () => void
+  onSaved: () => void
+}) {
+  const isEdit = !!sequence
+
+  const [name, setName] = useState(sequence?.name ?? '')
+  const [description, setDescription] = useState(sequence?.description ?? '')
+  const [trigger, setTrigger] = useState(sequence?.trigger ?? 'QUOTE_SENT')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  const [steps, setSteps] = useState<SequenceStepFull[]>(sequence?.steps ?? [])
+  const [editingStep, setEditingStep] = useState<string | null>(null)
+  const [stepDraft, setStepDraft] = useState<Partial<NewStep>>({})
+
+  const TRIGGERS = [
+    { value: 'QUOTE_SENT', label: 'Quote sent to client' },
+    { value: 'CONTRACT_SENT', label: 'Contract sent to client' },
+    { value: 'PROJECT_CREATED', label: 'New project created' },
+    { value: 'QUOTE_VIEWED_NO_ACTION', label: 'Quote viewed but not accepted' },
+    { value: 'LEAD_COLD', label: 'Lead goes cold (7+ days inactive)' },
+  ]
+
+  const handleSaveMetadata = async () => {
+    if (!name.trim()) { setError('Sequence name is required'); return }
+    setSaving(true)
+    setError('')
+    try {
+      if (isEdit && sequence) {
+        const result = await sequencesApi.update(sequence.id, { name, description, trigger })
+        if (result.error) { setError(result.message || 'Failed to update'); return }
+      } else {
+        const result = await sequencesApi.create({ name, description, trigger, steps: [] })
+        if (result.error) { setError(result.message || 'Failed to create'); return }
+      }
+      onSaved()
+    } catch {
+      setError('Something went wrong')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleAddStep = async () => {
+    if (!sequence) return
+    const newStep: NewStep = {
+      subject: '',
+      body: '',
+      delayDays: steps.length === 0 ? 0 : (steps[steps.length - 1]?.delayDays ?? 0) + 3,
+      order: steps.length,
+    }
+    const result = await sequencesApi.addStep(sequence.id, newStep)
+    if (result.data?.step) {
+      setSteps(prev => [...prev, result.data!.step])
+      setEditingStep(result.data!.step.id)
+      setStepDraft({ subject: '', body: '', delayDays: newStep.delayDays })
+    }
+  }
+
+  const handleSaveStep = async (stepId: string) => {
+    if (!sequence) return
+    await sequencesApi.updateStep(sequence.id, stepId, stepDraft)
+    setSteps(prev => prev.map(s => s.id === stepId ? { ...s, ...stepDraft } as SequenceStepFull : s))
+    setEditingStep(null)
+    setStepDraft({})
+  }
+
+  const handleDeleteStep = async (stepId: string) => {
+    if (!sequence) return
+    await sequencesApi.deleteStep(sequence.id, stepId)
+    setSteps(prev => prev.filter(s => s.id !== stepId))
+  }
+
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" data-testid="sequence-builder-modal">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-2xl bg-light-50 rounded-2xl border border-light-200 shadow-2xl max-h-[90vh] overflow-y-auto">
+
+        <div className="sticky top-0 bg-light-50 border-b border-light-200 px-6 py-4 flex items-center justify-between z-10">
+          <div>
+            <h2 className="text-lg font-bold text-text-primary">
+              {isEdit ? 'Edit Sequence' : 'New Sequence'}
+            </h2>
+            <p className="text-xs text-text-secondary mt-0.5">
+              {isEdit ? 'Update your email workflow' : 'Build an automated email workflow'}
+            </p>
+          </div>
+          <button onClick={onClose} className="p-2 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-lg transition min-w-[44px] min-h-[44px] flex items-center justify-center" data-testid="close-builder">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="px-6 py-5 space-y-6">
+          <div>
+            <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Sequence details</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-1.5">
+                  Sequence name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="e.g. Post-booking welcome series"
+                  maxLength={80}
+                  className="w-full px-3 py-2.5 bg-surface-base border border-border rounded-lg text-sm text-text-primary placeholder-text-tertiary focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20"
+                  data-testid="seq-name-input"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-1.5">Description (optional)</label>
+                <input
+                  type="text"
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  placeholder="What does this sequence do?"
+                  maxLength={200}
+                  className="w-full px-3 py-2.5 bg-surface-base border border-border rounded-lg text-sm text-text-primary placeholder-text-tertiary focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20"
+                  data-testid="seq-desc-input"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-1.5">Trigger</label>
+                <select
+                  value={trigger}
+                  onChange={e => setTrigger(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-surface-base border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-brand-primary"
+                  data-testid="seq-trigger-select"
+                >
+                  {TRIGGERS.map(t => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-text-tertiary mt-1.5">
+                  This sequence will start automatically when this event occurs.
+                </p>
+              </div>
+            </div>
+
+            {error && <p className="text-xs text-red-600 mt-3 font-medium">{error}</p>}
+
+            <button
+              onClick={handleSaveMetadata}
+              disabled={saving || !name.trim()}
+              className="mt-4 px-5 py-2.5 bg-brand-primary text-white rounded-lg text-sm font-semibold hover:brightness-110 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-h-[44px]"
+              data-testid="save-seq-metadata-btn"
+            >
+              {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : null}
+              {isEdit ? 'Save changes' : 'Create sequence'}
+            </button>
+          </div>
+
+          {isEdit && sequence && (
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">Email steps ({steps.length})</h3>
+                <button
+                  onClick={handleAddStep}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-purple-500/10 text-purple-500 border border-purple-500/30 rounded-lg text-xs font-semibold hover:bg-purple-500/20 transition min-h-[44px]"
+                  data-testid="add-step-btn"
+                >
+                  <Plus weight="bold" className="w-3.5 h-3.5" />
+                  Add step
+                </button>
+              </div>
+
+              {steps.length === 0 ? (
+                <div className="bg-surface-base border border-dashed border-border rounded-xl p-8 text-center">
+                  <p className="text-sm text-text-secondary mb-3">No steps yet. Add your first email.</p>
+                  <button
+                    onClick={handleAddStep}
+                    className="px-4 py-2 bg-brand-primary text-white rounded-lg text-xs font-semibold hover:brightness-110 transition min-h-[44px]"
+                    data-testid="add-first-step-btn"
+                  >
+                    Add first email
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {steps.map((step, idx) => (
+                    <div key={step.id} className="bg-surface-base border border-border rounded-xl overflow-hidden" data-testid={`step-${step.id}`}>
+                      <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
+                        <div className="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                          <span className="text-[10px] text-purple-400 font-bold">{idx + 1}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-text-primary truncate">
+                            {step.subject || '(no subject)'}
+                          </p>
+                          <p className="text-[10px] text-text-tertiary">Send on day {step.delayDays}</p>
+                        </div>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          <button
+                            onClick={() => {
+                              setEditingStep(step.id)
+                              setStepDraft({ subject: step.subject, body: step.body, delayDays: step.delayDays })
+                            }}
+                            className="p-1.5 text-text-tertiary hover:text-purple-500 hover:bg-purple-500/10 rounded-md transition"
+                            data-testid={`edit-step-${step.id}`}
+                          >
+                            <PencilSimple className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteStep(step.id)}
+                            className="p-1.5 text-text-tertiary hover:text-red-500 hover:bg-red-50 rounded-md transition"
+                            data-testid={`delete-step-${step.id}`}
+                          >
+                            <Trash className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {editingStep === step.id && (
+                        <div className="px-4 py-4 space-y-3 bg-surface-base">
+                          <div>
+                            <label className="block text-[11px] font-semibold text-text-secondary mb-1">Send on day</label>
+                            <input
+                              type="number"
+                              min={0}
+                              max={365}
+                              value={stepDraft.delayDays ?? step.delayDays}
+                              onChange={e => setStepDraft(d => ({ ...d, delayDays: parseInt(e.target.value) || 0 }))}
+                              className="w-24 px-3 py-1.5 bg-white border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-brand-primary"
+                              data-testid={`step-delay-${step.id}`}
+                            />
+                            <span className="ml-2 text-xs text-text-tertiary">days after trigger</span>
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-semibold text-text-secondary mb-1">Subject line</label>
+                            <input
+                              type="text"
+                              value={stepDraft.subject ?? step.subject}
+                              onChange={e => setStepDraft(d => ({ ...d, subject: e.target.value }))}
+                              placeholder="Email subject line..."
+                              maxLength={150}
+                              className="w-full px-3 py-1.5 bg-white border border-border rounded-lg text-sm text-text-primary placeholder-text-tertiary focus:outline-none focus:border-brand-primary"
+                              data-testid={`step-subject-${step.id}`}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-semibold text-text-secondary mb-1">Email body</label>
+                            <textarea
+                              value={stepDraft.body ?? step.body}
+                              onChange={e => setStepDraft(d => ({ ...d, body: e.target.value }))}
+                              placeholder="Write your email content here. Use {clientName} and {studioName} as placeholders."
+                              rows={6}
+                              className="w-full px-3 py-2 bg-white border border-border rounded-lg text-sm text-text-primary placeholder-text-tertiary focus:outline-none focus:border-brand-primary resize-y"
+                              data-testid={`step-body-${step.id}`}
+                            />
+                            <p className="text-[10px] text-text-tertiary mt-1">
+                              Available placeholders: {'{clientName}'}, {'{studioName}'}, {'{projectTitle}'}
+                            </p>
+                          </div>
+                          <div className="flex gap-2 pt-1">
+                            <button
+                              onClick={() => handleSaveStep(step.id)}
+                              className="px-4 py-2 bg-brand-primary text-white rounded-lg text-xs font-semibold hover:brightness-110 transition min-h-[44px]"
+                              data-testid={`save-step-${step.id}`}
+                            >
+                              Save step
+                            </button>
+                            <button
+                              onClick={() => { setEditingStep(null); setStepDraft({}) }}
+                              className="px-4 py-2 bg-light-100 text-text-secondary rounded-lg text-xs font-medium hover:bg-light-200 transition min-h-[44px]"
+                              data-testid={`cancel-step-${step.id}`}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {!isEdit && (
+            <div className="bg-purple-500/5 border border-purple-500/20 rounded-xl px-4 py-3">
+              <p className="text-xs text-text-secondary">
+                After creating the sequence, you can add email steps and customise the content.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
