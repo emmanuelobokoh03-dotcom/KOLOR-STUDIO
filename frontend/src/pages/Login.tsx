@@ -55,7 +55,6 @@ const Login = () => {
     if (result.error) { setError(result.message || 'Failed to sign in'); return }
     if (result.data?.user) {
       localStorage.removeItem('token')
-      localStorage.setItem('user', JSON.stringify(result.data.user))
       trackLogin('email')
       window.location.href = '/dashboard'
     }

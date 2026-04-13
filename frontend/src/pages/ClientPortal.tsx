@@ -4,6 +4,19 @@ import ClientPortalMessages from '../components/ClientPortalMessages';
 import ClientFileUpload from '../components/ClientFileUpload';
 import ProjectTimeline from '../components/ProjectTimeline';
 import { toast } from 'sonner';
+
+/**
+ * AUDIT FIX [C2]: Lightweight HTML sanitiser — strips script tags and dangerous event handlers.
+ * Not as comprehensive as DOMPurify but sufficient for creator-authored contract content.
+ */
+function sanitiseContractHtml(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '')
+    .replace(/\b(href|src|action)\s*=\s*["']?\s*javascript:/gi, '$1="#"')
+    .replace(/\bsrc\s*=\s*["']?\s*data:/gi, 'src="about:blank"')
+    .replace(/\bstyle\s*=\s*["'][^"']*expression\s*\([^"']*["']/gi, '')
+}
 import {
   Sparkle,
   CheckCircle,
@@ -819,9 +832,10 @@ export default function ClientPortal() {
 
                   {/* Content */}
                   <div className="px-5 py-5 border-t border-gray-100">
+                    {/* AUDIT FIX [C2]: Sanitise contract HTML before rendering */}
                     <div
                       className="prose prose-sm max-w-none text-gray-700 [&_h2]:text-gray-900 [&_h2]:text-base [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-gray-900 [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-1 [&_strong]:text-gray-900 [&_p]:leading-relaxed [&_p]:mb-2 [&_p]:text-xs"
-                      dangerouslySetInnerHTML={{ __html: contract.content }}
+                      dangerouslySetInnerHTML={{ __html: sanitiseContractHtml(contract.content) }}
                     />
                   </div>
 

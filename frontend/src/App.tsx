@@ -80,7 +80,7 @@ function App() {
       </div>
       <CookieConsent />
       <Toaster
-        theme="dark"
+        theme="light"
         position="top-center"
         richColors
         toastOptions={{

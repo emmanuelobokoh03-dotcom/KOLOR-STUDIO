@@ -155,7 +155,9 @@ const Dashboard = () => {
   const [monthlyTrend, setMonthlyTrend] = useState<MonthlyTrendData[]>([])
   const { startTour, tourComplete } = useOnboardingTour()
   const { showWizard, setShowWizard, resetWizard } = useOnboardingWizard(leads.length)
-  const lang = getIndustryLanguage(user?.industry)
+  const lang = getIndustryLanguage(
+    user?.industry || user?.primaryIndustry as any
+  )
 
   // Sparkline helper — last 7 months of trend data as sparkline points
   const toSparkline = (data: MonthlyTrendData[], key: 'count' | 'revenue', fallback: number) => {
@@ -910,7 +912,10 @@ const Dashboard = () => {
             onAddLead={() => setShowAddModal(true)}
           />
         )}
-        {(user?.primaryIndustry === 'GRAPHIC_DESIGN' || user?.primaryIndustry === 'WEB_DESIGN' || user?.primaryIndustry === 'BRANDING' || user?.primaryIndustry === 'ILLUSTRATION') && (
+        {/* AUDIT FIX [M2]: Check both industry fields — covers all DESIGN sub-types */}
+        {((user?.industry as string) === 'DESIGN' ||
+          user?.primaryIndustry === 'DESIGN' as any ||
+          user?.primaryIndustry === 'GRAPHIC_DESIGN' || user?.primaryIndustry === 'WEB_DESIGN' || user?.primaryIndustry === 'BRANDING' || user?.primaryIndustry === 'ILLUSTRATION') && (
           <DesignWidgets
             onLeadClick={setSelectedLead}
             onAddLead={() => setShowAddModal(true)}

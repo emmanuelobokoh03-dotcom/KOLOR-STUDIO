@@ -4,17 +4,10 @@ import { ArrowRight } from '@phosphor-icons/react'
 import KolorLogo from '../components/KolorLogo'
 import { CountdownTimer } from '../components/CountdownTimer'
 
-/* ---------- BETA end date (7 days from now, persisted in localStorage) ---------- */
+/* ---------- BETA end date (fixed deadline for all visitors) ---------- */
+// AUDIT FIX [M3]: Fixed beta end date — countdown must be consistent for all visitors
 function getBetaEndDate(): Date {
-  const key = 'kolor_beta_end'
-  const stored = localStorage.getItem(key)
-  if (stored) {
-    const d = new Date(stored)
-    if (d.getTime() > Date.now()) return d
-  }
-  const d = new Date(Date.now() + 7 * 86400000)
-  localStorage.setItem(key, d.toISOString())
-  return d
+  return new Date('2025-06-30T23:59:59Z')
 }
 
 /* ---------- Section label with purple rule ---------- */
