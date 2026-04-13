@@ -183,6 +183,10 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Empty state**: Elevated brand-coloured circle with "Coming soon" copy + "Get in touch" link. Filter empty state has "Clear filters" button.
 - **Scroll-reveal**: `IntersectionObserver`-powered fade-in on testimonials and inquiry CTA sections with `prefers-reduced-motion` support.
 
+### Iteration 125 — Testimonial Social Proof Nudge + Email Send Log UI (Complete)
+- **Testimonial Nudge (Task A)**: (1) PublicPortfolio empty state: "Get in touch to share your experience" link below main CTA. (2) PortfolioSettings empty state: "Build social proof first" nudge card above upload area, directing creators to use Lead Detail modal for testimonial requests.
+- **Email Send Log (Task B)**: Backend `GET /api/sequences/email-log` endpoint with pagination (20 per page), filtered to authenticated user's leads. New "Send Log" tab in SequencesDashboard with table (Sent, Client, Email type, Recipient, Opened columns), prev/next pagination, and empty state. `formatEmailType` helper for human-readable labels.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
