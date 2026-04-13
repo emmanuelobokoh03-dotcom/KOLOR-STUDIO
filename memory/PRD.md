@@ -194,13 +194,17 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Bug 4 (P1) — Contract unsigned warning multi-fire**: Narrowed window from 72-99h to 72-95h (23h wide). Renamed `ninetyNineHoursAgo` → `ninetyFiveHoursAgo`.
 
 ### Iteration 127 — Audit Critical + High Fixes (Complete)
-- **C2 XSS sanitiser**: `sanitiseContractHtml()` added to `ClientPortal.tsx` — strips `<script>`, `on*` handlers, `javascript:` hrefs, `data:` src. Applied to `dangerouslySetInnerHTML`.
+- **C2 XSS sanitiser**: `sanitiseContractHtml()` added to `ClientPortal.tsx` — strips `<script>`, `on*` handlers, `javascript:` hrefs, `data:` src. Upgraded to sandboxed `<iframe srcDoc>` for browser-level XSS isolation.
 - **L2 Toaster theme**: Changed from `theme="dark"` to `theme="light"` in `App.tsx`.
 - **H1 Dead localStorage write**: Removed `localStorage.setItem('user')` from `Login.tsx`.
 - **H3 Favicon**: Updated `index.html` with full favicon block (ico, svg, png, apple-touch-icon, site.webmanifest). Created `/public/site.webmanifest`.
 - **M2 DESIGN widgets**: Added `user?.industry === 'DESIGN'` check alongside existing sub-type checks. Added `user?.industry || user?.primaryIndustry` fallback for `getIndustryLanguage`.
 - **M3 Beta countdown**: `getBetaEndDate()` now returns fixed `Date('2025-06-30T23:59:59Z')` — no localStorage.
 - **C4 env.example**: Full rewrite with all Railway env vars (Resend, Supabase, Google, Stripe, Sentry, Vite). Removed stale SendGrid references.
+
+### Iteration 128 — Custom Email Sequence Visual Builder (Complete)
+- **api.ts**: Added `CustomSequence`, `NewStep`, `SequenceStepFull` interfaces. Added 7 CRUD methods to `sequencesApi` (listCustom, create, update, delete, addStep, updateStep, deleteStep).
+- **SequencesDashboard.tsx**: Replaced "Coming Soon" placeholder with full custom sequences section. `CustomSequenceCard` shows name, trigger label, step preview, toggle/edit/delete with two-tap confirm. `SequenceBuilder` modal for create/edit mode with metadata form + inline step editor. Steps support subject, body (with placeholders), delay days. Empty state with "Create your first sequence" CTA. Built-in sequences and Send Log tab preserved unchanged.
 
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
