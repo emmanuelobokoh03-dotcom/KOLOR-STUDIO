@@ -1,8 +1,26 @@
 User-agent: *
 Allow: /
+Allow: /privacy
+Allow: /terms
+
+# Disallow auth-gated app routes
 Disallow: /dashboard
 Disallow: /settings
+Disallow: /calendar
+Disallow: /onboarding
+
+# Disallow dynamic public routes with sensitive tokens
 Disallow: /portal/
-Disallow: /api/
+Disallow: /quote/
+Disallow: /testimonial/
+Disallow: /verify-email/
+Disallow: /reset-password/
+
+# Disallow user-specific public pages (indexed via portfolio link sharing only)
+Disallow: /book/
+
+# Allow portfolio and inquiry (SEO-relevant public surfaces)
+Allow: /portfolio/
+Allow: /inquiry
 
 Sitemap: https://kolorstudio.app/sitemap.xml

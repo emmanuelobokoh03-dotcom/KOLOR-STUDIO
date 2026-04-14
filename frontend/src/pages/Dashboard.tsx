@@ -900,13 +900,17 @@ const Dashboard = () => {
         </div>
 
         {/* Industry-Specific Widgets */}
-        {user?.primaryIndustry === 'PHOTOGRAPHY' && (
+        {/* AUDIT FIX [H1]: Dual-field industry check */}
+        {((user?.industry as string) === 'PHOTOGRAPHY' ||
+          user?.primaryIndustry === 'PHOTOGRAPHY') && (
           <PhotographyWidgets
             onViewCalendar={() => handleViewChange('calendar')}
             onLeadClick={setSelectedLead}
           />
         )}
-        {user?.primaryIndustry === 'FINE_ART' && (
+        {/* AUDIT FIX [H1]: Dual-field industry check */}
+        {((user?.industry as string) === 'FINE_ART' ||
+          user?.primaryIndustry === 'FINE_ART') && (
           <FineArtWidgets
             onLeadClick={setSelectedLead}
             onAddLead={() => setShowAddModal(true)}

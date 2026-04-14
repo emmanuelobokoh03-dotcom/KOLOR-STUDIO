@@ -575,6 +575,10 @@ export default function SequencesDashboard() {
           sequence={editingSequence}
           onClose={() => { setShowBuilder(false); setEditingSequence(null) }}
           onSaved={() => { setShowBuilder(false); setEditingSequence(null); fetchCustomSequences() }}
+          onCreated={(newSeq) => {
+            fetchCustomSequences()
+            setEditingSequence(newSeq)
+          }}
         />
       )}
       </>
@@ -765,10 +769,11 @@ function CustomSequenceCard({ seq, onEdit, onDelete, onToggle }: {
 }
 
 // ─── Sequence Builder Modal ──────────────────────────────
-function SequenceBuilder({ sequence, onClose, onSaved }: {
+function SequenceBuilder({ sequence, onClose, onSaved, onCreated }: {
   sequence: CustomSequence | null
   onClose: () => void
   onSaved: () => void
+  onCreated?: (seq: CustomSequence) => void
 }) {
   const isEdit = !!sequence
 
@@ -798,11 +803,16 @@ function SequenceBuilder({ sequence, onClose, onSaved }: {
       if (isEdit && sequence) {
         const result = await sequencesApi.update(sequence.id, { name, description, trigger })
         if (result.error) { setError(result.message || 'Failed to update'); return }
+        onSaved()
       } else {
         const result = await sequencesApi.create({ name, description, trigger, steps: [] })
         if (result.error) { setError(result.message || 'Failed to create'); return }
+        if (result.data?.sequence && onCreated) {
+          onCreated(result.data.sequence)
+        } else {
+          onSaved()
+        }
       }
-      onSaved()
     } catch {
       setError('Something went wrong')
     } finally {
@@ -1046,10 +1056,10 @@ function SequenceBuilder({ sequence, onClose, onSaved }: {
             </div>
           )}
 
-          {!isEdit && (
+          {!isEdit && name.trim() && (
             <div className="bg-purple-500/5 border border-purple-500/20 rounded-xl px-4 py-3">
               <p className="text-xs text-text-secondary">
-                After creating the sequence, you can add email steps and customise the content.
+                Create the sequence to start adding email steps.
               </p>
             </div>
           )}

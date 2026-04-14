@@ -7,7 +7,8 @@ import { CountdownTimer } from '../components/CountdownTimer'
 /* ---------- BETA end date (fixed deadline for all visitors) ---------- */
 // AUDIT FIX [M3]: Fixed beta end date — countdown must be consistent for all visitors
 function getBetaEndDate(): Date {
-  return new Date('2025-06-30T23:59:59Z')
+  // AUDIT FIX [L2]: Updated to real future beta deadline
+  return new Date('2026-07-31T23:59:59Z')
 }
 
 /* ---------- Section label with purple rule ---------- */
@@ -1316,6 +1317,7 @@ function FounderSection() {
     { icon: '\u{1F512}', title: 'GDPR-native', desc: 'from day one' },
     { icon: '\u{1F30D}', title: 'Global-first', desc: 'UK, EU, Africa, LatAm, Asia' },
     { icon: '\u26A1', title: 'Built in public', desc: 'Every iteration shipped live' },
+    { icon: '\u{1F91D}', title: 'Operations-first', desc: 'Built from the management side' },
   ]
 
   return (
@@ -1335,31 +1337,36 @@ function FounderSection() {
               style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}
             >
               <span style={{ background: 'linear-gradient(180deg, #ffffff, rgba(255,255,255,0.55))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                Built by someone who
+                Built by someone who watched
               </span>
               <br />
               <span style={{ background: 'linear-gradient(135deg, #a78bfa, #6C2EDB)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                lost clients to spreadsheets.
+                talented creatives lose work to broken admin.
               </span>
             </h2>
 
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, marginBottom: 16 }}>
-              KOLOR started as a folder of Google Sheets and unanswered emails. Every inquiry
-              that didn't get a quote fast enough became a lost booking. Every contract sent as
-              a Word doc felt unprofessional. The follow-up system was a sticky note on a monitor.
+              I spent years managing creative teams — photographers on assignment, designers
+              on retainer, artists fulfilling commissions. The talent was never the problem.
+              The problem was the black hole between "I'm interested" and "contract signed."
+              Inquiries sitting in inboxes for four days. Proposals sent as email attachments.
+              Follow-up that depended entirely on memory. World-class work, chaos behind it.
             </p>
 
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, marginBottom: 16 }}>
-              I built KOLOR because HoneyBook and Dubsado aren't built for me. They're US-centric,
-              photographer-first, and designed like enterprise software from 2015. Fine artists
-              managing commissions, designers sending proposals, photographers in Lagos and Berlin —
-              none of them have a tool built specifically for how they work.
+              I looked at every tool on the market and found the same thing: HoneyBook and
+              Dubsado were built for American wedding photographers in 2016 and never
+              meaningfully expanded beyond that. They assume US bank accounts, US tax rates,
+              and a single industry. A fine artist managing collectors in Tokyo, a brand
+              designer sending proposals in Lagos, a photographer billing in euros — none of
+              them were the intended user. It shows in every screen.
             </p>
 
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, marginBottom: 0 }}>
-              KOLOR is that tool. It's built for three industries equally, designed to feel modern,
-              and architected to work for any creative professional on any continent. The first 20
-              people who join are building this with me.
+              KOLOR is what I would have built for every creative I ever managed. Equal depth
+              for photography, design, and fine art. GDPR-native from the first line of code.
+              Designed to work the way creative businesses actually run — not the way software
+              companies assume they do. The first 20 people who join are shaping what it becomes.
             </p>
 
             <div style={{

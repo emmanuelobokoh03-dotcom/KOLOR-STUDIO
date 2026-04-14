@@ -266,7 +266,7 @@ export default function PrivacyPolicy() {
             <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Google LLC</h3>
               <ul className="space-y-1 text-text-secondary text-sm">
-                <li>• Fonts CDN (see note below)</li>
+                <li>• Google Calendar integration (optional, user-initiated)</li>
                 <li>• Transfer mechanism: USA — SCCs / Data Privacy Framework (DPF)</li>
               </ul>
             </div>
@@ -282,7 +282,7 @@ export default function PrivacyPolicy() {
 
           <div className="mt-4 bg-surface-base rounded-xl p-5 border border-light-200">
             <p className="text-sm text-text-tertiary leading-relaxed">
-              <span className="font-semibold text-text-secondary">Google Fonts:</span> When you load any KOLOR Studio page, your browser makes a direct request to fonts.googleapis.com to download typeface files. Google receives your IP address as part of this request. We use Google Fonts to render our interface typography. This request occurs on every page load.
+              <span className="font-semibold text-text-secondary">Fonts:</span> All fonts are self-hosted on KOLOR's servers. No font requests are made to Google or any external CDN. Your IP address is never shared with third parties for font loading purposes.
             </p>
           </div>
 
