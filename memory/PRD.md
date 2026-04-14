@@ -206,6 +206,16 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **api.ts**: Added `CustomSequence`, `NewStep`, `SequenceStepFull` interfaces. Added 7 CRUD methods to `sequencesApi` (listCustom, create, update, delete, addStep, updateStep, deleteStep).
 - **SequencesDashboard.tsx**: Replaced "Coming Soon" placeholder with full custom sequences section. `CustomSequenceCard` shows name, trigger label, step preview, toggle/edit/delete with two-tap confirm. `SequenceBuilder` modal for create/edit mode with metadata form + inline step editor. Steps support subject, body (with placeholders), delay days. Empty state with "Create your first sequence" CTA. Built-in sequences and Send Log tab preserved unchanged.
 
+### Iteration 129 — Self-Host Google Fonts + Audit Fixes + Founder Copy Rewrite (Complete)
+- **C1 Self-hosted fonts**: Downloaded woff2 files to `/public/fonts/`. Replaced Google Fonts `@import` with `@font-face` declarations in `index.css`. Removed Google Fonts `<link>` tags from `index.html`. Updated Helmet CSP to remove Google domains. Updated Privacy Policy to "self-hosted" disclosure.
+- **H1 Widget dual-field check**: Photography and Fine Art widget conditions now check both `user.industry` and `user.primaryIndustry`.
+- **H5 robots.txt**: Created with Allow/Disallow rules for SEO surfaces vs auth-gated routes.
+- **M1 Sequence builder flow**: `onCreated` callback transitions create mode directly to edit mode without closing modal.
+- **M2 Page titles**: `<title>`, OG title, Twitter title all updated to include "Artists".
+- **L2 Beta countdown**: Updated to `2026-07-31T23:59:59Z` (future date).
+- **L4 auth__1_.ts**: File already didn't exist — no action needed.
+- **Founder copy rewrite**: New headline ("Built by someone who watched talented creatives lose work to broken admin"), business manager perspective copy, 4th credibility signal (Operations-first).
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
