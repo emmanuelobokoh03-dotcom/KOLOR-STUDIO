@@ -1,39 +1,46 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { IndustryType, INDUSTRY_TYPE_LABELS, authApi } from '../services/api'
+import { IndustryType, authApi } from '../services/api'
 import {
   Camera,
-  FilmStrip,
   PenNib,
-  Globe,
-  PaintBrush,
   Palette,
-  Scissors,
-  Megaphone,
-  FileImage,
-  Stack,
   SpinnerGap,
   CheckCircle,
   ArrowRight,
   Sparkle
 } from '@phosphor-icons/react'
 
-const INDUSTRY_CONFIG: { type: IndustryType; icon: React.ElementType; gradient: string; desc: string }[] = [
-  { type: 'PHOTOGRAPHY', icon: Camera, gradient: 'from-brand-primary to-brand-primary-dark', desc: 'Portraits, weddings, events, commercial' },
-  { type: 'VIDEOGRAPHY', icon: FilmStrip, gradient: 'from-blue-600 to-indigo-700', desc: 'Films, events, brand content, reels' },
-  { type: 'GRAPHIC_DESIGN', icon: PenNib, gradient: 'from-pink-600 to-rose-700', desc: 'Logos, branding, print, digital design' },
-  { type: 'WEB_DESIGN', icon: Globe, gradient: 'from-cyan-600 to-teal-700', desc: 'Websites, apps, UX/UI, digital products' },
-  { type: 'ILLUSTRATION', icon: PaintBrush, gradient: 'from-amber-600 to-orange-700', desc: 'Book covers, editorial, character design' },
-  { type: 'FINE_ART', icon: Palette, gradient: 'from-emerald-600 to-green-700', desc: 'Paintings, portraits, mixed media' },
-  { type: 'SCULPTURE', icon: Scissors, gradient: 'from-stone-600 to-stone-700', desc: 'Sculptures, installations, 3D work' },
-  { type: 'BRANDING', icon: Megaphone, gradient: 'from-brand-accent to-pink-700', desc: 'Brand strategy, identity, campaigns' },
-  { type: 'CONTENT_CREATION', icon: FileImage, gradient: 'from-sky-600 to-blue-700', desc: 'Social media, blogs, podcasts' },
-  { type: 'OTHER', icon: Stack, gradient: 'from-gray-600 to-gray-700', desc: 'Other creative disciplines' },
+const INDUSTRY_CONFIG: { type: string; label: string; icon: React.ElementType; gradient: string; desc: string; examples: string }[] = [
+  {
+    type: 'PHOTOGRAPHY',
+    label: 'Photography',
+    icon: Camera,
+    gradient: 'from-brand-primary to-brand-primary-dark',
+    desc: 'Portraits, weddings, events, commercial',
+    examples: 'e.g. portrait, wedding, commercial, editorial'
+  },
+  {
+    type: 'GRAPHIC_DESIGN',
+    label: 'Design',
+    icon: PenNib,
+    gradient: 'from-pink-600 to-rose-700',
+    desc: 'Logos, branding, web design, illustration',
+    examples: 'e.g. graphic design, UX/UI, illustration, branding'
+  },
+  {
+    type: 'FINE_ART',
+    label: 'Fine Art',
+    icon: Palette,
+    gradient: 'from-emerald-600 to-green-700',
+    desc: 'Paintings, sculpture, mixed media, commissions',
+    examples: 'e.g. oil painting, sculpture, watercolour, printmaking'
+  },
 ]
 
 export default function IndustryOnboarding() {
   const navigate = useNavigate()
-  const [selected, setSelected] = useState<IndustryType | null>(null)
+  const [selected, setSelected] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [templateName, setTemplateName] = useState('')
@@ -61,7 +68,7 @@ export default function IndustryOnboarding() {
       }
 
       // Show success state
-      setTemplateName(data.templates?.[0]?.name || `${INDUSTRY_TYPE_LABELS[selected]} Workflow`)
+      setTemplateName(data.templates?.[0]?.name || `${INDUSTRY_CONFIG.find(c => c.type === selected)?.label ?? selected} Workflow`)
       setDone(true)
       setLoading(false)
 
@@ -87,7 +94,7 @@ export default function IndustryOnboarding() {
           </div>
           <h1 className="text-3xl font-bold text-text-primary mb-3">You're all set!</h1>
           <p className="text-lg text-text-secondary mb-2">
-            Your <span className="text-purple-600 font-semibold">{INDUSTRY_TYPE_LABELS[selected!]}</span> workspace is ready
+            Your <span className="text-purple-600 font-semibold">{INDUSTRY_CONFIG.find(c => c.type === selected)?.label ?? selected}</span> workspace is ready
           </p>
           <p className="text-sm text-text-tertiary mb-6">
             We've created your "<span className="text-purple-600">{templateName}</span>" workflow template
@@ -119,8 +126,8 @@ export default function IndustryOnboarding() {
 
       {/* Industry Grid */}
       <div className="flex-1 max-w-4xl mx-auto w-full px-6 pb-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" data-testid="industry-grid">
-          {INDUSTRY_CONFIG.map(({ type, icon: Icon, gradient, desc }) => {
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" data-testid="industry-grid">
+          {INDUSTRY_CONFIG.map(({ type, label, icon: Icon, gradient, desc, examples }) => {
             const isSelected = selected === type
             return (
               <button
@@ -139,9 +146,10 @@ export default function IndustryOnboarding() {
                   <Icon className="w-5 h-5 text-white" />
                 </div>
                 <div className={`text-sm font-semibold mb-1 ${isSelected ? 'text-purple-700' : 'text-text-secondary'}`}>
-                  {INDUSTRY_TYPE_LABELS[type]}
+                  {label}
                 </div>
                 <div className="text-xs text-text-tertiary leading-relaxed">{desc}</div>
+                <div className="text-[11px] text-text-tertiary mt-1 italic">{examples}</div>
                 {isSelected && (
                   <div className="absolute top-3 right-3 w-5 h-5 bg-brand-primary rounded-full flex items-center justify-center">
                     <CheckCircle className="w-3.5 h-3.5 text-white" />

@@ -408,12 +408,22 @@ export default function SequencesDashboard() {
   const fetchAll = useCallback(async () => {
     setLoading(true)
     try {
-      const [seqRes, statsRes] = await Promise.all([
+      const [seqRes, statsRes, logRes] = await Promise.all([
         request('/api/sequences/dashboard'),
         request('/api/sequences/dashboard/stats'),
+        request('/api/sequences/email-log?page=1'),
       ])
       setSequences(seqRes.sequences || [])
-      setStats(statsRes)
+
+      // Compute accurate emailsSentThisWeek from EmailTracking rows
+      const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+      const logs: Array<{ sentAt: string }> = logRes.logs || []
+      const weekCount = logs.filter((l: { sentAt: string }) => new Date(l.sentAt).getTime() > oneWeekAgo).length
+
+      setStats(statsRes ? {
+        ...statsRes,
+        emailsSentThisWeek: weekCount,
+      } : null)
     } catch (err) {
       console.error('Failed to load sequences:', err)
     } finally {
@@ -1024,12 +1034,24 @@ function SequenceBuilder({ sequence, onClose, onSaved, onCreated }: {
                               onChange={e => setStepDraft(d => ({ ...d, body: e.target.value }))}
                               placeholder="Write your email content here. Use {clientName} and {studioName} as placeholders."
                               rows={6}
+                              maxLength={5000}
                               className="w-full px-3 py-2 bg-white border border-border rounded-lg text-sm text-text-primary placeholder-text-tertiary focus:outline-none focus:border-brand-primary resize-y"
                               data-testid={`step-body-${step.id}`}
                             />
-                            <p className="text-[10px] text-text-tertiary mt-1">
-                              Available placeholders: {'{clientName}'}, {'{studioName}'}, {'{projectTitle}'}
-                            </p>
+                            <div className="flex items-center justify-between mt-1">
+                              <p className="text-[10px] text-text-tertiary">
+                                Available placeholders: {'{clientName}'}, {'{studioName}'}, {'{projectTitle}'}
+                              </p>
+                              <span className={`text-[10px] font-mono ${
+                                (stepDraft.body ?? step.body).length > 4500
+                                  ? 'text-red-500'
+                                  : (stepDraft.body ?? step.body).length > 4000
+                                  ? 'text-amber-600'
+                                  : 'text-text-tertiary'
+                              }`}>
+                                {(stepDraft.body ?? step.body).length} / 5000
+                              </span>
+                            </div>
                           </div>
                           <div className="flex gap-2 pt-1">
                             <button
