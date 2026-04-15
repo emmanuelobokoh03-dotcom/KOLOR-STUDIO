@@ -216,6 +216,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **L4 auth__1_.ts**: File already didn't exist — no action needed.
 - **Founder copy rewrite**: New headline ("Built by someone who watched talented creatives lose work to broken admin"), business manager perspective copy, 4th credibility signal (Operations-first).
 
+### Iteration 130 — M4 + M5 + L1 + Font Preload (Complete)
+- **M4 IndustryOnboarding**: Replaced 10-option grid with 3 canonical industries (Photography, Design, Fine Art). Each card shows examples text in italic. Grid uses `sm:grid-cols-3`. Uses `GRAPHIC_DESIGN` as backend value (maps to DESIGN language via `getIndustryLanguage`).
+- **M5 Step body counter**: Added `maxLength={5000}` + live counter to sequence builder body textarea. Counter turns amber at 4000, red at 4500 chars.
+- **L1 Emails This Week**: Stats bar now computes accurate count from `EmailTracking` rows via `/api/sequences/email-log` instead of built-in enrollment fields.
+- **Font preload**: Added `<link rel="preload">` hints for Inter, Montserrat, Libre Baskerville in `index.html`.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
