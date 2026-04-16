@@ -196,16 +196,43 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Check if account is locked
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      const minutesLeft = Math.ceil((user.lockedUntil.getTime() - Date.now()) / 60000);
+      res.status(429).json({
+        error: 'Account temporarily locked',
+        message: `Too many failed login attempts. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? 's' : ''}.`,
+      });
+      return;
+    }
+
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
+      // Increment failed attempt counter
+      const newAttempts = (user.loginAttempts || 0) + 1;
+      const shouldLock = newAttempts >= 5;
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          loginAttempts: newAttempts,
+          lockedUntil: shouldLock ? new Date(Date.now() + 15 * 60 * 1000) : user.lockedUntil,
+        },
+      }).catch(e => console.error('[Auth] Failed to update login attempts:', e));
+
       res.status(401).json({
         error: 'Unauthorized',
         message: 'Invalid email or password'
       });
       return;
     }
+
+    // Successful login — reset counter
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { loginAttempts: 0, lockedUntil: null, lastLoginAt: new Date() },
+    }).catch(e => console.error('[Auth] Failed to reset login attempts:', e));
 
     // Generate JWT token
     const jwtSecret = process.env.JWT_SECRET;
@@ -225,12 +252,6 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 
     // Track first login (lastLoginAt is null on first ever login)
     const isFirstLogin = !user.lastLoginAt;
-
-    // Update last login
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { lastLoginAt: new Date() }
-    });
 
     // Set HTTP-only cookie — session-only when rememberMe is false
     res.cookie('auth_token', token, {
@@ -644,7 +665,7 @@ router.post('/change-password', authMiddleware, async (req: AuthRequest, res: Re
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
       where: { id: userId },
-      data: { password: hashedPassword, tokenVersion: { increment: 1 } },
+      data: { password: hashedPassword, tokenVersion: { increment: 1 }, loginAttempts: 0, lockedUntil: null },
     });
 
     sendPasswordChangedEmail({ email: user.email, firstName: user.firstName }).catch(e => console.error('Password changed email failed:', e));

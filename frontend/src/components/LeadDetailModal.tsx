@@ -718,7 +718,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             <div className="relative flex items-center gap-2 mt-3.5" data-testid="modal-action-row">
               <button
                 onClick={() => setActiveTab(getPrimaryActionTab(lead.status) as any)}
-                className="h-8 px-3.5 rounded-lg text-[11px] font-semibold text-white transition-colors"
+                className="min-h-[44px] px-3.5 rounded-lg text-[11px] font-semibold text-white transition-colors flex items-center"
                 style={{ background: '#6C2EDB' }}
                 data-testid="modal-primary-action"
               >
@@ -729,22 +729,22 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                   if (!lead.discoveryCallScheduled) handleScheduleDiscoveryCall()
                   else if (!lead.discoveryCallCompletedAt) handleCompleteDiscoveryCall()
                 }}
-                className="h-8 px-3 rounded-lg text-[11px] font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors"
+                className="min-h-[44px] px-3 rounded-lg text-[11px] font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center gap-1"
                 data-testid="modal-schedule-call"
               >
-                <PhoneCall className="w-3.5 h-3.5 inline mr-1" />
+                <PhoneCall className="w-3.5 h-3.5" aria-hidden="true" />
                 {!lead.discoveryCallScheduled ? 'Schedule call' : !lead.discoveryCallCompletedAt ? 'Complete call' : 'Call done'}
               </button>
               <button
                 onClick={() => setShowEmailComposer(true)}
-                className="h-8 px-3 rounded-lg text-[11px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors"
+                className="min-h-[44px] px-3 rounded-lg text-[11px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center"
                 data-testid="modal-email-action"
               >
                 Email
               </button>
               <button
                 onClick={handleRequestTestimonial}
-                className="h-8 px-3 rounded-lg text-[11px] font-medium text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50 transition-colors ml-auto"
+                className="min-h-[44px] px-3 rounded-lg text-[11px] font-medium text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50 transition-colors ml-auto flex items-center"
                 data-testid="modal-archive-action"
               >
                 Archive

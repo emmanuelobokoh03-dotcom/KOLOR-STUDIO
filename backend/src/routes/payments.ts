@@ -71,7 +71,8 @@ router.post('/:incomeId/deposit', authMiddleware, async (req: AuthRequest, res: 
     }
 
     const originUrl = req.body.originUrl || process.env.FRONTEND_URL || '';
-    const result = await paymentService.createDepositCheckout(income.id, originUrl);
+    const idempotencyKey = `deposit-${income.id}`;
+    const result = await paymentService.createDepositCheckout(income.id, originUrl, idempotencyKey);
 
     res.json({
       message: 'Deposit checkout session created',
@@ -105,7 +106,8 @@ router.post('/:incomeId/final', authMiddleware, async (req: AuthRequest, res: Re
     }
 
     const originUrl = req.body.originUrl || process.env.FRONTEND_URL || '';
-    const result = await paymentService.createFinalCheckout(income.id, originUrl);
+    const idempotencyKey = `final-${income.id}`;
+    const result = await paymentService.createFinalCheckout(income.id, originUrl, idempotencyKey);
 
     res.json({
       message: 'Final payment checkout session created',

@@ -549,6 +549,8 @@ model User {
   weeklyReportEnabled    Boolean              @default(true)
   staleLeadEmailEnabled  Boolean              @default(true)
   quoteNudgeEmailEnabled Boolean              @default(true)
+  loginAttempts          Int                  @default(0)
+  lockedUntil            DateTime?
 
   @@map("users")
 }
@@ -1061,4 +1063,13 @@ enum CreativeIndustry {
   PHOTOGRAPHY
   DESIGN
   FINE_ART
+}
+
+
+model ProcessedWebhookEvent {
+  id            String   @id @default(cuid())
+  stripeEventId String   @unique
+  processedAt   DateTime @default(now())
+
+  @@map("processed_webhook_events")
 }
