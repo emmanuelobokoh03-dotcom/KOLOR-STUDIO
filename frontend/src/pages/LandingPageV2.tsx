@@ -66,7 +66,9 @@ export default function LandingPageV2() {
       <ProblemSection />
       <WorkflowSection />
       <FeaturesSection />
+      <ProductDeepDiveSection />
       <TestimonialsSection />
+      <MidPageCTA onCta={goSignup} />
       <FAQSection />
       <FounderSection />
       <UrgencySection onCta={goSignup} />
@@ -195,12 +197,13 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
         <div
           className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 mb-8"
           style={{ background: 'rgba(108,46,219,0.15)', border: '1px solid rgba(108,46,219,0.3)' }}
+          data-testid="hero-announcement-pill"
         >
           <span className="landing-pulse-dot w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
           <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             {variant === 'fine_art'
               ? 'For fine artists \u00b7 No CRM has been built for you. Until now.'
-              : 'Beta is live \u00b7 First 20 spots \u2014 $97 one-time, lifetime access'}
+              : 'Now in beta \u00b7 20 founder spots \u2014 lifetime access for $97'}
           </span>
           <span style={{ color: 'rgba(255,255,255,0.4)' }}>&rarr;</span>
         </div>
@@ -293,9 +296,38 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
         </div>
 
         {/* Trust line */}
-        <p className="text-xs mb-14" style={{ color: 'rgba(255,255,255,0.3)' }}>
+        <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>
           No credit card required &nbsp;&middot;&nbsp; Set up in 5 minutes &nbsp;&middot;&nbsp; Cancel anytime
         </p>
+
+        {/* Avatar stack — social proof at fold */}
+        <div className="flex items-center justify-center gap-3 mb-10" data-testid="hero-avatar-stack">
+          <div className="flex -space-x-2.5">
+            {[
+              { initials: 'SL', color: '#6C2EDB' },
+              { initials: 'AO', color: '#5522B8' },
+              { initials: 'JM', color: '#7C3AED' },
+              { initials: 'PD', color: '#4C1D95' },
+              { initials: 'KN', color: '#6D28D9' },
+            ].map(({ initials, color }) => (
+              <div
+                key={initials}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
+                style={{ background: color, border: '2px solid #080612', boxShadow: '0 0 0 1px rgba(108,46,219,0.3)' }}
+              >
+                {initials}
+              </div>
+            ))}
+          </div>
+          <div className="text-left">
+            <div className="text-[12px] font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              Joined by creatives in 14 countries
+            </div>
+            <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              Photography &nbsp;&middot;&nbsp; Design &nbsp;&middot;&nbsp; Fine Art
+            </div>
+          </div>
+        </div>
 
         {/* Dashboard product frame */}
         <div className="relative max-w-[900px] mx-auto">
@@ -1406,6 +1438,206 @@ function FounderSection() {
   )
 }
 
+/* ---------- STATS ROW ---------- */
+function StatsRow() {
+  const stats = [
+    { value: '3', label: 'Industries supported', sub: 'Photography, Design, Fine Art' },
+    { value: '29+', label: 'Email automations', sub: 'Built-in sequences + custom builder' },
+    { value: '14', label: 'Countries', sub: 'Global-first, GDPR-native' },
+    { value: '5 min', label: 'Setup time', sub: 'From signup to first lead in minutes' },
+  ]
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20" data-testid="stats-row">
+      {stats.map(({ value, label, sub }) => (
+        <div key={label} className="rounded-xl p-5 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="font-display font-extrabold mb-1" style={{ fontSize: 'clamp(24px, 3vw, 32px)', color: '#6C2EDB', lineHeight: 1.1 }}>{value}</div>
+          <div className="text-[12px] font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.7)' }}>{label}</div>
+          <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)', lineHeight: 1.4 }}>{sub}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* ---------- PRODUCT DEEP DIVE ---------- */
+function ProductDeepDiveSection() {
+  const features = [
+    {
+      label: 'Lead management',
+      headline: 'Every inquiry. Always visible.',
+      body: 'Leads arrive from your public inquiry form and land directly in your Kanban pipeline. No inbox hunting. No missed messages. Move leads from inquiry to booked without leaving one screen.',
+      bullets: ['Instant inquiry acknowledgement email', 'Kanban + list view', 'Auto-sorted by urgency'],
+      mockup: (
+        <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.9)', border: '1px solid rgba(255,255,255,0.08)', padding: 20 }}>
+          <div className="flex items-center gap-[5px] mb-4">
+            <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FF5F57' }} />
+            <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
+            <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
+          </div>
+          <div className="text-[9px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: 'rgba(108,46,219,0.6)' }}>Pipeline &middot; 6 active leads</div>
+          {[
+            { name: 'Amara Okonkwo', meta: 'Commission \u00b7 Cape Town', stage: 'New', dot: '#6C2EDB' },
+            { name: 'Sophie Laurent', meta: 'Brand identity \u00b7 Paris', stage: 'Quoted', dot: '#E8891A' },
+            { name: 'James Mensah', meta: 'Wedding \u00b7 London', stage: 'Booked', dot: '#22c55e' },
+          ].map((lead) => (
+            <div key={lead.name} className="flex items-center justify-between rounded-lg px-3 py-2.5 mb-2" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div>
+                <div className="text-[11px] font-semibold mb-0.5" style={{ color: 'rgba(255,255,255,0.85)' }}>{lead.name}</div>
+                <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{lead.meta}</div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-[5px] h-[5px] rounded-full" style={{ background: lead.dot }} />
+                <span className="text-[9px] font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>{lead.stage}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      label: 'Quotes & contracts',
+      headline: 'Send a quote. Get it signed. In minutes.',
+      body: 'Build professional proposals in 2 minutes with your line items and branding. Clients approve online \u2014 no PDF attachments. Contract follows automatically. Everything timestamped and stored.',
+      bullets: ['Client-facing quote approval page', 'E-signature built in', 'Automated contract reminders'],
+      mockup: (
+        <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.9)', border: '1px solid rgba(255,255,255,0.08)', padding: 20 }}>
+          <div className="flex items-center gap-[5px] mb-4">
+            <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FF5F57' }} />
+            <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
+            <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
+          </div>
+          <div className="text-[9px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: 'rgba(232,137,26,0.7)' }}>Quote &middot; Amara Okonkwo</div>
+          {[
+            { label: 'Oil on canvas (60\u00d780cm)', val: '\u00a31,800' },
+            { label: 'Artist certificate + framing', val: '\u00a3240' },
+            { label: 'Secure delivery', val: '\u00a380' },
+          ].map((row) => (
+            <div key={row.label} className="flex justify-between py-[6px] text-[10px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <span style={{ color: 'rgba(255,255,255,0.45)' }}>{row.label}</span>
+              <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>{row.val}</span>
+            </div>
+          ))}
+          <div className="flex justify-between mt-3 pt-3 text-[13px] font-bold" style={{ borderTop: '1px solid rgba(108,46,219,0.3)' }}>
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10 }}>Total</span>
+            <span style={{ color: '#a78bfa' }}>{'\u00a3'}2,120</span>
+          </div>
+          <div className="flex items-center gap-2 rounded-lg px-3 py-2 mt-3" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
+            <span className="w-[5px] h-[5px] rounded-full flex-shrink-0" style={{ background: '#22c55e' }} />
+            <span className="text-[10px] font-semibold" style={{ color: 'rgba(34,197,94,0.85)' }}>Quote approved &middot; Contract sent</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: 'Email automation',
+      headline: 'Follow-ups that run while you sleep.',
+      body: 'KOLOR sends the right email at exactly the right moment \u2014 inquiry acknowledgements, quote reminders, contract nudges, onboarding sequences. Set it once. Never lose a client to silence again.',
+      bullets: ['Instant inquiry reply', 'Quote & contract follow-ups', 'Custom sequences for any workflow'],
+      mockup: (
+        <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.9)', border: '1px solid rgba(255,255,255,0.08)', padding: 20 }}>
+          <div className="flex items-center gap-[5px] mb-4">
+            <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FF5F57' }} />
+            <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
+            <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
+          </div>
+          <div className="text-[9px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: 'rgba(108,46,219,0.6)' }}>Email sequences &middot; Running</div>
+          {[
+            { label: 'Inquiry received \u2014 instant reply', day: 'Day 0', color: '#22c55e', sent: 12 },
+            { label: 'Quote follow-up', day: 'Day 3', color: '#a78bfa', sent: 8 },
+            { label: 'Contract reminder', day: 'Day 4', color: '#E8891A', sent: 5 },
+            { label: 'Client onboarding', day: 'Day 0', color: '#60a5fa', sent: 3 },
+          ].map((item) => (
+            <div key={item.label} className="flex items-center justify-between mb-2.5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-[6px] h-[6px] rounded-full flex-shrink-0" style={{ background: item.color }} />
+                <div>
+                  <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.65)' }}>{item.label}</div>
+                  <div className="text-[8px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.day}</div>
+                </div>
+              </div>
+              <span className="text-[9px] font-mono" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.sent} sent</span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+  ]
+
+  return (
+    <section className="reveal-section" style={{ padding: '80px 24px' }} data-testid="product-deepdive-section">
+      <div className="max-w-[1000px] mx-auto">
+        <SectionLabel>How KOLOR works</SectionLabel>
+        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-16" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15, color: '#ffffff' }}>
+          Built for every stage of your studio.
+        </h2>
+
+        <StatsRow />
+
+        <div className="space-y-24">
+          {features.map((feature, i) => (
+            <div key={feature.label} className={`flex flex-col ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 md:gap-16`}>
+              <div className="flex-1">
+                <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: '#a78bfa' }}>{feature.label}</div>
+                <h3 className="font-display font-extrabold tracking-[-0.02em] mb-4" style={{ fontSize: 'clamp(22px, 2.5vw, 30px)', color: '#ffffff', lineHeight: 1.2 }}>{feature.headline}</h3>
+                <p className="mb-6 leading-relaxed" style={{ fontSize: 15, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7 }}>{feature.body}</p>
+                <ul className="space-y-2.5">
+                  {feature.bullets.map((bullet) => (
+                    <li key={bullet} className="flex items-center gap-3 text-[13px]" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex-1 w-full">{feature.mockup}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ---------- MID-PAGE CTA ---------- */
+function MidPageCTA({ onCta }: { onCta: () => void }) {
+  return (
+    <section
+      className="reveal-section"
+      style={{ padding: '80px 24px', background: 'rgba(108,46,219,0.06)', borderTop: '1px solid rgba(108,46,219,0.15)', borderBottom: '1px solid rgba(108,46,219,0.15)' }}
+      data-testid="mid-page-cta"
+    >
+      <div className="max-w-[700px] mx-auto text-center">
+        <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 mb-6" style={{ background: 'rgba(108,46,219,0.15)', border: '1px solid rgba(108,46,219,0.3)' }}>
+          <span className="landing-pulse-dot w-1.5 h-1.5 rounded-full" style={{ background: '#6C2EDB' }} />
+          <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>20 founder spots &middot; 3 remaining</span>
+        </div>
+        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-5" style={{ fontSize: 'clamp(26px, 3vw, 38px)', lineHeight: 1.15, color: '#ffffff' }}>
+          Stop losing clients to a slower reply.
+        </h2>
+        <p className="mb-8 leading-relaxed" style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', maxWidth: 480, margin: '0 auto 32px' }}>
+          Every day without KOLOR is another inquiry that goes cold, another quote that gets forgotten, another contract that took too long. Set up takes 5 minutes.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            onClick={onCta}
+            className="inline-flex items-center gap-2 text-white font-semibold rounded-[10px] transition-colors duration-150"
+            style={{ background: '#6C2EDB', padding: '14px 28px', fontSize: 15 }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#5522B8')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#6C2EDB')}
+            data-testid="mid-cta-btn"
+          >
+            Claim your founder spot &rarr;
+          </button>
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
+            $97 one-time &nbsp;&middot;&nbsp; Lifetime access &nbsp;&middot;&nbsp; No card required
+          </span>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ---------- SECTION 8: URGENCY / BETA PRICING ---------- */
 function UrgencySection({ onCta }: { onCta: () => void }) {
   const endDate = getBetaEndDate()
@@ -1461,6 +1693,14 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
               >
                 Claim your spot &rarr;
               </button>
+              <ul className="mt-5 space-y-2">
+                {['Lead pipeline + Kanban board', 'Quotes, contracts, e-signature', 'Client portal included', 'Email automation sequences', 'Calendar + Google sync', 'Public portfolio page', 'All 3 industries supported', 'Lifetime access \u00b7 No monthly fee'].map(item => (
+                  <li key={item} className="flex items-center gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    <span style={{ color: '#22c55e', fontSize: 12, lineHeight: 1 }}>{'\u2713'}</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {/* $19/mo beta tier */}
@@ -1480,6 +1720,14 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
               >
                 Join the waitlist
               </button>
+              <ul className="mt-5 space-y-2">
+                {['Everything in the lifetime plan', 'Rate locked in permanently', 'Priority onboarding support'].map(item => (
+                  <li key={item} className="flex items-center gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12, lineHeight: 1 }}>{'\u2713'}</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {/* $29/mo public tier (ghost/dimmed) */}
