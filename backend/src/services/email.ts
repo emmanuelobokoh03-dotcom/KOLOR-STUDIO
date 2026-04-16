@@ -3501,3 +3501,44 @@ export async function sendHealthCheckFailureAlert(info: {
     return false;
   }
 }
+
+export async function sendPaymentNudge(
+  user: { email: string; firstName: string; industry?: string | null },
+  contract: { id: string; clientName: string; clientAgreedAt: Date | null }
+): Promise<boolean> {
+  try {
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('[Email] RESEND_API_KEY not set — skipping payment nudge');
+      return false;
+    }
+
+    const hoursElapsed = contract.clientAgreedAt
+      ? Math.floor((Date.now() - new Date(contract.clientAgreedAt).getTime()) / 3600000)
+      : 48;
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${process.env.SENDER_EMAIL || 'noreply@kolorstudio.app'}>`,
+      to: user.email,
+      subject: `Payment pending — ${contract.clientName} signed ${hoursElapsed}h ago`,
+      html: `
+        <p>Hi ${user.firstName},</p>
+        <p><strong>${contract.clientName}</strong> signed their contract ${hoursElapsed} hours ago but hasn't completed their deposit yet.</p>
+        <p>Log in to KOLOR to send them a payment link or follow up directly.</p>
+        <p><a href="${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/dashboard">Open KOLOR &rarr;</a></p>
+        <p style="color:#999;font-size:12px;">This is an automated reminder from KOLOR Studio.</p>
+      `,
+    });
+
+    if (error) {
+      console.error('[EMAIL] sendPaymentNudge error:', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[EMAIL] sendPaymentNudge exception:', err);
+    return false;
+  }
+}
+

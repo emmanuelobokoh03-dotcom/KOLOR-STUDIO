@@ -7,6 +7,7 @@ import {
   sendWeeklyPipelineReport,
   sendQuoteExpiryWarning,
   sendQuoteExpiryNoticeToClient,
+  sendPaymentNudge,
 } from './services/email';
 
 export function startScheduler(): void {
@@ -16,6 +17,8 @@ export function startScheduler(): void {
     await runStaleLeadNudges();
     await runQuoteViewedNudges();
     await runContractUnsignedWarnings();
+    await runContractUnsignedFinalWarning();
+    await runPaymentNudges();
     await runQuoteExpiryWarnings();
   });
 
@@ -141,15 +144,90 @@ async function runContractUnsignedWarnings(): Promise<void> {
 
     for (const contract of contracts) {
       if (!contract.lead?.assignedTo) continue;
-      await sendContractUnsignedWarning(
-        { email: contract.lead.assignedTo.email, firstName: contract.lead.assignedTo.firstName, industry: contract.lead.assignedTo.primaryIndustry },
-        { id: contract.id, sentAt: contract.sentAt },
-        { clientName: contract.lead.clientName }
-      );
+      try {
+        await sendContractUnsignedWarning(
+          { email: contract.lead.assignedTo.email, firstName: contract.lead.assignedTo.firstName, industry: contract.lead.assignedTo.primaryIndustry },
+          { id: contract.id, sentAt: contract.sentAt },
+          { clientName: contract.lead.clientName }
+        );
+      } catch (emailErr) {
+        console.error(`[Scheduler] contractWarning email failed for contract ${contract.id}:`, emailErr);
+      }
     }
     console.log(`[Scheduler] Contract unsigned warnings: ${contracts.length} checked`);
   } catch (err) {
     console.error('[Scheduler] contractUnsignedWarnings error:', err);
+  }
+}
+
+async function runContractUnsignedFinalWarning(): Promise<void> {
+  try {
+    const oneHundredSixtyEightHoursAgo = new Date(Date.now() - 168 * 3600000);
+    const oneHundredNinetyOneHoursAgo = new Date(Date.now() - 191 * 3600000);
+    const contracts = await prisma.contract.findMany({
+      where: {
+        sentAt: { gte: oneHundredNinetyOneHoursAgo, lt: oneHundredSixtyEightHoursAgo },
+        clientAgreed: false,
+        status: { in: ['SENT', 'VIEWED'] },
+      },
+      include: { lead: { include: { assignedTo: true } } },
+    });
+
+    for (const contract of contracts) {
+      if (!contract.lead?.assignedTo) continue;
+      try {
+        await sendContractUnsignedWarning(
+          {
+            email: contract.lead.assignedTo.email,
+            firstName: contract.lead.assignedTo.firstName,
+            industry: contract.lead.assignedTo.primaryIndustry,
+          },
+          { id: contract.id, sentAt: contract.sentAt },
+          { clientName: contract.lead.clientName }
+        );
+      } catch (emailErr) {
+        console.error(`[Scheduler] contractFinalWarning email failed for contract ${contract.id}:`, emailErr);
+      }
+    }
+    console.log(`[Scheduler] Contract unsigned final warnings (Day 7): ${contracts.length} checked`);
+  } catch (err) {
+    console.error('[Scheduler] contractUnsignedFinalWarning error:', err);
+  }
+}
+
+async function runPaymentNudges(): Promise<void> {
+  try {
+    const fortyEightHoursAgo = new Date(Date.now() - 48 * 3600000);
+    const seventyTwoHoursAgo = new Date(Date.now() - 72 * 3600000);
+
+    const contracts = await prisma.contract.findMany({
+      where: {
+        clientAgreed: true,
+        clientAgreedAt: { gte: seventyTwoHoursAgo, lt: fortyEightHoursAgo },
+        status: 'AGREED',
+      },
+      include: {
+        lead: {
+          include: { assignedTo: true },
+        },
+      },
+    });
+
+    for (const contract of contracts) {
+      if (!contract.lead?.assignedTo) continue;
+      const user = contract.lead.assignedTo;
+      try {
+        await sendPaymentNudge(
+          { email: user.email, firstName: user.firstName, industry: user.primaryIndustry },
+          { id: contract.id, clientName: contract.lead.clientName, clientAgreedAt: contract.clientAgreedAt }
+        );
+      } catch (emailErr) {
+        console.error(`[Scheduler] paymentNudge email failed for contract ${contract.id}:`, emailErr);
+      }
+    }
+    console.log(`[Scheduler] Payment nudges (48h): ${contracts.length} contracts checked`);
+  } catch (err) {
+    console.error('[Scheduler] runPaymentNudges error:', err);
   }
 }
 

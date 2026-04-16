@@ -130,12 +130,17 @@ router.get('/dashboard/stats', authMiddleware, async (req: AuthRequest, res: Res
       if (e.email3SentAt && e.email3SentAt >= weekAgo) followUpEmailCount++;
     }
 
-    // Both built-in sequences are always active (no toggle persistence yet)
-    const activeSequences = 2;
+    // Count custom sequences for accurate total
+    const customSequenceCount = await prisma.emailSequence.count({
+      where: { userId },
+    });
+    const activeCustomCount = await prisma.emailSequence.count({
+      where: { userId, active: true },
+    });
 
     res.json({
-      totalSequences: 2,
-      activeSequences,
+      totalSequences: 2 + customSequenceCount,
+      activeSequences: 2 + activeCustomCount,
       emailsSentThisWeek: onboardingEmailCount + followUpEmailCount,
       totalEnrolled: onboardingEnrolled + followUpEnrolled,
     });
