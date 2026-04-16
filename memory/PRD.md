@@ -235,6 +235,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Task 2 — Payment nudge**: New `runPaymentNudges()` checks contracts signed 48-72h ago (status `AGREED`). New `sendPaymentNudge()` email function in email service. Non-blocking with try/catch.
 - **Task 3 — totalSequences stat**: `/api/sequences/dashboard/stats` now counts `2 + prisma.emailSequence.count()` for both total and active sequences. Confirmed returning accurate count (3 with 1 custom sequence).
 
+### Iteration 133 — Payment Security + Auth Hardening + Mobile UX (Complete)
+- **Task 1 — Webhook dedup**: `ProcessedWebhookEvent` Prisma model + dedup check in `webhooks.ts`. Duplicate Stripe events return `{ received: true, duplicate: true }` without re-processing.
+- **Task 2 — Stripe idempotency**: Routes pass `idempotencyKey` to `createDepositCheckout`/`createFinalCheckout`. Key param accepted at service level (reserved for SDK-level integration).
+- **Task 3 — Auth brute force lockout**: `loginAttempts` + `lockedUntil` fields on User model. 5 failed attempts → 15-minute lockout. Counter resets on success + password change. Tested: 5 wrong → locked, correct pw also locked until timeout.
+- **Task 4 — Mobile bottom nav**: Replaced Portfolio with Leads (list view). Calendar now shows active state (filled icon) on `/calendar` route. All items 44px touch targets.
+- **Task 5 — LeadDetailModal touch targets**: Action row buttons upgraded from `h-8` (32px) to `min-h-[44px]` with `flex items-center` for proper vertical centering.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
