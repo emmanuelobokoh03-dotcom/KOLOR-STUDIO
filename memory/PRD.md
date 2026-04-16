@@ -222,6 +222,14 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **L1 Emails This Week**: Stats bar now computes accurate count from `EmailTracking` rows via `/api/sequences/email-log` instead of built-in enrollment fields.
 - **Font preload**: Added `<link rel="preload">` hints for Inter, Montserrat, Libre Baskerville in `index.html`.
 
+### Iteration 131 — Landing Page P0 + P1 Gap Fixes (Complete)
+- **Change 1**: Hero pill copy updated to "Now in beta · 20 founder spots — lifetime access for $97" + `data-testid="hero-announcement-pill"`.
+- **Change 2**: Avatar stack (5 overlapping circles + "Joined by creatives in 14 countries") below trust line, above dashboard frame.
+- **Change 3**: `ProductDeepDiveSection` with 3 alternating left/right feature rows (Lead management, Quotes & contracts, Email automation) each with mockup UI cards.
+- **Change 4**: `StatsRow` with 4 stat cards (3 industries, 29+ automations, 14 countries, 5 min setup) above deep-dive rows.
+- **Change 5**: `MidPageCTA` between Testimonials and FAQ with "Stop losing clients to a slower reply" headline and "Claim your founder spot" CTA.
+- **Change 6**: Feature checklists on pricing cards — 8 items on $97 card, 3 items on $19 card.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
