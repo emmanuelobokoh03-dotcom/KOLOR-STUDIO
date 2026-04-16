@@ -242,6 +242,14 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Task 4 — Mobile bottom nav**: Replaced Portfolio with Leads (list view). Calendar now shows active state (filled icon) on `/calendar` route. All items 44px touch targets.
 - **Task 5 — LeadDetailModal touch targets**: Action row buttons upgraded from `h-8` (32px) to `min-h-[44px]` with `flex items-center` for proper vertical centering.
 
+### Iteration 134 — Lockout Email + Click Tracking + Portfolio Skeleton + Mobile UX + Founder Copy (Complete)
+- **Task 1 — Lockout email**: `sendAccountLockoutEmail()` added to email.ts with error box + password reset CTA. Wired in auth.ts on 5th failed attempt (non-blocking).
+- **Task 2 — Click tracking**: `clickCount` + `clickedAt` fields on EmailTracking schema. Click redirect route `GET /api/track/click/:id?url=` with open-redirect protection. `wrapTrackedLink()` helper for future email link wrapping. "Clicked" column in SequencesDashboard send log.
+- **Task 3 — Client receipt**: Already handled by existing `sendDepositReceivedEmail` in paymentService. No changes needed.
+- **Task 4 — Portfolio skeleton**: Loading state replaced spinner with skeleton grid (avatar + 6 card placeholders with animate-pulse).
+- **Task 5 — Founder copy**: All 3 paragraphs replaced with formal business manager perspective copy.
+- **Task 6 — Mobile UX**: Search input + horizontal filter chips added to LeadsListView. Search filters by name/email/project. Chips filter by status. Expandable search icon on mobile.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
