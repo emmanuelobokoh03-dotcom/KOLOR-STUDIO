@@ -1676,6 +1676,7 @@ export const sequencesApi = {
         opened: boolean;
         openedAt: string | null;
         openCount: number;
+        clickCount: number;
       }>;
       total: number;
       page: number;

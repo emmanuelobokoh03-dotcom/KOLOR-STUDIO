@@ -52,4 +52,39 @@ router.get('/open/:trackingId', async (req: Request, res: Response): Promise<voi
   }
 });
 
+// GET /api/track/click/:id — Email link click tracker
+router.get('/click/:id', async (req: Request, res: Response): Promise<void> => {
+  const id = req.params.id as string;
+  const rawUrl = req.query.url;
+
+  if (!rawUrl || typeof rawUrl !== 'string') {
+    res.status(400).send('Missing redirect URL');
+    return;
+  }
+  const url: string = rawUrl;
+
+  let safeUrl: string;
+  try {
+    const parsed = new URL(url);
+    const allowed = ['kolorstudio.app', 'kolor-studio-production.up.railway.app'];
+    if (!allowed.some(h => parsed.hostname.endsWith(h))) {
+      safeUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
+    } else {
+      safeUrl = url;
+    }
+  } catch {
+    safeUrl = `${process.env.FRONTEND_URL || 'https://kolorstudio.app'}${url.startsWith('/') ? url : '/' + url}`;
+  }
+
+  prisma.emailTracking.update({
+    where: { id },
+    data: {
+      clickCount: { increment: 1 },
+      clickedAt: new Date(),
+    },
+  }).catch(e => console.error('[Track] Click update failed:', e));
+
+  res.redirect(302, safeUrl);
+});
+
 export default router;

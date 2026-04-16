@@ -1378,27 +1378,31 @@ function FounderSection() {
             </h2>
 
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, marginBottom: 16 }}>
-              I spent years managing creative teams — photographers on assignment, designers
-              on retainer, artists fulfilling commissions. The talent was never the problem.
-              The problem was the black hole between "I'm interested" and "contract signed."
-              Inquiries sitting in inboxes for four days. Proposals sent as email attachments.
-              Follow-up that depended entirely on memory. World-class work, chaos behind it.
+              For years, I led creative teams comprised of photographers doing freelance
+              assignments, designers on contract, and artists working under commission. The
+              biggest issue has always been the lack of a seamless transition between the two
+              stages of a project: &ldquo;I&rsquo;m interested&rdquo; and &ldquo;I have a signed contract.&rdquo; That gap
+              showed up the same way every time &mdash; an inquiry sitting in someone&rsquo;s inbox for
+              four days, a proposal sent as an email attachment, a follow-up that only happened
+              because the creative happened to remember.
             </p>
 
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, marginBottom: 16 }}>
-              I looked at every tool on the market and found the same thing: HoneyBook and
-              Dubsado were built for American wedding photographers in 2016 and never
-              meaningfully expanded beyond that. They assume US bank accounts, US tax rates,
-              and a single industry. A fine artist managing collectors in Tokyo, a brand
-              designer sending proposals in Lagos, a photographer billing in euros — none of
-              them were the intended user. It shows in every screen.
+              After exploring every option on the market, I found the same thing in all of
+              them: most are iterations of HoneyBook and Dubsado &mdash; both built in 2016 for
+              wedding photographers working in the United States, and unchanged in any
+              meaningful way since. They are built on the assumption that US banking, tax, and
+              self-employment law applies universally. They do not work for a fine artist
+              managing collectors in Tokyo, a brand designer sending proposals in Lagos, or a
+              photographer billing clients in Europe. That assumption shows in every screen.
             </p>
 
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, marginBottom: 0 }}>
-              KOLOR is what I would have built for every creative I ever managed. Equal depth
-              for photography, design, and fine art. GDPR-native from the first line of code.
-              Designed to work the way creative businesses actually run — not the way software
-              companies assume they do. The first 20 people who join are shaping what it becomes.
+              KOLOR is what I would have built for every creative I ever managed. It has
+              the same depth of functionality for photography, design, and fine art. It has been
+              built under GDPR regulation from the first line of code. It operates the way a
+              creative business actually operates &mdash; not the way a software company would expect
+              one to. The first 20 people who join will help define how KOLOR develops over time.
             </p>
 
             <div style={{

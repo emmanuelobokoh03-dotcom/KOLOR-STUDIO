@@ -2893,6 +2893,15 @@ export async function sendFileUploadNotification(data: FileUploadNotificationDat
 import { getIndustryLanguage } from '../utils/industryLanguage';
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://kolorstudio.app';
+
+/**
+ * Wrap a URL with click tracking. Falls back to the original URL if emailTrackingId is absent.
+ */
+export function wrapTrackedLink(url: string, trackingId?: string): string {
+  if (!trackingId) return url;
+  const base = process.env.BACKEND_URL || FRONTEND_URL;
+  return `${base}/api/track/click/${trackingId}?url=${encodeURIComponent(url)}`;
+}
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 // ── #02 — Welcome Email (industry-adaptive) ──
@@ -3538,6 +3547,46 @@ export async function sendPaymentNudge(
     return true;
   } catch (err) {
     console.error('[EMAIL] sendPaymentNudge exception:', err);
+    return false;
+  }
+}
+
+
+export async function sendAccountLockoutEmail(user: {
+  email: string;
+  firstName: string;
+}): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const resetUrl = `${FRONTEND_URL}/forgot-password`;
+    const html = buildEmailTemplate({
+      headline: 'Your account has been temporarily locked',
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Hi ${user.firstName}, we noticed 5 consecutive failed login attempts on your KOLOR Studio account. For your protection, access has been temporarily locked for 15 minutes.
+        </p>
+        ${errorBox('If this wasn\'t you, someone may be trying to access your account. Reset your password immediately.')}
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0;font-family:Arial,Helvetica,sans-serif;">
+          If it was you — perhaps a forgotten password — you can reset it now and regain access straight away. The lock lifts automatically after 15 minutes if you'd prefer to wait.
+        </p>
+        <p style="font-size:12px;color:#9CA3AF;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          Locked at ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })} UTC
+        </p>`,
+      ctaText: 'Reset my password \u2192',
+      ctaUrl: resetUrl,
+      emailType: 'auth',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [user.email],
+      subject: 'Your KOLOR Studio account has been temporarily locked',
+      html,
+    });
+    if (error) { console.error('[EMAIL] Account lockout email failed:', error); return false; }
+    return true;
+  } catch (err) {
+    console.error('[EMAIL] Account lockout email error:', err);
     return false;
   }
 }

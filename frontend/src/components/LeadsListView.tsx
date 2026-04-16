@@ -4,8 +4,10 @@ import {
   DotsThree,
   SquaresFour,
   ArrowLeft,
+  MagnifyingGlass,
+  X,
 } from '@phosphor-icons/react'
-import { Lead, LeadStatus } from '../services/api'
+import { Lead, LeadStatus, LEAD_STATUS_LABELS } from '../services/api'
 import { IndustryLanguage } from '../utils/industryLanguage'
 import { StatusBadge } from './StatusBadge'
 
@@ -304,6 +306,8 @@ function PipelinePlaceholder({ onBack }: { onBack: () => void }) {
 export default function LeadsListView({ leads, lang, currencySymbol = '$', onLeadClick, onLeadClickTab }: LeadsListViewProps) {
   const [activeTab, setActiveTab] = useState('all')
   const [showPipeline, setShowPipeline] = useState(false)
+  const [search, setSearch] = useState('')
+  const [searchExpanded, setSearchExpanded] = useState(false)
 
   const tabs: TabDef[] = [
     { key: 'all', label: 'All' },
@@ -315,14 +319,23 @@ export default function LeadsListView({ leads, lang, currencySymbol = '$', onLea
   ]
 
   const filteredLeads = useMemo(() => {
-    if (activeTab === 'all') return leads
+    let result = leads
     if (activeTab === 'needs_action') {
-      return leads.filter(l => !['BOOKED', 'LOST'].includes(l.status) && getDaysStale(l.updatedAt) >= 7)
+      result = result.filter(l => !['BOOKED', 'LOST'].includes(l.status) && getDaysStale(l.updatedAt) >= 7)
+    } else if (activeTab !== 'all') {
+      const statuses = TAB_STATUS_MAP[activeTab]
+      if (statuses && statuses.length > 0) result = result.filter(l => statuses.includes(l.status))
     }
-    const statuses = TAB_STATUS_MAP[activeTab]
-    if (statuses && statuses.length > 0) return leads.filter(l => statuses.includes(l.status))
-    return leads
-  }, [leads, activeTab])
+    if (search.trim()) {
+      const q = search.toLowerCase()
+      result = result.filter(l =>
+        l.clientName.toLowerCase().includes(q) ||
+        l.clientEmail?.toLowerCase().includes(q) ||
+        l.projectTitle?.toLowerCase().includes(q)
+      )
+    }
+    return result
+  }, [leads, activeTab, search])
 
   if (showPipeline) {
     return <PipelinePlaceholder onBack={() => setShowPipeline(false)} />
@@ -331,6 +344,63 @@ export default function LeadsListView({ leads, lang, currencySymbol = '$', onLea
   return (
     <div data-testid="leads-list-view">
       <StatsStrip leads={leads} lang={lang} currencySymbol={currencySymbol} />
+
+      {/* Search bar */}
+      <div className="flex items-center gap-2 mb-3">
+        <div className={`flex items-center transition-all duration-200 ${searchExpanded ? 'flex-1' : ''} md:flex-1`}>
+          {!searchExpanded && (
+            <button
+              onClick={() => setSearchExpanded(true)}
+              className="md:hidden flex items-center justify-center w-11 h-11 rounded-xl border border-light-200 text-text-secondary hover:bg-light-100 transition"
+              aria-label="Search leads"
+              data-testid="leads-search-toggle"
+            >
+              <MagnifyingGlass className="w-4 h-4" />
+            </button>
+          )}
+          <div className={`${searchExpanded ? 'flex' : 'hidden'} md:flex flex-1 items-center gap-2 rounded-xl border border-light-200 bg-surface-base px-3 py-2`}>
+            <MagnifyingGlass className="w-4 h-4 text-text-tertiary flex-shrink-0" />
+            <input
+              autoFocus={searchExpanded}
+              type="text"
+              placeholder="Search leads..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              onBlur={() => { if (!search) setSearchExpanded(false) }}
+              className="flex-1 text-sm bg-transparent outline-none text-text-primary placeholder-text-tertiary"
+              data-testid="leads-search-input"
+            />
+            {(search || searchExpanded) && (
+              <button onClick={() => { setSearch(''); setSearchExpanded(false) }} className="text-text-tertiary hover:text-text-primary p-1">
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile filter chips */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 mb-2 md:hidden" data-testid="mobile-filter-chips">
+        {(['ALL', 'NEW', 'CONTACTED', 'QUOTED', 'BOOKED', 'LOST'] as const).map(s => (
+          <button
+            key={s}
+            onClick={() => setActiveTab(s === 'ALL' ? 'all' : s === 'NEW' ? 'inquiry' : s === 'CONTACTED' ? 'discovery' : s === 'QUOTED' ? 'quoted' : s === 'BOOKED' ? 'signed' : 'all')}
+            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all min-h-[36px] ${
+              (s === 'ALL' && activeTab === 'all') ||
+              (s === 'NEW' && activeTab === 'inquiry') ||
+              (s === 'CONTACTED' && activeTab === 'discovery') ||
+              (s === 'QUOTED' && activeTab === 'quoted') ||
+              (s === 'BOOKED' && activeTab === 'signed')
+                ? 'bg-brand-primary text-white'
+                : 'bg-light-100 text-text-secondary border border-light-200'
+            }`}
+            data-testid={`filter-chip-${s.toLowerCase()}`}
+          >
+            {s === 'ALL' ? 'All' : LEAD_STATUS_LABELS[s]}
+          </button>
+        ))}
+      </div>
+
       <TabRow tabs={tabs} active={activeTab} onTabChange={setActiveTab} leads={leads} lang={lang} />
 
       {/* Lead list */}

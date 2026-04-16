@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { google } from 'googleapis';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail, sendBetaWelcomeEmail, sendNewUserSignupAlert, sendPasswordChangedEmail } from '../services/email';
+import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail, sendBetaWelcomeEmail, sendNewUserSignupAlert, sendPasswordChangedEmail, sendAccountLockoutEmail } from '../services/email';
 import { seedTemplatesForUser } from '../seeds/systemTemplates';
 import { createDemoProject } from '../scripts/createDemoProject';
 import { seedDefaultSequences } from '../scripts/seedSequences';
@@ -220,6 +220,12 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
           lockedUntil: shouldLock ? new Date(Date.now() + 15 * 60 * 1000) : user.lockedUntil,
         },
       }).catch(e => console.error('[Auth] Failed to update login attempts:', e));
+
+      // Fire lockout email exactly once — when the 5th attempt triggers the lock
+      if (shouldLock) {
+        sendAccountLockoutEmail({ email: user.email, firstName: user.firstName })
+          .catch(e => console.error('[Auth] Lockout email failed:', e));
+      }
 
       res.status(401).json({
         error: 'Unauthorized',

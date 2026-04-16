@@ -214,8 +214,21 @@ export default function PublicPortfolio() {
   // Loading state
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#F9F7FE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <SpinnerGap className="w-8 h-8 animate-spin" style={{ color: brandPrimary }} />
+      <div style={{ minHeight: '100vh', background: '#F9F7FE' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto', padding: '64px 24px' }} className="animate-pulse">
+          <div className="flex items-center gap-5 mb-10">
+            <div className="w-16 h-16 rounded-full" style={{ background: '#EDE8F5' }} />
+            <div className="space-y-2">
+              <div className="h-6 w-40 rounded" style={{ background: '#EDE8F5' }} />
+              <div className="h-4 w-24 rounded" style={{ background: '#F3F0FA' }} />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="rounded-xl" style={{ aspectRatio: '4/3', background: '#EDE8F5' }} />
+            ))}
+          </div>
+        </div>
       </div>
     )
   }

@@ -914,6 +914,8 @@ model EmailTracking {
   opened          Boolean   @default(false)
   openedAt        DateTime?
   openCount       Int       @default(0)
+  clickCount      Int       @default(0)
+  clickedAt       DateTime?
   userAgent       String?
   ipAddress       String?
   createdAt       DateTime  @default(now())

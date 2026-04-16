@@ -205,6 +205,7 @@ router.get('/email-log', authMiddleware, async (req: AuthRequest, res: Response)
         opened: l.opened,
         openedAt: l.openedAt?.toISOString() ?? null,
         openCount: l.openCount,
+        clickCount: l.clickCount,
       })),
       total,
       page,

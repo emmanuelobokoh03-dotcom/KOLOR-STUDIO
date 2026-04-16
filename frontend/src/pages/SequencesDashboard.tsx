@@ -365,6 +365,7 @@ interface EmailLogEntry {
   opened: boolean
   openedAt: string | null
   openCount: number
+  clickCount: number
 }
 
 const formatEmailType = (emailType: string, sequenceId: string | null, stepNumber: number | null): string => {
@@ -615,18 +616,19 @@ export default function SequencesDashboard() {
           <>
             <div className="bg-light-50 rounded-xl border border-light-200 overflow-hidden">
               {/* Table header */}
-              <div className="hidden md:grid grid-cols-[140px_1fr_1fr_160px_100px] gap-4 px-5 py-3 text-xs font-semibold text-text-tertiary uppercase tracking-wider border-b border-light-200">
+              <div className="hidden md:grid grid-cols-[140px_1fr_1fr_160px_80px_80px] gap-4 px-5 py-3 text-xs font-semibold text-text-tertiary uppercase tracking-wider border-b border-light-200">
                 <span>Sent</span>
                 <span>Client</span>
                 <span>Email type</span>
                 <span>Recipient</span>
                 <span>Opened</span>
+                <span>Clicked</span>
               </div>
               {/* Rows */}
               {emailLog.map(log => (
                 <div
                   key={log.id}
-                  className="grid grid-cols-1 md:grid-cols-[140px_1fr_1fr_160px_100px] gap-2 md:gap-4 px-5 py-3.5 border-b border-light-200 last:border-b-0 hover:bg-surface-background transition text-sm"
+                  className="grid grid-cols-1 md:grid-cols-[140px_1fr_1fr_160px_80px_80px] gap-2 md:gap-4 px-5 py-3.5 border-b border-light-200 last:border-b-0 hover:bg-surface-background transition text-sm"
                   data-testid={`email-log-${log.id}`}
                 >
                   <span className="text-text-secondary text-xs" title={new Date(log.sentAt).toLocaleString()}>
@@ -644,6 +646,13 @@ export default function SequencesDashboard() {
                   <span>
                     {log.opened ? (
                       <span className="text-emerald-600 font-semibold text-xs">&check; {log.openCount}&times;</span>
+                    ) : (
+                      <span className="text-text-tertiary text-xs">&mdash;</span>
+                    )}
+                  </span>
+                  <span>
+                    {log.clickCount > 0 ? (
+                      <span className="text-emerald-600 font-semibold text-xs">{log.clickCount}&times;</span>
                     ) : (
                       <span className="text-text-tertiary text-xs">&mdash;</span>
                     )}
