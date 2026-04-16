@@ -230,6 +230,11 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Change 5**: `MidPageCTA` between Testimonials and FAQ with "Stop losing clients to a slower reply" headline and "Claim your founder spot" CTA.
 - **Change 6**: Feature checklists on pricing cards — 8 items on $97 card, 3 items on $19 card.
 
+### Iteration 132 — Automation Workflow Gap Fixes (Complete)
+- **Task 1 — Contract Day 7 nudge**: New `runContractUnsignedFinalWarning()` checks 168-191h window. Existing Day 3 nudge wrapped in per-email try/catch. Daily cron now runs 6 functions.
+- **Task 2 — Payment nudge**: New `runPaymentNudges()` checks contracts signed 48-72h ago (status `AGREED`). New `sendPaymentNudge()` email function in email service. Non-blocking with try/catch.
+- **Task 3 — totalSequences stat**: `/api/sequences/dashboard/stats` now counts `2 + prisma.emailSequence.count()` for both total and active sequences. Confirmed returning accurate count (3 with 1 custom sequence).
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
