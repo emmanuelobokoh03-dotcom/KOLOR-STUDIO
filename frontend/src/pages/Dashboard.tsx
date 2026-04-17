@@ -49,6 +49,7 @@ import RevenueDashboard from '../components/RevenueDashboard'
 import RevenuePipelineWidget from '../components/RevenuePipelineWidget'
 import CalendarConnectionWidget from '../components/CalendarConnectionWidget'
 import OnboardingChecklist from '../components/OnboardingChecklist'
+import AHAModal from '../components/AHAModal'
 import NeedsAttentionSection from '../components/NeedsAttentionSection'
 import RevenueGoalWidget from '../components/RevenueGoalWidget'
 import SequencesDashboard from './SequencesDashboard'
@@ -139,6 +140,7 @@ const Dashboard = () => {
   const [projectTypeFilter, setProjectTypeFilter] = useState<string>('')
   const [industryFilter, setIndustryFilter] = useState<string>('')
   const [isFirstLogin, setIsFirstLogin] = useState(false)
+  const [showAHAModal, setShowAHAModal] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [showHelpPanel, setShowHelpPanel] = useState(false)
@@ -204,6 +206,7 @@ const Dashboard = () => {
         if (!hasLoggedInBefore) {
           setIsFirstLogin(true)
           localStorage.setItem('kolor_has_logged_in', 'true')
+          setTimeout(() => setShowAHAModal(true), 800)
         }
       }
 
@@ -263,11 +266,11 @@ const Dashboard = () => {
 
   // Auto-start onboarding tour for new users — only when wizard is NOT showing
   useEffect(() => {
-    if (!loading && user && !tourComplete && !showWizard) {
+    if (!loading && user && !tourComplete && !showWizard && !showAHAModal) {
       const timer = setTimeout(() => startTour(), 1500)
       return () => clearTimeout(timer)
     }
-  }, [loading, user, tourComplete, startTour, showWizard])
+  }, [loading, user, tourComplete, startTour, showWizard, showAHAModal])
 
   const fetchLeads = async () => {
     const params: any = {};
@@ -1455,6 +1458,14 @@ const Dashboard = () => {
         show={showCelebration}
         onClose={() => setShowCelebration(false)}
       />
+      {showAHAModal && user && (
+        <AHAModal
+          userFirstName={user.firstName}
+          userEmail={user.email}
+          userIndustry={(user as any).industry || user.primaryIndustry}
+          onDismiss={() => setShowAHAModal(false)}
+        />
+      )}
     </div>
     </div>
     </>

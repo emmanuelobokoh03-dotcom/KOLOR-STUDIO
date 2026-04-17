@@ -3591,3 +3591,58 @@ export async function sendAccountLockoutEmail(user: {
   }
 }
 
+
+export async function sendSampleQuoteEmail(data: {
+  clientName: string;
+  clientEmail: string;
+  projectTitle: string;
+  quoteNumber: string;
+  total: number;
+  validUntil: Date;
+  quoteToken: string;
+  portalToken?: string;
+  studioName: string;
+  currencySymbol?: string;
+  industry?: string | null;
+}): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const lang = getIndustryLanguage(data.industry as any);
+    const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
+    const quoteUrl = data.portalToken
+      ? `${baseUrl}/portal/${data.portalToken}`
+      : `${baseUrl}/quote/${data.quoteToken}`;
+    const sym = data.currencySymbol || '$';
+    const formattedTotal = `${sym}${data.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    const validDate = data.validUntil.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+    const html = buildEmailTemplate({
+      headline: `Your ${lang.quote.toLowerCase()} from ${data.studioName}`,
+      body: `
+        ${highlightBox(`This is a preview — you are seeing exactly what your client sees when you send a ${lang.quote.toLowerCase()} from KOLOR Studio.`)}
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0;font-family:Arial,Helvetica,sans-serif;">
+          Hi ${data.clientName}, ${data.studioName} has prepared a ${lang.quote.toLowerCase()} for <strong>${data.projectTitle}</strong>.
+        </p>
+        ${highlightBox(`Total: ${formattedTotal} &nbsp;&middot;&nbsp; Valid until ${validDate}`)}
+        <p style="font-size:14px;color:#4B5563;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          Click the button below to review and approve your ${lang.quote.toLowerCase()} online.
+        </p>`,
+      ctaText: `Review ${lang.quote} \u2192`,
+      ctaUrl: quoteUrl,
+      emailType: 'workflow',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [data.clientEmail],
+      subject: `[Preview] ${data.studioName} sent you a ${lang.quote.toLowerCase()} — ${formattedTotal}`,
+      html,
+    });
+    if (error) { console.error('[EMAIL] Sample quote email failed:', error); return false; }
+    return true;
+  } catch (err) {
+    console.error('[EMAIL] Sample quote email error:', err);
+    return false;
+  }
+}
+

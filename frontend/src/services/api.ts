@@ -104,6 +104,16 @@ export const authApi = {
       body: JSON.stringify({ primaryIndustry }),
     });
   },
+  sendSampleQuote: async () => {
+    return request<{
+      message: string;
+      alreadySent: boolean;
+      quoteToken: string | null;
+      quoteUrl: string | null;
+      total?: number;
+      studioName?: string;
+    }>('/api/auth/sample-quote', { method: 'POST' });
+  },
   sendVerification: async () => {
     return request<{ message: string }>('/api/auth/send-verification', {
       method: 'POST',

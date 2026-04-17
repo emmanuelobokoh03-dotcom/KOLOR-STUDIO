@@ -285,6 +285,7 @@ model Lead {
   nextFollowUpAt    DateTime?
   pipelineStatus    PipelineStatus        @default(NEW_INQUIRY)
   isDemoData        Boolean               @default(false)
+  isSampleQuote     Boolean               @default(false)
   deliveryDate      DateTime?
   editingDeadline   DateTime?
   shootingDate      DateTime?

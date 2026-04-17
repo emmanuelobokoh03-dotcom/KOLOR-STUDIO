@@ -304,6 +304,151 @@ router.post('/logout', (_req: Request, res: Response): void => {
   res.json({ message: 'Logged out successfully' });
 });
 
+// POST /api/auth/sample-quote — Send a sample quote to user's own email (AHA moment)
+router.post('/sample-quote', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId!;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true, email: true, firstName: true, lastName: true,
+        studioName: true, industry: true, primaryIndustry: true,
+        currency: true, currencySymbol: true,
+      },
+    });
+
+    if (!user) { res.status(404).json({ error: 'User not found' }); return; }
+
+    // Prevent duplicate sample quotes
+    const existingSample = await prisma.lead.findFirst({
+      where: { assignedToId: userId, isSampleQuote: true },
+    });
+    if (existingSample) {
+      const existingQuote = await prisma.quote.findFirst({
+        where: { leadId: existingSample.id },
+        orderBy: { createdAt: 'asc' },
+      });
+      res.json({
+        message: 'Sample quote already sent',
+        alreadySent: true,
+        quoteToken: existingQuote?.quoteToken || null,
+        quoteUrl: existingQuote?.quoteToken ? `${process.env.FRONTEND_URL}/quote/${existingQuote.quoteToken}` : null,
+      });
+      return;
+    }
+
+    const industry = (user as any).industry || user.primaryIndustry || 'PHOTOGRAPHY';
+    const lineItems = getSampleLineItems(industry);
+    const total = lineItems.reduce((sum: number, item: any) => sum + item.quantity * item.unitPrice, 0);
+    const studioName = user.studioName || `${user.firstName}'s Studio`;
+    const currencySymbol = user.currencySymbol || '$';
+
+    // Create sample lead
+    const lead = await prisma.lead.create({
+      data: {
+        assignedToId: userId,
+        clientName: user.firstName,
+        clientEmail: user.email,
+        projectTitle: getSampleProjectTitle(industry),
+        description: `Sample ${lang(industry)} project for AHA experience`,
+        serviceType: getSampleServiceType(industry) as any,
+        status: 'QUOTED',
+        isSampleQuote: true,
+        isDemoData: false,
+        source: 'REFERRAL',
+      },
+    });
+
+    const quoteNumber = `SAMPLE-${Date.now().toString(36).toUpperCase()}`;
+    const validUntil = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+
+    const quote = await prisma.quote.create({
+      data: {
+        leadId: lead.id,
+        createdById: userId,
+        quoteNumber,
+        lineItems: lineItems.map((item: any, i: number) => ({
+          description: item.description,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          total: item.quantity * item.unitPrice,
+          order: i,
+        })),
+        subtotal: total,
+        tax: 0,
+        taxAmount: 0,
+        total,
+        paymentTerms: '50% deposit, 50% on completion',
+        validUntil,
+        status: 'SENT',
+        sentAt: new Date(),
+        currency: user.currency,
+        currencySymbol,
+      },
+    });
+
+    // Send sample quote email (non-blocking)
+    const { sendSampleQuoteEmail } = await import('../services/email');
+    sendSampleQuoteEmail({
+      clientName: user.firstName,
+      clientEmail: user.email,
+      projectTitle: getSampleProjectTitle(industry),
+      quoteNumber,
+      total,
+      validUntil,
+      quoteToken: quote.quoteToken,
+      portalToken: lead.portalToken,
+      studioName,
+      currencySymbol,
+      industry,
+    }).catch(e => console.error('[SampleQuote] Email failed:', e));
+
+    const quoteUrl = `${process.env.FRONTEND_URL}/quote/${quote.quoteToken}`;
+    res.json({ message: 'Sample quote sent', alreadySent: false, quoteToken: quote.quoteToken, quoteUrl, total, studioName });
+  } catch (error) {
+    console.error('[SampleQuote] Error:', error);
+    res.status(500).json({ error: 'Failed to send sample quote' });
+  }
+});
+
+function getSampleLineItems(industry: string | null) {
+  if (industry === 'FINE_ART') return [
+    { description: 'Original oil on canvas commission (60×80cm)', quantity: 1, unitPrice: 1800 },
+    { description: 'Artist certificate of authenticity', quantity: 1, unitPrice: 75 },
+    { description: 'Secure packaged delivery', quantity: 1, unitPrice: 120 },
+  ];
+  if (industry === 'DESIGN' || industry === 'GRAPHIC_DESIGN') return [
+    { description: 'Brand identity — logo, colour palette, typography', quantity: 1, unitPrice: 1400 },
+    { description: 'Brand guidelines document', quantity: 1, unitPrice: 350 },
+    { description: '3 rounds of revision', quantity: 1, unitPrice: 0 },
+  ];
+  return [
+    { description: 'Full-day shoot coverage (8 hours)', quantity: 1, unitPrice: 1600 },
+    { description: 'Edited gallery (200 high-res images)', quantity: 1, unitPrice: 300 },
+    { description: 'Online gallery delivery', quantity: 1, unitPrice: 80 },
+  ];
+}
+
+function getSampleProjectTitle(industry: string | null): string {
+  if (industry === 'FINE_ART') return 'Portrait commission — family oil painting';
+  if (industry === 'DESIGN' || industry === 'GRAPHIC_DESIGN') return 'Brand identity — new studio rebrand';
+  return 'Wedding photography — full day coverage';
+}
+
+function getSampleServiceType(industry: string | null): string {
+  if (industry === 'FINE_ART') return 'OTHER';
+  if (industry === 'DESIGN' || industry === 'GRAPHIC_DESIGN') return 'BRANDING';
+  return 'PHOTOGRAPHY';
+}
+
+function lang(industry: string | null): string {
+  if (industry === 'FINE_ART') return 'fine art';
+  if (industry === 'DESIGN' || industry === 'GRAPHIC_DESIGN') return 'design';
+  return 'photography';
+}
+
+
+
 // GET /api/auth/me - Get current user info (protected route)
 router.get('/me', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
