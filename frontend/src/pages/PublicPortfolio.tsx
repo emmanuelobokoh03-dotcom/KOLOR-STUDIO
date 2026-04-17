@@ -149,11 +149,19 @@ export default function PublicPortfolio() {
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // Industry-aware copy
-  const heroSubline = ({
-    PHOTOGRAPHY: `Explore ${studioDisplayName}\u2019s photography \u2014 from ${lang.leads.toLowerCase()} to delivered galleries.`,
-    DESIGN: `${studioDisplayName}\u2019s design work \u2014 brand, UI, and creative direction.`,
-    FINE_ART: `Original works and commissions by ${studioDisplayName}.`,
-  } as Record<string, string>)[industry] ?? `Explore ${studioDisplayName}\u2019s creative work.`
+  // bioLine — personalised subline leveraging speciality + industry (replaces generic CRM-internal copy)
+  const bioLine = (() => {
+    const speciality = userInfo?.speciality?.trim()
+    if (speciality) {
+      if (industry === 'PHOTOGRAPHY') return `${speciality} photography by ${studioDisplayName}.`
+      if (industry === 'FINE_ART') return `${speciality} — original works and commissions by ${studioDisplayName}.`
+      return `${speciality} — creative work by ${studioDisplayName}.`
+    }
+    if (industry === 'PHOTOGRAPHY') return `Photography by ${studioDisplayName} — stories told through light.`
+    if (industry === 'DESIGN') return `Design, brand, and creative direction by ${studioDisplayName}.`
+    if (industry === 'FINE_ART') return `Original works and commissions by ${studioDisplayName}.`
+    return `Creative work by ${studioDisplayName}.`
+  })()
 
   const ctaHeadline = ({
     PHOTOGRAPHY: 'Ready to book your session?',
@@ -319,8 +327,8 @@ export default function PublicPortfolio() {
           </p>
         )}
 
-        <p style={{ fontSize: 15, color: '#6B7280', marginTop: 8, lineHeight: 1.6, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
-          {heroSubline}
+        <p style={{ fontSize: 15, color: '#6B7280', marginTop: 8, lineHeight: 1.6, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }} data-testid="portfolio-hero-bioline">
+          {bioLine}
         </p>
 
         {/* CTA row */}

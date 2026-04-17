@@ -14,7 +14,7 @@ interface ChecklistItem {
   icon: React.ReactNode
 }
 
-export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings?: () => void }) {
+export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings?: (tab?: string) => void }) {
   const [dismissed, setDismissed] = useState(() => localStorage.getItem('kolor_onboarding_dismissed') === 'true')
   const [items, setItems] = useState<ChecklistItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -30,9 +30,9 @@ export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings
     try {
       const [calRes, mtRes, availRes, leadsRes] = await Promise.all([
         fetch(`${API_URL}/api/google-calendar/status`, { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('/api/meeting-types', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('/api/availability', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('/api/leads', { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(`${API_URL}/api/meeting-types`, { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(`${API_URL}/api/availability`, { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(`${API_URL}/api/leads`, { credentials: 'include' }).then(r => r.ok ? r.json() : null).catch(() => null),
       ])
 
       const meetingTypes = mtRes?.meetingTypes || mtRes || []
@@ -53,7 +53,7 @@ export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings
           title: 'Set availability hours',
           description: 'Define when clients can book you',
           completed: Array.isArray(availability) ? availability.length > 0 : !!availability?.schedule,
-          action: onOpenSettings,
+          action: () => onOpenSettings?.('scheduling'),
           icon: <Clock className="w-5 h-5" weight="duotone" />,
         },
         {
@@ -61,7 +61,7 @@ export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings
           title: 'Create a meeting type',
           description: 'Add a consultation or discovery call',
           completed: Array.isArray(meetingTypes) ? meetingTypes.length > 0 : false,
-          action: onOpenSettings,
+          action: () => onOpenSettings?.('scheduling'),
           icon: <CalendarBlank className="w-5 h-5" weight="duotone" />,
         },
         {

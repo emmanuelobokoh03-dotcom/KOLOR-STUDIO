@@ -6,7 +6,6 @@ import {
   Activity,
   LeadFile,
   LEAD_STATUS_LABELS, 
-  SERVICE_TYPE_LABELS,
   leadsApi 
 } from '../services/api'
 import { getIndustryLanguage, IndustryType } from '../utils/industryLanguage'
@@ -691,7 +690,11 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                 <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[var(--text-secondary)]">
                   <span className="truncate">{lead.projectTitle}</span>
                   <span className="opacity-40">·</span>
-                  <span>{SERVICE_TYPE_LABELS[lead.serviceType]}</span>
+                  <span data-testid="lead-project-type-label">
+                    {lead.projectType
+                      ? lead.projectType.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
+                      : lang.booking}
+                  </span>
                   <span className="opacity-40">·</span>
                   <span>{formatTimeAgo(lead.createdAt)}</span>
                 </div>
@@ -726,7 +729,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               </button>
               <button
                 onClick={() => {
-                  if (!lead.discoveryCallScheduled) handleScheduleDiscoveryCall()
+                  if (!lead.discoveryCallScheduled) setShowBookingModal(true)
                   else if (!lead.discoveryCallCompletedAt) handleCompleteDiscoveryCall()
                 }}
                 className="min-h-[44px] px-3 rounded-lg text-[11px] font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center gap-1"

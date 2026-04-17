@@ -419,7 +419,7 @@ export default function ClientPortal() {
     return position === 'BEFORE' ? `${symbol}${formatted}` : `${formatted}${symbol}`;
   };
 
-  const studioName = data?.contact?.studioName || 'KOLOR STUDIO';
+  const studioName = data?.contact?.studioName || data?.contact?.name || 'KOLOR STUDIO';
   const brandColor = data?.contact?.brandPrimaryColor || '#6C2EDB';
   const brandLogo = data?.contact?.brandLogoUrl || null;
 

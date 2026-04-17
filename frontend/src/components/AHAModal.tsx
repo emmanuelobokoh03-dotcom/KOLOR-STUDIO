@@ -32,12 +32,18 @@ export default function AHAModal({ userFirstName, userEmail, userIndustry, onDis
         setQuoteUrl(result.data.quoteUrl)
         setStudioName(result.data.studioName || `${userFirstName}'s Studio`)
         setState('sent')
+        localStorage.setItem('kolor_aha_completed', 'true')
       } else {
         setState('error')
       }
     } catch {
       setState('error')
     }
+  }
+
+  const handleDismiss = () => {
+    localStorage.setItem('kolor_aha_completed', 'true')
+    onDismiss()
   }
 
   const sampleItems = userIndustry === 'FINE_ART'
@@ -72,7 +78,7 @@ export default function AHAModal({ userFirstName, userEmail, userIndustry, onDis
         data-testid="aha-modal"
       >
         <button
-          onClick={onDismiss}
+          onClick={handleDismiss}
           className="absolute top-4 right-4 p-1.5 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-light-100 transition z-10 min-h-[44px] min-w-[44px] flex items-center justify-center"
           aria-label="Skip this step"
           data-testid="aha-modal-close"
@@ -116,7 +122,7 @@ export default function AHAModal({ userFirstName, userEmail, userIndustry, onDis
                 <Envelope weight="duotone" className="w-4 h-4" />
                 Send sample {quoteTerm} to my inbox
               </button>
-              <button onClick={onDismiss} className="w-full text-center text-xs text-text-tertiary hover:text-text-secondary transition mt-3 py-2" data-testid="aha-skip-btn">
+              <button onClick={handleDismiss} className="w-full text-center text-xs text-text-tertiary hover:text-text-secondary transition mt-3 py-2" data-testid="aha-skip-btn">
                 Skip for now — I'll explore on my own
               </button>
             </>
@@ -154,7 +160,7 @@ export default function AHAModal({ userFirstName, userEmail, userIndustry, onDis
                   Preview the {quoteTerm} now
                 </a>
               )}
-              <button onClick={onDismiss} className="w-full text-center text-xs text-text-tertiary hover:text-text-secondary transition py-2" data-testid="aha-done-btn">
+              <button onClick={handleDismiss} className="w-full text-center text-xs text-text-tertiary hover:text-text-secondary transition py-2" data-testid="aha-done-btn">
                 Got it — start building my studio
               </button>
             </>
@@ -169,7 +175,7 @@ export default function AHAModal({ userFirstName, userEmail, userIndustry, onDis
               <button onClick={handleSend} className="w-full py-3 rounded-xl font-semibold text-sm bg-brand-primary text-white transition min-h-[44px] mb-2" data-testid="aha-retry-btn">
                 Try again
               </button>
-              <button onClick={onDismiss} className="w-full text-center text-xs text-text-tertiary hover:text-text-secondary transition py-2">Skip</button>
+              <button onClick={handleDismiss} className="w-full text-center text-xs text-text-tertiary hover:text-text-secondary transition py-2">Skip</button>
             </>
           )}
         </div>

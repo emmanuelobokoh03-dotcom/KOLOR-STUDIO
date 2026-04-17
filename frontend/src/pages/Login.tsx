@@ -56,7 +56,11 @@ const Login = () => {
     if (result.data?.user) {
       localStorage.removeItem('token')
       trackLogin('email')
-      window.location.href = '/dashboard'
+      // Server-authoritative first-login flag — used by Dashboard to trigger AHA modal
+      if ((result.data.user as { isFirstLogin?: boolean }).isFirstLogin) {
+        sessionStorage.setItem('kolor_first_login_session', 'true')
+      }
+      navigate('/dashboard')
     }
   }
 

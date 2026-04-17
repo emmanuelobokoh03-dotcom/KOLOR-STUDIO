@@ -132,6 +132,7 @@ const Dashboard = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+  const [settingsInitialTab, setSettingsInitialTab] = useState<'currency' | 'brand' | 'testimonials' | 'email' | 'scheduling' | 'account' | undefined>(undefined)
   const [showFeedback, setShowFeedback] = useState(false)
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
   const [stats, setStats] = useState<{ total: number; statusCounts: Record<string, number> } | null>(null)
@@ -202,11 +203,20 @@ const Dashboard = () => {
 
       if (userResult.data?.user) {
         setUser(userResult.data.user)
-        const hasLoggedInBefore = localStorage.getItem('kolor_has_logged_in')
-        if (!hasLoggedInBefore) {
+        // Server-authoritative first-login detection via sessionStorage flag set by Login/Signup
+        // (server returns isFirstLogin: true only on the very first successful login, based on lastLoginAt).
+        // This eliminates the Desktop/Mobile session discrepancy caused by the old localStorage-only flag.
+        const firstLoginSession = sessionStorage.getItem('kolor_first_login_session') === 'true'
+        const ahaCompleted = localStorage.getItem('kolor_aha_completed') === 'true'
+        if (firstLoginSession) {
           setIsFirstLogin(true)
+          // Keep legacy flag in sync so older code paths that read it keep working
           localStorage.setItem('kolor_has_logged_in', 'true')
-          setTimeout(() => setShowAHAModal(true), 800)
+          sessionStorage.removeItem('kolor_first_login_session')
+          // Only show AHA modal once ever per device (flag is set in AHAModal on send/dismiss)
+          if (!ahaCompleted) {
+            setTimeout(() => setShowAHAModal(true), 800)
+          }
         }
       }
 
@@ -1134,11 +1144,13 @@ const Dashboard = () => {
 
             <button
               onClick={() => setShowShareModal(true)}
-              className="hidden md:flex items-center gap-2 px-4 py-2.5 border border-brand-primary text-purple-600 rounded-xl hover:bg-purple-50 transition-all duration-200 font-medium text-sm"
+              className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-200 font-semibold text-sm bg-brand-primary/10 text-purple-700 border border-brand-primary/30 hover:bg-brand-primary/15 hover:border-brand-primary/50 hover:shadow-sm relative group"
               data-testid="share-form-button"
+              title="Share your public inquiry form to capture new leads"
             >
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#E8891A] group-hover:scale-110 transition-transform motion-reduce:transition-none" aria-hidden="true" />
               <LinkIcon className="w-4 h-4" />
-              <span className="hidden lg:inline">Share Form</span>
+              <span>Share inquiry form</span>
             </button>
             <button
               onClick={() => setShowAddModal(true)}
@@ -1311,7 +1323,7 @@ const Dashboard = () => {
               />
 
               {/* Onboarding Checklist */}
-              <OnboardingChecklist onOpenSettings={() => setShowSettings(true)} />
+              <OnboardingChecklist onOpenSettings={(tab) => { setSettingsInitialTab(tab as any); setShowSettings(true); }} />
 
               {/* Activity Feed */}
               <div className="glass-card rounded-xl border border-light-200 p-4" data-testid="activity-feed-card">
@@ -1372,7 +1384,7 @@ const Dashboard = () => {
         {/* Mobile-only: Onboarding + Activity Feed + Quick Actions (stacked below content) */}
         {(viewMode === 'kanban' || viewMode === 'list') && (
           <div className="lg:hidden mt-4 space-y-4">
-            <OnboardingChecklist onOpenSettings={() => setShowSettings(true)} />
+            <OnboardingChecklist onOpenSettings={(tab) => { setSettingsInitialTab(tab as any); setShowSettings(true); }} />
             <div className="glass-card rounded-xl border border-light-200 p-4" data-testid="activity-feed-card-mobile">
               <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-3">Recent Activity</h3>
               <ActivityFeed onLeadClick={(leadId) => {
@@ -1425,7 +1437,8 @@ const Dashboard = () => {
       {showShareModal && <ShareFormModal onClose={() => setShowShareModal(false)} userId={user?.id} />}
       {showSettings && (
         <SettingsModal
-          onClose={() => setShowSettings(false)}
+          onClose={() => { setShowSettings(false); setSettingsInitialTab(undefined); }}
+          initialTab={settingsInitialTab}
           onSettingsUpdate={(newSettings) => {
             if (user) {
               setUser({

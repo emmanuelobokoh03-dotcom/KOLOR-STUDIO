@@ -113,7 +113,11 @@ const Signup = () => {
         FINE_ART: 'FINE_ART',
       }
       try { await authApi.onboarding(industryMap[industry]) } catch {}
-      setTimeout(() => navigate('/dashboard'), 1000)
+      // Server-authoritative first-login flag — used by Dashboard to trigger AHA modal
+      if ((loginResult.data.user as { isFirstLogin?: boolean }).isFirstLogin) {
+        sessionStorage.setItem('kolor_first_login_session', 'true')
+      }
+      navigate('/dashboard')
     } else {
       setSuccess('Account created! Please log in.')
       setTimeout(() => navigate('/login'), 2000)
