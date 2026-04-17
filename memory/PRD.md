@@ -258,6 +258,18 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **api.ts**: Added `authApi.sendSampleQuote()`.
 - **Task 6 (Sequence link wrapping)**: Deferred — onboarding/quote-followup services don't create EmailTracking records, so no trackingId available for `wrapTrackedLink`.
 
+### Iteration 136 — Bug Fix Sprint: QA Review (Complete — 2026-04-17)
+- **P0 Login mobile redirect** (`Login.tsx`): `window.location.href` → `navigate('/dashboard')` (fixes mobile Safari cookie timing). Stores `kolor_first_login_session` in sessionStorage when server returns `isFirstLogin: true`.
+- **P0 Signup redirect** (`Signup.tsx`): Removed `setTimeout` wrapper on navigation. Passes `isFirstLogin` flag into sessionStorage. Industry map kept as `DESIGN: 'GRAPHIC_DESIGN'` (backend enum requires this canonical key).
+- **P0 AHA modal runs once** (`AHAModal.tsx` + `Dashboard.tsx`): New `kolor_aha_completed` localStorage flag set on send/dismiss. Dashboard gates modal on `!ahaCompleted`. Dashboard first-login detection now purely server-authoritative via sessionStorage flag (eliminates desktop/mobile session discrepancy).
+- **P1 Client Portal studio name** (`ClientPortal.tsx`): Fallback chain upgraded to `studioName || contact.name || 'KOLOR STUDIO'`.
+- **P1 Onboarding Checklist** (`OnboardingChecklist.tsx`): Prefixed all fetches with `${API_URL}` (meeting-types, availability, leads). Availability + Meeting type actions now call `onOpenSettings('scheduling')`. `SettingsModal` accepts new `initialTab` prop.
+- **P1 Lead modal Schedule Call** (`LeadDetailModal.tsx`): Clicking "Schedule call" now opens `BookingModal` via `setShowBookingModal(true)` (was: silently toggled API flag).
+- **P1 Project type industry-aware** (`LeadDetailModal.tsx`): Modal header replaces `SERVICE_TYPE_LABELS[serviceType]` with formatted `lead.projectType` (fallback `lang.booking`). `SERVICE_TYPE_LABELS` import removed.
+- **P1 Portfolio hero bioLine** (`PublicPortfolio.tsx`): Replaced CRM-internal `heroSubline` ("from inquiries to delivered galleries") with personalised `bioLine` computed from speciality + industry.
+- **P1 Desktop/Mobile first-login parity** (`Dashboard.tsx`): Server-provided `isFirstLogin` via sessionStorage (from Login/Signup) replaces localStorage-only detection.
+- **P2 Share inquiry form visibility** (`Dashboard.tsx`): Button upgraded from ghost outline to filled brand-tinted CTA with amber accent dot + full "Share inquiry form" label visible at md+.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
