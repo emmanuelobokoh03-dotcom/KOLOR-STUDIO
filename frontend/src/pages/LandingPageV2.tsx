@@ -349,7 +349,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
               <div className="flex-1 flex justify-center">
                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-[5px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
                   <span className="w-2 h-2 rounded-full" style={{ background: '#28CA41' }} />
-                  <span className="font-mono-kolor text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>app.kolorstudio.com/dashboard</span>
+                  <span className="font-mono-kolor text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>kolorstudio.app/dashboard</span>
                 </div>
               </div>
             </div>
@@ -409,18 +409,18 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
                       className="flex items-center justify-between px-3 py-2.5 text-[11px]"
                       style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="font-medium text-white/70">{row.name}</span>
-                        <span className="text-white/25">{row.project}</span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="font-medium text-white/70 truncate">{row.name}</span>
+                        <span className="text-white/25 hidden sm:inline flex-shrink-0">{row.project}</span>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 flex-shrink-0">
                         <span
-                          className="font-medium rounded px-1.5 py-0.5"
+                          className="font-medium rounded px-1.5 py-0.5 text-[10px] whitespace-nowrap"
                           style={{ borderLeft: `2px solid ${row.statusColor}`, background: row.bg, color: row.statusColor }}
                         >
                           {row.status}
                         </span>
-                        <span className="text-white/40 tabular-nums">{row.amount}</span>
+                        <span className="hidden sm:inline text-white/40 tabular-nums">{row.amount}</span>
                       </div>
                     </div>
                   ))}
