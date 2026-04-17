@@ -75,7 +75,6 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
 
   useEffect(() => {
     fetchContracts();
-    fetchTemplates();
     fetchUserInfo();
   }, [leadId]);
 
@@ -96,16 +95,16 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
     setLoading(false);
   };
 
-  const fetchTemplates = async () => {
-    const result = await contractsApi.getTemplates();
-    if (result.data?.templates) setTemplates(result.data.templates);
-  };
-
   const fetchUserInfo = async () => {
     const result = await authApi.getMe();
     if (result.data?.user) {
-      setUserName(`${result.data.user.firstName} ${result.data.user.lastName}`.trim());
-      setStudioName(result.data.user.studioName || '');
+      const u = result.data.user as { firstName: string; lastName: string; studioName?: string; industry?: string | null; primaryIndustry?: string | null };
+      setUserName(`${u.firstName} ${u.lastName}`.trim());
+      setStudioName(u.studioName || '');
+      // Fetch templates filtered by industry so fine-art users don't see photography templates
+      const industry = u.industry || u.primaryIndustry || undefined;
+      const tmplResult = await contractsApi.getTemplates(industry || undefined);
+      if (tmplResult.data?.templates) setTemplates(tmplResult.data.templates);
     }
   };
 
@@ -291,8 +290,9 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
             <span className="text-xs"><strong>First contract?</strong> Pick a template that fits your project. You can edit every word before sending.</span>
           </InlineHint>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {templates.map((tmpl) => {
+            {templates.map((tmpl, index) => {
               const Icon = TEMPLATE_ICONS[tmpl.type] || FileText;
+              const isRecommended = index === 0;
               return (
                 <button
                   key={tmpl.type}
@@ -304,8 +304,18 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                   <div className="p-2 bg-purple-50 rounded-xl border border-purple-200 flex-shrink-0">
                     <Icon className="w-5 h-5 text-purple-600" />
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-text-primary truncate">{tmpl.label}</p>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium text-text-primary truncate">{tmpl.label}</p>
+                      {isRecommended && (
+                        <span
+                          className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 flex-shrink-0 uppercase tracking-wide"
+                          data-testid="template-recommended-badge"
+                        >
+                          Recommended
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-text-secondary">{tmpl.title}</p>
                   </div>
                 </button>

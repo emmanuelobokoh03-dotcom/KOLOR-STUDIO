@@ -3,7 +3,7 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { sendQuoteEmail, sendQuoteAcceptedNotification, sendQuoteDeclinedNotification } from '../services/email';
 import { generateQuotePDF } from '../services/pdf.service';
 import { enrollLead, stopSequencesForLead } from '../services/sequenceEngine';
-import { paymentService } from '../services/paymentService';
+// paymentService import removed — deposit checkout now created on-demand via POST /api/payments/:incomeId/deposit
 import { logActivity } from './activities';
 import { enrollInQuoteFollowUp, stopQuoteFollowUp } from '../services/quoteFollowUpService';
 
@@ -962,10 +962,9 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
       }
     });
 
-    // Auto-create income record
-    let createdIncome: any = null;
+    // Auto-create income record (reserved for future invoicing; deposit flow uses POST /api/payments/:incomeId/deposit)
     try {
-      createdIncome = await prisma.income.create({
+      await prisma.income.create({
         data: {
           userId: quote.createdById,
           leadId: quote.leadId,
@@ -982,13 +981,10 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
       console.error('Failed to create income record:', incomeError);
     }
 
-    // Auto-create deposit payment link (non-blocking)
-    if (createdIncome) {
-      const frontendUrl = process.env.FRONTEND_URL || '';
-      paymentService.createDepositCheckout(createdIncome.id, frontendUrl)
-        .then(() => {})
-        .catch(e => console.error('[Pay] Auto-deposit link failed:', e));
-    }
+    // Note: Deposit payment email is now triggered AFTER contract signing (see contracts.ts /agree route)
+    // to match the intended flow: Quote accepted → contract sent → contract signed → deposit request.
+    // The dedicated POST /api/payments/:incomeId/deposit endpoint creates the Stripe session on demand
+    // when the client clicks "Pay Deposit" from the portal.
 
     // Auto-generate contract from industry template (non-blocking)
     autoGenerateContract(quote.id).catch(e => console.error('[Contract] Auto-gen error:', e));

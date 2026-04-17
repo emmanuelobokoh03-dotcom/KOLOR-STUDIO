@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { logActivity } from './activities';
-import { sendContractSentEmail, sendContractAgreedNotification } from '../services/email';
+import { sendContractSentEmail, sendContractAgreedNotification, sendDepositPaymentEmail } from '../services/email';
 import { enrollInOnboarding } from '../services/onboardingService';
 
 const router = Router();
@@ -505,6 +505,38 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
 
     await logActivity(contract.lead.id, null, 'CONTRACT_SIGNED', `Client ${contract.lead.clientName} signed: "${contract.title}"`);
 
+    // Send deposit payment email to client AFTER contract is signed (non-blocking).
+    // Previously the deposit email was triggered from quote acceptance — too early, before signing.
+    // The payment link points to the client portal where the "Pay Deposit" button creates the Stripe session on demand.
+    (async () => {
+      try {
+        const quote = await prisma.quote.findFirst({
+          where: { leadId: contract.leadId, status: { in: ['ACCEPTED', 'SENT'] } },
+          orderBy: { createdAt: 'desc' },
+        });
+        if (!quote || !contract.lead.clientEmail) return;
+        const studioDisplayName = contract.lead.assignedTo?.studioName
+          || `${contract.lead.assignedTo?.firstName || ''} ${contract.lead.assignedTo?.lastName || ''}`.trim()
+          || 'Studio';
+        const totalAmount = Number(quote.total ?? 0);
+        const depositAmount = Math.round(totalAmount * 0.3 * 100) / 100;
+        const portalUrl = `${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/portal/${contract.lead.portalToken}`;
+        await sendDepositPaymentEmail({
+          clientName: contract.lead.clientName,
+          clientEmail: contract.lead.clientEmail,
+          creativeName: studioDisplayName,
+          studioName: studioDisplayName,
+          projectTitle: contract.lead.projectTitle,
+          depositAmount,
+          totalAmount,
+          paymentUrl: portalUrl,
+        });
+        console.log('[CONTRACT] Deposit email sent post-signing for lead:', contract.leadId);
+      } catch (depositEmailErr) {
+        console.error('[CONTRACT] Deposit email failed:', depositEmailErr);
+      }
+    })();
+
     // Auto-generate milestones for the project
     try {
       const existingMilestones = await prisma.projectMilestone.count({ where: { leadId: contract.leadId } });
@@ -591,12 +623,34 @@ router.patch('/contracts/:id/viewed', async (req: Request, res: Response): Promi
 });
 
 // GET /api/contracts/templates/list
-router.get('/contracts/templates/list', authMiddleware, async (_req: AuthRequest, res: Response): Promise<void> => {
-  const templates = Object.entries(CONTRACT_TEMPLATES).map(([key, val]) => ({
-    type: key,
-    title: val.title,
-    label: CONTRACT_TYPE_LABELS[key] || key,
-  }));
+router.get('/contracts/templates/list', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  const industry = req.query.industry as string | undefined;
+
+  // Industry → allowed template types. DESIGN group includes all design variants.
+  const INDUSTRY_TEMPLATES: Record<string, string[]> = {
+    PHOTOGRAPHY: ['PHOTOGRAPHY_SHOOT', 'GENERAL_SERVICE', 'CUSTOM'],
+    DESIGN: ['LOGO_DESIGN', 'WEB_DESIGN', 'GENERAL_SERVICE', 'CUSTOM'],
+    GRAPHIC_DESIGN: ['LOGO_DESIGN', 'WEB_DESIGN', 'GENERAL_SERVICE', 'CUSTOM'],
+    WEB_DESIGN: ['LOGO_DESIGN', 'WEB_DESIGN', 'GENERAL_SERVICE', 'CUSTOM'],
+    ILLUSTRATION: ['LOGO_DESIGN', 'WEB_DESIGN', 'GENERAL_SERVICE', 'CUSTOM'],
+    BRANDING: ['LOGO_DESIGN', 'WEB_DESIGN', 'GENERAL_SERVICE', 'CUSTOM'],
+    FINE_ART: ['PORTRAIT_COMMISSION', 'GENERAL_SERVICE', 'CUSTOM'],
+    DEFAULT: ['PHOTOGRAPHY_SHOOT', 'PORTRAIT_COMMISSION', 'LOGO_DESIGN', 'WEB_DESIGN', 'GENERAL_SERVICE', 'CUSTOM'],
+  };
+
+  const allowedTypes = industry && INDUSTRY_TEMPLATES[industry]
+    ? INDUSTRY_TEMPLATES[industry]
+    : INDUSTRY_TEMPLATES.DEFAULT;
+
+  // Preserve allowedTypes order so the recommended template renders first
+  const templates = allowedTypes
+    .filter(key => CONTRACT_TEMPLATES[key])
+    .map(key => ({
+      type: key,
+      title: CONTRACT_TEMPLATES[key].title,
+      label: CONTRACT_TYPE_LABELS[key] || key,
+    }));
+
   res.json({ templates });
 });
 

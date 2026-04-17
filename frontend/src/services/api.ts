@@ -1430,8 +1430,9 @@ export const contractsApi = {
   getPending: async () => {
     return request<{ contracts: Contract[] }>('/api/contracts/pending');
   },
-  getTemplates: async () => {
-    return request<{ templates: ContractTemplate[] }>('/api/contracts/templates/list');
+  getTemplates: async (industry?: string) => {
+    const query = industry ? `?industry=${encodeURIComponent(industry)}` : '';
+    return request<{ templates: ContractTemplate[] }>(`/api/contracts/templates/list${query}`);
   },
   getForLead: async (leadId: string) => {
     return request<{ contracts: Contract[] }>(`/api/leads/${leadId}/contracts`);
