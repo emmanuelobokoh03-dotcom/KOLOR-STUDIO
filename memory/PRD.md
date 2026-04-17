@@ -270,6 +270,17 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **P1 Desktop/Mobile first-login parity** (`Dashboard.tsx`): Server-provided `isFirstLogin` via sessionStorage (from Login/Signup) replaces localStorage-only detection.
 - **P2 Share inquiry form visibility** (`Dashboard.tsx`): Button upgraded from ghost outline to filled brand-tinted CTA with amber accent dot + full "Share inquiry form" label visible at md+.
 
+### Iteration 137 — Fine Art Contract Templates + Deposit Email Timing (Complete — 2026-04-17)
+- **P0 Contract templates filtered by industry** (`contracts.ts` backend + `ContractsTab.tsx` + `api.ts`): `GET /api/contracts/templates/list?industry=X` filters templates. Maps PHOTOGRAPHY/DESIGN/GRAPHIC_DESIGN/WEB_DESIGN/ILLUSTRATION/BRANDING/FINE_ART to appropriate template sets. Fallback returns all 6. Frontend passes `user.industry || user.primaryIndustry`. Order preserved so first template is the "Recommended" one (badge added).
+- **P0 Deposit email timing** (`contracts.ts` `/agree` route + `quotes.ts`): Deposit email now sent AFTER contract is signed, not on quote acceptance. Removed pre-emptive `paymentService.createDepositCheckout` auto-trigger from quotes.ts accept handler. Added non-blocking IIFE in contracts.ts `/agree` that looks up the latest accepted/sent quote, computes 30% deposit, sends `sendDepositPaymentEmail` with portal URL as paymentUrl. On-demand Stripe session creation remains available via `POST /api/payments/:incomeId/deposit`.
+- **P2 QR code in ShareFormModal** — SKIPPED: Feature already exists using local `qrcode.react` package (better privacy/GDPR than external `api.qrserver.com`).
+
+**Verified**: `npx tsc --noEmit` clean on both sides. Backend endpoint curl-tested:
+- FINE_ART → `[PORTRAIT_COMMISSION, GENERAL_SERVICE, CUSTOM]`
+- PHOTOGRAPHY → `[PHOTOGRAPHY_SHOOT, GENERAL_SERVICE, CUSTOM]`
+- DESIGN/GRAPHIC_DESIGN → `[LOGO_DESIGN, WEB_DESIGN, GENERAL_SERVICE, CUSTOM]`
+- No param → all 6 (fallback)
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
