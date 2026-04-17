@@ -29,12 +29,13 @@ interface SettingsModalProps {
   onClose: () => void;
   onSettingsUpdate?: (settings: UserSettings) => void;
   onRestartTutorial?: () => void;
+  initialTab?: SettingsTab;
 }
 
 type SettingsTab = 'currency' | 'brand' | 'testimonials' | 'email' | 'scheduling' | 'account';
 
-export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTutorial }: SettingsModalProps) {
-  const [activeTab, setActiveTab] = useState<SettingsTab>('currency')
+export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTutorial, initialTab }: SettingsModalProps) {
+  const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab || 'currency')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
