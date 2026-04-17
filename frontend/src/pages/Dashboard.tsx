@@ -1438,7 +1438,7 @@ const Dashboard = () => {
       {showSettings && (
         <SettingsModal
           onClose={() => { setShowSettings(false); setSettingsInitialTab(undefined); }}
-          initialTab={settingsInitialTab}
+          initialTab={settingsInitialTab as any}
           onSettingsUpdate={(newSettings) => {
             if (user) {
               setUser({
