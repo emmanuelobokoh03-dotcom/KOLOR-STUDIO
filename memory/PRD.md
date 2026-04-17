@@ -250,6 +250,14 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Task 5 — Founder copy**: All 3 paragraphs replaced with formal business manager perspective copy.
 - **Task 6 — Mobile UX**: Search input + horizontal filter chips added to LeadsListView. Search filters by name/email/project. Chips filter by status. Expandable search icon on mobile.
 
+### Iteration 135 — AHA Moment: First-Login Sample Quote Flow (Complete)
+- **Backend `POST /api/auth/sample-quote`**: Creates sample Lead + Quote with industry-appropriate line items, sends branded quote email to user's own inbox. Idempotent (flags via `isSampleQuote` on Lead). Schema: added `isSampleQuote Boolean` to Lead model.
+- **`sendSampleQuoteEmail()`**: Branded email with preview banner ("This is a preview"), quote total, validity date, and CTA to review the quote online.
+- **`AHAModal` component**: 4-state modal (idle/sending/sent/error) with industry-aware quote preview, send button, and quote URL link. Shows on first login with 800ms delay.
+- **Dashboard integration**: `showAHAModal` state, triggered on first login. Suppresses onboarding tour while modal is open.
+- **api.ts**: Added `authApi.sendSampleQuote()`.
+- **Task 6 (Sequence link wrapping)**: Deferred — onboarding/quote-followup services don't create EmailTracking records, so no trackingId available for `wrapTrackedLink`.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
