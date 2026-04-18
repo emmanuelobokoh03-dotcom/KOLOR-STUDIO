@@ -357,9 +357,9 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
             </div>
 
             {/* App content mock */}
-            <div className="grid" style={{ gridTemplateColumns: '180px 1fr' }}>
+            <div className="grid" style={{ gridTemplateColumns: 'minmax(0,0) 1fr' }}>
               {/* Sidebar */}
-              <div className="hidden md:block py-4 px-3" style={{ background: '#0C0A1A', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
+              <div className="hidden md:block py-4 px-3" style={{ background: '#0C0A1A', borderRight: '1px solid rgba(255,255,255,0.05)', width: 180, minWidth: 180 }}>
                 <div className="font-extrabold text-sm mb-5 px-2" style={{ color: '#a78bfa' }}>KOLOR</div>
                 {['Dashboard', 'Leads', 'Quotes', 'Contracts', 'Calendar', 'Settings'].map((item, i) => (
                   <div
@@ -376,12 +376,12 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
               </div>
 
               {/* Main content */}
-              <div className="p-3 md:p-5 min-h-[240px] md:min-h-[340px] overflow-x-hidden" style={{ background: '#100D20' }}>
-                <div className="flex items-center justify-between mb-4">
+              <div className="p-3 md:p-5 min-h-[240px] md:min-h-[340px]" style={{ background: '#100D20', overflow: 'hidden' }}>
+                <div className="flex items-start justify-between mb-3 gap-2">
                   <div>
                     <div className="text-[11px] font-semibold text-white/80 whitespace-nowrap">Good morning, Sarah <span style={{ color: '#a78bfa' }}>&#10022;</span></div>
                   </div>
-                  <div className="text-[10px] font-semibold text-white rounded-md px-2.5 py-1" style={{ background: '#6C2EDB' }}>+ New Lead</div>
+                  <div className="text-[10px] font-semibold text-white rounded-md px-2.5 py-1 whitespace-nowrap flex-shrink-0" style={{ background: '#6C2EDB' }}>+ New Lead</div>
                 </div>
 
                 {/* 4-stat row */}
