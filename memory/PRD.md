@@ -281,6 +281,28 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - DESIGN/GRAPHIC_DESIGN → `[LOGO_DESIGN, WEB_DESIGN, GENERAL_SERVICE, CUSTOM]`
 - No param → all 6 (fallback)
 
+### Iteration 138 — Paystack Integration + Hero Mobile Stat Card Fix (Complete — 2026-04-18)
+- **Schema**: Added `paystackReference String?` + `@@index([paystackReference])` to `Income` model. Applied via `prisma db push`.
+- **paymentService.ts**: Added Paystack config (currencies: NGN, GHS, ZAR, KES), `paystackInitializeTransaction` and `paystackVerifyTransaction` helpers (native fetch, no SDK), `shouldUsePaystack(currency)` router, and `checkAndUpdatePaystackPayment` (mirrors Stripe's `checkAndUpdateSessionStatus` — updates income, creates Activity + Audit log, sends deposit/final received emails). `createDepositCheckout` and `createFinalCheckout` now branch by `shouldUsePaystack(currency)`: NGN/GHS/ZAR/KES → Paystack, everything else → Stripe (unchanged path).
+- **webhooks.ts**: Added `POST /api/webhooks/paystack` with HMAC SHA-512 signature verification, dedup via existing `ProcessedWebhookEvent` (key: `paystack_${reference}`), fast 200 acknowledgement, async processing.
+- **payments.ts**: Added `GET /api/payments/paystack/verify/:reference` for client-portal post-redirect verification.
+- **server.ts**: Scoped `express.raw()` middleware to `/api/webhooks/stripe` only so Paystack receives parsed JSON body.
+- **ClientPortal.tsx**: Handles `?payment=success&psp=paystack&ref=xxx` callback — calls verify endpoint, refreshes portal data on success.
+- **LandingPageV2.tsx**: Hero stat mockup changed from `grid-cols-4` to horizontal flex scroll with `scrollbar-hide`, `flex-shrink-0`, `whitespace-nowrap`. "Total Leads" shortened to "Leads" to prevent two-line wrap on 375px screens.
+
+**Verified curl**:
+- Paystack webhook: missing/bad signature → 400; valid HMAC SHA-512 → 200 (ack'd fast, async processing)
+- Paystack verify endpoint: returns 500 with no secret key configured (expected — fails closed)
+- Stripe webhook: regression-tested, still rejects bad signatures with 400
+- Contract templates (iter 137 regression): FINE_ART still returns `[PORTRAIT_COMMISSION, GENERAL_SERVICE, CUSTOM]`
+- TypeScript: 0 errors backend + frontend
+
+**Post-deployment (Railway — manual)**:
+- `PAYSTACK_SECRET_KEY=sk_test_xxx` or `sk_live_xxx` in Railway env
+- `PAYSTACK_PUBLIC_KEY=pk_test_xxx` in Railway env  
+- Register webhook URL `https://kolor-studio-production.up.railway.app/api/webhooks/paystack` in Paystack dashboard → Settings → API Keys & Webhooks
+- E2E test: create NGN income → client portal → click "Pay Deposit" → should redirect to Paystack checkout; create USD income → should still redirect to Stripe
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
