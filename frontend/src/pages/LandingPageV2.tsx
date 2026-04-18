@@ -1693,6 +1693,29 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
               >
                 3 spots remaining
               </div>
+              {/* PSP payment badges */}
+              <div className="flex items-center gap-2 mb-5 flex-wrap">
+                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>Pay via</span>
+                <span
+                  className="inline-flex items-center gap-1 rounded px-2 py-1 text-[10px] font-semibold"
+                  style={{ background: 'rgba(99,91,255,0.12)', border: '1px solid rgba(99,91,255,0.25)', color: '#a5b4fc' }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z"/>
+                  </svg>
+                  Stripe
+                </span>
+                <span
+                  className="inline-flex items-center gap-1 rounded px-2 py-1 text-[10px] font-semibold"
+                  style={{ background: 'rgba(0,196,140,0.12)', border: '1px solid rgba(0,196,140,0.25)', color: '#6ee7b7' }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.15"/>
+                    <path d="M7 12h10M7 8h10M7 16h6"/>
+                  </svg>
+                  Paystack
+                </span>
+              </div>
               <button
                 onClick={onCta}
                 className="w-full text-white font-semibold py-3 rounded-lg text-sm transition-colors duration-150"
@@ -1757,6 +1780,38 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
                 Coming soon
               </button>
             </div>
+          </div>
+
+          {/* PSP trust strip */}
+          <div className="mt-8 flex flex-col items-center gap-2" data-testid="psp-trust-strip">
+            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Secure payments via</p>
+            <div className="flex items-center gap-3 flex-wrap justify-center">
+              <div
+                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#a5b4fc" aria-hidden="true">
+                  <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z"/>
+                </svg>
+                <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>Stripe</span>
+                <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.2)' }}>Global</span>
+              </div>
+              <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 10 }}>·</span>
+              <div
+                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(110,231,183,0.9)" strokeWidth="1.75" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9"/>
+                  <path d="M3 12h18M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18" strokeLinecap="round"/>
+                </svg>
+                <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>Paystack</span>
+                <span className="text-[9px]" style={{ color: 'rgba(0,196,140,0.7)' }}>NG · GH · ZA · KE</span>
+              </div>
+            </div>
+            <p className="text-[10px] mt-1" style={{ color: 'rgba(255,255,255,0.18)' }}>
+              256-bit SSL encryption &nbsp;·&nbsp; GDPR compliant &nbsp;·&nbsp; No card stored
+            </p>
           </div>
         </div>
       </div>

@@ -284,6 +284,30 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
                 </option>
               ))}
             </select>
+            {/* PSP indicator — updates when currency changes */}
+            {(() => {
+              const isPaystackCurrency = new Set(['NGN', 'GHS', 'ZAR', 'KES']).has(currency)
+              return (
+                <div
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg mt-2"
+                  style={{
+                    background: isPaystackCurrency ? 'rgba(0,196,140,0.08)' : 'rgba(99,91,255,0.08)',
+                    border: `1px solid ${isPaystackCurrency ? 'rgba(0,196,140,0.2)' : 'rgba(99,91,255,0.2)'}`,
+                  }}
+                  data-testid="psp-indicator"
+                >
+                  <div
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ background: isPaystackCurrency ? '#10b981' : '#818cf8' }}
+                  />
+                  <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                    {isPaystackCurrency
+                      ? `Payments in ${currency} will be processed via Paystack`
+                      : `Payments in ${currency} will be processed via Stripe`}
+                  </p>
+                </div>
+              )
+            })()}
           </div>
 
           {/* Custom Symbol Toggle */}
