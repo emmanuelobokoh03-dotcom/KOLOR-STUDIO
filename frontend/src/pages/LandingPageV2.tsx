@@ -357,9 +357,9 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
             </div>
 
             {/* App content mock */}
-            <div className="grid" style={{ gridTemplateColumns: 'minmax(0,0) 1fr' }}>
+            <div className="flex" style={{ overflow: 'hidden' }}>
               {/* Sidebar */}
-              <div className="hidden md:block py-4 px-3" style={{ background: '#0C0A1A', borderRight: '1px solid rgba(255,255,255,0.05)', width: 180, minWidth: 180 }}>
+              <div className="hidden md:block flex-shrink-0 py-4 px-3" style={{ background: '#0C0A1A', borderRight: '1px solid rgba(255,255,255,0.05)', width: 180 }}>
                 <div className="font-extrabold text-sm mb-5 px-2" style={{ color: '#a78bfa' }}>KOLOR</div>
                 {['Dashboard', 'Leads', 'Quotes', 'Contracts', 'Calendar', 'Settings'].map((item, i) => (
                   <div
@@ -376,7 +376,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
               </div>
 
               {/* Main content */}
-              <div className="p-3 md:p-5 min-h-[240px] md:min-h-[340px]" style={{ background: '#100D20', overflow: 'hidden' }}>
+              <div className="flex-1 min-w-0 p-3 md:p-5 min-h-[240px] md:min-h-[340px]" style={{ background: '#100D20', overflow: 'hidden' }}>
                 <div className="flex items-start justify-between mb-3 gap-2">
                   <div>
                     <div className="text-[11px] font-semibold text-white/80 whitespace-nowrap">Good morning, Sarah <span style={{ color: '#a78bfa' }}>&#10022;</span></div>

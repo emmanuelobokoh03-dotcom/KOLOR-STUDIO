@@ -736,7 +736,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                 data-testid="modal-schedule-call"
               >
                 <PhoneCall className="w-3.5 h-3.5" aria-hidden="true" />
-                {!lead.discoveryCallScheduled ? 'Schedule call' : !lead.discoveryCallCompletedAt ? 'Complete call' : 'Call done'}
+                {!lead.discoveryCallScheduled ? `Schedule ${lang.discoveryCall.toLowerCase()}` : !lead.discoveryCallCompletedAt ? `Complete ${lang.discoveryCall.toLowerCase()}` : `${lang.discoveryCall} done`}
               </button>
               <button
                 onClick={() => setShowEmailComposer(true)}
@@ -1141,16 +1141,16 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                             <PhoneCall weight="duotone" className="w-4.5 h-4.5 text-purple-600" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-text-primary">Schedule Discovery Call</h4>
+                            <h4 className="text-sm font-semibold text-text-primary">Schedule {lang.discoveryCall}</h4>
                             <p className="text-xs text-text-secondary mt-0.5">Book a call to discuss project details before sending a quote</p>
                           </div>
                           <button
-                            onClick={handleScheduleDiscoveryCall}
+                            onClick={() => setShowBookingModal(true)}
                             className="flex items-center gap-1.5 px-3 py-2 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition flex-shrink-0"
                             data-testid="schedule-discovery-btn"
                           >
                             <PhoneCall weight="bold" className="w-3.5 h-3.5" />
-                            Schedule Call
+                            Schedule {lang.discoveryCall}
                           </button>
                         </div>
                       </div>
@@ -1163,7 +1163,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                             <CalendarBlank weight="duotone" className="w-4.5 h-4.5 text-blue-600" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-blue-900">Discovery Call Scheduled</h4>
+                            <h4 className="text-sm font-semibold text-blue-900">{lang.discoveryCall} Scheduled</h4>
                             <p className="text-xs text-blue-700 mt-0.5">Waiting for call to complete before sending quote</p>
                           </div>
                           <button
@@ -1185,7 +1185,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                             <CheckCircle weight="fill" className="w-4.5 h-4.5 text-emerald-600" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-emerald-900">Discovery Call Completed</h4>
+                            <h4 className="text-sm font-semibold text-emerald-900">{lang.discoveryCall} Completed</h4>
                             <p className="text-xs text-emerald-700 mt-0.5">
                               {new Date(lead.discoveryCallCompletedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                               {lead.discoveryCallNotes && ` — ${lead.discoveryCallNotes}`}

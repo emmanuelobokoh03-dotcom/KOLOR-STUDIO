@@ -140,6 +140,22 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
     }
   };
 
+  const handleSaveAndSend = async () => {
+    if (!editingContract) return;
+    setSaving(true);
+    const result = await contractsApi.update(editingContract.id, {
+      title: editTitle,
+      content: editContent,
+    });
+    setSaving(false);
+    if (result.data?.contract) {
+      setContracts(contracts.map(c => c.id === editingContract.id ? result.data!.contract : c));
+      const updated = result.data.contract;
+      setEditingContract(null);
+      handleSendClick(updated);
+    }
+  };
+
   const handleSendClick = (contract: Contract) => {
     if (lead) {
       setEmailComposerContract(contract);
@@ -247,6 +263,17 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
             {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
             Save Contract
           </button>
+          {editingContract.status === 'DRAFT' && (
+            <button
+              onClick={handleSaveAndSend}
+              disabled={saving}
+              className="px-5 py-2.5 bg-amber-500 text-white rounded-xl font-medium hover:bg-amber-600 disabled:opacity-50 flex items-center gap-2 touch-target"
+              data-testid="save-and-send-contract-btn"
+            >
+              <PaperPlaneTilt weight="bold" className="w-4 h-4" />
+              Save &amp; Send
+            </button>
+          )}
         </div>
       </div>
     );

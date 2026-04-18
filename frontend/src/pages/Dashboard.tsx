@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import KolorLogo from '../components/KolorLogo'
 import {
@@ -140,6 +140,33 @@ const Dashboard = () => {
   const [bookingLead, setBookingLead] = useState<Lead | null>(null)
   const [projectTypeFilter, setProjectTypeFilter] = useState<string>('')
   const [industryFilter, setIndustryFilter] = useState<string>('')
+
+  // Only show filter options that are actually represented in the user's current leads
+  // — avoids confusing "All Types" menus with 10+ internal/legacy categories
+  const availableProjectTypes = useMemo(() => {
+    const present = new Set(leads.map(l => l.projectType).filter(Boolean) as ProjectType[])
+    return (Object.entries(PROJECT_TYPE_LABELS) as [ProjectType, string][]).filter(([k]) => present.has(k))
+  }, [leads])
+
+  // Industry filter: collapse to the 3 canonical buckets that match the frontend's getIndustryLanguage()
+  const CANONICAL_INDUSTRY_LABELS: Record<string, string> = {
+    PHOTOGRAPHY: 'Photography',
+    GRAPHIC_DESIGN: 'Design',
+    FINE_ART: 'Fine Art',
+  }
+  const availableIndustries = useMemo(() => {
+    const present = new Set(leads.map(l => l.industry).filter(Boolean) as string[])
+    // Collapse WEB_DESIGN / ILLUSTRATION / BRANDING into the Design bucket for the UI
+    const designAliases = ['GRAPHIC_DESIGN', 'WEB_DESIGN', 'ILLUSTRATION', 'BRANDING']
+    const photoAliases = ['PHOTOGRAPHY', 'VIDEOGRAPHY', 'CONTENT_CREATION']
+    const fineArtAliases = ['FINE_ART', 'SCULPTURE']
+    const buckets: Array<{ key: string; label: string; matches: string[] }> = [
+      { key: 'PHOTOGRAPHY', label: 'Photography', matches: photoAliases },
+      { key: 'GRAPHIC_DESIGN', label: 'Design', matches: designAliases },
+      { key: 'FINE_ART', label: 'Fine Art', matches: fineArtAliases },
+    ]
+    return buckets.filter(b => b.matches.some(m => present.has(m)))
+  }, [leads])
   const [isFirstLogin, setIsFirstLogin] = useState(false)
   const [showAHAModal, setShowAHAModal] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -556,7 +583,7 @@ const Dashboard = () => {
 
         {/* Settings */}
         <button
-          onClick={() => window.location.href = '/settings'}
+          onClick={() => setShowSettings(true)}
           className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[11px] text-text-secondary hover:bg-surface-background transition-all duration-150 mb-0.5"
           data-testid="sidebar-settings"
         >
@@ -782,7 +809,13 @@ const Dashboard = () => {
                 document.querySelector('[data-tour="kanban-board"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
               }, 100)
             }
-            else if (action === 'view-portfolio') handleViewChange('portfolio')
+            else if (action === 'view-portfolio') {
+              if (user?.id) {
+                window.open(`${window.location.origin}/portfolio/${user.id}`, '_blank', 'noopener,noreferrer')
+              } else {
+                handleViewChange('portfolio')
+              }
+            }
             else if (action === 'open-settings') setShowSettings(true)
             else if (action === 'open-brand-settings') setShowSettings(true)
           }}
@@ -1118,29 +1151,33 @@ const Dashboard = () => {
             </div>
 
             {/* Desktop filters */}
-            <select
-              value={projectTypeFilter}
-              onChange={(e) => setProjectTypeFilter(e.target.value)}
-              className="hidden md:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-              data-testid="filter-project-type"
-            >
-              <option value="">All Types</option>
-              {(Object.entries(PROJECT_TYPE_LABELS) as [ProjectType, string][]).map(([k, v]) => (
-                <option key={k} value={k}>{v}</option>
-              ))}
-            </select>
-            <select
-              value={industryFilter}
-              onChange={(e) => setIndustryFilter(e.target.value)}
-              className="hidden lg:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-              data-testid="filter-industry"
-              title="Filter leads by industry"
-            >
-              <option value="">Filter: All Industries</option>
-              {(Object.entries(INDUSTRY_TYPE_LABELS) as [IndustryType, string][]).map(([k, v]) => (
-                <option key={k} value={k}>{v}</option>
-              ))}
-            </select>
+            {availableProjectTypes.length > 0 && (
+              <select
+                value={projectTypeFilter}
+                onChange={(e) => setProjectTypeFilter(e.target.value)}
+                className="hidden md:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                data-testid="filter-project-type"
+              >
+                <option value="">All Types</option>
+                {availableProjectTypes.map(([k, v]) => (
+                  <option key={k} value={k}>{v}</option>
+                ))}
+              </select>
+            )}
+            {availableIndustries.length > 1 && (
+              <select
+                value={industryFilter}
+                onChange={(e) => setIndustryFilter(e.target.value)}
+                className="hidden lg:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                data-testid="filter-industry"
+                title="Filter leads by industry"
+              >
+                <option value="">All Industries</option>
+                {availableIndustries.map(b => (
+                  <option key={b.key} value={b.key}>{b.label}</option>
+                ))}
+              </select>
+            )}
 
             <button
               onClick={() => setShowShareModal(true)}
@@ -1211,7 +1248,7 @@ const Dashboard = () => {
                   data-testid="mobile-filter-project-type"
                 >
                   <option value="">All Types</option>
-                  {(Object.entries(PROJECT_TYPE_LABELS) as [ProjectType, string][]).map(([k, v]) => (
+                  {availableProjectTypes.map(([k, v]) => (
                     <option key={k} value={k}>{v}</option>
                   ))}
                 </select>
@@ -1222,8 +1259,8 @@ const Dashboard = () => {
                   data-testid="mobile-filter-industry"
                 >
                   <option value="">All Industries</option>
-                  {(Object.entries(INDUSTRY_TYPE_LABELS) as [IndustryType, string][]).map(([k, v]) => (
-                    <option key={k} value={k}>{v}</option>
+                  {availableIndustries.map(b => (
+                    <option key={b.key} value={b.key}>{b.label}</option>
                   ))}
                 </select>
               </div>

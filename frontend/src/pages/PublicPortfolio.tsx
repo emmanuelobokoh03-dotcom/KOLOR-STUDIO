@@ -149,20 +149,6 @@ export default function PublicPortfolio() {
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // Industry-aware copy
-  // bioLine — personalised subline leveraging speciality + industry (replaces generic CRM-internal copy)
-  const bioLine = (() => {
-    const speciality = userInfo?.speciality?.trim()
-    if (speciality) {
-      if (industry === 'PHOTOGRAPHY') return `${speciality} photography by ${studioDisplayName}.`
-      if (industry === 'FINE_ART') return `${speciality} — original works and commissions by ${studioDisplayName}.`
-      return `${speciality} — creative work by ${studioDisplayName}.`
-    }
-    if (industry === 'PHOTOGRAPHY') return `Photography by ${studioDisplayName} — stories told through light.`
-    if (industry === 'DESIGN') return `Design, brand, and creative direction by ${studioDisplayName}.`
-    if (industry === 'FINE_ART') return `Original works and commissions by ${studioDisplayName}.`
-    return `Creative work by ${studioDisplayName}.`
-  })()
-
   const ctaHeadline = ({
     PHOTOGRAPHY: 'Ready to book your session?',
     DESIGN: 'Ready to start your project?',
@@ -327,9 +313,7 @@ export default function PublicPortfolio() {
           </p>
         )}
 
-        <p style={{ fontSize: 15, color: '#6B7280', marginTop: 8, lineHeight: 1.6, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }} data-testid="portfolio-hero-bioline">
-          {bioLine}
-        </p>
+        {/* Bio paragraph removed per user request — keep hero minimal: name, divider, speciality, CTAs */}
 
         {/* CTA row */}
         <div style={{ marginTop: 32, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>

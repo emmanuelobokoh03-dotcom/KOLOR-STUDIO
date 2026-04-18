@@ -2914,7 +2914,7 @@ export async function sendWelcomeEmail(user: {
     const industryLabel = user.industry === 'DESIGN' ? 'design' : user.industry === 'FINE_ART' ? 'fine art' : 'photography';
     const isFounder = userCount !== undefined && userCount <= 20;
     const founderNote = isFounder
-      ? highlightBox(`You're one of KOLOR Studio's ${userCount} founding members. Your account is free, forever.`)
+      ? highlightBox(`You're founding member #${userCount} of 20. You have lifetime access — no monthly fees, ever.`)
       : '';
 
     const stepsTable = `
@@ -3057,9 +3057,9 @@ export async function sendBetaWelcomeEmail(user: {
       headline: 'You made it. You\'re in the first 20.',
       body: `
         <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
-          KOLOR Studio is yours free, forever. No trial. No expiry. As one of the founding members, you get full access to every feature \u2014 now and as the product grows.
+          You have lifetime access to KOLOR Studio. No monthly fees, no expiry. As one of the 20 founding members, you get full access to every feature \u2014 now and as the product grows.
         </p>
-        ${successBox(`Free forever \u00b7 Full access \u00b7 Founding member #${userNumber} of 20`)}
+        ${successBox(`Lifetime access \u00b7 Full access \u00b7 Founding member #${userNumber} of 20`)}
         <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
           Your feedback shapes what we build next. When something doesn't work or could be better, tell us \u2014 reply to this email directly.
         </p>`,
