@@ -303,6 +303,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Register webhook URL `https://kolor-studio-production.up.railway.app/api/webhooks/paystack` in Paystack dashboard → Settings → API Keys & Webhooks
 - E2E test: create NGN income → client portal → click "Pay Deposit" → should redirect to Paystack checkout; create USD income → should still redirect to Stripe
 
+### Iteration 139 — Paystack Trust Badge + Currency Selector PSP Indicator (Complete — 2026-04-18)
+- **LandingPageV2.tsx** UrgencySection: Added "Pay via" row with Stripe + Paystack inline SVG badges inside the $97 pricing card (above CTA). Added PSP trust strip below the three-card row with "Secure payments via" header, Stripe + Paystack tiles (country codes NG · GH · ZA · KE on Paystack), and SSL/GDPR trust microcopy. Replaced spec's 🌍 emoji with clean inline SVG globe per user preference.
+- **SettingsModal.tsx** Currency tab: Added reactive PSP indicator pill below currency `<select>`. Green/emerald tint for Paystack currencies (NGN/GHS/ZAR/KES), purple/indigo tint for Stripe. Copy: "Payments in {CURRENCY} will be processed via Stripe/Paystack". Uses IIFE to scope the `isPaystackCurrency` boolean locally — no new state, additive only.
+
+**Verified**: `npx tsc --noEmit` = 0 errors. Landing bundle served includes new markers (`psp-trust-strip`, "Paystack", "NG · GH · ZA · KE").
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
