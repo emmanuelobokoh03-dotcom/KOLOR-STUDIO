@@ -221,6 +221,7 @@ model Income {
   paymentMethod         String?
   stripePaymentIntentId String?
   stripeSessionId       String?
+  paystackReference     String?
   lead                  Lead?          @relation(fields: [leadId], references: [id])
   quote                 Quote?         @relation(fields: [quoteId], references: [id])
   user                  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -228,6 +229,7 @@ model Income {
   @@index([receivedDate])
   @@index([status])
   @@index([stripeSessionId])
+  @@index([paystackReference])
   @@index([userId])
   @@map("incomes")
 }

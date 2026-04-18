@@ -383,16 +383,20 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
                 </div>
 
                 {/* 4-stat row */}
-                <div className="grid grid-cols-4 gap-2 mb-4">
+                <div className="flex gap-1.5 mb-4 overflow-x-auto scrollbar-hide pb-0.5">
                   {[
-                    { label: 'Total Leads', val: '24' },
+                    { label: 'Leads', val: '24' },
                     { label: 'New', val: '8' },
                     { label: 'Quoted', val: '6' },
                     { label: 'Booked', val: '10' },
                   ].map(s => (
-                    <div key={s.label} className="rounded-lg px-2.5 py-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div
+                      key={s.label}
+                      className="rounded-lg px-2.5 py-2 flex-shrink-0"
+                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', minWidth: 52 }}
+                    >
                       <div className="text-sm font-bold text-white/90">{s.val}</div>
-                      <div className="text-[9px] text-white/30">{s.label}</div>
+                      <div className="text-[9px] text-white/30 whitespace-nowrap">{s.label}</div>
                     </div>
                   ))}
                 </div>

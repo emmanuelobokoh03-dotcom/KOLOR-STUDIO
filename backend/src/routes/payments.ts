@@ -51,6 +51,18 @@ router.get('/session/:sessionId/status', async (req: Request, res: Response): Pr
   }
 });
 
+// GET /api/payments/paystack/verify/:reference — Verify Paystack payment after redirect
+router.get('/paystack/verify/:reference', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const reference = String(req.params.reference);
+    const result = await paymentService.checkAndUpdatePaystackPayment(reference);
+    res.json(result);
+  } catch (error: any) {
+    console.error('[Pay] Paystack verify error:', error);
+    res.status(500).json({ error: error.message || 'Failed to verify Paystack payment' });
+  }
+});
+
 // ========================================
 // GENERIC :incomeId ROUTES
 // ========================================
