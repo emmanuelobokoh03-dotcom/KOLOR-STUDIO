@@ -332,8 +332,10 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
         {/* Dashboard product frame */}
         <div className="relative max-w-[900px] mx-auto">
           <div
-            className="rounded-2xl overflow-hidden hero-frame-tilt"
+            className="rounded-2xl hero-frame-tilt"
             style={{
+              overflowX: 'clip',
+              overflowY: 'hidden',
               background: '#100D20',
               border: '1px solid rgba(255,255,255,0.08)',
               boxShadow: '0 0 0 1px rgba(108,46,219,0.15), 0 40px 80px rgba(0,0,0,0.7), 0 0 120px rgba(108,46,219,0.08)',
@@ -374,10 +376,10 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
               </div>
 
               {/* Main content */}
-              <div className="p-4 md:p-5 min-h-[280px] md:min-h-[340px]" style={{ background: '#100D20' }}>
+              <div className="p-3 md:p-5 min-h-[240px] md:min-h-[340px] overflow-x-hidden" style={{ background: '#100D20' }}>
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <div className="text-sm font-semibold text-white/80">Good morning, Sarah <span style={{ color: '#a78bfa' }}>&#10022;</span></div>
+                    <div className="text-[11px] font-semibold text-white/80 whitespace-nowrap">Good morning, Sarah <span style={{ color: '#a78bfa' }}>&#10022;</span></div>
                   </div>
                   <div className="text-[10px] font-semibold text-white rounded-md px-2.5 py-1" style={{ background: '#6C2EDB' }}>+ New Lead</div>
                 </div>
