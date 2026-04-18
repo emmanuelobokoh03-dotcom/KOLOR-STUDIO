@@ -309,6 +309,23 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 
 **Verified**: `npx tsc --noEmit` = 0 errors. Landing bundle served includes new markers (`psp-trust-strip`, "Paystack", "NG · GH · ZA · KE").
 
+### Iteration 140 — Comprehensive QA Fix Sprint (Complete — 2026-04-18)
+- **T3 Hero grid mobile clip** (`LandingPageV2.tsx`): Converted broken `grid` with `gridTemplateColumns: 'minmax(0,0) 1fr'` to proper `flex` layout. Sidebar uses `hidden md:block flex-shrink-0 width:180` so it takes 0px on mobile, 180px on desktop. Main content gets `flex-1 min-w-0` to prevent overflow.
+- **T4 Portfolio hero bio removed** (`PublicPortfolio.tsx`): Deleted `bioLine` computation block and the `<p>` tag entirely. Hero now renders: h1 → divider → speciality → CTAs (no bio sentence).
+- **T5 LeadDetailModal industry-aware discovery call** (`LeadDetailModal.tsx`): All three states now use `lang.discoveryCall` — fine art → "Schedule collector conversation", design → "Schedule scoping call", photo → "Schedule discovery call". Updated both the top-action button label and the inline discovery card heading/button.
+- **T6 Dashboard settings nav** (`Dashboard.tsx` line 559): `window.location.href = '/settings'` → `setShowSettings(true)` (Settings is a modal, not a route).
+- **T7 Dashboard view-portfolio public URL** (`Dashboard.tsx`): SmartSuggestion `view-portfolio` action opens `/portfolio/:userId` in a new tab (falls back to internal view if `user.id` unavailable).
+- **T8 Filter dropdowns simplified** (`Dashboard.tsx`): `availableProjectTypes` memo filters to types present in actual leads. `availableIndustries` memo collapses 10 enum values into 3 canonical UI buckets (Photography / Design / Fine Art). Dropdowns hide entirely when nothing to filter. Mobile + desktop both updated.
+- **T9 Beta email copy** (`email.ts`): "Your account is free, forever." → "You have lifetime access — no monthly fees, ever." 3 replacements (founder note + beta welcome body + success box). Corrects the mis-description for $97 lifetime users.
+- **T10 Fine art contract date row removed** (`quotes.ts` autopilot template + `contracts.ts` list-endpoint template): PORTRAIT_COMMISSION Commission Details row no longer includes `Estimated Completion: {{eventDate}}` — just Project + Agreed Fee. Photography/design templates unchanged.
+- **T11 ContractsTab Save & Send** (`ContractsTab.tsx`): Added `handleSaveAndSend` + amber button visible only when `editingContract.status === 'DRAFT'`. Saves then opens email composer with updated contract in one flow.
+
+**Skipped (already done in iter 136)**: Login/Signup navigate — remaining `window.location.href` in those files is the Google SSO button which must stay (cross-origin redirect).
+
+**Verified**: `npx tsc --noEmit` = 0 errors on both sides. `GET /api/contracts/templates/list?industry=FINE_ART` still returns `[PORTRAIT_COMMISSION, GENERAL_SERVICE, CUSTOM]` (regression clean). Backend health 200.
+
+**Flagged for Emmanuel**: Verification-email issue confirmed NOT a code bug (affected users got wrong-URL emails before `FRONTEND_URL` was fixed on Railway — manual resend needed). Signup industry map kept as `DESIGN: 'GRAPHIC_DESIGN'` (Prisma enum has no `DESIGN` value; frontend `industryLanguage.ts` maps correctly).
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
