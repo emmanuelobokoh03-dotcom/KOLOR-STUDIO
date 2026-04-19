@@ -431,10 +431,15 @@ export default function QuoteBuilderModal({
                   <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Project</p>
                   <p className="text-xs font-semibold text-text-primary truncate mt-0.5">{lead.projectTitle}</p>
                 </div>
-                <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }}>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
-                  <p className="text-xs font-semibold text-text-primary mt-0.5">{lead.keyDate || lead.eventDate ? new Date(lead.keyDate || lead.eventDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}</p>
-                </div>
+                {/* Hide the keyDate cell for fine-art commissions when no date is set — fine art rarely has a fixed date */}
+                {!(userIndustry === 'FINE_ART' && !lead.keyDate && !lead.eventDate) ? (
+                  <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }}>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
+                    <p className="text-xs font-semibold text-text-primary mt-0.5">{lead.keyDate || lead.eventDate ? new Date(lead.keyDate || lead.eventDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}</p>
+                  </div>
+                ) : (
+                  <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }} aria-hidden="true" />
+                )}
                 <div className="px-3.5 py-2.5">
                   <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Valid until</p>
                   <input

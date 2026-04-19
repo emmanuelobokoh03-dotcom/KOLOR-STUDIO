@@ -66,6 +66,8 @@ export default function Calendar() {
   const [googleEvents, setGoogleEvents] = useState<CalendarDerivedEvent[]>([])
   const [googleConnected, setGoogleConnected] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<CalendarDerivedEvent | null>(null)
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [showMobileDaySheet, setShowMobileDaySheet] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [createDate, setCreateDate] = useState<string>('')
   const [showGoogle, setShowGoogle] = useState(true)
@@ -96,8 +98,8 @@ export default function Calendar() {
 
   // Fetch events when date changes
   const fetchEvents = useCallback(async () => {
-    const start = startOfMonth(subMonths(currentDate, 1))
-    const end = endOfMonth(addMonths(currentDate, 1))
+    const start = startOfMonth(currentDate)
+    const end = endOfMonth(currentDate)
     const startStr = start.toISOString()
     const endStr = end.toISOString()
 
@@ -164,7 +166,15 @@ export default function Calendar() {
     : format(currentDate, 'MMMM yyyy')
 
   const handleDayClick = (day: Date) => {
-    setCreateDate(format(day, 'yyyy-MM-dd'))
+    setSelectedDate(day)
+    // On mobile, show the day's events in a slide-in panel
+    if (isMobile) {
+      setShowMobileDaySheet(true)
+    }
+  }
+
+  const openCreateForSelectedDay = () => {
+    setCreateDate(format(selectedDate || new Date(), 'yyyy-MM-dd'))
     setShowCreateModal(true)
   }
 
@@ -330,21 +340,28 @@ export default function Calendar() {
             )}
           </div>
 
-          {/* Side panel - desktop */}
-          {selectedEvent && (
-            <div className="hidden lg:block w-[320px] flex-shrink-0">
+          {/* Day sidebar - always visible on desktop. Shows events for selectedDate. */}
+          <div className="hidden lg:block w-[280px] flex-shrink-0">
+            {selectedEvent ? (
               <EventSidePanel
                 event={selectedEvent}
                 onClose={() => setSelectedEvent(null)}
                 onDelete={handleDeleteEvent}
                 onNavigateToLead={(leadId) => navigate(`/dashboard?leadId=${leadId}`)}
               />
-            </div>
-          )}
+            ) : (
+              <DaySidebar
+                selectedDate={selectedDate}
+                events={getEventsForDay(selectedDate)}
+                onEventClick={setSelectedEvent}
+                onAddEvent={openCreateForSelectedDay}
+              />
+            )}
+          </div>
         </div>
       </main>
 
-      {/* Mobile side panel overlay */}
+      {/* Mobile event detail overlay (click on an event) */}
       {selectedEvent && (
         <div className="lg:hidden fixed inset-0 z-50" data-testid="calendar-event-mobile-panel">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSelectedEvent(null)} />
@@ -354,6 +371,22 @@ export default function Calendar() {
               onClose={() => setSelectedEvent(null)}
               onDelete={handleDeleteEvent}
               onNavigateToLead={(leadId) => navigate(`/dashboard?leadId=${leadId}`)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Mobile day panel (click on a day) — shows day's events list */}
+      {showMobileDaySheet && !selectedEvent && (
+        <div className="lg:hidden fixed inset-0 z-40" data-testid="calendar-day-mobile-panel">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowMobileDaySheet(false)} />
+          <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-light-50 border-l border-light-200 overflow-y-auto animate-slide-left">
+            <DaySidebar
+              selectedDate={selectedDate}
+              events={getEventsForDay(selectedDate)}
+              onEventClick={(evt) => { setSelectedEvent(evt); setShowMobileDaySheet(false) }}
+              onAddEvent={() => { setShowMobileDaySheet(false); openCreateForSelectedDay() }}
+              onClose={() => setShowMobileDaySheet(false)}
             />
           </div>
         </div>
@@ -613,6 +646,104 @@ function ListView({
           </div>
         </div>
       ))}
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════
+// DAY SIDEBAR — always-visible day summary
+// ═══════════════════════════════════════
+function DaySidebar({
+  selectedDate,
+  events,
+  onEventClick,
+  onAddEvent,
+  onClose,
+}: {
+  selectedDate: Date
+  events: CalendarDerivedEvent[]
+  onEventClick: (event: CalendarDerivedEvent) => void
+  onAddEvent: () => void
+  onClose?: () => void
+}) {
+  const date = selectedDate
+  const isDateToday = isToday(date)
+
+  return (
+    <div className="bg-light-50 rounded-xl border border-light-200 overflow-hidden lg:sticky lg:top-[72px]" data-testid="day-sidebar">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-light-200 flex items-start justify-between gap-2">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-text-tertiary mb-0.5">
+            {isDateToday ? 'Today' : format(date, 'EEEE')}
+          </p>
+          <h3 className="text-lg font-bold text-text-primary">
+            {format(date, 'MMMM d, yyyy')}
+          </h3>
+        </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="p-1.5 text-text-tertiary hover:text-text-primary hover:bg-light-100 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Close day panel"
+            data-testid="day-sidebar-close"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Events list or empty state */}
+      <div className="p-3">
+        {events.length === 0 ? (
+          <div className="text-center py-8">
+            <CalendarBlank className="w-8 h-8 text-text-tertiary mx-auto mb-2" />
+            <p className="text-xs text-text-secondary mb-3">No events on this day</p>
+            <button
+              onClick={onAddEvent}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-brand-600 border border-brand-primary rounded-lg hover:bg-brand-50 transition mx-auto min-h-[44px]"
+              data-testid="day-sidebar-add-empty"
+            >
+              <Plus weight="bold" className="w-3.5 h-3.5" /> Add event
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {events.map(evt => {
+              const config = EVENT_TYPE_CONFIG[evt.type] || EVENT_TYPE_CONFIG.manual
+              return (
+                <button
+                  key={evt.id}
+                  onClick={() => onEventClick(evt)}
+                  className="w-full text-left px-3 py-2.5 rounded-lg border border-light-200 hover:border-brand-primary hover:bg-brand-50/30 transition"
+                  data-testid={`day-sidebar-event-${evt.id}`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-brand-600">{config.icon}</span>
+                    <span className="text-[10px] font-semibold text-text-tertiary uppercase tracking-wider">{config.label}</span>
+                    {evt.startTime && (
+                      <span className="text-[10px] text-text-tertiary ml-auto">
+                        {format(parseISO(evt.startTime), 'h:mm a')}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs font-semibold text-text-primary truncate">{evt.title}</p>
+                  {evt.clientName && (
+                    <p className="text-[10px] text-text-secondary mt-0.5 truncate">{evt.clientName}</p>
+                  )}
+                </button>
+              )
+            })}
+            <button
+              onClick={onAddEvent}
+              className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-text-secondary border border-dashed border-light-300 rounded-lg hover:border-brand-primary hover:text-brand-600 transition mt-1 min-h-[44px]"
+              data-testid="day-sidebar-add"
+            >
+              <Plus weight="bold" className="w-3 h-3" /> Add event
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

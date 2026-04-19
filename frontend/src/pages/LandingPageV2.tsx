@@ -118,7 +118,7 @@ function Nav({ onCta }: { onCta: () => void }) {
         <div className="flex items-center gap-3">
           <Link
             to="/login"
-            className="text-[13px] font-medium transition-colors duration-150 hidden sm:block"
+            className="text-[13px] font-medium transition-colors duration-150"
             style={{ color: 'rgba(255,255,255,0.5)' }}
             data-testid="nav-login"
           >

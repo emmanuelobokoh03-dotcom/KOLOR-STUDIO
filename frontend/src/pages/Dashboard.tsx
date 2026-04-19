@@ -251,15 +251,19 @@ const Dashboard = () => {
       await fetchStats()
       await fetchPendingContracts()
 
-      // Fetch analytics and monthly trend for sparklines + revenue goal
-      const [analyticsResult, trendResult] = await Promise.all([
-        analyticsApi.getDashboard(),
-        analyticsApi.getMonthlyTrend(),
-      ])
-      if (analyticsResult.data) setAnalytics(analyticsResult.data)
-      if (trendResult.data?.trend) setMonthlyTrend(trendResult.data.trend)
-
       setLoading(false)
+
+      // Fetch analytics and monthly trend AFTER initial render — non-blocking deferred fetch
+      // so sparklines + revenue goal populate in the background without delaying TTI.
+      setTimeout(() => {
+        Promise.all([
+          analyticsApi.getDashboard(),
+          analyticsApi.getMonthlyTrend(),
+        ]).then(([analyticsResult, trendResult]) => {
+          if (analyticsResult.data) setAnalytics(analyticsResult.data)
+          if (trendResult.data?.trend) setMonthlyTrend(trendResult.data.trend)
+        }).catch(e => console.error('[Dashboard] analytics fetch failed:', e))
+      }, 0)
 
       // Handle Google Calendar OAuth callback
       const params = new URLSearchParams(window.location.search)
@@ -1022,6 +1026,8 @@ const Dashboard = () => {
           />
         )}
 
+        {/* Lead-management chrome (stat cards + filter toolbar) — only visible for lead-focused views */}
+        {(viewMode === 'kanban' || viewMode === 'list') && (<>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
           <StatCard
             icon={Users}
@@ -1306,6 +1312,7 @@ const Dashboard = () => {
             </div>
           )}
         </div>
+        </>)}
 
         {/* Content */}
         {viewMode === 'sequences' ? (
