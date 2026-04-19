@@ -164,12 +164,15 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Stripe webhooks need raw body BEFORE JSON parsing
-app.use('/api/webhooks', express.raw({ type: 'application/json' }), webhookRoutes);
+// Stripe webhooks need raw body BEFORE JSON parsing (Paystack uses parsed JSON — scoped to /stripe only)
+app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }));
 
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Register webhook routes after body parsing so Paystack (JSON) works; Stripe still gets raw via the path-scoped middleware above
+app.use('/api/webhooks', webhookRoutes);
 
 // Cookie parsing (for HTTP-only cookie auth)
 app.use(cookieParser());

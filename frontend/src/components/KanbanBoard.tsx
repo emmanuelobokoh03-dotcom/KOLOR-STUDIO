@@ -32,16 +32,21 @@ interface KanbanBoardProps {
 
 const KANBAN_COLUMNS: LeadStatus[] = ['NEW', 'CONTACTED', 'QUOTED', 'NEGOTIATING', 'BOOKED'];
 
-const COLUMN_COLORS: Record<LeadStatus, { bg: string; border: string; header: string }> = {
-  NEW: { bg: 'bg-purple-50', border: 'border-purple-200', header: 'bg-brand-primary' },
-  REVIEWING: { bg: 'bg-purple-50', border: 'border-purple-200', header: 'bg-brand-primary' },
-  CONTACTED: { bg: 'bg-purple-50', border: 'border-purple-200', header: 'bg-brand-primary' },
-  QUALIFIED: { bg: 'bg-indigo-950/20', border: 'border-indigo-800/40', header: 'bg-indigo-500' },
-  QUOTED: { bg: 'bg-brand-accent-dark/20', border: 'border-pink-200', header: 'bg-brand-accent' },
-  NEGOTIATING: { bg: 'bg-blue-950/20', border: 'border-blue-800/40', header: 'bg-blue-500' },
-  BOOKED: { bg: 'bg-emerald-950/20', border: 'border-emerald-800/40', header: 'bg-emerald-500' },
-  LOST: { bg: 'bg-slate-950/20', border: 'border-light-200/40', header: 'bg-slate-500' },
+// Warm pastel palette — soft column backgrounds with readable colored dots for status indicators.
+// Each stage keys to { bg, border, text, dot } and is applied via inline styles for precise pastel hues.
+const KANBAN_STAGE_COLORS: Record<LeadStatus, { bg: string; border: string; text: string; dot: string }> = {
+  NEW:         { bg: '#FFF8F0', border: '#FDDCB5', text: '#92400E', dot: '#F59E0B' },
+  REVIEWING:   { bg: '#FFF8F0', border: '#FDDCB5', text: '#92400E', dot: '#F59E0B' },
+  CONTACTED:   { bg: '#EFF6FF', border: '#BFDBFE', text: '#1E3A8A', dot: '#3B82F6' },
+  QUALIFIED:   { bg: '#F5F3FF', border: '#DDD6FE', text: '#5B21B6', dot: '#8B5CF6' },
+  QUOTED:      { bg: '#F5F0FF', border: '#DDD6FE', text: '#5B21B6', dot: '#8B5CF6' },
+  NEGOTIATING: { bg: '#FFFBEB', border: '#FDE68A', text: '#92400E', dot: '#D97706' },
+  BOOKED:      { bg: '#F0FDF4', border: '#BBF7D0', text: '#14532D', dot: '#22C55E' },
+  LOST:        { bg: '#FAFAFA', border: '#E5E7EB', text: '#6B7280', dot: '#9CA3AF' },
 };
+
+// (COLUMN_COLORS removed — iter 142 swapped all column rendering to KANBAN_STAGE_COLORS pastels.)
+
 
 export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLeadDelete, user }: KanbanBoardProps) {
   const lang = getIndustryLanguage(user?.industry || user?.primaryIndustry);
@@ -209,20 +214,25 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
           <div className="flex-1 flex gap-1.5 overflow-x-auto scrollbar-hide py-1">
             {KANBAN_COLUMNS.map((status, idx) => {
               const count = getLeadsByStatus(status).length;
-              const colors = COLUMN_COLORS[status];
+              const pastel = KANBAN_STAGE_COLORS[status];
+              const isActive = mobileColumn === idx;
               return (
                 <button
                   key={status}
                   onClick={() => setMobileColumn(idx)}
-                  className={`flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 touch-target ${
-                    mobileColumn === idx
-                      ? `${colors.header} text-white shadow-lg`
-                      : 'bg-light-50 text-text-secondary border border-light-200'
-                  }`}
+                  className="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 touch-target border"
+                  style={{
+                    background: isActive ? pastel.bg : 'var(--surface-base)',
+                    borderColor: isActive ? pastel.dot : 'var(--border)',
+                    color: isActive ? pastel.text : 'var(--text-secondary)',
+                  }}
                   data-testid={`mobile-tab-${status.toLowerCase()}`}
                 >
-                  {stageLabel(status)}
-                  <span className={`ml-1.5 ${mobileColumn === idx ? 'bg-white/20' : 'bg-light-200'} px-1.5 py-0.5 rounded-full text-[10px]`}>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: pastel.dot }} aria-hidden="true" />
+                    {stageLabel(status)}
+                  </span>
+                  <span className="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px]" style={{ background: isActive ? `${pastel.dot}20` : 'rgba(0,0,0,0.05)' }}>
                     {count}
                   </span>
                 </button>
@@ -245,17 +255,21 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
         {(() => {
           const status = KANBAN_COLUMNS[mobileColumn];
           const columnLeads = getLeadsByStatus(status);
-          const colors = COLUMN_COLORS[status];
+          const pastel = KANBAN_STAGE_COLORS[status];
 
           return (
             <div
-              className={`rounded-xl ${colors.bg} ${colors.border} border-2 animate-fade-in`}
+              className="rounded-xl border-2 animate-fade-in"
+              style={{ background: pastel.bg, borderColor: pastel.border }}
               data-testid={`kanban-column-${status.toLowerCase()}`}
             >
-              <div className={`${colors.header} text-white px-4 py-3 rounded-t-[10px]`}>
+              <div className="px-4 py-3 rounded-t-[10px]" style={{ background: `${pastel.dot}18`, borderBottom: `1px solid ${pastel.border}` }}>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-sm">{stageLabel(status)}</h3>
-                  <span className="bg-white/20 px-2.5 py-0.5 rounded-full text-xs font-medium">{columnLeads.length}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full" style={{ background: pastel.dot }} aria-hidden="true" />
+                    <h3 className="font-semibold text-sm" style={{ color: pastel.text }}>{stageLabel(status)}</h3>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ background: `${pastel.dot}20`, color: pastel.text }}>{columnLeads.length}</span>
                 </div>
               </div>
               <div className="p-3 space-y-3 min-h-[300px]">
@@ -273,24 +287,28 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
       <div className="hidden md:flex gap-5 overflow-x-auto pb-4 min-h-[600px]">
         {KANBAN_COLUMNS.map((status) => {
           const columnLeads = getLeadsByStatus(status);
-          const colors = COLUMN_COLORS[status];
+          const pastel = KANBAN_STAGE_COLORS[status];
           const isOver = dragOverColumn === status;
 
           return (
             <div
               key={status}
-              className={`flex-shrink-0 w-[300px] rounded-xl ${colors.bg} ${colors.border} border-2 transition-all duration-300 ${
+              className={`flex-shrink-0 w-[300px] rounded-xl border-2 transition-all duration-300 ${
                 isOver ? 'ring-2 ring-brand-primary-light scale-[1.02]' : ''
               }`}
+              style={{ background: pastel.bg, borderColor: pastel.border }}
               onDragOver={(e) => handleDragOver(e, status)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, status)}
               data-testid={`kanban-column-${status.toLowerCase()}`}
             >
-              <div className={`${colors.header} text-white px-5 py-3.5 rounded-t-[10px]`}>
+              <div className="px-5 py-3.5 rounded-t-[10px]" style={{ background: `${pastel.dot}14`, borderBottom: `1px solid ${pastel.border}` }}>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-sm">{stageLabel(status)}</h3>
-                  <span className="bg-white/20 px-2.5 py-0.5 rounded-full text-xs font-medium">{columnLeads.length}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full" style={{ background: pastel.dot }} aria-hidden="true" />
+                    <h3 className="font-semibold text-sm" style={{ color: pastel.text }}>{stageLabel(status)}</h3>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ background: `${pastel.dot}20`, color: pastel.text }}>{columnLeads.length}</span>
                 </div>
               </div>
               <div className="p-3 space-y-3 min-h-[500px]">

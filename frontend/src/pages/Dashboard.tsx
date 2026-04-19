@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import KolorLogo from '../components/KolorLogo'
 import {
   SignOut,
@@ -121,11 +121,16 @@ const formatCurrentDate = () => {
 
 const Dashboard = () => {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  // Deep-link support: read `?view=quotes|contracts|analytics|sequences|portfolio|list|kanban|calendar` from the URL so tabs can be bookmarked/shared.
+  const VALID_VIEWS: ViewMode[] = ['kanban', 'list', 'analytics', 'calendar', 'portfolio', 'sequences', 'quotes', 'contracts']
+  const initialViewFromUrl = searchParams.get('view') as ViewMode | null
+  const initialView: ViewMode = (initialViewFromUrl && VALID_VIEWS.includes(initialViewFromUrl)) ? initialViewFromUrl : 'kanban'
   const [user, setUser] = useState<UserType | null>(null)
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
-  const [viewMode, setViewMode] = useState<ViewMode>('kanban')
+  const [viewMode, setViewMode] = useState<ViewMode>(initialView)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [selectedLeadInitialTab, setSelectedLeadInitialTab] = useState<string | undefined>(undefined)
@@ -351,6 +356,12 @@ const Dashboard = () => {
     setMobileMenuOpen(false)
     setStaleFilter(false)
     trackViewChanged(view)
+    // Sync deep-link: `kanban` is the default so it's represented by the absence of `?view=`.
+    // Preserve other query params (e.g. `leadId`) while only mutating the `view` param.
+    const next = new URLSearchParams(searchParams)
+    if (view === 'kanban') next.delete('view')
+    else next.set('view', view)
+    setSearchParams(next, { replace: true })
   }
 
   useEffect(() => {

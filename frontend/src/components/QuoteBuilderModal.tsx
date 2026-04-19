@@ -129,8 +129,8 @@ function QuotePreview({ lead, lineItems, subtotal, tax, taxAmount, total, paymen
   lead: Lead; lineItems: QuoteLineItem[]; subtotal: number; tax: number; taxAmount: number; total: number; paymentTerms: string; validUntil: string; terms: string; currencySettings: CurrencySettings; onBack: () => void; onSend: () => void; sending: boolean;
 }) {
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onBack}>
-      <div className="bg-surface-base rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-auto" onClick={e => e.stopPropagation()} data-testid="quote-preview">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[70] p-4" onClick={onBack}>
+      <div className="bg-surface-base rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()} data-testid="quote-preview">
         <div className="p-8">
           <div className="flex justify-between items-start mb-8">
             <div>
@@ -337,6 +337,7 @@ export default function QuoteBuilderModal({
     const sendResult = await quotesApi.send(quoteId!);
     setSending(false);
     if (sendResult.error) { setError(sendResult.message || 'Failed to send quote'); return; }
+    setShowPreview(false);
     if (sendResult.data?.quote && onSent) onSent(sendResult.data.quote);
     else if (sendResult.data?.quote) onSaved(sendResult.data.quote);
   };

@@ -38,7 +38,7 @@ const CONTRACT_TEMPLATES: Record<string, { title: string; content: string }> = {
     content: `<h2>Art Commission Agreement</h2>
 <p>This Agreement is between <strong>{{studioName}}</strong> ("Artist") and <strong>{{clientName}}</strong> ("Client").</p>
 <h3>1. Commission Details</h3>
-<p><strong>Project:</strong> {{projectTitle}}<br/><strong>Estimated Completion:</strong> {{eventDate}}<br/><strong>Agreed Fee:</strong> {{estimatedValue}}</p>
+<p><strong>Project:</strong> {{projectTitle}}<br/><strong>Agreed Fee:</strong> {{estimatedValue}}</p>
 <h3>2. Scope of Work</h3>
 <p>The Artist agrees to create an original artwork as described. Up to two rounds of revisions are included after the initial concept is presented.</p>
 <h3>3. Deliverables</h3>

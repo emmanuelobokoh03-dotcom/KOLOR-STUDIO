@@ -63,22 +63,186 @@ export default function LandingPageV2() {
       <Nav onCta={goSignup} />
       <HeroSection onCta={goSignup} variant={heroVariant} />
       <MarqueeSection />
-      <ProblemSection />
-      <WorkflowSection />
-      <FeaturesSection />
-      <ProductDeepDiveSection />
+      <SocialProofStrip />
+      <FeatureRowsSection />
       <TestimonialsSection />
-      <MidPageCTA onCta={goSignup} />
-      <FAQSection />
-      <FounderSection />
       <UrgencySection onCta={goSignup} />
-      <FinalCTA onCta={goSignup} />
+      <SimpleFinalCTA onCta={goSignup} />
       <Footer />
     </div>
   )
 }
 
 /* ---------- NAVIGATION ---------- */
+// ═══════════════════════════════════════════════════════════════
+// NEW iter-142 sections — SocialProofStrip, FeatureRowsSection, SimpleFinalCTA
+// Kept above Nav so they render without circular type issues.
+// ═══════════════════════════════════════════════════════════════
+
+function SocialProofStrip() {
+  const quotes = [
+    { text: "Sent my first quote in 4 minutes.", author: "Adaeze O.", role: "Fine artist, Lagos" },
+    { text: "Finally a CRM that doesn't feel like it was built for wedding photographers only.", author: "Marc D.", role: "Graphic designer, Berlin" },
+    { text: "The client portal alone is worth it.", author: "Priya K.", role: "Portrait photographer, London" },
+  ]
+  return (
+    <section className="py-12 px-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        {quotes.map((q, i) => (
+          <div key={i} className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <p className="text-sm text-white/80 leading-relaxed mb-4">&ldquo;{q.text}&rdquo;</p>
+            <p className="text-xs font-semibold text-white/60">{q.author}</p>
+            <p className="text-[11px] text-white/40">{q.role}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function LeadsMockup() {
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="w-2 h-2 rounded-full bg-red-500/60" />
+        <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
+        <div className="w-2 h-2 rounded-full bg-green-500/60" />
+        <span className="ml-2 text-[10px] text-white/30">Pipeline</span>
+      </div>
+      <div className="p-4 space-y-3">
+        {[
+          { name: 'Chiara B.', project: 'Brand shoot', status: 'Quoted', color: '#a78bfa' },
+          { name: 'James O.', project: 'Commission', status: 'Signed', color: '#34d399' },
+          { name: 'Lena M.', project: 'Editorial', status: 'New', color: '#fbbf24' },
+        ].map((lead, i) => (
+          <div key={i} className="flex items-center justify-between rounded-lg px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.04)' }}>
+            <div>
+              <p className="text-xs font-semibold text-white/80">{lead.name}</p>
+              <p className="text-[10px] text-white/40">{lead.project}</p>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: `${lead.color}20`, color: lead.color }}>{lead.status}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function QuoteMockup() {
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="h-1.5" style={{ background: 'linear-gradient(90deg, #6C2EDB, #a78bfa)' }} />
+      <div className="p-5">
+        <p className="text-xs font-bold text-white/80 mb-1">Quote #004 &mdash; Brand Campaign</p>
+        <p className="text-[10px] text-white/40 mb-4">For Chiara B. &middot; Valid 30 days</p>
+        <div className="space-y-2 mb-4">
+          {[['Creative direction', '$2,400'], ['Photography (2 days)', '$3,200'], ['Post-processing', '$800']].map(([item, price], i) => (
+            <div key={i} className="flex justify-between text-[11px]">
+              <span className="text-white/60">{item}</span>
+              <span className="text-white/80 font-medium">{price}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-between pt-3 border-t border-white/10">
+          <span className="text-xs font-bold text-white">Total</span>
+          <span className="text-sm font-extrabold text-white">$6,400</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ArtistMockup() {
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <span className="text-[10px] text-white/30">Commission Portal</span>
+      </div>
+      <div className="p-5 space-y-3">
+        <div className="rounded-xl h-28 flex items-center justify-center" style={{ background: 'rgba(108,46,219,0.08)', border: '1px dashed rgba(108,46,219,0.3)' }}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(167,139,250,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="8.5" r="1.5" fill="currentColor"/>
+            <circle cx="8" cy="12" r="1.5" fill="currentColor"/>
+            <circle cx="16" cy="12" r="1.5" fill="currentColor"/>
+            <circle cx="12" cy="15.5" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <p className="text-xs font-bold text-white/80">Oil on Canvas &mdash; 36&times;48&quot;</p>
+          <p className="text-[10px] text-white/40">Collector: Marcus A. &middot; Progress: 60%</p>
+        </div>
+        <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+          <div className="h-full rounded-full bg-purple-500" style={{ width: '60%' }} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function FeatureRowsSection() {
+  const rows: Array<{ label: string; title: string; body: string; mockup: JSX.Element; flip?: boolean }> = [
+    {
+      label: 'LEADS & PIPELINE',
+      title: 'Every inquiry. Organised.',
+      body: 'Capture leads from your inquiry form, track them through your pipeline, and never forget a follow-up. Built for the way creatives actually work — not how enterprise software thinks you should.',
+      mockup: <LeadsMockup />,
+    },
+    {
+      label: 'QUOTES & CONTRACTS',
+      title: 'Look professional from day one.',
+      body: 'Send branded quotes in minutes. When they accept, a contract goes out automatically. Get paid faster with Stripe and Paystack — in your currency, wherever you are.',
+      mockup: <QuoteMockup />,
+      flip: true,
+    },
+    {
+      label: 'FOR FINE ARTISTS',
+      title: 'The first CRM built for commission artists.',
+      body: 'Track commission inquiries, manage collector relationships, and deliver your work through a client portal that reflects your gallery-level standards. No other CRM does this.',
+      mockup: <ArtistMockup />,
+    },
+  ]
+  return (
+    <section className="py-16 px-6">
+      <div className="max-w-5xl mx-auto space-y-20">
+        {rows.map((row, i) => (
+          <div key={i} className={`flex flex-col ${row.flip ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16`}>
+            <div className="flex-1">
+              <span className="text-[11px] font-mono font-bold tracking-[0.12em] text-purple-400 mb-3 block">{row.label}</span>
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">{row.title}</h3>
+              <p className="text-sm text-white/60 leading-relaxed">{row.body}</p>
+            </div>
+            <div className="flex-1 w-full">
+              {row.mockup}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function SimpleFinalCTA({ onCta }: { onCta: () => void }) {
+  return (
+    <section className="py-20 px-6 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+        Your creative business.<br />Finally under control.
+      </h2>
+      <p className="text-white/50 text-sm mb-8 max-w-md mx-auto">
+        Join photographers, designers, and artists building sustainable practices with KOLOR.
+      </p>
+      <button
+        onClick={onCta}
+        className="inline-flex items-center gap-2 px-8 py-4 text-sm font-bold text-white rounded-xl transition-all hover:scale-[1.02] motion-reduce:hover:scale-100"
+        style={{ background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)', boxShadow: '0 0 40px rgba(108,46,219,0.4)' }}
+        data-testid="landing-final-cta"
+      >
+        Start free &mdash; no credit card required
+      </button>
+    </section>
+  )
+}
+
 function Nav({ onCta }: { onCta: () => void }) {
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
@@ -988,7 +1152,9 @@ const TESTIMONIALS: {
 
 /* ---------- SECTION 6: TESTIMONIALS ---------- */
 function TestimonialsSection() {
-  const track = [...TESTIMONIALS, ...TESTIMONIALS]
+  // Iter 142 — trim to top 3 testimonials for tighter conversion focus
+  const topThree = TESTIMONIALS.slice(0, 3)
+  const track = [...topThree, ...topThree]
   // AUDIT FIX [5.2, 5.3]: Keyboard accessible marquee with pause control
   const [paused, setPaused] = useState(false)
 

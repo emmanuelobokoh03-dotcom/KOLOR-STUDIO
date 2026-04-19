@@ -17,7 +17,6 @@ import {
   SpinnerGap,
   SignOut,
   GearSix,
-  SquaresFour,
   Camera,
   Video,
   Palette,
@@ -229,14 +228,6 @@ export default function Calendar() {
             >
               <GearSix className="w-4 h-4" />
             </button>
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-lg transition"
-              data-testid="calendar-dashboard-link"
-            >
-              <SquaresFour className="w-4 h-4" />
-              <span className="hidden sm:inline">Dashboard</span>
-            </button>
           </div>
         </div>
       </header>
@@ -340,21 +331,20 @@ export default function Calendar() {
             )}
           </div>
 
-          {/* Day sidebar - always visible on desktop. Shows events for selectedDate. */}
-          <div className="hidden lg:block w-[280px] flex-shrink-0">
-            {selectedEvent ? (
+          {/* Side panel - always visible on desktop. Day sidebar always renders; EventSidePanel appears below when an event is selected. */}
+          <div className="hidden lg:block w-[320px] flex-shrink-0 space-y-3">
+            <DaySidebar
+              selectedDate={selectedDate}
+              events={getEventsForDay(selectedDate)}
+              onEventClick={setSelectedEvent}
+              onAddEvent={openCreateForSelectedDay}
+            />
+            {selectedEvent && (
               <EventSidePanel
                 event={selectedEvent}
                 onClose={() => setSelectedEvent(null)}
                 onDelete={handleDeleteEvent}
                 onNavigateToLead={(leadId) => navigate(`/dashboard?leadId=${leadId}`)}
-              />
-            ) : (
-              <DaySidebar
-                selectedDate={selectedDate}
-                events={getEventsForDay(selectedDate)}
-                onEventClick={setSelectedEvent}
-                onAddEvent={openCreateForSelectedDay}
               />
             )}
           </div>
