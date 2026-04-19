@@ -337,6 +337,20 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 
 **Verified**: `npx tsc --noEmit` = 0 errors on both sides. Backend health 200. Supervisor status all running.
 
+### Iteration 142 — Calendar fix, Quote modal, Deep-link views, Landing revamp, Kanban pastels, 4-palette accents (Complete — 2026-04-18)
+- **T1 Calendar** (`Calendar.tsx`): Removed redundant "Dashboard" button from header (logo already navigates). `DaySidebar` now always visible on desktop; `EventSidePanel` renders below it when an event is selected (both stacked in same sidebar column).
+- **T2 Quote Preview modal** (`QuoteBuilderModal.tsx`): `QuotePreview` outer overlay z-index raised to `z-[70]` (was `z-50`) to sit above the main quote builder modal. `handleSend` now closes the preview (`setShowPreview(false)`) after a successful send so parent modal state reflects the sent quote.
+- **T3 Deep-link `?view=`** (`Dashboard.tsx`): Dashboard now reads `?view=quotes|contracts|analytics|sequences|portfolio|list|kanban|calendar` from URL on mount. `handleViewChange` syncs the URL via `setSearchParams` (kanban default → no `?view=` param). Preserves other query params like `leadId`. Use `navigate('/dashboard?view=quotes')` anywhere to deep-link. No new routes, no unmounts.
+- **T5 Landing revamp** (`LandingPageV2.tsx`): Removed `ProblemSection`, `WorkflowSection`, `FeaturesSection`, `ProductDeepDiveSection`, `MidPageCTA`, `FAQSection`, `FounderSection`, `FinalCTA` from render. Added `SocialProofStrip` (3 testimonial cards), `FeatureRowsSection` (3 alternating image+text rows with inline `LeadsMockup`/`QuoteMockup`/`ArtistMockup` preview cards), `SimpleFinalCTA`. `TestimonialsSection` trimmed to top 3 testimonials. Component bodies remain in file — fully recoverable.
+- **T6 Kanban pastels** (`KanbanBoard.tsx`): Replaced `COLUMN_COLORS` (dark tailwind tokens) with `KANBAN_STAGE_COLORS` (pastel hex palette keyed by status → `{ bg, border, text, dot }`). Mobile tabs, mobile single-column view, and desktop columns all use soft pastel backgrounds with colored status dots + tinted status pill counts. `COLUMN_COLORS` shim removed.
+- **T7 4-palette accent system** (`Settings.tsx`): Replaced 8-swatch `ACCENT_COLOURS` with 4 curated `ACCENT_PALETTES` (KOLOR / Slate Studio / Terra / Midnight) — each has name, description, primary colour, and 2-swatch preview. New `kolor_palette_id` localStorage key + backward-compat write to `kolor_app_accent` so `main.tsx` boot script still applies the theme. Reset button removed (named palettes include the default).
+
+**Skipped (already done in iter 141)**: T4 (React.lazy + Suspense code-splitting — `App.tsx` already uses `lazy()` for all routes).
+
+**Skipped (deferred per Emmanuel's call)**: Standalone routes for Quotes/Contracts/Sequences/Analytics/Portfolio — in-memory view-mode switches are faster than route unmounts; T3 deep-link via `?view=` param gives bookmark/share capability without the remount cost.
+
+**Verified**: `npx tsc --noEmit` = 0 errors on both sides. Backend health 200. Iter 137 template regression clean.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
