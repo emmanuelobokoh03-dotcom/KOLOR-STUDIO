@@ -326,6 +326,17 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 
 **Flagged for Emmanuel**: Verification-email issue confirmed NOT a code bug (affected users got wrong-URL emails before `FRONTEND_URL` was fixed on Railway — manual resend needed). Signup industry map kept as `DESIGN: 'GRAPHIC_DESIGN'` (Prisma enum has no `DESIGN` value; frontend `industryLanguage.ts` maps correctly).
 
+### Iteration 141 — Navigation, Calendar Sidebar, Performance, Mobile Login, Quotes (Complete — 2026-04-18)
+- **T1 Dashboard chrome scoping** (`Dashboard.tsx`): Stat cards + filter toolbar now only render for `kanban` / `list` views. Analytics / Sequences / Portfolio views are full-bleed without the lead-management chrome above them.
+- **T2 Deferred analytics fetch** (`Dashboard.tsx`): Analytics + monthly-trend now fire in a `setTimeout(0)` after `setLoading(false)` — sparklines + revenue goal populate in background without delaying initial TTI.
+- **T3+T4 Calendar DaySidebar** (`Calendar.tsx`): New `selectedDate` state + always-visible `DaySidebar` component on desktop (lg+). Shows day header + event list + "Add event" CTA. Empty state shows "No events on this day" + empty-state CTA. Sidebar is sticky top-72px so it stays in view while scrolling. When an event is clicked, `EventSidePanel` replaces `DaySidebar` in the same slot.
+- **Day click behavior** (`Calendar.tsx`): Clicking a day in Month/Week view now sets `selectedDate` (desktop) and opens a slide-in panel (mobile). No longer opens `CreateEventModal`. The "+ Event" toolbar button is the single create path.
+- **T5 Narrowed event fetch** (`Calendar.tsx`): Event fetch window reduced from ±1 month to current month only. Halves API payload on every navigation.
+- **T6 Landing Login link on mobile** (`LandingPageV2.tsx`): Removed `hidden sm:block` so Log in link is visible in nav at all viewport widths.
+- **T7 Fine-art quote date cell** (`QuoteBuilderModal.tsx`): For `userIndustry === 'FINE_ART'` when both `keyDate` and `eventDate` are null, the date cell renders as an empty spacer (preserves grid layout) instead of "—". Photography/design always show the date cell.
+
+**Verified**: `npx tsc --noEmit` = 0 errors on both sides. Backend health 200. Supervisor status all running.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
