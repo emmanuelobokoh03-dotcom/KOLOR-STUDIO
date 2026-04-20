@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { ArrowRight } from '@phosphor-icons/react'
 import KolorLogo from '../components/KolorLogo'
@@ -67,7 +67,7 @@ export default function LandingPageV2() {
       <FeatureRowsSection />
       <TestimonialsSection />
       <UrgencySection onCta={goSignup} />
-      <SimpleFinalCTA onCta={goSignup} />
+      <FinalCTA onCta={goSignup} />
       <Footer />
     </div>
   )
@@ -153,6 +153,25 @@ function QuoteMockup() {
 }
 
 function ArtistMockup() {
+  const barRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const bar = barRef.current
+    if (!bar) return
+    const section = bar.closest('[data-feature-row]')
+    if (!section) return
+
+    const apply = () => { bar.style.width = '60%' }
+    if (section.classList.contains('revealed')) { apply(); return }
+
+    const obs = new MutationObserver(() => {
+      if (section.classList.contains('revealed')) { apply(); obs.disconnect() }
+    })
+    obs.observe(section, { attributes: true, attributeFilter: ['class'] })
+    return () => obs.disconnect()
+  }, [])
+
   return (
     <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
       <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -173,7 +192,7 @@ function ArtistMockup() {
           <p className="text-[10px] text-white/40">Collector: Marcus A. &middot; Progress: 60%</p>
         </div>
         <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
-          <div className="h-full rounded-full bg-purple-500" style={{ width: '60%' }} />
+          <div ref={barRef} className="h-full rounded-full bg-purple-500" style={{ width: '0%', transition: 'width 1.2s ease 0.4s' }} />
         </div>
       </div>
     </div>
@@ -202,17 +221,52 @@ function FeatureRowsSection() {
       mockup: <ArtistMockup />,
     },
   ]
+  // Iter 143 — animate mockup entrance when the row gains the `revealed` class (set by the existing IO at the page root).
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const sections = document.querySelectorAll<HTMLElement>('[data-feature-row]')
+    const observers: MutationObserver[] = []
+
+    sections.forEach(section => {
+      const mockup = section.querySelector<HTMLElement>('.mockup-animate')
+      if (!mockup) return
+
+      const apply = () => {
+        mockup.style.opacity = '1'
+        mockup.style.transform = 'translateY(0)'
+      }
+
+      if (section.classList.contains('revealed')) { apply(); return }
+
+      const obs = new MutationObserver(() => {
+        if (section.classList.contains('revealed')) { apply(); obs.disconnect() }
+      })
+      obs.observe(section, { attributes: true, attributeFilter: ['class'] })
+      observers.push(obs)
+    })
+
+    return () => observers.forEach(o => o.disconnect())
+  }, [])
+
   return (
-    <section className="py-16 px-6">
+    <section className="py-16 px-6" id="features" data-testid="features-section">
       <div className="max-w-5xl mx-auto space-y-20">
         {rows.map((row, i) => (
-          <div key={i} className={`flex flex-col ${row.flip ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16`}>
+          <div
+            key={i}
+            data-feature-row
+            className={`reveal-section flex flex-col ${row.flip ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16`}
+          >
             <div className="flex-1">
               <span className="text-[11px] font-mono font-bold tracking-[0.12em] text-purple-400 mb-3 block">{row.label}</span>
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">{row.title}</h3>
               <p className="text-sm text-white/60 leading-relaxed">{row.body}</p>
             </div>
-            <div className="flex-1 w-full">
+            <div
+              className="flex-1 w-full mockup-animate"
+              style={{ opacity: 0, transform: 'translateY(24px)', transition: 'opacity 0.55s ease, transform 0.55s ease' }}
+            >
               {row.mockup}
             </div>
           </div>
@@ -265,17 +319,22 @@ function Nav({ onCta }: { onCta: () => void }) {
         <KolorLogo variant="light" size="md" />
 
         <div className="hidden md:flex items-center gap-8">
-          {['Features', 'Pricing', 'Stories'].map(label => (
-            <a
+          {[
+            { label: 'Features', id: 'features' },
+            { label: 'Pricing', id: 'pricing' },
+            { label: 'Stories', id: 'stories' },
+          ].map(({ label, id }) => (
+            <button
               key={label}
-              href={`#${label.toLowerCase()}`}
-              className="text-[13px] font-medium transition-colors duration-150"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="text-[13px] font-medium transition-colors duration-150 bg-transparent border-none cursor-pointer"
+              style={{ color: 'rgba(255,255,255,0.5)', padding: 0 }}
               onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
+              data-testid={`nav-scroll-${id}`}
             >
               {label}
-            </a>
+            </button>
           ))}
         </div>
 
@@ -1160,6 +1219,7 @@ function TestimonialsSection() {
 
   return (
     <section
+      id="stories"
       className="reveal-section"
       style={{ padding: '100px 0' }}
       data-testid="testimonials-section"

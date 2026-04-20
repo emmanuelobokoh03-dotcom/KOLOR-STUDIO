@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { InlineHint } from './InlineHint'
 import {
   Lead,
@@ -143,16 +144,22 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
   const handleSaveAndSend = async () => {
     if (!editingContract) return;
     setSaving(true);
-    const result = await contractsApi.update(editingContract.id, {
-      title: editTitle,
-      content: editContent,
-    });
-    setSaving(false);
-    if (result.data?.contract) {
+    try {
+      const result = await contractsApi.update(editingContract.id, {
+        title: editTitle,
+        content: editContent,
+      });
+      if (result.error || !result.data?.contract) {
+        toast.error(result.message || 'Failed to save contract');
+        return;
+      }
       setContracts(contracts.map(c => c.id === editingContract.id ? result.data!.contract : c));
       const updated = result.data.contract;
       setEditingContract(null);
+      // Open the email composer; handleEmailSend toasts success on actual send
       handleSendClick(updated);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -179,17 +186,24 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
   const handleEmailSend = async (subject: string, message: string) => {
     if (!emailComposerContract) return;
     setSending(emailComposerContract.id);
-    const result = await contractsApi.send(emailComposerContract.id, { subject, message });
-    setSending(null);
-
-    if (result.error) {
-      throw new Error(result.message || 'Failed to send contract');
+    try {
+      const result = await contractsApi.send(emailComposerContract.id, { subject, message });
+      if (result.error) {
+        toast.error(result.message || 'Failed to send contract');
+        throw new Error(result.message || 'Failed to send contract');
+      }
+      if (result.data?.contract) {
+        setContracts(contracts.map(c => c.id === emailComposerContract.id ? result.data!.contract : c));
+      }
+      toast.success('Contract sent to client');
+      fetchContracts();
+    } catch (e) {
+      // EmailComposer expects thrown errors to show inline validation state; retain throw
+      throw e;
+    } finally {
+      setSending(null);
+      setEmailComposerContract(null);
     }
-
-    if (result.data?.contract) {
-      setContracts(contracts.map(c => c.id === emailComposerContract.id ? result.data!.contract : c));
-    }
-    setEmailComposerContract(null);
   };
 
   const handleDelete = async (contractId: string) => {

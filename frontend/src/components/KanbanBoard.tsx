@@ -118,7 +118,7 @@ export default function KanbanBoard({ leads, onLeadClick, onStatusChange, onLead
       {/* Cover Image */}
       {lead.coverImage ? (
         <div className="relative h-28 md:h-36 overflow-hidden cursor-pointer" onClick={() => onLeadClick(lead)}>
-          <img src={lead.coverImage} alt={lead.projectTitle} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+          <img src={lead.coverImage} alt={lead.projectTitle} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent opacity-60" />
           <div className="absolute bottom-2 left-3 right-3">
             <span className="text-xs px-2 py-0.5 bg-brand-primary/80 backdrop-blur-sm text-white rounded-full">

@@ -18,11 +18,11 @@ interface PipelineData {
 }
 
 const STAGES = [
-  { key: 'quoteSent', name: 'Quotes Sent', icon: '📋', bg: 'bg-blue-500', text: 'text-blue-600' },
-  { key: 'contractSigned', name: 'Contract', icon: '✍️', bg: 'bg-purple-500', text: 'text-purple-400' },
-  { key: 'depositPaid', name: 'Deposit Paid', icon: '💰', bg: 'bg-green-500', text: 'text-green-400' },
-  { key: 'inProgress', name: 'In Progress', icon: '🚀', bg: 'bg-orange-500', text: 'text-orange-400' },
-  { key: 'paidInFull', name: 'Paid in Full', icon: '🎉', bg: 'bg-emerald-500', text: 'text-emerald-600' },
+  { key: 'quoteSent', name: 'Quotes Sent', icon: '📋', headerBg: '#F5F0FF', headerBorder: '#DDD6FE', headerText: '#5B21B6', valueBg: '#FDFCFF', valueText: '#5B21B6' },
+  { key: 'contractSigned', name: 'Contract', icon: '✍️', headerBg: '#FFF8F0', headerBorder: '#FDDCB5', headerText: '#92400E', valueBg: '#FFFBF7', valueText: '#92400E' },
+  { key: 'depositPaid', name: 'Deposit Paid', icon: '💰', headerBg: '#F0FDF4', headerBorder: '#BBF7D0', headerText: '#14532D', valueBg: '#F7FDF9', valueText: '#14532D' },
+  { key: 'inProgress', name: 'In Progress', icon: '🚀', headerBg: '#FFFBEB', headerBorder: '#FDE68A', headerText: '#78350F', valueBg: '#FFFDF5', valueText: '#92400E' },
+  { key: 'paidInFull', name: 'Paid in Full', icon: '🎉', headerBg: '#F0F9FF', headerBorder: '#BAE6FD', headerText: '#0C4A6E', valueBg: '#F7FBFF', valueText: '#0C4A6E' },
 ] as const;
 
 export default function RevenuePipelineWidget() {
@@ -32,17 +32,21 @@ export default function RevenuePipelineWidget() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/analytics/revenue-pipeline`, {
-      credentials: 'include',
-    })
-      .then(r => r.json())
-      .then(data => {
-        setPipeline(data.pipeline);
-        setTotalValue(data.totalValue || 0);
-        setCurrencySymbol(data.currencySymbol || '$');
+    // Iter 143 — defer the analytics fetch so the dashboard TTI isn't blocked by this widget
+    const timer = setTimeout(() => {
+      fetch(`${API_URL}/api/analytics/revenue-pipeline`, {
+        credentials: 'include',
       })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+        .then(r => r.json())
+        .then(data => {
+          setPipeline(data.pipeline);
+          setTotalValue(data.totalValue || 0);
+          setCurrencySymbol(data.currencySymbol || '$');
+        })
+        .catch(console.error)
+        .finally(() => setLoading(false));
+    }, 1200);
+    return () => clearTimeout(timer);
   }, []);
 
   if (loading) {
@@ -75,18 +79,24 @@ export default function RevenuePipelineWidget() {
             {STAGES.map(stage => {
               const data = pipeline[stage.key as keyof PipelineData];
               return (
-                <div key={stage.key} className="min-w-[110px] flex-1 transition-transform hover:scale-[1.03]">
-                  <div className={`${stage.bg} text-white rounded-t-lg py-3 px-2 text-center`}>
+                <div key={stage.key} className="min-w-[110px] flex-1 transition-transform hover:scale-[1.03] motion-reduce:hover:scale-100">
+                  <div
+                    className="rounded-t-lg py-3 px-2 text-center"
+                    style={{ background: stage.headerBg, border: `1px solid ${stage.headerBorder}`, borderBottom: 'none' }}
+                  >
                     <div className="text-2xl mb-1">{stage.icon}</div>
-                    <div className="text-[10px] font-medium leading-tight">{stage.name}</div>
+                    <div className="text-[10px] font-semibold leading-tight" style={{ color: stage.headerText }}>{stage.name}</div>
                   </div>
-                  <div className="bg-light-100 border border-t-0 border-light-200 rounded-b-lg py-3 px-2 text-center">
-                    <div className={`text-xl font-bold ${stage.text}`}>{data.count}</div>
+                  <div
+                    className="rounded-b-lg py-3 px-2 text-center"
+                    style={{ background: stage.valueBg, border: `1px solid ${stage.headerBorder}`, borderTop: 'none' }}
+                  >
+                    <div className="text-xl font-bold" style={{ color: stage.valueText }}>{data.count}</div>
                     <div className="text-xs text-text-secondary mt-0.5">
                       {currencySymbol}{data.value.toLocaleString()}
                     </div>
                     {data.clients.length > 0 && (
-                      <div className="mt-1.5 pt-1.5 border-t border-light-200">
+                      <div className="mt-1.5 pt-1.5" style={{ borderTop: `1px solid ${stage.headerBorder}` }}>
                         <span className="text-[10px] text-text-tertiary truncate block">
                           {data.clients[0].name}{data.clients.length > 1 ? ` +${data.clients.length - 1}` : ''}
                         </span>

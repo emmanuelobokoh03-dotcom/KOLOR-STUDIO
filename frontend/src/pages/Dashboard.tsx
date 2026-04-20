@@ -882,7 +882,7 @@ const Dashboard = () => {
                     data-testid={`active-commission-${lead.id}`}
                   >
                     {lead.coverImage ? (
-                      <img src={lead.coverImage} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                      <img src={lead.coverImage} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" loading="lazy" />
                     ) : (
                       <div className="w-10 h-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center flex-shrink-0">
                         <Briefcase className="w-4 h-4 text-amber-600" />

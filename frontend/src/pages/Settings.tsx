@@ -726,7 +726,7 @@ function BrandTab({
       <div className="bg-[var(--surface-base)] rounded-xl p-5 sm:p-6" style={{ border: '0.5px solid var(--border)', marginBottom: 16 }}>
         <h2 className="text-sm font-bold text-text-primary mb-1">Brand identity</h2>
         <p className="text-xs text-[var(--text-secondary)] mb-5">
-          These colours and logo appear on your public portfolio, inquiry form, and booking page.
+          These are your <strong>client-facing</strong> brand colours — they appear on your public portfolio, inquiry form, and booking page. To change your workspace theme (what you see inside the app), go to the <strong>Profile</strong> tab.
         </p>
 
         {/* Logo upload */}
