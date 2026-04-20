@@ -351,6 +351,18 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 
 **Verified**: `npx tsc --noEmit` = 0 errors on both sides. Backend health 200. Iter 137 template regression clean.
 
+### Iteration 143 — Landing fixes, mockup animations, pipeline pastels, contract UX, brand/scheduling toasts, perf (Complete — 2026-04-18)
+- **T1 Landing nav** (`LandingPageV2.tsx`): `Features/Pricing/Stories` anchor tags → smooth-scroll `<button>` calling `scrollIntoView`. Added `id="features"` to `FeatureRowsSection` and `id="stories"` to `TestimonialsSection`. `UrgencySection` already had `id="pricing"`. Restored `FinalCTA` (replaces `SimpleFinalCTA` in render; both definitions remain in file).
+- **T2 Mockup scroll animations** (`LandingPageV2.tsx`): Each row tagged `data-feature-row` + `reveal-section`. Mockup containers start at `opacity:0 + translateY(24px)` and transition to visible when parent gains `.revealed` (existing IO + MutationObserver pattern). `ArtistMockup` progress bar animates width from 0% → 60% on reveal via `useRef` + MutationObserver. All animations respect `prefers-reduced-motion: reduce`.
+- **T3 Revenue pipeline pastels** (`RevenuePipelineWidget.tsx`): New `STAGES` schema with per-stage `headerBg`, `headerBorder`, `headerText`, `valueBg`, `valueText` hex values. Two-tone pastel card per stage (peach/violet/green/amber/sky). Fetch deferred `setTimeout(1200)` so dashboard TTI isn't blocked by the pipeline analytics call.
+- **T4 Contract send error handling** (`ContractsTab.tsx`): Added `import { toast } from 'sonner'`. `handleEmailSend` wraps send in try/catch/finally, toasts success, closes composer in `finally`, rethrows inline validation errors to preserve EmailComposer UX. `handleSaveAndSend` wraps update in try/finally + toasts save errors. Save button closes editor before handing off to composer for the send step.
+- **T5a Brand tab copy** (`Settings.tsx`): Clarified these are **client-facing** brand colours; pointer to Profile tab for workspace theme.
+- **T5b Scheduling save toast** (`SchedulingSettings.tsx`): `saveAvailability` now try/catch/finally-wrapped, `toast.success('Availability saved')` / `toast.error(...)` on the save button flow. Added sonner import.
+- **T6 QuickActions wiring** (verified): All 4 handlers (`handleQuickSendQuote`, `handleQuickFollowUp`, `handleQuickCheckSchedule`, `setShowAddModal(true)`) wired on both desktop + mobile render sites. `handleQuickCheckSchedule` = `navigate('/calendar')`. No "Add Commission" anywhere.
+- **T7a Defer pipeline fetch** (done in T3).
+- **T7b Defer analytics fetch** — already deferred in iter 141 via `setTimeout(0)` after `setLoading(false)`. Verified still in place.
+- **T7c Lazy images** (`Dashboard.tsx` + `KanbanBoard.tsx`): Added `loading="lazy"` to lead cover image `<img>` tags. Kanban cover img also got `motion-reduce:` hover guard.
+
 ### Iteration 116b — Fine Art Workflow + Industry Language (Complete)
 - `industryLanguage.ts`: Added `pipelineStages` to interface and all 3 industry blocks; `getIndustryLanguage` now safely maps GRAPHIC_DESIGN, WEB_DESIGN, ILLUSTRATION, BRANDING → DESIGN
 - `AddLeadModal.tsx`: Fixed `name="material"` → `name="medium"` (schema-correct); added `edition` field for commissions; `CreateLeadData` type extended with medium/dimensions/edition
