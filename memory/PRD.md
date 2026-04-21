@@ -387,14 +387,27 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Visual Sequence Builder
 - A/B test landing page hero copy variants
 
-## Test Credentials
-- Email: bookingtest@test.com
-- Password: password123
-
 ## Key API Endpoints
 - `GET /api/health` — Health check
 - `GET /api/unsubscribe/:token` — Public unsubscribe
+- `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
+
+## Iteration 144 — Scroll-nav, App Themes, Mockup Shadows, Digest Fix, Perf (Feb 2026) — ✅ SHIPPED
+- **T1 Landing Nav (P0)**: IntersectionObserver highlights active section (features/pricing/stories) with purple underline; smooth-scroll buttons preserved.
+- **T2 App Themes (P1)**: `ACCENT_PALETTES` → `APP_THEMES` with emoji cards (🎨 KOLOR, 🖋️ Slate, 🌅 Terra, 🌙 Midnight). Back-compat `kolor_palette_id` + `kolor_app_accent` localStorage keys preserved.
+- **T3 Mockup glow (P1)**: LeadsMockup + ArtistMockup now have purple gradient top bar (`#6C2EDB → #a78bfa`) + `0 0 40px rgba(108,46,219,0.18)` glow.
+- **T4 Weekly Digest (P0)**: Added `POST /api/digest/weekly` (cold-start safety net). Scheduler opt-out default: `weeklyReportEnabled: { not: false }`.
+- **T5 Dashboard header (P1)**: Removed HelpMenu + Settings gear from top header; sidebar + mobile menu unchanged.
+- **T6 Calendar (P1)**: `handleDayClick` clears `selectedEvent` when day has 0 events.
+- **T7 Backend perf (P0)**: Staggered 5 bg processors at 5/7/9/11/13 min post-boot. Added `[Perf] ⚠️ Slow` middleware for >500ms requests.
+- **T8 Scheduling toasts (P1)**: `saveMeetingType` / `deleteMeetingType` / `toggleMeetingTypeActive` now wrap API calls in try/catch with `toast.success`/`error`.
+- **T9 QuoteBuilderModal (P0)**: Outer modal `maxHeight: min(700px, 95vh)`. Preview already had z-[70] + 90vh overflow + onSend wiring + setShowPreview(false) on success. Added testids `quote-preview-send-btn` / `quote-preview-back-btn`.
+- Testing: All 9 tasks verified by testing_agent_v3_fork (iteration_144.json, 100% pass backend 6/6, all UI tasks verified).
+
+## Test Credentials
+- Email: bookingtest@test.com
+- Password: password123
 
 ## 3rd Party Integrations
 - Resend (transactional emails)
