@@ -393,6 +393,11 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 145 — Contract Preview Modal + Dashboard Scroll-to-Top (Feb 2026) — ✅ SHIPPED
+- **T1 ContractsTab preview modal (P0)**: Full-screen `ContractPreviewModal` at z-[60] with header/scrollable body/sticky footer. Prominent 'Send to Client' (or 'Resend to Client') button always visible in footer. Closes on Escape, backdrop click. Triggered by new 'Preview' Eye button in action row and 'See full contract →' link under inline preview. Inline preview shrunk to 200px with fade gradient hinting more content below. Fixes the 'no Send button after review' bug caused by the old 300px max-height clipping.
+- **T2 Dashboard scroll-to-top (P0)**: `handleViewChange` now calls `window.scrollTo({ top: 0, behavior: 'smooth' | 'auto' })` respecting `prefers-reduced-motion`. Applies to all desktop toolbar, sidebar, and mobile-hamburger nav buttons (they all route through `handleViewChange`).
+- Testing: testing_agent_v3_fork verified 10/10 tasks (iteration_145.json). Desktop scroll: 1849px → 0px; mobile scroll: 1461px → 0px; sidebar closes on mobile.
+
 ## Iteration 144 — Scroll-nav, App Themes, Mockup Shadows, Digest Fix, Perf (Feb 2026) — ✅ SHIPPED
 - **T1 Landing Nav (P0)**: IntersectionObserver highlights active section (features/pricing/stories) with purple underline; smooth-scroll buttons preserved.
 - **T2 App Themes (P1)**: `ACCENT_PALETTES` → `APP_THEMES` with emoji cards (🎨 KOLOR, 🖋️ Slate, 🌅 Terra, 🌙 Midnight). Back-compat `kolor_palette_id` + `kolor_app_accent` localStorage keys preserved.
