@@ -102,7 +102,15 @@ function SocialProofStrip() {
 
 function LeadsMockup() {
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+    <div
+      className="rounded-2xl overflow-hidden"
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 0 40px rgba(108,46,219,0.18), 0 0 80px rgba(167,139,250,0.08)',
+      }}
+    >
+      <div className="h-1.5" style={{ background: 'linear-gradient(90deg, #6C2EDB, #a78bfa)' }} />
       <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="w-2 h-2 rounded-full bg-red-500/60" />
         <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
@@ -173,7 +181,15 @@ function ArtistMockup() {
   }, [])
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+    <div
+      className="rounded-2xl overflow-hidden"
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 0 40px rgba(108,46,219,0.18), 0 0 80px rgba(167,139,250,0.08)',
+      }}
+    >
+      <div className="h-1.5" style={{ background: 'linear-gradient(90deg, #6C2EDB, #a78bfa)' }} />
       <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <span className="text-[10px] text-white/30">Commission Portal</span>
       </div>
@@ -298,11 +314,35 @@ function SimpleFinalCTA({ onCta }: { onCta: () => void }) {
 }
 
 function Nav({ onCta }: { onCta: () => void }) {
-  const [scrolled, setScrolled] = useState(false)
+  const [, setScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState<string>('')
+
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', h, { passive: true })
     return () => window.removeEventListener('scroll', h)
+  }, [])
+
+  // Iter 144 — IntersectionObserver to highlight the active nav link
+  useEffect(() => {
+    const ids = ['features', 'pricing', 'stories']
+    const sections = ids
+      .map(id => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el)
+    if (sections.length === 0) return
+
+    const observer = new IntersectionObserver(
+      entries => {
+        // Pick the entry with the greatest intersectionRatio that is currently intersecting
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        if (visible?.target?.id) setActiveSection(visible.target.id)
+      },
+      { rootMargin: '-40% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+    )
+    sections.forEach(s => observer.observe(s))
+    return () => observer.disconnect()
   }, [])
 
   return (
@@ -323,19 +363,27 @@ function Nav({ onCta }: { onCta: () => void }) {
             { label: 'Features', id: 'features' },
             { label: 'Pricing', id: 'pricing' },
             { label: 'Stories', id: 'stories' },
-          ].map(({ label, id }) => (
-            <button
-              key={label}
-              onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-              className="text-[13px] font-medium transition-colors duration-150 bg-transparent border-none cursor-pointer"
-              style={{ color: 'rgba(255,255,255,0.5)', padding: 0 }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
-              data-testid={`nav-scroll-${id}`}
-            >
-              {label}
-            </button>
-          ))}
+          ].map(({ label, id }) => {
+            const isActive = activeSection === id
+            return (
+              <button
+                key={label}
+                onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className="relative text-[13px] font-medium transition-colors duration-150 bg-transparent border-none cursor-pointer"
+                style={{
+                  color: isActive ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.5)',
+                  padding: '0 0 4px 0',
+                  borderBottom: isActive ? '1px solid #a78bfa' : '1px solid transparent',
+                }}
+                onMouseEnter={e => { if (!isActive) (e.currentTarget.style.color = 'rgba(255,255,255,0.9)') }}
+                onMouseLeave={e => { if (!isActive) (e.currentTarget.style.color = 'rgba(255,255,255,0.5)') }}
+                data-testid={`nav-scroll-${id}`}
+                aria-current={isActive ? 'true' : undefined}
+              >
+                {label}
+              </button>
+            )
+          })}
         </div>
 
         <div className="flex items-center gap-3">

@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { generateDigestForUser } from '../services/digestService';
 import { sendWeeklyDigestEmail } from '../services/email';
+import { runWeeklyPipelineReports } from '../scheduler';
 
 const router = Router();
 
@@ -44,6 +45,19 @@ router.post('/send', authMiddleware, async (req: AuthRequest, res: Response): Pr
   } catch (error) {
     console.error('Digest send error:', error);
     res.status(500).json({ error: 'Failed to send digest' });
+  }
+});
+
+// POST /api/digest/weekly — Manually trigger the Monday pipeline report for ALL opted-in users
+// (Acts as a cold-start safety net in case the node-cron job missed its window.)
+// Requires auth: any logged-in user can trigger, but the payload is sent to each user's own email.
+router.post('/weekly', authMiddleware, async (_req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    await runWeeklyPipelineReports();
+    res.json({ message: 'Weekly pipeline reports dispatched', success: true });
+  } catch (error) {
+    console.error('Manual weekly digest error:', error);
+    res.status(500).json({ error: 'Failed to run weekly reports' });
   }
 });
 

@@ -265,10 +265,11 @@ async function runQuoteExpiryWarnings(): Promise<void> {
   }
 }
 
-async function runWeeklyPipelineReports(): Promise<void> {
+export async function runWeeklyPipelineReports(): Promise<void> {
   try {
+    // Iter 144 — opt-out default: include users who haven't explicitly disabled it (null or true).
     const users = await prisma.user.findMany({
-      where: { weeklyReportEnabled: true },
+      where: { weeklyReportEnabled: { not: false } },
     });
     const oneWeekAgo = new Date(Date.now() - 7 * 86400000);
 

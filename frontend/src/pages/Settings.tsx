@@ -47,19 +47,21 @@ const INDUSTRY_OPTIONS = [
   { value: 'FINE_ART', label: 'Fine Art', icon: Palette, desc: 'Commissions, galleries' },
 ]
 
-interface AccentPalette {
+interface AppTheme {
   id: string
   name: string
   description: string
+  emoji: string
   primary: string
-  preview: [string, string]
 }
 
-const ACCENT_PALETTES: AccentPalette[] = [
-  { id: 'kolor',    name: 'KOLOR',         description: 'Default — deep violet',     primary: '#6C2EDB', preview: ['#6C2EDB', '#E8891A'] },
-  { id: 'slate',    name: 'Slate Studio',  description: 'Dark & editorial',          primary: '#1E293B', preview: ['#1E293B', '#D97706'] },
-  { id: 'terra',    name: 'Terra',         description: 'Warm & earthy',             primary: '#92400E', preview: ['#92400E', '#6EE7B7'] },
-  { id: 'midnight', name: 'Midnight',      description: 'Deep indigo & coral',       primary: '#3730A3', preview: ['#3730A3', '#FB7185'] },
+// Iter 144 — Renamed from ACCENT_PALETTES. Emoji-based theme cards replace colour swatches.
+// Back-compat: IDs match previous palette IDs so existing `kolor_palette_id` values keep working.
+const APP_THEMES: AppTheme[] = [
+  { id: 'kolor',    name: 'KOLOR',        description: 'The original. Deep violet energy.', emoji: '🎨', primary: '#6C2EDB' },
+  { id: 'slate',    name: 'Slate Studio', description: 'Clean, editorial and focused.',     emoji: '🖋️', primary: '#1E293B' },
+  { id: 'terra',    name: 'Terra',        description: 'Warm, earthy and grounded.',        emoji: '🌅', primary: '#92400E' },
+  { id: 'midnight', name: 'Midnight',     description: 'Deep indigo. Late-night flow.',     emoji: '🌙', primary: '#3730A3' },
 ]
 
 export default function Settings() {
@@ -76,12 +78,10 @@ export default function Settings() {
   const [businessName, setBusinessName] = useState('')
   const [industry, setIndustry] = useState('')
 
-  // App accent palette (workspace theme)
+  // App theme (workspace personalization)
   const [selectedPaletteId, setSelectedPaletteId] = useState<string>(() => {
     return localStorage.getItem('kolor_palette_id') || 'kolor'
   })
-  // Keep a derived primary value for backward compat readers of `kolor_app_accent`
-  const selectedAccent = ACCENT_PALETTES.find(p => p.id === selectedPaletteId)?.primary || '#6C2EDB'
 
   // Password form
   const [currentPassword, setCurrentPassword] = useState('')
@@ -377,41 +377,43 @@ export default function Settings() {
                       {saving ? <><SpinnerGap className="w-4 h-4 animate-spin" /> Saving...</> : 'Save Changes'}
                     </button>
 
-                    {/* ── Workspace Theme (4 curated palettes) ── */}
+                    {/* ── App Themes (4 curated themes with emoji) ── */}
                     <div className="border-t pt-5 mt-5" style={{ borderColor: 'var(--border)' }} data-testid="accent-colour-section">
-                      <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-0.5 uppercase tracking-wide">Workspace Theme</label>
-                      <p className="text-[11px] text-[var(--text-tertiary)] mb-4">Choose a colour theme for your workspace. Your client-facing brand colours are in the Brand tab.</p>
+                      <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-0.5 uppercase tracking-wide">App Theme</label>
+                      <p className="text-[11px] text-[var(--text-tertiary)] mb-4">Choose a vibe for your workspace. Your client-facing brand colours are in the Brand tab.</p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {ACCENT_PALETTES.map(palette => {
-                          const isActive = selectedPaletteId === palette.id
+                        {APP_THEMES.map(theme => {
+                          const isActive = selectedPaletteId === theme.id
                           return (
                             <button
-                              key={palette.id}
+                              key={theme.id}
                               onClick={() => {
-                                document.documentElement.style.setProperty('--brand-primary', palette.primary)
-                                localStorage.setItem('kolor_palette_id', palette.id)
-                                localStorage.setItem('kolor_app_accent', palette.primary)
-                                setSelectedPaletteId(palette.id)
+                                document.documentElement.style.setProperty('--brand-primary', theme.primary)
+                                localStorage.setItem('kolor_palette_id', theme.id)
+                                localStorage.setItem('kolor_app_accent', theme.primary)
+                                setSelectedPaletteId(theme.id)
                               }}
                               className="flex items-center gap-3 px-3 py-3 rounded-xl border-2 text-left transition-all min-h-[44px]"
                               style={{
-                                borderColor: isActive ? palette.primary : 'var(--border)',
-                                background: isActive ? `${palette.primary}08` : 'var(--surface-base)',
+                                borderColor: isActive ? theme.primary : 'var(--border)',
+                                background: isActive ? `${theme.primary}08` : 'var(--surface-base)',
                               }}
-                              data-testid={`palette-${palette.id}`}
+                              data-testid={`theme-${theme.id}`}
                               aria-pressed={isActive}
                             >
-                              <div className="flex-shrink-0 flex gap-1">
-                                {palette.preview.map((color, i) => (
-                                  <div key={i} className="w-5 h-5 rounded-full border border-white/20" style={{ background: color }} />
-                                ))}
+                              <div
+                                className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-xl"
+                                style={{ background: isActive ? `${theme.primary}15` : 'var(--surface-background)' }}
+                                aria-hidden="true"
+                              >
+                                {theme.emoji}
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-bold text-text-primary">{palette.name}</p>
-                                <p className="text-[10px] text-[var(--text-tertiary)] truncate">{palette.description}</p>
+                                <p className="text-xs font-bold text-text-primary">{theme.name}</p>
+                                <p className="text-[10px] text-[var(--text-tertiary)] truncate">{theme.description}</p>
                               </div>
                               {isActive && (
-                                <div className="ml-auto flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center" style={{ background: palette.primary }} aria-hidden="true">
+                                <div className="ml-auto flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center" style={{ background: theme.primary }} aria-hidden="true">
                                   <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                   </svg>

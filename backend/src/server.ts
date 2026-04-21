@@ -182,6 +182,20 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// Iter 144 — Slow request logger: surfaces any API call slower than 500ms so we can
+// spot DB/endpoint regressions in Railway logs without pulling full APM.
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (!req.path.startsWith('/api')) return next();
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    if (duration > 500) {
+      console.warn(`[Perf] ⚠️ Slow ${req.method} ${req.path} — ${duration}ms (status ${res.statusCode})`);
+    }
+  });
+  next();
+});
+
 // =====================
 // ROUTES
 // =====================
@@ -333,53 +347,53 @@ app.listen(PORT, () => {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   `);
 
-  // Start sequence processor — runs every hour, first run after 15s
+  // Start sequence processor — runs every hour, first run staggered at 5 min post-boot
   const SEQ_INTERVAL = 60 * 60 * 1000; // 1 hour
   setTimeout(() => {
     processSequences().catch(e => console.error('[Seq] Initial run error:', e));
     setInterval(() => {
       processSequences().catch(e => console.error('[Seq] Cron error:', e));
     }, SEQ_INTERVAL);
-  }, 15000);
+  }, 5 * 60 * 1000);
 
-  // Client onboarding sequence processor — runs every 6 hours
+  // Client onboarding sequence processor — runs every 6 hours, first run at 7 min post-boot
   const ONBOARDING_INTERVAL = 6 * 60 * 60 * 1000;
   setTimeout(() => {
     processOnboardingSequences().catch(e => console.error('[Onboarding] Initial run error:', e));
     setInterval(() => {
       processOnboardingSequences().catch(e => console.error('[Onboarding] Cron error:', e));
     }, ONBOARDING_INTERVAL);
-  }, 20000);
+  }, 7 * 60 * 1000);
   console.log('📨 Client onboarding processor scheduled (every 6 hours)');
 
-  // Quote follow-up sequence processor — runs every 6 hours
+  // Quote follow-up sequence processor — runs every 6 hours, first run at 9 min post-boot
   const FOLLOWUP_INTERVAL = 6 * 60 * 60 * 1000;
   setTimeout(() => {
     processQuoteFollowUpSequences().catch(e => console.error('[QuoteFollowUp] Initial run error:', e));
     setInterval(() => {
       processQuoteFollowUpSequences().catch(e => console.error('[QuoteFollowUp] Cron error:', e));
     }, FOLLOWUP_INTERVAL);
-  }, 25000);
+  }, 9 * 60 * 1000);
   console.log('💰 Quote follow-up processor scheduled (every 6 hours)');
 
-  // Scheduled email processor (testimonial requests, file review reminders) — every 2 hours
+  // Scheduled email processor (testimonial requests, file review reminders) — every 2 hours, first run at 11 min post-boot
   const SCHEDULED_EMAIL_INTERVAL = 2 * 60 * 60 * 1000;
   setTimeout(() => {
     processScheduledEmails().catch(e => console.error('[ScheduledEmails] Initial run error:', e));
     setInterval(() => {
       processScheduledEmails().catch(e => console.error('[ScheduledEmails] Cron error:', e));
     }, SCHEDULED_EMAIL_INTERVAL);
-  }, 30000);
+  }, 11 * 60 * 1000);
   console.log('📬 Scheduled email processor started (every 2 hours)');
 
-  // Meeting reminders — runs every hour
+  // Meeting reminders — runs every hour, first run at 13 min post-boot
   const MEETING_REMINDER_INTERVAL = 60 * 60 * 1000;
   setTimeout(() => {
     processMeetingReminders().catch(e => console.error('[MeetingReminders] Initial run error:', e));
     setInterval(() => {
       processMeetingReminders().catch(e => console.error('[MeetingReminders] Cron error:', e));
     }, MEETING_REMINDER_INTERVAL);
-  }, 35000);
+  }, 13 * 60 * 1000);
   console.log('📅 Meeting reminder processor started (every hour)');
 
   // node-cron scheduler for daily + weekly automated emails

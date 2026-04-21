@@ -33,7 +33,6 @@ import SettingsModal from '../components/SettingsModal'
 import AnalyticsDashboard from '../components/AnalyticsDashboard'
 import CalendarViewNew from '../components/CalendarViewNew'
 import PortfolioPage from './Portfolio'
-import HelpMenu from '../components/HelpMenu'
 import FeedbackModal from '../components/FeedbackModal'
 import AnnouncementBanner from '../components/AnnouncementBanner'
 import BookingModal from '../components/BookingModal'
@@ -669,15 +668,7 @@ const Dashboard = () => {
                   data-testid="dashboard-search"
                 />
               </div>
-              <HelpMenu onOpenFeedback={() => setShowFeedback(true)} />
-              <button
-                onClick={() => setShowSettings(true)}
-                className="p-2 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl transition-all duration-200"
-                data-testid="settings-button"
-                title="Settings"
-              >
-                <GearSix className="w-4 h-4" />
-              </button>
+              {/* Iter 144 — HelpMenu + Settings gear removed from top header (kept in sidebar). */}
             </div>
             <button
               onClick={() => setShowAddModal(true)}

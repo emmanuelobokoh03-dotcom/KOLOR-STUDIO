@@ -154,8 +154,8 @@ function QuotePreview({ lead, lineItems, subtotal, tax, taxAmount, total, paymen
           </div>
           {terms && <div className="mt-6 p-4 bg-gray-50 rounded-lg"><h4 className="text-sm font-medium text-gray-700 mb-2">Terms</h4><p className="text-xs text-gray-500 whitespace-pre-line">{terms}</p></div>}
           <div className="flex gap-3 mt-8">
-            <button onClick={onBack} className="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition">Back to Edit</button>
-            <button onClick={onSend} disabled={sending} className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition disabled:opacity-50 flex items-center justify-center gap-2">
+            <button onClick={onBack} className="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition" data-testid="quote-preview-back-btn">Back to Edit</button>
+            <button onClick={onSend} disabled={sending} className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition disabled:opacity-50 flex items-center justify-center gap-2" data-testid="quote-preview-send-btn">
               {sending ? <SpinnerGap className="w-5 h-5 animate-spin" /> : <PaperPlaneTilt className="w-5 h-5" />} {sending ? 'Sending...' : 'Send Quote'}
             </button>
           </div>
@@ -357,7 +357,7 @@ export default function QuoteBuilderModal({
       <div
         ref={modalRef}
         className="bg-[var(--surface-base)] w-screen h-screen md:w-auto md:h-auto md:rounded-2xl overflow-hidden flex flex-col animate-modal-enter motion-reduce:animate-none"
-        style={{ maxWidth: 'min(860px, 95vw)', maxHeight: 'min(700px, 92vh)', width: '100%', height: '100%', border: '0.5px solid var(--border-dark, var(--border))', boxShadow: '0 24px 64px rgba(0,0,0,0.18)' }}
+        style={{ maxWidth: 'min(860px, 95vw)', maxHeight: 'min(700px, 95vh)', width: '100%', height: '100%', border: '0.5px solid var(--border-dark, var(--border))', boxShadow: '0 24px 64px rgba(0,0,0,0.18)' }}
         onClick={e => e.stopPropagation()}
         data-testid="quote-builder-modal"
         role="dialog"

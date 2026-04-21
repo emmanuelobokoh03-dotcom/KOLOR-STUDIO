@@ -7,6 +7,7 @@ import {
   GoogleLogo, Link as LinkIcon, LinkBreak
 } from '@phosphor-icons/react'
 import { meetingTypesApi, availabilityApi, MeetingType, AvailabilitySlot } from '../services/api'
+import { toast } from 'sonner'
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const DAY_SHORTS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -113,9 +114,19 @@ export default function SchedulingSettings() {
       endTime: s.endTime,
       isActive: s.isActive,
     }))
-    const res = await availabilityApi.save(slots)
-    if (res.data) setAvailability(res.data.availability)
-    setSavingAvailability(false)
+    try {
+      const res = await availabilityApi.save(slots)
+      if (res.error) {
+        toast.error(res.message || 'Failed to save availability')
+      } else {
+        if (res.data) setAvailability(res.data.availability)
+        toast.success('Availability saved')
+      }
+    } catch {
+      toast.error('Failed to save availability')
+    } finally {
+      setSavingAvailability(false)
+    }
   }
 
   // Meeting type helpers
@@ -149,25 +160,51 @@ export default function SchedulingSettings() {
       bufferAfter: editingType.bufferAfter,
       maxPerDay: editingType.maxPerDay,
     }
-    if (editingType.id) {
-      await meetingTypesApi.update(editingType.id, payload as any)
-    } else {
-      await meetingTypesApi.create(payload)
+    try {
+      const res = editingType.id
+        ? await meetingTypesApi.update(editingType.id, payload as any)
+        : await meetingTypesApi.create(payload)
+      if (res?.error) {
+        toast.error(res.message || 'Failed to save meeting type')
+      } else {
+        toast.success(editingType.id ? 'Meeting type updated' : 'Meeting type created')
+        setShowMeetingForm(false)
+        setEditingType(null)
+        fetchData()
+      }
+    } catch {
+      toast.error('Failed to save meeting type')
+    } finally {
+      setSavingType(false)
     }
-    setShowMeetingForm(false)
-    setEditingType(null)
-    setSavingType(false)
-    fetchData()
   }
 
   const deleteMeetingType = async (id: string) => {
-    await meetingTypesApi.delete(id)
-    fetchData()
+    try {
+      const res = await meetingTypesApi.delete(id)
+      if (res?.error) {
+        toast.error(res.message || 'Failed to delete meeting type')
+      } else {
+        toast.success('Meeting type deleted')
+        fetchData()
+      }
+    } catch {
+      toast.error('Failed to delete meeting type')
+    }
   }
 
   const toggleMeetingTypeActive = async (mt: MeetingType) => {
-    await meetingTypesApi.update(mt.id, { isActive: !mt.isActive } as any)
-    fetchData()
+    try {
+      const res = await meetingTypesApi.update(mt.id, { isActive: !mt.isActive } as any)
+      if (res?.error) {
+        toast.error(res.message || 'Failed to update meeting type')
+      } else {
+        toast.success(!mt.isActive ? 'Meeting type activated' : 'Meeting type paused')
+        fetchData()
+      }
+    } catch {
+      toast.error('Failed to update meeting type')
+    }
   }
 
   const copyBookingLink = () => {

@@ -166,6 +166,12 @@ export default function Calendar() {
 
   const handleDayClick = (day: Date) => {
     setSelectedDate(day)
+    // Iter 144 — If the clicked day has no events, clear any selected event so
+    // the EventSidePanel collapses instead of showing stale data from a prior day.
+    const dayEvents = getEventsForDay(day)
+    if (dayEvents.length === 0) {
+      setSelectedEvent(null)
+    }
     // On mobile, show the day's events in a slide-in panel
     if (isMobile) {
       setShowMobileDaySheet(true)
