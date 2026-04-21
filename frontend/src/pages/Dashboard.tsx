@@ -355,6 +355,12 @@ const Dashboard = () => {
     setMobileMenuOpen(false)
     setStaleFilter(false)
     trackViewChanged(view)
+    // Iter 145 — Scroll to top so the new view is immediately visible, especially on mobile
+    // where the user may be scrolled deep into a Kanban column. Respect prefers-reduced-motion.
+    if (typeof window !== 'undefined') {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' })
+    }
     // Sync deep-link: `kanban` is the default so it's represented by the absence of `?view=`.
     // Preserve other query params (e.g. `leadId`) while only mutating the `view` param.
     const next = new URLSearchParams(searchParams)

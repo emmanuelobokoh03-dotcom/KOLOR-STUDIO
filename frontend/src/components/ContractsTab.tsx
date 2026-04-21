@@ -71,6 +71,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
   const [error, setError] = useState('');
   const [expandedContract, setExpandedContract] = useState<string | null>(null);
   const [emailComposerContract, setEmailComposerContract] = useState<Contract | null>(null);
+  const [previewContract, setPreviewContract] = useState<Contract | null>(null);
   const [userName, setUserName] = useState('');
   const [studioName, setStudioName] = useState('');
 
@@ -454,16 +455,37 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                       )}
                     </div>
 
-                    {/* Contract preview */}
-                    <div className="px-3 md:px-4 py-4 max-h-[300px] overflow-y-auto">
+                    {/* Contract preview — inline summary with fade + "See full" link (Iter 145) */}
+                    <div className="px-3 md:px-4 py-4 max-h-[200px] overflow-y-auto relative">
                       <div
                         className="prose prose-sm prose-invert max-w-none text-text-secondary [&_h2]:text-text-primary [&_h2]:text-base [&_h2]:font-bold [&_h3]:text-text-primary [&_h3]:text-sm [&_h3]:font-semibold [&_strong]:text-text-primary [&_p]:text-xs [&_p]:leading-relaxed [&_p]:mb-2"
                         dangerouslySetInnerHTML={{ __html: contract.content }}
                       />
+                      {/* Fade gradient hinting there's more below the fold */}
+                      <div
+                        className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
+                        style={{ background: 'linear-gradient(to bottom, transparent, var(--surface-base))' }}
+                        aria-hidden="true"
+                      />
                     </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setPreviewContract(contract); }}
+                      className="w-full py-2 text-xs text-brand-600 hover:text-brand-700 font-medium border-t border-light-200 transition"
+                      data-testid={`see-full-contract-${contract.id}`}
+                    >
+                      See full contract &rarr;
+                    </button>
 
                     {/* Actions */}
                     <div className="px-3 md:px-4 py-3 border-t border-light-200 flex items-center gap-2 flex-wrap">
+                      {/* Preview button — always shown so user can open the full-screen modal with Send inside (Iter 145) */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setPreviewContract(contract); }}
+                        className="flex items-center gap-1.5 px-3 py-2 text-sm text-brand-600 border border-brand-200 hover:bg-brand-50 rounded-xl font-medium touch-target transition"
+                        data-testid={`preview-contract-${contract.id}`}
+                      >
+                        <Eye className="w-4 h-4" /> Preview
+                      </button>
                       {contract.status === 'DRAFT' && (
                         <>
                           <button
@@ -523,6 +545,125 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
           onCancel={() => setEmailComposerContract(null)}
         />
       )}
+
+      {/* Contract Preview Modal (Iter 145) — fullscreen unclipped review with Send button */}
+      {previewContract && (
+        <ContractPreviewModal
+          contract={previewContract}
+          onClose={() => setPreviewContract(null)}
+          onSend={() => {
+            const c = previewContract;
+            setPreviewContract(null);
+            handleSendClick(c);
+          }}
+          sending={sending === previewContract.id}
+        />
+      )}
+    </div>
+  );
+}
+
+// ─── ContractPreviewModal ───────────────────────────────────────────
+function ContractPreviewModal({
+  contract,
+  onClose,
+  onSend,
+  sending,
+}: {
+  contract: Contract
+  onClose: () => void
+  onSend: () => void
+  sending: boolean
+}) {
+  // Close on Escape
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] flex flex-col"
+      data-testid="contract-preview-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="contract-preview-title"
+    >
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* Modal panel */}
+      <div
+        className="relative z-10 flex flex-col bg-surface-base m-4 md:m-8 lg:m-16 rounded-2xl border border-light-200 shadow-2xl overflow-hidden w-auto"
+        style={{ maxHeight: 'calc(100vh - 64px)' }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-light-200 flex-shrink-0">
+          <div className="min-w-0">
+            <h2 id="contract-preview-title" className="text-base font-bold text-text-primary truncate">{contract.title}</h2>
+            <p className="text-xs text-text-secondary mt-0.5">Review before sending to client</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl touch-target transition flex-shrink-0"
+            aria-label="Close preview"
+            data-testid="contract-preview-close-btn"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Scrollable contract body — no max-height clipping */}
+        <div className="flex-1 overflow-y-auto px-6 py-6 md:px-10 md:py-8">
+          <div
+            className="prose prose-sm max-w-none text-text-secondary
+              [&_h1]:text-text-primary [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-4
+              [&_h2]:text-text-primary [&_h2]:text-base [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-2
+              [&_h3]:text-text-primary [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-1
+              [&_strong]:text-text-primary
+              [&_p]:text-sm [&_p]:leading-relaxed [&_p]:mb-3
+              [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1
+              [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1
+              [&_li]:text-sm [&_li]:leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: contract.content }}
+          />
+        </div>
+
+        {/* Footer — always visible, sticky at bottom */}
+        <div className="flex items-center justify-between px-5 py-4 border-t border-light-200 bg-surface-base flex-shrink-0">
+          <button
+            onClick={onClose}
+            className="px-4 py-2.5 text-sm text-text-secondary hover:bg-light-100 rounded-xl font-medium touch-target transition"
+            data-testid="contract-preview-cancel-btn"
+          >
+            Close
+          </button>
+          <div className="flex items-center gap-2">
+            {contract.status !== 'AGREED' && (
+              <button
+                onClick={onSend}
+                disabled={sending}
+                className="flex items-center gap-2 px-6 py-2.5 bg-brand-primary text-white rounded-xl text-sm font-semibold hover:brightness-110 disabled:opacity-50 touch-target transition"
+                data-testid="contract-preview-send-btn"
+              >
+                {sending
+                  ? <><SpinnerGap className="w-4 h-4 animate-spin" /> Sending...</>
+                  : <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> {contract.status === 'DRAFT' ? 'Send to Client' : 'Resend to Client'}</>}
+              </button>
+            )}
+            {contract.status === 'AGREED' && (
+              <div className="flex items-center gap-2 text-green-600 text-sm font-medium">
+                <CheckCircle className="w-4 h-4" /> Agreement Signed
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
