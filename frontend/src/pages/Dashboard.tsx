@@ -138,6 +138,10 @@ const Dashboard = () => {
   const [showSettings, setShowSettings] = useState(false)
   const [settingsInitialTab, setSettingsInitialTab] = useState<'currency' | 'brand' | 'testimonials' | 'email' | 'scheduling' | 'account' | undefined>(undefined)
   const [showFeedback, setShowFeedback] = useState(false)
+  // Iter 146 — Task 1d: collapse industry widgets by default
+  const [showIndustryWidgets, setShowIndustryWidgets] = useState(false)
+  // Iter 146 — Task 2b: sidebar user block dropdown with Settings + Logout
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
   const [stats, setStats] = useState<{ total: number; statusCounts: Record<string, number> } | null>(null)
   const [showBookingModal, setShowBookingModal] = useState(false)
@@ -514,20 +518,43 @@ const Dashboard = () => {
 
         {/* User block */}
         <div
-          className="flex items-center gap-2.5 rounded-[10px] p-2.5 mb-4 cursor-pointer transition-all duration-150 border border-transparent hover:border-purple-200"
+          className="flex items-center gap-2.5 rounded-xl p-2.5 mb-1 cursor-pointer transition-all duration-150 border border-transparent hover:border-purple-200"
           style={{ background: 'var(--surface-background)' }}
-          onClick={() => setShowSettings(true)}
+          onClick={() => setUserMenuOpen(v => !v)}
           data-testid="sidebar-user-block"
         >
-          <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)' }}>
+          <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)' }}>
             {user?.firstName?.[0]}{user?.lastName?.[0]}
           </span>
           <div className="flex-1 min-w-0">
             <div className="text-xs font-bold text-text-primary truncate">{user?.firstName} {user?.lastName}</div>
-            <div className="text-[11px] text-text-secondary">Beta · Free plan</div>
+            <div className="text-xs text-text-secondary">Beta · Free plan</div>
           </div>
-          <CaretDown weight="bold" className="w-3 h-3 text-text-tertiary" />
+          <CaretDown weight="bold" className={`w-3 h-3 text-text-tertiary transition-transform duration-150 ${userMenuOpen ? 'rotate-180' : ''}`} />
         </div>
+
+        {/* Iter 146 — User menu dropdown: Settings + Log out */}
+        {userMenuOpen && (
+          <div
+            className="rounded-lg border overflow-hidden mb-4 animate-fade-in"
+            style={{ background: 'var(--surface-background)', borderColor: 'var(--border)' }}
+          >
+            <button
+              onClick={() => { setShowSettings(true); setUserMenuOpen(false); }}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-text-secondary hover:bg-surface-base hover:text-text-primary transition"
+            >
+              <GearSix weight="regular" className="w-[13px] h-[13px]" /> Settings
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-red-500 hover:bg-red-50 transition"
+              data-testid="sidebar-logout-btn"
+            >
+              <SignOut weight="regular" className="w-[13px] h-[13px]" /> Log out
+            </button>
+          </div>
+        )}
+        {!userMenuOpen && <div className="mb-3" />}
 
         {/* Workspace nav */}
         <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-2">Workspace</div>
@@ -552,7 +579,7 @@ const Dashboard = () => {
             <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-[14px] h-[14px]" />
             {label}
             {badge !== undefined && badge > 0 && (
-              <span className="ml-auto text-[9px] font-bold rounded-full px-1.5 py-px" style={{ background: 'rgba(108,46,219,0.12)', color: '#6C2EDB' }}>{badge}</span>
+              <span className="ml-auto text-[10px] font-bold rounded-full px-1.5 py-px" style={{ background: 'rgba(108,46,219,0.12)', color: '#6C2EDB' }}>{badge}</span>
             )}
           </button>
         ))}
@@ -595,8 +622,8 @@ const Dashboard = () => {
         <div className="flex-1" />
 
         {/* Beta plan card */}
-        <div className="rounded-[9px] p-3 mb-2" style={{ background: 'linear-gradient(135deg, rgba(108,46,219,0.07), rgba(108,46,219,0.03))', border: '0.5px solid rgba(108,46,219,0.18)' }}>
-          <div className="text-[9px] font-bold uppercase tracking-[0.06em]" style={{ color: '#6C2EDB' }}>Beta Access</div>
+        <div className="rounded-lg p-3 mb-2" style={{ background: 'linear-gradient(135deg, rgba(108,46,219,0.07), rgba(108,46,219,0.03))', border: '0.5px solid rgba(108,46,219,0.18)' }}>
+          <div className="text-[10px] font-bold uppercase tracking-[0.06em]" style={{ color: '#6C2EDB' }}>Beta Access</div>
           <div className="text-xs font-bold text-text-primary">$97 one-time</div>
           <div className="text-[10px] text-text-secondary">Founding member &#10022;</div>
         </div>
@@ -604,17 +631,17 @@ const Dashboard = () => {
         {/* Settings */}
         <button
           onClick={() => setShowSettings(true)}
-          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[11px] text-text-secondary hover:bg-surface-background transition-all duration-150 mb-0.5"
+          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-text-secondary hover:bg-surface-background transition-all duration-150 mb-0.5"
           data-testid="sidebar-settings"
         >
-          <GearSix className="w-[14px] h-[14px]" />
+          <GearSix weight="regular" className="w-[14px] h-[14px]" />
           Settings
         </button>
 
         {/* Help */}
         <button
           onClick={() => setShowFeedback(true)}
-          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[11px] text-text-secondary hover:bg-surface-background transition-all duration-150"
+          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-text-secondary hover:bg-surface-background transition-all duration-150"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.3" /><path d="M6 6.2c0-1.1.9-2 2-2s2 .9 2 2c0 .7-.4 1.3-1 1.7-.3.2-.5.4-.6.6-.1.2-.2.3-.2.5M8 11v.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
           Help &amp; feedback
@@ -651,7 +678,7 @@ const Dashboard = () => {
               <h1 className="text-[17px] font-extrabold tracking-[-0.015em] text-text-primary">
                 {getGreeting()}, {user?.firstName} <span style={{ color: '#a78bfa' }}>&#10022;</span>
               </h1>
-              <p className="text-[11px] text-text-secondary">
+              <p className="text-xs text-text-secondary">
                 {(() => {
                   const awaitingCount = leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length
                   if (awaitingCount > 0) return `${awaitingCount} ${awaitingCount === 1 ? lang.lead.toLowerCase() : lang.leads.toLowerCase()} awaiting ${lang.quotes.toLowerCase()}`
@@ -670,7 +697,7 @@ const Dashboard = () => {
                   placeholder="Search anything…"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-[200px] h-8 rounded-[7px] border border-light-200 bg-surface-background text-[11px] pl-8 pr-3 text-text-primary placeholder:text-text-tertiary outline-none focus:border-brand-400"
+                  className="w-[200px] h-8 rounded-lg border border-light-200 bg-surface-background text-xs pl-8 pr-3 text-text-primary placeholder:text-text-tertiary outline-none focus:border-brand-400"
                   data-testid="dashboard-search"
                 />
               </div>
@@ -678,20 +705,13 @@ const Dashboard = () => {
             </div>
             <button
               onClick={() => setShowAddModal(true)}
-              className="hidden lg:flex items-center gap-1.5 h-8 px-3 rounded-[7px] text-white text-[11px] font-semibold transition-colors duration-fast"
+              className="hidden lg:flex items-center gap-1.5 h-8 px-3 rounded-lg text-white text-xs font-semibold transition-colors duration-fast"
               style={{ background: '#6C2EDB' }}
               data-testid="add-lead-topbar"
             >
               <Plus weight="bold" className="w-3.5 h-3.5" /> {lang.newLead.replace('+ ', '')}
             </button>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
-              data-testid="logout-button"
-            >
-              <SignOut className="w-4 h-4" />
-              <span className="hidden md:inline text-sm font-medium">Logout</span>
-            </button>
+            {/* Iter 146 — Task 2b: Logout moved from header into sidebar user block dropdown. */}
           </div>
         </div>
       </header>
@@ -935,28 +955,38 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div className="mb-4 md:mb-6">
-          <RevenuePipelineWidget />
-        </div>
+        {/* Iter 146 — Task 1a: RevenuePipelineWidget removed from kanban/list surface (to move to Analytics in a future iteration). */}
 
         {/* ═══ Two-column layout: Main + Right sidebar ═══ */}
         <div className={`${(viewMode === 'kanban' || viewMode === 'list') ? 'lg:grid lg:gap-6' : ''}`} style={(viewMode === 'kanban' || viewMode === 'list') ? { gridTemplateColumns: '1fr 280px' } : undefined}>
           {/* Left: Main content */}
           <div className="min-w-0">
 
-        {/* CRM Alerts + Revenue Dashboard */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
-          <div data-tour="crm-alerts">
-            <CRMAlerts onLeadClick={(leadId) => {
-              const lead = leads.find(l => l.id === leadId)
-              if (lead) setSelectedLead(lead)
-            }} />
-          </div>
-          <div data-tour="revenue-dashboard">
-            <RevenueDashboard />
-          </div>
-        </div>
+        {/* Iter 146 — Task 1b: CRMAlerts + RevenueDashboard moved to right sidebar to declutter above-the-fold. */}
 
+        {/* Iter 146 — Task 1d: Industry widget toggle (collapsed by default) */}
+        {((user?.industry as string) === 'PHOTOGRAPHY' ||
+          user?.primaryIndustry === 'PHOTOGRAPHY' ||
+          (user?.industry as string) === 'FINE_ART' ||
+          user?.primaryIndustry === 'FINE_ART' ||
+          (user?.industry as string) === 'DESIGN' ||
+          user?.primaryIndustry === 'DESIGN' as any ||
+          user?.primaryIndustry === 'GRAPHIC_DESIGN' ||
+          user?.primaryIndustry === 'WEB_DESIGN' ||
+          user?.primaryIndustry === 'BRANDING' ||
+          user?.primaryIndustry === 'ILLUSTRATION') && (
+          <button
+            onClick={() => setShowIndustryWidgets(v => !v)}
+            className="flex items-center gap-1.5 text-[10px] text-text-tertiary hover:text-text-secondary transition mb-2 touch-target"
+            data-testid="toggle-industry-widgets"
+            aria-expanded={showIndustryWidgets}
+          >
+            <span>{showIndustryWidgets ? '▾' : '▸'}</span>
+            {showIndustryWidgets ? 'Hide studio tools' : 'Show studio tools'}
+          </button>
+        )}
+
+        {showIndustryWidgets && <>
         {/* Industry-Specific Widgets */}
         {/* AUDIT FIX [H1]: Dual-field industry check */}
         {((user?.industry as string) === 'PHOTOGRAPHY' ||
@@ -983,6 +1013,7 @@ const Dashboard = () => {
             onAddLead={() => setShowAddModal(true)}
           />
         )}
+        </>}
         {/* Defensive fallback: prompt user to complete onboarding if industry not set */}
         {!user?.primaryIndustry && (
           <div className="mb-4 md:mb-6 bg-purple-50 border border-purple-200 rounded-xl p-4 md:p-5 flex items-center justify-between gap-4" data-testid="complete-onboarding-banner">
@@ -1019,7 +1050,7 @@ const Dashboard = () => {
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
             <NumberFlow
               value={leads.filter(l => !['BOOKED', 'LOST'].includes(l.status)).length}
-              style={{ fontSize: 56, fontWeight: 700, color: '#1A1A2E', lineHeight: 1 }}
+              style={{ fontSize: 40, fontWeight: 700, color: '#1A1A2E', lineHeight: 1 }}
             />
             <span style={{ fontSize: 14, color: 'rgba(0,0,0,0.35)' }}>{lang.leads.toLowerCase()} in pipeline</span>
           </div>
@@ -1367,6 +1398,17 @@ const Dashboard = () => {
           {/* Right sidebar — visible on desktop for kanban/list views */}
           {(viewMode === 'kanban' || viewMode === 'list') && (
             <aside className="hidden lg:block space-y-4" data-testid="dashboard-right-sidebar">
+              {/* Iter 146 — Task 1b: CRM Alerts + Revenue Dashboard moved into sidebar */}
+              <div data-tour="crm-alerts">
+                <CRMAlerts onLeadClick={(leadId) => {
+                  const lead = leads.find(l => l.id === leadId)
+                  if (lead) setSelectedLead(lead)
+                }} />
+              </div>
+              <div data-tour="revenue-dashboard">
+                <RevenueDashboard />
+              </div>
+
               {/* Revenue Goal Widget */}
               <RevenueGoalWidget
                 bookedThisYear={analytics?.overview.bookedThisYear.value ?? 0}
@@ -1418,7 +1460,7 @@ const Dashboard = () => {
                           setCalendarHintDismissed(true)
                           localStorage.setItem('kolor_calendar_hint_dismissed', 'true')
                         }}
-                        className="text-[11px] text-text-tertiary hover:text-text-secondary transition"
+                        className="text-xs text-text-tertiary hover:text-text-secondary transition"
                         data-testid="dismiss-calendar-widget"
                       >
                         Dismiss

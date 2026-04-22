@@ -16,7 +16,7 @@ function SectionLabel({ children }: { children: string }) {
   return (
     <div className="flex items-center gap-3 mb-8">
       <span className="block w-4 h-px" style={{ background: '#a78bfa' }} />
-      <span className="font-mono-kolor text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: '#a78bfa' }}>
+      <span className="font-mono-kolor text-xs font-bold uppercase tracking-[0.1em]" style={{ color: '#a78bfa' }}>
         {children}
       </span>
     </div>
@@ -92,7 +92,7 @@ function SocialProofStrip() {
           <div key={i} className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <p className="text-sm text-white/80 leading-relaxed mb-4">&ldquo;{q.text}&rdquo;</p>
             <p className="text-xs font-semibold text-white/60">{q.author}</p>
-            <p className="text-[11px] text-white/40">{q.role}</p>
+            <p className="text-xs text-white/40">{q.role}</p>
           </div>
         ))}
       </div>
@@ -145,7 +145,7 @@ function QuoteMockup() {
         <p className="text-[10px] text-white/40 mb-4">For Chiara B. &middot; Valid 30 days</p>
         <div className="space-y-2 mb-4">
           {[['Creative direction', '$2,400'], ['Photography (2 days)', '$3,200'], ['Post-processing', '$800']].map(([item, price], i) => (
-            <div key={i} className="flex justify-between text-[11px]">
+            <div key={i} className="flex justify-between text-xs">
               <span className="text-white/60">{item}</span>
               <span className="text-white/80 font-medium">{price}</span>
             </div>
@@ -218,15 +218,15 @@ function ArtistMockup() {
 function FeatureRowsSection() {
   const rows: Array<{ label: string; title: string; body: string; mockup: JSX.Element; flip?: boolean }> = [
     {
-      label: 'LEADS & PIPELINE',
+      label: 'FOR PHOTOGRAPHERS',
       title: 'Every inquiry. Organised.',
-      body: 'Capture leads from your inquiry form, track them through your pipeline, and never forget a follow-up. Built for the way creatives actually work — not how enterprise software thinks you should.',
+      body: 'Capture leads from your inquiry form, track them through your pipeline, and never forget a follow-up. Built for the way photographers actually work — not how enterprise software thinks you should.',
       mockup: <LeadsMockup />,
     },
     {
-      label: 'QUOTES & CONTRACTS',
+      label: 'FOR DESIGNERS',
       title: 'Look professional from day one.',
-      body: 'Send branded quotes in minutes. When they accept, a contract goes out automatically. Get paid faster with Stripe and Paystack — in your currency, wherever you are.',
+      body: 'Send branded proposals in minutes. When they accept, a project agreement goes out automatically. Get paid faster in your currency, wherever your clients are.',
       mockup: <QuoteMockup />,
       flip: true,
     },
@@ -275,7 +275,7 @@ function FeatureRowsSection() {
             className={`reveal-section flex flex-col ${row.flip ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16`}
           >
             <div className="flex-1">
-              <span className="text-[11px] font-mono font-bold tracking-[0.12em] text-purple-400 mb-3 block">{row.label}</span>
+              <span className="text-xs font-mono font-bold tracking-[0.12em] text-purple-400 mb-3 block">{row.label}</span>
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">{row.title}</h3>
               <p className="text-sm text-white/60 leading-relaxed">{row.body}</p>
             </div>
@@ -369,7 +369,7 @@ function Nav({ onCta }: { onCta: () => void }) {
               <button
                 key={label}
                 onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                className="relative text-[13px] font-medium transition-colors duration-150 bg-transparent border-none cursor-pointer"
+                className="relative text-sm font-medium transition-colors duration-150 bg-transparent border-none cursor-pointer"
                 style={{
                   color: isActive ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.5)',
                   padding: '0 0 4px 0',
@@ -389,7 +389,7 @@ function Nav({ onCta }: { onCta: () => void }) {
         <div className="flex items-center gap-3">
           <Link
             to="/login"
-            className="text-[13px] font-medium transition-colors duration-150"
+            className="text-sm font-medium transition-colors duration-150"
             style={{ color: 'rgba(255,255,255,0.5)' }}
             data-testid="nav-login"
           >
@@ -397,7 +397,7 @@ function Nav({ onCta }: { onCta: () => void }) {
           </Link>
           <button
             onClick={onCta}
-            className="text-[13px] font-semibold text-white rounded-lg transition-colors duration-150"
+            className="text-sm font-semibold text-white rounded-lg transition-colors duration-150"
             style={{ background: '#6C2EDB', padding: '8px 18px' }}
             onMouseEnter={e => (e.currentTarget.style.background = '#5522B8')}
             onMouseLeave={e => (e.currentTarget.style.background = '#6C2EDB')}
@@ -594,7 +594,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
             <div className="text-[12px] font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
               Joined by creatives in 14 countries
             </div>
-            <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            <div className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
               Photography &nbsp;&middot;&nbsp; Design &nbsp;&middot;&nbsp; Fine Art
             </div>
           </div>
@@ -622,7 +622,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
               <div className="flex-1 flex justify-center">
                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-[5px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
                   <span className="w-2 h-2 rounded-full" style={{ background: '#28CA41' }} />
-                  <span className="font-mono-kolor text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>kolorstudio.app/dashboard</span>
+                  <span className="font-mono-kolor text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>kolorstudio.app/dashboard</span>
                 </div>
               </div>
             </div>
@@ -650,7 +650,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
               <div className="flex-1 min-w-0 p-3 md:p-5 min-h-[240px] md:min-h-[340px]" style={{ background: '#100D20', overflow: 'hidden' }}>
                 <div className="flex items-start justify-between mb-3 gap-2">
                   <div>
-                    <div className="text-[11px] font-semibold text-white/80 whitespace-nowrap">Good morning, Sarah <span style={{ color: '#a78bfa' }}>&#10022;</span></div>
+                    <div className="text-xs font-semibold text-white/80 whitespace-nowrap">Good morning, Sarah <span style={{ color: '#a78bfa' }}>&#10022;</span></div>
                   </div>
                   <div className="text-[10px] font-semibold text-white rounded-md px-2.5 py-1 whitespace-nowrap flex-shrink-0" style={{ background: '#6C2EDB' }}>+ New Lead</div>
                 </div>
@@ -669,7 +669,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
                       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', minWidth: 52 }}
                     >
                       <div className="text-sm font-bold text-white/90">{s.val}</div>
-                      <div className="text-[9px] text-white/30 whitespace-nowrap">{s.label}</div>
+                      <div className="text-[10px] text-white/30 whitespace-nowrap">{s.label}</div>
                     </div>
                   ))}
                 </div>
@@ -683,7 +683,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
                   ].map((row, i) => (
                     <div
                       key={row.name}
-                      className="flex items-center justify-between px-3 py-2.5 text-[11px]"
+                      className="flex items-center justify-between px-3 py-2.5 text-xs"
                       style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
                     >
                       <div className="flex items-center gap-2 min-w-0">
@@ -803,7 +803,7 @@ function ProblemSection() {
 
           {painCards.map(card => (
             <div key={card.num} className="p-7 landing-pain-card" style={{ background: '#080612' }}>
-              <div className="text-[11px] font-bold uppercase tracking-[0.08em] mb-3" style={{ color: 'rgba(108,46,219,0.5)' }}>{card.num}</div>
+              <div className="text-xs font-bold uppercase tracking-[0.08em] mb-3" style={{ color: 'rgba(108,46,219,0.5)' }}>{card.num}</div>
               <h3 className="text-base font-semibold text-white/90 mb-2">{card.title}</h3>
               <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>{card.body}</p>
             </div>
@@ -845,11 +845,11 @@ function WorkflowSection() {
           {/* Step 01 */}
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-8">
-              <span className="text-[11px] font-bold tracking-[0.1em] uppercase" style={{ color: '#a78bfa' }}>01</span>
+              <span className="text-xs font-bold tracking-[0.1em] uppercase" style={{ color: '#a78bfa' }}>01</span>
               <div className="w-2 h-2 rounded-full" style={{ background: '#6C2EDB', border: '1px solid #a78bfa' }} />
             </div>
             <h3 className="text-[17px] font-bold text-white/90 mb-2">Capture the lead</h3>
-            <p className="text-[13px] leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <p className="text-sm leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>
               Every inquiry lands in your pipeline automatically. Share a form link — leads arrive directly in your dashboard.
             </p>
             {/* Lead card mockup */}
@@ -859,7 +859,7 @@ function WorkflowSection() {
                 <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
                 <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
               </div>
-              <div className="inline-block text-[9px] font-bold tracking-[0.07em] uppercase px-[7px] py-[2px] rounded mb-2" style={{ background: 'rgba(108,46,219,0.2)', color: '#a78bfa' }}>New inquiry</div>
+              <div className="inline-block text-[10px] font-bold tracking-[0.07em] uppercase px-[7px] py-[2px] rounded mb-2" style={{ background: 'rgba(108,46,219,0.2)', color: '#a78bfa' }}>New inquiry</div>
               <div className="rounded-lg p-3 mb-2" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
                 <div className="text-[12px] font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.85)' }}>Amara Okonkwo</div>
                 <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Wedding &middot; Cape Town &middot; Jun 14</div>
@@ -874,11 +874,11 @@ function WorkflowSection() {
           {/* Step 02 */}
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-8">
-              <span className="text-[11px] font-bold tracking-[0.1em] uppercase" style={{ color: '#a78bfa' }}>02</span>
+              <span className="text-xs font-bold tracking-[0.1em] uppercase" style={{ color: '#a78bfa' }}>02</span>
               <div className="w-2 h-2 rounded-full" style={{ background: '#6C2EDB', border: '1px solid #a78bfa' }} />
             </div>
             <h3 className="text-[17px] font-bold text-white/90 mb-2">Send the quote</h3>
-            <p className="text-[13px] leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <p className="text-sm leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>
               Professional proposals in 2 minutes. Clients approve online — no PDF attachments, no back-and-forth.
             </p>
             {/* Quote mockup */}
@@ -898,7 +898,7 @@ function WorkflowSection() {
                   <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>{row.val}</span>
                 </div>
               ))}
-              <div className="flex justify-between mt-2 pt-2 text-[13px] font-bold" style={{ borderTop: '1px solid rgba(108,46,219,0.3)' }}>
+              <div className="flex justify-between mt-2 pt-2 text-sm font-bold" style={{ borderTop: '1px solid rgba(108,46,219,0.3)' }}>
                 <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11 }}>Total</span>
                 <span style={{ color: '#a78bfa' }}>{'\u00a3'}2,270</span>
               </div>
@@ -908,11 +908,11 @@ function WorkflowSection() {
           {/* Step 03 */}
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-8">
-              <span className="text-[11px] font-bold tracking-[0.1em] uppercase" style={{ color: '#a78bfa' }}>03</span>
+              <span className="text-xs font-bold tracking-[0.1em] uppercase" style={{ color: '#a78bfa' }}>03</span>
               <div className="w-2 h-2 rounded-full" style={{ background: '#6C2EDB', border: '1px solid #a78bfa' }} />
             </div>
             <h3 className="text-[17px] font-bold text-white/90 mb-2">Close the booking</h3>
-            <p className="text-[13px] leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <p className="text-sm leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>
               Contract sent, signed online, and filed automatically. You're booked before they change their mind.
             </p>
             {/* Contract mockup */}
@@ -928,10 +928,10 @@ function WorkflowSection() {
               </div>
               <div className="text-[10px] mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>Booking Agreement — Amara Okonkwo</div>
               <div style={{ borderTop: '1px dashed rgba(255,255,255,0.15)', paddingTop: 8 }}>
-                <div className="text-[9px] mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>Client signature</div>
-                <div className="text-[11px] font-semibold italic" style={{ color: 'rgba(255,255,255,0.8)' }}>Amara Okonkwo</div>
+                <div className="text-[10px] mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>Client signature</div>
+                <div className="text-xs font-semibold italic" style={{ color: 'rgba(255,255,255,0.8)' }}>Amara Okonkwo</div>
               </div>
-              <div className="text-[9px] mt-3" style={{ color: 'rgba(34,197,94,0.6)' }}>Deposit of {'\u00a3'}454 received</div>
+              <div className="text-[10px] mt-3" style={{ color: 'rgba(34,197,94,0.6)' }}>Deposit of {'\u00a3'}454 received</div>
             </div>
           </div>
         </div>
@@ -1008,7 +1008,7 @@ function FeaturesSection() {
           >
             <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Lead management</div>
             <h3 className="text-base font-semibold text-white/90 mb-1">Every lead, always visible</h3>
-            <p className="text-[13px] mb-5" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>From first inquiry to signed contract. Know exactly where every potential client is — without a spreadsheet.</p>
+            <p className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>From first inquiry to signed contract. Know exactly where every potential client is — without a spreadsheet.</p>
 
             {/* Mini kanban */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -1020,8 +1020,8 @@ function FeaturesSection() {
               ].map(col => (
                 <div key={col.col}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[9px] font-bold tracking-[0.07em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>{col.col}</span>
-                    <span className="flex items-center justify-center w-4 h-4 rounded text-[9px]" style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>{col.count}</span>
+                    <span className="text-[10px] font-bold tracking-[0.07em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>{col.col}</span>
+                    <span className="flex items-center justify-center w-4 h-4 rounded text-[10px]" style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>{col.count}</span>
                   </div>
                   {col.cards.map((card, i) => (
                     <div
@@ -1032,8 +1032,8 @@ function FeaturesSection() {
                       onMouseLeave={e => { e.currentTarget.style.borderColor = (card as any).booked ? 'rgba(34,197,94,0.25)' : 'rgba(255,255,255,0.07)'; e.currentTarget.style.transform = 'none' }}
                     >
                       <div className="text-[10px] font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{card.name}</div>
-                      <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{card.meta}</div>
-                      {(card as any).amt && <div className="text-[9px] font-semibold mt-1" style={{ color: (card as any).booked ? 'rgba(34,197,94,0.9)' : 'rgba(34,197,94,0.7)' }}>{(card as any).amt}</div>}
+                      <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{card.meta}</div>
+                      {(card as any).amt && <div className="text-[10px] font-semibold mt-1" style={{ color: (card as any).booked ? 'rgba(34,197,94,0.9)' : 'rgba(34,197,94,0.7)' }}>{(card as any).amt}</div>}
                     </div>
                   ))}
                 </div>
@@ -1051,23 +1051,23 @@ function FeaturesSection() {
           >
             <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Quotes</div>
             <h3 className="text-base font-semibold text-white/90 mb-1">Proposals that close</h3>
-            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>Build, send, and get approved online. Clients approve in one tap from any device.</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>Build, send, and get approved online. Clients approve in one tap from any device.</p>
             <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.8)', border: '1px solid rgba(255,255,255,0.08)', padding: '14px' }}>
               {[
                 { label: 'Full-day shoot', val: '\u00a31,800' },
                 { label: 'Second shooter', val: '\u00a3350' },
                 { label: 'Gallery delivery', val: '\u00a3120' },
               ].map((row, i) => (
-                <div key={i} className="flex justify-between text-[11px] py-[5px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <div key={i} className="flex justify-between text-xs py-[5px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <span style={{ color: 'rgba(255,255,255,0.5)' }}>{row.label}</span>
                   <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>{row.val}</span>
                 </div>
               ))}
               <div className="flex justify-between mt-2 pt-2" style={{ borderTop: '1px solid rgba(108,46,219,0.25)' }}>
-                <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Total</span>
-                <span className="text-[13px] font-bold" style={{ color: '#a78bfa' }}>{'\u00a3'}2,270</span>
+                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Total</span>
+                <span className="text-sm font-bold" style={{ color: '#a78bfa' }}>{'\u00a3'}2,270</span>
               </div>
-              <div className="mt-3 w-full text-center text-white text-[11px] font-semibold py-2 rounded-lg" style={{ background: '#6C2EDB' }}>Approve quote &rarr;</div>
+              <div className="mt-3 w-full text-center text-white text-xs font-semibold py-2 rounded-lg" style={{ background: '#6C2EDB' }}>Approve quote &rarr;</div>
             </div>
           </div>
 
@@ -1081,7 +1081,7 @@ function FeaturesSection() {
           >
             <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Contracts</div>
             <h3 className="text-base font-semibold text-white/90 mb-1">Signed before they change their mind</h3>
-            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>E-signature compliant with ESIGN and eIDAS. Industry-specific templates for photography, design, and fine art.</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>E-signature compliant with ESIGN and eIDAS. Industry-specific templates for photography, design, and fine art.</p>
             <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,10,30,0.8)', border: '1px solid rgba(255,255,255,0.08)', padding: '14px' }}>
               <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-3" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)' }}>
                 <span className="w-[6px] h-[6px] rounded-full flex-shrink-0" style={{ background: '#22c55e' }} />
@@ -1089,12 +1089,12 @@ function FeaturesSection() {
               </div>
               <div className="text-[10px] mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>Booking Agreement — David Mensah</div>
               <div style={{ borderTop: '1px dashed rgba(255,255,255,0.15)', paddingTop: 8, marginBottom: 10 }}>
-                <div className="text-[9px] mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>Client signature</div>
-                <div className="text-[11px] font-semibold italic" style={{ color: 'rgba(255,255,255,0.8)' }}>David Mensah</div>
+                <div className="text-[10px] mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>Client signature</div>
+                <div className="text-xs font-semibold italic" style={{ color: 'rgba(255,255,255,0.8)' }}>David Mensah</div>
               </div>
               <div className="flex gap-2 flex-wrap">
                 {['Photography', 'Fine Art', 'Design'].map(t => (
-                  <span key={t} className="text-[9px] px-2 py-1 rounded" style={{ background: 'rgba(108,46,219,0.15)', border: '1px solid rgba(108,46,219,0.25)', color: '#a78bfa' }}>{t}</span>
+                  <span key={t} className="text-[10px] px-2 py-1 rounded" style={{ background: 'rgba(108,46,219,0.15)', border: '1px solid rgba(108,46,219,0.25)', color: '#a78bfa' }}>{t}</span>
                 ))}
               </div>
             </div>
@@ -1110,10 +1110,10 @@ function FeaturesSection() {
           >
             <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Client portal</div>
             <h3 className="text-base font-semibold text-white/90 mb-1">Your client's home base</h3>
-            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>One link. Quote, contract, and messages — all in one place your clients love.</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>One link. Quote, contract, and messages — all in one place your clients love.</p>
             <div className="rounded-lg p-3 mb-2 text-center" style={{ background: 'rgba(108,46,219,0.12)', border: '1px solid rgba(108,46,219,0.2)' }}>
-              <div className="text-[11px] font-bold mb-1" style={{ color: '#a78bfa' }}>Studio L{'\u00e9'}a K.</div>
-              <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Your project portal</div>
+              <div className="text-xs font-bold mb-1" style={{ color: '#a78bfa' }}>Studio L{'\u00e9'}a K.</div>
+              <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Your project portal</div>
             </div>
             <div className="flex items-center gap-2 rounded-lg px-3 py-2" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
               <span className="w-[5px] h-[5px] rounded-full" style={{ background: '#22c55e' }} />
@@ -1131,7 +1131,7 @@ function FeaturesSection() {
           >
             <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Calendar sync</div>
             <h3 className="text-base font-semibold text-white/90 mb-1">No more double-bookings</h3>
-            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>Google Calendar sync. Every shoot, call, and deadline blocked automatically.</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>Google Calendar sync. Every shoot, call, and deadline blocked automatically.</p>
             <div className="grid grid-cols-7 gap-1">
               {[
                 { d: 'M', n: '10' }, { d: 'T', n: '11', event: 'Shoot' }, { d: 'W', n: '12' },
@@ -1160,7 +1160,7 @@ function FeaturesSection() {
           >
             <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-2" style={{ color: '#a78bfa' }}>Automation</div>
             <h3 className="text-base font-semibold text-white/90 mb-1">Follow-ups on autopilot</h3>
-            <p className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>Automated sequences keep leads warm so nothing falls through the cracks.</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>Automated sequences keep leads warm so nothing falls through the cracks.</p>
             <div>
               {[
                 { label: 'Inquiry received — instant reply', day: 'Day 0', color: '#22c55e' },
@@ -1174,7 +1174,7 @@ function FeaturesSection() {
                   </div>
                   <div>
                     <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>{item.label}</div>
-                    <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.day}</div>
+                    <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.day}</div>
                   </div>
                 </div>
               ))}
@@ -1759,7 +1759,7 @@ function ProductDeepDiveSection() {
             <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
             <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
           </div>
-          <div className="text-[9px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: 'rgba(108,46,219,0.6)' }}>Pipeline &middot; 6 active leads</div>
+          <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: 'rgba(108,46,219,0.6)' }}>Pipeline &middot; 6 active leads</div>
           {[
             { name: 'Amara Okonkwo', meta: 'Commission \u00b7 Cape Town', stage: 'New', dot: '#6C2EDB' },
             { name: 'Sophie Laurent', meta: 'Brand identity \u00b7 Paris', stage: 'Quoted', dot: '#E8891A' },
@@ -1767,12 +1767,12 @@ function ProductDeepDiveSection() {
           ].map((lead) => (
             <div key={lead.name} className="flex items-center justify-between rounded-lg px-3 py-2.5 mb-2" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
               <div>
-                <div className="text-[11px] font-semibold mb-0.5" style={{ color: 'rgba(255,255,255,0.85)' }}>{lead.name}</div>
-                <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{lead.meta}</div>
+                <div className="text-xs font-semibold mb-0.5" style={{ color: 'rgba(255,255,255,0.85)' }}>{lead.name}</div>
+                <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{lead.meta}</div>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-[5px] h-[5px] rounded-full" style={{ background: lead.dot }} />
-                <span className="text-[9px] font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>{lead.stage}</span>
+                <span className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>{lead.stage}</span>
               </div>
             </div>
           ))}
@@ -1791,7 +1791,7 @@ function ProductDeepDiveSection() {
             <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
             <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
           </div>
-          <div className="text-[9px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: 'rgba(232,137,26,0.7)' }}>Quote &middot; Amara Okonkwo</div>
+          <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: 'rgba(232,137,26,0.7)' }}>Quote &middot; Amara Okonkwo</div>
           {[
             { label: 'Oil on canvas (60\u00d780cm)', val: '\u00a31,800' },
             { label: 'Artist certificate + framing', val: '\u00a3240' },
@@ -1802,7 +1802,7 @@ function ProductDeepDiveSection() {
               <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>{row.val}</span>
             </div>
           ))}
-          <div className="flex justify-between mt-3 pt-3 text-[13px] font-bold" style={{ borderTop: '1px solid rgba(108,46,219,0.3)' }}>
+          <div className="flex justify-between mt-3 pt-3 text-sm font-bold" style={{ borderTop: '1px solid rgba(108,46,219,0.3)' }}>
             <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10 }}>Total</span>
             <span style={{ color: '#a78bfa' }}>{'\u00a3'}2,120</span>
           </div>
@@ -1825,7 +1825,7 @@ function ProductDeepDiveSection() {
             <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#FFBD2E' }} />
             <span className="w-[6px] h-[6px] rounded-full" style={{ background: '#28CA41' }} />
           </div>
-          <div className="text-[9px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: 'rgba(108,46,219,0.6)' }}>Email sequences &middot; Running</div>
+          <div className="text-[10px] font-bold tracking-[0.08em] uppercase mb-3" style={{ color: 'rgba(108,46,219,0.6)' }}>Email sequences &middot; Running</div>
           {[
             { label: 'Inquiry received \u2014 instant reply', day: 'Day 0', color: '#22c55e', sent: 12 },
             { label: 'Quote follow-up', day: 'Day 3', color: '#a78bfa', sent: 8 },
@@ -1840,7 +1840,7 @@ function ProductDeepDiveSection() {
                   <div className="text-[8px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.day}</div>
                 </div>
               </div>
-              <span className="text-[9px] font-mono" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.sent} sent</span>
+              <span className="text-[10px] font-mono" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.sent} sent</span>
             </div>
           ))}
         </div>
@@ -1867,7 +1867,7 @@ function ProductDeepDiveSection() {
                 <p className="mb-6 leading-relaxed" style={{ fontSize: 15, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7 }}>{feature.body}</p>
                 <ul className="space-y-2.5">
                   {feature.bullets.map((bullet) => (
-                    <li key={bullet} className="flex items-center gap-3 text-[13px]" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                    <li key={bullet} className="flex items-center gap-3 text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
                       <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
                       {bullet}
                     </li>
@@ -1962,7 +1962,7 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
               <div className="text-4xl font-extrabold text-white mb-1">$97</div>
               <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>One-time payment. Lifetime access. No monthly fees.</p>
               <div
-                className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold mb-5"
+                className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold mb-5"
                 style={{ background: 'rgba(232,137,26,0.15)', border: '1px solid rgba(232,137,26,0.3)', color: '#fbbf24' }}
               >
                 3 spots remaining
@@ -2002,7 +2002,7 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
               </button>
               <ul className="mt-5 space-y-2">
                 {['Lead pipeline + Kanban board', 'Quotes, contracts, e-signature', 'Client portal included', 'Email automation sequences', 'Calendar + Google sync', 'Public portfolio page', 'All 3 industries supported', 'Lifetime access \u00b7 No monthly fee'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  <li key={item} className="flex items-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
                     <span style={{ color: '#22c55e', fontSize: 12, lineHeight: 1 }}>{'\u2713'}</span>
                     {item}
                   </li>
@@ -2029,7 +2029,7 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
               </button>
               <ul className="mt-5 space-y-2">
                 {['Everything in the lifetime plan', 'Rate locked in permanently', 'Priority onboarding support'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                  <li key={item} className="flex items-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
                     <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12, lineHeight: 1 }}>{'\u2713'}</span>
                     {item}
                   </li>
@@ -2058,7 +2058,7 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
 
           {/* PSP trust strip */}
           <div className="mt-8 flex flex-col items-center gap-2" data-testid="psp-trust-strip">
-            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Secure payments via</p>
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>Secure payments via</p>
             <div className="flex items-center gap-3 flex-wrap justify-center">
               <div
                 className="flex items-center gap-1.5 rounded-lg px-3 py-1.5"
@@ -2067,8 +2067,8 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="#a5b4fc" aria-hidden="true">
                   <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z"/>
                 </svg>
-                <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>Stripe</span>
-                <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.2)' }}>Global</span>
+                <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>Stripe</span>
+                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.2)' }}>Global</span>
               </div>
               <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 10 }}>·</span>
               <div
@@ -2079,8 +2079,8 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
                   <circle cx="12" cy="12" r="9"/>
                   <path d="M3 12h18M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18" strokeLinecap="round"/>
                 </svg>
-                <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>Paystack</span>
-                <span className="text-[9px]" style={{ color: 'rgba(0,196,140,0.7)' }}>NG · GH · ZA · KE</span>
+                <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>Paystack</span>
+                <span className="text-[10px]" style={{ color: 'rgba(0,196,140,0.7)' }}>NG · GH · ZA · KE</span>
               </div>
             </div>
             <p className="text-[10px] mt-1" style={{ color: 'rgba(255,255,255,0.18)' }}>
@@ -2148,7 +2148,7 @@ function Footer() {
   return (
     <footer className="px-6 md:px-10" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '40px 24px' }} data-testid="footer">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.3)' }}>KOLOR Studio</span>
+        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>KOLOR Studio</span>
         <span className="text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>&copy; {new Date().getFullYear()} KOLOR Studio. Built for creatives.</span>
         <div className="flex gap-4 text-xs">
           <Link to="/privacy" className="transition-colors duration-150" style={{ color: 'rgba(255,255,255,0.3)' }} onMouseEnter={e => (e.currentTarget.style.color = '#fff')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}>Privacy</Link>

@@ -62,26 +62,25 @@ export function QuickActions({
       label: lang.quoteVerb,
       sub: noQuoteLead ? lang.quickActions.sendQuoteSub : `Create a new ${lang.quote.toLowerCase()}`,
       dot: null,
+      hasAction: true,
       onClick: () => onSendQuote(noQuoteLead),
     },
     {
       key: 'follow-up',
       icon: Clock,
       label: 'Follow up on stale leads',
-      sub: staleCount > 0
-        ? `${staleCount} ${lang.leads.toLowerCase()} with no activity in 7+ days`
-        : `All ${lang.leads.toLowerCase()} are up to date`,
-      dot: staleCount > 0 ? '#E8891A' : null,
+      sub: `${staleCount} ${lang.leads.toLowerCase()} need attention`,
+      dot: '#E8891A',
+      hasAction: staleCount > 0,
       onClick: () => onFollowUpStale(staleLeads),
     },
     {
       key: 'schedule',
       icon: CalendarBlank,
       label: "Check today's schedule",
-      sub: todayCount > 0
-        ? `${todayCount} event${todayCount > 1 ? 's' : ''} today`
-        : 'Nothing scheduled today',
-      dot: todayCount > 0 ? '#10B981' : null,
+      sub: `${todayCount} event${todayCount > 1 ? 's' : ''} today`,
+      dot: '#10B981',
+      hasAction: todayCount > 0,
       onClick: onCheckSchedule,
     },
     {
@@ -90,9 +89,13 @@ export function QuickActions({
       label: `Add a ${lang.lead.toLowerCase()}`,
       sub: lang.quickActions.addLeadSub,
       dot: null,
+      hasAction: true,
       onClick: onAddLead,
     },
   ]
+
+  const activeActions = actions.filter(a => a.hasAction)
+  const allCaughtUp = activeActions.length <= 2 // only send-quote and add-lead
 
   return (
     <div
@@ -106,15 +109,15 @@ export function QuickActions({
         style={{ borderBottom: '0.5px solid var(--border)' }}
       >
         <Lightning weight="duotone" className="w-3.5 h-3.5" style={{ color: '#6C2EDB' }} />
-        <span className="text-[13px] font-bold" style={{ color: 'var(--text-primary)' }}>
+        <span className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>
           Quick actions
         </span>
       </div>
 
-      {/* Action list */}
-      {actions.map((a, i) => {
+      {/* Action list — Iter 146: only show actionable rows */}
+      {activeActions.map((a, i) => {
         const Icon = a.icon
-        const isLast = i === actions.length - 1
+        const isLast = i === activeActions.length - 1 && !allCaughtUp
         return (
           <button
             key={a.key}
@@ -132,15 +135,14 @@ export function QuickActions({
           >
             {/* Icon */}
             <div
-              className="flex items-center justify-center flex-shrink-0"
+              className="flex items-center justify-center flex-shrink-0 rounded-lg"
               style={{
                 width: 28,
                 height: 28,
-                borderRadius: 7,
                 background: 'rgba(108,46,219,0.08)',
               }}
             >
-              <Icon weight="duotone" className="w-3.5 h-3.5" style={{ color: '#6C2EDB' }} />
+              <Icon weight="regular" className="w-3.5 h-3.5" style={{ color: '#6C2EDB' }} />
             </div>
 
             {/* Label + Sub */}
@@ -180,6 +182,18 @@ export function QuickActions({
           </button>
         )
       })}
+
+      {/* Iter 146 — Task 5: 'All caught up' confirmation replaces blank-state rows */}
+      {allCaughtUp && (
+        <div
+          className="flex items-center gap-2 px-4 py-3 text-[10px] text-text-tertiary border-t"
+          style={{ borderColor: 'var(--border)' }}
+          data-testid="quick-actions-caught-up"
+        >
+          <span style={{ color: '#10B981' }}>✓</span>
+          No stale leads · Nothing scheduled today
+        </div>
+      )}
     </div>
   )
 }

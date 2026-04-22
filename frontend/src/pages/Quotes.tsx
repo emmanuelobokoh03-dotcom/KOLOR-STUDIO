@@ -146,11 +146,11 @@ function StatsStrip({ quotes, lang, currencySymbol }: { quotes: Quote[]; lang: I
       {chips.map((chip) => (
         <div
           key={chip.label}
-          className="rounded-[9px] bg-[var(--surface-base)] px-3.5 py-3"
+          className="rounded-lg bg-[var(--surface-base)] px-3.5 py-3"
           style={{ border: '0.5px solid var(--border)' }}
           data-testid={`stat-${chip.label.toLowerCase().replace(/\s+/g, '-')}`}
         >
-          <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-1">{chip.label}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-1">{chip.label}</p>
           <p className="text-xl font-extrabold tabular-nums text-text-primary" style={{ color: chip.label === 'Awaiting approval' && stats.awaiting > 0 ? '#D97706' : undefined }}>{chip.value}</p>
           <p className="text-[10px] mt-0.5" style={{ color: chip.trendColor }}>{chip.trend}</p>
         </div>
@@ -179,7 +179,7 @@ function TabRow({ tabs, active, onTabChange, quotes }: {
 
   return (
     <div
-      className="flex items-center gap-1 rounded-[9px] bg-[var(--surface-base)] p-1 mb-4 overflow-x-auto scrollbar-hide"
+      className="flex items-center gap-1 rounded-xl bg-[var(--surface-base)] p-1 mb-4 overflow-x-auto scrollbar-hide"
       style={{ border: '0.5px solid var(--border)' }}
       data-testid="quotes-tab-row"
     >
@@ -187,7 +187,7 @@ function TabRow({ tabs, active, onTabChange, quotes }: {
         <button
           key={tab.key}
           onClick={() => onTabChange(tab.key)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] text-xs font-medium whitespace-nowrap transition-all duration-150 ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all duration-150 ${
             active === tab.key
               ? 'font-bold text-[#6C2EDB]'
               : 'text-[var(--text-secondary)] hover:text-text-primary hover:bg-[var(--surface-background)]'
@@ -245,7 +245,7 @@ function QuoteRow({ quote, lang, currencySymbol, onEdit, onSend, onPreview, onDu
       {/* Client cell */}
       <div className="flex items-center gap-2.5 min-w-0">
         <div
-          className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0"
+          className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
           style={isDraft ? { border: '1.5px solid var(--border-dark, #6B7280)', background: 'transparent', color: 'var(--text-secondary)' } : { background: `${avatarColor}18`, color: avatarColor }}
         >
           {initials}
@@ -265,7 +265,7 @@ function QuoteRow({ quote, lang, currencySymbol, onEdit, onSend, onPreview, onDu
       </div>
 
       {/* Quote number cell */}
-      <div className="text-[11px] font-mono text-[var(--text-secondary)] truncate">
+      <div className="text-xs font-mono text-[var(--text-secondary)] truncate">
         {quote.quoteNumber || `QT-${(quote.id || '').slice(-4).toUpperCase()}`}
       </div>
 
@@ -280,14 +280,14 @@ function QuoteRow({ quote, lang, currencySymbol, onEdit, onSend, onPreview, onDu
       </div>
 
       {/* Sent date cell */}
-      <div className="text-[11px] text-[var(--text-secondary)] tabular-nums">
+      <div className="text-xs text-[var(--text-secondary)] tabular-nums">
         {quote.sentAt ? formatShortDate(quote.sentAt) : '—'}
       </div>
 
       {/* Value cell + hover actions */}
       <div className="relative flex items-center justify-end">
         {/* Default: show value */}
-        <span className={`text-[11px] font-bold text-text-primary tabular-nums group-hover:hidden ${isDraft ? 'opacity-60' : ''}`}>
+        <span className={`text-xs font-bold text-text-primary tabular-nums group-hover:hidden ${isDraft ? 'opacity-60' : ''}`}>
           {fmtCurrencyCompact(quote.total, currencySymbol)}
         </span>
         {/* Hover: show quick-actions */}
@@ -316,20 +316,20 @@ function QuoteRow({ quote, lang, currencySymbol, onEdit, onSend, onPreview, onDu
             </button>
             {menuOpen && (
               <div className="absolute right-0 top-8 bg-[var(--surface-base)] rounded-lg shadow-xl z-20 py-1 min-w-[130px]" style={{ border: '0.5px solid var(--border)' }}>
-                <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit(quote) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
+                <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit(quote) }} className="w-full px-3 py-1.5 text-left text-xs hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
                   <PencilSimple className="w-3 h-3" /> Edit
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDuplicate(quote) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
+                <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDuplicate(quote) }} className="w-full px-3 py-1.5 text-left text-xs hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
                   <Copy className="w-3 h-3" /> Duplicate
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onCopyLink(quote) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
+                <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onCopyLink(quote) }} className="w-full px-3 py-1.5 text-left text-xs hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
                   <ArrowSquareOut className="w-3 h-3" /> Copy link
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); quotesApi.downloadPdf(quote.id) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
+                <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); quotesApi.downloadPdf(quote.id) }} className="w-full px-3 py-1.5 text-left text-xs hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
                   <DownloadSimple className="w-3 h-3" /> PDF
                 </button>
                 {isDraft && (
-                  <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDelete(quote) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-red-50 text-red-500 flex items-center gap-2">
+                  <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDelete(quote) }} className="w-full px-3 py-1.5 text-left text-xs hover:bg-red-50 text-red-500 flex items-center gap-2">
                     <Trash className="w-3 h-3" /> Delete
                   </button>
                 )}
@@ -482,14 +482,14 @@ export default function QuotesPage({ lang, user, leads }: QuotesPageProps) {
       <div className="flex items-start justify-between mb-5" data-testid="quotes-topbar">
         <div>
           <h1 className="text-base font-extrabold text-text-primary">{lang.quotes}</h1>
-          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             {quotes.length} total · {fmtCurrencyCompact(totalSentValue, currencySymbol)} sent · {awaitingCount} awaiting approval
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={handleNewQuote}
-            className="h-8 px-3.5 rounded-lg text-[11px] font-semibold text-white transition-colors flex items-center gap-1.5"
+            className="h-8 px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center gap-1.5"
             style={{ background: '#6C2EDB' }}
             data-testid="new-quote-btn"
           >
@@ -513,20 +513,20 @@ export default function QuotesPage({ lang, user, leads }: QuotesPageProps) {
             onCta={handleNewQuote}
           />
         ) : (
-          <div className="py-16 text-center rounded-[10px] bg-[var(--surface-base)]" style={{ border: '0.5px solid var(--border)' }} data-testid="quotes-empty-filter">
+          <div className="py-16 text-center rounded-xl bg-[var(--surface-base)]" style={{ border: '0.5px solid var(--border)' }} data-testid="quotes-empty-filter">
             <p className="text-sm text-[var(--text-secondary)] mb-1">No {lang.quotes.toLowerCase()} match this filter</p>
             <button onClick={() => setActiveTab('all')} className="text-xs text-[#6C2EDB] font-medium hover:underline">View all</button>
           </div>
         )
       ) : (
-        <div className="rounded-[10px] bg-[var(--surface-base)] overflow-hidden" style={{ border: '0.5px solid var(--border)' }} data-testid="quotes-list-table">
+        <div className="rounded-xl bg-[var(--surface-base)] overflow-hidden" style={{ border: '0.5px solid var(--border)' }} data-testid="quotes-list-table">
           {/* Header */}
           <div className="grid items-center px-3.5 py-2.5 bg-[var(--surface-background)]" style={{ gridTemplateColumns: '1fr 88px 120px 72px 88px', borderBottom: '0.5px solid var(--border)' }}>
-            <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.quote} #</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Status</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Sent</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Value</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.quote} #</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Status</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Sent</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Value</span>
           </div>
           {filteredQuotes.map(quote => (
             <QuoteRow

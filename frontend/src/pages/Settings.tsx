@@ -50,18 +50,47 @@ const INDUSTRY_OPTIONS = [
 interface AppTheme {
   id: string
   name: string
-  description: string
-  emoji: string
+  tagline: string
   primary: string
+  surfaceTint: string
+  glyph: string
 }
 
-// Iter 144 — Renamed from ACCENT_PALETTES. Emoji-based theme cards replace colour swatches.
-// Back-compat: IDs match previous palette IDs so existing `kolor_palette_id` values keep working.
+// Iter 146 — Named app themes with glyph + tagline (replaces emoji cards from Iter 144).
+// Back-compat: IDs match previous values so `kolor_palette_id` + `kolor_app_accent` keep working.
 const APP_THEMES: AppTheme[] = [
-  { id: 'kolor',    name: 'KOLOR',        description: 'The original. Deep violet energy.', emoji: '🎨', primary: '#6C2EDB' },
-  { id: 'slate',    name: 'Slate Studio', description: 'Clean, editorial and focused.',     emoji: '🖋️', primary: '#1E293B' },
-  { id: 'terra',    name: 'Terra',        description: 'Warm, earthy and grounded.',        emoji: '🌅', primary: '#92400E' },
-  { id: 'midnight', name: 'Midnight',     description: 'Deep indigo. Late-night flow.',     emoji: '🌙', primary: '#3730A3' },
+  {
+    id: 'kolor',
+    name: 'KOLOR',
+    tagline: 'Default · deep violet',
+    primary: '#6C2EDB',
+    surfaceTint: 'rgba(108,46,219,0.05)',
+    glyph: '✦',
+  },
+  {
+    id: 'slate',
+    name: 'Slate Studio',
+    tagline: 'Dark & editorial',
+    primary: '#1E293B',
+    surfaceTint: 'rgba(30,41,59,0.05)',
+    glyph: '◈',
+  },
+  {
+    id: 'terra',
+    name: 'Terra',
+    tagline: 'Warm & earthy',
+    primary: '#92400E',
+    surfaceTint: 'rgba(146,64,14,0.05)',
+    glyph: '◉',
+  },
+  {
+    id: 'midnight',
+    name: 'Midnight',
+    tagline: 'Deep indigo & coral',
+    primary: '#3730A3',
+    surfaceTint: 'rgba(55,48,163,0.05)',
+    glyph: '◆',
+  },
 ]
 
 export default function Settings() {
@@ -79,9 +108,16 @@ export default function Settings() {
   const [industry, setIndustry] = useState('')
 
   // App theme (workspace personalization)
-  const [selectedPaletteId, setSelectedPaletteId] = useState<string>(() => {
+  const [selectedThemeId, setSelectedThemeId] = useState<string>(() => {
     return localStorage.getItem('kolor_palette_id') || 'kolor'
   })
+
+  // Iter 146 — Apply stored theme on mount to keep --brand-primary consistent with saved choice
+  useEffect(() => {
+    const theme = APP_THEMES.find(t => t.id === selectedThemeId)
+    if (theme) document.documentElement.style.setProperty('--brand-primary', theme.primary)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Password form
   const [currentPassword, setCurrentPassword] = useState('')
@@ -377,13 +413,13 @@ export default function Settings() {
                       {saving ? <><SpinnerGap className="w-4 h-4 animate-spin" /> Saving...</> : 'Save Changes'}
                     </button>
 
-                    {/* ── App Themes (4 curated themes with emoji) ── */}
+                    {/* ── App Themes (Iter 146: glyph + name + tagline cards) ── */}
                     <div className="border-t pt-5 mt-5" style={{ borderColor: 'var(--border)' }} data-testid="accent-colour-section">
                       <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-0.5 uppercase tracking-wide">App Theme</label>
-                      <p className="text-[11px] text-[var(--text-tertiary)] mb-4">Choose a vibe for your workspace. Your client-facing brand colours are in the Brand tab.</p>
+                      <p className="text-[10px] text-[var(--text-tertiary)] mb-4">Choose a vibe for your workspace. Your client-facing brand colours are in the Brand tab.</p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {APP_THEMES.map(theme => {
-                          const isActive = selectedPaletteId === theme.id
+                          const isActive = selectedThemeId === theme.id
                           return (
                             <button
                               key={theme.id}
@@ -391,33 +427,34 @@ export default function Settings() {
                                 document.documentElement.style.setProperty('--brand-primary', theme.primary)
                                 localStorage.setItem('kolor_palette_id', theme.id)
                                 localStorage.setItem('kolor_app_accent', theme.primary)
-                                setSelectedPaletteId(theme.id)
+                                setSelectedThemeId(theme.id)
                               }}
-                              className="flex items-center gap-3 px-3 py-3 rounded-xl border-2 text-left transition-all min-h-[44px]"
+                              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-left transition-all min-h-[44px]"
                               style={{
-                                borderColor: isActive ? theme.primary : 'var(--border)',
-                                background: isActive ? `${theme.primary}08` : 'var(--surface-base)',
+                                border: `2px solid ${isActive ? theme.primary : 'var(--border)'}`,
+                                background: isActive ? theme.surfaceTint : 'var(--surface-base)',
                               }}
                               data-testid={`theme-${theme.id}`}
                               aria-pressed={isActive}
                             >
+                              {/* Glyph block */}
                               <div
-                                className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-xl"
-                                style={{ background: isActive ? `${theme.primary}15` : 'var(--surface-background)' }}
+                                className="w-9 h-9 rounded-lg flex items-center justify-center text-base font-bold flex-shrink-0 text-white"
+                                style={{ background: theme.primary }}
                                 aria-hidden="true"
                               >
-                                {theme.emoji}
+                                {theme.glyph}
                               </div>
+                              {/* Label */}
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-bold text-text-primary">{theme.name}</p>
-                                <p className="text-[10px] text-[var(--text-tertiary)] truncate">{theme.description}</p>
+                                <p className="text-xs font-bold text-text-primary leading-tight">{theme.name}</p>
+                                <p className="text-[10px] mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{theme.tagline}</p>
                               </div>
+                              {/* Active checkmark */}
                               {isActive && (
-                                <div className="ml-auto flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center" style={{ background: theme.primary }} aria-hidden="true">
-                                  <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                  </svg>
-                                </div>
+                                <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke={theme.primary} strokeWidth={2.5} aria-hidden="true">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
                               )}
                             </button>
                           )
@@ -732,7 +769,7 @@ function BrandTab({
         </p>
 
         {/* Logo upload */}
-        <label className="block text-[11px] font-semibold uppercase text-[var(--text-secondary)] mb-2">Logo</label>
+        <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-2">Logo</label>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
           <div style={{ width: 64, height: 64, borderRadius: 12, border: '0.5px solid var(--border)', background: 'var(--surface-background)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             {brandLogoUrl ? (

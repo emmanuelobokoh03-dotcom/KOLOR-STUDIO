@@ -125,11 +125,11 @@ function StatsStrip({ contracts, lang }: { contracts: Contract[]; lang: Industry
       {chips.map((chip) => (
         <div
           key={chip.label}
-          className="rounded-[9px] bg-[var(--surface-base)] px-3.5 py-3"
+          className="rounded-lg bg-[var(--surface-base)] px-3.5 py-3"
           style={{ border: '0.5px solid var(--border)' }}
           data-testid={`stat-${chip.label.toLowerCase().replace(/\s+/g, '-')}`}
         >
-          <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-1">{chip.label}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-1">{chip.label}</p>
           <p className="text-xl font-extrabold tabular-nums text-text-primary" style={{ color: chip.label === 'Awaiting signature' && parseInt(chip.value) > 0 ? '#D97706' : undefined }}>{chip.value}</p>
           <p className="text-[10px] mt-0.5" style={{ color: chip.trendColor }}>{chip.trend}</p>
         </div>
@@ -157,7 +157,7 @@ function TabRow({ tabs, active, onTabChange, contracts }: {
 
   return (
     <div
-      className="flex items-center gap-1 rounded-[9px] bg-[var(--surface-base)] p-1 mb-4 overflow-x-auto scrollbar-hide"
+      className="flex items-center gap-1 rounded-xl bg-[var(--surface-base)] p-1 mb-4 overflow-x-auto scrollbar-hide"
       style={{ border: '0.5px solid var(--border)' }}
       data-testid="contracts-tab-row"
     >
@@ -165,7 +165,7 @@ function TabRow({ tabs, active, onTabChange, contracts }: {
         <button
           key={tab.key}
           onClick={() => onTabChange(tab.key)}
-          className={`flex items-center gap-1.5 px-3 py-2.5 md:py-1.5 min-h-[44px] md:min-h-0 rounded-[7px] text-xs font-medium whitespace-nowrap transition-all duration-150 ${
+          className={`flex items-center gap-1.5 px-3 py-2.5 md:py-1.5 min-h-[44px] md:min-h-0 rounded-lg text-xs font-medium whitespace-nowrap transition-all duration-150 ${
             active === tab.key
               ? 'font-bold text-[#6C2EDB]'
               : 'text-[var(--text-secondary)] hover:text-text-primary hover:bg-[var(--surface-background)]'
@@ -223,7 +223,7 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
       {/* Client cell */}
       <div className="flex items-center gap-2.5 min-w-0">
         <div
-          className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0"
+          className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
           style={isDraft ? { border: '1.5px solid var(--border-dark, #6B7280)', background: 'transparent', color: 'var(--text-secondary)' } : { background: `${avatarColor}18`, color: avatarColor }}
         >
           {isSigned ? <CheckCircle weight="fill" className="w-3.5 h-3.5" style={{ color: '#10B981' }} /> : initials}
@@ -264,24 +264,24 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
             {CONTRACT_STATUS_LABELS[contract.status]}
           </span>
         </div>
-        <div className="text-[11px] text-[var(--text-secondary)] truncate">
+        <div className="text-xs text-[var(--text-secondary)] truncate">
           {CONTRACT_TYPE_LABELS[contract.templateType] || contract.templateType}
         </div>
-        <span className="text-[11px] text-[var(--text-secondary)] tabular-nums ml-auto md:hidden">
+        <span className="text-xs text-[var(--text-secondary)] tabular-nums ml-auto md:hidden">
           {contract.sentAt ? formatShortDate(contract.sentAt) : '\u2014'}
         </span>
       </div>
 
       {/* Actions: always visible on mobile, hover on desktop */}
       <div className="relative flex items-center justify-end">
-        <span className="text-[11px] text-[var(--text-secondary)] tabular-nums hidden md:inline md:group-hover:hidden">
+        <span className="text-xs text-[var(--text-secondary)] tabular-nums hidden md:inline md:group-hover:hidden">
           {contract.sentAt ? formatShortDate(contract.sentAt) : '\u2014'}
         </span>
         <div className="flex md:hidden md:group-hover:flex items-center gap-1" data-testid={`contract-quick-actions-${contract.id}`}>
           {isDraft && (
             <button
               onClick={(e) => { e.stopPropagation(); onSend(contract) }}
-              className="h-9 md:h-7 px-3 md:px-2 rounded-md text-[11px] md:text-[10px] font-semibold text-white whitespace-nowrap transition-colors"
+              className="h-9 md:h-7 px-3 md:px-2 rounded-md text-xs md:text-[10px] font-semibold text-white whitespace-nowrap transition-colors"
               style={{ background: '#6C2EDB' }}
               data-testid={`contract-send-${contract.id}`}
             >
@@ -291,7 +291,7 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
           {(contract.status === 'SENT' || contract.status === 'VIEWED') && (
             <button
               onClick={(e) => { e.stopPropagation(); onSend(contract) }}
-              className="h-9 md:h-7 px-3 md:px-2 rounded-md text-[11px] md:text-[10px] font-semibold text-white whitespace-nowrap transition-colors"
+              className="h-9 md:h-7 px-3 md:px-2 rounded-md text-xs md:text-[10px] font-semibold text-white whitespace-nowrap transition-colors"
               style={{ background: '#6C2EDB' }}
               data-testid={`contract-resend-${contract.id}`}
             >
@@ -308,12 +308,12 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
             {menuOpen && (
               <div className="absolute right-0 top-8 bg-[var(--surface-base)] rounded-lg shadow-xl z-20 py-1 min-w-[130px]" style={{ border: '0.5px solid var(--border)' }}>
                 {isDraft && (
-                  <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit(contract) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
+                  <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit(contract) }} className="w-full px-3 py-1.5 text-left text-xs hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
                     <PencilSimple className="w-3 h-3" /> Edit
                   </button>
                 )}
                 {contract.lead?.portalToken && (
-                  <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onViewPortal(contract) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
+                  <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onViewPortal(contract) }} className="w-full px-3 py-1.5 text-left text-xs hover:bg-[var(--surface-background)] text-[var(--text-secondary)] flex items-center gap-2">
                     <ArrowSquareOut className="w-3 h-3" /> View portal
                   </button>
                 )}
@@ -329,7 +329,7 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
                       </button>
                     </div>
                   ) : (
-                    <button onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }} className="w-full px-3 py-1.5 text-left text-[11px] hover:bg-red-50 text-red-500 flex items-center gap-2">
+                    <button onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }} className="w-full px-3 py-1.5 text-left text-xs hover:bg-red-50 text-red-500 flex items-center gap-2">
                       <Trash className="w-3 h-3" /> Delete
                     </button>
                   )
@@ -434,7 +434,7 @@ export default function ContractsPage({ lang, user, leads, onLeadClick, onLeadCl
       <div className="flex items-start justify-between mb-5" data-testid="contracts-topbar">
         <div>
           <h1 className="text-base font-extrabold text-text-primary">{lang.contracts}</h1>
-          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             {contracts.length} total &middot; {awaitingCount} awaiting signature
           </p>
         </div>
@@ -458,19 +458,19 @@ export default function ContractsPage({ lang, user, leads, onLeadClick, onLeadCl
             }}
           />
         ) : (
-          <div className="py-16 text-center rounded-[10px] bg-[var(--surface-base)]" style={{ border: '0.5px solid var(--border)' }} data-testid="contracts-empty-filter">
+          <div className="py-16 text-center rounded-xl bg-[var(--surface-base)]" style={{ border: '0.5px solid var(--border)' }} data-testid="contracts-empty-filter">
             <p className="text-sm text-[var(--text-secondary)] mb-1">No {lang.contracts.toLowerCase()} match this filter</p>
             <button onClick={() => setActiveTab('all')} className="text-xs text-[#6C2EDB] font-medium hover:underline">View all</button>
           </div>
         )
       ) : (
-        <div className="rounded-[10px] bg-[var(--surface-base)] overflow-hidden" style={{ border: '0.5px solid var(--border)' }} data-testid="contracts-list-table">
+        <div className="rounded-xl bg-[var(--surface-base)] overflow-hidden" style={{ border: '0.5px solid var(--border)' }} data-testid="contracts-list-table">
           {/* Header - desktop only */}
           <div className="hidden md:grid items-center px-3.5 py-2.5 bg-[var(--surface-background)]" style={{ gridTemplateColumns: '1fr 120px 100px 72px', borderBottom: '0.5px solid var(--border)' }}>
-            <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Status</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Type</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Sent</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Status</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Type</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Sent</span>
           </div>
           {filteredContracts.map(contract => (
             <ContractRow

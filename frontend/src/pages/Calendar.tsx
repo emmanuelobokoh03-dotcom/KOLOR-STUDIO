@@ -435,12 +435,12 @@ function MonthView({
             <div
               key={i}
               onClick={() => onDayClick(day)}
-              className={`min-h-[80px] md:min-h-[100px] border-b border-r border-light-200 p-1 md:p-1.5 cursor-pointer transition-colors hover:bg-brand-50/30 ${
+              className={`min-h-[88px] md:min-h-[110px] border-b border-r border-light-200 p-1 md:p-1.5 cursor-pointer transition-colors hover:bg-brand-50/30 ${
                 !isCurrentMonth ? 'bg-light-100/50' : ''
               }`}
               data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
             >
-              <div className={`text-[11px] md:text-xs font-medium mb-0.5 w-6 h-6 flex items-center justify-center rounded-full ${
+              <div className={`text-xs font-medium mb-0.5 w-6 h-6 flex items-center justify-center rounded-full ${
                 today ? 'bg-brand-primary text-white' : isCurrentMonth ? 'text-text-primary' : 'text-text-tertiary'
               }`}>
                 {format(day, 'd')}
@@ -450,7 +450,7 @@ function MonthView({
                   <button
                     key={evt.id}
                     onClick={(e) => { e.stopPropagation(); onEventClick(evt) }}
-                    className="w-full text-left px-1.5 py-1 md:py-0.5 rounded text-[10px] md:text-[11px] font-medium truncate transition-opacity hover:opacity-80"
+                    className="w-full text-left px-1.5 py-1 md:py-0.5 rounded text-[10px] md:text-xs font-medium truncate transition-opacity hover:opacity-80"
                     style={{ backgroundColor: `${evt.color}18`, color: evt.color, borderLeft: `2px solid ${evt.color}` }}
                     data-testid={`calendar-event-${evt.id}`}
                   >
@@ -458,7 +458,13 @@ function MonthView({
                   </button>
                 ))}
                 {dayEvents.length > 3 && (
-                  <div className="text-[10px] text-text-tertiary font-medium pl-1">+{dayEvents.length - 3} more</div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onDayClick(day); }}
+                    className="text-[10px] text-brand-600 font-semibold pl-1 hover:underline transition min-h-[20px] text-left bg-transparent border-0 cursor-pointer"
+                    data-testid={`calendar-show-more-${format(day, 'yyyy-MM-dd')}`}
+                  >
+                    +{dayEvents.length - 3} more
+                  </button>
                 )}
               </div>
             </div>
@@ -540,7 +546,7 @@ function WeekView({
                   <button
                     key={evt.id}
                     onClick={() => onEventClick(evt)}
-                    className="w-full text-left p-2 rounded-lg text-[11px] font-medium transition-all hover:shadow-sm min-h-[44px]"
+                    className="w-full text-left p-2 rounded-lg text-xs font-medium transition-all hover:shadow-sm min-h-[44px]"
                     style={{ backgroundColor: `${evt.color}15`, borderLeft: `3px solid ${evt.color}` }}
                     data-testid={`calendar-week-event-${evt.id}`}
                   >
