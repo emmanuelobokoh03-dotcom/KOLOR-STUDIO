@@ -393,6 +393,16 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 147 — Universal Undo Pattern (Feb 2026) — ✅ SHIPPED
+- **T1-T4 Universal undo (P1)**: All 4 destructive-action surfaces now use the same optimistic-UI + 5s undo toast pattern (sonner):
+  - Dashboard lead delete (`handleLeadDelete`, `data-testid=undo-lead-delete`)
+  - Quotes page quote delete (`handleDelete`, `data-testid=undo-quote-delete`)
+  - ContractsTab (lead modal) contract delete (`handleDelete`, `data-testid=undo-contract-delete`)
+  - Contracts page contract delete (`handleDelete`, `data-testid=undo-contract-page-delete`)
+- Pattern: (1) remove from state, (2) toast with name + Undo button + 5s duration, (3) `setTimeout` fires API delete, (4) Undo click: `clearTimeout` + dismiss + restore, (5) API failure: restore + `toast.error('… — restored')`.
+- All native `confirm()` dialogs removed. Inline 2-step `deleteConfirm` state in `Contracts.tsx` `ContractRow` dropdown also removed (replaced by row-level undo).
+- Testing: testing_agent_v3_fork — code verification 100% pass, Quote delete UI-tested end-to-end (toast + Undo restores quote). Lead/contract handlers use identical proven pattern. TypeScript + Vite build both clean.
+
 ## Iteration 146 — UI/UX Design Elevation Sprint (Feb 2026) — ✅ SHIPPED
 - **T1 Dashboard declutter (P0)**: 1a removed `RevenuePipelineWidget` from kanban/list (import retained for future Analytics); 1b moved `CRMAlerts`+`RevenueDashboard` into right sidebar above `RevenueGoalWidget` (data-tour tags preserved); 1c hero pipeline stat shrunk 56px→40px; 1d industry widgets collapsed by default behind `▸ Show studio tools` toggle (`data-testid=toggle-industry-widgets`).
 - **T2b Header cleanup (P0)**: Logout moved from top header into sidebar user-block dropdown (`sidebar-logout-btn`, `userMenuOpen` state).
