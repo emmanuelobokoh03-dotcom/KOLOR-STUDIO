@@ -393,6 +393,18 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 146 — UI/UX Design Elevation Sprint (Feb 2026) — ✅ SHIPPED
+- **T1 Dashboard declutter (P0)**: 1a removed `RevenuePipelineWidget` from kanban/list (import retained for future Analytics); 1b moved `CRMAlerts`+`RevenueDashboard` into right sidebar above `RevenueGoalWidget` (data-tour tags preserved); 1c hero pipeline stat shrunk 56px→40px; 1d industry widgets collapsed by default behind `▸ Show studio tools` toggle (`data-testid=toggle-industry-widgets`).
+- **T2b Header cleanup (P0)**: Logout moved from top header into sidebar user-block dropdown (`sidebar-logout-btn`, `userMenuOpen` state).
+- **T3 Typography 5-step scale (P1)**: `text-[9px]`→`text-[10px]`, `text-[11px]`→`text-xs`, `text-[13px]`→`text-sm` across Dashboard, QuickActions, Quotes, Contracts + broader sweep (BrandPreview excluded as intentional mockup).
+- **T4 Border radii (P1)**: `rounded-[7px]`→`rounded-lg`, `rounded-[10px]`→`rounded-xl`, `rounded-[9px]`→`rounded-lg` (chips) / `rounded-xl` (tab rows).
+- **T5 QuickActions contextual empty states (P1)**: `hasAction` filter + "All caught up" footer (`quick-actions-caught-up`).
+- **T6 Landing feature rows (P1)**: Relabelled `FOR PHOTOGRAPHERS` / `FOR DESIGNERS` / `FOR FINE ARTISTS`; row-2 body rewrite using "proposals", "project agreement", "in your currency" (removed Stripe/Paystack mentions from feature rows — still present in Pricing/PSP trust strip).
+- **T7 Settings App Themes rewrite (P1)**: Glyph + named theme spec replaces emoji cards — ✦ KOLOR / ◈ Slate Studio / ◉ Terra / ◆ Midnight each with tagline. State renamed `selectedPaletteId`→`selectedThemeId`. localStorage keys (`kolor_palette_id`, `kolor_app_accent`) preserved.
+- **T8 Calendar '+N more' (P1)**: Now a `<button>` with `data-testid=calendar-show-more-YYYY-MM-DD` that opens DaySidebar. Month cell min-h 80→88 / 100→110.
+- **T9 Icon weights (P2)**: QuickActions icons `duotone`→`regular`; sidebar `GearSix` made explicit `weight="regular"`.
+- Testing: testing_agent_v3_fork verified 9/9 tasks (iteration_146.json, 100% pass). TypeScript + Vite build both clean.
+
 ## Iteration 145 — Contract Preview Modal + Dashboard Scroll-to-Top (Feb 2026) — ✅ SHIPPED
 - **T1 ContractsTab preview modal (P0)**: Full-screen `ContractPreviewModal` at z-[60] with header/scrollable body/sticky footer. Prominent 'Send to Client' (or 'Resend to Client') button always visible in footer. Closes on Escape, backdrop click. Triggered by new 'Preview' Eye button in action row and 'See full contract →' link under inline preview. Inline preview shrunk to 200px with fade gradient hinting more content below. Fixes the 'no Send button after review' bug caused by the old 300px max-height clipping.
 - **T2 Dashboard scroll-to-top (P0)**: `handleViewChange` now calls `window.scrollTo({ top: 0, behavior: 'smooth' | 'auto' })` respecting `prefers-reduced-motion`. Applies to all desktop toolbar, sidebar, and mobile-hamburger nav buttons (they all route through `handleViewChange`).
