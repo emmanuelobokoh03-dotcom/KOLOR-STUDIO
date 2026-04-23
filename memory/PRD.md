@@ -393,6 +393,14 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 148 — Sparkline NaN Fix + Design Sweep Extension (Feb 2026) — ✅ SHIPPED
+- **T1 Sparkline NaN fix (P1)**: `toSparkline` in Dashboard.tsx now maps `d[key] ?? 0` — eliminates `<path d: NaN>` console warnings when API data is sparse (carryover from Iter 145-147).
+- **T2 Login.tsx (P1)**: `rounded-[10px]` → `rounded-lg` (4x); `text-[13px]` → `text-sm` (2x); `text-[11px]` → `text-xs` (4x).
+- **T3 Signup.tsx (P1)**: `rounded-[10px]` → `rounded-lg` (7x); `text-[13px]` → `text-sm` (3x); `text-[11px]` → `text-xs` (7x).
+- **T4 LeadsListView.tsx (P1)**: Chip containers → `rounded-lg`, tab row container → `rounded-xl`, tab buttons → `rounded-lg`, pipeline placeholder + table container → `rounded-xl`. Typography was already scale-compliant from Iter 146 sweep.
+- **T5 QuoteBuilderModal.tsx (P1)**: Thumbnail + value summary → `rounded-lg`; client/line-items/notes/totals cards → `rounded-xl`; modal max-height bumped `min(700px, 95vh)` → `min(800px, 95vh)` for more room on taller viewports.
+- Testing: Smoke screenshots confirm Login + Signup render correctly with the new radii/typography. TypeScript + Vite build both clean.
+
 ## Iteration 147 — Universal Undo Pattern (Feb 2026) — ✅ SHIPPED
 - **T1-T4 Universal undo (P1)**: All 4 destructive-action surfaces now use the same optimistic-UI + 5s undo toast pattern (sonner):
   - Dashboard lead delete (`handleLeadDelete`, `data-testid=undo-lead-delete`)
