@@ -64,7 +64,7 @@ function PipelineStep({ step, label, state }: { step: number; label: string; sta
   return (
     <div className="flex items-center gap-1.5">
       <div
-        className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0"
+        className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
         style={
           state === 'done' ? { background: 'rgba(16,185,129,0.15)', color: '#059669' }
             : state === 'active' ? { background: 'rgba(108,46,219,0.15)', border: '0.5px solid rgba(108,46,219,0.3)', color: '#6C2EDB' }
@@ -105,11 +105,11 @@ function ClientPreview({ leadName, userName, validUntil, total, currencySettings
   leadName: string; userName?: string; validUntil: string; total: number; currencySettings: CurrencySettings
 }) {
   return (
-    <div className="rounded-[9px] overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-background)' }}>
+    <div className="rounded-lg overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-background)' }}>
       <div className="h-1" style={{ background: 'linear-gradient(90deg, #6C2EDB, #a78bfa)' }} />
       <div className="px-3 py-2.5">
         <p className="text-[10px] font-bold text-text-primary truncate">{leadName}</p>
-        <p className="text-[9px] text-[var(--text-secondary)] mt-0.5">Quote from {userName || 'you'} · Valid {new Date(validUntil).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+        <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">Quote from {userName || 'you'} · Valid {new Date(validUntil).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
         <div className="space-y-1 mt-2.5">
           {[100, 80, 60, 85].map((w, i) => (
             <div key={i} className="h-1 rounded-sm bg-[var(--border)]" style={{ width: `${w}%` }} />
@@ -357,7 +357,7 @@ export default function QuoteBuilderModal({
       <div
         ref={modalRef}
         className="bg-[var(--surface-base)] w-screen h-screen md:w-auto md:h-auto md:rounded-2xl overflow-hidden flex flex-col animate-modal-enter motion-reduce:animate-none"
-        style={{ maxWidth: 'min(860px, 95vw)', maxHeight: 'min(700px, 95vh)', width: '100%', height: '100%', border: '0.5px solid var(--border-dark, var(--border))', boxShadow: '0 24px 64px rgba(0,0,0,0.18)' }}
+        style={{ maxWidth: 'min(860px, 95vw)', maxHeight: 'min(800px, 95vh)', width: '100%', height: '100%', border: '0.5px solid var(--border-dark, var(--border))', boxShadow: '0 24px 64px rgba(0,0,0,0.18)' }}
         onClick={e => e.stopPropagation()}
         data-testid="quote-builder-modal"
         role="dialog"
@@ -370,15 +370,15 @@ export default function QuoteBuilderModal({
             <h2 id="quote-builder-title" className="text-sm font-extrabold text-text-primary truncate">
               {existingQuote ? `${lang.quote} #${existingQuote.quoteNumber || existingQuote.id.slice(-4).toUpperCase()}` : `New ${lang.quote} — ${lead.clientName}`}
             </h2>
-            <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               {existingQuote?.quoteNumber || 'New'} · {statusLabel} · {existingQuote ? new Date(existingQuote.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Today'}
             </p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <button onClick={handleSave} disabled={loading} className="h-8 px-3 rounded-lg text-[11px] font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center gap-1.5 disabled:opacity-50" data-testid="save-draft-btn">
+            <button onClick={handleSave} disabled={loading} className="h-8 px-3 rounded-lg text-xs font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center gap-1.5 disabled:opacity-50" data-testid="save-draft-btn">
               {loading ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <FloppyDisk className="w-3 h-3" />} Save draft
             </button>
-            <button onClick={handleSend} disabled={sending} className="h-8 px-3.5 rounded-lg text-[11px] font-semibold text-white transition-colors flex items-center gap-1.5 disabled:opacity-50" style={{ background: '#6C2EDB' }} data-testid="send-quote-btn">
+            <button onClick={handleSend} disabled={sending} className="h-8 px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center gap-1.5 disabled:opacity-50" style={{ background: '#6C2EDB' }} data-testid="send-quote-btn">
               {sending ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <PaperPlaneTilt className="w-3 h-3" />} Send {lang.quote} →
             </button>
             <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--surface-background)] transition-colors text-[var(--text-secondary)]" aria-label="Close" title="Close (Esc)">
@@ -409,7 +409,7 @@ export default function QuoteBuilderModal({
             )}
 
             {/* Client card */}
-            <div className="rounded-[10px] overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="client-card">
+            <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="client-card">
               <div className="flex items-center justify-between px-3.5 py-2.5" style={{ borderBottom: '0.5px solid var(--border)' }}>
                 <span className="text-xs font-bold text-text-primary">{lang.client}</span>
               </div>
@@ -418,31 +418,31 @@ export default function QuoteBuilderModal({
                   {lead.clientName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-bold text-text-primary truncate">{lead.clientName}</p>
+                  <p className="text-sm font-bold text-text-primary truncate">{lead.clientName}</p>
                   <p className="text-[10px] text-[var(--text-secondary)]">{lead.clientEmail}{lead.clientPhone ? ` · ${lead.clientPhone}` : ''}</p>
                 </div>
                 {lead.projectType && (
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-purple-50 text-[#6C2EDB] flex-shrink-0">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-50 text-[#6C2EDB] flex-shrink-0">
                     {lead.projectType.replace(/_/g, ' ')}
                   </span>
                 )}
               </div>
               <div className="grid grid-cols-3" style={{ borderTop: '0.5px solid var(--border)' }}>
                 <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }}>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Project</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Project</p>
                   <p className="text-xs font-semibold text-text-primary truncate mt-0.5">{lead.projectTitle}</p>
                 </div>
                 {/* Hide the keyDate cell for fine-art commissions when no date is set — fine art rarely has a fixed date */}
                 {!(userIndustry === 'FINE_ART' && !lead.keyDate && !lead.eventDate) ? (
                   <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }}>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
                     <p className="text-xs font-semibold text-text-primary mt-0.5">{lead.keyDate || lead.eventDate ? new Date(lead.keyDate || lead.eventDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}</p>
                   </div>
                 ) : (
                   <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }} aria-hidden="true" />
                 )}
                 <div className="px-3.5 py-2.5">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Valid until</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Valid until</p>
                   <input
                     type="date"
                     value={validUntil}
@@ -455,11 +455,11 @@ export default function QuoteBuilderModal({
             </div>
 
             {/* Line items card */}
-            <div className="rounded-[10px] overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="line-items-card">
+            <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="line-items-card">
               <div className="flex items-center justify-between px-3.5 py-2.5" style={{ borderBottom: '0.5px solid var(--border)' }}>
                 <span className="text-xs font-bold text-text-primary">{lang.quote} items</span>
                 <div className="relative">
-                  <button onClick={() => setShowTemplateDropdown(!showTemplateDropdown)} className="text-[11px] font-semibold text-[#6C2EDB] hover:underline" data-testid="load-package-btn">
+                  <button onClick={() => setShowTemplateDropdown(!showTemplateDropdown)} className="text-xs font-semibold text-[#6C2EDB] hover:underline" data-testid="load-package-btn">
                     Load package →
                   </button>
                   {showTemplateDropdown && (
@@ -467,7 +467,7 @@ export default function QuoteBuilderModal({
                       {loadingTemplates ? (
                         <div className="p-3 text-center"><SpinnerGap className="w-4 h-4 animate-spin mx-auto text-[var(--text-secondary)]" /></div>
                       ) : templates.length === 0 ? (
-                        <div className="p-3 text-center text-[11px] text-[var(--text-tertiary)]">No packages saved yet</div>
+                        <div className="p-3 text-center text-xs text-[var(--text-tertiary)]">No packages saved yet</div>
                       ) : (
                         templates.map(t => (
                           <button key={t.id} onClick={() => loadTemplate(t)} className="w-full px-3 py-2 text-left hover:bg-[var(--surface-background)] transition-colors" data-testid={`template-${t.id}`}>
@@ -483,9 +483,9 @@ export default function QuoteBuilderModal({
 
               {/* Column headers */}
               <div className="grid items-center px-3.5 py-2" style={{ gridTemplateColumns: '1fr 72px 72px 28px', borderBottom: '0.5px solid var(--border)', background: 'var(--surface-background)' }}>
-                <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Description</span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-center">Qty</span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Price</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Description</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-center">Qty</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Price</span>
                 <span />
               </div>
 
@@ -508,7 +508,7 @@ export default function QuoteBuilderModal({
                       value={item.quantity}
                       onChange={e => updateLineItem(index, 'quantity', e.target.value)}
                       min={1}
-                      className="w-12 text-center bg-[var(--surface-background)] rounded-[5px] text-[11px] py-1 tabular-nums focus:outline-none focus:ring-1 focus:ring-[#6C2EDB]"
+                      className="w-12 text-center bg-[var(--surface-background)] rounded-[5px] text-xs py-1 tabular-nums focus:outline-none focus:ring-1 focus:ring-[#6C2EDB]"
                       style={{ border: '0.5px solid var(--border)' }}
                       data-testid={`line-qty-${index}`}
                     />
@@ -519,7 +519,7 @@ export default function QuoteBuilderModal({
                       value={item.price || ''}
                       onChange={e => updateLineItem(index, 'price', e.target.value)}
                       placeholder="0"
-                      className="w-full text-right bg-transparent text-[11px] font-semibold text-text-primary tabular-nums placeholder:text-[var(--text-tertiary)] focus:outline-none"
+                      className="w-full text-right bg-transparent text-xs font-semibold text-text-primary tabular-nums placeholder:text-[var(--text-tertiary)] focus:outline-none"
                       data-testid={`line-price-${index}`}
                     />
                   </div>
@@ -539,14 +539,14 @@ export default function QuoteBuilderModal({
               ))}
 
               {/* Add line item */}
-              <button onClick={addLineItem} className="w-full flex items-center gap-2 px-3.5 py-2.5 text-[11px] font-medium text-[var(--text-secondary)] hover:text-[#6C2EDB] transition-colors" style={{ borderTop: '0.5px dashed var(--border)' }} data-testid="add-line-item-btn">
+              <button onClick={addLineItem} className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-[var(--text-secondary)] hover:text-[#6C2EDB] transition-colors" style={{ borderTop: '0.5px dashed var(--border)' }} data-testid="add-line-item-btn">
                 <span className="w-[18px] h-[18px] rounded-full flex items-center justify-center text-[10px]" style={{ border: '1.5px dashed var(--border)' }}>+</span>
                 Add {lang.quote} item
               </button>
             </div>
 
             {/* Notes / Terms */}
-            <div className="rounded-[10px] overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="notes-card">
+            <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="notes-card">
               <div className="px-3.5 py-2.5" style={{ borderBottom: '0.5px solid var(--border)' }}>
                 <span className="text-xs font-bold text-text-primary">Note to {lang.client}</span>
               </div>
@@ -564,7 +564,7 @@ export default function QuoteBuilderModal({
             </div>
 
             {/* Totals card */}
-            <div className="rounded-[10px] overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="totals-card">
+            <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="totals-card">
               <div className="px-3.5">
                 <div className="flex items-center justify-between py-2" style={{ borderBottom: '0.5px solid var(--border)' }}>
                   <span className="text-xs text-[var(--text-secondary)]">Subtotal</span>
@@ -592,7 +592,7 @@ export default function QuoteBuilderModal({
                 </div>
               </div>
               <div className="flex items-center justify-between px-3.5 py-3" style={{ background: 'rgba(108,46,219,0.04)', borderTop: '0.5px solid rgba(108,46,219,0.10)' }}>
-                <span className="text-[13px] font-bold text-text-primary">Total</span>
+                <span className="text-sm font-bold text-text-primary">Total</span>
                 <span className="text-xl font-extrabold text-text-primary tabular-nums" data-testid="quote-total">{formatCurrency(total, effectiveCurrency)}</span>
               </div>
             </div>
@@ -609,7 +609,7 @@ export default function QuoteBuilderModal({
             </div>
             {showCurrencyOptions && (
               <div className="rounded-lg p-3 space-y-2" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-background)' }}>
-                <label className="flex items-center gap-2 text-[11px] text-[var(--text-secondary)]">
+                <label className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
                   <input type="checkbox" checked={useCurrencyOverride} onChange={e => setUseCurrencyOverride(e.target.checked)} className="rounded" />
                   Override default currency
                 </label>
@@ -648,10 +648,10 @@ export default function QuoteBuilderModal({
           <div className="w-full md:w-[220px] flex-shrink-0 overflow-y-auto p-4 space-y-4" style={{ borderLeft: '0.5px solid var(--border)', background: 'var(--surface-base)' }}>
 
             {/* Value summary */}
-            <div className="rounded-[9px] px-3.5 py-3" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-background)' }} data-testid="value-summary">
+            <div className="rounded-lg px-3.5 py-3" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-background)' }} data-testid="value-summary">
               <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.quote.toUpperCase()} VALUE</p>
               <p className="text-[22px] font-extrabold text-text-primary tabular-nums mt-1">{formatCurrency(total, effectiveCurrency)}</p>
-              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{lead.projectTitle} · {lead.keyDate || lead.eventDate ? new Date(lead.keyDate || lead.eventDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No date'}</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">{lead.projectTitle} · {lead.keyDate || lead.eventDate ? new Date(lead.keyDate || lead.eventDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No date'}</p>
               <div className="mt-2">
                 <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium" style={
                   existingQuote?.status === 'SENT' ? { background: 'rgba(108,46,219,0.1)', color: '#6C2EDB' }
@@ -690,7 +690,7 @@ export default function QuoteBuilderModal({
               {templates.length === 0 ? (
                 <button
                   onClick={() => setShowSaveTemplateModal(true)}
-                  className="w-full px-3 py-2.5 rounded-lg text-[11px] font-medium text-[var(--text-secondary)] hover:text-[#6C2EDB] hover:border-[rgba(108,46,219,0.3)] transition-colors cursor-pointer text-left"
+                  className="w-full px-3 py-2.5 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[#6C2EDB] hover:border-[rgba(108,46,219,0.3)] transition-colors cursor-pointer text-left"
                   style={{ border: '1.5px dashed var(--border)' }}
                   data-testid="save-first-package-btn"
                 >
@@ -708,7 +708,7 @@ export default function QuoteBuilderModal({
                     >
                       <p className="text-xs font-bold text-text-primary">{t.name}</p>
                       <p className="text-[10px] text-[var(--text-secondary)]">{t.lineItems.length} items{t.description ? ` · ${t.description}` : ''}</p>
-                      <p className="text-[11px] font-bold text-[#6C2EDB] mt-0.5">{formatCurrency(t.lineItems.reduce((s: number, i: QuoteTemplateLineItem) => s + i.quantity * i.price, 0), effectiveCurrency)}</p>
+                      <p className="text-xs font-bold text-[#6C2EDB] mt-0.5">{formatCurrency(t.lineItems.reduce((s: number, i: QuoteTemplateLineItem) => s + i.quantity * i.price, 0), effectiveCurrency)}</p>
                     </button>
                   ))}
                   <button

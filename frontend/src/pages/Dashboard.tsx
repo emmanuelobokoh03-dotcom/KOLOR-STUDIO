@@ -201,7 +201,7 @@ const Dashboard = () => {
   // Sparkline helper — last 7 months of trend data as sparkline points
   const toSparkline = (data: MonthlyTrendData[], key: 'count' | 'revenue', fallback: number) => {
     if (!data.length) return [{ value: fallback }]
-    return data.slice(-7).map(d => ({ value: d[key] }))
+    return data.slice(-7).map(d => ({ value: d[key] ?? 0 }))
   }
 
   // Booked card trend direction from analytics

@@ -180,7 +180,7 @@ const Signup = () => {
           <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-text-primary mb-1">
             {step === 1 ? 'Create your account' : 'Choose your discipline'}
           </h1>
-          <p className="text-[13px] text-text-secondary mb-5">
+          <p className="text-sm text-text-secondary mb-5">
             {step === 1 ? (
               <>Already have one?{' '}<Link to="/login" className="font-medium" style={{ color: '#6C2EDB' }}>Sign in &rarr;</Link></>
             ) : (
@@ -211,37 +211,37 @@ const Signup = () => {
           {step === 1 && (
             <>
               {/* Google */}
-              <button onClick={() => { window.location.href = `${import.meta.env.VITE_API_URL || ''}/api/auth/google`; }} className="w-full flex items-center justify-center gap-2.5 rounded-[10px] border border-light-200 bg-surface-base hover:bg-surface-background transition-colors duration-fast" style={{ height: 46 }} data-testid="google-sso">
+              <button onClick={() => { window.location.href = `${import.meta.env.VITE_API_URL || ''}/api/auth/google`; }} className="w-full flex items-center justify-center gap-2.5 rounded-lg border border-light-200 bg-surface-base hover:bg-surface-background transition-colors duration-fast" style={{ height: 46 }} data-testid="google-sso">
                 <GoogleIcon />
-                <span className="text-[13px] font-medium text-text-primary">Continue with Google</span>
+                <span className="text-sm font-medium text-text-primary">Continue with Google</span>
               </button>
               <div className="flex items-center gap-3 my-4">
                 <span className="flex-1 h-px bg-light-200" />
-                <span className="text-[11px] font-medium text-text-tertiary">or use your email</span>
+                <span className="text-xs font-medium text-text-tertiary">or use your email</span>
                 <span className="flex-1 h-px bg-light-200" />
               </div>
 
               <form onSubmit={handleNextStep}>
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <div>
-                    <label htmlFor="signup-fn" className="block text-[11px] font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">First name *</label>
-                    <input id="signup-fn" type="text" name="firstName" required value={formData.firstName} onChange={handleChange} placeholder="John" className="w-full rounded-[10px] border border-light-200 bg-surface-base text-[13px] text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 14px' }} data-testid="signup-firstname" />
+                    <label htmlFor="signup-fn" className="block text-xs font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">First name *</label>
+                    <input id="signup-fn" type="text" name="firstName" required value={formData.firstName} onChange={handleChange} placeholder="John" className="w-full rounded-lg border border-light-200 bg-surface-base text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 14px' }} data-testid="signup-firstname" />
                   </div>
                   <div>
-                    <label htmlFor="signup-ln" className="block text-[11px] font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Last name *</label>
-                    <input id="signup-ln" type="text" name="lastName" required value={formData.lastName} onChange={handleChange} placeholder="Doe" className="w-full rounded-[10px] border border-light-200 bg-surface-base text-[13px] text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 14px' }} data-testid="signup-lastname" />
+                    <label htmlFor="signup-ln" className="block text-xs font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Last name *</label>
+                    <input id="signup-ln" type="text" name="lastName" required value={formData.lastName} onChange={handleChange} placeholder="Doe" className="w-full rounded-lg border border-light-200 bg-surface-base text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 14px' }} data-testid="signup-lastname" />
                   </div>
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="signup-email" className="block text-[11px] font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Email address *</label>
-                  <input id="signup-email" type="email" name="email" required value={formData.email} onChange={handleChange} placeholder="you@example.com" className="w-full rounded-[10px] border border-light-200 bg-surface-base text-[13px] text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 14px' }} data-testid="signup-email" />
+                  <label htmlFor="signup-email" className="block text-xs font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Email address *</label>
+                  <input id="signup-email" type="email" name="email" required value={formData.email} onChange={handleChange} placeholder="you@example.com" className="w-full rounded-lg border border-light-200 bg-surface-base text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 14px' }} data-testid="signup-email" />
                 </div>
 
                 <div className="mb-1">
-                  <label htmlFor="signup-pw" className="block text-[11px] font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Password *</label>
+                  <label htmlFor="signup-pw" className="block text-xs font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Password *</label>
                   <div className="relative">
-                    <input id="signup-pw" type={showPw ? 'text' : 'password'} name="password" required value={formData.password} onChange={handleChange} placeholder="••••••••" className="w-full rounded-[10px] border border-light-200 bg-surface-base text-[13px] text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 42px 0 14px' }} data-testid="signup-password" />
+                    <input id="signup-pw" type={showPw ? 'text' : 'password'} name="password" required value={formData.password} onChange={handleChange} placeholder="••••••••" className="w-full rounded-lg border border-light-200 bg-surface-base text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 42px 0 14px' }} data-testid="signup-password" />
                     <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-secondary transition-colors"><EyeIcon open={showPw} /></button>
                   </div>
                 </div>
@@ -256,7 +256,7 @@ const Signup = () => {
                   </div>
                 )}
 
-                <button type="submit" className="w-full rounded-[10px] text-white text-sm font-bold tracking-[0.01em] transition-all duration-fast active:scale-[0.97] mt-4" style={{ height: 46, background: '#6C2EDB', cursor: 'pointer' }} onMouseEnter={e => (e.currentTarget.style.background = '#5522B8')} onMouseLeave={e => (e.currentTarget.style.background = '#6C2EDB')} data-testid="signup-next-step">
+                <button type="submit" className="w-full rounded-lg text-white text-sm font-bold tracking-[0.01em] transition-all duration-fast active:scale-[0.97] mt-4" style={{ height: 46, background: '#6C2EDB', cursor: 'pointer' }} onMouseEnter={e => (e.currentTarget.style.background = '#5522B8')} onMouseLeave={e => (e.currentTarget.style.background = '#6C2EDB')} data-testid="signup-next-step">
                   Continue &rarr;
                 </button>
               </form>
@@ -309,8 +309,8 @@ const Signup = () => {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <span className="block text-[13px] font-semibold" style={{ color: 'var(--text-primary)' }}>{card.label}</span>
-                        <span className="block text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)' }}>{card.sub}</span>
+                        <span className="block text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{card.label}</span>
+                        <span className="block text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{card.sub}</span>
                       </div>
                       {selected && (
                         <CheckCircle weight="fill" className="w-5 h-5 flex-shrink-0" style={{ color: card.selectedBorder }} />
@@ -324,7 +324,7 @@ const Signup = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={!industry || loading}
-                className="w-full rounded-[10px] text-white text-sm font-bold tracking-[0.01em] transition-all duration-fast active:scale-[0.97]"
+                className="w-full rounded-lg text-white text-sm font-bold tracking-[0.01em] transition-all duration-fast active:scale-[0.97]"
                 style={{
                   height: 46,
                   background: !industry ? 'rgba(108,46,219,0.4)' : loading ? 'rgba(108,46,219,0.7)' : '#6C2EDB',
@@ -339,7 +339,7 @@ const Signup = () => {
             </>
           )}
 
-          <p className="text-center text-[11px] text-text-secondary mt-3.5" data-testid="signup-legal-agreement">
+          <p className="text-center text-xs text-text-secondary mt-3.5" data-testid="signup-legal-agreement">
             By creating an account you agree to our{' '}
             <Link to="/terms" style={{ color: '#6C2EDB' }}>Terms of Service</Link> and{' '}
             <Link to="/privacy" style={{ color: '#6C2EDB' }}>Privacy Policy</Link>
@@ -354,7 +354,7 @@ const Signup = () => {
             ].map((t, i) => (
               <div key={t.label} className="flex items-center gap-3">
                 {i > 0 && <span className="w-1 h-1 rounded-full bg-light-300 -ml-1" />}
-                <span className="flex items-center gap-1.5 text-[11px] text-text-secondary">
+                <span className="flex items-center gap-1.5 text-xs text-text-secondary">
                   <span className="text-text-tertiary">{t.icon}</span>{t.label}
                 </span>
               </div>

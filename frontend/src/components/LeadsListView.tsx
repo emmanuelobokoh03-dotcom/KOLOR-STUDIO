@@ -117,11 +117,11 @@ function StatsStrip({ leads, lang, currencySymbol = '$' }: { leads: Lead[]; lang
       {chips.map((chip) => (
         <div
           key={chip.label}
-          className="rounded-[9px] border border-[var(--border)] bg-[var(--surface-base)] px-3.5 py-3"
+          className="rounded-lg border border-[var(--border)] bg-[var(--surface-base)] px-3.5 py-3"
           style={{ borderWidth: '0.5px' }}
           data-testid={`stat-${chip.label.toLowerCase().replace(/\s+/g, '-')}`}
         >
-          <p className="font-mono-kolor text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-1">{chip.label}</p>
+          <p className="font-mono-kolor text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-1">{chip.label}</p>
           <p className="text-xl font-extrabold tabular-nums text-text-primary" style={{ color: chip.color === '#D97706' ? '#D97706' : undefined }}>{chip.value}</p>
           <p className="text-[10px] mt-0.5" style={{ color: chip.color }}>{chip.trend}</p>
         </div>
@@ -153,7 +153,7 @@ function TabRow({ tabs, active, onTabChange, leads, lang }: {
 
   return (
     <div
-      className="flex items-center gap-1 rounded-[9px] border border-[var(--border)] bg-[var(--surface-base)] p-1 mb-4 overflow-x-auto scrollbar-hide"
+      className="flex items-center gap-1 rounded-xl border border-[var(--border)] bg-[var(--surface-base)] p-1 mb-4 overflow-x-auto scrollbar-hide"
       style={{ borderWidth: '0.5px' }}
       data-testid="leads-tab-row"
     >
@@ -161,7 +161,7 @@ function TabRow({ tabs, active, onTabChange, leads, lang }: {
         <button
           key={tab.key}
           onClick={() => onTabChange(tab.key)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] text-xs font-medium whitespace-nowrap transition-all duration-150 ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all duration-150 ${
             active === tab.key
               ? 'font-bold text-[#6C2EDB]'
               : 'text-[var(--text-secondary)] hover:text-text-primary hover:bg-[var(--surface-background)]'
@@ -208,7 +208,7 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
       {/* Client cell */}
       <div className="flex items-center gap-2.5 min-w-0">
         <div
-          className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0"
+          className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
           style={{ background: avatarColor }}
         >
           {getInitials(lead.clientName)}
@@ -228,17 +228,17 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
       </div>
 
       {/* Type cell */}
-      <div className="text-[11px] text-[var(--text-secondary)] truncate">
+      <div className="text-xs text-[var(--text-secondary)] truncate">
         {lead.projectType ? lead.projectType.replace(/_/g, ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase()) : '—'}
       </div>
 
       {/* Key date cell */}
-      <div className="text-[11px] text-[var(--text-secondary)] tabular-nums">
+      <div className="text-xs text-[var(--text-secondary)] tabular-nums">
         {formatKeyDate(lead.keyDate || lead.eventDate)}
       </div>
 
       {/* Value cell */}
-      <div className="text-[11px] font-semibold text-text-primary tabular-nums">
+      <div className="text-xs font-semibold text-text-primary tabular-nums">
         {formatCurrency(lead.estimatedValue, currencySymbol)}
       </div>
 
@@ -283,7 +283,7 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
 
 function PipelinePlaceholder({ onBack }: { onBack: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 px-6 text-center rounded-[10px] border border-[var(--border)] bg-[var(--surface-base)]" style={{ borderWidth: '0.5px' }} data-testid="pipeline-placeholder">
+    <div className="flex flex-col items-center justify-center py-20 px-6 text-center rounded-xl border border-[var(--border)] bg-[var(--surface-base)]" style={{ borderWidth: '0.5px' }} data-testid="pipeline-placeholder">
       <SquaresFour weight="duotone" className="w-12 h-12 text-[var(--text-tertiary)] mb-4 opacity-40" />
       <h3 className="text-base font-bold text-text-primary mb-1.5">Pipeline view is coming soon</h3>
       <p className="text-sm text-[var(--text-secondary)] max-w-sm mb-6">
@@ -405,7 +405,7 @@ export default function LeadsListView({ leads, lang, currencySymbol = '$', onLea
 
       {/* Lead list */}
       <div
-        className="rounded-[10px] border border-[var(--border)] bg-[var(--surface-base)] overflow-hidden"
+        className="rounded-xl border border-[var(--border)] bg-[var(--surface-base)] overflow-hidden"
         style={{ borderWidth: '0.5px' }}
         data-testid="leads-list-table"
       >
@@ -414,11 +414,11 @@ export default function LeadsListView({ leads, lang, currencySymbol = '$', onLea
           className="grid items-center px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface-background)]"
           style={{ gridTemplateColumns: '1fr 80px 96px 72px 80px' }}
         >
-          <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
-          <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Type</span>
-          <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</span>
-          <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Value</span>
-          <span className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Status</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Type</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Value</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Status</span>
         </div>
 
         {/* Rows */}

@@ -114,20 +114,20 @@ const Login = () => {
           <KolorLogo variant="dark" size="md" linkTo="/" className="md:hidden mb-8" />
 
           <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-text-primary mb-1">Sign in to KOLOR</h1>
-          <p className="text-[13px] text-text-secondary mb-6">
+          <p className="text-sm text-text-secondary mb-6">
             No account yet?{' '}
             <Link to="/signup" className="font-medium" style={{ color: '#6C2EDB' }}>Start for free →</Link>
           </p>
 
           {/* Google SSO */}
-          <button onClick={() => { window.location.href = `${import.meta.env.VITE_API_URL || ''}/api/auth/google`; }} className="w-full flex items-center justify-center gap-2.5 rounded-[10px] border border-light-200 bg-surface-base hover:bg-surface-background transition-colors duration-fast" style={{ height: 46 }} data-testid="google-sso">
+          <button onClick={() => { window.location.href = `${import.meta.env.VITE_API_URL || ''}/api/auth/google`; }} className="w-full flex items-center justify-center gap-2.5 rounded-lg border border-light-200 bg-surface-base hover:bg-surface-background transition-colors duration-fast" style={{ height: 46 }} data-testid="google-sso">
             <GoogleIcon />
-            <span className="text-[13px] font-medium text-text-primary">Continue with Google</span>
+            <span className="text-sm font-medium text-text-primary">Continue with Google</span>
           </button>
 
           <div className="flex items-center gap-3 my-[18px]">
             <span className="flex-1 h-px bg-light-200" />
-            <span className="text-[11px] font-medium text-text-tertiary">or</span>
+            <span className="text-xs font-medium text-text-tertiary">or</span>
             <span className="flex-1 h-px bg-light-200" />
           </div>
 
@@ -141,14 +141,14 @@ const Login = () => {
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label htmlFor="login-email" className="block text-[11px] font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Email address</label>
-              <input id="login-email" type="email" name="email" required value={formData.email} onChange={handleChange} placeholder="you@example.com" className="w-full rounded-[10px] border border-light-200 bg-surface-base text-[13px] text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 14px' }} data-testid="login-email" />
+              <label htmlFor="login-email" className="block text-xs font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Email address</label>
+              <input id="login-email" type="email" name="email" required value={formData.email} onChange={handleChange} placeholder="you@example.com" className="w-full rounded-lg border border-light-200 bg-surface-base text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 14px' }} data-testid="login-email" />
             </div>
 
             <div className="mb-4">
-              <label htmlFor="login-password" className="block text-[11px] font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Password</label>
+              <label htmlFor="login-password" className="block text-xs font-semibold uppercase tracking-[0.05em] text-text-secondary mb-[5px]">Password</label>
               <div className="relative">
-                <input id="login-password" type={showPw ? 'text' : 'password'} name="password" required value={formData.password} onChange={handleChange} placeholder="••••••••" className="w-full rounded-[10px] border border-light-200 bg-surface-base text-[13px] text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 42px 0 14px' }} data-testid="login-password" />
+                <input id="login-password" type={showPw ? 'text' : 'password'} name="password" required value={formData.password} onChange={handleChange} placeholder="••••••••" className="w-full rounded-lg border border-light-200 bg-surface-base text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-fast focus:border-[#6C2EDB] focus:shadow-[0_0_0_3px_rgba(108,46,219,0.10)]" style={{ height: 46, padding: '0 42px 0 14px' }} data-testid="login-password" />
                 <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-secondary transition-colors">
                   <EyeIcon open={showPw} />
                 </button>
@@ -167,7 +167,7 @@ const Login = () => {
               <Link to="/forgot-password" className="text-xs font-medium" style={{ color: '#6C2EDB' }} data-testid="forgot-password-link">Forgot password?</Link>
             </div>
 
-            <button type="submit" disabled={loading} className="w-full rounded-[10px] text-white text-sm font-bold tracking-[0.01em] transition-all duration-fast active:scale-[0.97]" style={{ height: 46, background: loading ? 'rgba(108,46,219,0.7)' : '#6C2EDB', cursor: loading ? 'not-allowed' : 'pointer' }} onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#5522B8' }} onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#6C2EDB' }} data-testid="login-submit">
+            <button type="submit" disabled={loading} className="w-full rounded-lg text-white text-sm font-bold tracking-[0.01em] transition-all duration-fast active:scale-[0.97]" style={{ height: 46, background: loading ? 'rgba(108,46,219,0.7)' : '#6C2EDB', cursor: loading ? 'not-allowed' : 'pointer' }} onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#5522B8' }} onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#6C2EDB' }} data-testid="login-submit">
               {loading ? <span className="inline-flex items-center gap-2"><SpinnerGap className="w-4 h-4 animate-spin" />Signing in...</span> : 'Sign in to KOLOR →'}
             </button>
           </form>
@@ -181,7 +181,7 @@ const Login = () => {
             ].map((t, i) => (
               <div key={t.label} className="flex items-center gap-3">
                 {i > 0 && <span className="w-1 h-1 rounded-full bg-light-300 -ml-1" />}
-                <span className="flex items-center gap-1.5 text-[11px] text-text-secondary">
+                <span className="flex items-center gap-1.5 text-xs text-text-secondary">
                   <span className="text-text-tertiary">{t.icon}</span>{t.label}
                 </span>
               </div>
