@@ -33,6 +33,7 @@ import {
   User
 } from '../services/api'
 import { formatCurrency, CurrencySettings } from '../utils/currency'
+import RevenuePipelineWidget from './RevenuePipelineWidget'
 
 interface AnalyticsDashboardProps {
   user: User | null;
@@ -247,6 +248,9 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
           </p>
         </div>
       </div>
+
+      {/* Revenue Pipeline Widget — Iter 149: live breakdown of revenue stages */}
+      <RevenuePipelineWidget />
 
       {/* Monthly Revenue Trend Chart */}
       <div className="bg-surface-base rounded-xl p-6 border border-light-200">
