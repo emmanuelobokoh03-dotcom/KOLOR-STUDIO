@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { toast } from 'sonner'
 import KolorLogo from '../components/KolorLogo'
 import {
   SignOut,
@@ -410,12 +411,45 @@ const Dashboard = () => {
     fetchStats()
   }
 
-  const handleLeadDelete = async (leadId: string) => {
-    const result = await leadsApi.delete(leadId)
-    if (!result.error) {
-      setLeads(leads.filter(l => l.id !== leadId))
-      fetchStats()
-    }
+  const handleLeadDelete = (leadId: string) => {
+    // Iter 147 — Universal undo pattern
+    const deletedLead = leads.find(l => l.id === leadId)
+    if (!deletedLead) return
+
+    setLeads(prev => prev.filter(l => l.id !== leadId))
+
+    let undoTimeout: ReturnType<typeof setTimeout>
+
+    const toastId = toast(
+      <div className="flex items-center justify-between gap-3 w-full">
+        <span className="text-sm">
+          <span className="font-medium">{deletedLead.clientName}</span>
+          <span className="text-text-secondary"> deleted</span>
+        </span>
+        <button
+          onClick={() => {
+            clearTimeout(undoTimeout)
+            toast.dismiss(toastId)
+            setLeads(prev => [deletedLead, ...prev])
+          }}
+          className="text-xs font-semibold text-brand-600 hover:text-brand-700 transition flex-shrink-0 underline"
+          data-testid="undo-lead-delete"
+        >
+          Undo
+        </button>
+      </div>,
+      { duration: 5000, position: 'bottom-right' }
+    )
+
+    undoTimeout = setTimeout(async () => {
+      const result = await leadsApi.delete(leadId)
+      if (result.error) {
+        setLeads(prev => [deletedLead, ...prev])
+        toast.error('Failed to delete lead — restored')
+      } else {
+        fetchStats()
+      }
+    }, 5000)
   }
 
   const filteredLeads = leads.filter(lead => {

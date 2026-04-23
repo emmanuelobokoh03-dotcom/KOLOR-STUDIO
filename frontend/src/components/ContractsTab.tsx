@@ -207,12 +207,43 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
     }
   };
 
-  const handleDelete = async (contractId: string) => {
-    if (!confirm('Delete this draft contract?')) return;
-    const result = await contractsApi.delete(contractId);
-    if (!result.error) {
-      setContracts(contracts.filter(c => c.id !== contractId));
-    }
+  const handleDelete = (contractId: string) => {
+    // Iter 147 — Universal undo pattern (replaces confirm() dialog)
+    const deletedContract = contracts.find(c => c.id === contractId);
+    if (!deletedContract) return;
+
+    setContracts(prev => prev.filter(c => c.id !== contractId));
+
+    let undoTimeout: ReturnType<typeof setTimeout>;
+
+    const toastId = toast(
+      <div className="flex items-center justify-between gap-3 w-full">
+        <span className="text-sm">
+          <span className="font-medium">{deletedContract.title}</span>
+          <span className="text-text-secondary"> deleted</span>
+        </span>
+        <button
+          onClick={() => {
+            clearTimeout(undoTimeout)
+            toast.dismiss(toastId)
+            setContracts(prev => [deletedContract, ...prev])
+          }}
+          className="text-xs font-semibold text-brand-600 hover:text-brand-700 transition flex-shrink-0 underline"
+          data-testid="undo-contract-delete"
+        >
+          Undo
+        </button>
+      </div>,
+      { duration: 5000, position: 'bottom-right' }
+    );
+
+    undoTimeout = setTimeout(async () => {
+      const result = await contractsApi.delete(contractId);
+      if (result.error) {
+        setContracts(prev => [deletedContract, ...prev]);
+        toast.error('Failed to delete contract — restored');
+      }
+    }, 5000);
   };
 
   const formatDate = (dateString?: string) => {

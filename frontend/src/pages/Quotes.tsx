@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { toast } from 'sonner'
 import {
   Plus,
   PaperPlaneTilt,
@@ -446,10 +447,40 @@ export default function QuotesPage({ lang, user, leads }: QuotesPageProps) {
     }
   }
 
-  const handleDelete = async (quote: Quote) => {
-    if (!confirm(`Delete this ${lang.quote.toLowerCase()}?`)) return
-    const result = await quotesApi.delete(quote.id)
-    if (!result.error) fetchQuotes()
+  const handleDelete = (quote: Quote) => {
+    // Iter 147 — Universal undo pattern (replaces confirm() dialog)
+    setQuotes(prev => prev.filter(q => q.id !== quote.id))
+
+    let undoTimeout: ReturnType<typeof setTimeout>
+
+    const toastId = toast(
+      <div className="flex items-center justify-between gap-3 w-full">
+        <span className="text-sm">
+          <span className="font-medium">{lang.quote}</span>
+          <span className="text-text-secondary"> for {quote.lead?.clientName || 'client'} deleted</span>
+        </span>
+        <button
+          onClick={() => {
+            clearTimeout(undoTimeout)
+            toast.dismiss(toastId)
+            setQuotes(prev => [quote, ...prev])
+          }}
+          className="text-xs font-semibold text-brand-600 hover:text-brand-700 transition flex-shrink-0 underline"
+          data-testid="undo-quote-delete"
+        >
+          Undo
+        </button>
+      </div>,
+      { duration: 5000, position: 'bottom-right' }
+    )
+
+    undoTimeout = setTimeout(async () => {
+      const result = await quotesApi.delete(quote.id)
+      if (result.error) {
+        setQuotes(prev => [quote, ...prev])
+        toast.error(`Failed to delete ${lang.quote.toLowerCase()} — restored`)
+      }
+    }, 5000)
   }
 
   const handleCopyLink = async (quote: Quote) => {

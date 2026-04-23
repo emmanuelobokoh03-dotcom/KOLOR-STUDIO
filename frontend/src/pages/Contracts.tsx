@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { toast } from 'sonner'
 import {
   Plus,
   PaperPlaneTilt,
@@ -198,8 +199,6 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
   onDelete: (c: Contract) => void
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
-  // AUDIT FIX [U3.1]: Destructive action confirmation state
-  const [deleteConfirm, setDeleteConfirm] = useState(false)
   const clientName = contract.lead?.clientName || 'Unknown'
   const initials = getInitials(clientName)
   const avatarColor = STATUS_AVATAR_COLORS[contract.status] || '#9CA3AF'
@@ -318,21 +317,13 @@ function ContractRow({ contract, lang, onEdit, onSend, onViewPortal, onDelete }:
                   </button>
                 )}
                 {isDraft && (
-                  deleteConfirm ? (
-                    <div className="flex items-center gap-1.5 px-3 py-2" data-testid={`contract-delete-confirm-${contract.id}`}>
-                      <span className="text-[10px] text-red-500 flex-1">Delete permanently?</span>
-                      <button onClick={(e) => { e.stopPropagation(); setMenuOpen(false); setDeleteConfirm(false); onDelete(contract) }} className="px-2 py-1 text-[10px] font-semibold text-white bg-red-500 rounded">
-                        Delete
-                      </button>
-                      <button onClick={(e) => { e.stopPropagation(); setDeleteConfirm(false) }} className="px-2 py-1 text-[10px] text-[var(--text-secondary)] border border-[var(--border)] rounded">
-                        Cancel
-                      </button>
-                    </div>
-                  ) : (
-                    <button onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }} className="w-full px-3 py-1.5 text-left text-xs hover:bg-red-50 text-red-500 flex items-center gap-2">
-                      <Trash className="w-3 h-3" /> Delete
-                    </button>
-                  )
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDelete(contract) }}
+                    className="w-full px-3 py-1.5 text-left text-xs hover:bg-red-50 text-red-500 flex items-center gap-2"
+                    data-testid={`contract-row-delete-${contract.id}`}
+                  >
+                    <Trash className="w-3 h-3" /> Delete
+                  </button>
                 )}
               </div>
             )}
@@ -412,10 +403,40 @@ export default function ContractsPage({ lang, user, leads, onLeadClick, onLeadCl
     }
   }
 
-  // AUDIT FIX [U3.1]: Remove browser confirm() — confirmation now handled in ContractRow UI
-  const handleDelete = async (contract: Contract) => {
-    const result = await contractsApi.delete(contract.id)
-    if (!result.error) fetchContracts()
+  // Iter 147 — Universal undo pattern (replaces inline 2-step confirm in ContractRow)
+  const handleDelete = (contract: Contract) => {
+    setContracts(prev => prev.filter(c => c.id !== contract.id))
+
+    let undoTimeout: ReturnType<typeof setTimeout>
+
+    const toastId = toast(
+      <div className="flex items-center justify-between gap-3 w-full">
+        <span className="text-sm">
+          <span className="font-medium">{contract.title}</span>
+          <span className="text-text-secondary"> deleted</span>
+        </span>
+        <button
+          onClick={() => {
+            clearTimeout(undoTimeout)
+            toast.dismiss(toastId)
+            setContracts(prev => [contract, ...prev])
+          }}
+          className="text-xs font-semibold text-brand-600 hover:text-brand-700 transition flex-shrink-0 underline"
+          data-testid="undo-contract-page-delete"
+        >
+          Undo
+        </button>
+      </div>,
+      { duration: 5000, position: 'bottom-right' }
+    )
+
+    undoTimeout = setTimeout(async () => {
+      const result = await contractsApi.delete(contract.id)
+      if (result.error) {
+        setContracts(prev => [contract, ...prev])
+        toast.error('Failed to delete contract — restored')
+      }
+    }, 5000)
   }
 
   const awaitingCount = contracts.filter(c => c.status === 'SENT' || c.status === 'VIEWED').length
