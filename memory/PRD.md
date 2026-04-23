@@ -393,6 +393,11 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 149 — Wire RevenuePipelineWidget into Analytics (Feb 2026) — ✅ SHIPPED
+- **T1 AnalyticsDashboard (P1)**: Imported and rendered `<RevenuePipelineWidget />` between the Business Metrics 4-card grid and the Revenue Trend chart. Self-labelled widget with stages Quotes Sent → Contract → Deposit Paid → In Progress → Paid in Full + Total Pipeline Value footer.
+- **T2 Dashboard (P1)**: Removed the forward-compat `RevenuePipelineWidget` import retained since Iter 146. Widget no longer referenced on the primary work surface — lives exclusively in Analytics now.
+- Testing: Smoke-tested via logged-in screenshot at `/dashboard?view=analytics`. Widget renders correctly with live data ($13,200 pipeline value, $2,580 tracked). TypeScript + Vite build both clean.
+
 ## Iteration 148 — Sparkline NaN Fix + Design Sweep Extension (Feb 2026) — ✅ SHIPPED
 - **T1 Sparkline NaN fix (P1)**: `toSparkline` in Dashboard.tsx now maps `d[key] ?? 0` — eliminates `<path d: NaN>` console warnings when API data is sparse (carryover from Iter 145-147).
 - **T2 Login.tsx (P1)**: `rounded-[10px]` → `rounded-lg` (4x); `text-[13px]` → `text-sm` (2x); `text-[11px]` → `text-xs` (4x).
