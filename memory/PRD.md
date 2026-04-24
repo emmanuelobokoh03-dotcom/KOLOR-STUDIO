@@ -393,6 +393,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 153 — Digest Preview + Shared Templates + DB Rate Limit (Feb 2026) — ✅ SHIPPED
+- **T1 Settings digest preview (P2)**: New "Weekly digest preview" section in Settings → Notifications with `Send preview` button (`send-digest-preview-btn`) calling `POST /api/digest/send`. States: Sending… → Sent! → auto-clears after 4s. Uses existing backend endpoint.
+- **T2 Shared contract templates (P2)**: New `backend/src/data/contractTemplates.ts` exports `CONTRACT_TEMPLATES` (6 types incl CUSTOM), `INDUSTRY_TO_CONTRACT_TYPE` (10 industries), `fillContractTemplate`. `contracts.ts` + `quotes.ts` now import from the single source; local duplicates + `fillTemplate`/`CONTRACT_TEMPLATES_INLINE` removed. `CONTRACT_TYPE_LABELS` kept local to contracts.ts (display-only).
+- **T3 DB-persisted forgot-password rate limit (P2)**: User model gets `passwordResetAttempts` (Int @default(0)) + `passwordResetWindowStart` (DateTime?). Removed in-memory Map + module-level `MAX_ATTEMPTS`/`RATE_LIMIT_WINDOW` constants (now local inside handler as `MAX_RESET_ATTEMPTS`/`RATE_LIMIT_WINDOW_MS`). Counters reset on successful password reset. Migration: `20260424130000_add_password_reset_rate_limit/migration.sql`.
+- Testing: testing_agent_v3_fork — 100% pass backend (13/13) + UI verified (iteration_153.json). `/api/health` 200, login/settings/leads/quotes/contracts regression all green. TypeScript + both builds clean.
+
 ## Iteration 152 — Migration File + Weekly Report Throttle + Scheduler Env Flag (Feb 2026) — ✅ SHIPPED
 - **T1 Prisma migration file (P1 carryover)**: Created `prisma/migrations/20260424120000_iter151_schema_fixes/migration.sql` capturing the Iter 151 column rename + 3 new indexes. Marked applied via `npx prisma migrate resolve --applied`. `prisma migrate status` clean — Railway `migrate deploy` will now work.
 - **T2 Weekly report throttle (P2)**: Added `await new Promise(r => setTimeout(r, 100))` between users in `runWeeklyPipelineReports` loop. Prevents DB connection burst at 50+ users (Monday morning).
