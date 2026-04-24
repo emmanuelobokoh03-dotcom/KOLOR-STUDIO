@@ -77,6 +77,7 @@ import googleCalendarRoutes from './routes/googleCalendar';
 import calendarRoutes from './routes/calendar';
 import recentActivitiesRoutes from './routes/recentActivities';
 import unsubscribeRoutes from './routes/unsubscribe';
+import { startScheduler } from './scheduler';
 
 // dotenv already loaded at the top of this file
 
@@ -396,12 +397,14 @@ app.listen(PORT, () => {
   }, 13 * 60 * 1000);
   console.log('📅 Meeting reminder processor started (every hour)');
 
-  // node-cron scheduler for daily + weekly automated emails
-  if (process.env.NODE_ENV === 'production') {
-    const { startScheduler } = require('./scheduler');
+  // Iter 152 — node-cron scheduler controlled by ENABLE_SCHEDULER env var.
+  // Works in any NODE_ENV so scheduler can be tested in staging without
+  // flipping NODE_ENV. Railway production must set ENABLE_SCHEDULER=true.
+  if (process.env.ENABLE_SCHEDULER === 'true') {
     startScheduler();
+    console.log('[Scheduler] Started via ENABLE_SCHEDULER=true');
   } else {
-    console.log('[Scheduler] Skipped in development mode. Set NODE_ENV=production to enable.');
+    console.log('[Scheduler] Disabled. Set ENABLE_SCHEDULER=true to enable.');
   }
 });
 

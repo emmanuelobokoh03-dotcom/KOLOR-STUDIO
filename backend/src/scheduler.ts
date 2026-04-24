@@ -308,6 +308,8 @@ export async function runWeeklyPipelineReports(): Promise<void> {
       } catch (userErr) {
         console.error(`[Scheduler] weeklyReport failed for user ${user.id}:`, userErr);
       }
+      // Iter 152 — 100ms breathing room between users prevents DB connection burst at 50+ users
+      await new Promise(r => setTimeout(r, 100));
     }
     console.log(`[Scheduler] Weekly reports sent to ${users.length} users`);
   } catch (err) {
