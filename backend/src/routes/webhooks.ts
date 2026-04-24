@@ -26,26 +26,27 @@ router.post('/stripe', async (req: Request, res: Response): Promise<void> => {
       // Can't parse for dedup — continue, paymentService will validate signature
     }
 
+    // Iter 150 — Atomic dedup: claim the event ID first. The @unique constraint
+    // on stripeEventId makes this a DB-level lock — only one concurrent request
+    // succeeds; the other gets P2002, which we treat as the duplicate signal.
+    // Closes the race condition in the previous check-then-record pattern.
     if (eventId) {
-      const alreadyProcessed = await prisma.processedWebhookEvent
-        .findUnique({ where: { stripeEventId: eventId } })
-        .catch(() => null);
-
-      if (alreadyProcessed) {
-        console.log(`[Webhook] Duplicate event ${eventId} — skipping`);
-        res.json({ received: true, duplicate: true });
-        return;
+      try {
+        await prisma.processedWebhookEvent.create({
+          data: { stripeEventId: eventId },
+        });
+      } catch (e: any) {
+        if (e?.code === 'P2002') {
+          console.log(`[Webhook] Duplicate event ${eventId} — skipping`);
+          res.json({ received: true, duplicate: true });
+          return;
+        }
+        throw e;
       }
     }
 
+    // Event claimed — now safe to process
     await paymentService.handleWebhookEvent(rawBody, sig);
-
-    // Record processed event (best-effort, non-blocking)
-    if (eventId) {
-      prisma.processedWebhookEvent.create({
-        data: { stripeEventId: eventId, processedAt: new Date() },
-      }).catch(e => console.error('[Webhook] Failed to record processed event:', e));
-    }
 
     res.json({ received: true });
   } catch (err: any) {
@@ -88,21 +89,20 @@ router.post('/paystack', async (req: Request, res: Response): Promise<void> => {
       const reference = event.data.reference;
       const dedupKey = `paystack_${reference}`;
 
-      // Dedup via existing ProcessedWebhookEvent table (reusing stripeEventId column as a generic key)
-      const existing = await prisma.processedWebhookEvent
-        .findUnique({ where: { stripeEventId: dedupKey } })
-        .catch(() => null);
-
-      if (existing) {
-        console.log(`[Paystack Webhook] Duplicate event for ref ${reference} — skipping`);
-        return;
+      // Iter 150 — Atomic dedup (same pattern as Stripe handler above)
+      try {
+        await prisma.processedWebhookEvent.create({
+          data: { stripeEventId: dedupKey },
+        });
+      } catch (e: any) {
+        if (e?.code === 'P2002') {
+          console.log(`[Paystack Webhook] Duplicate event for ref ${reference} — skipping`);
+          return;
+        }
+        throw e;
       }
 
       await paymentService.checkAndUpdatePaystackPayment(reference);
-
-      prisma.processedWebhookEvent.create({
-        data: { stripeEventId: dedupKey, processedAt: new Date() },
-      }).catch(e => console.error('[Paystack Webhook] Failed to record processed event:', e));
     }
   } catch (err: any) {
     console.error('[Paystack Webhook] Processing error:', err.message);

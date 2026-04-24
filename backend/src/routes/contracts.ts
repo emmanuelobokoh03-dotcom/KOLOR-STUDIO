@@ -490,103 +490,118 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
       },
     });
 
-    if (contract.lead.assignedTo?.email) {
-      const studioName = contract.lead.assignedTo.studioName || `${contract.lead.assignedTo.firstName} ${contract.lead.assignedTo.lastName}`;
-      await sendContractAgreedNotification({
-        ownerEmail: contract.lead.assignedTo.email,
-        clientName: contract.lead.clientName,
-        projectTitle: contract.lead.projectTitle,
-        contractTitle: contract.title,
-        agreedAt: new Date().toISOString(),
-        clientIP,
-        studioName: studioName || 'Studio',
-      });
-    }
+    // Iter 150 — Respond immediately. The DB update is the authoritative signing
+    // event; all downstream side effects run after the response so that email or DB
+    // failures cannot cause the client to see an error on a successfully signed contract.
+    res.json({ success: true, celebration: true, contract: { id: updated.id, status: updated.status, clientAgreedAt: updated.clientAgreedAt } });
 
-    await logActivity(contract.lead.id, null, 'CONTRACT_SIGNED', `Client ${contract.lead.clientName} signed: "${contract.title}"`);
+    // All side effects fire after responding — failures are logged, not surfaced to client
+    setImmediate(async () => {
 
-    // Send deposit payment email to client AFTER contract is signed (non-blocking).
-    // Previously the deposit email was triggered from quote acceptance — too early, before signing.
-    // The payment link points to the client portal where the "Pay Deposit" button creates the Stripe session on demand.
-    (async () => {
+      // 1. Notify studio owner
+      if (contract.lead.assignedTo?.email) {
+        try {
+          const studioName = contract.lead.assignedTo.studioName || `${contract.lead.assignedTo.firstName} ${contract.lead.assignedTo.lastName}`;
+          await sendContractAgreedNotification({
+            ownerEmail: contract.lead.assignedTo.email,
+            clientName: contract.lead.clientName,
+            projectTitle: contract.lead.projectTitle,
+            contractTitle: contract.title,
+            agreedAt: new Date().toISOString(),
+            clientIP,
+            studioName: studioName || 'Studio',
+          });
+        } catch (err) {
+          console.error('[CONTRACT] Owner notification email failed:', err);
+        }
+      }
+
+      // 2. Log activity
+      try {
+        await logActivity(contract.lead.id, null, 'CONTRACT_SIGNED', `Client ${contract.lead.clientName} signed: "${contract.title}"`);
+      } catch (err) {
+        console.error('[CONTRACT] Activity log failed:', err);
+      }
+
+      // 3. Deposit payment email to client
       try {
         const quote = await prisma.quote.findFirst({
           where: { leadId: contract.leadId, status: { in: ['ACCEPTED', 'SENT'] } },
           orderBy: { createdAt: 'desc' },
         });
-        if (!quote || !contract.lead.clientEmail) return;
-        const studioDisplayName = contract.lead.assignedTo?.studioName
-          || `${contract.lead.assignedTo?.firstName || ''} ${contract.lead.assignedTo?.lastName || ''}`.trim()
-          || 'Studio';
-        const totalAmount = Number(quote.total ?? 0);
-        const depositAmount = Math.round(totalAmount * 0.3 * 100) / 100;
-        const portalUrl = `${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/portal/${contract.lead.portalToken}`;
-        await sendDepositPaymentEmail({
-          clientName: contract.lead.clientName,
-          clientEmail: contract.lead.clientEmail,
-          creativeName: studioDisplayName,
-          studioName: studioDisplayName,
-          projectTitle: contract.lead.projectTitle,
-          depositAmount,
-          totalAmount,
-          paymentUrl: portalUrl,
-        });
-        console.log('[CONTRACT] Deposit email sent post-signing for lead:', contract.leadId);
+        if (quote && contract.lead.clientEmail) {
+          const studioDisplayName = contract.lead.assignedTo?.studioName
+            || `${contract.lead.assignedTo?.firstName || ''} ${contract.lead.assignedTo?.lastName || ''}`.trim()
+            || 'Studio';
+          const totalAmount = Number(quote.total ?? 0);
+          const depositAmount = Math.round(totalAmount * 0.3 * 100) / 100;
+          const portalUrl = `${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/portal/${contract.lead.portalToken}`;
+          await sendDepositPaymentEmail({
+            clientName: contract.lead.clientName,
+            clientEmail: contract.lead.clientEmail,
+            creativeName: studioDisplayName,
+            studioName: studioDisplayName,
+            projectTitle: contract.lead.projectTitle,
+            depositAmount,
+            totalAmount,
+            paymentUrl: portalUrl,
+          });
+          console.log('[CONTRACT] Deposit email sent post-signing for lead:', contract.leadId);
+        }
       } catch (depositEmailErr) {
         console.error('[CONTRACT] Deposit email failed:', depositEmailErr);
       }
-    })();
 
-    // Auto-generate milestones for the project
-    try {
-      const existingMilestones = await prisma.projectMilestone.count({ where: { leadId: contract.leadId } });
-      if (existingMilestones === 0) {
-        const now = new Date();
-        const in7Days = new Date(now); in7Days.setDate(in7Days.getDate() + 7);
-        const in30Days = new Date(now); in30Days.setDate(in30Days.getDate() + 30);
-        const in45Days = new Date(now); in45Days.setDate(in45Days.getDate() + 45);
+      // 4. Auto-generate project milestones
+      try {
+        const existingMilestones = await prisma.projectMilestone.count({ where: { leadId: contract.leadId } });
+        if (existingMilestones === 0) {
+          const now = new Date();
+          const in7Days = new Date(now); in7Days.setDate(in7Days.getDate() + 7);
+          const in30Days = new Date(now); in30Days.setDate(in30Days.getDate() + 30);
+          const in45Days = new Date(now); in45Days.setDate(in45Days.getDate() + 45);
 
-        await prisma.projectMilestone.createMany({
-          data: [
-            { leadId: contract.leadId, name: 'Contract Signed', description: 'Service agreement executed', dueDate: now, completed: true, completedAt: now, order: 0 },
-            { leadId: contract.leadId, name: 'Deposit Payment', description: 'Initial deposit received', dueDate: in7Days, completed: false, order: 1 },
-            { leadId: contract.leadId, name: 'Project Completion', description: 'All deliverables completed', dueDate: in30Days, completed: false, order: 2 },
-            { leadId: contract.leadId, name: 'Final Payment', description: 'Balance payment received', dueDate: in45Days, completed: false, order: 3 },
-          ],
-        });
-        console.log('[CONTRACT] Auto-generated 4 milestones for lead:', contract.leadId);
+          await prisma.projectMilestone.createMany({
+            data: [
+              { leadId: contract.leadId, name: 'Contract Signed', description: 'Service agreement executed', dueDate: now, completed: true, completedAt: now, order: 0 },
+              { leadId: contract.leadId, name: 'Deposit Payment', description: 'Initial deposit received', dueDate: in7Days, completed: false, order: 1 },
+              { leadId: contract.leadId, name: 'Project Completion', description: 'All deliverables completed', dueDate: in30Days, completed: false, order: 2 },
+              { leadId: contract.leadId, name: 'Final Payment', description: 'Balance payment received', dueDate: in45Days, completed: false, order: 3 },
+            ],
+          });
+          console.log('[CONTRACT] Auto-generated 4 milestones for lead:', contract.leadId);
+        }
+      } catch (milestoneErr) {
+        console.error('[CONTRACT] Failed to auto-generate milestones:', milestoneErr);
       }
-    } catch (milestoneErr) {
-      console.error('[CONTRACT] Failed to auto-generate milestones:', milestoneErr);
-    }
 
-    // Enroll client in onboarding drip sequence
-    try {
-      await enrollInOnboarding(contract.lead.id);
-    } catch (err) {
-      console.error('[CONTRACT] Failed to enroll in onboarding:', err);
-    }
-
-    // Schedule testimonial request email — 7 days after signing
-    try {
-      const existing = await prisma.scheduledEmail.findFirst({
-        where: { leadId: contract.lead.id, type: 'TESTIMONIAL_REQUEST', sentAt: null },
-      });
-      if (!existing) {
-        await prisma.scheduledEmail.create({
-          data: {
-            type: 'TESTIMONIAL_REQUEST',
-            leadId: contract.lead.id,
-            scheduledFor: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          },
-        });
-        console.log(`[CONTRACT] Testimonial request scheduled for lead ${contract.lead.id} in 7 days`);
+      // 5. Enroll client in onboarding drip
+      try {
+        await enrollInOnboarding(contract.lead.id);
+      } catch (err) {
+        console.error('[CONTRACT] Failed to enroll in onboarding:', err);
       }
-    } catch (err) {
-      console.error('[CONTRACT] Failed to schedule testimonial request:', err);
-    }
 
-    res.json({ success: true, celebration: true, contract: { id: updated.id, status: updated.status, clientAgreedAt: updated.clientAgreedAt } });
+      // 6. Schedule testimonial request — 7 days post-signing
+      try {
+        const existing = await prisma.scheduledEmail.findFirst({
+          where: { leadId: contract.lead.id, type: 'TESTIMONIAL_REQUEST', sentAt: null },
+        });
+        if (!existing) {
+          await prisma.scheduledEmail.create({
+            data: {
+              type: 'TESTIMONIAL_REQUEST',
+              leadId: contract.lead.id,
+              scheduledFor: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            },
+          });
+          console.log(`[CONTRACT] Testimonial request scheduled for lead ${contract.lead.id} in 7 days`);
+        }
+      } catch (err) {
+        console.error('[CONTRACT] Failed to schedule testimonial request:', err);
+      }
+
+    }); // end setImmediate
   } catch (error) {
     console.error('Error processing agreement:', error);
     res.status(500).json({ error: 'Failed to process agreement' });
