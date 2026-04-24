@@ -393,6 +393,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 151 — Schema Migration + Processor Mutex + Sequence DB-Before-Send (Feb 2026) — ✅ SHIPPED
+- **T1 Schema (P1)**: Renamed `ProcessedWebhookEvent.stripeEventId` → `eventKey` (column now stores both Stripe event IDs and Paystack `paystack_ch_*` refs). Added missing indexes: `Quote([viewedAt])`, `Quote([validUntil, status])`, `Contract([sentAt, status, clientAgreed])`. Applied via raw SQL rename + `prisma db push`. `webhooks.ts` field refs updated.
+- **T2 Processor concurrency mutex (P1)**: Added `ProcessorRunning` boolean guard in 5 service files (`sequenceEngine`, `onboardingService`, `quoteFollowUpService`, `scheduledEmailService`, `meetingReminderService`). Pattern: module-level flag + entry check + `try { … } finally { flag = false }`. Prevents a slow run from overlapping the next scheduled invocation.
+- **T3 Sequence DB-before-send (P1)**: `processSequences` now calls `prisma.sequenceEnrollment.update` (line 138) BEFORE `sendSequenceEmail` (line 145). Email failure after DB advance no longer causes duplicate sends on the next run.
+- Testing: testing_agent_v3_fork — 100% pass backend (iteration_151.json). Functional tests: `/api/contracts/:id/agree` 1.1s response, `/api/quotes/public/:token/accept` works end-to-end. TypeScript + build clean.
+
 ## Iteration 150 — P0 Backend Hardening (Feb 2026) — ✅ SHIPPED
 - **T1 Webhooks atomic dedup (P0)**: Replaced check-then-record pattern with atomic create-first, catching `P2002` unique violation as the duplicate signal. Applied to both Stripe (`/api/webhooks/stripe`) and Paystack (`/api/webhooks/paystack`) handlers. Closes race condition where concurrent retries could double-process events.
 - **T2 Quotes debug log removal (P0)**: Removed 13 lines of PII-leaking debug logs (owner emails, `SENDER_EMAIL`, hard-coded sandbox email). Kept `sendQuoteAcceptedNotification` intact and replaced success log with a single `!notifSent` warn. Functional test confirms quote acceptance still fires notifications.
