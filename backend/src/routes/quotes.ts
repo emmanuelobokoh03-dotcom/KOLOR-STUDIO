@@ -10,111 +10,9 @@ import { enrollInQuoteFollowUp, stopQuoteFollowUp } from '../services/quoteFollo
 const router = Router();
 import prisma from '../lib/prisma';
 
-// ---- Contract Template Map (for auto-generation) ----
-const INDUSTRY_TO_CONTRACT_TYPE: Record<string, string> = {
-  PHOTOGRAPHY: 'PHOTOGRAPHY_SHOOT',
-  VIDEOGRAPHY: 'PHOTOGRAPHY_SHOOT',
-  CONTENT_CREATION: 'PHOTOGRAPHY_SHOOT',
-  FINE_ART: 'PORTRAIT_COMMISSION',
-  ILLUSTRATION: 'PORTRAIT_COMMISSION',
-  SCULPTURE: 'PORTRAIT_COMMISSION',
-  GRAPHIC_DESIGN: 'LOGO_DESIGN',
-  WEB_DESIGN: 'WEB_DESIGN',
-  BRANDING: 'LOGO_DESIGN',
-  OTHER: 'GENERAL_SERVICE',
-};
+// Iter 153 — Contract templates now sourced from shared data file
+import { CONTRACT_TEMPLATES, INDUSTRY_TO_CONTRACT_TYPE, fillContractTemplate } from '../data/contractTemplates';
 
-const CONTRACT_TEMPLATES_INLINE: Record<string, { title: string; content: string }> = {
-  PHOTOGRAPHY_SHOOT: {
-    title: 'Photography Services Agreement',
-    content: `<h2>Photography Services Agreement</h2>
-<p>This Photography Services Agreement is entered into between <strong>{{studioName}}</strong> ("Photographer") and <strong>{{clientName}}</strong> ("Client") for the project described below.</p>
-<h3>1. Project Details</h3>
-<p><strong>Project:</strong> {{projectTitle}}<br/><strong>Event/Session Date:</strong> {{eventDate}}<br/><strong>Agreed Fee:</strong> {{estimatedValue}}</p>
-<h3>2. Services Provided</h3>
-<p>The Photographer agrees to provide professional photography services as discussed, including pre-shoot consultation, the photography session, and post-production editing.</p>
-<h3>3. Deliverables</h3>
-<p>Curated, professionally edited digital images delivered via secure online gallery within 2-4 weeks.</p>
-<h3>4. Payment Terms</h3>
-<p>A non-refundable retainer of 30% is due upon signing. Remaining balance due 7 days before the session.</p>
-<h3>5. Cancellation</h3>
-<p>Client may reschedule with 14 days' notice. Cancellations under 14 days forfeit the retainer.</p>
-<h3>6. Usage Rights</h3>
-<p>Client receives personal, non-exclusive license upon full payment. Photographer retains copyright and portfolio usage rights.</p>
-<h3>7. Agreement</h3>
-<p>By agreeing below, both parties acknowledge and accept these terms.</p>`,
-  },
-  PORTRAIT_COMMISSION: {
-    title: 'Art Commission Agreement',
-    content: `<h2>Art Commission Agreement</h2>
-<p>This Agreement is between <strong>{{studioName}}</strong> ("Artist") and <strong>{{clientName}}</strong> ("Client").</p>
-<h3>1. Commission Details</h3>
-<p><strong>Project:</strong> {{projectTitle}}<br/><strong>Agreed Fee:</strong> {{estimatedValue}}</p>
-<h3>2. Scope of Work</h3>
-<p>The Artist agrees to create an original artwork as described. Two rounds of revisions included after the initial concept.</p>
-<h3>3. Payment Terms</h3>
-<p>A non-refundable deposit of 30% is due upon acceptance. Remaining balance due upon completion.</p>
-<h3>4. Cancellation</h3>
-<p>If Client cancels after work begins, deposit is non-refundable. Post-concept cancellations billed for work completed.</p>
-<h3>5. Intellectual Property</h3>
-<p>Upon full payment, Client receives ownership of the physical artwork. Artist retains reproduction and portfolio rights.</p>
-<h3>6. Agreement</h3>
-<p>By agreeing below, both parties acknowledge and accept these terms.</p>`,
-  },
-  LOGO_DESIGN: {
-    title: 'Design Project Agreement',
-    content: `<h2>Design Project Agreement</h2>
-<p>This Agreement is between <strong>{{studioName}}</strong> ("Designer") and <strong>{{clientName}}</strong> ("Client").</p>
-<h3>1. Project Details</h3>
-<p><strong>Project:</strong> {{projectTitle}}<br/><strong>Estimated Completion:</strong> {{eventDate}}<br/><strong>Agreed Fee:</strong> {{estimatedValue}}</p>
-<h3>2. Scope of Work</h3>
-<p>Professional design services including concept development, design iterations, and final production files.</p>
-<h3>3. Deliverables</h3>
-<p>Final design files in industry-standard formats. Source files provided upon full payment.</p>
-<h3>4. Revisions</h3>
-<p>Three rounds of revisions included. Additional revisions billed at agreed hourly rate.</p>
-<h3>5. Payment Terms</h3>
-<p>30% deposit due upon signing. Remaining balance due upon delivery of final files.</p>
-<h3>6. Intellectual Property</h3>
-<p>Upon full payment, all rights to final designs transfer to Client. Designer retains portfolio usage rights.</p>
-<h3>7. Agreement</h3>
-<p>By agreeing below, both parties acknowledge and accept these terms.</p>`,
-  },
-  WEB_DESIGN: {
-    title: 'Web Design Agreement',
-    content: `<h2>Web Design &amp; Development Agreement</h2>
-<p>This Agreement is between <strong>{{studioName}}</strong> ("Designer") and <strong>{{clientName}}</strong> ("Client").</p>
-<h3>1. Project Details</h3>
-<p><strong>Project:</strong> {{projectTitle}}<br/><strong>Estimated Completion:</strong> {{eventDate}}<br/><strong>Agreed Fee:</strong> {{estimatedValue}}</p>
-<h3>2. Scope</h3>
-<p>Design and development of website as specified. Content provided by Client unless otherwise agreed.</p>
-<h3>3. Payment Terms</h3>
-<p>30% deposit due upon signing. Remaining balance due upon project completion.</p>
-<h3>4. Ownership</h3>
-<p>Upon full payment, Client owns all custom design work and code. Third-party licenses remain with their owners.</p>
-<h3>5. Agreement</h3>
-<p>By agreeing below, both parties acknowledge and accept these terms.</p>`,
-  },
-  GENERAL_SERVICE: {
-    title: 'Service Agreement',
-    content: `<h2>Service Agreement</h2>
-<p>This Agreement is between <strong>{{studioName}}</strong> ("Provider") and <strong>{{clientName}}</strong> ("Client").</p>
-<h3>1. Project Details</h3>
-<p><strong>Project:</strong> {{projectTitle}}<br/><strong>Timeline:</strong> {{eventDate}}<br/><strong>Agreed Fee:</strong> {{estimatedValue}}</p>
-<h3>2. Payment Terms</h3>
-<p>30% deposit due upon signing. Balance due upon completion.</p>
-<h3>3. Agreement</h3>
-<p>By agreeing below, both parties acknowledge and accept these terms.</p>`,
-  },
-};
-
-function fillContractTemplate(template: string, data: Record<string, string>): string {
-  let result = template;
-  for (const [key, value] of Object.entries(data)) {
-    result = result.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), value || 'TBD');
-  }
-  return result;
-}
 
 /** Auto-generate and send a contract when a quote is accepted */
 async function autoGenerateContract(quoteId: string): Promise<string | null> {
@@ -137,7 +35,7 @@ async function autoGenerateContract(quoteId: string): Promise<string | null> {
     const user = lead.assignedTo || quote.createdBy;
     const industry = user?.primaryIndustry || 'PHOTOGRAPHY';
     const contractType = INDUSTRY_TO_CONTRACT_TYPE[industry] || 'GENERAL_SERVICE';
-    const template = CONTRACT_TEMPLATES_INLINE[contractType] || CONTRACT_TEMPLATES_INLINE.GENERAL_SERVICE;
+    const template = CONTRACT_TEMPLATES[contractType] || CONTRACT_TEMPLATES.GENERAL_SERVICE;
 
     const studioName = user?.studioName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Studio';
     const currencySymbol = quote.currencySymbol || '$';

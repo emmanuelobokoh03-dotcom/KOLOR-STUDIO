@@ -12,10 +12,9 @@ import prisma from '../lib/prisma';
 
 const router = Router();
 
-// In-memory rate limiting for forgot-password requests
-const forgotPasswordAttempts: Map<string, { count: number; resetTime: number }> = new Map();
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour in ms
-const MAX_ATTEMPTS = 3;
+// Iter 153 — Forgot-password rate limit is now DB-persisted on the User model
+// (passwordResetAttempts + passwordResetWindowStart). Previous in-memory Map
+// reset on Railway cold starts and did not work across instances.
 
 // POST /api/auth/signup - Create new user account
 router.post('/signup', async (req: Request, res: Response): Promise<void> => {
@@ -520,27 +519,43 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Rate limiting check
-    const now = Date.now();
-    const attemptRecord = forgotPasswordAttempts.get(normalizedEmail);
-    
-    if (attemptRecord) {
-      if (now < attemptRecord.resetTime) {
-        if (attemptRecord.count >= MAX_ATTEMPTS) {
+    // Iter 153 — DB-persisted rate limiting. Survives Railway restarts and
+    // works across multiple instances. Mirrors the login lockout pattern
+    // (loginAttempts + lockedUntil on User model).
+    const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+    const MAX_RESET_ATTEMPTS = 3;
+
+    const rateLimitUser = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+      select: { id: true, passwordResetAttempts: true, passwordResetWindowStart: true },
+    });
+
+    if (rateLimitUser) {
+      const windowStart = rateLimitUser.passwordResetWindowStart;
+      const nowDate = new Date();
+
+      if (windowStart && (nowDate.getTime() - windowStart.getTime()) < RATE_LIMIT_WINDOW_MS) {
+        if (rateLimitUser.passwordResetAttempts >= MAX_RESET_ATTEMPTS) {
           res.status(429).json({
             error: 'Too Many Requests',
-            message: 'Too many password reset requests. Please try again in an hour.'
+            message: 'Too many password reset requests. Please try again in an hour.',
           });
           return;
         }
-        attemptRecord.count++;
+        await prisma.user.update({
+          where: { id: rateLimitUser.id },
+          data: { passwordResetAttempts: { increment: 1 } },
+        });
       } else {
-        // Reset the window
-        forgotPasswordAttempts.set(normalizedEmail, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+        // Window expired or never started — start a new window
+        await prisma.user.update({
+          where: { id: rateLimitUser.id },
+          data: { passwordResetAttempts: 1, passwordResetWindowStart: nowDate },
+        });
       }
-    } else {
-      forgotPasswordAttempts.set(normalizedEmail, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
     }
+    // If no user found for this email, skip rate-limit tracking entirely —
+    // we still return the generic "email sent" response below for enumeration safety.
 
     // Find user by email
     const user = await prisma.user.findUnique({
@@ -667,6 +682,9 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
         password: hashedPassword,
         passwordResetToken: null,
         passwordResetExpires: null,
+        // Iter 153 — Reset rate-limit counters after successful password reset
+        passwordResetAttempts: 0,
+        passwordResetWindowStart: null,
         tokenVersion: { increment: 1 },
       }
     });

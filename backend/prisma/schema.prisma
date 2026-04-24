@@ -516,6 +516,10 @@ model User {
   lastLoginAt          DateTime?
   passwordResetExpires DateTime?
   passwordResetToken   String?              @unique
+  // Iter 153 — DB-persisted rate limit for POST /api/auth/forgot-password
+  // (replaces in-memory Map that reset on Railway cold starts)
+  passwordResetAttempts    Int       @default(0)
+  passwordResetWindowStart DateTime?
   currency             String               @default("USD")
   currencyPosition     String               @default("BEFORE")
   currencySymbol       String               @default("$")

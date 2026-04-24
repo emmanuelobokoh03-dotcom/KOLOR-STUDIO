@@ -13,6 +13,7 @@ import {
   GoogleLogo,
   CheckCircle,
   SpinnerGap,
+  EnvelopeSimple,
   Eye,
   EyeSlash,
   WarningCircle,
@@ -101,6 +102,9 @@ export default function Settings() {
   const [settings, setSettings] = useState<UserSettings | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  // Iter 153 — Weekly digest preview send state
+  const [sendingDigest, setSendingDigest] = useState(false)
+  const [digestSent, setDigestSent] = useState<'sent' | 'skipped' | 'error' | null>(null)
 
   // Profile form
   const [firstName, setFirstName] = useState('')
@@ -194,6 +198,35 @@ export default function Settings() {
       toast.error('Connection error')
     }
     setSaving(false)
+  }
+
+  // Iter 153 — Send a preview of the weekly digest to the logged-in user's email
+  const handleSendDigestPreview = async () => {
+    setSendingDigest(true)
+    setDigestSent(null)
+    try {
+      const res = await fetch(`${API_URL}/api/digest/send`, {
+        method: 'POST',
+        credentials: 'include',
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setDigestSent('error')
+        toast.error('Failed to send preview — check your email settings')
+      } else if (data.skipped) {
+        setDigestSent('skipped')
+        toast('No activity this week — digest would be empty')
+      } else {
+        setDigestSent('sent')
+        toast.success('Preview sent! Check your inbox.')
+      }
+    } catch {
+      setDigestSent('error')
+      toast.error('Connection error — try again')
+    } finally {
+      setSendingDigest(false)
+      setTimeout(() => setDigestSent(null), 4000)
+    }
   }
 
   const handleChangePassword = async () => {
@@ -519,6 +552,36 @@ export default function Settings() {
                         </button>
                       </div>
                     ))}
+
+                    {/* Iter 153 — Weekly digest preview: lets users validate formatting before Monday */}
+                    <div
+                      className="flex items-center justify-between gap-3 p-4 rounded-lg border"
+                      style={{ borderColor: 'var(--border)' }}
+                      data-testid="digest-preview-section"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-text-primary">Weekly digest preview</p>
+                        <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                          Send yourself a sample of this week's digest right now.
+                        </p>
+                      </div>
+                      <button
+                        onClick={handleSendDigestPreview}
+                        disabled={sendingDigest}
+                        className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white transition disabled:opacity-50 min-h-[44px]"
+                        style={{ background: digestSent === 'sent' ? '#16a34a' : 'var(--brand-primary, #6C2EDB)' }}
+                        data-testid="send-digest-preview-btn"
+                      >
+                        {sendingDigest ? (
+                          <SpinnerGap className="w-4 h-4 animate-spin" />
+                        ) : digestSent === 'sent' ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <EnvelopeSimple className="w-4 h-4" />
+                        )}
+                        {sendingDigest ? 'Sending\u2026' : digestSent === 'sent' ? 'Sent!' : 'Send preview'}
+                      </button>
+                    </div>
 
                     <p className="text-[10px] text-[var(--text-tertiary)] mt-2">
                       Transactional emails (quote sent, contract signed, etc.) are always on and cannot be disabled.
