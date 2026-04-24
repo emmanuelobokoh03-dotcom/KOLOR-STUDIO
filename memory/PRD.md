@@ -393,6 +393,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 150 — P0 Backend Hardening (Feb 2026) — ✅ SHIPPED
+- **T1 Webhooks atomic dedup (P0)**: Replaced check-then-record pattern with atomic create-first, catching `P2002` unique violation as the duplicate signal. Applied to both Stripe (`/api/webhooks/stripe`) and Paystack (`/api/webhooks/paystack`) handlers. Closes race condition where concurrent retries could double-process events.
+- **T2 Quotes debug log removal (P0)**: Removed 13 lines of PII-leaking debug logs (owner emails, `SENDER_EMAIL`, hard-coded sandbox email). Kept `sendQuoteAcceptedNotification` intact and replaced success log with a single `!notifSent` warn. Functional test confirms quote acceptance still fires notifications.
+- **T3 `/contracts/:id/agree` response ordering (P0)**: `res.json` now fires immediately after the authoritative `prisma.contract.update` (line 496). All 6 side effects (owner notification, activity log, deposit email, milestones `createMany`, `enrollInOnboarding`, testimonial schedule) run inside `setImmediate` with independent try/catch — side-effect failures no longer surface as 500 to signing clients. Verified response time ~644ms with 4 milestones auto-generated and testimonial scheduled.
+- Testing: testing_agent_v3_fork — 100% pass backend (iteration_150.json). `npx tsc --noEmit` + `npm run build` both clean.
+
 ## Iteration 149 — Wire RevenuePipelineWidget into Analytics (Feb 2026) — ✅ SHIPPED
 - **T1 AnalyticsDashboard (P1)**: Imported and rendered `<RevenuePipelineWidget />` between the Business Metrics 4-card grid and the Revenue Trend chart. Self-labelled widget with stages Quotes Sent → Contract → Deposit Paid → In Progress → Paid in Full + Total Pipeline Value footer.
 - **T2 Dashboard (P1)**: Removed the forward-compat `RevenuePipelineWidget` import retained since Iter 146. Widget no longer referenced on the primary work surface — lives exclusively in Analytics now.
