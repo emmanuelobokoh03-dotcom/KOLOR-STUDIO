@@ -78,9 +78,17 @@ export async function stopOnboardingForLead(leadId: string, reason: string): Pro
 }
 
 
+let onboardingProcessorRunning = false;
+
 export async function processOnboardingSequences() {
-  const now = new Date();
-  let processed = 0;
+  if (onboardingProcessorRunning) {
+    console.warn('[Onboarding] Previous run still active — skipping this invocation');
+    return;
+  }
+  onboardingProcessorRunning = true;
+  try {
+    const now = new Date();
+    let processed = 0;
 
   // Step 2: Send portal guide 2 days after email 1
   const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
@@ -186,4 +194,7 @@ export async function processOnboardingSequences() {
   }
 
 
+  } finally {
+    onboardingProcessorRunning = false;
+  }
 }

@@ -76,7 +76,14 @@ export async function stopSequencesForLead(leadId: string, reason: string): Prom
 /**
  * Process all due emails across active enrollments. Run on a schedule.
  */
+let sequenceProcessorRunning = false;
+
 export async function processSequences(): Promise<{ sent: number; completed: number; errors: number }> {
+  if (sequenceProcessorRunning) {
+    console.warn('[Seq] Previous run still active — skipping this invocation');
+    return { sent: 0, completed: 0, errors: 0 };
+  }
+  sequenceProcessorRunning = true;
   const stats = { sent: 0, completed: 0, errors: 0 };
   try {
     const due = await prisma.sequenceEnrollment.findMany({
@@ -110,18 +117,11 @@ export async function processSequences(): Promise<{ sent: number; completed: num
         const studioName = enrollment.lead.assignedTo?.studioName || enrollment.lead.assignedTo?.firstName || 'Studio';
         const portalUrl = enrollment.lead.portalToken ? `${process.env.FRONTEND_URL}/portal/${enrollment.lead.portalToken}` : undefined;
 
-        await sendSequenceEmail({
-          clientEmail: enrollment.lead.clientEmail,
-          clientName: enrollment.lead.clientName,
-          studioName,
-          subject,
-          body,
-          portalUrl,
-          unsubscribeUrl: `${process.env.FRONTEND_URL}/api/unsubscribe/${enrollment.unsubscribeToken}`,
-        });
-
-
-        // Determine next step timing
+        // Iter 151 — Determine next step timing and advance enrollment state in DB
+        // BEFORE sending email. If the email send fails after this point, the enrollment
+        // has still advanced and the duplicate will not fire on the next run.
+        // If the DB update fails here, we skip the send entirely — the enrollment
+        // remains at the current step and will retry naturally on the next run.
         const nextStep = enrollment.sequence.steps[enrollment.currentStep + 1];
         const nextEmailAt = nextStep ? addDays(new Date(), nextStep.delayDays) : null;
         const isLast = !nextStep;
@@ -140,6 +140,18 @@ export async function processSequences(): Promise<{ sent: number; completed: num
           data: updateData,
         });
 
+        // Send email AFTER DB is updated — failure here is logged but does not
+        // roll back the enrollment state (intentional: prevents duplicate sends)
+        await sendSequenceEmail({
+          clientEmail: enrollment.lead.clientEmail,
+          clientName: enrollment.lead.clientName,
+          studioName,
+          subject,
+          body,
+          portalUrl,
+          unsubscribeUrl: `${process.env.FRONTEND_URL}/api/unsubscribe/${enrollment.unsubscribeToken}`,
+        });
+
         stats.sent++;
         if (isLast) stats.completed++;
       } catch (err) {
@@ -149,6 +161,8 @@ export async function processSequences(): Promise<{ sent: number; completed: num
     }
   } catch (error) {
     console.error('[Seq] Process error:', error);
+  } finally {
+    sequenceProcessorRunning = false;
   }
   return stats;
 }

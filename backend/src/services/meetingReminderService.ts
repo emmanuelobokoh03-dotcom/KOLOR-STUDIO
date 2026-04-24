@@ -4,7 +4,14 @@ import { sendMeetingReminderEmail } from './email';
 /**
  * Process meeting reminders: sends email 24 hours before meeting
  */
+let meetingReminderProcessorRunning = false;
+
 export async function processMeetingReminders(): Promise<void> {
+  if (meetingReminderProcessorRunning) {
+    console.warn('[MeetingReminders] Previous run still active — skipping this invocation');
+    return;
+  }
+  meetingReminderProcessorRunning = true;
   try {
     const now = new Date();
     const in24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
@@ -55,5 +62,7 @@ export async function processMeetingReminders(): Promise<void> {
     }
   } catch (error) {
     console.error('[MeetingReminders] Error:', error);
+  } finally {
+    meetingReminderProcessorRunning = false;
   }
 }

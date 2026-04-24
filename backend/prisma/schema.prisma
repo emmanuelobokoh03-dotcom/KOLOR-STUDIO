@@ -70,6 +70,7 @@ model Contract {
 
   @@index([leadId])
   @@index([status])
+  @@index([sentAt, status, clientAgreed])
   @@map("contracts")
 }
 
@@ -439,6 +440,8 @@ model Quote {
   @@index([leadId, status])
   @@index([createdById, status])
   @@index([createdById, createdAt])
+  @@index([viewedAt])
+  @@index([validUntil, status])
   @@map("quotes")
 }
 
@@ -1072,9 +1075,9 @@ enum CreativeIndustry {
 
 
 model ProcessedWebhookEvent {
-  id            String   @id @default(cuid())
-  stripeEventId String   @unique
-  processedAt   DateTime @default(now())
+  id          String   @id @default(cuid())
+  eventKey    String   @unique
+  processedAt DateTime @default(now())
 
   @@map("processed_webhook_events")
 }

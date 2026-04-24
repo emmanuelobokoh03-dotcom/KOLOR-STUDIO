@@ -1,7 +1,14 @@
 import prisma from '../lib/prisma';
 import { sendTestimonialRequestEmail, sendFileReviewReminderEmail, sendPostCallQuoteReminderEmail } from './email';
 
+let scheduledEmailProcessorRunning = false;
+
 export async function processScheduledEmails(): Promise<void> {
+  if (scheduledEmailProcessorRunning) {
+    console.warn('[ScheduledEmails] Previous run still active — skipping this invocation');
+    return;
+  }
+  scheduledEmailProcessorRunning = true;
   try {
     const now = new Date();
     console.log('[ScheduledEmails] Processing due emails...');
@@ -82,5 +89,7 @@ export async function processScheduledEmails(): Promise<void> {
     console.log('[ScheduledEmails] Processing complete');
   } catch (error) {
     console.error('[ScheduledEmails] Error:', error);
+  } finally {
+    scheduledEmailProcessorRunning = false;
   }
 }

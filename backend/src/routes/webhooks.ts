@@ -27,13 +27,13 @@ router.post('/stripe', async (req: Request, res: Response): Promise<void> => {
     }
 
     // Iter 150 — Atomic dedup: claim the event ID first. The @unique constraint
-    // on stripeEventId makes this a DB-level lock — only one concurrent request
+    // on eventKey makes this a DB-level lock — only one concurrent request
     // succeeds; the other gets P2002, which we treat as the duplicate signal.
     // Closes the race condition in the previous check-then-record pattern.
     if (eventId) {
       try {
         await prisma.processedWebhookEvent.create({
-          data: { stripeEventId: eventId },
+          data: { eventKey: eventId },
         });
       } catch (e: any) {
         if (e?.code === 'P2002') {
@@ -92,7 +92,7 @@ router.post('/paystack', async (req: Request, res: Response): Promise<void> => {
       // Iter 150 — Atomic dedup (same pattern as Stripe handler above)
       try {
         await prisma.processedWebhookEvent.create({
-          data: { stripeEventId: dedupKey },
+          data: { eventKey: dedupKey },
         });
       } catch (e: any) {
         if (e?.code === 'P2002') {

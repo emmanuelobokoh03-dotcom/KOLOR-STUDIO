@@ -46,9 +46,17 @@ export async function stopQuoteFollowUp(
   return enrollment;
 }
 
+let quoteFollowUpProcessorRunning = false;
+
 export async function processQuoteFollowUpSequences() {
-  const now = new Date();
-  let processed = 0;
+  if (quoteFollowUpProcessorRunning) {
+    console.warn('[QuoteFollowUp] Previous run still active — skipping this invocation');
+    return;
+  }
+  quoteFollowUpProcessorRunning = true;
+  try {
+    const now = new Date();
+    let processed = 0;
 
   // Step 1: 3 days after enrollment, quote still SENT
   const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
@@ -211,4 +219,7 @@ export async function processQuoteFollowUpSequences() {
   }
 
 
+  } finally {
+    quoteFollowUpProcessorRunning = false;
+  }
 }
