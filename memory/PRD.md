@@ -393,6 +393,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 152 — Migration File + Weekly Report Throttle + Scheduler Env Flag (Feb 2026) — ✅ SHIPPED
+- **T1 Prisma migration file (P1 carryover)**: Created `prisma/migrations/20260424120000_iter151_schema_fixes/migration.sql` capturing the Iter 151 column rename + 3 new indexes. Marked applied via `npx prisma migrate resolve --applied`. `prisma migrate status` clean — Railway `migrate deploy` will now work.
+- **T2 Weekly report throttle (P2)**: Added `await new Promise(r => setTimeout(r, 100))` between users in `runWeeklyPipelineReports` loop. Prevents DB connection burst at 50+ users (Monday morning).
+- **T3 Scheduler env flag (P2)**: Replaced dynamic `require('./scheduler')` + `NODE_ENV === 'production'` guard with static `import { startScheduler } from './scheduler'` + `ENABLE_SCHEDULER === 'true'` check. Works in any NODE_ENV so scheduler is testable in staging/dev.
+- **⚠️ Manual prod step required**: On next Railway deploy, set `ENABLE_SCHEDULER=true` or scheduler will remain off.
+- Testing: `npx tsc --noEmit` + `npm run build` clean. Backend restarts cleanly, health check green, startup log confirms new "[Scheduler] Disabled. Set ENABLE_SCHEDULER=true to enable." message.
+
 ## Iteration 151 — Schema Migration + Processor Mutex + Sequence DB-Before-Send (Feb 2026) — ✅ SHIPPED
 - **T1 Schema (P1)**: Renamed `ProcessedWebhookEvent.stripeEventId` → `eventKey` (column now stores both Stripe event IDs and Paystack `paystack_ch_*` refs). Added missing indexes: `Quote([viewedAt])`, `Quote([validUntil, status])`, `Contract([sentAt, status, clientAgreed])`. Applied via raw SQL rename + `prisma db push`. `webhooks.ts` field refs updated.
 - **T2 Processor concurrency mutex (P1)**: Added `ProcessorRunning` boolean guard in 5 service files (`sequenceEngine`, `onboardingService`, `quoteFollowUpService`, `scheduledEmailService`, `meetingReminderService`). Pattern: module-level flag + entry check + `try { … } finally { flag = false }`. Prevents a slow run from overlapping the next scheduled invocation.
