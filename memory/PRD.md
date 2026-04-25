@@ -393,6 +393,15 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - `POST /api/digest/weekly` — Manual trigger for Monday pipeline reports (auth required, cold-start safety net, added Iter 144)
 - All `/api/` routes protected by auth middleware
 
+## Iteration 154 — Mobile Landing Fixes + Geometric KolorLogo (Feb 2026) — ✅ SHIPPED
+- **A1 (P0)**: Mockup observers now skip MutationObserver path on mobile (innerWidth<768) + reduced-motion. Reveals `.mockup-animate` immediately with `opacity:1/translateY(0)`. Fixes invisible-on-mobile P0 bug. Applied to both feature-row observer and ArtistMockup progress-bar observer. Verified post-deploy: 3/3 mockups report `opacity:'1'` on 390px viewport (was 0).
+- **A2 (P0)**: IntersectionObserver threshold `0.1 → 0.05`.
+- **A3 (P1)**: Feature row mobile gap `gap-10 → gap-6` (md:gap-16 unchanged).
+- **A4 (P1)**: Hero subheadings use `fontSize: clamp(15px, 4vw, 18px)` (both variants).
+- **A5 (P1)**: Nav "Log in" `hidden sm:block` (was crowding logo on narrow viewports).
+- **B**: Rebuilt `KolorLogo` as a geometric Bauhaus-style K mark + wordmark. Construction in 120px coord space: stem rect + 3 polygons (upper arm / amber channel / lower arm), all sharing the same diagonal angle. Same prop API as before — all 5 call sites (LandingPageV2, Dashboard, Login, Signup, Calendar) work unchanged.
+- TypeScript + Vite build clean. Commit: f2d42b9.
+
 ## Iteration 153 — Digest Preview + Shared Templates + DB Rate Limit (Feb 2026) — ✅ SHIPPED
 - **T1 Settings digest preview (P2)**: New "Weekly digest preview" section in Settings → Notifications with `Send preview` button (`send-digest-preview-btn`) calling `POST /api/digest/send`. States: Sending… → Sent! → auto-clears after 4s. Uses existing backend endpoint.
 - **T2 Shared contract templates (P2)**: New `backend/src/data/contractTemplates.ts` exports `CONTRACT_TEMPLATES` (6 types incl CUSTOM), `INDUSTRY_TO_CONTRACT_TYPE` (10 industries), `fillContractTemplate`. `contracts.ts` + `quotes.ts` now import from the single source; local duplicates + `fillTemplate`/`CONTRACT_TEMPLATES_INLINE` removed. `CONTRACT_TYPE_LABELS` kept local to contracts.ts (display-only).
