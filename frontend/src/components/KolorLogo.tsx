@@ -1,112 +1,131 @@
 import { Link } from 'react-router-dom'
 
+/*
+ * KolorLogo — Iteration 154
+ *
+ * Geometric K mark derived from constructivist/Bauhaus type specimen reference.
+ * Construction (120px coordinate space):
+ *   Stem:        rect  x=0–36,  y=0–120  (stroke weight = arm weight)
+ *   Upper arm:   polygon  36,0  110,0  110,14  36,50   (42% height, steep diagonal)
+ *   Amber gap:   polygon  36,50  110,14  110,28  36,64  (parallelogram, same diagonal angle as arms)
+ *   Lower arm:   polygon  36,64  110,28  110,84  36,120
+ *
+ * Props:
+ *   variant   'light' | 'dark'   — light = on dark bg (white wordmark), dark = on light bg (dark wordmark)
+ *   size      'sm' | 'md' | 'lg' — sm ~28px, md ~40px, lg ~56px mark height
+ *   markOnly  boolean            — omit wordmark
+ *   linkTo    string | null      — wrap in <Link> if provided
+ *   className string
+ */
+
 interface KolorLogoProps {
-  variant?: 'light' | 'dark' | 'purple'
+  variant?: 'light' | 'dark'
   size?: 'sm' | 'md' | 'lg'
   markOnly?: boolean
-  iconMode?: boolean
   linkTo?: string | null
   className?: string
 }
 
+const SIZE_MAP = {
+  sm: { markH: 28, scale: 28 / 120 },
+  md: { markH: 40, scale: 40 / 120 },
+  lg: { markH: 56, scale: 56 / 120 },
+}
+
+const MARK_NATURAL_W = 110
+const MARK_NATURAL_H = 120
+
+function KMark({ scale }: { scale: number }) {
+  const w = MARK_NATURAL_W * scale
+  const h = MARK_NATURAL_H * scale
+  return (
+    <svg
+      width={w}
+      height={h}
+      viewBox={`0 0 ${MARK_NATURAL_W} ${MARK_NATURAL_H}`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {/* Stem */}
+      <rect x="0" y="0" width="36" height="120" fill="#6C2EDB" />
+      {/* Upper arm */}
+      <polygon points="36,0 110,0 110,14 36,50" fill="#6C2EDB" />
+      {/* Amber channel — parallelogram following same diagonal angle as arms */}
+      <polygon points="36,50 110,14 110,28 36,64" fill="#E8891A" />
+      {/* Lower arm */}
+      <polygon points="36,64 110,28 110,84 36,120" fill="#6C2EDB" />
+    </svg>
+  )
+}
+
+function Wordmark({ variant, size }: { variant: 'light' | 'dark'; size: 'sm' | 'md' | 'lg' }) {
+  const titleColor = variant === 'light' ? '#ffffff' : '#1a0a3d'
+  const subtitleColor = variant === 'light' ? 'rgba(255,255,255,0.42)' : 'rgba(26,10,61,0.38)'
+
+  const titleSize = size === 'lg' ? 22 : size === 'md' ? 17 : 13
+  const subtitleSize = size === 'lg' ? 10 : size === 'md' ? 8.5 : 7
+  const subtitleMt = size === 'lg' ? 3 : 2
+
+  return (
+    <div className="flex flex-col justify-center">
+      <span
+        style={{
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontSize: titleSize,
+          fontWeight: 700,
+          letterSpacing: '0.18em',
+          color: titleColor,
+          lineHeight: 1,
+        }}
+      >
+        KOLOR
+      </span>
+      <span
+        style={{
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontSize: subtitleSize,
+          fontWeight: 500,
+          letterSpacing: '0.22em',
+          color: subtitleColor,
+          lineHeight: 1,
+          marginTop: subtitleMt,
+        }}
+      >
+        STUDIO
+      </span>
+    </div>
+  )
+}
+
 export default function KolorLogo({
-  variant = 'light',
+  variant = 'dark',
   size = 'md',
   markOnly = false,
-  iconMode = false,
-  linkTo = '/',
+  linkTo,
   className = '',
 }: KolorLogoProps) {
-  const scales = { sm: 0.72, md: 1, lg: 1.5 }
-  const s = scales[size]
+  const { scale } = SIZE_MAP[size]
+  const gap = size === 'lg' ? 14 : size === 'md' ? 10 : 8
 
-  const markW = Math.round(38 * s)
-  const markH = Math.round(40 * s)
-  const totalW = markOnly ? markW : Math.round(160 * s)
-  const totalH = markH
-
-  // Tonal plane fills -- shift for each variant
-  const planes =
-    variant === 'light'
-      ? { stem: '#2D1470', mid: '#6C2EDB', blade: '#9B6AEF', word: '#ffffff', amber: '#E8891A' }
-      : variant === 'purple'
-      ? { stem: 'rgba(255,255,255,0.38)', mid: 'rgba(255,255,255,0.72)', blade: 'rgba(255,255,255,0.96)', word: '#ffffff', amber: '#E8891A' }
-      : { stem: '#1A0A50', mid: '#5522C4', blade: '#8B5AEA', word: '#0D0820', amber: '#C46E0E' }
-
-  // Reverse K polygons -- arms face LEFT
-  const kMarkPolygons = (
-    <g>
-      {/* Stem -- darkest plane, vertical left column */}
-      <polygon points="2,1 2,39 11,39 11,26" fill={planes.stem} />
-      {/* Lower arm -- mid plane */}
-      <polygon points="11,26 20,39 32,39 19,20" fill={planes.mid} />
-      {/* Upper arm top edge -- mid plane triangle */}
-      <polygon points="2,1 11,1 11,14 19,1" fill={planes.mid} />
-      {/* Upper blade -- lightest plane, largest face */}
-      <polygon points="11,14 19,1 32,1 19,20 11,26" fill={planes.blade} />
-      {/* Amber accent -- junction sliver */}
-      <polygon points="11,12 11,16 14,14" fill={planes.amber} />
-    </g>
+  const inner = (
+    <div
+      className={`inline-flex items-center ${className}`}
+      style={{ gap }}
+    >
+      <KMark scale={scale} />
+      {!markOnly && <Wordmark variant={variant} size={size} />}
+    </div>
   )
 
-  // Icon mode = mark inside a rounded purple square
-  if (iconMode) {
-    const box = Math.round(40 * s)
+  if (linkTo) {
     return (
-      <svg
-        width={box}
-        height={box}
-        viewBox="0 0 40 40"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label="KOLOR Studio"
-        role="img"
-        className={className}
-      >
-        <rect width="40" height="40" rx="9" fill="#6C2EDB" />
-        <g transform="translate(1,0)">
-          {kMarkPolygons}
-        </g>
-      </svg>
+      <Link to={linkTo} aria-label="KOLOR Studio — home" className="inline-flex">
+        {inner}
+      </Link>
     )
   }
 
-  const logo = (
-    <svg
-      width={totalW}
-      height={totalH}
-      viewBox={markOnly ? '0 0 38 40' : '0 0 160 40'}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="KOLOR Studio"
-      role="img"
-    >
-      {kMarkPolygons}
-      {!markOnly && (
-        <text
-          x="46"
-          y="29"
-          fontFamily="Inter, system-ui, sans-serif"
-          fontWeight="800"
-          fontSize="22"
-          letterSpacing="0.09em"
-          fill={planes.word}
-        >
-          KOLOR
-        </text>
-      )}
-    </svg>
-  )
-
-  if (linkTo === null) return <div className={className}>{logo}</div>
-
-  return (
-    <Link
-      to={linkTo}
-      className={`inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 rounded-sm ${className}`}
-      aria-label="Go to KOLOR Studio homepage"
-    >
-      {logo}
-    </Link>
-  )
+  return inner
 }

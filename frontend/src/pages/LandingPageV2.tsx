@@ -52,7 +52,7 @@ export default function LandingPageV2() {
           }
         })
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 }
     )
     document.querySelectorAll('.reveal-section').forEach(el => observer.observe(el))
     return () => observer.disconnect()
@@ -164,9 +164,16 @@ function ArtistMockup() {
   const barRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
     const bar = barRef.current
     if (!bar) return
+
+    if (isReducedMotion || isMobile) {
+      bar.style.width = '60%'
+      return
+    }
+
     const section = bar.closest('[data-feature-row]')
     if (!section) return
 
@@ -239,7 +246,19 @@ function FeatureRowsSection() {
   ]
   // Iter 143 — animate mockup entrance when the row gains the `revealed` class (set by the existing IO at the page root).
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    const skipAnimation = isReducedMotion || isMobile
+
+    // Iter 154 — On mobile or reduced-motion: reveal all mockups immediately,
+    // skip observer machinery (MutationObserver timing fails on narrow viewports)
+    if (skipAnimation) {
+      document.querySelectorAll<HTMLElement>('.mockup-animate').forEach(el => {
+        el.style.opacity = '1'
+        el.style.transform = 'translateY(0)'
+      })
+      return
+    }
 
     const sections = document.querySelectorAll<HTMLElement>('[data-feature-row]')
     const observers: MutationObserver[] = []
@@ -272,7 +291,7 @@ function FeatureRowsSection() {
           <div
             key={i}
             data-feature-row
-            className={`reveal-section flex flex-col ${row.flip ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16`}
+            className={`reveal-section flex flex-col ${row.flip ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-6 md:gap-16`}
           >
             <div className="flex-1">
               <span className="text-xs font-mono font-bold tracking-[0.12em] text-purple-400 mb-3 block">{row.label}</span>
@@ -389,7 +408,7 @@ function Nav({ onCta }: { onCta: () => void }) {
         <div className="flex items-center gap-3">
           <Link
             to="/login"
-            className="text-sm font-medium transition-colors duration-150"
+            className="hidden sm:block text-sm font-medium transition-colors duration-150"
             style={{ color: 'rgba(255,255,255,0.5)' }}
             data-testid="nav-login"
           >
@@ -507,7 +526,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
                 </span>
               ))}
             </h1>
-            <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 18, color: 'rgba(255,255,255,0.5)', maxWidth: 540 }}>
+            <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 'clamp(15px, 4vw, 18px)', color: 'rgba(255,255,255,0.5)', maxWidth: 540 }}>
               Manage commissions, collectors, and reproduction rights — all in one place. KOLOR is the first CRM purpose-built for independent fine artists. Track commissions from inquiry to delivery. Send professional offers. Sign agreements with built-in reproduction rights clauses. Know what needs attention before a collector goes quiet.
             </p>
           </>
@@ -538,7 +557,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
                 </span>
               ))}
             </h1>
-            <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 18, color: 'rgba(255,255,255,0.5)', maxWidth: 520 }}>
+            <p className="mx-auto mb-10 leading-relaxed" style={{ fontSize: 'clamp(15px, 4vw, 18px)', color: 'rgba(255,255,255,0.5)', maxWidth: 520 }}>
               CRM built for photographers, designers, and fine artists who are done managing clients from a spreadsheet. Leads, quotes, contracts, and calendar — one beautiful tool.
             </p>
           </>
