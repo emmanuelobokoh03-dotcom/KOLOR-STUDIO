@@ -467,6 +467,14 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **T2 Dashboard scroll-to-top (P0)**: `handleViewChange` now calls `window.scrollTo({ top: 0, behavior: 'smooth' | 'auto' })` respecting `prefers-reduced-motion`. Applies to all desktop toolbar, sidebar, and mobile-hamburger nav buttons (they all route through `handleViewChange`).
 - Testing: testing_agent_v3_fork verified 10/10 tasks (iteration_145.json). Desktop scroll: 1849px → 0px; mobile scroll: 1461px → 0px; sidebar closes on mobile.
 
+## Iteration 155 — Logo Entrance Animation + Branded Loading + Favicon/OG Card (Feb 2026) — ✅ SHIPPED
+- **Workstream A — Logo Entrance Animation (P0)**: Added opt-in `animated` prop to `KolorLogo.tsx` with three keyframes (`kolor-mark-in`, `kolor-amber-in`, `kolor-word-in`) wrapped in `prefers-reduced-motion: no-preference`. Stem → upper arm → lower arm → amber channel → wordmark stagger at 50/120/180/320/500ms. `LandingPageV2` Nav passes `animated` to its single `<KolorLogo>` instance.
+- **Workstream B — Branded App Loading Screen (P0)**: New `frontend/src/components/LoadingScreen.tsx` — full-page `#080612` surface with the geometric K mark (coords match `KolorLogo.tsx`), amber channel pulses (1.4s cycle), 3-dot cascade caption, ARIA live region, `data-testid="app-loading-screen"`. All animations gated by `prefers-reduced-motion: no-preference`. Wired into `App.tsx` Suspense fallback (replaces previous generic spinner).
+- **Workstream C — Favicon + OG Card (P0)**: `frontend/public/favicon.svg` rebuilt from text 'K' to the geometric K mark on a rounded-square dark backplate. New `frontend/public/og-card.svg` (1200×630): K mark + KOLOR STUDIO wordmark + amber divider + verbatim tagline **"The studio behind your best work."** + URL chip. `index.html` adds `og:image:alt` and SVG `og:image` alongside existing PNG.
+- **Build gate**: `npx tsc --noEmit` clean (0 errors). `npm run build` clean (10.56s). Constraints honored — additive only, zero new npm deps, all motion guarded.
+- **Smoke test**: Visual verification — animated K logo renders in LandingPageV2 nav, full landing page renders without regression, LoadingScreen displays during chunked-route Suspense.
+- **Commit**: `24d33dc5ff964bbfa9a7e6f19e78f0ae5c455b02`
+
 ## Iteration 144 — Scroll-nav, App Themes, Mockup Shadows, Digest Fix, Perf (Feb 2026) — ✅ SHIPPED
 - **T1 Landing Nav (P0)**: IntersectionObserver highlights active section (features/pricing/stories) with purple underline; smooth-scroll buttons preserved.
 - **T2 App Themes (P1)**: `ACCENT_PALETTES` → `APP_THEMES` with emoji cards (🎨 KOLOR, 🖋️ Slate, 🌅 Terra, 🌙 Midnight). Back-compat `kolor_palette_id` + `kolor_app_accent` localStorage keys preserved.
