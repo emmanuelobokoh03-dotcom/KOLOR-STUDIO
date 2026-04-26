@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
+import LoadingScreen from './components/LoadingScreen'
 const LandingPageV2 = lazy(() => import('./pages/LandingPageV2'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Settings = lazy(() => import('./pages/Settings'))
@@ -49,11 +50,7 @@ function App() {
         Skip to main content
       </a>
       <div id="main-content">
-      <Suspense fallback={
-        <div className="min-h-screen bg-surface-base flex items-center justify-center">
-          <div className="w-8 h-8 rounded-full border-2 border-light-200 border-t-[#6C2EDB] animate-spin" />
-        </div>
-      }>
+      <Suspense fallback={<LoadingScreen />}>
       <Routes>
         <Route path="/" element={<LandingPageV2 />} />
         <Route path="/login" element={<Login />} />

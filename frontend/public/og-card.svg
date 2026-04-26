@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- KOLOR Studio Open Graph card — 1200x630, social sharing master -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg-vignette" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d0820"/>
+      <stop offset="100%" stop-color="#080612"/>
+    </linearGradient>
+    <linearGradient id="amber-glow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E8891A" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#E8891A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-vignette)"/>
+
+  <!-- Soft amber glow behind mark -->
+  <ellipse cx="260" cy="315" rx="380" ry="180" fill="url(#amber-glow)"/>
+
+  <!-- K mark — 110x120 source, scaled 2.6x → 286x312, positioned at (96, 159) -->
+  <g transform="translate(96,159) scale(2.6)">
+    <rect x="0" y="0" width="36" height="120" fill="#6C2EDB"/>
+    <polygon points="36,0 110,0 110,14 36,50" fill="#6C2EDB"/>
+    <polygon points="36,64 110,28 110,84 36,120" fill="#6C2EDB"/>
+    <polygon points="36,50 110,14 110,28 36,64" fill="#E8891A"/>
+  </g>
+
+  <!-- Wordmark KOLOR STUDIO -->
+  <text x="510" y="290"
+        font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif"
+        font-size="92" font-weight="800"
+        letter-spacing="14" fill="#ffffff">KOLOR</text>
+  <text x="513" y="338"
+        font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif"
+        font-size="34" font-weight="500"
+        letter-spacing="13" fill="rgba(255,255,255,0.45)">STUDIO</text>
+
+  <!-- Divider -->
+  <rect x="510" y="378" width="64" height="3" fill="#E8891A"/>
+
+  <!-- Tagline (verbatim) -->
+  <text x="510" y="442"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="44" font-weight="400" font-style="italic"
+        fill="rgba(255,255,255,0.92)">The studio behind your</text>
+  <text x="510" y="494"
+        font-family="Georgia, 'Libre Baskerville', serif"
+        font-size="44" font-weight="400" font-style="italic"
+        fill="rgba(255,255,255,0.92)">best work.</text>
+
+  <!-- Bottom URL chip -->
+  <text x="96" y="572"
+        font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif"
+        font-size="20" font-weight="600"
+        letter-spacing="4" fill="rgba(255,255,255,0.55)">KOLORSTUDIO.APP</text>
+  <text x="1104" y="572" text-anchor="end"
+        font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif"
+        font-size="20" font-weight="500"
+        letter-spacing="3" fill="rgba(255,255,255,0.4)">CRM for creative professionals</text>
+</svg>

@@ -1,5 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#080612"/>
-  <text x="16" y="23" font-family="Arial, sans-serif" font-size="20" font-weight="900"
-    text-anchor="middle" fill="#6C2EDB">K</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- KOLOR Studio favicon — geometric K mark, matches KolorLogo.tsx coordinates -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="32" height="32">
+  <rect width="120" height="120" rx="22" fill="#080612"/>
+  <g transform="translate(5,0)">
+    <rect x="0" y="0" width="36" height="120" fill="#6C2EDB"/>
+    <polygon points="36,0 110,0 110,14 36,50" fill="#6C2EDB"/>
+    <polygon points="36,64 110,28 110,84 36,120" fill="#6C2EDB"/>
+    <polygon points="36,50 110,14 110,28 36,64" fill="#E8891A"/>
+  </g>
 </svg>
