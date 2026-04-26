@@ -1,20 +1,23 @@
 import { Link } from 'react-router-dom'
 
 /*
- * KolorLogo — Iteration 155
+ * KolorLogo — Iteration 155 (Canva reference geometry)
  *
- * Geometric K mark — constructivist/Bauhaus reference.
- * Construction (120px coordinate space):
- *   Stem:      rect x=0–36, y=0–120
- *   Upper arm: polygon 36,0 110,0 110,14 36,50
- *   Amber gap: polygon 36,50 110,14 110,28 36,64 (parallelogram, same diagonal as arms)
- *   Lower arm: polygon 36,64 110,28 110,84 36,120
+ * Mark construction (150x170px coordinate space):
+ *   Pill stem:    rect x=0, y=0, w=70, h=170, rx=35 (fully rounded caps)
+ *   Gap:          10px between pill right edge and right column (x=80)
+ *   Upper right:  semicircle — flat left at x=80, arc bulges right, r=40, spans y=0 to y=80
+ *                 path: M 80,0 A 40,40 0 0 1 80,80 Z
+ *   Inner gap:    10px (y=80 to y=90)
+ *   Lower right:  rect with bottom-right corner rounded only (r=20)
+ *                 M 80,90 L 150,90 L 150,150 A 20,20 0 0 1 130,170 L 80,170 Z
+ *   Amber sweep:  radial gradient blob behind mark, fades to transparent
  *
  * Props:
- *   variant   'light' | 'dark'   — light = on dark bg, dark = on light bg
+ *   variant   'light' | 'dark'   — light = on dark bg (white wordmark), dark = on light bg
  *   size      'sm' | 'md' | 'lg' — sm=28px, md=40px, lg=56px mark height
  *   markOnly  boolean            — omit wordmark
- *   animated  boolean            — play entrance animation on mount (default: false)
+ *   animated  boolean            — entrance animation on mount (default: false)
  *   linkTo    string | null      — wrap in <Link> if provided
  *   className string
  */
@@ -29,16 +32,16 @@ interface KolorLogoProps {
 }
 
 const SIZE_MAP = {
-  sm: { scale: 28 / 120 },
-  md: { scale: 40 / 120 },
-  lg: { scale: 56 / 120 },
+  sm: { scale: 28 / 170 },
+  md: { scale: 40 / 170 },
+  lg: { scale: 56 / 170 },
 }
 
-const MARK_W = 110
-const MARK_H = 120
-
-/* Keyframes injected once into <head> — guarded by prefers-reduced-motion */
+const MARK_W = 150
+const MARK_H = 170
+const EASE = 'cubic-bezier(0.22,1,0.36,1)'
 const STYLE_ID = 'kolor-logo-keyframes'
+
 function ensureKeyframes() {
   if (typeof document === 'undefined') return
   if (document.getElementById(STYLE_ID)) return
@@ -46,34 +49,44 @@ function ensureKeyframes() {
   style.id = STYLE_ID
   style.textContent = `
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes kolor-mark-in {
-    from { opacity: 0; transform: translateY(6px); }
+  @keyframes kolor-pill-in {
+    from { opacity: 0; transform: translateY(5px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  @keyframes kolor-amber-in {
-    from { opacity: 0; transform: scaleX(0); transform-origin: left center; }
-    to   { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+  @keyframes kolor-semi-in {
+    from { opacity: 0; transform: translateY(5px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes kolor-rect-in {
+    from { opacity: 0; transform: translateY(5px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes kolor-sweep-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
   @keyframes kolor-word-in {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
-}
-  `.trim()
+}`.trim()
   document.head.appendChild(style)
 }
 
-function markStyle(delay: number, amber = false): React.CSSProperties {
-  return {
-    animation: amber
-      ? `kolor-amber-in 0.28s cubic-bezier(0.22,1,0.36,1) ${delay}ms both`
-      : `kolor-mark-in 0.3s cubic-bezier(0.22,1,0.36,1) ${delay}ms both`,
-  }
-}
-
-function KMark({ scale, animated }: { scale: number; animated: boolean }) {
+function KMark({
+  scale,
+  animated,
+  variant,
+}: {
+  scale: number
+  animated: boolean
+  variant: 'light' | 'dark'
+}) {
   const w = Math.round(MARK_W * scale)
   const h = Math.round(MARK_H * scale)
+  const sweepOpacity = variant === 'light' ? 0.38 : 0.58
+  const gradId = `kolor-sweep-${variant}`
+
   return (
     <svg
       width={w}
@@ -85,26 +98,39 @@ function KMark({ scale, animated }: { scale: number; animated: boolean }) {
       focusable="false"
       style={{ overflow: 'visible' }}
     >
+      <defs>
+        <radialGradient id={gradId} cx="62%" cy="82%" r="68%">
+          <stop offset="0%" stopColor="#E8891A" stopOpacity={sweepOpacity} />
+          <stop offset="100%" stopColor="#E8891A" stopOpacity={0} />
+        </radialGradient>
+      </defs>
+
+      {/* Amber sweep — behind all shapes */}
+      <path
+        d="M 4,118 Q 28,52 82,66 Q 128,76 146,18 L 154,18 L 154,182 Q 128,202 68,194 Q 22,186 4,168 Z"
+        fill={`url(#${gradId})`}
+        style={animated ? { animation: `kolor-sweep-in 0.45s ${EASE} 0.04s both` } : undefined}
+      />
+
+      {/* Pill stem */}
       <rect
-        x="0" y="0" width="36" height="120"
+        x="0" y="0" width="70" height="170" rx="35"
         fill="#6C2EDB"
-        style={animated ? markStyle(50) : undefined}
+        style={animated ? { animation: `kolor-pill-in 0.36s ${EASE} 0.08s both` } : undefined}
       />
-      <polygon
-        points="36,0 110,0 110,14 36,50"
+
+      {/* Upper right — semicircle, flat left at x=80, arc right, r=40, y=0 to y=80 */}
+      <path
+        d="M 80,0 A 40,40 0 0 1 80,80 Z"
         fill="#6C2EDB"
-        style={animated ? markStyle(120) : undefined}
+        style={animated ? { animation: `kolor-semi-in 0.36s ${EASE} 0.18s both` } : undefined}
       />
-      <polygon
-        points="36,64 110,28 110,84 36,120"
+
+      {/* Lower right — rect with bottom-right corner rounded r=20 */}
+      <path
+        d="M 80,90 L 150,90 L 150,150 A 20,20 0 0 1 130,170 L 80,170 Z"
         fill="#6C2EDB"
-        style={animated ? markStyle(180) : undefined}
-      />
-      {/* Amber channel — drawn last, scaleX from left */}
-      <polygon
-        points="36,50 110,14 110,28 36,64"
-        fill="#E8891A"
-        style={animated ? markStyle(320, true) : undefined}
+        style={animated ? { animation: `kolor-rect-in 0.36s ${EASE} 0.26s both` } : undefined}
       />
     </svg>
   )
@@ -129,11 +155,7 @@ function Wordmark({
   return (
     <div
       className="flex flex-col justify-center"
-      style={
-        animated
-          ? { animation: 'kolor-word-in 0.3s cubic-bezier(0.22,1,0.36,1) 500ms both' }
-          : undefined
-      }
+      style={animated ? { animation: `kolor-word-in 0.32s ${EASE} 0.42s both` } : undefined}
     >
       <span
         style={{
@@ -179,7 +201,7 @@ export default function KolorLogo({
 
   const inner = (
     <div className={`inline-flex items-center ${className}`} style={{ gap }}>
-      <KMark scale={scale} animated={animated} />
+      <KMark scale={scale} animated={animated} variant={variant} />
       {!markOnly && <Wordmark variant={variant} size={size} animated={animated} />}
     </div>
   )

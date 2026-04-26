@@ -1,142 +1,110 @@
 /*
  * LoadingScreen — Iteration 155
  *
- * Branded full-page loading state. Uses the KOLOR K-mark geometry from
- * KolorLogo.tsx with an amber channel that pulses while the app loads.
+ * Full-page loading state using the KOLOR mark.
+ * Amber sweep pulses (opacity 0.25 -> 0.7 -> 0.25, 1.6s infinite).
+ * Purple geometry stays solid — communicates "working" without spinning.
+ * prefers-reduced-motion: amber stays at full opacity, no animation.
  *
- * Animation is strictly additive and gated by `prefers-reduced-motion: no-preference`.
- * No new npm packages — pure CSS keyframes injected once into <head>.
+ * Usage: if (loading) return <LoadingScreen />
  */
-
-import { useEffect } from 'react'
-
-interface LoadingScreenProps {
-  /** Optional caption rendered beneath the mark */
-  label?: string
-  /** Use full viewport height (default true). Set false to embed inline. */
-  fullScreen?: boolean
-}
 
 const STYLE_ID = 'kolor-loading-keyframes'
 
-function ensureKeyframes() {
+function ensureLoadingKeyframes() {
   if (typeof document === 'undefined') return
   if (document.getElementById(STYLE_ID)) return
   const style = document.createElement('style')
   style.id = STYLE_ID
   style.textContent = `
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes kolor-loading-mark-in {
-    from { opacity: 0; transform: translateY(4px); }
-    to   { opacity: 1; transform: translateY(0); }
+  @keyframes kolor-sweep-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%       { opacity: 0.7; }
   }
-  @keyframes kolor-loading-amber-pulse {
-    0%, 100% { opacity: 0.35; transform: scaleX(0.92); }
-    50%      { opacity: 1;    transform: scaleX(1); }
+  .kolor-loading-sweep {
+    animation: kolor-sweep-pulse 1.6s ease-in-out infinite;
   }
-  @keyframes kolor-loading-caption-in {
-    from { opacity: 0; }
-    to   { opacity: 0.62; }
-  }
-  @keyframes kolor-loading-dots {
-    0%, 20%   { opacity: 0.25; }
-    50%       { opacity: 1; }
-    80%, 100% { opacity: 0.25; }
-  }
-}
-  `.trim()
+}`.trim()
   document.head.appendChild(style)
 }
 
-export default function LoadingScreen({
-  label = 'Loading',
-  fullScreen = true,
-}: LoadingScreenProps) {
-  useEffect(() => {
-    ensureKeyframes()
-  }, [])
+export default function LoadingScreen() {
+  if (typeof window !== 'undefined') ensureLoadingKeyframes()
 
   return (
     <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: '#080612',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 20,
+        zIndex: 9999,
+      }}
       role="status"
-      aria-live="polite"
-      aria-label={label}
-      data-testid="app-loading-screen"
-      className={
-        fullScreen
-          ? 'fixed inset-0 z-[100] flex flex-col items-center justify-center'
-          : 'flex flex-col items-center justify-center py-16'
-      }
-      style={{ background: fullScreen ? '#080612' : 'transparent' }}
+      aria-label="Loading KOLOR Studio"
     >
-      {/* K mark — coordinates match KolorLogo.tsx exactly */}
       <svg
-        width="72"
-        height="78"
-        viewBox="0 0 110 120"
+        width="64"
+        height="72"
+        viewBox="0 0 150 170"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
-        focusable="false"
-        style={{
-          animation: 'kolor-loading-mark-in 0.32s cubic-bezier(0.22,1,0.36,1) both',
-        }}
+        style={{ overflow: 'visible' }}
       >
-        <rect x="0" y="0" width="36" height="120" fill="#6C2EDB" />
-        <polygon points="36,0 110,0 110,14 36,50" fill="#6C2EDB" />
-        <polygon points="36,64 110,28 110,84 36,120" fill="#6C2EDB" />
-        {/* Amber channel — pulses while loading */}
-        <polygon
-          points="36,50 110,14 110,28 36,64"
-          fill="#E8891A"
-          style={{
-            transformOrigin: '36px 39px',
-            animation:
-              'kolor-loading-amber-pulse 1.4s cubic-bezier(0.4,0,0.2,1) 280ms infinite',
-          }}
+        <defs>
+          <radialGradient id="ls-sweep" cx="62%" cy="82%" r="68%">
+            <stop offset="0%" stopColor="#E8891A" stopOpacity={0.7} />
+            <stop offset="100%" stopColor="#E8891A" stopOpacity={0} />
+          </radialGradient>
+        </defs>
+
+        {/* Amber sweep — pulses */}
+        <path
+          className="kolor-loading-sweep"
+          d="M 4,118 Q 28,52 82,66 Q 128,76 146,18 L 154,18 L 154,182 Q 128,202 68,194 Q 22,186 4,168 Z"
+          fill="url(#ls-sweep)"
         />
+
+        {/* Pill stem */}
+        <rect x="0" y="0" width="70" height="170" rx="35" fill="#6C2EDB" />
+
+        {/* Upper right — semicircle */}
+        <path d="M 80,0 A 40,40 0 0 1 80,80 Z" fill="#6C2EDB" />
+
+        {/* Lower right — rect with bottom-right corner rounded */}
+        <path d="M 80,90 L 150,90 L 150,150 A 20,20 0 0 1 130,170 L 80,170 Z" fill="#6C2EDB" />
       </svg>
 
-      {/* Caption — 'Loading' with three pulsing dots */}
-      <div
-        aria-hidden="true"
-        style={{
-          marginTop: 22,
-          fontFamily: 'system-ui, -apple-system, sans-serif',
-          fontSize: 11,
-          fontWeight: 600,
-          letterSpacing: '0.32em',
-          color: 'rgba(255,255,255,0.62)',
-          textTransform: 'uppercase',
-          animation: 'kolor-loading-caption-in 0.4s ease-out 200ms both',
-        }}
-      >
-        {label}
-        <span style={{ display: 'inline-flex', marginLeft: 6, gap: 3 }}>
-          <span
-            style={{
-              animation: 'kolor-loading-dots 1.2s ease-in-out infinite',
-              animationDelay: '0ms',
-            }}
-          >
-            .
-          </span>
-          <span
-            style={{
-              animation: 'kolor-loading-dots 1.2s ease-in-out infinite',
-              animationDelay: '180ms',
-            }}
-          >
-            .
-          </span>
-          <span
-            style={{
-              animation: 'kolor-loading-dots 1.2s ease-in-out infinite',
-              animationDelay: '360ms',
-            }}
-          >
-            .
-          </span>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+        <span
+          style={{
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontSize: 20,
+            fontWeight: 700,
+            letterSpacing: '0.18em',
+            color: '#ffffff',
+            lineHeight: 1,
+          }}
+        >
+          KOLOR
+        </span>
+        <span
+          style={{
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontSize: 9,
+            fontWeight: 500,
+            letterSpacing: '0.22em',
+            color: 'rgba(255,255,255,0.38)',
+            lineHeight: 1,
+          }}
+        >
+          STUDIO
         </span>
       </div>
     </div>
