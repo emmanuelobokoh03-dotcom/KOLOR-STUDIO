@@ -467,6 +467,16 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **T2 Dashboard scroll-to-top (P0)**: `handleViewChange` now calls `window.scrollTo({ top: 0, behavior: 'smooth' | 'auto' })` respecting `prefers-reduced-motion`. Applies to all desktop toolbar, sidebar, and mobile-hamburger nav buttons (they all route through `handleViewChange`).
 - Testing: testing_agent_v3_fork verified 10/10 tasks (iteration_145.json). Desktop scroll: 1849px → 0px; mobile scroll: 1461px → 0px; sidebar closes on mobile.
 
+## Iteration 155 (Final) — Designer K-mark PNG asset across logo / loading / OG (Feb 2026) — ✅ SHIPPED
+- **Asset**: `frontend/public/kolor-mark.png` (designer-supplied PNG, processed via PIL: luminance-keyed alpha to remove white background, tight bbox crop → 691×459 RGBA, 380 KB). Duplicate `favicon-mark.png` for the favicon link.
+- **KolorLogo.tsx**: full rewrite — render `<img src="/kolor-mark.png" />` at 28/40/56 px (sm/md/lg) with `prefers-reduced-motion`-guarded entrance animation. `variant` controls wordmark colour. `animated` opt-in only.
+- **LandingPageV2 Nav**: passes `animated` to its single `<KolorLogo>` (line 378).
+- **LoadingScreen.tsx**: full rewrite — full-page `#080612` surface with PNG mark pulsing (`kolor-mark-pulse` 1.6s ease-in-out infinite), gated by `prefers-reduced-motion`. Already wired into `App.tsx` Suspense fallback.
+- **og-card.svg**: 1200×630, embeds `/kolor-mark.png` at 300×300 + KOLOR STUDIO wordmark + verbatim tagline **"The studio behind your best work."** + URL chip.
+- **index.html**: favicon points to `/favicon-mark.png`; cleaned `og`/`twitter` block — single `og:image` content URL.
+- **Build gate**: `npx tsc --noEmit` clean. `npm run build` clean (9.74s).
+- **Commit**: `ff53c8aa9ffb4298019656ae1c008c1ea923afa5` (supersedes Canva-geometry `e1498bb`).
+
 ## Iteration 155 (Revised) — Canva K-mark Geometry + Animation + Loading + Favicon/OG (Feb 2026) — ✅ SHIPPED
 - **Workstream A — KolorLogo.tsx full rewrite (Canva reference geometry)**: 150×170 coordinate space — pill stem (rect 0,0 70×170 rx=35), upper-right semicircle (`M 80,0 A 40,40 0 0 1 80,80 Z`), lower-right rect with `r=20` bottom-right corner, amber radial sweep behind purple geometry (variant-aware opacity 0.38/0.58). Five staggered keyframes at 40/80/180/260/420ms, all gated by `prefers-reduced-motion: no-preference`.
 - **Workstream B — LandingPageV2 Nav opt-in animation**: single Nav `<KolorLogo>` instance receives `animated` prop (line 378).
