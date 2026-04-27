@@ -1,15 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <rect width="1200" height="630" fill="#080612"/>
-  <radialGradient id="g1" cx="38%" cy="55%" r="50%">
-    <stop offset="0%" stop-color="#6C2EDB" stop-opacity="0.35"/>
+  <radialGradient id="g1" cx="35%" cy="55%" r="50%">
+    <stop offset="0%" stop-color="#6C2EDB" stop-opacity="0.38"/>
     <stop offset="100%" stop-color="#080612" stop-opacity="0"/>
   </radialGradient>
   <rect width="1200" height="630" fill="url(#g1)"/>
-  <image href="/kolor-mark.png" x="100" y="165" width="300" height="300"/>
-  <text x="450" y="272" font-family="system-ui,-apple-system,sans-serif" font-size="76" font-weight="700" letter-spacing="16" fill="#ffffff">KOLOR</text>
-  <text x="453" y="310" font-family="system-ui,-apple-system,sans-serif" font-size="19" font-weight="500" letter-spacing="10" fill="rgba(255,255,255,0.38)">STUDIO</text>
-  <line x1="450" y1="338" x2="860" y2="338" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-  <text x="450" y="388" font-family="system-ui,-apple-system,sans-serif" font-size="30" font-weight="400" fill="rgba(255,255,255,0.52)" letter-spacing="0.3">The studio behind your best work.</text>
-  <rect x="450" y="426" width="230" height="38" rx="19" fill="rgba(108,46,219,0.28)" stroke="rgba(108,46,219,0.55)" stroke-width="1"/>
-  <text x="565" y="450" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="500" fill="rgba(255,255,255,0.58)" text-anchor="middle" letter-spacing="0.4">kolorstudio.app</text>
+  <radialGradient id="g2" cx="35%" cy="75%" r="32%">
+    <stop offset="0%" stop-color="#E8891A" stop-opacity="0.22"/>
+    <stop offset="100%" stop-color="#080612" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="1200" height="630" fill="url(#g2)"/>
+  <rect x="120" y="195" width="83" height="200" rx="41" fill="#6C2EDB"/>
+  <path d="M 209,195 A 47,47 0 0 1 209,275 L 209,275 L 209,195 Z" fill="#6C2EDB"/>
+  <path d="M 209,195 A 47,47 0 0 1 303,195 A 47,47 0 0 1 256,242 L 209,242 Z" fill="#6C2EDB"/>
+  <path d="M 225,252 L 303,252 L 303,395 L 209,395 L 209,275 Z" fill="#6C2EDB"/>
+  <text x="360" y="290" font-family="system-ui,-apple-system,sans-serif" font-size="82" font-weight="700" letter-spacing="18" fill="#ffffff">KOLOR</text>
+  <text x="364" y="332" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="500" letter-spacing="11" fill="rgba(255,255,255,0.38)">STUDIO</text>
+  <line x1="360" y1="362" x2="860" y2="362" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="360" y="414" font-family="system-ui,-apple-system,sans-serif" font-size="30" font-weight="400" fill="rgba(255,255,255,0.52)">The studio behind your best work.</text>
+  <rect x="360" y="450" width="234" height="38" rx="19" fill="rgba(108,46,219,0.28)" stroke="rgba(108,46,219,0.55)" stroke-width="1"/>
+  <text x="477" y="474" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="500" fill="rgba(255,255,255,0.58)" text-anchor="middle" letter-spacing="0.5">kolorstudio.app</text>
 </svg>

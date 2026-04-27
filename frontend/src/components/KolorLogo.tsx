@@ -57,9 +57,9 @@ function Wordmark({
   size: 'sm' | 'md' | 'lg'
   animated: boolean
 }) {
-  const titleColor = variant === 'light' ? '#1a0a3d' : '#ffffff'
+  const titleColor = variant === 'light' ? '#ffffff' : '#1a0a3d'
   const subtitleColor =
-    variant === 'light' ? 'rgba(26,10,61,0.38)' : 'rgba(255,255,255,0.42)'
+    variant === 'light' ? 'rgba(255,255,255,0.42)' : 'rgba(26,10,61,0.38)'
   const titleSize = size === 'lg' ? 22 : size === 'md' ? 17 : 13
   const subtitleSize = size === 'lg' ? 10 : size === 'md' ? 8.5 : 7
   const subtitleMt = size === 'lg' ? 3 : 2
