@@ -24,7 +24,7 @@ interface KolorLogoProps {
   className?: string
 }
 
-const SIZE_MAP = { sm: 28, md: 40, lg: 56 }
+const SIZE_MAP = { sm: 40, md: 56, lg: 72 }
 const EASE = 'cubic-bezier(0.22,1,0.36,1)'
 const STYLE_ID = 'kolor-logo-keyframes'
 
@@ -93,7 +93,6 @@ export default function KolorLogo({
         src="/kolor-mark.png"
         alt=""
         width={markSize}
-        height={markSize}
         style={animated ? { animation: 'kolor-mark-in 0.36s ' + EASE + ' 0.06s both' } : undefined}
         draggable={false}
       />
