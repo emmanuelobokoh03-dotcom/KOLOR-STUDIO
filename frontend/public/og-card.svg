@@ -1,29 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <rect width="1200" height="630" fill="#080612"/>
-  <radialGradient id="og-glow1" cx="38%" cy="55%" r="52%">
+  <radialGradient id="g1" cx="38%" cy="55%" r="50%">
     <stop offset="0%" stop-color="#6C2EDB" stop-opacity="0.35"/>
     <stop offset="100%" stop-color="#080612" stop-opacity="0"/>
   </radialGradient>
-  <rect width="1200" height="630" fill="url(#og-glow1)"/>
-  <radialGradient id="og-glow2" cx="38%" cy="75%" r="38%">
-    <stop offset="0%" stop-color="#E8891A" stop-opacity="0.22"/>
-    <stop offset="100%" stop-color="#080612" stop-opacity="0"/>
-  </radialGradient>
-  <rect width="1200" height="630" fill="url(#og-glow2)"/>
-  <g transform="translate(140, 195) scale(1.4)">
-    <radialGradient id="og-sweep" cx="62%" cy="82%" r="68%">
-      <stop offset="0%" stop-color="#E8891A" stop-opacity="0.55"/>
-      <stop offset="100%" stop-color="#E8891A" stop-opacity="0"/>
-    </radialGradient>
-    <path d="M 4,118 Q 28,52 82,66 Q 128,76 146,18 L 154,18 L 154,182 Q 128,202 68,194 Q 22,186 4,168 Z" fill="url(#og-sweep)"/>
-    <rect x="0" y="0" width="70" height="170" rx="35" fill="#6C2EDB"/>
-    <path d="M 80,0 A 40,40 0 0 1 80,80 Z" fill="#6C2EDB"/>
-    <path d="M 80,90 L 150,90 L 150,150 A 20,20 0 0 1 130,170 L 80,170 Z" fill="#6C2EDB"/>
-  </g>
-  <text x="430" y="272" font-family="system-ui,-apple-system,sans-serif" font-size="76" font-weight="700" letter-spacing="16" fill="#ffffff">KOLOR</text>
-  <text x="433" y="310" font-family="system-ui,-apple-system,sans-serif" font-size="19" font-weight="500" letter-spacing="10" fill="rgba(255,255,255,0.38)">STUDIO</text>
-  <line x1="430" y1="338" x2="840" y2="338" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-  <text x="430" y="388" font-family="system-ui,-apple-system,sans-serif" font-size="30" font-weight="400" fill="rgba(255,255,255,0.52)" letter-spacing="0.3">The studio behind your best work.</text>
-  <rect x="430" y="428" width="230" height="38" rx="19" fill="rgba(108,46,219,0.28)" stroke="rgba(108,46,219,0.55)" stroke-width="1"/>
-  <text x="545" y="452" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="500" fill="rgba(255,255,255,0.58)" text-anchor="middle" letter-spacing="0.4">kolorstudio.app</text>
+  <rect width="1200" height="630" fill="url(#g1)"/>
+  <image href="/kolor-mark.png" x="100" y="165" width="300" height="300"/>
+  <text x="450" y="272" font-family="system-ui,-apple-system,sans-serif" font-size="76" font-weight="700" letter-spacing="16" fill="#ffffff">KOLOR</text>
+  <text x="453" y="310" font-family="system-ui,-apple-system,sans-serif" font-size="19" font-weight="500" letter-spacing="10" fill="rgba(255,255,255,0.38)">STUDIO</text>
+  <line x1="450" y1="338" x2="860" y2="338" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="450" y="388" font-family="system-ui,-apple-system,sans-serif" font-size="30" font-weight="400" fill="rgba(255,255,255,0.52)" letter-spacing="0.3">The studio behind your best work.</text>
+  <rect x="450" y="426" width="230" height="38" rx="19" fill="rgba(108,46,219,0.28)" stroke="rgba(108,46,219,0.55)" stroke-width="1"/>
+  <text x="565" y="450" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="500" fill="rgba(255,255,255,0.58)" text-anchor="middle" letter-spacing="0.4">kolorstudio.app</text>
 </svg>
