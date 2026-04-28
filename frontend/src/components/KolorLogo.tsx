@@ -93,7 +93,10 @@ export default function KolorLogo({
         src="/kolor-mark.png"
         alt=""
         width={markSize}
-        style={animated ? { animation: 'kolor-mark-in 0.36s ' + EASE + ' 0.06s both' } : undefined}
+        style={animated
+          ? { animation: 'kolor-mark-in 0.36s ' + EASE + ' 0.06s both', display: 'block' }
+          : { display: 'block' }
+        }
         draggable={false}
       />
       {!markOnly && <Wordmark variant={variant} size={size} animated={animated} />}

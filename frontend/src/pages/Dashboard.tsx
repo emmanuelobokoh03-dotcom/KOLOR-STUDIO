@@ -216,12 +216,19 @@ const Dashboard = () => {
       const age = Date.now() - new Date(lead.updatedAt).getTime()
       if (lead.status === 'BOOKED' && (lead.contractsCount ?? 0) === 0) {
         acc.push({ lead, reason: 'awaiting_contract' })
-      } else if (lead.status === 'QUOTED' && age > 7 * DAY) {
+        return acc
+      }
+      if (lead.status === 'QUOTED' && age > 7 * DAY) {
         acc.push({ lead, reason: 'overdue_quote' })
-      } else if (lead.status === 'QUOTED' && age > 3 * DAY) {
+        return acc
+      }
+      if (lead.status === 'QUOTED' && age > 3 * DAY) {
         acc.push({ lead, reason: 'no_response' })
-      } else if (['NEW', 'CONTACTED'].includes(lead.status) && age > 5 * DAY) {
+        return acc
+      }
+      if (['NEW', 'CONTACTED'].includes(lead.status) && age > 5 * DAY) {
         acc.push({ lead, reason: 'stale_contact' })
+        return acc
       }
       return acc
     }, [])

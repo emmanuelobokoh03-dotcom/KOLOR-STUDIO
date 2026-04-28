@@ -374,7 +374,7 @@ function Nav({ onCta }: { onCta: () => void }) {
       }}
       data-testid="landing-nav"
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-3.5">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-2.5">
         <div className="flex items-center gap-3">
             <KolorLogo animated variant="light" size="md" markOnly={true} />
             <div className="flex flex-col justify-center">
