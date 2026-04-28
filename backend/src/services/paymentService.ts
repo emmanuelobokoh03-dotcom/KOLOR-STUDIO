@@ -459,7 +459,16 @@ export const paymentService = {
           where: { id: incomeId },
           data: { depositPaid: true, depositPaidAt: new Date(), status: 'DEPOSIT_RECEIVED' },
         });
+        // Advance lead to BOOKED on deposit confirmation
         if (income.leadId) {
+          await prisma.lead.update({
+            where: { id: income.leadId },
+            data: {
+              status: 'BOOKED',
+              pipelineStatus: 'BOOKED',
+              convertedAt: new Date(),
+            },
+          });
           await prisma.activity.create({
             data: {
               leadId: income.leadId,
@@ -630,7 +639,16 @@ export const paymentService = {
         },
       });
 
+      // Advance lead to BOOKED on deposit confirmation
       if (income.leadId) {
+        await prisma.lead.update({
+          where: { id: income.leadId },
+          data: {
+            status: 'BOOKED',
+            pipelineStatus: 'BOOKED',
+            convertedAt: new Date(),
+          },
+        });
         await prisma.activity.create({
           data: {
             leadId: income.leadId,

@@ -669,7 +669,8 @@ router.get('/public/:quoteToken', async (req: Request, res: Response): Promise<v
             clientEmail: true,
             projectTitle: true,
             serviceType: true,
-            description: true
+            description: true,
+            status: true
           }
         },
         createdBy: {
@@ -721,6 +722,17 @@ router.get('/public/:quoteToken', async (req: Request, res: Response): Promise<v
           metadata: { quoteId: quote.id, quoteNumber: quote.quoteNumber }
         }
       });
+
+      // Auto-advance lead to NEGOTIATING when client first views the quote
+      const statusOrder = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
+      const currentIdx = statusOrder.indexOf((quote as any).lead.status);
+      const negotiatingIdx = statusOrder.indexOf('NEGOTIATING');
+      if (currentIdx < negotiatingIdx) {
+        await prisma.lead.update({
+          where: { id: quote.leadId },
+          data: { status: 'NEGOTIATING' }
+        });
+      }
 
       quote.status = 'VIEWED';
       quote.viewedAt = new Date();
@@ -849,16 +861,19 @@ router.post('/public/:quoteToken/accept', async (req: Request, res: Response): P
       }
     });
 
-    // Update lead status to BOOKED
-    await prisma.lead.update({
-      where: { id: quote.leadId },
-      data: {
-        status: 'BOOKED',
-        pipelineStatus: 'BOOKED',
-        actualValue: quote.total,
-        convertedAt: new Date()
-      }
-    });
+    // Update lead status to NEGOTIATING — deposit payment will advance to BOOKED
+    const statusOrder = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
+    const currentIdx = statusOrder.indexOf((quote as any).lead.status);
+    const negotiatingIdx = statusOrder.indexOf('NEGOTIATING');
+    if (currentIdx < negotiatingIdx) {
+      await prisma.lead.update({
+        where: { id: quote.leadId },
+        data: {
+          status: 'NEGOTIATING',
+          actualValue: quote.total,
+        }
+      });
+    }
 
     // Auto-create income record (reserved for future invoicing; deposit flow uses POST /api/payments/:incomeId/deposit)
     try {

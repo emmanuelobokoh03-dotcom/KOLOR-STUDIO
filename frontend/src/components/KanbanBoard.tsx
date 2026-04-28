@@ -30,7 +30,7 @@ interface KanbanBoardProps {
   user?: { industry?: string; primaryIndustry?: string };
 }
 
-const KANBAN_COLUMNS: LeadStatus[] = ['NEW', 'CONTACTED', 'QUOTED', 'NEGOTIATING', 'BOOKED'];
+const KANBAN_COLUMNS: LeadStatus[] = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED'];
 
 // Warm pastel palette — soft column backgrounds with readable colored dots for status indicators.
 // Each stage keys to { bg, border, text, dot } and is applied via inline styles for precise pastel hues.
