@@ -15,7 +15,7 @@ const INDUSTRY_LABELS: Record<string, string> = {
   PHOTOGRAPHY: 'quote',
   DESIGN: 'proposal',
   GRAPHIC_DESIGN: 'proposal',
-  FINE_ART: 'quote',
+  FINE_ART: 'commission agreement',
 }
 
 export default function AHAModal({ userFirstName, userEmail, userIndustry, onDismiss }: AHAModalProps) {

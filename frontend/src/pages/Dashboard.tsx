@@ -546,7 +546,7 @@ const Dashboard = () => {
           data-testid="sidebar-logo"
           aria-label="Go to dashboard"
         >
-          <KolorLogo variant="dark" size="sm" markOnly={false} linkTo={null} />
+          <KolorLogo variant="dark" size="md" markOnly={false} linkTo={null} />
         </button>
 
         {/* User block */}
@@ -703,7 +703,7 @@ const Dashboard = () => {
               data-testid="header-logo-link"
               aria-label="Go to dashboard"
             >
-              <KolorLogo variant="dark" size="sm" linkTo={null} />
+              <KolorLogo variant="dark" size="md" linkTo={null} />
             </button>
 
             {/* Desktop greeting */}
@@ -756,7 +756,7 @@ const Dashboard = () => {
           <div className="absolute left-0 top-0 bottom-0 w-72 bg-light-50 border-r border-light-200 animate-slide-left flex flex-col">
             {/* Sidebar Header */}
             <div className="flex items-center justify-between p-4 border-b border-light-200">
-              <KolorLogo variant="dark" size="sm" linkTo={null} />
+              <KolorLogo variant="dark" size="md" linkTo={null} />
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-2 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-xl touch-target"

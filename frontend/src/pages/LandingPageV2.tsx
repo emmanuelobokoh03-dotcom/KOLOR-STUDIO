@@ -375,7 +375,13 @@ function Nav({ onCta }: { onCta: () => void }) {
       data-testid="landing-nav"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-3.5">
-        <KolorLogo animated variant="light" size="lg" />
+        <div className="flex items-center gap-3">
+            <KolorLogo animated variant="light" size="md" markOnly={true} />
+            <div className="flex flex-col justify-center">
+              <span style={{ fontFamily: 'system-ui,-apple-system,sans-serif', fontSize: 17, fontWeight: 700, letterSpacing: '0.18em', color: '#ffffff', lineHeight: 1 }}>KOLOR</span>
+              <span style={{ fontFamily: 'system-ui,-apple-system,sans-serif', fontSize: 8.5, fontWeight: 500, letterSpacing: '0.22em', color: 'rgba(255,255,255,0.42)', lineHeight: 1, marginTop: 2 }}>STUDIO</span>
+            </div>
+          </div>
 
         <div className="hidden md:flex items-center gap-8">
           {[
