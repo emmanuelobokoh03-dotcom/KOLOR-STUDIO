@@ -44,7 +44,16 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
   // Form state
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [category, setCategory] = useState<PortfolioCategory>('PHOTOGRAPHY')
+  const getDefaultCategory = (): PortfolioCategory => {
+    const industry = (user as any)?.primaryIndustry || (user as any)?.industry || ''
+    if (['FINE_ART', 'ILLUSTRATION', 'SCULPTURE'].includes(industry)) return 'FINE_ART'
+    if (['GRAPHIC_DESIGN', 'BRANDING'].includes(industry)) return 'GRAPHIC_DESIGN'
+    if (['WEB_DESIGN'].includes(industry)) return 'WEB_DESIGN'
+    if (['VIDEOGRAPHY'].includes(industry)) return 'VIDEOGRAPHY'
+    if (['CONTENT_CREATION'].includes(industry)) return 'CONTENT_CREATION'
+    return 'PHOTOGRAPHY'
+  }
+  const [category, setCategory] = useState<PortfolioCategory>(getDefaultCategory)
   const [tags, setTags] = useState('')
   const [featured, setFeatured] = useState(false)
   const [imageFile, setImageFile] = useState<File | null>(null)

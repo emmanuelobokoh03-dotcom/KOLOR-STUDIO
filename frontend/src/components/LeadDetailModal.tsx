@@ -1,3 +1,4 @@
+import { toast } from 'sonner'
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
 import { 
@@ -97,6 +98,10 @@ const ACTIVITY_ICONS: Record<string, React.ElementType> = {
   CONTRACT_SIGNED: FileText,
   DISCOVERY_CALL_SCHEDULED: PhoneCall,
   DISCOVERY_CALL_COMPLETED: Checks,
+  BOOKING_CREATED: CalendarBlank,
+  BOOKING_UPDATED: CalendarBlank,
+  BOOKING_CANCELLED: CalendarBlank,
+  BOOKING_COMPLETED: CheckCircle,
 };
 
 const ACTIVITY_COLORS: Record<string, string> = {
@@ -114,6 +119,10 @@ const ACTIVITY_COLORS: Record<string, string> = {
   CONTRACT_SIGNED: 'bg-cyan-900/50 text-cyan-400',
   DISCOVERY_CALL_SCHEDULED: 'bg-purple-50 text-purple-600',
   DISCOVERY_CALL_COMPLETED: 'bg-emerald-50 text-emerald-600',
+  BOOKING_CREATED: 'bg-indigo-50 text-indigo-600',
+  BOOKING_UPDATED: 'bg-indigo-50 text-indigo-600',
+  BOOKING_CANCELLED: 'bg-red-50 text-red-500',
+  BOOKING_COMPLETED: 'bg-emerald-50 text-emerald-600',
 };
 
 const FILE_ICONS: Record<string, React.ElementType> = {
@@ -210,13 +219,15 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
       if (res.ok) {
         const link = `${window.location.origin}/testimonial/${data.testimonial.publicToken}`
         await navigator.clipboard.writeText(link)
-        alert('Testimonial requested! Submission link copied to clipboard.')
+        toast.success('Testimonial requested — link copied to clipboard')
       } else {
-        alert(data.error || 'Failed to request testimonial')
+        toast.error(data.error || 'Failed to request testimonial')
       }
-    } catch { alert('Failed to request testimonial') }
+    } catch { toast.error('Failed to request testimonial') }
   }
   const [dragOver, setDragOver] = useState(false);
+  const [showDiscoveryNotesInput, setShowDiscoveryNotesInput] = useState(false);
+  const [discoveryNotesValue, setDiscoveryNotesValue] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -554,12 +565,16 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     }
   };
 
-  const handleCompleteDiscoveryCall = async () => {
-    const notes = prompt('Add any notes from the discovery call (optional):');
+  const handleCompleteDiscoveryCall = () => {
+    setShowDiscoveryNotesInput(true);
+    setDiscoveryNotesValue('');
+  };
+
+  const handleSaveDiscoveryNotes = async () => {
     try {
       const result = await leadsApi.updateDiscoveryCall(lead.id, {
         discoveryCallCompletedAt: new Date().toISOString(),
-        discoveryCallNotes: notes || null,
+        discoveryCallNotes: discoveryNotesValue.trim() || null,
       });
       if (result.data?.lead) {
         onUpdate(result.data.lead);
@@ -568,6 +583,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     } catch (error) {
       console.error('Complete discovery call error:', error);
     }
+    setShowDiscoveryNotesInput(false);
+    setDiscoveryNotesValue('');
   };
 
   // ── Status gradient helpers ──
@@ -718,10 +735,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             </div>
 
             {/* Action row */}
-            <div className="relative flex items-center gap-2 mt-3.5" data-testid="modal-action-row">
+            <div className="relative flex items-center gap-2 mt-3.5 flex-wrap" data-testid="modal-action-row">
               <button
                 onClick={() => setActiveTab(getPrimaryActionTab(lead.status) as any)}
-                className="min-h-[44px] px-3.5 rounded-lg text-[11px] font-semibold text-white transition-colors flex items-center"
+                className="min-h-[44px] px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center"
                 style={{ background: '#6C2EDB' }}
                 data-testid="modal-primary-action"
               >
@@ -732,22 +749,46 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                   if (!lead.discoveryCallScheduled) setShowBookingModal(true)
                   else if (!lead.discoveryCallCompletedAt) handleCompleteDiscoveryCall()
                 }}
-                className="min-h-[44px] px-3 rounded-lg text-[11px] font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center gap-1"
+                className="min-h-[44px] px-3 rounded-lg text-xs font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center gap-1"
                 data-testid="modal-schedule-call"
               >
                 <PhoneCall className="w-3.5 h-3.5" aria-hidden="true" />
                 {!lead.discoveryCallScheduled ? `Schedule ${lang.discoveryCall.toLowerCase()}` : !lead.discoveryCallCompletedAt ? `Complete ${lang.discoveryCall.toLowerCase()}` : `${lang.discoveryCall} done`}
               </button>
+              {showDiscoveryNotesInput && (
+                <div className="absolute top-full left-0 right-0 z-10 mt-1 p-3 rounded-lg bg-[var(--surface-base)] border border-[var(--border)] shadow-lg" data-testid="discovery-notes-input">
+                  <p className="text-[11px] font-medium text-[var(--text-secondary)] mb-2">Call notes (optional)</p>
+                  <textarea
+                    value={discoveryNotesValue}
+                    onChange={e => setDiscoveryNotesValue(e.target.value)}
+                    className="w-full text-xs rounded-lg border border-[var(--border)] bg-[var(--surface-background)] px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-[#6C2EDB]"
+                    rows={3}
+                    placeholder="What did you discuss?"
+                    autoFocus
+                  />
+                  <div className="flex gap-2 mt-2">
+                    <button onClick={handleSaveDiscoveryNotes} className="px-3 py-1.5 rounded-lg text-[11px] font-semibold text-white bg-[#6C2EDB] hover:bg-[#5B27C0]">Save</button>
+                    <button onClick={() => setShowDiscoveryNotesInput(false)} className="px-3 py-1.5 rounded-lg text-[11px] font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-background)]">Cancel</button>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={() => setShowEmailComposer(true)}
-                className="min-h-[44px] px-3 rounded-lg text-[11px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center"
+                className="min-h-[44px] px-3 rounded-lg text-xs font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center"
                 data-testid="modal-email-action"
               >
                 Email
               </button>
               <button
-                onClick={handleRequestTestimonial}
-                className="min-h-[44px] px-3 rounded-lg text-[11px] font-medium text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50 transition-colors ml-auto flex items-center"
+                onClick={async () => {
+                  if (!window.confirm('Mark this lead as Lost? You can restore it by changing the status.')) return
+                  const result = await leadsApi.update(lead.id, { status: 'LOST' })
+                  if (result.data?.lead) {
+                    onUpdate(result.data.lead)
+                    onClose()
+                  }
+                }}
+                className="min-h-[44px] px-3 rounded-lg text-xs font-medium text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50 transition-colors ml-auto flex items-center"
                 data-testid="modal-archive-action"
               >
                 Archive
@@ -795,7 +836,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
 
                   {/* Client Details — 2-col field grid */}
                   <div data-testid="client-details-section">
-                    <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">{lang.client} Details</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">{lang.client} Details</h4>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                       {getClientFields().map(field => field.value ? (
                         <div key={field.label}>
@@ -812,7 +853,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
 
                   {/* ── Project Details — inline editable ── */}
                   <div data-testid="project-details-section">
-                    <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">Project Details</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">Project Details</h4>
 
                     {/* Project Title */}
                     <div className="group mb-3" data-testid="inline-field-projectTitle">
@@ -930,7 +971,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                   {/* Discovery Call — 3-step vertical timeline */}
                   {['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED'].includes(lead.status) && (
                     <div data-testid="discovery-call-section">
-                      <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">{lang.discoveryCall}</h4>
+                      <h4 className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">{lang.discoveryCall}</h4>
                       <div className="space-y-0">
                         {/* Step 1: Schedule */}
                         <div className="flex gap-3 relative">
@@ -1009,7 +1050,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
 
                   {/* Notes — quick add */}
                   <div data-testid="overview-notes-section">
-                    <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-2">Notes</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-2">Notes</h4>
                     <textarea
                       value={newNote}
                       onChange={(e) => setNewNote(e.target.value)}
@@ -1035,7 +1076,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                   {/* Portal link — compact */}
                   {portalUrl && (
                     <div data-testid="overview-portal-section">
-                      <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-2">{lang.client} Portal</h4>
+                      <h4 className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-2">{lang.client} Portal</h4>
                       <div className="flex items-center gap-2">
                         <input readOnly value={portalUrl} className="flex-1 text-[10px] px-2.5 py-1.5 rounded-md bg-[var(--surface-background)] border border-[var(--border)] text-[var(--text-secondary)] truncate" />
                         <button onClick={handleCopyPortalLink} className="h-7 px-2 rounded-md text-[10px] font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition" data-testid="copy-portal-link-btn">
@@ -1051,7 +1092,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
 
                 {/* ═══ Right Panel — Relationship Timeline ═══ */}
                 <div className="bg-[var(--surface-background)] p-4 overflow-y-auto" data-testid="relationship-timeline">
-                  <h4 className="text-[9px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">Timeline</h4>
+                  <h4 className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">Timeline</h4>
                   {loadingActivities ? (
                     <ActivitySkeleton />
                   ) : (
@@ -1067,7 +1108,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                             </div>
                             <div className="flex-1 pb-3 min-w-0">
                               <p className="text-xs font-semibold text-text-primary leading-tight">{getTimelineTitle(activity)}</p>
-                              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 line-clamp-2">{activity.description}</p>
+                              <p className="text-xs text-[var(--text-secondary)] mt-0.5 line-clamp-2">{activity.description}</p>
                               <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">{formatTimeAgo(activity.createdAt)}</p>
                             </div>
                           </div>
