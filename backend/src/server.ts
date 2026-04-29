@@ -185,17 +185,21 @@ if (process.env.NODE_ENV === 'development') {
 
 // Iter 144 — Slow request logger: surfaces any API call slower than 500ms so we can
 // spot DB/endpoint regressions in Railway logs without pulling full APM.
-app.use((req: Request, res: Response, next: NextFunction) => {
-  if (!req.path.startsWith('/api')) return next();
-  const start = Date.now();
-  res.on('finish', () => {
-    const duration = Date.now() - start;
-    if (duration > 500) {
-      console.warn(`[Perf] ⚠️ Slow ${req.method} ${req.path} — ${duration}ms (status ${res.statusCode})`);
-    }
+// Iter 160 — Gated behind PERF_LOGGING env var; set PERF_LOGGING=false in Railway
+// to silence in production. Re-enable on demand for debugging.
+if (process.env.PERF_LOGGING !== 'false') {
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (!req.path.startsWith('/api')) return next();
+    const start = Date.now();
+    res.on('finish', () => {
+      const duration = Date.now() - start;
+      if (duration > 500) {
+        console.warn(`[Perf] ⚠️ Slow ${req.method} ${req.path} — ${duration}ms (status ${res.statusCode})`);
+      }
+    });
+    next();
   });
-  next();
-});
+}
 
 // =====================
 // ROUTES

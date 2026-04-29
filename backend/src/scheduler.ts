@@ -47,7 +47,7 @@ async function runStaleLeadNudges(): Promise<void> {
           { lastContactedAt: { lt: new Date(Date.now() - 6 * 3600000) } },
         ],
       },
-      include: { assignedTo: true },
+      include: { assignedTo: { select: { email: true, firstName: true, staleLeadEmailEnabled: true } } },
     });
 
     for (const lead of tier1Leads) {
@@ -79,7 +79,7 @@ async function runStaleLeadNudges(): Promise<void> {
           { lastContactedAt: { lt: new Date(Date.now() - 6 * 3600000) } },
         ],
       },
-      include: { assignedTo: true },
+      include: { assignedTo: { select: { email: true, firstName: true, staleLeadEmailEnabled: true } } },
     });
 
     for (const lead of tier2Leads) {
@@ -112,7 +112,7 @@ async function runQuoteViewedNudges(): Promise<void> {
         viewedAt: { gte: seventyTwoHoursAgo, lt: fortyEightHoursAgo },
         status: { in: ['SENT', 'VIEWED'] },
       },
-      include: { lead: { include: { assignedTo: true } } },
+      include: { lead: { include: { assignedTo: { select: { email: true, firstName: true, primaryIndustry: true, quoteNudgeEmailEnabled: true } } } } },
     });
 
     for (const quote of quotes) {
@@ -139,7 +139,7 @@ async function runContractUnsignedWarnings(): Promise<void> {
         clientAgreed: false,
         status: { in: ['SENT', 'VIEWED'] },
       },
-      include: { lead: { include: { assignedTo: true } } },
+      include: { lead: { include: { assignedTo: { select: { email: true, firstName: true, primaryIndustry: true } } } } },
     });
 
     for (const contract of contracts) {
@@ -170,7 +170,7 @@ async function runContractUnsignedFinalWarning(): Promise<void> {
         clientAgreed: false,
         status: { in: ['SENT', 'VIEWED'] },
       },
-      include: { lead: { include: { assignedTo: true } } },
+      include: { lead: { include: { assignedTo: { select: { email: true, firstName: true, primaryIndustry: true } } } } },
     });
 
     for (const contract of contracts) {
@@ -208,7 +208,7 @@ async function runPaymentNudges(): Promise<void> {
       },
       include: {
         lead: {
-          include: { assignedTo: true },
+          include: { assignedTo: { select: { email: true, firstName: true, primaryIndustry: true } } },
         },
       },
     });
@@ -240,7 +240,7 @@ async function runQuoteExpiryWarnings(): Promise<void> {
         validUntil: { gte: threeDaysFromNow, lt: fourDaysFromNow },
         status: { in: ['SENT', 'VIEWED'] },
       },
-      include: { lead: { include: { assignedTo: true } } },
+      include: { lead: { include: { assignedTo: { select: { email: true, primaryIndustry: true, businessName: true } } } } },
     });
 
     for (const quote of quotes) {

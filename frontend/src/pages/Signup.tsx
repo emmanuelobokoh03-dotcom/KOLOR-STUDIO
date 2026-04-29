@@ -101,7 +101,14 @@ const Signup = () => {
       industry,
     } as Parameters<typeof authApi.signup>[0] & { industry: string })
     setLoading(false)
-    if (result.error) { setError(result.message || 'Failed to create account'); return }
+    if (result.error) {
+      if (result.error === 'Conflict' || (result.message || '').toLowerCase().includes('already exists')) {
+        setError('ACCOUNT_EXISTS')
+      } else {
+        setError(result.message || 'Failed to create account')
+      }
+      return
+    }
     trackSignup('email')
     const loginResult = await authApi.login({ email: formData.email, password: formData.password, rememberMe: true })
     if (loginResult.data?.user) {
@@ -195,10 +202,19 @@ const Signup = () => {
           </div>
 
           {/* Errors / Success */}
-          {error && (
+          {error && error !== 'ACCOUNT_EXISTS' && (
             <div className="mb-4 flex items-start gap-2.5 rounded-lg text-[12px]" style={{ background: 'rgba(239,68,68,0.06)', border: '0.5px solid rgba(239,68,68,0.2)', padding: '10px 14px', color: '#DC2626' }} data-testid="signup-error" role="alert">
               <svg width="14" height="14" viewBox="0 0 16 16" className="flex-shrink-0 mt-0.5"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.3" fill="none" /><path d="M8 4.5v4M8 10.5v.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
               {error}
+            </div>
+          )}
+          {error === 'ACCOUNT_EXISTS' && (
+            <div className="mb-4 rounded-lg text-[12px]" style={{ background: 'rgba(108,46,219,0.06)', border: '0.5px solid rgba(108,46,219,0.25)', padding: '12px 14px', color: '#1a0a3d' }} data-testid="signup-account-exists" role="alert">
+              <p className="font-medium mb-1.5" style={{ color: '#6C2EDB' }}>An account with this email already exists.</p>
+              <div className="flex items-center gap-3">
+                <Link to="/login" className="underline font-medium" style={{ color: '#6C2EDB' }} data-testid="signup-go-login">Sign in &rarr;</Link>
+                <Link to="/forgot-password" className="underline font-medium" style={{ color: '#6C2EDB' }} data-testid="signup-go-forgot">Forgot password &rarr;</Link>
+              </div>
             </div>
           )}
           {success && (

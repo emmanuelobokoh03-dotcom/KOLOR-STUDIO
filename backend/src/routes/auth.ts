@@ -576,7 +576,11 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
         where: { id: user.id },
         data: {
           passwordResetToken: hashedToken,
-          passwordResetExpires: resetExpires
+          passwordResetExpires: resetExpires,
+          // Iter 160 — Proving email ownership via forgot-password releases
+          // the login lockout so the user can log in after resetting
+          loginAttempts: 0,
+          lockedUntil: null,
         }
       });
 
@@ -682,10 +686,13 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
         password: hashedPassword,
         passwordResetToken: null,
         passwordResetExpires: null,
-        // Iter 153 — Reset rate-limit counters after successful password reset
         passwordResetAttempts: 0,
         passwordResetWindowStart: null,
         tokenVersion: { increment: 1 },
+        // Iter 160 — Clear login lockout so pre-reset failed attempts
+        // do not carry over and lock the user out after resetting
+        loginAttempts: 0,
+        lockedUntil: null,
       }
     });
 
