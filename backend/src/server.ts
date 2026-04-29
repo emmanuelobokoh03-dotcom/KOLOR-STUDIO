@@ -352,6 +352,12 @@ app.listen(PORT, () => {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   `);
 
+  // Iter 161 — Schedulers run in BOTH the API process AND a dedicated
+  // Worker service during transition. Set WORKER_ONLY=true on the API
+  // Railway service once the Worker service is confirmed healthy. The
+  // schedulers will then only run in worker.ts, isolating background
+  // DB load from API request latency.
+  if (process.env.WORKER_ONLY !== 'true') {
   // Start sequence processor — runs every hour, first run staggered at 5 min post-boot
   const SEQ_INTERVAL = 60 * 60 * 1000; // 1 hour
   setTimeout(() => {
@@ -410,6 +416,9 @@ app.listen(PORT, () => {
   } else {
     console.log('[Scheduler] Disabled. Set ENABLE_SCHEDULER=true to enable.');
   }
+  } else {
+    console.log('[Scheduler] WORKER_ONLY=true — all background schedulers delegated to worker.ts process');
+  } // end WORKER_ONLY guard
 });
 
 export default app;
