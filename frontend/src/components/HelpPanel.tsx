@@ -16,54 +16,14 @@ import {
 } from '@phosphor-icons/react'
 
 const quickStartItems = [
-  {
-    icon: FileText,
-    title: 'Create Your First Quotes',
-    description: 'Send professional pricing to clients',
-    color: 'text-pink-600 bg-pink-50 border-brand-accent-dark/30',
-  },
-  {
-    icon: CalendarBlank,
-    title: 'Set Up a Booking',
-    description: 'Schedule shoots and meetings',
-    color: 'text-blue-600 bg-blue-50 border-blue-700/30',
-  },
-  {
-    icon: UploadSimple,
-    title: 'Upload Portfolio Work',
-    description: 'Showcase your best pieces',
-    color: 'text-purple-600 bg-purple-50 border-purple-200',
-  },
-  {
-    icon: Scroll,
-    title: 'Send a Contract',
-    description: 'Protect yourself legally',
-    color: 'text-emerald-600 bg-emerald-50 border-emerald-700/30',
-  },
-  {
-    icon: TrendUp,
-    title: 'Track Your Income',
-    description: 'See earnings and tax estimates automatically',
-    color: 'text-amber-700 bg-amber-50 border-amber-200',
-  },
-  {
-    icon: Star,
-    title: 'Get Testimonials',
-    description: 'Automatically collect 5-star reviews',
-    color: 'text-yellow-400 bg-yellow-900/30 border-yellow-200',
-  },
-  {
-    icon: Envelope,
-    title: 'Email Signature',
-    description: 'Market your portfolio in every email',
-    color: 'text-cyan-400 bg-cyan-900/30 border-cyan-700/30',
-  },
-  {
-    icon: Paperclip,
-    title: 'Share Files with Clients',
-    description: 'Securely share deliverables via portal',
-    color: 'text-violet-400 bg-violet-900/30 border-violet-700/30',
-  },
+  { icon: FileText,      title: 'Create Your First Quotes',  description: 'Send professional pricing to clients',          color: 'text-pink-600 bg-pink-50 border-brand-accent-dark/30', action: 'quotes'    },
+  { icon: CalendarBlank, title: 'Set Up a Booking',          description: 'Schedule shoots and meetings',                  color: 'text-blue-600 bg-blue-50 border-blue-700/30',          action: 'calendar'  },
+  { icon: UploadSimple,  title: 'Upload Portfolio Work',     description: 'Showcase your best pieces',                     color: 'text-purple-600 bg-purple-50 border-purple-200',       action: 'portfolio' },
+  { icon: Scroll,        title: 'Send a Contract',           description: 'Protect yourself legally',                      color: 'text-emerald-600 bg-emerald-50 border-emerald-700/30', action: 'contracts' },
+  { icon: TrendUp,       title: 'Track Your Income',         description: 'See earnings and tax estimates automatically',  color: 'text-amber-700 bg-amber-50 border-amber-200',          action: 'analytics' },
+  { icon: Star,          title: 'Get Testimonials',          description: 'Automatically collect 5-star reviews',          color: 'text-yellow-400 bg-yellow-900/30 border-yellow-200',   action: 'settings'  },
+  { icon: Envelope,      title: 'Email Signature',           description: 'Market your portfolio in every email',          color: 'text-cyan-400 bg-cyan-900/30 border-cyan-700/30',      action: 'settings'  },
+  { icon: Paperclip,     title: 'Share Files with Clients',  description: 'Securely share deliverables via portal',        color: 'text-violet-400 bg-violet-900/30 border-violet-700/30', action: 'leads'    },
 ]
 
 const faqs = [
@@ -136,9 +96,10 @@ interface HelpPanelProps {
   open: boolean
   onClose: () => void
   startTour?: () => void
+  onAction?: (action: string) => void
 }
 
-export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) {
+export default function HelpPanel({ open, onClose, startTour, onAction }: HelpPanelProps) {
   return (
     <AnimatePresence>
       {open && (
@@ -184,9 +145,18 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
                 <h4 className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-3">Quick Start</h4>
                 <div className="space-y-2">
                   {quickStartItems.map((item) => (
-                    <div
+                    <button
                       key={item.title}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-light-50 border border-light-200 hover:border-light-300 transition-colors cursor-default"
+                      onClick={() => {
+                        if (!onAction) return
+                        onClose()
+                        if (item.action === 'calendar') {
+                          setTimeout(() => window.location.assign('/calendar'), 200)
+                        } else {
+                          setTimeout(() => onAction(item.action), 200)
+                        }
+                      }}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl bg-light-50 border border-light-200 hover:border-purple-200 hover:bg-purple-50/30 transition-colors text-left"
                       data-testid={`help-quickstart-${item.title.toLowerCase().replace(/\s/g, '-')}`}
                     >
                       <div className={`w-9 h-9 rounded-lg border flex items-center justify-center flex-shrink-0 ${item.color}`}>
@@ -196,7 +166,7 @@ export default function HelpPanel({ open, onClose, startTour }: HelpPanelProps) 
                         <p className="text-sm font-medium text-text-primary">{item.title}</p>
                         <p className="text-xs text-text-secondary">{item.description}</p>
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>

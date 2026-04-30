@@ -1,3 +1,9 @@
+/*
+ * HelpMenu — DEPRECATED (Iteration 144)
+ * Removed from header. HelpPanel (slide-in drawer) now handles all help.
+ * Accessed via sidebar Help button, floating ? button, or the ? key shortcut.
+ * This file is kept for reference but not mounted anywhere in the app.
+ */
 import { useState, useRef, useEffect } from 'react'
 import { Question, BookOpen, Envelope, CaretDown, ChatText } from '@phosphor-icons/react'
 
@@ -45,7 +51,7 @@ export default function HelpMenu({ onOpenFeedback }: HelpMenuProps) {
         <div className="absolute right-0 top-full mt-2 w-64 bg-surface-base rounded-xl shadow-xl border border-light-200 py-2 z-50">
           {/* Email Support */}
           <a
-            href="mailto:hello@kolorstudio.com"
+            href="mailto:hello@kolorstudio.app"
             className="w-full px-4 py-2.5 text-left hover:bg-light-100 flex items-center gap-3 transition"
             data-testid="email-support-link"
           >

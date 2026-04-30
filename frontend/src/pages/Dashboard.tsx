@@ -328,6 +328,20 @@ const Dashboard = () => {
     }
   }, [loading, user, tourComplete, startTour, showWizard, showAHAModal])
 
+  // Iter 162 — ? keyboard shortcut to toggle HelpPanel
+  // Documented in HelpPanel Pro Tips — now implemented
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) return
+      if (e.key === '?' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        setShowHelpPanel(prev => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   const fetchLeads = async () => {
     const params: any = {};
     if (projectTypeFilter) params.projectType = projectTypeFilter;
@@ -680,11 +694,20 @@ const Dashboard = () => {
 
         {/* Help */}
         <button
-          onClick={() => setShowFeedback(true)}
+          onClick={() => setShowHelpPanel(true)}
           className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-text-secondary hover:bg-surface-background transition-all duration-150"
+          data-testid="sidebar-help-btn"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.3" /><path d="M6 6.2c0-1.1.9-2 2-2s2 .9 2 2c0 .7-.4 1.3-1 1.7-.3.2-.5.4-.6.6-.1.2-.2.3-.2.5M8 11v.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
-          Help &amp; feedback
+          Help
+        </button>
+        <button
+          onClick={() => setShowFeedback(true)}
+          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-text-secondary hover:bg-surface-background transition-all duration-150"
+          data-testid="sidebar-feedback-btn"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 2h12v9H9l-3 3v-3H2V2z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/></svg>
+          Feedback
         </button>
       </aside>
 
@@ -818,6 +841,14 @@ const Dashboard = () => {
                 className="w-full flex items-center gap-3 px-3 py-3 text-sm text-text-secondary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
               >
                 <GearSix weight="regular" className="w-5 h-5" aria-hidden="true" /> Settings
+              </button>
+              <button
+                onClick={() => { setMobileMenuOpen(false); setTimeout(() => setShowHelpPanel(true), 200) }}
+                className="w-full flex items-center gap-3 px-3 py-3 text-sm text-text-secondary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
+                data-testid="mobile-help-btn"
+              >
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.3"/><path d="M6 6.2c0-1.1.9-2 2-2s2 .9 2 2c0 .7-.4 1.3-1 1.7-.3.2-.5.4-.6.6-.1.2-.2.3-.2.5M8 11v.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+                Help
               </button>
               <button
                 onClick={() => { setShowFeedback(true); setMobileMenuOpen(false); }}
@@ -1599,7 +1630,18 @@ const Dashboard = () => {
       <div data-tour="help-button">
         <HelpButton onClick={() => setShowHelpPanel(true)} />
       </div>
-      <HelpPanel open={showHelpPanel} onClose={() => setShowHelpPanel(false)} startTour={startTour} />
+      <HelpPanel
+        open={showHelpPanel}
+        onClose={() => setShowHelpPanel(false)}
+        startTour={startTour}
+        onAction={(action) => {
+          if (action === 'settings') {
+            setShowSettings(true)
+          } else {
+            handleViewChange(action as any)
+          }
+        }}
+      />
       <CelebrationModal
         achievement={celebration}
         show={showCelebration}
