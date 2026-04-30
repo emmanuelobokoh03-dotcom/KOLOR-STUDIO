@@ -25,6 +25,8 @@ import CookieConsent from './components/CookieConsent'
 import NotFound from './pages/NotFound'
 import { Toaster } from 'sonner'
 
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 function App() {
   // AUDIT FIX [9.1]: Gate analytics behind cookie consent
   const [analyticsConsented, setAnalyticsConsented] = useState(
@@ -37,6 +39,14 @@ function App() {
     }
     window.addEventListener('kolor-consent-update', handler)
     return () => window.removeEventListener('kolor-consent-update', handler)
+  }, [])
+
+  // Iter 163 — Keep-alive ping: wake Railway backend before user hits login/signup.
+  // Railway developer tier spins down after inactivity; this eliminates the cold-start
+  // delay the user would otherwise experience on their first API call.
+  useEffect(() => {
+    fetch(`${API_URL}/api/health`, { method: 'GET', credentials: 'omit' })
+      .catch(() => { /* silently ignore — just a warm-up ping */ })
   }, [])
 
   return (

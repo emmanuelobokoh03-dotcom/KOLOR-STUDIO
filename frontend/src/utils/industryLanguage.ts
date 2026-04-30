@@ -401,7 +401,7 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
 };
 
 export function getIndustryLanguage(industry: IndustryType | string | undefined | null): IndustryLanguage {
-  if (industry === 'FINE_ART') return industryLanguage.FINE_ART;
+  if (industry === 'FINE_ART' || industry === 'SCULPTURE' || industry === 'CERAMICS') return industryLanguage.FINE_ART;
   if (industry === 'DESIGN' ||
       industry === 'GRAPHIC_DESIGN' ||
       industry === 'WEB_DESIGN' ||

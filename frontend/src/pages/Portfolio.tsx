@@ -24,6 +24,7 @@ import {
 } from '../services/api'
 import { CelebrationModal, checkCelebration, Achievement } from '../components/CelebrationModal'
 import SharePortfolio from '../components/SharePortfolio'
+import KolorSpinner from '../components/KolorSpinner'
 
 interface PortfolioPageProps {
   user: User | null;
@@ -241,7 +242,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
       <div className="bg-gradient-to-r from-brand-primary/20 to-brand-primary/20 border border-brand-primary/30 rounded-xl p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-text-primary mb-1">My Portfolio</h2>
+            <h2 className="text-xl font-bold text-text-primary mb-1">{(user as any)?.businessName || (user as any)?.studioName || user?.firstName ? `${(user as any)?.businessName || (user as any)?.studioName || user?.firstName}'s Portfolio` : 'My Portfolio'}</h2>
             <p className="text-sm text-text-secondary">
               Showcase your best work to impress potential clients
             </p>
@@ -298,7 +299,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
       {/* Loading */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <SpinnerGap className="w-8 h-8 animate-spin text-purple-600" />
+          <KolorSpinner size={48} />
         </div>
       ) : items.length === 0 ? (
         /* Empty State */

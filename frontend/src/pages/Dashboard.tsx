@@ -913,11 +913,9 @@ const Dashboard = () => {
               }, 100)
             }
             else if (action === 'view-portfolio') {
-              if (user?.id) {
-                window.open(`${window.location.origin}/portfolio/${user.id}`, '_blank', 'noopener,noreferrer')
-              } else {
-                handleViewChange('portfolio')
-              }
+              // Iter 163 — always open the in-app portfolio management view.
+              // The user can preview the public URL from inside the portfolio page.
+              handleViewChange('portfolio')
             }
             else if (action === 'open-settings') setShowSettings(true)
             else if (action === 'open-brand-settings') setShowSettings(true)

@@ -448,8 +448,8 @@ export default function Settings() {
 
                     {/* ── App Themes (Iter 146: glyph + name + tagline cards) ── */}
                     <div className="border-t pt-5 mt-5" style={{ borderColor: 'var(--border)' }} data-testid="accent-colour-section">
-                      <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-0.5 uppercase tracking-wide">App Theme</label>
-                      <p className="text-[10px] text-[var(--text-tertiary)] mb-4">Choose a vibe for your workspace. Your client-facing brand colours are in the Brand tab.</p>
+                      <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-0.5 uppercase tracking-wide">Workspace Theme</label>
+                      <p className="text-[10px] text-[var(--text-tertiary)] mb-4">Choose a colour theme for your KOLOR workspace. This only affects what you see inside the app — your client-facing brand colours are set in the Brand tab.</p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {APP_THEMES.map(theme => {
                           const isActive = selectedThemeId === theme.id
@@ -828,7 +828,7 @@ function BrandTab({
       <div className="bg-[var(--surface-base)] rounded-xl p-5 sm:p-6" style={{ border: '0.5px solid var(--border)', marginBottom: 16 }}>
         <h2 className="text-sm font-bold text-text-primary mb-1">Brand identity</h2>
         <p className="text-xs text-[var(--text-secondary)] mb-5">
-          These are your <strong>client-facing</strong> brand colours — they appear on your public portfolio, inquiry form, and booking page. To change your workspace theme (what you see inside the app), go to the <strong>Profile</strong> tab.
+          These are your <strong>client-facing</strong> brand colours — they appear on your public portfolio, inquiry form, and booking page. To change your <strong>Workspace Theme</strong> (what you see inside the app), go to the <strong>Profile</strong> tab.
         </p>
 
         {/* Logo upload */}
