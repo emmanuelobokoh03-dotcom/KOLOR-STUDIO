@@ -360,6 +360,8 @@ export default function Settings() {
                     brandFontFamily: brandFont,
                     brandLogoUrl: brandLogoUrl,
                   })
+                  // Iter 164 — sync CSS variable so workspace reflects new brand colour immediately
+                  document.documentElement.style.setProperty('--brand-primary', brandPrimary)
                   setSavingBrand(false)
                 }}
               />
@@ -438,7 +440,14 @@ export default function Settings() {
                     </div>
 
                     <button
-                      onClick={() => saveSettings({ firstName, businessName, primaryIndustry: industry })}
+                      onClick={async () => {
+                        const prevIndustry = (settings as any)?.primaryIndustry
+                        await saveSettings({ firstName, businessName, primaryIndustry: industry })
+                        // Iter 164 — reload so all getIndustryLanguage() calls re-evaluate
+                        if (industry && industry !== prevIndustry) {
+                          setTimeout(() => window.location.reload(), 800)
+                        }
+                      }}
                       disabled={saving}
                       className="px-5 py-2.5 bg-[#6C2EDB] text-white rounded-lg text-sm font-semibold hover:bg-[#5B27B5] disabled:opacity-50 transition flex items-center gap-2"
                       data-testid="settings-save-profile-btn"

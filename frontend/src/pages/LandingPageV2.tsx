@@ -64,6 +64,7 @@ export default function LandingPageV2() {
       <HeroSection onCta={goSignup} variant={heroVariant} />
       <MarqueeSection />
       <SocialProofStrip />
+      <ProblemSection />
       <FeatureRowsSection />
       <TestimonialsSection />
       <UrgencySection onCta={goSignup} />

@@ -50,6 +50,9 @@ export default function BookingModal({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showCancelInput, setShowCancelInput] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
 
   // Lead selector state (for when no lead is passed)
   const [availableLeads, setAvailableLeads] = useState<Lead[]>([])
@@ -73,9 +76,10 @@ export default function BookingModal({
         setLoadingLeads(true)
         const result = await leadsApi.getAll()
         if (result.data?.leads) {
-          // Filter to leads that make sense for booking (QUALIFIED, QUOTED, BOOKED, NEGOTIATING)
+          // Filter to leads that make sense for booking — Iter 164: include early-pipeline
+          // (NEW/REVIEWING/CONTACTED) so discovery calls can be scheduled before qualification
           const bookableLeads = result.data.leads.filter(l => 
-            ['QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED'].includes(l.status)
+            ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED'].includes(l.status)
           )
           setAvailableLeads(bookableLeads)
         }
@@ -218,11 +222,15 @@ export default function BookingModal({
     }
   }
 
-  // Handle delete
+  // Handle delete — uses inline confirm instead of browser confirm()
   const handleDelete = async () => {
     if (!existingBooking) return
-    if (!confirm('Are you sure you want to delete this booking?')) return
+    setShowDeleteConfirm(true)
+  }
 
+  const handleDeleteConfirmed = async () => {
+    if (!existingBooking) return
+    setShowDeleteConfirm(false)
     setLoading(true)
     const result = await bookingsApi.delete(existingBooking.id)
     setLoading(false)
@@ -256,13 +264,18 @@ export default function BookingModal({
     }
   }
 
-  // Handle cancel
-  const handleCancel = async () => {
+  // Handle cancel — uses inline input instead of browser prompt()
+  const handleCancel = () => {
     if (!existingBooking) return
-    const reason = prompt('Reason for cancellation (optional):')
+    setShowCancelInput(true)
+    setCancelReason('')
+  }
 
+  const handleCancelConfirmed = async () => {
+    if (!existingBooking) return
+    setShowCancelInput(false)
     setLoading(true)
-    const result = await bookingsApi.cancel(existingBooking.id, reason || undefined)
+    const result = await bookingsApi.cancel(existingBooking.id, cancelReason.trim() || undefined)
     setLoading(false)
 
     if (result.error) {
@@ -283,7 +296,7 @@ export default function BookingModal({
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" role="presentation" onClick={onClose}>
-      <div ref={modalRef} className="bg-surface-base rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
+      <div ref={modalRef} className="relative bg-surface-base rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-light-200">
           <div className="flex items-center gap-3">
@@ -505,7 +518,43 @@ export default function BookingModal({
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Inline Delete Confirm Panel */}
+      {showDeleteConfirm && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 rounded-2xl">
+          <div className="bg-surface-base rounded-xl border border-light-200 shadow-xl p-6 mx-4 w-full max-w-sm">
+            <p className="text-sm font-semibold text-text-primary mb-2">Delete this booking?</p>
+            <p className="text-xs text-text-secondary mb-5">This cannot be undone.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setShowDeleteConfirm(false)} className="flex-1 px-4 py-2.5 text-sm font-medium text-text-secondary border border-light-200 rounded-xl hover:bg-light-100 transition" data-testid="booking-delete-keep">Keep it</button>
+              <button onClick={handleDeleteConfirmed} className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-xl transition" data-testid="booking-delete-confirm">Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Inline Cancel Input Panel */}
+      {showCancelInput && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 rounded-2xl">
+          <div className="bg-surface-base rounded-xl border border-light-200 shadow-xl p-6 mx-4 w-full max-w-sm">
+            <p className="text-sm font-semibold text-text-primary mb-2">Cancel this booking?</p>
+            <textarea
+              value={cancelReason}
+              onChange={e => setCancelReason(e.target.value)}
+              placeholder="Reason for cancellation (optional)"
+              className="w-full text-xs rounded-lg border border-light-200 bg-surface-background px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-brand-primary mb-4"
+              rows={3}
+              autoFocus
+              data-testid="booking-cancel-reason"
+            />
+            <div className="flex gap-3">
+              <button onClick={() => setShowCancelInput(false)} className="flex-1 px-4 py-2.5 text-sm font-medium text-text-secondary border border-light-200 rounded-xl hover:bg-light-100 transition" data-testid="booking-cancel-keep">Keep it</button>
+              <button onClick={handleCancelConfirmed} className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 rounded-xl transition" data-testid="booking-cancel-confirm">Cancel Booking</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
         <div className="p-4 border-t border-light-200 space-y-3">
           {/* Status actions for existing bookings */}
           {existingBooking && existingBooking.status === 'CONFIRMED' && (
