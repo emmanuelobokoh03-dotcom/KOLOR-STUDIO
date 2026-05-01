@@ -238,7 +238,7 @@ function QuoteRow({ quote, lang, currencySymbol, onEdit, onSend, onPreview, onDu
 
   return (
     <div
-      className="grid items-center px-3.5 py-[10px] cursor-pointer transition-all duration-150 group border-b last:border-b-0 hover:bg-[var(--surface-background)]"
+      className="block sm:grid items-center px-3.5 py-3 sm:py-[10px] cursor-pointer transition-all duration-150 group border-b last:border-b-0 hover:bg-[var(--surface-background)]"
       style={{ gridTemplateColumns: '1fr 88px 120px 72px 88px', borderColor: 'var(--border)' }}
       onClick={() => onEdit(quote)}
       data-testid={`quote-row-${quote.id}`}
@@ -265,13 +265,38 @@ function QuoteRow({ quote, lang, currencySymbol, onEdit, onSend, onPreview, onDu
         </div>
       </div>
 
+      {/* Mobile-only: status + value + primary action summary row */}
+      <div className="flex items-center justify-between mt-2 sm:hidden" data-testid={`quote-row-mobile-summary-${quote.id}`}>
+        <span
+          className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold"
+          style={{ borderLeft: `3px solid ${statusStyle.border}`, background: statusStyle.bg, color: statusStyle.text }}
+        >
+          {QUOTE_STATUS_LABELS[quote.status]}
+        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] text-[var(--text-secondary)] tabular-nums">
+            {quote.sentAt ? formatShortDate(quote.sentAt) : '—'}
+          </span>
+          <span className={`text-sm font-bold text-text-primary tabular-nums ${isDraft ? 'opacity-60' : ''}`}>
+            {fmtCurrencyCompact(quote.total, currencySymbol)}
+          </span>
+          <button
+            onClick={(e) => { e.stopPropagation(); primaryAction.action === 'send' || primaryAction.action === 'resend' ? onSend(quote) : onEdit(quote) }}
+            className="h-7 px-2.5 rounded-md text-[10px] font-semibold text-white whitespace-nowrap"
+            style={{ background: '#6C2EDB' }}
+          >
+            {primaryAction.label}
+          </button>
+        </div>
+      </div>
+
       {/* Quote number cell */}
-      <div className="text-xs font-mono text-[var(--text-secondary)] truncate">
+      <div className="hidden sm:block text-xs font-mono text-[var(--text-secondary)] truncate">
         {quote.quoteNumber || `QT-${(quote.id || '').slice(-4).toUpperCase()}`}
       </div>
 
       {/* Status cell */}
-      <div>
+      <div className="hidden sm:block">
         <span
           className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold"
           style={{ borderLeft: `3px solid ${statusStyle.border}`, background: statusStyle.bg, color: statusStyle.text }}
@@ -281,12 +306,12 @@ function QuoteRow({ quote, lang, currencySymbol, onEdit, onSend, onPreview, onDu
       </div>
 
       {/* Sent date cell */}
-      <div className="text-xs text-[var(--text-secondary)] tabular-nums">
+      <div className="hidden sm:block text-xs text-[var(--text-secondary)] tabular-nums">
         {quote.sentAt ? formatShortDate(quote.sentAt) : '—'}
       </div>
 
       {/* Value cell + hover actions */}
-      <div className="relative flex items-center justify-end">
+      <div className="hidden sm:relative sm:flex items-center justify-end">
         {/* Default: show value */}
         <span className={`text-xs font-bold text-text-primary tabular-nums group-hover:hidden ${isDraft ? 'opacity-60' : ''}`}>
           {fmtCurrencyCompact(quote.total, currencySymbol)}
@@ -552,7 +577,7 @@ export default function QuotesPage({ lang, user, leads }: QuotesPageProps) {
       ) : (
         <div className="rounded-xl bg-[var(--surface-base)] overflow-hidden" style={{ border: '0.5px solid var(--border)' }} data-testid="quotes-list-table">
           {/* Header */}
-          <div className="grid items-center px-3.5 py-2.5 bg-[var(--surface-background)]" style={{ gridTemplateColumns: '1fr 88px 120px 72px 88px', borderBottom: '0.5px solid var(--border)' }}>
+          <div className="hidden sm:grid items-center px-3.5 py-2.5 bg-[var(--surface-background)]" style={{ gridTemplateColumns: '1fr 88px 120px 72px 88px', borderBottom: '0.5px solid var(--border)' }}>
             <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.quote} #</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Status</span>

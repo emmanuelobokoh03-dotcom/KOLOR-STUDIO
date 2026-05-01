@@ -735,7 +735,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             </div>
 
             {/* Action row */}
-            <div className="relative flex items-center gap-2 mt-3.5 flex-wrap" data-testid="modal-action-row">
+            <div className="relative flex items-center gap-2 gap-y-2 mt-3.5 flex-wrap" data-testid="modal-action-row">
               <button
                 onClick={() => setActiveTab(getPrimaryActionTab(lead.status) as any)}
                 className="min-h-[44px] px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center"
@@ -788,7 +788,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                     onClose()
                   }
                 }}
-                className="min-h-[44px] px-3 rounded-lg text-xs font-medium text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50 transition-colors ml-auto flex items-center"
+                className="min-h-[44px] px-3 rounded-lg text-xs font-medium text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50 transition-colors sm:ml-auto flex items-center"
                 data-testid="modal-archive-action"
               >
                 Archive

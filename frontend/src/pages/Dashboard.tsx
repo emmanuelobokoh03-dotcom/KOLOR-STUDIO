@@ -1119,9 +1119,10 @@ const Dashboard = () => {
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
             <NumberFlow
               value={leads.filter(l => !['BOOKED', 'LOST'].includes(l.status)).length}
-              style={{ fontSize: 40, fontWeight: 700, color: '#1A1A2E', lineHeight: 1 }}
+              className="text-[32px] sm:text-[40px] font-bold leading-none"
+              style={{ color: '#1A1A2E' }}
             />
-            <span style={{ fontSize: 14, color: 'rgba(0,0,0,0.35)' }}>{lang.leads.toLowerCase()} in pipeline</span>
+            <span className="text-xs sm:text-sm" style={{ color: 'rgba(0,0,0,0.35)' }}>{lang.leads.toLowerCase()} in pipeline</span>
           </div>
         </div>
 
@@ -1358,7 +1359,7 @@ const Dashboard = () => {
                 <select
                   value={projectTypeFilter}
                   onChange={(e) => setProjectTypeFilter(e.target.value)}
-                  className="px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
+                  className="w-full px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
                   data-testid="mobile-filter-project-type"
                 >
                   <option value="">All Types</option>
@@ -1369,7 +1370,7 @@ const Dashboard = () => {
                 <select
                   value={industryFilter}
                   onChange={(e) => setIndustryFilter(e.target.value)}
-                  className="px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
+                  className="w-full px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
                   data-testid="mobile-filter-industry"
                 >
                   <option value="">All Industries</option>
