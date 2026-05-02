@@ -513,6 +513,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Fix 2 (mobile "New Commission" header button) was already `hidden lg:flex` — no change needed.
 - Build gate: `npx tsc --noEmit` clean, `npm run build` clean (9.71 s). Commit `b313f26`.
 
+### Iteration 168 — Three Persistent Fixes (Complete, Feb 2026)
+- **KolorSpinner v4 geometry**: discarded the old arc-heavy paths (which rendered as a crescent at small sizes). Now uses exact coords: `<rect>` stem + quarter-circle bowl path (radius 24) for TL/BL and flat-edged `<polygon>` blades for TR/BR. Style ID bumped to `kolor-spinner-kf-v4` so stale cached keyframes are discarded on next paint. Static screenshots at 48/120/240 px all read as a distinct K.
+- **Dashboard toolbar button removed**: deleted `<button data-testid="add-lead-button">` block in the toolbar row. The header `add-lead-topbar` (desktop-only `hidden lg:flex`) remains the sole header entry. Other entry points (empty state, kanban `+` column, keyboard shortcut) untouched.
+- **ContractPreviewModal portal**: now wrapped in `ReactDOM.createPortal(..., document.body)` so it escapes the parent `LeadDetailModal` stacking context. z-index reset to `z-50` (portal removes the need for inflated z values).
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (9.15 s). Commit `e787429`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
