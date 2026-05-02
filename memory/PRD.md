@@ -504,6 +504,15 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Regenerated `frontend/public/og-card.png` (151 KB) via Pillow with the new mark + brand purple radial glow + Playfair display.
 - Build gate: `npx tsc --noEmit` clean, `npm run build` clean.
 
+### Iteration 167 — Spinner Geometry Fix + 5 Bug Fixes (Complete, Feb 2026)
+- **KolorSpinner**: rewrote SVG to 4 distinct K quadrants — TL/BL are vertical stem (`<rect>`) + right-facing semicircle bowl (`<path>` with arc); TR/BR are diagonal parallelogram blades. Added whole-group 360° rotate after assembly.
+- **Dashboard**: `open-brand-settings` action (Create Signature banner) now sets `settingsInitialTab: 'email'` before opening Settings (was landing on Brand tab).
+- **ContractsTab**: `ContractPreviewModal` z-index `z-[60]` → `z-[70]` so it stacks above `EmailComposerModal` (`z-50`).
+- **PublicPortfolio**: nav studio name no longer uses `position: absolute; left: 50%`; now a `flex-1 justify-center` column with `max-width: 40vw` + ellipsis — no collision with left avatar on mobile.
+- **BrandSettings**: `PRESET_PALETTES` replaced with curated Studio/Midnight/Sage/Carbon/Blush/Ocean; `DEFAULTS` primary/accent now `#6C2EDB` / `#E8891A`; section label `Quick Palettes` → `Starter Palettes`.
+- Fix 2 (mobile "New Commission" header button) was already `hidden lg:flex` — no change needed.
+- Build gate: `npx tsc --noEmit` clean, `npm run build` clean (9.71 s). Commit `b313f26`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
