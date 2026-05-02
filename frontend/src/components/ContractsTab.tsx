@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom'
 import { toast } from 'sonner'
 import { InlineHint } from './InlineHint'
 import {
@@ -578,7 +579,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
       )}
 
       {/* Contract Preview Modal (Iter 145) — fullscreen unclipped review with Send button */}
-      {previewContract && (
+      {previewContract && ReactDOM.createPortal(
         <ContractPreviewModal
           contract={previewContract}
           onClose={() => setPreviewContract(null)}
@@ -588,7 +589,8 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
             handleSendClick(c);
           }}
           sending={sending === previewContract.id}
-        />
+        />,
+        document.body
       )}
     </div>
   );
@@ -615,7 +617,7 @@ function ContractPreviewModal({
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex flex-col"
+      className="fixed inset-0 z-50 flex flex-col"
       data-testid="contract-preview-modal"
       role="dialog"
       aria-modal="true"

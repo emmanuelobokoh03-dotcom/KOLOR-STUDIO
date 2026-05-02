@@ -1,13 +1,10 @@
 /*
- * KolorSpinner — Iteration 167 (geometry fix)
- * Four-quadrant K mark — corrected SVG paths.
- * TL/BL: vertical stem + right-facing semicircle arc.
- * TR/BR: diagonal parallelogram blades.
- * Animation: each quadrant assembles from its corner, hold, whole mark rotates 360°.
- * prefers-reduced-motion: opacity pulse only.
+ * KolorSpinner — Iteration 168 (geometry v3 — exact coordinates)
+ * Four-quadrant K mark. TL/BL: rect stem + quarter-circle bowl.
+ * TR/BR: flat-edged polygon blades. No arc-only paths.
  */
 
-const STYLE_ID = 'kolor-spinner-kf-v3'
+const STYLE_ID = 'kolor-spinner-kf-v4'
 
 function ensureKeyframes() {
   if (typeof document === 'undefined') return
@@ -15,22 +12,22 @@ function ensureKeyframes() {
   const style = document.createElement('style')
   style.id = STYLE_ID
   style.textContent = `
-    .ks-svg .kq { transform-box: fill-box; transform-origin: center; }
+    .ks4 .kq { transform-box: fill-box; transform-origin: center; }
     @media (prefers-reduced-motion: no-preference) {
-      @keyframes ks-tl { 0%,100%{opacity:0;transform:translate(-6px,-6px) scale(.8)} 20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
-      @keyframes ks-tr { 0%,100%{opacity:0;transform:translate(6px,-6px) scale(.8)}  20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
-      @keyframes ks-bl { 0%,100%{opacity:0;transform:translate(-6px,6px) scale(.8)}  20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
-      @keyframes ks-br { 0%,100%{opacity:0;transform:translate(6px,6px) scale(.8)}   20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
-      @keyframes ks-whole { 0%{transform:rotate(0deg);opacity:1} 65%{transform:rotate(0deg);opacity:1} 88%{transform:rotate(360deg);opacity:1} 95%{opacity:.7} 100%{transform:rotate(360deg);opacity:1} }
-      .ks-svg .kq.tl { animation: ks-tl 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:0ms }
-      .ks-svg .kq.tr { animation: ks-tr 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:100ms }
-      .ks-svg .kq.bl { animation: ks-bl 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:200ms }
-      .ks-svg .kq.br { animation: ks-br 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:300ms }
-      .ks-svg .ks-group { animation: ks-whole 2s cubic-bezier(.4,0,.2,1) infinite; transform-origin: 50px 50px }
+      @keyframes ks4-tl { 0%,100%{opacity:0;transform:translate(-5px,-5px) scale(.85)} 20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
+      @keyframes ks4-tr { 0%,100%{opacity:0;transform:translate(5px,-5px) scale(.85)}  20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
+      @keyframes ks4-bl { 0%,100%{opacity:0;transform:translate(-5px,5px) scale(.85)}  20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
+      @keyframes ks4-br { 0%,100%{opacity:0;transform:translate(5px,5px) scale(.85)}   20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
+      @keyframes ks4-rot { 0%{transform:rotate(0deg)} 65%{transform:rotate(0deg)} 88%{transform:rotate(360deg)} 100%{transform:rotate(360deg)} }
+      .ks4 .kq.tl { animation: ks4-tl 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:0ms }
+      .ks4 .kq.tr { animation: ks4-tr 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:100ms }
+      .ks4 .kq.bl { animation: ks4-bl 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:200ms }
+      .ks4 .kq.br { animation: ks4-br 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:300ms }
+      .ks4 .ks4-g { animation: ks4-rot 2s cubic-bezier(.4,0,.2,1) infinite; transform-origin: 50px 50px }
     }
     @media (prefers-reduced-motion: reduce) {
-      @keyframes ks-pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
-      .ks-svg .ks-group { animation: ks-pulse 1.6s ease-in-out infinite }
+      @keyframes ks4-pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
+      .ks4 .ks4-g { animation: ks4-pulse 1.6s ease-in-out infinite }
     }
   `
   document.head.appendChild(style)
@@ -46,7 +43,7 @@ export default function KolorSpinner({ size = 48, color = '#6C2EDB', className =
   ensureKeyframes()
   return (
     <svg
-      className={`ks-svg ${className}`}
+      className={`ks4 ${className}`}
       width={size}
       height={size}
       viewBox="0 0 100 100"
@@ -55,17 +52,13 @@ export default function KolorSpinner({ size = 48, color = '#6C2EDB', className =
       aria-hidden="true"
       focusable="false"
     >
-      <g className="ks-group" fill={color}>
-        {/* TL: vertical stem up + right-facing semicircle bowl */}
-        <rect className="kq tl" x="44" y="6" width="8" height="40" rx="2" />
-        <path className="kq tl" d="M 44 18 A 26 26 0 0 0 18 44 L 18 48 L 44 48 Z" />
-        {/* TR: upper diagonal blade */}
-        <path className="kq tr" d="M 52 6 L 94 6 L 94 28 L 52 48 L 44 38 Z" />
-        {/* BL: vertical stem down + right-facing semicircle bowl */}
-        <rect className="kq bl" x="44" y="54" width="8" height="40" rx="2" />
-        <path className="kq bl" d="M 44 52 L 18 52 L 18 56 A 26 26 0 0 0 44 82 Z" />
-        {/* BR: lower diagonal blade */}
-        <path className="kq br" d="M 44 62 L 52 52 L 94 72 L 94 94 L 52 94 Z" />
+      <g className="ks4-g" fill={color}>
+        <rect className="kq tl" x="44" y="6" width="8" height="40" rx="1" />
+        <path className="kq tl" d="M 44 22 A 24 24 0 0 0 20 46 L 44 46 Z" />
+        <polygon className="kq tr" points="52,6 94,6 94,30 52,48 44,36" />
+        <rect className="kq bl" x="44" y="54" width="8" height="40" rx="1" />
+        <path className="kq bl" d="M 44 54 L 20 54 A 24 24 0 0 0 44 78 Z" />
+        <polygon className="kq br" points="52,52 94,70 94,94 52,94 44,64" />
       </g>
     </svg>
   )

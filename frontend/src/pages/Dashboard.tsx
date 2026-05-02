@@ -1304,15 +1304,6 @@ const Dashboard = () => {
               <LinkIcon className="w-4 h-4" />
               <span>Share inquiry form</span>
             </button>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2.5 bg-brand-primary text-white rounded-xl hover:brightness-110 transition-all duration-200 font-medium text-sm hover:shadow-lg hover:shadow-brand-primary/20 touch-target"
-              data-testid="add-lead-button"
-              data-tour="add-lead"
-            >
-              <Plus weight="bold" className="w-4 h-4" />
-              <span className="hidden sm:inline">{lang.newLead.replace('+ ', '')}</span>
-            </button>
           </div>
 
           {/* Mobile filters dropdown */}
