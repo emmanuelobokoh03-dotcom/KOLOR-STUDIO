@@ -1,52 +1,38 @@
 /*
- * KolorSpinner — Iteration 166
- * Pure SVG/CSS animated K mark. Four quadrants assemble around the center
- * with a staggered fade + scale, then dissolve and loop. No PNG dependency.
- * Respects prefers-reduced-motion (renders the static assembled K).
- *
- * The K is decomposed into 4 quadrants matching the brand mark:
- *   tl — upper-left curved arc
- *   tr — upper-right diagonal arm
- *   bl — lower-left curved arc
- *   br — lower-right diagonal arm
+ * KolorSpinner — Iteration 167 (geometry fix)
+ * Four-quadrant K mark — corrected SVG paths.
+ * TL/BL: vertical stem + right-facing semicircle arc.
+ * TR/BR: diagonal parallelogram blades.
+ * Animation: each quadrant assembles from its corner, hold, whole mark rotates 360°.
+ * prefers-reduced-motion: opacity pulse only.
  */
 
-const STYLE_ID = 'kolor-spinner-keyframes-v2'
+const STYLE_ID = 'kolor-spinner-kf-v3'
 
 function ensureKeyframes() {
   if (typeof document === 'undefined') return
   if (document.getElementById(STYLE_ID)) return
   const style = document.createElement('style')
   style.id = STYLE_ID
-  style.textContent = [
-    '.kolor-spinner-svg .kq {',
-    '  transform-box: view-box;',
-    '  transform-origin: 50% 50%;',
-    '  opacity: 1;',
-    '}',
-    '@media (prefers-reduced-motion: no-preference) {',
-    '  @keyframes kolor-q-tl {',
-    '    0%, 100% { opacity: 0; transform: translate(-7px, -7px) scale(0.78); }',
-    '    18%, 70% { opacity: 1; transform: translate(0, 0) scale(1); }',
-    '  }',
-    '  @keyframes kolor-q-tr {',
-    '    0%, 100% { opacity: 0; transform: translate(7px, -7px) scale(0.78); }',
-    '    18%, 70% { opacity: 1; transform: translate(0, 0) scale(1); }',
-    '  }',
-    '  @keyframes kolor-q-bl {',
-    '    0%, 100% { opacity: 0; transform: translate(-7px, 7px) scale(0.78); }',
-    '    18%, 70% { opacity: 1; transform: translate(0, 0) scale(1); }',
-    '  }',
-    '  @keyframes kolor-q-br {',
-    '    0%, 100% { opacity: 0; transform: translate(7px, 7px) scale(0.78); }',
-    '    18%, 70% { opacity: 1; transform: translate(0, 0) scale(1); }',
-    '  }',
-    '  .kolor-spinner-svg .kq.tl { animation: kolor-q-tl 1.8s ease-in-out infinite; animation-delay: 0ms; }',
-    '  .kolor-spinner-svg .kq.tr { animation: kolor-q-tr 1.8s ease-in-out infinite; animation-delay: 90ms; }',
-    '  .kolor-spinner-svg .kq.bl { animation: kolor-q-bl 1.8s ease-in-out infinite; animation-delay: 180ms; }',
-    '  .kolor-spinner-svg .kq.br { animation: kolor-q-br 1.8s ease-in-out infinite; animation-delay: 270ms; }',
-    '}',
-  ].join('\n')
+  style.textContent = `
+    .ks-svg .kq { transform-box: fill-box; transform-origin: center; }
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes ks-tl { 0%,100%{opacity:0;transform:translate(-6px,-6px) scale(.8)} 20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
+      @keyframes ks-tr { 0%,100%{opacity:0;transform:translate(6px,-6px) scale(.8)}  20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
+      @keyframes ks-bl { 0%,100%{opacity:0;transform:translate(-6px,6px) scale(.8)}  20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
+      @keyframes ks-br { 0%,100%{opacity:0;transform:translate(6px,6px) scale(.8)}   20%,65%{opacity:1;transform:translate(0,0) scale(1)} }
+      @keyframes ks-whole { 0%{transform:rotate(0deg);opacity:1} 65%{transform:rotate(0deg);opacity:1} 88%{transform:rotate(360deg);opacity:1} 95%{opacity:.7} 100%{transform:rotate(360deg);opacity:1} }
+      .ks-svg .kq.tl { animation: ks-tl 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:0ms }
+      .ks-svg .kq.tr { animation: ks-tr 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:100ms }
+      .ks-svg .kq.bl { animation: ks-bl 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:200ms }
+      .ks-svg .kq.br { animation: ks-br 2s cubic-bezier(.4,0,.2,1) infinite; animation-delay:300ms }
+      .ks-svg .ks-group { animation: ks-whole 2s cubic-bezier(.4,0,.2,1) infinite; transform-origin: 50px 50px }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      @keyframes ks-pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
+      .ks-svg .ks-group { animation: ks-pulse 1.6s ease-in-out infinite }
+    }
+  `
   document.head.appendChild(style)
 }
 
@@ -60,7 +46,7 @@ export default function KolorSpinner({ size = 48, color = '#6C2EDB', className =
   ensureKeyframes()
   return (
     <svg
-      className={`kolor-spinner-svg ${className}`}
+      className={`ks-svg ${className}`}
       width={size}
       height={size}
       viewBox="0 0 100 100"
@@ -69,11 +55,17 @@ export default function KolorSpinner({ size = 48, color = '#6C2EDB', className =
       aria-hidden="true"
       focusable="false"
     >
-      <g fill={color}>
-        <path className="kq tl" d="M 50 8 A 42 42 0 0 0 8 50 L 26 50 A 24 24 0 0 1 50 26 Z" />
-        <path className="kq tr" d="M 50 26 L 50 50 L 92 8 L 64 8 Z" />
-        <path className="kq bl" d="M 8 50 A 42 42 0 0 0 50 92 L 50 74 A 24 24 0 0 1 26 50 Z" />
-        <path className="kq br" d="M 50 50 L 50 74 L 92 92 L 64 92 Z" />
+      <g className="ks-group" fill={color}>
+        {/* TL: vertical stem up + right-facing semicircle bowl */}
+        <rect className="kq tl" x="44" y="6" width="8" height="40" rx="2" />
+        <path className="kq tl" d="M 44 18 A 26 26 0 0 0 18 44 L 18 48 L 44 48 Z" />
+        {/* TR: upper diagonal blade */}
+        <path className="kq tr" d="M 52 6 L 94 6 L 94 28 L 52 48 L 44 38 Z" />
+        {/* BL: vertical stem down + right-facing semicircle bowl */}
+        <rect className="kq bl" x="44" y="54" width="8" height="40" rx="2" />
+        <path className="kq bl" d="M 44 52 L 18 52 L 18 56 A 26 26 0 0 0 44 82 Z" />
+        {/* BR: lower diagonal blade */}
+        <path className="kq br" d="M 44 62 L 52 52 L 94 72 L 94 94 L 52 94 Z" />
       </g>
     </svg>
   )

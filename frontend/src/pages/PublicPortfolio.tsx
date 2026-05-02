@@ -266,9 +266,14 @@ export default function PublicPortfolio() {
             )}
           </div>
 
-          {/* Center: Studio name */}
-          <span style={{ fontSize: 15, fontWeight: 700, color: '#1A1A2E', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }} className="hidden md:block" data-testid="portfolio-nav-studio-name">
-            {studioDisplayName}
+          {/* Center: Studio name — flex-1 column, no absolute positioning (Iter 167) */}
+          <span
+            className="hidden md:flex flex-1 justify-center px-4"
+            data-testid="portfolio-nav-studio-name"
+          >
+            <span style={{ fontSize: 15, fontWeight: 700, color: '#1A1A2E', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '40vw' }}>
+              {studioDisplayName}
+            </span>
           </span>
 
           {/* Right: Links (desktop) */}

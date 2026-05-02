@@ -615,7 +615,7 @@ function ContractPreviewModal({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex flex-col"
+      className="fixed inset-0 z-[70] flex flex-col"
       data-testid="contract-preview-modal"
       role="dialog"
       aria-modal="true"

@@ -918,7 +918,7 @@ const Dashboard = () => {
               handleViewChange('portfolio')
             }
             else if (action === 'open-settings') setShowSettings(true)
-            else if (action === 'open-brand-settings') setShowSettings(true)
+            else if (action === 'open-brand-settings') { setSettingsInitialTab('email'); setShowSettings(true) }
           }}
         />
         )}

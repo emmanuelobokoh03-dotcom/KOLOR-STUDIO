@@ -16,15 +16,15 @@ const FONT_OPTIONS = [
 ]
 
 const PRESET_PALETTES = [
-  { name: 'Violet', primary: '#A855F7', accent: '#EC4899' },
-  { name: 'Indigo', primary: '#6366F1', accent: '#F59E0B' },
-  { name: 'Emerald', primary: '#10B981', accent: '#6366F1' },
-  { name: 'Rose', primary: '#F43F5E', accent: '#8B5CF6' },
-  { name: 'Sky', primary: '#0EA5E9', accent: '#F97316' },
-  { name: 'Amber', primary: '#F59E0B', accent: '#8B5CF6' },
+  { name: 'Studio',   primary: '#6C2EDB', accent: '#E8891A' },
+  { name: 'Midnight', primary: '#1E1B4B', accent: '#7C3AED' },
+  { name: 'Sage',     primary: '#2D6A4F', accent: '#F4A261' },
+  { name: 'Carbon',   primary: '#111827', accent: '#6C2EDB' },
+  { name: 'Blush',    primary: '#9D174D', accent: '#FBBF24' },
+  { name: 'Ocean',    primary: '#0369A1', accent: '#F97316' },
 ]
 
-const DEFAULTS = { primary: '#A855F7', accent: '#EC4899', font: 'Inter' }
+const DEFAULTS = { primary: '#6C2EDB', accent: '#E8891A', font: 'Inter' }
 
 export default function BrandSettings() {
   const brandTheme = useBrandTheme()
@@ -158,7 +158,7 @@ export default function BrandSettings() {
 
       {/* Preset Palettes */}
       <div>
-        <label className="text-sm font-medium text-text-secondary mb-2 block">Quick Palettes</label>
+        <label className="text-sm font-medium text-text-secondary mb-2 block">Starter Palettes</label>
         <div className="flex flex-wrap gap-2">
           {PRESET_PALETTES.map(p => (
             <button
