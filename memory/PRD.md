@@ -497,6 +497,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **T9 QuoteBuilderModal (P0)**: Outer modal `maxHeight: min(700px, 95vh)`. Preview already had z-[70] + 90vh overflow + onSend wiring + setShowPreview(false) on success. Added testids `quote-preview-send-btn` / `quote-preview-back-btn`.
 - Testing: All 9 tasks verified by testing_agent_v3_fork (iteration_144.json, 100% pass backend 6/6, all UI tasks verified).
 
+### Iteration 166 — New Logo Asset + Animated SVG Spinner (Complete, Feb 2026)
+- Replaced `frontend/public/kolor-mark.png` (853 KB) and `favicon-mark.png` (192 KB) with the new brand asset (resized from 4096² source).
+- Rewrote `KolorSpinner.tsx` as a pure SVG/CSS component: 4 quadrants (`tl`, `tr`, `bl`, `br`) of the K mark assemble around the center with staggered ease-in-out (0/90/180/270 ms), 1.8 s loop. `prefers-reduced-motion` renders the static assembled K. New `color` prop defaults to `#6C2EDB`.
+- `LoadingScreen.tsx` now renders `<KolorSpinner size={72} />`; removed the amber-pulse PNG path.
+- Regenerated `frontend/public/og-card.png` (151 KB) via Pillow with the new mark + brand purple radial glow + Playfair display.
+- Build gate: `npx tsc --noEmit` clean, `npm run build` clean.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
