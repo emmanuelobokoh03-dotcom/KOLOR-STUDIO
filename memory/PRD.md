@@ -519,6 +519,11 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **ContractPreviewModal portal**: now wrapped in `ReactDOM.createPortal(..., document.body)` so it escapes the parent `LeadDetailModal` stacking context. z-index reset to `z-50` (portal removes the need for inflated z values).
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (9.15 s). Commit `e787429`.
 
+### Iteration 169 — Canonical KolorSpinner File (Complete, Feb 2026)
+- Diagnostic confirmed all three Iter 168 fixes (spinner geometry, toolbar button removal, contract portal) were already applied and committed in `e787429`. The "files were never updated" premise of the Iter 169 prompt did not match repo state.
+- Brought `KolorSpinner.tsx` header comment + per-quadrant inline `{/* TL/TR/BL/BR */}` comments in line with the Iter 169 canonical spec via direct file write (`overwrite=true`). Geometry coordinates, polygon points, arc paths, animation keyframes, and `STYLE_ID = 'kolor-spinner-kf-v4'` all unchanged from v4.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (10.13 s). Commit `0c3f4e5`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
