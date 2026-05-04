@@ -766,14 +766,7 @@ const Dashboard = () => {
               </div>
               {/* Iter 144 — HelpMenu + Settings gear removed from top header (kept in sidebar). */}
             </div>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="hidden lg:flex items-center gap-1.5 h-8 px-3 rounded-lg text-white text-xs font-semibold transition-colors duration-fast"
-              style={{ background: '#6C2EDB' }}
-              data-testid="add-lead-topbar"
-            >
-              <Plus weight="bold" className="w-3.5 h-3.5" /> {lang.newLead.replace('+ ', '')}
-            </button>
+            {/* Iter 170 — header CTA removed; entry points: empty state, kanban "+" columns, keyboard shortcut, sidebar. */}
             {/* Iter 146 — Task 2b: Logout moved from header into sidebar user block dropdown. */}
           </div>
         </div>
