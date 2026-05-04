@@ -1,10 +1,7 @@
 /*
  * KolorSpinner — Iteration 169 (geometry v4 — final)
- * Four-quadrant K mark. Exact coordinates, no approximation.
  * TL/BL: rect stem + quarter-circle arc bowl.
- * TR/BR: flat polygon blades — NO arc commands.
- * Animation: staggered corner entry → hold → full 360° group rotation → loop.
- * prefers-reduced-motion: opacity pulse only, no translate/rotate.
+ * TR/BR: flat polygon blades. No arc-only paths.
  */
 
 const STYLE_ID = 'kolor-spinner-kf-v4'
@@ -56,17 +53,11 @@ export default function KolorSpinner({ size = 48, color = '#6C2EDB', className =
       focusable="false"
     >
       <g className="ks4-g" fill={color}>
-        {/* TL: vertical stem up */}
         <rect className="kq tl" x="44" y="6" width="8" height="40" rx="1" />
-        {/* TL: quarter-circle bowl — center (44,46), radius 24, from (44,22) to (20,46) */}
         <path className="kq tl" d="M 44 22 A 24 24 0 0 0 20 46 L 44 46 Z" />
-        {/* TR: upper diagonal blade — flat polygon, no arcs */}
         <polygon className="kq tr" points="52,6 94,6 94,30 52,48 44,36" />
-        {/* BL: vertical stem down */}
         <rect className="kq bl" x="44" y="54" width="8" height="40" rx="1" />
-        {/* BL: quarter-circle bowl — center (44,54), radius 24, from (20,54) to (44,78) */}
         <path className="kq bl" d="M 44 54 L 20 54 A 24 24 0 0 0 44 78 Z" />
-        {/* BR: lower diagonal blade — flat polygon, no arcs */}
         <polygon className="kq br" points="52,52 94,70 94,94 52,94 44,64" />
       </g>
     </svg>
