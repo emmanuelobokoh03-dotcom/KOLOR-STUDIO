@@ -524,6 +524,11 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Brought `KolorSpinner.tsx` header comment + per-quadrant inline `{/* TL/TR/BL/BR */}` comments in line with the Iter 169 canonical spec via direct file write (`overwrite=true`). Geometry coordinates, polygon points, arc paths, animation keyframes, and `STYLE_ID = 'kolor-spinner-kf-v4'` all unchanged from v4.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (10.13 s). Commit `0c3f4e5`.
 
+### Iteration 169 (re-run) — Spec-Verbatim Spinner File (Complete, Feb 2026)
+- User's diagnostic re-run requested. Confirmed Fix 2 (toolbar `add-lead-button`) and Fix 3 (`ContractsTab` portal) were already canonical from commit `e787429`; no source changes needed for either.
+- Spinner re-written to match the Iter 169 prompt verbatim (compressed 7-line header + no inline `{/* TL/TR/BL/BR */}` comments inside SVG). All geometry coordinates, animation keyframes, and `STYLE_ID = 'kolor-spinner-kf-v4'` unchanged.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (10.24 s). Commit `53514e4`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
