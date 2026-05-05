@@ -573,6 +573,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
           projectTitle={lead.projectTitle}
           userName={userName}
           studioName={studioName}
+          portalUrl={`https://kolorstudio.app/portal/${lead.portalToken}`}
           onSend={handleEmailSend}
           onCancel={() => setEmailComposerContract(null)}
         />

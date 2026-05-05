@@ -10,6 +10,7 @@ interface EmailComposerProps {
   studioName?: string;
   onSend: (subject: string, message: string) => Promise<void>;
   onCancel: () => void;
+  portalUrl?: string;
 }
 
 export default function EmailComposer({
@@ -21,6 +22,7 @@ export default function EmailComposer({
   studioName,
   onSend,
   onCancel,
+  portalUrl,
 }: EmailComposerProps) {
   const firstName = recipientName.split(' ')[0];
 
@@ -132,12 +134,15 @@ export default function EmailComposer({
               <div className="px-6 py-5">
                 <div className="whitespace-pre-wrap text-gray-700 leading-relaxed text-sm">{message}</div>
                 <div className="mt-6 pt-5 border-t border-gray-200">
-                  <div
+                  <a
+                    href={portalUrl || '#'}
+                    target="_blank"
+                    rel="noreferrer"
                     className="inline-block px-6 py-3 text-white text-sm font-semibold rounded-lg"
                     style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
                   >
-                    {type === 'quote' ? 'View Quotes Details' : 'Review & Sign Agreement'}
-                  </div>
+                    {type === 'quote' ? 'View Quote Details' : 'Review & Sign Agreement'}
+                  </a>
                 </div>
               </div>
             </div>
