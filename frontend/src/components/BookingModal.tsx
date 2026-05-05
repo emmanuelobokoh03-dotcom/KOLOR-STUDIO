@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
+import KolorSpinner from './KolorSpinner'
 import {
   X,
   CalendarBlank,
@@ -605,7 +606,7 @@ export default function BookingModal({
             >
               {loading ? (
                 <>
-                  <SpinnerGap className="w-4 h-4 animate-spin" />
+                  <KolorSpinner size={14} color="white" />
                   Saving...
                 </>
               ) : success ? (

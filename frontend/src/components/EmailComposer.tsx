@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Envelope, Eye, PaperPlaneTilt, X, SpinnerGap, PencilSimple } from '@phosphor-icons/react';
+import { Envelope, Eye, PaperPlaneTilt, X, PencilSimple } from '@phosphor-icons/react';
+import KolorSpinner from './KolorSpinner';
 
 interface EmailComposerProps {
   type: 'quote' | 'contract';
@@ -82,7 +83,7 @@ export default function EmailComposer({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[70] p-4" data-testid="email-composer-modal">
       <div
-        className="bg-light-50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
+        className="bg-light-50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-light-200 flex flex-col shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -231,7 +232,7 @@ export default function EmailComposer({
             data-testid="email-send-btn"
           >
             {sending ? (
-              <><SpinnerGap className="w-4 h-4 animate-spin" /> Sending...</>
+              <><KolorSpinner size={14} color="white" /> Sending...</>
             ) : (
               <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> PaperPlaneTilt {type === 'quote' ? 'Quotes' : 'Contract'}</>
             )}

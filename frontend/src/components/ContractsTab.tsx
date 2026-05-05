@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { toast } from 'sonner'
+import KolorSpinner from './KolorSpinner'
 import { InlineHint } from './InlineHint'
 import {
   Lead,
@@ -544,7 +545,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                           data-testid={`send-contract-${contract.id}`}
                         >
                           {sending === contract.id ? (
-                            <><SpinnerGap className="w-4 h-4 animate-spin" /> Sending...</>
+                            <><KolorSpinner size={14} color="white" /> Sending...</>
                           ) : (
                             <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> {contract.status === 'DRAFT' ? 'Send to Client' : 'Resend'}</>
                           )}
@@ -686,7 +687,7 @@ function ContractPreviewModal({
                 data-testid="contract-preview-send-btn"
               >
                 {sending
-                  ? <><SpinnerGap className="w-4 h-4 animate-spin" /> Sending...</>
+                  ? <><KolorSpinner size={14} color="white" /> Sending...</>
                   : <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> {contract.status === 'DRAFT' ? 'Send to Client' : 'Resend to Client'}</>}
               </button>
             )}

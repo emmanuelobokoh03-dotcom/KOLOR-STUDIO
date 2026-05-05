@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
+import KolorSpinner from './KolorSpinner'
 import {
   X,
   Plus,
@@ -156,7 +157,7 @@ function QuotePreview({ lead, lineItems, subtotal, tax, taxAmount, total, paymen
           <div className="flex gap-3 mt-8">
             <button onClick={onBack} className="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition" data-testid="quote-preview-back-btn">Back to Edit</button>
             <button onClick={onSend} disabled={sending} className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition disabled:opacity-50 flex items-center justify-center gap-2" data-testid="quote-preview-send-btn">
-              {sending ? <SpinnerGap className="w-5 h-5 animate-spin" /> : <PaperPlaneTilt className="w-5 h-5" />} {sending ? 'Sending...' : 'Send Quote'}
+              {sending ? <KolorSpinner size={16} color="white" /> : <PaperPlaneTilt className="w-5 h-5" />} {sending ? 'Sending...' : 'Send Quote'}
             </button>
           </div>
         </div>
@@ -674,7 +675,7 @@ export default function QuoteBuilderModal({
               style={{ background: existingQuote?.status && existingQuote.status !== 'DRAFT' ? 'transparent' : '#6C2EDB', border: existingQuote?.status && existingQuote.status !== 'DRAFT' ? '1px solid var(--border)' : undefined, color: existingQuote?.status && existingQuote.status !== 'DRAFT' ? 'var(--text-secondary)' : 'white' }}
               data-testid="sidebar-send-btn"
             >
-              {sending ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <PaperPlaneTilt className="w-3.5 h-3.5" />}
+              {sending ? <KolorSpinner size={12} color="white" /> : <PaperPlaneTilt className="w-3.5 h-3.5" />}
               {existingQuote?.status && existingQuote.status !== 'DRAFT' ? 'Send reminder →' : `Send to ${clientFirstName} →`}
             </button>
 

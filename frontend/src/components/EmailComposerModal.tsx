@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
+import KolorSpinner from './KolorSpinner'
 import {
   X,
   PaperPlaneTilt,
@@ -300,7 +301,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
             className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
             data-testid="send-email-btn"
           >
-            {sending ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <PaperPlaneTilt weight="bold" className="w-4 h-4" />}
+            {sending ? <KolorSpinner size={14} color="white" /> : <PaperPlaneTilt weight="bold" className="w-4 h-4" />}
             Send Email
           </button>
         </div>

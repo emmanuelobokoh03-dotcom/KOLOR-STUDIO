@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import './index.css'
 
+console.info('[KOLOR] build', typeof __BUILD_HASH__ !== 'undefined' ? __BUILD_HASH__ : 'dev')
+
 // =====================
 // Sentry — front-end error tracking (disabled when DSN is absent)
 // =====================
