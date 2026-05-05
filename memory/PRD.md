@@ -536,6 +536,19 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - EmailComposer preview sizing was already correct (`max-h-[90vh]` + inner scroller); no change needed.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (10.58 s). Commit `b81caf4`.
 
+### Iteration 171 — Brand Spinner in CTAs + Build Hash Stamp (Complete, Feb 2026)
+- **EmailComposer modal**: was already `max-w-2xl` + `max-h-[90vh]` from Iter 170; added `shadow-2xl` polish.
+- **KolorSpinner in primary CTAs** (7 buttons across 5 files):
+  - `EmailComposer.tsx` — send button
+  - `EmailComposerModal.tsx` — `send-email-btn`
+  - `ContractsTab.tsx` — `send-contract-{id}`, `contract-preview-send-btn`
+  - `QuoteBuilderModal.tsx` — `quote-preview-send-btn`, `sidebar-send-btn`
+  - `BookingModal.tsx` — `save-booking-btn`
+  - Each `<SpinnerGap className="w-4 h-4 animate-spin" />` replaced with `<KolorSpinner size={14} color="white" />` (or 12/16 to match icon sizing). Other `SpinnerGap` instances (page loaders, section indicators, status badges) intentionally preserved.
+- **BrandSettings WYSIWYG palette preview**: already correctly wired — `BrandPreview` receives `primary`/`accent`/`font` from local state, which updates instantly on palette click. No code change needed.
+- **Build hash stamp**: `__BUILD_HASH__` injected via Vite `define` from `git rev-parse --short HEAD`; `console.info('[KOLOR] build', __BUILD_HASH__)` in `main.tsx`; `declare const __BUILD_HASH__: string` in `vite-env.d.ts`. Bundle inspection confirms hash baked in.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (10.64 s). Commit `586680f`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
