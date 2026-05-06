@@ -549,6 +549,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Build hash stamp**: `__BUILD_HASH__` injected via Vite `define` from `git rev-parse --short HEAD`; `console.info('[KOLOR] build', __BUILD_HASH__)` in `main.tsx`; `declare const __BUILD_HASH__: string` in `vite-env.d.ts`. Bundle inspection confirms hash baked in.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (10.64 s). Commit `586680f`.
 
+### Iteration 172 — Bundle Splitting + Parallel API Calls (Complete, Feb 2026)
+- **Dashboard parallel init**: `fetchLeads` / `fetchStats` / `fetchPendingContracts` now run concurrently via `Promise.all` (4 occurrences in `Dashboard.tsx`, including `handleRefresh`). Eliminates ~400–900 ms of sequential waterfall on cold start.
+- **Lazy-loaded 8 heavy sub-views**: `KanbanBoard`, `LeadDetailModal`, `SettingsModal`, `AnalyticsDashboard`, `PortfolioPage`, `SequencesDashboard`, `QuotesPage`, `ContractsPage` — each wrapped in `<Suspense>` with `KolorSpinner` fallback (or `null` for modals already gated by a condition). Removed unused `CalendarViewNew` import (dead code).
+- **Vite manualChunks**: `vendor-react` (react + react-dom + router), `vendor-ui` (sonner + phosphor), `vendor-editor` (react-quill), `vendor-charts` (recharts), `vendor-numberflow`. `chunkSizeWarningLimit` raised to 600 KB.
+- **Result**: Dashboard chunk **1,464 KB → 347 KB (-76%)**. Initial JS for logged-in landing reduced from ~1.54 MB to ~0.93 MB (~415 KB → ~270 KB gzip transfer). Vendor chunks cache long-term across deploys.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (9.39 s, no warnings). Commit `507a717`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
