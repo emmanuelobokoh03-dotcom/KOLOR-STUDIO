@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import KolorLogo from '../components/KolorLogo'
@@ -26,14 +26,8 @@ import {
   CaretDown
 } from '@phosphor-icons/react'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
-import KanbanBoard from '../components/KanbanBoard'
-import LeadDetailModal from '../components/LeadDetailModal'
 import AddLeadModal from '../components/AddLeadModal'
 import ShareFormModal from '../components/ShareFormModal'
-import SettingsModal from '../components/SettingsModal'
-import AnalyticsDashboard from '../components/AnalyticsDashboard'
-import CalendarViewNew from '../components/CalendarViewNew'
-import PortfolioPage from './Portfolio'
 import FeedbackModal from '../components/FeedbackModal'
 import AnnouncementBanner from '../components/AnnouncementBanner'
 import BookingModal from '../components/BookingModal'
@@ -51,7 +45,6 @@ import OnboardingChecklist from '../components/OnboardingChecklist'
 import AHAModal from '../components/AHAModal'
 import NeedsAttentionSection from '../components/NeedsAttentionSection'
 import RevenueGoalWidget from '../components/RevenueGoalWidget'
-import SequencesDashboard from './SequencesDashboard'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import DemoProjectBanner from '../components/DemoProjectBanner'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
@@ -64,9 +57,19 @@ import { QuickActions } from '../components/QuickActions'
 import { getIndustryLanguage } from '../utils/industryLanguage'
 import { UserPlus, Receipt, ShieldCheck } from '@phosphor-icons/react'
 import LeadsListView from '../components/LeadsListView'
-import QuotesPage from './Quotes'
-import ContractsPage from './Contracts'
+import KolorSpinner from '../components/KolorSpinner'
 import NumberFlow from '@number-flow/react'
+
+// Iter 172 — lazy heavy sub-views to shrink initial Dashboard chunk.
+// Each is only rendered when its viewMode/modal trigger is active.
+const KanbanBoard = lazy(() => import('../components/KanbanBoard'))
+const LeadDetailModal = lazy(() => import('../components/LeadDetailModal'))
+const SettingsModal = lazy(() => import('../components/SettingsModal'))
+const AnalyticsDashboard = lazy(() => import('../components/AnalyticsDashboard'))
+const PortfolioPage = lazy(() => import('./Portfolio'))
+const SequencesDashboard = lazy(() => import('./SequencesDashboard'))
+const QuotesPage = lazy(() => import('./Quotes'))
+const ContractsPage = lazy(() => import('./Contracts'))
 
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
 
@@ -262,9 +265,11 @@ const Dashboard = () => {
         }
       }
 
-      await fetchLeads()
-      await fetchStats()
-      await fetchPendingContracts()
+      await Promise.all([
+        fetchLeads(),
+        fetchStats(),
+        fetchPendingContracts(),
+      ])
 
       setLoading(false)
 
@@ -362,9 +367,11 @@ const Dashboard = () => {
 
   const handleRefresh = async () => {
     setRefreshing(true)
-    await fetchLeads()
-    await fetchStats()
-    await fetchPendingContracts()
+    await Promise.all([
+      fetchLeads(),
+      fetchStats(),
+      fetchPendingContracts(),
+    ])
     setRefreshing(false)
   }
 
@@ -917,15 +924,19 @@ const Dashboard = () => {
         )}
 
         {viewMode === 'quotes' ? (
-          <QuotesPage lang={lang} user={user} leads={leads} />
+          <Suspense fallback={<div className="flex items-center justify-center h-64"><KolorSpinner size={32} /></div>}>
+            <QuotesPage lang={lang} user={user} leads={leads} />
+          </Suspense>
         ) : viewMode === 'contracts' ? (
-          <ContractsPage
-            lang={lang}
-            user={user}
-            leads={leads}
-            onLeadClick={setSelectedLead}
-            onLeadClickTab={(lead, tab) => { setSelectedLeadInitialTab(tab); setSelectedLead(lead); }}
-          />
+          <Suspense fallback={<div className="flex items-center justify-center h-64"><KolorSpinner size={32} /></div>}>
+            <ContractsPage
+              lang={lang}
+              user={user}
+              leads={leads}
+              onLeadClick={setSelectedLead}
+              onLeadClickTab={(lead, tab) => { setSelectedLeadInitialTab(tab); setSelectedLead(lead); }}
+            />
+          </Suspense>
         ) : (
         <>
 
@@ -1409,11 +1420,17 @@ const Dashboard = () => {
 
         {/* Content */}
         {viewMode === 'sequences' ? (
-          <SequencesDashboard />
+          <Suspense fallback={<div className="flex items-center justify-center h-64"><KolorSpinner size={32} /></div>}>
+            <SequencesDashboard />
+          </Suspense>
         ) : viewMode === 'analytics' ? (
-          <AnalyticsDashboard user={user} onFilterByStatus={handleFilterByStatus} />
+          <Suspense fallback={<div className="flex items-center justify-center h-64"><KolorSpinner size={32} /></div>}>
+            <AnalyticsDashboard user={user} onFilterByStatus={handleFilterByStatus} />
+          </Suspense>
         ) : viewMode === 'portfolio' ? (
-          <PortfolioPage user={user} />
+          <Suspense fallback={<div className="flex items-center justify-center h-64"><KolorSpinner size={32} /></div>}>
+            <PortfolioPage user={user} />
+          </Suspense>
         ) : filteredLeads.length === 0 && !loading ? (
           <div className="bg-light-50 rounded-xl border border-light-200 p-6 md:p-12">
             <EmptyState
@@ -1426,13 +1443,15 @@ const Dashboard = () => {
           </div>
         ) : viewMode === 'kanban' ? (
           <div data-tour="kanban-board">
-            <KanbanBoard
-              leads={filteredLeads}
-              onLeadClick={setSelectedLead}
-              onStatusChange={handleStatusChange}
-              onLeadDelete={handleLeadDelete}
-              user={user || undefined}
-            />
+            <Suspense fallback={<div className="flex items-center justify-center h-64"><KolorSpinner size={32} /></div>}>
+              <KanbanBoard
+                leads={filteredLeads}
+                onLeadClick={setSelectedLead}
+                onStatusChange={handleStatusChange}
+                onLeadDelete={handleLeadDelete}
+                user={user || undefined}
+              />
+            </Suspense>
           </div>
         ) : (
           <LeadsListView
@@ -1562,15 +1581,17 @@ const Dashboard = () => {
 
       {/* Modals */}
       {selectedLead && (
-        <LeadDetailModal
-          lead={selectedLead}
-          onClose={() => { setSelectedLead(null); setSelectedLeadInitialTab(undefined) }}
-          onUpdate={handleLeadUpdate}
-          onCelebrate={triggerCelebration}
-          initialTab={selectedLeadInitialTab}
-          userIndustry={user?.industry as any}
-          currencySymbol={user?.currencySymbol || '$'}
-        />
+        <Suspense fallback={null}>
+          <LeadDetailModal
+            lead={selectedLead}
+            onClose={() => { setSelectedLead(null); setSelectedLeadInitialTab(undefined) }}
+            onUpdate={handleLeadUpdate}
+            onCelebrate={triggerCelebration}
+            initialTab={selectedLeadInitialTab}
+            userIndustry={user?.industry as any}
+            currencySymbol={user?.currencySymbol || '$'}
+          />
+        </Suspense>
       )}
       {showAddModal && (
         <AddLeadModal
@@ -1584,23 +1605,25 @@ const Dashboard = () => {
       )}
       {showShareModal && <ShareFormModal onClose={() => setShowShareModal(false)} userId={user?.id} />}
       {showSettings && (
-        <SettingsModal
-          onClose={() => { setShowSettings(false); setSettingsInitialTab(undefined); }}
-          initialTab={settingsInitialTab}
-          onSettingsUpdate={(newSettings) => {
-            if (user) {
-              setUser({
-                ...user,
-                currency: newSettings.currency,
-                currencySymbol: newSettings.currencySymbol,
-                currencyPosition: newSettings.currencyPosition as 'BEFORE' | 'AFTER',
-                numberFormat: newSettings.numberFormat,
-                defaultTaxRate: newSettings.defaultTaxRate,
-              });
-            }
-          }}
-          onRestartTutorial={resetWizard}
-        />
+        <Suspense fallback={null}>
+          <SettingsModal
+            onClose={() => { setShowSettings(false); setSettingsInitialTab(undefined); }}
+            initialTab={settingsInitialTab}
+            onSettingsUpdate={(newSettings) => {
+              if (user) {
+                setUser({
+                  ...user,
+                  currency: newSettings.currency,
+                  currencySymbol: newSettings.currencySymbol,
+                  currencyPosition: newSettings.currencyPosition as 'BEFORE' | 'AFTER',
+                  numberFormat: newSettings.numberFormat,
+                  defaultTaxRate: newSettings.defaultTaxRate,
+                });
+              }
+            }}
+            onRestartTutorial={resetWizard}
+          />
+        </Suspense>
       )}
       {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
       {showBookingModal && bookingLead && (

@@ -22,6 +22,20 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': ['sonner', '@phosphor-icons/react'],
+          'vendor-editor': ['react-quill'],
+          'vendor-charts': ['recharts'],
+          'vendor-numberflow': ['@number-flow/react'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
   server: {
     port: 3000,
     host: '0.0.0.0',
