@@ -563,6 +563,15 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Result**: `vendor-ui` **391 KB → 34 KB (-91%)**. First-paint logged-in JS **~959 KB → ~726 KB raw** (~270 KB → ~210 KB gzip). Combined with Iter 172, total first-paint cut ~50%.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.79 s, no warnings). Commit `5e2a33a`.
 
+### Iteration 175 — New Logo Mark Asset Swap (Complete, Feb 2026)
+- New converging-pinwheel mark provided. Source PNG turned out to be an opaque RGB image rendered with photoshop's 2-shade grey checkerboard (not actually alpha-transparent). Processed via Pillow with chroma-based alpha mask (`chroma < 20 → transparent`, `> 70 → opaque`, mid-range = linear ramp for anti-alias edges) and recoloured opaque pixels to exactly `#6C2EDB` for crisp brand-pure output.
+- `kolor-mark.png` 853 KB → **106 KB** (2048×2048, 86% transparent). `favicon-mark.png` 192 KB → **63 KB** (1280×1280). Both true alpha-transparent — no grey haze, no off-white box on dark surfaces.
+- Regenerated `og-card.png` (68 KB) with new mark + Playfair Display title + brand-purple radial glow.
+- Verified live: loading screen now shows the mark cleanly above the KOLOR/STUDIO wordmark on the dark background.
+- `site.webmanifest`, `index.html` (favicon + apple-touch-icon), `KolorLogo.tsx` (`<img src="/kolor-mark.png">`) all reference the same paths — no source code changes needed.
+- Backend has no hardcoded brand-logo URLs (only the user-upload `/brand/logo` endpoint).
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.59 s). Commit `4f6e2fa`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
