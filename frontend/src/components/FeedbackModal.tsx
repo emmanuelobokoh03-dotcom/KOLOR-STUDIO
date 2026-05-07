@@ -1,16 +1,13 @@
 import { useState } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
-import {
-  X,
-  Bug,
-  Lightbulb,
-  ChatText,
-  PaperPlaneTilt,
-  SpinnerGap,
-  CheckCircle,
-  WarningCircle
-} from '@phosphor-icons/react'
-
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Bug } from '@phosphor-icons/react/dist/csr/Bug'
+import { Lightbulb } from '@phosphor-icons/react/dist/csr/Lightbulb'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 interface FeedbackModalProps {
   onClose: () => void;
 }

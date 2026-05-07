@@ -1,24 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import {
-  User,
-  Bell,
-  Plugs,
-  Shield,
-  ArrowLeft,
-  Camera,
-  PaintBrush,
-  Palette,
-  GoogleLogo,
-  CheckCircle,
-  SpinnerGap,
-  EnvelopeSimple,
-  Eye,
-  EyeSlash,
-  WarningCircle,
-  Funnel,
-} from '@phosphor-icons/react'
+import { User } from '@phosphor-icons/react/dist/csr/User'
+import { Bell } from '@phosphor-icons/react/dist/csr/Bell'
+import { Plugs } from '@phosphor-icons/react/dist/csr/Plugs'
+import { Shield } from '@phosphor-icons/react/dist/csr/Shield'
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
+import { PaintBrush } from '@phosphor-icons/react/dist/csr/PaintBrush'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { GoogleLogo } from '@phosphor-icons/react/dist/csr/GoogleLogo'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { EyeSlash } from '@phosphor-icons/react/dist/csr/EyeSlash'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
 import BrandPreview from '../components/BrandPreview'
 import PortfolioSettings from '../components/PortfolioSettings'
 import SharePortfolio from '../components/SharePortfolio'

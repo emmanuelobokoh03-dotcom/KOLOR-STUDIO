@@ -1,6 +1,13 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Shield, Lock, Database, Envelope, Globe, User, FileText, Trash } from '@phosphor-icons/react'
-
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+import { Shield } from '@phosphor-icons/react/dist/csr/Shield'
+import { Lock } from '@phosphor-icons/react/dist/csr/Lock'
+import { Database } from '@phosphor-icons/react/dist/csr/Database'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { Globe } from '@phosphor-icons/react/dist/csr/Globe'
+import { User } from '@phosphor-icons/react/dist/csr/User'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-light-50 text-text-secondary">

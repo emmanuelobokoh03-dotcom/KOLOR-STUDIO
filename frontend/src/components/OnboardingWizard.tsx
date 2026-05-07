@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react'
-import {
-  X,
-  ArrowRight,
-  ArrowLeft,
-  Sparkle,
-  UserPlus,
-  FileText,
-  Palette,
-  CheckCircle,
-  SkipForward
-} from '@phosphor-icons/react'
-
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { SkipForward } from '@phosphor-icons/react/dist/csr/SkipForward'
 interface WizardStep {
   id: string
   title: string

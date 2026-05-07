@@ -1,10 +1,14 @@
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 import { useState, useEffect, useRef } from 'react'
-import {
-  Check, X, CalendarBlank, Clock, FileText, Sparkle, ArrowRight, UserCircle
-} from '@phosphor-icons/react'
-
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { UserCircle } from '@phosphor-icons/react/dist/csr/UserCircle'
 interface ChecklistItem {
   id: string
   title: string
@@ -169,7 +173,7 @@ export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings
               <p className={`text-xs font-medium ${item.completed ? 'text-emerald-700 line-through' : 'text-text-primary'}`}>
                 {item.title}
               </p>
-              <p className="text-[11px] text-text-tertiary">{item.description}</p>
+              <p className="text-xs text-text-tertiary">{item.description}</p>
             </div>
             {!item.completed && item.action && (
               <ArrowRight weight="bold" className="w-3.5 h-3.5 text-purple-500 flex-shrink-0" />
@@ -193,7 +197,7 @@ export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings
             Continue Setup
             <ArrowRight weight="bold" className="w-3.5 h-3.5" />
           </button>
-          <button onClick={dismiss} className="text-[11px] text-text-tertiary hover:text-text-secondary transition">
+          <button onClick={dismiss} className="text-xs text-text-tertiary hover:text-text-secondary transition">
             I'll do this later
           </button>
         </div>

@@ -1,20 +1,17 @@
 import { useState, useEffect } from 'react'
-import {
-  ArrowsClockwise,
-  UserPlus,
-  PaperPlaneTilt,
-  FileText,
-  CurrencyDollar,
-  CalendarCheck,
-  ChatCircle,
-  Pencil,
-  Eye,
-  UploadSimple,
-  Signature,
-  Clock,
-  X as XIcon,
-} from '@phosphor-icons/react'
-
+import { ArrowsClockwise } from '@phosphor-icons/react/dist/csr/ArrowsClockwise'
+import { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { CalendarCheck } from '@phosphor-icons/react/dist/csr/CalendarCheck'
+import { ChatCircle } from '@phosphor-icons/react/dist/csr/ChatCircle'
+import { Pencil } from '@phosphor-icons/react/dist/csr/Pencil'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
+import { Signature } from '@phosphor-icons/react/dist/csr/Signature'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { X as XIcon } from '@phosphor-icons/react/dist/csr/X'
 interface FeedActivity {
   id: string
   type: string
@@ -106,7 +103,7 @@ export function ActivityFeed({ onLeadClick }: ActivityFeedProps) {
       <div className="text-center py-6" data-testid="activity-feed-empty">
         <Clock weight="duotone" className="w-8 h-8 text-text-tertiary mx-auto mb-2" />
         <p className="text-xs text-text-secondary">No activity yet</p>
-        <p className="text-[11px] text-text-tertiary mt-0.5">Activity will appear as you work with leads</p>
+        <p className="text-xs text-text-tertiary mt-0.5">Activity will appear as you work with leads</p>
       </div>
     )
   }

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ArrowRight } from '@phosphor-icons/react'
-
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 interface SmartSuggestionProps {
   leadCount: number
   hasQuotes: boolean

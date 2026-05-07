@@ -1,33 +1,31 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import KolorLogo from '../components/KolorLogo'
-import {
-  CaretLeft,
-  CaretRight,
-  Plus,
-  CalendarDots,
-  List as ListIcon,
-  CalendarBlank,
-  X,
-  MapPin,
-  Clock,
-  User as UserIcon,
-  ArrowSquareOut,
-  Trash,
-  SpinnerGap,
-  SignOut,
-  GearSix,
-  Camera,
-  Video,
-  Palette,
-  Globe,
-  FileText,
-  ChatText,
-  Package,
-  Warning,
-  GoogleLogo,
-  CheckCircle,
-} from '@phosphor-icons/react'
+import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
+import { List as ListIcon } from '@phosphor-icons/react/dist/csr/List'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { User as UserIcon } from '@phosphor-icons/react/dist/csr/User'
+import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { SignOut } from '@phosphor-icons/react/dist/csr/SignOut'
+import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
+import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
+import { Video } from '@phosphor-icons/react/dist/csr/Video'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { Globe } from '@phosphor-icons/react/dist/csr/Globe'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
+import { Package } from '@phosphor-icons/react/dist/csr/Package'
+import { Warning } from '@phosphor-icons/react/dist/csr/Warning'
+import { GoogleLogo } from '@phosphor-icons/react/dist/csr/GoogleLogo'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import {
   addMonths, subMonths, addWeeks, subWeeks,
   startOfMonth, endOfMonth, startOfWeek, endOfWeek,

@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
-import { Star as StarIcon, PaperPlaneTilt, Check, Heart, Sparkle } from '@phosphor-icons/react'
-
+import { Star as StarIcon } from '@phosphor-icons/react/dist/csr/Star'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { Heart } from '@phosphor-icons/react/dist/csr/Heart'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
 interface TestimonialRequest {
   id: string
   clientName: string

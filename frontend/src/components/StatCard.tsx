@@ -62,13 +62,13 @@ function Sparkline({ points, color }: { points: SparklinePoint[]; color: AccentC
 
 function TrendIndicator({ trend }: { trend: TrendData }) {
   if (trend.direction === 'neutral') {
-    return <span className="text-[11px] text-text-tertiary leading-none">{trend.label}</span>;
+    return <span className="text-xs text-text-tertiary leading-none">{trend.label}</span>;
   }
 
   const isUp = trend.direction === 'up';
 
   return (
-    <span className={`inline-flex items-center gap-0.5 text-[11px] font-medium leading-none ${isUp ? 'text-emerald-600' : 'text-red-500'}`}>
+    <span className={`inline-flex items-center gap-0.5 text-xs font-medium leading-none ${isUp ? 'text-emerald-600' : 'text-red-500'}`}>
       <svg width="8" height="6" viewBox="0 0 8 6" aria-hidden="true" className={isUp ? '' : 'rotate-180'}>
         <path d="M4 0L8 6H0L4 0Z" fill="currentColor" />
       </svg>

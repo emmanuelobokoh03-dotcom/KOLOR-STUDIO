@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Warning, SpinnerGap } from '@phosphor-icons/react'
-
+import { Warning } from '@phosphor-icons/react/dist/csr/Warning'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 export default function AccountDangerZone() {

@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react'
-import { CurrencyDollar, TrendUp, TrendDown, Crosshair, ArrowUpRight, CalendarBlank } from '@phosphor-icons/react'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { TrendUp } from '@phosphor-icons/react/dist/csr/TrendUp'
+import { TrendDown } from '@phosphor-icons/react/dist/csr/TrendDown'
+import { Crosshair } from '@phosphor-icons/react/dist/csr/Crosshair'
+import { ArrowUpRight } from '@phosphor-icons/react/dist/csr/ArrowUpRight'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 
 interface RevenueStats {

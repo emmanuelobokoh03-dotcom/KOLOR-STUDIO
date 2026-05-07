@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import {
-  GoogleLogo, Check, ArrowRight, SpinnerGap, LinkBreak, CalendarCheck
-} from '@phosphor-icons/react'
-
+import { GoogleLogo } from '@phosphor-icons/react/dist/csr/GoogleLogo'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { LinkBreak } from '@phosphor-icons/react/dist/csr/LinkBreak'
+import { CalendarCheck } from '@phosphor-icons/react/dist/csr/CalendarCheck'
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 interface CalendarConnectionWidgetProps {
@@ -135,7 +137,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
               <Check weight="bold" className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-xs font-medium text-text-primary">{label}</p>
-                <p className="text-[11px] text-text-tertiary">{sub}</p>
+                <p className="text-xs text-text-tertiary">{sub}</p>
               </div>
             </div>
           ))}
@@ -156,7 +158,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
             <p className="text-xs text-text-secondary mt-0.5">Sync availability automatically and prevent double-bookings</p>
             <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
               {['Real-time sync', 'Auto-create events', 'Prevent conflicts'].map(t => (
-                <span key={t} className="flex items-center gap-1 text-[11px] text-purple-700">
+                <span key={t} className="flex items-center gap-1 text-xs text-purple-700">
                   <Check weight="bold" className="w-3 h-3" /> {t}
                 </span>
               ))}

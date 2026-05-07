@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { SpinnerGap, Star, X, CaretLeft, CaretRight, List as ListIcon } from '@phosphor-icons/react'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { Star } from '@phosphor-icons/react/dist/csr/Star'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
+import { List as ListIcon } from '@phosphor-icons/react/dist/csr/List'
 import { 
   portfolioApi, 
   PortfolioItem, 

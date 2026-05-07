@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
-import {
-  CalendarBlank,
-  CheckCircle,
-  Circle,
-  Clock,
-  Plus,
-  Trash,
-  SpinnerGap,
-  DotsSixVertical,
-  Flag
-} from '@phosphor-icons/react';
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Circle } from '@phosphor-icons/react/dist/csr/Circle'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { DotsSixVertical } from '@phosphor-icons/react/dist/csr/DotsSixVertical'
+import { Flag } from '@phosphor-icons/react/dist/csr/Flag'
 import { format, isPast, isFuture, isToday } from 'date-fns';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -272,7 +270,7 @@ export default function ProjectTimeline({ leadId, token, editable = false }: Pro
                           <button
                             onClick={() => toggleComplete(item)}
                             disabled={togglingId === item.id}
-                            className={`text-[11px] px-2 py-1 rounded-lg font-medium transition-colors ${
+                            className={`text-xs px-2 py-1 rounded-lg font-medium transition-colors ${
                               item.completed
                                 ? 'text-text-secondary hover:bg-light-200'
                                 : 'text-green-400 hover:bg-green-900/20'

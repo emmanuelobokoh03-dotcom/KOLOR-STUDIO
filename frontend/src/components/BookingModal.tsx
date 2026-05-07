@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
 import KolorSpinner from './KolorSpinner'
-import {
-  X,
-  CalendarBlank,
-  Clock,
-  MapPin,
-  FileText,
-  SpinnerGap,
-  WarningCircle,
-  Check,
-  Trash,
-  CheckCircle,
-  XCircle,
-  Users
-} from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { XCircle } from '@phosphor-icons/react/dist/csr/XCircle'
+import { Users } from '@phosphor-icons/react/dist/csr/Users'
 import { Lead, Booking, CreateBookingData, bookingsApi, leadsApi, ServiceType } from '../services/api'
 
 interface BookingModalProps {

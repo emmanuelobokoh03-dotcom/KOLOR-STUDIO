@@ -1,11 +1,9 @@
-import {
-  FileText,
-  Clock,
-  CalendarBlank,
-  UserPlus,
-  Lightning,
-  CaretRight,
-} from '@phosphor-icons/react'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
+import { Lightning } from '@phosphor-icons/react/dist/csr/Lightning'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
 import { Lead } from '../services/api'
 import { IndustryLanguage } from '../utils/industryLanguage'
 

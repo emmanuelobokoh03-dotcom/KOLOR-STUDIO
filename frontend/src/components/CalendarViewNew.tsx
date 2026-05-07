@@ -6,22 +6,19 @@ import type { CalendarProps } from 'react-big-calendar'
 import { format, parse, startOfWeek, getDay, addMonths, subMonths } from 'date-fns'
 import { enUS } from 'date-fns/locale'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import {
-  SpinnerGap,
-  Camera,
-  Video,
-  Palette,
-  Globe,
-  Sparkle,
-  FileText,
-  ChatText,
-  Package,
-  Plus,
-  ArrowsClockwise,
-  Funnel,
-  CalendarBlank
-} from '@phosphor-icons/react'
-
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
+import { Video } from '@phosphor-icons/react/dist/csr/Video'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { Globe } from '@phosphor-icons/react/dist/csr/Globe'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
+import { Package } from '@phosphor-icons/react/dist/csr/Package'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { ArrowsClockwise } from '@phosphor-icons/react/dist/csr/ArrowsClockwise'
+import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 // Cast to work around React 18 types issue
 const CalendarComponent = BigCalendar as React.ComponentType<CalendarProps<CalendarBookingEvent, object>>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { SpinnerGap } from '@phosphor-icons/react'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { authApi } from '../services/api'
 import { trackLogin } from '../utils/analytics'
 import KolorLogo from '../components/KolorLogo'

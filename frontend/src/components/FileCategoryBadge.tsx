@@ -1,5 +1,10 @@
-import { FolderOpen, Scales, CurrencyDollar, Package, PencilSimple, Archive, File } from '@phosphor-icons/react'
-
+import { FolderOpen } from '@phosphor-icons/react/dist/csr/FolderOpen'
+import { Scales } from '@phosphor-icons/react/dist/csr/Scales'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { Package } from '@phosphor-icons/react/dist/csr/Package'
+import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
+import { Archive } from '@phosphor-icons/react/dist/csr/Archive'
+import { File } from '@phosphor-icons/react/dist/csr/File'
 type FileCategory = 'REFERENCE' | 'LEGAL' | 'PAYMENT' | 'DELIVERABLE' | 'REVISION' | 'ASSET' | 'OTHER'
 
 const categoryConfig: Record<FileCategory, { label: string; icon: React.ElementType; classes: string }> = {
@@ -15,7 +20,7 @@ const categoryConfig: Record<FileCategory, { label: string; icon: React.ElementT
 export default function FileCategoryBadge({ category, size = 'sm' }: { category: string; size?: 'sm' | 'md' }) {
   const config = categoryConfig[category as FileCategory] || categoryConfig.OTHER
   const Icon = config.icon
-  const sizeClasses = size === 'sm' ? 'px-2 py-0.5 text-[11px] gap-1' : 'px-2.5 py-1 text-xs gap-1.5'
+  const sizeClasses = size === 'sm' ? 'px-2 py-0.5 text-xs gap-1' : 'px-2.5 py-1 text-xs gap-1.5'
   const iconSize = size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'
 
   return (

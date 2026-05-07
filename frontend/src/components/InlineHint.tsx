@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { X } from '@phosphor-icons/react'
-
+import { X } from '@phosphor-icons/react/dist/csr/X'
 interface InlineHintProps {
   storageKey: string
   children: React.ReactNode

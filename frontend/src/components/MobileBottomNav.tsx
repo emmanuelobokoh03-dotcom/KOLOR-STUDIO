@@ -1,6 +1,9 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { SquaresFour, CalendarDots, List, GearSix, Receipt } from '@phosphor-icons/react'
-
+import { SquaresFour } from '@phosphor-icons/react/dist/csr/SquaresFour'
+import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
+import { List } from '@phosphor-icons/react/dist/csr/List'
+import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
+import { Receipt } from '@phosphor-icons/react/dist/csr/Receipt'
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
 
 interface MobileBottomNavProps {

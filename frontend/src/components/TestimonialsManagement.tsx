@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react'
-import {
-  Star as StarIcon,
-  Check,
-  X,
-  Sparkle,
-  ChatText,
-  ThumbsUp,
-  ThumbsDown,
-  Trophy,
-  Clock,
-  SpinnerGap,
-  PaperPlaneTilt
-} from '@phosphor-icons/react'
-
+import { Star as StarIcon } from '@phosphor-icons/react/dist/csr/Star'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
+import { ThumbsUp } from '@phosphor-icons/react/dist/csr/ThumbsUp'
+import { ThumbsDown } from '@phosphor-icons/react/dist/csr/ThumbsDown'
+import { Trophy } from '@phosphor-icons/react/dist/csr/Trophy'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
 interface Testimonial {
   id: string
   clientName: string
@@ -138,11 +135,11 @@ export default function TestimonialsManagement() {
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm font-semibold text-text-primary">{t.clientName}</span>
                     {t.featured && (
-                      <span className="text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded-full bg-brand-primary/20 text-brand-primary">
+                      <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-full bg-brand-primary/20 text-brand-primary">
                         Featured
                       </span>
                     )}
-                    <span className={`text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded-full border ${
+                    <span className={`text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-full border ${
                       t.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-600 border-emerald-500/30'
                       : t.status === 'REJECTED' ? 'bg-red-500/20 text-red-400 border-red-500/30'
                       : t.submittedAt ? 'bg-amber-500/20 text-amber-700 border-amber-500/30'

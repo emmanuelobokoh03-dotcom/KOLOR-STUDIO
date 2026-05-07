@@ -1,19 +1,17 @@
 import { useState, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
-import {
-  Plus,
-  PaperPlaneTilt,
-  Eye,
-  DotsThree,
-  FileText,
-  ArrowSquareOut,
-  Copy,
-  Trash,
-  PencilSimple,
-  SpinnerGap,
-  CheckCircle,
-  DownloadSimple,
-} from '@phosphor-icons/react'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { DotsThree } from '@phosphor-icons/react/dist/csr/DotsThree'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
+import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
 import {
   Quote,
   QuoteStatus,

@@ -17,26 +17,24 @@ function sanitiseContractHtml(html: string): string {
     .replace(/\bsrc\s*=\s*["']?\s*data:/gi, 'src="about:blank"')
     .replace(/\bstyle\s*=\s*["'][^"']*expression\s*\([^"']*["']/gi, '')
 }
-import {
-  Sparkle,
-  CheckCircle,
-  Clock,
-  Envelope,
-  CalendarBlank,
-  CurrencyDollar,
-  FileText,
-  ChatCircle,
-  SpinnerGap,
-  WarningCircle,
-  Scroll,
-  ShieldCheck,
-  DownloadSimple,
-  Paperclip,
-  Star,
-  ArrowRight,
-  Confetti,
-  Check,
-} from '@phosphor-icons/react';
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { ChatCircle } from '@phosphor-icons/react/dist/csr/ChatCircle'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { Scroll } from '@phosphor-icons/react/dist/csr/Scroll'
+import { ShieldCheck } from '@phosphor-icons/react/dist/csr/ShieldCheck'
+import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
+import { Paperclip } from '@phosphor-icons/react/dist/csr/Paperclip'
+import { Star } from '@phosphor-icons/react/dist/csr/Star'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { Confetti } from '@phosphor-icons/react/dist/csr/Confetti'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { trackPortalViewed } from '../utils/analytics';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -266,8 +264,22 @@ export default function ClientPortal() {
     if (params.get('payment') === 'success') {
       setPaymentSuccess(true);
       window.history.replaceState({}, '', window.location.pathname);
+      const psp = params.get('psp');
+      const ref = params.get('ref');
       const sessionId = params.get('session_id');
-      if (sessionId) pollPaymentStatus(sessionId);
+      if (psp === 'paystack' && ref) {
+        // Paystack verification — server calls Paystack verify API, updates DB, sends emails
+        fetch(`${API_URL}/api/payments/paystack/verify/${encodeURIComponent(ref)}`, { credentials: 'include' })
+          .then(r => r.json())
+          .then((data) => {
+            if (data.payment_status === 'success' || data.status === 'success') {
+              fetchPortalData();
+            }
+          })
+          .catch(e => console.error('[Portal] Paystack verify failed:', e));
+      } else if (sessionId) {
+        pollPaymentStatus(sessionId);
+      }
     }
   }, [token]);
 
@@ -473,7 +485,7 @@ export default function ClientPortal() {
               {brandLogo ? (
                 <img src={brandLogo} alt={studioName} className="w-full h-full object-contain" />
               ) : (
-                <span className="text-[11px] font-extrabold text-white/90">
+                <span className="text-xs font-extrabold text-white/90">
                   {studioName.charAt(0).toUpperCase()}
                 </span>
               )}
@@ -959,7 +971,7 @@ export default function ClientPortal() {
                       <div className="flex items-center gap-1.5">
                         <p className="text-xs font-medium text-gray-900 truncate">{file.name}</p>
                         {file.uploadedBy === 'client' && (
-                          <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[9px] font-semibold rounded-full border border-blue-100 flex-shrink-0" data-testid={`client-badge-${file.id}`}>
+                          <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-semibold rounded-full border border-blue-100 flex-shrink-0" data-testid={`client-badge-${file.id}`}>
                             You uploaded
                           </span>
                         )}
@@ -975,7 +987,7 @@ export default function ClientPortal() {
                     href={`${API_URL}/api/portal/${token}/files/${file.id}/download`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-2 bg-[#6C2EDB] text-white rounded-lg text-[11px] font-semibold hover:bg-[#5B27B5] transition ml-2 whitespace-nowrap"
+                    className="flex items-center gap-1.5 px-3 py-2 bg-[#6C2EDB] text-white rounded-lg text-xs font-semibold hover:bg-[#5B27B5] transition ml-2 whitespace-nowrap"
                     data-testid={`download-file-${file.id}`}
                   >
                     <DownloadSimple weight="bold" className="w-3.5 h-3.5" />

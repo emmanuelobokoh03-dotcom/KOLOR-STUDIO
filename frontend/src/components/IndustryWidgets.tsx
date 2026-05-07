@@ -1,24 +1,22 @@
 import { useState, useEffect } from 'react'
-import {
-  Camera,
-  Clock,
-  CalendarDots,
-  MapPin,
-  CurrencyDollar,
-  Palette,
-  Package,
-  Truck,
-  ArrowRight,
-  PenNib,
-  ChatText,
-  CheckCircle,
-  FileText,
-  SpinnerGap,
-  Plus,
-  Eye,
-  CaretRight,
-  Sparkle
-} from '@phosphor-icons/react'
+import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
+import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { Package } from '@phosphor-icons/react/dist/csr/Package'
+import { Truck } from '@phosphor-icons/react/dist/csr/Truck'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { PenNib } from '@phosphor-icons/react/dist/csr/PenNib'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
 import {
   bookingsApi, leadsApi, quotesApi,
   Booking, Lead, LeadStatus,

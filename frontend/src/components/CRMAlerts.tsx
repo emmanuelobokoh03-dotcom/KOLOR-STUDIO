@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react'
-import {
-  Warning,
-  Clock,
-  Phone,
-  Envelope,
-  Flame,
-  Snowflake,
-  CaretRight,
-  Bell,
-  ArrowsClockwise
-} from '@phosphor-icons/react'
-
+import { Warning } from '@phosphor-icons/react/dist/csr/Warning'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { Phone } from '@phosphor-icons/react/dist/csr/Phone'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { Flame } from '@phosphor-icons/react/dist/csr/Flame'
+import { Snowflake } from '@phosphor-icons/react/dist/csr/Snowflake'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
+import { Bell } from '@phosphor-icons/react/dist/csr/Bell'
+import { ArrowsClockwise } from '@phosphor-icons/react/dist/csr/ArrowsClockwise'
 interface CRMAlert {
   id: string
   priority: 'HIGH' | 'MEDIUM' | 'LOW'
@@ -115,7 +112,7 @@ export default function CRMAlerts({ onLeadClick }: { onLeadClick?: (leadId: stri
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-sm font-medium text-text-primary truncate">{alert.leadName}</span>
-                    <span className={`text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded-full border ${PRIORITY_BADGE[alert.priority]}`}>
+                    <span className={`text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-full border ${PRIORITY_BADGE[alert.priority]}`}>
                       {alert.priority}
                     </span>
                   </div>

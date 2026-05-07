@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Copy, Check, Envelope } from '@phosphor-icons/react'
+import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
 import { useBrandTheme } from '../contexts/BrandThemeContext'
 import { authApi } from '../services/api'
 

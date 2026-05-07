@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { CheckCircle, Package, SpinnerGap } from '@phosphor-icons/react'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Package } from '@phosphor-icons/react/dist/csr/Package'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { leadsApi } from '../services/api'
 
 interface Props {

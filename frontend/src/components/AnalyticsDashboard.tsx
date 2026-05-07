@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react'
-import {
-  TrendUp,
-  CalendarBlank,
-  CurrencyDollar,
-  Crosshair,
-  Clock,
-  Users,
-  Trophy,
-  ChartBar,
-  ArrowsClockwise,
-  SpinnerGap,
-  ArrowUpRight,
-  ArrowDownRight,
-  Minus
-} from '@phosphor-icons/react'
+import { TrendUp } from '@phosphor-icons/react/dist/csr/TrendUp'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { Crosshair } from '@phosphor-icons/react/dist/csr/Crosshair'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { Users } from '@phosphor-icons/react/dist/csr/Users'
+import { Trophy } from '@phosphor-icons/react/dist/csr/Trophy'
+import { ChartBar } from '@phosphor-icons/react/dist/csr/ChartBar'
+import { ArrowsClockwise } from '@phosphor-icons/react/dist/csr/ArrowsClockwise'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { ArrowUpRight } from '@phosphor-icons/react/dist/csr/ArrowUpRight'
+import { ArrowDownRight } from '@phosphor-icons/react/dist/csr/ArrowDownRight'
+import { Minus } from '@phosphor-icons/react/dist/csr/Minus'
 import {
   BarChart,
   Bar,

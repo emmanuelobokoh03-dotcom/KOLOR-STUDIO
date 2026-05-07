@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react'
-import { CreditCard, CheckCircle, Clock, SpinnerGap, ArrowSquareOut, WarningCircle } from '@phosphor-icons/react'
+import { CreditCard } from '@phosphor-icons/react/dist/csr/CreditCard'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { paymentsApi } from '../services/api'
 
 interface PaymentTrackerProps {

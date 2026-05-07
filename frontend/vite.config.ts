@@ -27,7 +27,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-ui': ['sonner', '@phosphor-icons/react'],
+          'vendor-ui': ['sonner'],
           'vendor-editor': ['react-quill'],
           'vendor-charts': ['recharts'],
           'vendor-numberflow': ['@number-flow/react'],

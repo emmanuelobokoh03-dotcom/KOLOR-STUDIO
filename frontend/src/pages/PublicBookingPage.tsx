@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import {
-  Clock, MapPin, CalendarBlank, ArrowLeft, ArrowRight,
-  SpinnerGap, Check, User, EnvelopeSimple, Phone, ChatText, CaretLeft, CaretRight
-} from '@phosphor-icons/react'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { User } from '@phosphor-icons/react/dist/csr/User'
+import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
+import { Phone } from '@phosphor-icons/react/dist/csr/Phone'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
+import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
 import { publicBookingApi } from '../services/api'
 
 type Step = 'select-type' | 'select-date' | 'select-time' | 'enter-details' | 'confirmed'

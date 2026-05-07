@@ -1,11 +1,23 @@
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 import { useState, useEffect } from 'react'
-import {
-  Clock, Plus, Trash, FloppyDisk, SpinnerGap, Copy, Check,
-  CalendarBlank, MapPin, Timer, CaretDown, CaretUp, ToggleLeft, ToggleRight,
-  GoogleLogo, Link as LinkIcon, LinkBreak
-} from '@phosphor-icons/react'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
+import { Timer } from '@phosphor-icons/react/dist/csr/Timer'
+import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
+import { CaretUp } from '@phosphor-icons/react/dist/csr/CaretUp'
+import { ToggleLeft } from '@phosphor-icons/react/dist/csr/ToggleLeft'
+import { ToggleRight } from '@phosphor-icons/react/dist/csr/ToggleRight'
+import { GoogleLogo } from '@phosphor-icons/react/dist/csr/GoogleLogo'
+import { Link as LinkIcon } from '@phosphor-icons/react/dist/csr/Link'
+import { LinkBreak } from '@phosphor-icons/react/dist/csr/LinkBreak'
 import { meetingTypesApi, availabilityApi, MeetingType, AvailabilitySlot } from '../services/api'
 import { toast } from 'sonner'
 
@@ -336,7 +348,7 @@ export default function SchedulingSettings() {
           </div>
         )}
         {!calendarConnected && (
-          <p className="mt-2 text-[11px] text-text-tertiary">
+          <p className="mt-2 text-xs text-text-tertiary">
             Tip: You can also connect from the main Dashboard for quick access.
           </p>
         )}

@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { X, Envelope, ArrowRight, CheckCircle, SpinnerGap, Eye } from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
 import { authApi } from '../services/api'
 
 interface AHAModalProps {

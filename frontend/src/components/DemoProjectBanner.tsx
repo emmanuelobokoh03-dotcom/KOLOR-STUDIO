@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Sparkle, X, Trash, SpinnerGap } from '@phosphor-icons/react';
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { leadsApi } from '../services/api';
 
 interface DemoProjectBannerProps {

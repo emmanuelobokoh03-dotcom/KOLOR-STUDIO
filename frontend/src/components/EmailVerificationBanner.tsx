@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { X, Envelope, SpinnerGap } from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { authApi, User } from '../services/api'
 
 interface EmailVerificationBannerProps {

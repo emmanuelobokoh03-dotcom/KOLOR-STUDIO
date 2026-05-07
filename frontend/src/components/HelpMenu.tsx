@@ -5,8 +5,11 @@
  * This file is kept for reference but not mounted anywhere in the app.
  */
 import { useState, useRef, useEffect } from 'react'
-import { Question, BookOpen, Envelope, CaretDown, ChatText } from '@phosphor-icons/react'
-
+import { Question } from '@phosphor-icons/react/dist/csr/Question'
+import { BookOpen } from '@phosphor-icons/react/dist/csr/BookOpen'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
 interface HelpMenuProps {
   onOpenFeedback: () => void;
 }

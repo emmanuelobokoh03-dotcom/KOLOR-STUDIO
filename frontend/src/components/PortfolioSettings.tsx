@@ -1,18 +1,16 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import {
-  UploadSimple,
-  X,
-  Star,
-  Pencil,
-  Trash,
-  SpinnerGap,
-  Image as Image,
-  Plus,
-  WarningCircle,
-  Check,
-  DotsSixVertical,
-  Envelope
-} from '@phosphor-icons/react'
+import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Star } from '@phosphor-icons/react/dist/csr/Star'
+import { Pencil } from '@phosphor-icons/react/dist/csr/Pencil'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { Image } from '@phosphor-icons/react/dist/csr/Image'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { DotsSixVertical } from '@phosphor-icons/react/dist/csr/DotsSixVertical'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
 import { 
   portfolioApi, 
   PortfolioItem, 

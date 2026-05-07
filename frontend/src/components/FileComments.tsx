@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { leadsApi } from '../services/api'
-import { PaperPlaneTilt, Trash, SpinnerGap, ChatCircle } from '@phosphor-icons/react'
-
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { ChatCircle } from '@phosphor-icons/react/dist/csr/ChatCircle'
 interface Comment {
   id: string
   authorName: string

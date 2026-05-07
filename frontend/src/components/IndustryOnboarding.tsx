@@ -1,16 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IndustryType, authApi } from '../services/api'
-import {
-  Camera,
-  PenNib,
-  Palette,
-  SpinnerGap,
-  CheckCircle,
-  ArrowRight,
-  Sparkle
-} from '@phosphor-icons/react'
-
+import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
+import { PenNib } from '@phosphor-icons/react/dist/csr/PenNib'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
 const INDUSTRY_CONFIG: { type: string; label: string; icon: React.ElementType; gradient: string; desc: string; examples: string }[] = [
   {
     type: 'PHOTOGRAPHY',
@@ -149,7 +146,7 @@ export default function IndustryOnboarding() {
                   {label}
                 </div>
                 <div className="text-xs text-text-tertiary leading-relaxed">{desc}</div>
-                <div className="text-[11px] text-text-tertiary mt-1 italic">{examples}</div>
+                <div className="text-xs text-text-tertiary mt-1 italic">{examples}</div>
                 {isSelected && (
                   <div className="absolute top-3 right-3 w-5 h-5 bg-brand-primary rounded-full flex items-center justify-center">
                     <CheckCircle className="w-3.5 h-3.5 text-white" />

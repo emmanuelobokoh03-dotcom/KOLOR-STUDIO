@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
-import { EnvelopeSimple, FloppyDisk, Eye, EyeSlash, SpinnerGap } from '@phosphor-icons/react'
-
+import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
+import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { EyeSlash } from '@phosphor-icons/react/dist/csr/EyeSlash'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 export default function EmailSignatureSettings() {

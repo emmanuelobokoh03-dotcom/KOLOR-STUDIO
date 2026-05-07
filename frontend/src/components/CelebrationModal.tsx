@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkle } from '@phosphor-icons/react'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
 import Confetti from 'react-confetti'
 
 export interface Achievement {

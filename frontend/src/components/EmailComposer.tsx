@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { Envelope, Eye, PaperPlaneTilt, X, PencilSimple } from '@phosphor-icons/react';
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
 import KolorSpinner from './KolorSpinner';
 
 interface EmailComposerProps {

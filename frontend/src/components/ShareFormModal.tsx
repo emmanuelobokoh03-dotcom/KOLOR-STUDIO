@@ -1,17 +1,15 @@
 import { useState, useRef } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
 import { QRCodeSVG } from 'qrcode.react'
-import {
-  X,
-  Link,
-  Copy,
-  Check,
-  Envelope,
-  ArrowSquareOut,
-  DownloadSimple,
-  Lightbulb,
-  ShareNetwork
-} from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Link } from '@phosphor-icons/react/dist/csr/Link'
+import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
+import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
+import { Lightbulb } from '@phosphor-icons/react/dist/csr/Lightbulb'
+import { ShareNetwork } from '@phosphor-icons/react/dist/csr/ShareNetwork'
 import { trackPortalLinkShared } from '../utils/analytics'
 
 interface ShareFormModalProps {

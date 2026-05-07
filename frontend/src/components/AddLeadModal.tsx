@@ -14,31 +14,29 @@ import {
   CreateLeadData,
   leadsApi 
 } from '../services/api'
-import {
-  X,
-  SpinnerGap,
-  WarningCircle,
-  CheckCircle,
-  Camera,
-  Briefcase,
-  Palette,
-  ShoppingBag,
-  Monitor,
-  PenNib,
-  PaintBrush,
-  Megaphone,
-  Scissors,
-  Globe,
-  Package,
-  FileImage,
-  Printer,
-  Wrench,
-  Layout,
-  Stack,
-  UploadSimple,
-  Image,
-  Trash
-} from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
+import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { ShoppingBag } from '@phosphor-icons/react/dist/csr/ShoppingBag'
+import { Monitor } from '@phosphor-icons/react/dist/csr/Monitor'
+import { PenNib } from '@phosphor-icons/react/dist/csr/PenNib'
+import { PaintBrush } from '@phosphor-icons/react/dist/csr/PaintBrush'
+import { Megaphone } from '@phosphor-icons/react/dist/csr/Megaphone'
+import { Scissors } from '@phosphor-icons/react/dist/csr/Scissors'
+import { Globe } from '@phosphor-icons/react/dist/csr/Globe'
+import { Package } from '@phosphor-icons/react/dist/csr/Package'
+import { FileImage } from '@phosphor-icons/react/dist/csr/FileImage'
+import { Printer } from '@phosphor-icons/react/dist/csr/Printer'
+import { Wrench } from '@phosphor-icons/react/dist/csr/Wrench'
+import { Layout } from '@phosphor-icons/react/dist/csr/Layout'
+import { Stack } from '@phosphor-icons/react/dist/csr/Stack'
+import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
+import { Image } from '@phosphor-icons/react/dist/csr/Image'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { trackLeadCreated } from '../utils/analytics'
 
 interface AddLeadModalProps {

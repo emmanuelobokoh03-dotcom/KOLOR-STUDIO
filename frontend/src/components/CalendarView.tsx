@@ -1,27 +1,25 @@
 import { useState, useEffect, useMemo } from 'react'
-import {
-  CaretLeft,
-  CaretRight,
-  SpinnerGap,
-  Camera,
-  Video,
-  Palette,
-  Globe,
-  Sparkle,
-  FileText,
-  ChatText,
-  Package,
-  CalendarBlank as CalendarIcon,
-  ArrowsClockwise,
-  List,
-  CalendarDots,
-  Clock,
-  MapPin,
-  Funnel,
-  Eye,
-  EyeSlash,
-  Plus
-} from '@phosphor-icons/react'
+import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
+import { Video } from '@phosphor-icons/react/dist/csr/Video'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { Globe } from '@phosphor-icons/react/dist/csr/Globe'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
+import { Package } from '@phosphor-icons/react/dist/csr/Package'
+import { CalendarBlank as CalendarIcon } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { ArrowsClockwise } from '@phosphor-icons/react/dist/csr/ArrowsClockwise'
+import { List } from '@phosphor-icons/react/dist/csr/List'
+import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
+import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { EyeSlash } from '@phosphor-icons/react/dist/csr/EyeSlash'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { leadsApi, CalendarEvent, User, ServiceType, SERVICE_TYPE_LABELS } from '../services/api'
 import { formatCurrency, CurrencySettings } from '../utils/currency'
 

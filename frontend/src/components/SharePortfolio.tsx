@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Copy, Check, ShareNetwork, Envelope, ChatCircle, DownloadSimple } from '@phosphor-icons/react'
+import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { ShareNetwork } from '@phosphor-icons/react/dist/csr/ShareNetwork'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { ChatCircle } from '@phosphor-icons/react/dist/csr/ChatCircle'
+import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
 import QRCode from 'qrcode'
 import { authApi } from '../services/api'
 

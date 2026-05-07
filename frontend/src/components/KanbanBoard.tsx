@@ -7,18 +7,16 @@ import {
   PROJECT_TYPE_LABELS,
   ProjectType,
 } from '../services/api'
-import {
-  DotsSixVertical,
-  User,
-  CalendarBlank,
-  CurrencyDollar,
-  DotsThree,
-  Trash,
-  Eye,
-  Image,
-  CaretLeft,
-  CaretRight
-} from '@phosphor-icons/react'
+import { DotsSixVertical } from '@phosphor-icons/react/dist/csr/DotsSixVertical'
+import { User } from '@phosphor-icons/react/dist/csr/User'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { DotsThree } from '@phosphor-icons/react/dist/csr/DotsThree'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { Image } from '@phosphor-icons/react/dist/csr/Image'
+import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
 import { trackLeadStatusChanged, trackLeadDeleted } from '../utils/analytics'
 import { getIndustryLanguage } from '../utils/industryLanguage'
 

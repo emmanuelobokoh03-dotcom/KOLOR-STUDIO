@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { SpinnerGap, TrendUp } from '@phosphor-icons/react';
-
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { TrendUp } from '@phosphor-icons/react/dist/csr/TrendUp'
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 interface PipelineStage {

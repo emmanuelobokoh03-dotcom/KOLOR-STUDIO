@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkle, SpinnerGap, WarningCircle, CheckCircle, ArrowLeft, Envelope } from '@phosphor-icons/react'
-
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 const ForgotPassword = () => {

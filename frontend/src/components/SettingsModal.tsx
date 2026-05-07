@@ -1,22 +1,20 @@
 import { useState, useEffect } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
-import {
-  X,
-  GearSix,
-  CurrencyDollar,
-  SpinnerGap,
-  FloppyDisk,
-  Check,
-  Globe,
-  Percent,
-  Palette,
-  ChatText,
-  ArrowCounterClockwise,
-  Warning,
-  UserCircleMinus,
-  EnvelopeSimple,
-  CalendarBlank,
-} from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { Globe } from '@phosphor-icons/react/dist/csr/Globe'
+import { Percent } from '@phosphor-icons/react/dist/csr/Percent'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
+import { ArrowCounterClockwise } from '@phosphor-icons/react/dist/csr/ArrowCounterClockwise'
+import { Warning } from '@phosphor-icons/react/dist/csr/Warning'
+import { UserCircleMinus } from '@phosphor-icons/react/dist/csr/UserCircleMinus'
+import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 import { formatCurrency, NUMBER_FORMAT_OPTIONS } from '../utils/currency'
 import BrandSettings from './BrandSettings'

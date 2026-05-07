@@ -1,21 +1,19 @@
 import { useState, useEffect } from 'react'
 import { InlineHint } from './InlineHint'
-import {
-  FileText,
-  Plus,
-  PaperPlaneTilt,
-  Eye,
-  Trash,
-  Copy,
-  PencilSimple,
-  SpinnerGap,
-  CheckCircle,
-  XCircle,
-  Clock,
-  ArrowSquareOut,
-  DotsThree,
-  DownloadSimple
-} from '@phosphor-icons/react'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
+import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { XCircle } from '@phosphor-icons/react/dist/csr/XCircle'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
+import { DotsThree } from '@phosphor-icons/react/dist/csr/DotsThree'
+import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
 import { 
   Lead,
   Quote, 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { PaperPlaneTilt, ChatCircle, SpinnerGap } from '@phosphor-icons/react'
-
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { ChatCircle } from '@phosphor-icons/react/dist/csr/ChatCircle'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 interface Message {
   id: string
   content: string

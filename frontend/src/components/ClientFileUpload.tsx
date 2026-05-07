@@ -1,6 +1,10 @@
 import { useState, useRef } from 'react';
-import { UploadSimple, FileText, X, CheckCircle, WarningCircle, SpinnerGap } from '@phosphor-icons/react';
-
+import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 // Allowed file extensions

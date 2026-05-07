@@ -1,18 +1,16 @@
 import { useState, useRef } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
 import KolorSpinner from './KolorSpinner'
-import {
-  X,
-  PaperPlaneTilt,
-  SpinnerGap,
-  WarningCircle,
-  CaretDown,
-  CaretUp,
-  Check,
-  User,
-  FileText,
-  Link
-} from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
+import { CaretUp } from '@phosphor-icons/react/dist/csr/CaretUp'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { User } from '@phosphor-icons/react/dist/csr/User'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { Link } from '@phosphor-icons/react/dist/csr/Link'
 import { Lead, leadsApi } from '../services/api'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'

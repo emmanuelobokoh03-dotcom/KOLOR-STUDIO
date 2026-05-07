@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
-import { CheckCircle, Warning, XCircle, SpinnerGap } from '@phosphor-icons/react'
-
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Warning } from '@phosphor-icons/react/dist/csr/Warning'
+import { XCircle } from '@phosphor-icons/react/dist/csr/XCircle'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 type SystemStatus = 'operational' | 'degraded' | 'outage' | 'checking';
 
 interface StatusIndicatorProps {

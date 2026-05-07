@@ -1,24 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
 import KolorSpinner from './KolorSpinner'
-import {
-  X,
-  Plus,
-  Trash,
-  SpinnerGap,
-  WarningCircle,
-  FloppyDisk,
-  PaperPlaneTilt,
-  Eye,
-  CurrencyDollar,
-  Globe,
-  CaretDown,
-  FileText,
-  Check,
-  DownloadSimple,
-  CheckCircle,
-  Minus,
-} from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { Globe } from '@phosphor-icons/react/dist/csr/Globe'
+import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Minus } from '@phosphor-icons/react/dist/csr/Minus'
 import { 
   Lead, 
   Quote,

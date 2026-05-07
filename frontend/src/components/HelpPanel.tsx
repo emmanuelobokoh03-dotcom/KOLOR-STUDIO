@@ -1,20 +1,17 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Question,
-  X,
-  FileText,
-  CalendarBlank,
-  UploadSimple,
-  Scroll,
-  CaretDown,
-  Envelope,
-  ArrowsClockwise,
-  TrendUp,
-  Star,
-  Paperclip
-} from '@phosphor-icons/react'
-
+import { Question } from '@phosphor-icons/react/dist/csr/Question'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
+import { Scroll } from '@phosphor-icons/react/dist/csr/Scroll'
+import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { ArrowsClockwise } from '@phosphor-icons/react/dist/csr/ArrowsClockwise'
+import { TrendUp } from '@phosphor-icons/react/dist/csr/TrendUp'
+import { Star } from '@phosphor-icons/react/dist/csr/Star'
+import { Paperclip } from '@phosphor-icons/react/dist/csr/Paperclip'
 const quickStartItems = [
   { icon: FileText,      title: 'Create Your First Quotes',  description: 'Send professional pricing to clients',          color: 'text-pink-600 bg-pink-50 border-brand-accent-dark/30', action: 'quotes'    },
   { icon: CalendarBlank, title: 'Set Up a Booking',          description: 'Schedule shoots and meetings',                  color: 'text-blue-600 bg-blue-50 border-blue-700/30',          action: 'calendar'  },

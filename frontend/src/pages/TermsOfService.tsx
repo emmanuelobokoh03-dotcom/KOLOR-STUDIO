@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, FileText, Shield, CreditCard, Warning, Scales, Envelope } from '@phosphor-icons/react'
-
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { Shield } from '@phosphor-icons/react/dist/csr/Shield'
+import { CreditCard } from '@phosphor-icons/react/dist/csr/CreditCard'
+import { Warning } from '@phosphor-icons/react/dist/csr/Warning'
+import { Scales } from '@phosphor-icons/react/dist/csr/Scales'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
 export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-light-50 text-text-secondary">

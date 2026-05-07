@@ -1,6 +1,5 @@
 import { Lead } from '../services/api'
-import { CaretRight } from '@phosphor-icons/react'
-
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
 type AttentionReason = 'overdue_quote' | 'stale_contact' | 'awaiting_contract' | 'no_response'
 
 interface NeedsAttentionSectionProps {
@@ -80,7 +79,7 @@ export default function NeedsAttentionSection({ items, lang, onLeadClick }: Need
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-gray-900 truncate">{lead.clientName}</span>
-                  <span className="text-[11px] text-gray-400 flex-shrink-0">{timeAgo(lead.updatedAt)}</span>
+                  <span className="text-xs text-gray-400 flex-shrink-0">{timeAgo(lead.updatedAt)}</span>
                 </div>
                 <div className="flex items-center gap-2 mt-0.5">
                   {lead.projectTitle && (

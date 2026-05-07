@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom'
-import { Sparkle, InstagramLogo, XLogo, LinkedinLogo } from '@phosphor-icons/react'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { InstagramLogo } from '@phosphor-icons/react/dist/csr/InstagramLogo'
+import { XLogo } from '@phosphor-icons/react/dist/csr/XLogo'
+import { LinkedinLogo } from '@phosphor-icons/react/dist/csr/LinkedinLogo'
 import StatusIndicator from './StatusIndicator'
 
 export default function Footer() {

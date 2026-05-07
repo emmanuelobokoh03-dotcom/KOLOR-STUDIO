@@ -2,29 +2,27 @@ import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import KolorLogo from '../components/KolorLogo'
-import {
-  SignOut,
-  Plus,
-  SquaresFour,
-  List as ListIcon,
-  MagnifyingGlass,
-  ArrowsClockwise,
-  Users,
-  TrendUp,
-  CurrencyDollar,
-  CalendarBlank,
-  Link as LinkIcon,
-  Copy,
-  Envelope,
-  Crosshair,
-  GearSix,
-  ChartBar,
-  CalendarDots,
-  X,
-  Briefcase,
-  Funnel,
-  CaretDown
-} from '@phosphor-icons/react'
+import { SignOut } from '@phosphor-icons/react/dist/csr/SignOut'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { SquaresFour } from '@phosphor-icons/react/dist/csr/SquaresFour'
+import { List as ListIcon } from '@phosphor-icons/react/dist/csr/List'
+import { MagnifyingGlass } from '@phosphor-icons/react/dist/csr/MagnifyingGlass'
+import { ArrowsClockwise } from '@phosphor-icons/react/dist/csr/ArrowsClockwise'
+import { Users } from '@phosphor-icons/react/dist/csr/Users'
+import { TrendUp } from '@phosphor-icons/react/dist/csr/TrendUp'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { Link as LinkIcon } from '@phosphor-icons/react/dist/csr/Link'
+import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { Crosshair } from '@phosphor-icons/react/dist/csr/Crosshair'
+import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
+import { ChartBar } from '@phosphor-icons/react/dist/csr/ChartBar'
+import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
+import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
+import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
 import AddLeadModal from '../components/AddLeadModal'
 import ShareFormModal from '../components/ShareFormModal'
@@ -55,7 +53,9 @@ import { SmartNudgeBanner } from '../components/SmartNudgeBanner'
 import { ActivityFeed } from '../components/ActivityFeed'
 import { QuickActions } from '../components/QuickActions'
 import { getIndustryLanguage } from '../utils/industryLanguage'
-import { UserPlus, Receipt, ShieldCheck } from '@phosphor-icons/react'
+import { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
+import { Receipt } from '@phosphor-icons/react/dist/csr/Receipt'
+import { ShieldCheck } from '@phosphor-icons/react/dist/csr/ShieldCheck'
 import LeadsListView from '../components/LeadsListView'
 import KolorSpinner from '../components/KolorSpinner'
 import NumberFlow from '@number-flow/react'

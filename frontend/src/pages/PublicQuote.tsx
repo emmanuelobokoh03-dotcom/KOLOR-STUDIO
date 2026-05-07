@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import {
-  CheckCircle,
-  XCircle,
-  Clock,
-  SpinnerGap,
-  WarningCircle,
-  Envelope,
-  Phone,
-  CalendarBlank,
-  DownloadSimple
-} from '@phosphor-icons/react'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { XCircle } from '@phosphor-icons/react/dist/csr/XCircle'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { Phone } from '@phosphor-icons/react/dist/csr/Phone'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
 import { quotesApi, Quote, PAYMENT_TERMS_OPTIONS } from '../services/api'
 import { formatCurrency, CurrencySettings, getMergedCurrencySettings } from '../utils/currency'
 import { trackQuoteViewed, trackQuoteAccepted, trackQuoteDeclined } from '../utils/analytics'

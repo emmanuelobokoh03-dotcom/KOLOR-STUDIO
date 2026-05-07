@@ -10,49 +10,47 @@ import {
   leadsApi 
 } from '../services/api'
 import { getIndustryLanguage, IndustryType } from '../utils/industryLanguage'
-import {
-  X,
-  User,
-  Envelope,
-  Phone,
-  Building,
-  CalendarBlank,
-  CurrencyDollar,
-  Clock,
-  FileText,
-  FloppyDisk,
-  SpinnerGap,
-  ChatText,
-  ArrowsLeftRight,
-  PaperPlaneTilt,
-  CheckCircle,
-  Note,
-  ClockCounterClockwise,
-  UploadSimple,
-  File,
-  Image,
-  Table,
-  Trash,
-  DownloadSimple,
-  Paperclip,
-  Link,
-  Copy,
-  ArrowSquareOut,
-  Eye,
-  EyeSlash,
-  ChatCircle,
-  ChartBar,
-  Receipt,
-  EnvelopeSimple,
-  Package,
-  Scroll,
-  Flag,
-  Star as StarIcon,
-  PhoneCall,
-  Checks,
-  Megaphone,
-  PencilSimple
-} from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { User } from '@phosphor-icons/react/dist/csr/User'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { Phone } from '@phosphor-icons/react/dist/csr/Phone'
+import { Building } from '@phosphor-icons/react/dist/csr/Building'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
+import { ArrowsLeftRight } from '@phosphor-icons/react/dist/csr/ArrowsLeftRight'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Note } from '@phosphor-icons/react/dist/csr/Note'
+import { ClockCounterClockwise } from '@phosphor-icons/react/dist/csr/ClockCounterClockwise'
+import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
+import { File } from '@phosphor-icons/react/dist/csr/File'
+import { Image } from '@phosphor-icons/react/dist/csr/Image'
+import { Table } from '@phosphor-icons/react/dist/csr/Table'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
+import { Paperclip } from '@phosphor-icons/react/dist/csr/Paperclip'
+import { Link } from '@phosphor-icons/react/dist/csr/Link'
+import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
+import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { EyeSlash } from '@phosphor-icons/react/dist/csr/EyeSlash'
+import { ChatCircle } from '@phosphor-icons/react/dist/csr/ChatCircle'
+import { ChartBar } from '@phosphor-icons/react/dist/csr/ChartBar'
+import { Receipt } from '@phosphor-icons/react/dist/csr/Receipt'
+import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
+import { Package } from '@phosphor-icons/react/dist/csr/Package'
+import { Scroll } from '@phosphor-icons/react/dist/csr/Scroll'
+import { Flag } from '@phosphor-icons/react/dist/csr/Flag'
+import { Star as StarIcon } from '@phosphor-icons/react/dist/csr/Star'
+import { PhoneCall } from '@phosphor-icons/react/dist/csr/PhoneCall'
+import { Checks } from '@phosphor-icons/react/dist/csr/Checks'
+import { Megaphone } from '@phosphor-icons/react/dist/csr/Megaphone'
+import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
 import QuotesTab from './QuotesTab'
 import EmailComposerModal from './EmailComposerModal'
 import BookingModal from './BookingModal'

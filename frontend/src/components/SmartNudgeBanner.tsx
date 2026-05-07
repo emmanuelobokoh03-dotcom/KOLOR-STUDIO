@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Clock, X, ArrowRight } from '@phosphor-icons/react'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 import { Lead } from '../services/api'
 
 interface SmartNudgeBannerProps {
@@ -63,7 +65,7 @@ export function SmartNudgeBanner({ leads, onLeadClick }: SmartNudgeBannerProps) 
               </button>
             ))}
             {staleLeads.length > 3 && (
-              <span className="inline-flex items-center px-2.5 py-1.5 text-[11px] text-text-tertiary">
+              <span className="inline-flex items-center px-2.5 py-1.5 text-xs text-text-tertiary">
                 +{staleLeads.length - 3} more
               </span>
             )}

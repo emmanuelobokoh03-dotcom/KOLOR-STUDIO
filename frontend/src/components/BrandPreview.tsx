@@ -1,16 +1,13 @@
 import { useState } from 'react'
-import {
-  Image as Image,
-  FileText,
-  Layout,
-  Check,
-  CaretRight,
-  Star,
-  CalendarBlank,
-  Clock,
-  Envelope
-} from '@phosphor-icons/react'
-
+import { Image } from '@phosphor-icons/react/dist/csr/Image'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { Layout } from '@phosphor-icons/react/dist/csr/Layout'
+import { Check } from '@phosphor-icons/react/dist/csr/Check'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
+import { Star } from '@phosphor-icons/react/dist/csr/Star'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
 interface BrandPreviewProps {
   primary: string
   accent: string

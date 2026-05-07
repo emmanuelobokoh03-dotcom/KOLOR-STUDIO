@@ -14,29 +14,26 @@ import {
   contractsApi,
   authApi,
 } from '../services/api'
-import {
-  Plus,
-  FileText,
-  PaperPlaneTilt,
-  CheckCircle,
-  PencilSimple,
-  Trash,
-  SpinnerGap,
-  WarningCircle,
-  Clock,
-  Eye,
-  X,
-  Camera,
-  Palette,
-  PenNib,
-  Globe,
-  Briefcase,
-  CaretDown
-} from '@phosphor-icons/react'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { PenNib } from '@phosphor-icons/react/dist/csr/PenNib'
+import { Globe } from '@phosphor-icons/react/dist/csr/Globe'
+import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
+import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
 import EmailComposer from './EmailComposer'
 import { EmptyState } from './EmptyState'
-import { Signature } from '@phosphor-icons/react'
-
+import { Signature } from '@phosphor-icons/react/dist/csr/Signature'
 interface ContractsTabProps {
   leadId: string;
   lead?: Lead;

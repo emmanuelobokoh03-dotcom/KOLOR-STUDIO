@@ -7,28 +7,25 @@ import {
   DELIVERABLE_STATUS_LABELS,
   deliverablesApi,
 } from '../services/api'
-import {
-  Plus,
-  SpinnerGap,
-  Trash,
-  X,
-  FloppyDisk,
-  FileImage,
-  Palette,
-  Printer,
-  Wrench,
-  Layout,
-  Package,
-  Clock,
-  CheckCircle,
-  Truck,
-  WarningCircle,
-  ArrowRight,
-  MapPin,
-  CalendarBlank,
-  Ruler
-} from '@phosphor-icons/react'
-
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
+import { FileImage } from '@phosphor-icons/react/dist/csr/FileImage'
+import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+import { Printer } from '@phosphor-icons/react/dist/csr/Printer'
+import { Wrench } from '@phosphor-icons/react/dist/csr/Wrench'
+import { Layout } from '@phosphor-icons/react/dist/csr/Layout'
+import { Package } from '@phosphor-icons/react/dist/csr/Package'
+import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Truck } from '@phosphor-icons/react/dist/csr/Truck'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { Ruler } from '@phosphor-icons/react/dist/csr/Ruler'
 interface DeliverablesTabProps {
   leadId: string;
 }

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
-import { X, Megaphone, Sparkle, Confetti } from '@phosphor-icons/react'
-
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Megaphone } from '@phosphor-icons/react/dist/csr/Megaphone'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { Confetti } from '@phosphor-icons/react/dist/csr/Confetti'
 interface Announcement {
   id: string;
   message: string;

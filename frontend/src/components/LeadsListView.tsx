@@ -1,12 +1,10 @@
 import { useState, useMemo } from 'react'
-import {
-  PhoneCall,
-  DotsThree,
-  SquaresFour,
-  ArrowLeft,
-  MagnifyingGlass,
-  X,
-} from '@phosphor-icons/react'
+import { PhoneCall } from '@phosphor-icons/react/dist/csr/PhoneCall'
+import { DotsThree } from '@phosphor-icons/react/dist/csr/DotsThree'
+import { SquaresFour } from '@phosphor-icons/react/dist/csr/SquaresFour'
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+import { MagnifyingGlass } from '@phosphor-icons/react/dist/csr/MagnifyingGlass'
+import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Lead, LeadStatus, LEAD_STATUS_LABELS } from '../services/api'
 import { IndustryLanguage } from '../utils/industryLanguage'
 import { StatusBadge } from './StatusBadge'

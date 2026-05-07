@@ -1,7 +1,13 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { Sparkle, SpinnerGap, WarningCircle, CheckCircle, Eye, EyeSlash, Lock, ArrowLeft } from '@phosphor-icons/react'
-
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { EyeSlash } from '@phosphor-icons/react/dist/csr/EyeSlash'
+import { Lock } from '@phosphor-icons/react/dist/csr/Lock'
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 // Password strength calculation

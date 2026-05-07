@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { CheckCircle, XCircle, SpinnerGap } from '@phosphor-icons/react'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { XCircle } from '@phosphor-icons/react/dist/csr/XCircle'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { authApi } from '../services/api'
 
 export default function VerifyEmail() {

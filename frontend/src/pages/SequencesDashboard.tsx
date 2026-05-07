@@ -1,24 +1,22 @@
 import { useState, useEffect, useCallback } from 'react'
-import {
-  Envelope,
-  CaretDown,
-  X,
-  Play,
-  Pause,
-  Eye,
-  Users,
-  Lightning,
-  SpinnerGap,
-  EnvelopeOpen,
-  TrendUp,
-  Tray,
-  CaretLeft,
-  CaretRight,
-  Plus,
-  EnvelopeSimple,
-  Trash,
-  PencilSimple
-} from '@phosphor-icons/react'
+import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
+import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
+import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Play } from '@phosphor-icons/react/dist/csr/Play'
+import { Pause } from '@phosphor-icons/react/dist/csr/Pause'
+import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { Users } from '@phosphor-icons/react/dist/csr/Users'
+import { Lightning } from '@phosphor-icons/react/dist/csr/Lightning'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { EnvelopeOpen } from '@phosphor-icons/react/dist/csr/EnvelopeOpen'
+import { TrendUp } from '@phosphor-icons/react/dist/csr/TrendUp'
+import { Tray } from '@phosphor-icons/react/dist/csr/Tray'
+import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
+import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
+import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
+import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
 import { sequencesApi } from '../services/api'
 import type { CustomSequence, SequenceStepFull, NewStep } from '../services/api'
 
@@ -741,7 +739,7 @@ function CustomSequenceCard({ seq, onEdit, onDelete, onToggle }: {
           <div className="space-y-1">
             {seq.steps.slice(0, 3).map(s => (
               <div key={s.id} className="flex items-center gap-2 text-xs text-text-secondary">
-                <span className="w-4 h-4 rounded-full bg-purple-500/20 flex items-center justify-center text-[9px] text-purple-400 font-bold flex-shrink-0">
+                <span className="w-4 h-4 rounded-full bg-purple-500/20 flex items-center justify-center text-[10px] text-purple-400 font-bold flex-shrink-0">
                   {s.order + 1}
                 </span>
                 <span className="truncate">Day {s.delayDays}: {s.subject || '(no subject)'}</span>
@@ -930,7 +928,7 @@ function SequenceBuilder({ sequence, onClose, onSaved, onCreated }: {
                     <option key={t.value} value={t.value}>{t.label}</option>
                   ))}
                 </select>
-                <p className="text-[11px] text-text-tertiary mt-1.5">
+                <p className="text-xs text-text-tertiary mt-1.5">
                   This sequence will start automatically when this event occurs.
                 </p>
               </div>
@@ -1012,7 +1010,7 @@ function SequenceBuilder({ sequence, onClose, onSaved, onCreated }: {
                       {editingStep === step.id && (
                         <div className="px-4 py-4 space-y-3 bg-surface-base">
                           <div>
-                            <label className="block text-[11px] font-semibold text-text-secondary mb-1">Send on day</label>
+                            <label className="block text-xs font-semibold text-text-secondary mb-1">Send on day</label>
                             <input
                               type="number"
                               min={0}
@@ -1025,7 +1023,7 @@ function SequenceBuilder({ sequence, onClose, onSaved, onCreated }: {
                             <span className="ml-2 text-xs text-text-tertiary">days after trigger</span>
                           </div>
                           <div>
-                            <label className="block text-[11px] font-semibold text-text-secondary mb-1">Subject line</label>
+                            <label className="block text-xs font-semibold text-text-secondary mb-1">Subject line</label>
                             <input
                               type="text"
                               value={stepDraft.subject ?? step.subject}
@@ -1037,7 +1035,7 @@ function SequenceBuilder({ sequence, onClose, onSaved, onCreated }: {
                             />
                           </div>
                           <div>
-                            <label className="block text-[11px] font-semibold text-text-secondary mb-1">Email body</label>
+                            <label className="block text-xs font-semibold text-text-secondary mb-1">Email body</label>
                             <textarea
                               value={stepDraft.body ?? step.body}
                               onChange={e => setStepDraft(d => ({ ...d, body: e.target.value }))}

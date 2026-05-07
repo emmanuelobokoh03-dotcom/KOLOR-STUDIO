@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Crosshair, PencilSimple, X } from '@phosphor-icons/react'
-
+import { Crosshair } from '@phosphor-icons/react/dist/csr/Crosshair'
+import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
+import { X } from '@phosphor-icons/react/dist/csr/X'
 interface RevenueGoalWidgetProps {
   bookedThisYear: number
   currencySymbol: string
@@ -137,10 +138,10 @@ export default function RevenueGoalWidget({ bookedThisYear, currencySymbol }: Re
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-text-tertiary">
+        <span className="text-xs text-text-tertiary">
           {currencySymbol}{remaining.toLocaleString()} remaining · {monthsLeft} month{monthsLeft !== 1 ? 's' : ''} left
         </span>
-        <span className="text-[11px] font-semibold" style={{ color: barColor }}>
+        <span className="text-xs font-semibold" style={{ color: barColor }}>
           {pct}%
         </span>
       </div>

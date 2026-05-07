@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { SpinnerGap, WarningCircle, CheckCircle, ArrowLeft, Sparkle } from '@phosphor-icons/react'
+import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
 import { ServiceType, leadsApi } from '../services/api'
 import { getIndustryLanguage, IndustryType } from '../utils/industryLanguage'
 

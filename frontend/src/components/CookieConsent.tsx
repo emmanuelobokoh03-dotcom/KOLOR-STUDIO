@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Cookie, X } from '@phosphor-icons/react'
-
+import { Cookie } from '@phosphor-icons/react/dist/csr/Cookie'
+import { X } from '@phosphor-icons/react/dist/csr/X'
 export default function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false)
 
