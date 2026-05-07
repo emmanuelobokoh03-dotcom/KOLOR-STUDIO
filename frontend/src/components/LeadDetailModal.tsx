@@ -1,5 +1,5 @@
 import { toast } from 'sonner'
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { lazy, Suspense, useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
 import { 
   Lead, 
@@ -52,7 +52,7 @@ import { Checks } from '@phosphor-icons/react/dist/csr/Checks'
 import { Megaphone } from '@phosphor-icons/react/dist/csr/Megaphone'
 import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
 import QuotesTab from './QuotesTab'
-import EmailComposerModal from './EmailComposerModal'
+const EmailComposerModal = lazy(() => import('./EmailComposerModal'))
 import BookingModal from './BookingModal'
 import DeliverablesTab from './DeliverablesTab'
 import ContractsTab from './ContractsTab'
@@ -1955,11 +1955,13 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
       </div>
 
       {showEmailComposer && (
-        <EmailComposerModal
-          lead={lead}
-          onClose={() => setShowEmailComposer(false)}
-          onSent={() => { fetchActivities(); }}
-        />
+        <Suspense fallback={null}>
+          <EmailComposerModal
+            lead={lead}
+            onClose={() => setShowEmailComposer(false)}
+            onSent={() => { fetchActivities(); }}
+          />
+        </Suspense>
       )}
 
       {showBookingModal && (

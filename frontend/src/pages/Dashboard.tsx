@@ -37,7 +37,7 @@ import OnboardingWizard, { useOnboardingWizard } from '../components/OnboardingW
 import { SmartSuggestion } from '../components/SmartSuggestion'
 import { CelebrationModal, checkCelebration, Achievement, achievements } from '../components/CelebrationModal'
 import CRMAlerts from '../components/CRMAlerts'
-import RevenueDashboard from '../components/RevenueDashboard'
+const RevenueDashboard = lazy(() => import('../components/RevenueDashboard'))
 import CalendarConnectionWidget from '../components/CalendarConnectionWidget'
 import OnboardingChecklist from '../components/OnboardingChecklist'
 import AHAModal from '../components/AHAModal'

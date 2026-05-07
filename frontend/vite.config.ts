@@ -28,8 +28,6 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-ui': ['sonner'],
-          'vendor-editor': ['react-quill'],
-          'vendor-charts': ['recharts'],
           'vendor-numberflow': ['@number-flow/react'],
         },
       },
