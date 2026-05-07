@@ -556,6 +556,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Result**: Dashboard chunk **1,464 KB → 347 KB (-76%)**. Initial JS for logged-in landing reduced from ~1.54 MB to ~0.93 MB (~415 KB → ~270 KB gzip transfer). Vendor chunks cache long-term across deploys.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (9.39 s, no warnings). Commit `507a717`.
 
+### Iteration 173 — Phosphor Icon Tree-Shaking (Complete, Feb 2026)
+- Converted **80 frontend files** from `import { X, Check } from '@phosphor-icons/react'` (barrel) to per-icon CSR direct imports `import { X } from '@phosphor-icons/react/dist/csr/X'`. Phosphor's package barrel exports defeat Vite's tree-shaker, forcing the entire ~3000-icon library into the bundle regardless of which icons are actually used.
+- 730 direct CSR imports across 80 files. Preserved: 2 `import type { Icon as PhosphorIcon }` declarations (`EmptyState.tsx`, `StatCard.tsx`); all `weight`/`className`/`style` props; all `as` aliases.
+- `vite.config.ts`: removed `@phosphor-icons/react` from `vendor-ui` manualChunk so Vite bundles each icon with the chunk that uses it.
+- **Result**: `vendor-ui` **391 KB → 34 KB (-91%)**. First-paint logged-in JS **~959 KB → ~726 KB raw** (~270 KB → ~210 KB gzip). Combined with Iter 172, total first-paint cut ~50%.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.79 s, no warnings). Commit `5e2a33a`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
