@@ -572,6 +572,14 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Backend has no hardcoded brand-logo URLs (only the user-upload `/brand/logo` endpoint).
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.59 s). Commit `4f6e2fa`.
 
+### Iteration 176 — Logo Container + Parallax + Shimmer + Sticky Save Bar (Complete, Feb 2026)
+- **KolorLogo**: wrapped `<img src="/kolor-mark.png">` in a `#1A0A3C` dark-violet rounded-square container (radius = `markSize * 0.22`); mark image at 72% of container for breathing room. Reads cleanly on light nav surfaces; blends naturally on dark loading screen.
+- **LoadingScreen**: rewrote with parallax tilt (`perspective(600px) rotateX/Y`) — 4° max via `pointermove` (desktop) + `deviceorientation` (mobile gyroscope), 0.12 s ease-out transition. `prefers-reduced-motion`: static, no listeners attached.
+- **Dashboard shimmer skeletons**: new `ks-shimmer` keyframe (linear-gradient sweep `#ede9fe → #c4b5fd → #ede9fe` at 1.6 s ease-in-out infinite) injected once at module level. `StatCardSkeleton` + `KanbanSkeleton` replaced flat `animate-pulse` + `bg-light-*` with 11 brand-purple shimmer applications. `prefers-reduced-motion`: solid `#ede9fe`.
+- **AnalyticsDashboard lazy**: was already lazy from Iter 172; no change needed.
+- **BrandSettings sticky save bar**: footer pinned via `sticky bottom-0` + `bg-surface-base`; amber pulse dot + "Unsaved changes" label when `hasChanges === true`. `KolorSpinner` replaces `SpinnerGap` in both the save button and the logo-upload spinner; `SpinnerGap` import removed.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.86 s, no warnings). Commit `7ef28e6`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
