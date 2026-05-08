@@ -80,9 +80,9 @@ function StatsBar({ stats, loading }: { stats: StatsData | null; loading: boolea
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3" data-testid="sequence-stats-loading">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="bg-light-50 rounded-xl border border-light-200 p-5 animate-pulse">
-            <div className="h-3 bg-light-200 rounded w-1/2 mb-3" />
-            <div className="h-7 bg-light-200 rounded w-2/3" />
+          <div key={i} className="bg-light-50 rounded-xl border border-light-100 p-5">
+            <div className="h-3 ks-shimmer rounded w-1/2 mb-3" />
+            <div className="h-7 ks-shimmer rounded w-2/3" />
           </div>
         ))}
       </div>
@@ -510,7 +510,7 @@ export default function SequencesDashboard() {
         {loading ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {[1, 2].map(i => (
-              <div key={i} className="bg-light-50 rounded-xl border border-light-200 p-6 animate-pulse h-80" />
+              <div key={i} className="bg-light-50 rounded-xl border border-light-100 p-6 ks-shimmer h-80" />
             ))}
           </div>
         ) : (
@@ -538,7 +538,7 @@ export default function SequencesDashboard() {
 
         {loadingCustom ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {[1, 2].map(i => <div key={i} className="bg-light-50 rounded-xl border border-light-200 p-6 animate-pulse h-48" />)}
+            {[1, 2].map(i => <div key={i} className="bg-light-50 rounded-xl border border-light-100 p-6 ks-shimmer h-48" />)}
           </div>
         ) : customSequences.length === 0 ? (
           <div className="bg-light-50 border-2 border-dashed border-light-200 rounded-xl p-10 text-center">

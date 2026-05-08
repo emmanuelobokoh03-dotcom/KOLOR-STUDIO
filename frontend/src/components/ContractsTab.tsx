@@ -406,12 +406,12 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
       {loading ? (
         <div className="space-y-3">
           {[1, 2].map(i => (
-            <div key={i} className="bg-surface-base rounded-xl border border-light-200 p-4 animate-pulse">
+            <div key={i} className="bg-surface-base rounded-xl border border-light-100 p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-light-200 rounded-xl" />
+                <div className="w-10 h-10 ks-shimmer rounded-xl" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-40 bg-light-200 rounded" />
-                  <div className="h-3 w-24 bg-light-100 rounded" />
+                  <div className="h-4 w-40 ks-shimmer rounded" />
+                  <div className="h-3 w-24 ks-shimmer rounded opacity-60" />
                 </div>
               </div>
             </div>

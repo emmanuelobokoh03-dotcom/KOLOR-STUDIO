@@ -74,30 +74,7 @@ const ContractsPage = lazy(() => import('./Contracts'))
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
 
 // Skeleton components for loading states
-// Shimmer keyframe — injected once at module level (Iter 176)
-if (typeof document !== 'undefined' && !document.getElementById('ks-shimmer')) {
-  const s = document.createElement('style')
-  s.id = 'ks-shimmer'
-  s.textContent = `
-    @media (prefers-reduced-motion: no-preference) {
-      @keyframes ks-shimmer {
-        0%   { background-position: -200% 0; }
-        100% { background-position:  200% 0; }
-      }
-      .ks-shimmer {
-        background: linear-gradient(90deg,
-          #ede9fe 0%, #ddd6fe 20%, #c4b5fd 40%, #ddd6fe 60%, #ede9fe 80%
-        );
-        background-size: 200% 100%;
-        animation: ks-shimmer 1.6s ease-in-out infinite;
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .ks-shimmer { background: #ede9fe; }
-    }
-  `
-  document.head.appendChild(s)
-}
+// Iter 177 — shimmer keyframe moved to global index.css (.ks-shimmer)
 
 const StatCardSkeleton = () => (
   <div className="bg-light-50 rounded-xl p-4 md:p-6 border border-light-100">
@@ -560,15 +537,15 @@ const Dashboard = () => {
         <header className="glass-header sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-7 h-7 md:w-8 md:h-8 bg-light-200 rounded-lg animate-pulse" />
-              <div className="w-28 md:w-32 h-6 bg-light-200 rounded-lg animate-pulse" />
+              <div className="w-7 h-7 md:w-8 md:h-8 ks-shimmer rounded-lg" />
+              <div className="w-28 md:w-32 h-6 ks-shimmer rounded-lg" />
             </div>
           </div>
         </header>
         <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8 pb-24 lg:pb-8">
-          <div className="space-y-2 animate-pulse">
-            <div className="h-7 md:h-8 w-48 md:w-64 bg-light-200 rounded-lg" />
-            <div className="h-4 md:h-5 w-36 md:w-48 bg-light-100 rounded-lg" />
+          <div className="space-y-2">
+            <div className="h-7 md:h-8 w-48 md:w-64 ks-shimmer rounded-lg" />
+            <div className="h-4 md:h-5 w-36 md:w-48 ks-shimmer rounded-lg opacity-60" />
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
             {[1, 2, 3, 4].map(i => <StatCardSkeleton key={i} />)}

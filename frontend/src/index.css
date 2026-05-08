@@ -922,3 +922,26 @@ select:focus {
   height: 3rem;
   border-width: 4px;
 }
+
+/* ─── Brand skeleton shimmer (iter-177) ─────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ks-shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+  .ks-shimmer {
+    background: linear-gradient(
+      90deg,
+      #ede9fe 0%,
+      #ddd6fe 20%,
+      #c4b5fd 40%,
+      #ddd6fe 60%,
+      #ede9fe 80%
+    );
+    background-size: 200% 100%;
+    animation: ks-shimmer 1.6s ease-in-out infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ks-shimmer { background: #ede9fe; }
+}

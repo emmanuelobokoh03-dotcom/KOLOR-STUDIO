@@ -93,7 +93,7 @@ export default function KolorLogo({
         style={{
           width: markSize,
           height: markSize,
-          background: '#1A0A3C',
+          background: '#6C2EDB',
           borderRadius: Math.round(markSize * 0.22),
           display: 'flex',
           alignItems: 'center',
@@ -105,9 +105,9 @@ export default function KolorLogo({
         <img
           src="/kolor-mark.png"
           alt=""
-          width={Math.round(markSize * 0.72)}
+          width={Math.round(markSize * 0.78)}
           draggable={false}
-          style={{ display: 'block' }}
+          style={{ display: 'block', filter: 'brightness(0) invert(1)' }}
         />
       </div>
       {!markOnly && <Wordmark variant={variant} size={size} animated={animated} />}

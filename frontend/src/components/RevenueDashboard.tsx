@@ -46,12 +46,12 @@ export default function RevenueDashboard() {
 
   if (loading) {
     return (
-      <div className="bg-light-50 rounded-2xl border border-light-200 p-5 animate-pulse" data-testid="revenue-dashboard-loading">
-        <div className="h-4 bg-light-200 rounded w-32 mb-4" />
+      <div className="bg-light-50 rounded-2xl border border-light-100 p-5" data-testid="revenue-dashboard-loading">
+        <div className="h-4 ks-shimmer rounded w-32 mb-4" />
         <div className="grid grid-cols-2 gap-3 mb-4">
-          {[...Array(4)].map((_, i) => <div key={i} className="h-16 bg-light-100 rounded-xl" />)}
+          {[...Array(4)].map((_, i) => <div key={i} className="h-16 ks-shimmer rounded-xl" />)}
         </div>
-        <div className="h-32 bg-light-100 rounded-xl" />
+        <div className="h-32 ks-shimmer rounded-xl" />
       </div>
     )
   }

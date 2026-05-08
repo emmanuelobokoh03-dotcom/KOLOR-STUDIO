@@ -86,11 +86,11 @@ export function ActivityFeed({ onLeadClick }: ActivityFeedProps) {
     return (
       <div className="space-y-3" data-testid="activity-feed-loading">
         {[1, 2, 3].map(i => (
-          <div key={i} className="flex items-start gap-2.5 animate-pulse">
-            <div className="w-7 h-7 rounded-full bg-light-200 flex-shrink-0" />
+          <div key={i} className="flex items-start gap-2.5">
+            <div className="w-7 h-7 rounded-full ks-shimmer flex-shrink-0" />
             <div className="flex-1 space-y-1.5">
-              <div className="h-3 w-3/4 bg-light-200 rounded" />
-              <div className="h-2.5 w-1/2 bg-light-100 rounded" />
+              <div className="h-3 w-3/4 ks-shimmer rounded" />
+              <div className="h-2.5 w-1/2 ks-shimmer rounded opacity-60" />
             </div>
           </div>
         ))}

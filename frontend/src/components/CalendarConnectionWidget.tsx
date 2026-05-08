@@ -95,12 +95,12 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
 
   if (loading) {
     return (
-      <div className="bg-light-50 rounded-xl border border-light-200 p-5 animate-pulse">
+      <div className="bg-light-50 rounded-xl border border-light-100 p-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-light-200 rounded-lg" />
+          <div className="w-10 h-10 ks-shimmer rounded-lg" />
           <div className="space-y-2 flex-1">
-            <div className="h-4 bg-light-200 rounded w-1/3" />
-            <div className="h-3 bg-light-100 rounded w-1/2" />
+            <div className="h-4 ks-shimmer rounded w-1/3" />
+            <div className="h-3 ks-shimmer rounded w-1/2 opacity-60" />
           </div>
         </div>
       </div>

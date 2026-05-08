@@ -145,11 +145,11 @@ const FILE_COLORS: Record<string, string> = {
 const ActivitySkeleton = () => (
   <div className="space-y-4">
     {[1, 2, 3].map(i => (
-      <div key={i} className="flex gap-4 animate-pulse">
-        <div className="w-10 h-10 rounded-full bg-light-200 flex-shrink-0" />
-        <div className="flex-1 bg-light-50 rounded-xl p-4 border border-light-200 space-y-2">
-          <div className="h-3 w-24 bg-light-200 rounded" />
-          <div className="h-4 w-3/4 bg-light-100 rounded" />
+      <div key={i} className="flex gap-4">
+        <div key={i + '-a'} className="w-10 h-10 rounded-full ks-shimmer flex-shrink-0" />
+        <div className="flex-1 bg-light-50 rounded-xl p-4 border border-light-100 space-y-2">
+          <div className="h-3 w-24 ks-shimmer rounded" />
+          <div className="h-4 w-3/4 ks-shimmer rounded opacity-60" />
         </div>
       </div>
     ))}
@@ -160,9 +160,7 @@ const ActivitySkeleton = () => (
 const FileGridSkeleton = () => (
   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
     {[1, 2, 3].map(i => (
-      <div key={i} className="aspect-square bg-light-50 rounded-xl border border-light-200 animate-pulse">
-        <div className="w-full h-full bg-light-100 rounded-xl" />
-      </div>
+      <div key={i} className="aspect-square ks-shimmer rounded-xl border border-light-100" />
     ))}
   </div>
 );
