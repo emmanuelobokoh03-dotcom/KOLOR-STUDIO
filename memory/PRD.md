@@ -580,6 +580,14 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **BrandSettings sticky save bar**: footer pinned via `sticky bottom-0` + `bg-surface-base`; amber pulse dot + "Unsaved changes" label when `hasChanges === true`. `KolorSpinner` replaces `SpinnerGap` in both the save button and the logo-upload spinner; `SpinnerGap` import removed.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.86 s, no warnings). Commit `7ef28e6`.
 
+### Iteration 177 — Bold Logo + Global Shimmer Utility + Perf Verification (Complete, Feb 2026)
+- **KolorLogo bolder**: container `#1A0A3C` → `#6C2EDB` (brand primary), inner mark size `72% → 78%`, `<img>` filter `brightness(0) invert(1)` so the mark renders pure white inside the violet container.
+- **Global shimmer utility**: moved `ks-shimmer` keyframe + `.ks-shimmer` class from runtime JS injection in `Dashboard.tsx` to `frontend/src/index.css` (single source of truth, no FOUC). 23-line CSS block appended.
+- **Skeleton sweep**: replaced `animate-pulse` with `ks-shimmer` on **every skeleton site** in the codebase (11 sites across 8 components/pages: Dashboard header skeletons, ContractsTab list, LeadDetailModal Activity/FileGrid, PublicPortfolio loader, ActivityFeed, CalendarConnectionWidget, RevenueDashboard, SequencesDashboard stats + 2 card skeletons). Preserved: emerald live dot, amber unsaved dot, brand quote-status pulse.
+- **39 `ks-shimmer` applications across 9 files** (1 CSS + 8 TSX).
+- **Performance verified**: `vendor-charts*.js` and `vendor-editor*.js` confirmed absent from `dist/assets/` — recharts is inlined into the lazy `BarChart` chunk, react-quill inlined into the lazy `EmailComposerModal` chunk. Dashboard chunk **442 KB** (−10 KB from removing the JS injection block). No chunk-size warnings.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.72 s, no warnings). Commit `84b22d6`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
