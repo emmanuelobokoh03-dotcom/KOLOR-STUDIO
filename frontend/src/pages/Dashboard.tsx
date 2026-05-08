@@ -74,13 +74,38 @@ const ContractsPage = lazy(() => import('./Contracts'))
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
 
 // Skeleton components for loading states
+// Shimmer keyframe — injected once at module level (Iter 176)
+if (typeof document !== 'undefined' && !document.getElementById('ks-shimmer')) {
+  const s = document.createElement('style')
+  s.id = 'ks-shimmer'
+  s.textContent = `
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes ks-shimmer {
+        0%   { background-position: -200% 0; }
+        100% { background-position:  200% 0; }
+      }
+      .ks-shimmer {
+        background: linear-gradient(90deg,
+          #ede9fe 0%, #ddd6fe 20%, #c4b5fd 40%, #ddd6fe 60%, #ede9fe 80%
+        );
+        background-size: 200% 100%;
+        animation: ks-shimmer 1.6s ease-in-out infinite;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ks-shimmer { background: #ede9fe; }
+    }
+  `
+  document.head.appendChild(s)
+}
+
 const StatCardSkeleton = () => (
-  <div className="bg-light-50 rounded-xl p-4 md:p-6 border border-light-200 animate-pulse">
+  <div className="bg-light-50 rounded-xl p-4 md:p-6 border border-light-100">
     <div className="flex items-center gap-3 md:gap-4">
-      <div className="w-10 h-10 md:w-12 md:h-12 bg-light-200 rounded-xl" />
+      <div className="w-10 h-10 md:w-12 md:h-12 ks-shimmer rounded-xl" />
       <div className="space-y-2">
-        <div className="h-6 md:h-7 w-12 md:w-16 bg-light-200 rounded-md" />
-        <div className="h-3 md:h-4 w-16 md:w-24 bg-light-100 rounded-md" />
+        <div className="h-6 md:h-7 w-12 md:w-16 ks-shimmer rounded-md" />
+        <div className="h-3 md:h-4 w-16 md:w-24 ks-shimmer rounded-md opacity-60" />
       </div>
     </div>
   </div>
@@ -89,14 +114,14 @@ const StatCardSkeleton = () => (
 const KanbanSkeleton = () => (
   <div className="space-y-4 md:flex md:gap-5 md:space-y-0 overflow-x-auto pb-4">
     {[1, 2, 3].map((i) => (
-      <div key={i} className="flex-shrink-0 w-full md:w-72 rounded-xl border-2 border-light-200 bg-light-50 animate-pulse">
+      <div key={i} className="flex-shrink-0 w-full md:w-72 rounded-xl border-2 border-light-200 bg-light-50">
         <div className="h-12 bg-light-200 rounded-t-lg" />
         <div className="p-4 space-y-4">
           {[1, 2].map((j) => (
             <div key={j} className="bg-light-50 rounded-lg p-4 space-y-3 border border-light-200">
-              <div className="h-24 md:h-32 bg-light-100 rounded-lg" />
-              <div className="h-4 w-3/4 bg-light-200 rounded" />
-              <div className="h-3 w-1/2 bg-light-100 rounded" />
+              <div className="h-24 md:h-32 ks-shimmer rounded-lg" />
+              <div className="h-4 w-3/4 ks-shimmer rounded" />
+              <div className="h-3 w-1/2 ks-shimmer rounded opacity-60" />
             </div>
           ))}
         </div>

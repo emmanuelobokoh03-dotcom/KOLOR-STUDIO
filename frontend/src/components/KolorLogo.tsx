@@ -89,16 +89,27 @@ export default function KolorLogo({
 
   const inner = (
     <div className={'inline-flex items-center ' + className} style={{ gap }}>
-      <img
-        src="/kolor-mark.png"
-        alt=""
-        width={markSize}
-        style={animated
-          ? { animation: 'kolor-mark-in 0.36s ' + EASE + ' 0.06s both', display: 'block' }
-          : { display: 'block' }
-        }
-        draggable={false}
-      />
+      <div
+        style={{
+          width: markSize,
+          height: markSize,
+          background: '#1A0A3C',
+          borderRadius: Math.round(markSize * 0.22),
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+          ...(animated ? { animation: 'kolor-mark-in 0.36s ' + EASE + ' 0.06s both' } : {}),
+        }}
+      >
+        <img
+          src="/kolor-mark.png"
+          alt=""
+          width={Math.round(markSize * 0.72)}
+          draggable={false}
+          style={{ display: 'block' }}
+        />
+      </div>
       {!markOnly && <Wordmark variant={variant} size={size} animated={animated} />}
     </div>
   )

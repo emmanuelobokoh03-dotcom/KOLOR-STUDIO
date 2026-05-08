@@ -8,11 +8,11 @@ import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { ArrowCounterClockwise } from '@phosphor-icons/react/dist/csr/ArrowCounterClockwise'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import BrandPreview from './BrandPreview'
 import EmailSignatureGenerator from './EmailSignatureGenerator'
+import KolorSpinner from './KolorSpinner'
 
 const FONT_OPTIONS = [
   { value: 'Inter', label: 'Inter', style: 'Modern & Clean' },
@@ -239,7 +239,7 @@ export default function BrandSettings() {
               data-testid="upload-logo-area"
             >
               {uploading ? (
-                <SpinnerGap className="w-5 h-5 text-text-secondary animate-spin" />
+                <KolorSpinner size={20} color="#6C2EDB" />
               ) : (
                 <UploadSimple weight="bold" className="w-5 h-5 text-text-secondary" />
               )}
@@ -265,26 +265,36 @@ export default function BrandSettings() {
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-3 pt-2 border-t border-light-200">
-        <button
-          onClick={handleSave}
-          disabled={saving || !hasChanges}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{ background: hasChanges ? primary : undefined }}
-          data-testid="save-brand-btn"
-        >
-          {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <FloppyDisk className="w-4 h-4" />}
-          {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Brand'}
-        </button>
-        <button
-          onClick={handleReset}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-light-200 text-text-secondary hover:text-text-primary hover:border-light-300 transition-colors text-sm font-medium"
-          data-testid="reset-brand-btn"
-        >
-          <ArrowCounterClockwise className="w-4 h-4" />
-          Reset
-        </button>
+      {/* Sticky save bar (Iter 176) */}
+      <div
+        className="sticky bottom-0 left-0 right-0 flex items-center gap-3 pt-3 pb-2 border-t border-light-200 bg-surface-base"
+      >
+        {hasChanges && (
+          <span className="flex items-center gap-1.5 text-xs text-amber-600 font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse inline-block" />
+            Unsaved changes
+          </span>
+        )}
+        <div className="flex items-center gap-2 ml-auto">
+          <button
+            onClick={handleReset}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-light-200 text-text-secondary hover:text-text-primary hover:border-light-300 transition-colors text-sm font-medium"
+            data-testid="reset-brand-btn"
+          >
+            <ArrowCounterClockwise className="w-4 h-4" />
+            Reset
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving || !hasChanges}
+            className="flex items-center gap-2 px-5 py-2 rounded-xl text-white font-medium text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: hasChanges ? primary : '#9CA3AF' }}
+            data-testid="save-brand-btn"
+          >
+            {saving ? <KolorSpinner size={14} color="white" /> : saved ? <Check className="w-4 h-4" /> : <FloppyDisk className="w-4 h-4" />}
+            {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Brand'}
+          </button>
+        </div>
       </div>
       </div>
 
