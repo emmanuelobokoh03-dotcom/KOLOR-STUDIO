@@ -588,6 +588,15 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Performance verified**: `vendor-charts*.js` and `vendor-editor*.js` confirmed absent from `dist/assets/` — recharts is inlined into the lazy `BarChart` chunk, react-quill inlined into the lazy `EmailComposerModal` chunk. Dashboard chunk **442 KB** (−10 KB from removing the JS injection block). No chunk-size warnings.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.72 s, no warnings). Commit `84b22d6`.
 
+### Iteration 178 — Perf Fixes + Portal Elevation + Email Diagnosis (Complete, Feb 2026)
+- **RevenuePipelineWidget**: removed the 1200 ms `setTimeout` wrapper around the analytics fetch (added in iter-143 when Dashboard init was sequential; iter-172 parallelised init so the delay was redundant). Cleanup `clearTimeout` removed.
+- **ContractsTab**: mount `useEffect` now `Promise.all([fetchContracts(), fetchUserInfo()])`. `fetchUserInfo` fires `getTemplates(industry)` immediately after `getMe` resolves and lets the resolve-callback set state, instead of awaiting it. Saves one API roundtrip on the critical path.
+- **ClientPortal footer elevation**: rebuilt as a branded dark panel (`#1a1625`) with the studio initial in a `#6C2EDB` square, helper subtitle, and a `Contact Us` CTA that mailto's `data.contact.email`. Legacy "Thank you for working with… Powered by KOLOR STUDIO" line moved below the panel, `data-testid="powered-by-badge"` preserved.
+- **ClientPortal loading**: `SpinnerGap` → `KolorSpinner size={48}` (brand mark during portal fetch).
+- Spec fixes 3b/3c (Messages + Share Files icon headers) were already canonical in `ClientPortalMessages.tsx` (L91) and `ClientFileUpload.tsx` (L141) — no change needed.
+- **Email delivery root cause confirmed**: `backend/src/services/email.ts:11` falls back to `onboarding@resend.dev` (Resend sandbox) when `SENDER_EMAIL` env var is unset. Sandbox can ONLY deliver to the account-owner email — clients never receive contract emails. **Fix is a Railway env var update, not a code change**: set `SENDER_EMAIL=noreply@kolorstudio.app` (or another verified-domain address), save, redeploy API. The boot warning `[EMAIL] WARNING: Using Resend sandbox sender` (email.ts L19) is the live confirmation signal — it disappears once the env var is correctly set.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.13 s, no warnings). Commit `58b5d50`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
