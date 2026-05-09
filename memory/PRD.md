@@ -597,6 +597,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Email delivery root cause confirmed**: `backend/src/services/email.ts:11` falls back to `onboarding@resend.dev` (Resend sandbox) when `SENDER_EMAIL` env var is unset. Sandbox can ONLY deliver to the account-owner email — clients never receive contract emails. **Fix is a Railway env var update, not a code change**: set `SENDER_EMAIL=noreply@kolorstudio.app` (or another verified-domain address), save, redeploy API. The boot warning `[EMAIL] WARNING: Using Resend sandbox sender` (email.ts L19) is the live confirmation signal — it disappears once the env var is correctly set.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.13 s, no warnings). Commit `58b5d50`.
 
+### Iteration 179 — Auto-Send Contract on Quote Acceptance (Complete, Feb 2026)
+- **Backend `autoGenerateContract` rewrite** (`quotes.ts`): contract is now created with `status: 'SENT'` + `sentAt: new Date()` immediately on quote acceptance, and `sendContractSentEmail` fires inline. No manual studio action required to fulfil the portal's "your contract is being prepared, you'll receive it shortly" promise. Email failure is non-blocking (contract stays SENT in DB; portal access preserved). `portalUrl` built from `FRONTEND_URL` env (falls back to `kolorstudio.app`). Activity log updated to reflect auto-send. Industry mapping (`INDUSTRY_TO_CONTRACT_TYPE`) untouched — auto-send applies to all 3 industries equally.
+- **`/api/contracts/pending`** (`contracts.ts`): status filter `'DRAFT' → { in: ['SENT', 'VIEWED'] }` so the banner now surfaces contracts awaiting client signature, not draft review.
+- **Dashboard pending banner**: title "Contract Ready for Review → Contract Awaiting Signature"; body copy reflects new auto-send flow ("has been sent a contract… Awaiting their signature").
+- **Required deploy**: Railway API service must be redeployed for backend changes to take effect (push to main triggers auto-deploy if wired). Confirmation log line on success: `[AUTOPILOT] Contract created and auto-sent: <id>` followed by `[AUTOPILOT] Contract email sent to client: <email>`.
+- Build gate: backend `tsc --noEmit` ✓, frontend `tsc --noEmit` ✓, `npm run build` ✓ (7.03 s, no warnings). Commit `e7e4051`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
