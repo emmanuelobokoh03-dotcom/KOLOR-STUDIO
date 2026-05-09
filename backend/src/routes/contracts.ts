@@ -60,14 +60,14 @@ router.get('/contracts/all', authMiddleware, async (req: AuthRequest, res: Respo
   }
 });
 
-// GET /api/contracts/pending — Fetch DRAFT contracts awaiting user review
+// GET /api/contracts/pending — Iter 179: Fetch SENT/VIEWED contracts awaiting client signature
 router.get('/contracts/pending', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId as string;
     const contracts = await prisma.contract.findMany({
       where: {
         lead: { assignedToId: userId },
-        status: 'DRAFT',
+        status: { in: ['SENT', 'VIEWED'] },
       },
       include: {
         lead: {

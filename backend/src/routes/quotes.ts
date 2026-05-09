@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { sendQuoteEmail, sendQuoteAcceptedNotification, sendQuoteDeclinedNotification } from '../services/email';
+import { sendQuoteEmail, sendQuoteAcceptedNotification, sendQuoteDeclinedNotification, sendContractSentEmail } from '../services/email';
 import { generateQuotePDF } from '../services/pdf.service';
 import { enrollLead, stopSequencesForLead } from '../services/sequenceEngine';
 // paymentService import removed — deposit checkout now created on-demand via POST /api/payments/:incomeId/deposit
@@ -14,7 +14,7 @@ import prisma from '../lib/prisma';
 import { CONTRACT_TEMPLATES, INDUSTRY_TO_CONTRACT_TYPE, fillContractTemplate } from '../data/contractTemplates';
 
 
-/** Auto-generate and send a contract when a quote is accepted */
+/** Auto-generate AND immediately send a contract when a quote is accepted (Iter 179) */
 async function autoGenerateContract(quoteId: string): Promise<string | null> {
   try {
     const quote = await prisma.quote.findUnique({
@@ -50,18 +50,51 @@ async function autoGenerateContract(quoteId: string): Promise<string | null> {
       studioName,
     });
 
+    const portalUrl = `${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/portal/${lead.portalToken}`;
+
+    // Iter 179 — create as SENT immediately so the client receives the email without
+    // requiring manual studio review. The auto-generated contract is fully pre-filled
+    // from the industry template and matches what would be sent manually.
     const contract = await prisma.contract.create({
       data: {
         leadId: lead.id,
         templateType: contractType as any,
         title: template.title,
         content: filledContent,
-        status: 'DRAFT',
+        status: 'SENT',
+        sentAt: new Date(),
       },
     });
 
-    console.log('[AUTOPILOT] Contract created as DRAFT:', contract.id, '| User must review before sending.');
-    await logActivity(lead.id, quote.createdById, 'CONTRACT_SIGNED', `Contract auto-generated (DRAFT): "${contract.title}" — awaiting user review`);
+    console.log('[AUTOPILOT] Contract created and auto-sent:', contract.id);
+
+    // Fire contract email — non-blocking on failure (contract is already SENT in DB,
+    // client can still access it via portal).
+    try {
+      const emailSent = await sendContractSentEmail({
+        clientName: lead.clientName,
+        clientEmail: lead.clientEmail,
+        projectTitle: lead.projectTitle,
+        contractTitle: contract.title,
+        studioName,
+        portalUrl,
+      });
+      if (emailSent) {
+        console.log('[AUTOPILOT] Contract email sent to client:', lead.clientEmail);
+      } else {
+        console.warn('[AUTOPILOT] Contract email failed to send — contract still marked SENT in DB');
+      }
+    } catch (emailErr) {
+      console.error('[AUTOPILOT] Contract email exception:', emailErr);
+    }
+
+    await logActivity(
+      lead.id,
+      quote.createdById,
+      'CONTRACT_SIGNED',
+      `Contract auto-generated and sent to ${lead.clientEmail}: "${contract.title}"`,
+    );
+
     return contract.id;
   } catch (error) {
     console.error('[AUTOPILOT] Contract auto-generation FAILED:', error);

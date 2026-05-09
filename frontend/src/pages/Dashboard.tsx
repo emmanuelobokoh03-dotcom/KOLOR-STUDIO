@@ -1000,10 +1000,10 @@ const Dashboard = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-base font-semibold text-amber-900 mb-1">
-                  Contract Ready for Review
+                  Contract Awaiting Signature
                 </h3>
                 <p className="text-sm text-amber-700 mb-3">
-                  <strong>{pendingContracts[0].lead?.clientName}</strong> accepted your quote for <strong>"{pendingContracts[0].lead?.projectTitle}"</strong>. Review the contract before sending it to your client.
+                  <strong>{pendingContracts[0].lead?.clientName}</strong> has been sent a contract for <strong>"{pendingContracts[0].lead?.projectTitle}"</strong>. Awaiting their signature.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <button
