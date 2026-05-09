@@ -75,8 +75,8 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
   const [studioName, setStudioName] = useState('');
 
   useEffect(() => {
-    fetchContracts();
-    fetchUserInfo();
+    // Iter 178 — fetchContracts and fetchUserInfo are independent → run in parallel
+    Promise.all([fetchContracts(), fetchUserInfo()]);
   }, [leadId]);
 
   const fetchContracts = async () => {
@@ -102,10 +102,11 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
       const u = result.data.user as { firstName: string; lastName: string; studioName?: string; industry?: string | null; primaryIndustry?: string | null };
       setUserName(`${u.firstName} ${u.lastName}`.trim());
       setStudioName(u.studioName || '');
-      // Fetch templates filtered by industry so fine-art users don't see photography templates
       const industry = u.industry || u.primaryIndustry || undefined;
-      const tmplResult = await contractsApi.getTemplates(industry || undefined);
-      if (tmplResult.data?.templates) setTemplates(tmplResult.data.templates);
+      // Iter 178 — fire templates fetch immediately, don't await; setState on resolve.
+      contractsApi.getTemplates(industry || undefined).then(tmplResult => {
+        if (tmplResult.data?.templates) setTemplates(tmplResult.data.templates);
+      });
     }
   };
 

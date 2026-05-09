@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ClientPortalMessages from '../components/ClientPortalMessages';
+import KolorSpinner from '../components/KolorSpinner';
 import ClientFileUpload from '../components/ClientFileUpload';
 import ProjectTimeline from '../components/ProjectTimeline';
 import { toast } from 'sonner';
@@ -440,7 +441,7 @@ export default function ClientPortal() {
     return (
       <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center">
         <div className="text-center">
-          <SpinnerGap weight="duotone" className="w-10 h-10 text-[#6C2EDB] animate-spin mx-auto mb-4" />
+          <KolorSpinner size={48} className="mx-auto mb-4" />
           <p className="text-sm text-gray-500">Loading your project portal...</p>
         </div>
       </div>
@@ -1022,15 +1023,48 @@ export default function ClientPortal() {
           </div>
         </div>
 
-        {/* Footer */}
-        <footer className="text-center text-gray-400 text-xs py-8">
-          <p>Thank you for working with {studioName}.</p>
-          <p className="mt-2 text-[10px] text-gray-300" data-testid="powered-by-badge">
-            Powered by{' '}
-            <Link to="/" className="text-[#6C2EDB] hover:text-[#5B27B5] transition font-semibold">
-              KOLOR STUDIO
-            </Link>
-          </p>
+        {/* Footer (Iter 178 — elevated branded panel) */}
+        <footer className="mt-12 pb-10">
+          <div className="max-w-3xl mx-auto px-5">
+            <div
+              className="rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4"
+              style={{ background: '#1a1625' }}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                  style={{ background: '#6C2EDB' }}
+                >
+                  <span className="text-xs font-extrabold text-white">
+                    {studioName.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-white/80">{studioName} is here to help.</p>
+                  <p className="text-[10px] text-white/40 mt-0.5">Reply to your portal email or use the message box above.</p>
+                </div>
+              </div>
+              <a
+                href={`mailto:${data.contact.email}`}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors flex-shrink-0"
+                style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.8)' }}
+              >
+                <Envelope className="w-3.5 h-3.5" />
+                Contact Us
+              </a>
+            </div>
+            <p className="text-center text-[10px] text-gray-400 mt-4" data-testid="powered-by-badge">
+              Thank you for working with <span className="font-semibold">{studioName}</span>.
+              {' '}Powered by{' '}
+              <Link
+                to="/"
+                className="font-semibold hover:underline"
+                style={{ color: '#6C2EDB' }}
+              >
+                KOLOR STUDIO
+              </Link>
+            </p>
+          </div>
         </footer>
       </main>
     </div>

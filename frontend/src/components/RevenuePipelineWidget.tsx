@@ -32,21 +32,18 @@ export default function RevenuePipelineWidget() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Iter 143 — defer the analytics fetch so the dashboard TTI isn't blocked by this widget
-    const timer = setTimeout(() => {
-      fetch(`${API_URL}/api/analytics/revenue-pipeline`, {
-        credentials: 'include',
+    // Iter 178 — Dashboard init now parallel (iter-172); no need to defer.
+    fetch(`${API_URL}/api/analytics/revenue-pipeline`, {
+      credentials: 'include',
+    })
+      .then(r => r.json())
+      .then(data => {
+        setPipeline(data.pipeline);
+        setTotalValue(data.totalValue || 0);
+        setCurrencySymbol(data.currencySymbol || '$');
       })
-        .then(r => r.json())
-        .then(data => {
-          setPipeline(data.pipeline);
-          setTotalValue(data.totalValue || 0);
-          setCurrencySymbol(data.currencySymbol || '$');
-        })
-        .catch(console.error)
-        .finally(() => setLoading(false));
-    }, 1200);
-    return () => clearTimeout(timer);
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) {
