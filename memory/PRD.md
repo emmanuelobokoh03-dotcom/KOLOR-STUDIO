@@ -604,6 +604,15 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Required deploy**: Railway API service must be redeployed for backend changes to take effect (push to main triggers auto-deploy if wired). Confirmation log line on success: `[AUTOPILOT] Contract created and auto-sent: <id>` followed by `[AUTOPILOT] Contract email sent to client: <email>`.
 - Build gate: backend `tsc --noEmit` ✓, frontend `tsc --noEmit` ✓, `npm run build` ✓ (7.03 s, no warnings). Commit `e7e4051`.
 
+### Iteration 180 — Six-Area Polish Sprint (Complete, Feb 2026)
+- **SpinnerGap → KolorSpinner** across 5 named scope files (11 button + page-load sites): `AnalyticsDashboard`, `RevenuePipelineWidget`, `ContractsTab`, `Settings`, `SubmitInquiry`. SpinnerGap imports removed from each. Out-of-scope files (`DeliverablesTab` status-icon map, `LeadDetailModal` non-loading uses) left untouched — those use SpinnerGap as visual cues, not loaders.
+- **AnalyticsDashboard loading state**: centered spinner → full shimmer skeleton (header + 4 stat cards + chart panel) matching the real layout.
+- **RevenuePipelineWidget loading state**: centered spinner → 3-row pipeline-stage shimmer skeleton.
+- **CRMAlerts**: "Loading alerts…" text → shimmer skeleton with `data-testid="crm-alerts-loading"`. Per-icon imports were already in place (Iter 173); `onLeadClick` already wired in Dashboard (no change).
+- **ShareFormModal**: Pro Tips heading `text-gray-200` (invisible on light purple) → `text-purple-800 font-semibold`. Modal header `bg-gradient-to-r from-brand-primary to-brand-primary` → `bg-gradient-to-br from-[#1A0A3C] to-[#2D1470]` (deep brand gradient matching KolorLogo container).
+- **SubmitInquiry**: left panel `#FFFFFF` → `#F4F0FD` (brand-tinted, matches palette + creates intentional two-tone layout). Border `#EDE8F5` → `#DDD6FE`. Submit button SpinnerGap → KolorSpinner.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.06 s, no warnings). Commit `c932007`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
