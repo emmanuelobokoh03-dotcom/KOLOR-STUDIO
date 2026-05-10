@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import KolorSpinner from '../components/KolorSpinner'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
@@ -314,7 +314,7 @@ const SubmitInquiry = () => {
     <div style={{ minHeight: '100vh', background: '#F9F7FE' }} data-testid="inquiry-page">
       <div className="inquiry-layout">
         {/* ─── Left Panel ─── */}
-        <aside className="inquiry-left-panel" style={{ background: '#FFFFFF', borderRight: '0.5px solid #EDE8F5', padding: '48px 40px' }} data-testid="inquiry-left-panel">
+        <aside className="inquiry-left-panel" style={{ background: '#F4F0FD', borderRight: '0.5px solid #DDD6FE', padding: '48px 40px' }} data-testid="inquiry-left-panel">
           {/* Creator identity */}
           {studioId && studioDisplayName ? (
             <div>
@@ -641,7 +641,7 @@ const SubmitInquiry = () => {
             >
               {loading ? (
                 <>
-                  <SpinnerGap className="w-5 h-5 animate-spin" />
+                  <KolorSpinner size={16} color="white" />
                   Submitting...
                 </>
               ) : (

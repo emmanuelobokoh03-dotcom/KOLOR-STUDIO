@@ -20,7 +20,6 @@ import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
 import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
@@ -306,7 +305,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
             className="px-5 py-2.5 bg-brand-primary text-white rounded-xl font-medium hover:bg-brand-primary disabled:opacity-50 flex items-center gap-2 touch-target"
             data-testid="save-contract-btn"
           >
-            {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+            {saving ? <KolorSpinner size={14} color="white" /> : <CheckCircle className="w-4 h-4" />}
             Save Contract
           </button>
           {editingContract.status === 'DRAFT' && (
@@ -397,7 +396,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
           </div>
           {creating && (
             <div className="flex items-center justify-center gap-2 mt-4 text-sm text-purple-600">
-              <SpinnerGap className="w-4 h-4 animate-spin" /> Creating contract...
+              <KolorSpinner size={14} color="white" /> Creating contract...
             </div>
           )}
         </div>

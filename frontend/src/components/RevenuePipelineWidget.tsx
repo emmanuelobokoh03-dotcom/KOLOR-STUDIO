@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import KolorSpinner from './KolorSpinner';
 import { TrendUp } from '@phosphor-icons/react/dist/csr/TrendUp'
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -48,8 +48,16 @@ export default function RevenuePipelineWidget() {
 
   if (loading) {
     return (
-      <div className="bg-surface-base border border-light-200 rounded-xl p-6 flex items-center justify-center h-40">
-        <SpinnerGap className="w-5 h-5 animate-spin text-text-secondary" />
+      <div className="bg-surface-base border border-light-200 rounded-xl p-6 space-y-3">
+        <div className="h-4 w-32 ks-shimmer rounded" />
+        <div className="space-y-2">
+          {[1,2,3].map(i => (
+            <div key={i} className="flex items-center justify-between">
+              <div className="h-3 w-24 ks-shimmer rounded opacity-70" />
+              <div className="h-3 w-16 ks-shimmer rounded opacity-70" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

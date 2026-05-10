@@ -123,7 +123,7 @@ Looking forward to working with you!`
         aria-labelledby="share-form-title"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-6">
+        <div className="bg-gradient-to-br from-[#1A0A3C] to-[#2D1470] text-white p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
@@ -251,7 +251,7 @@ Looking forward to working with you!`
                 <Lightbulb className="w-4 h-4 text-purple-600" />
               </div>
               <div>
-                <h4 className="font-medium text-gray-200 mb-2">Pro Tips</h4>
+                <h4 className="font-semibold text-purple-800 mb-2 text-sm">Pro Tips</h4>
                 <ul className="text-sm text-text-secondary space-y-1.5">
                   <li>• Add this link to your InstagramLogo bio</li>
                   <li>• Include it in your email signature</li>

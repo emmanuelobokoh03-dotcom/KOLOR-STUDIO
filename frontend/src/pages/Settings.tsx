@@ -11,7 +11,7 @@ import { PaintBrush } from '@phosphor-icons/react/dist/csr/PaintBrush'
 import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
 import { GoogleLogo } from '@phosphor-icons/react/dist/csr/GoogleLogo'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import KolorSpinner from '../components/KolorSpinner'
 import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
 import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
 import { EyeSlash } from '@phosphor-icons/react/dist/csr/EyeSlash'
@@ -254,7 +254,7 @@ export default function Settings() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--surface-background)] flex items-center justify-center">
-        <SpinnerGap className="w-8 h-8 text-[#6C2EDB] animate-spin" />
+        <KolorSpinner size={32} />
       </div>
     )
   }
@@ -450,7 +450,7 @@ export default function Settings() {
                       className="px-5 py-2.5 bg-[#6C2EDB] text-white rounded-lg text-sm font-semibold hover:bg-[#5B27B5] disabled:opacity-50 transition flex items-center gap-2"
                       data-testid="settings-save-profile-btn"
                     >
-                      {saving ? <><SpinnerGap className="w-4 h-4 animate-spin" /> Saving...</> : 'Save Changes'}
+                      {saving ? <><KolorSpinner size={14} color="white" /> Saving...</> : 'Save Changes'}
                     </button>
 
                     {/* ── App Themes (Iter 146: glyph + name + tagline cards) ── */}
@@ -580,7 +580,7 @@ export default function Settings() {
                         data-testid="send-digest-preview-btn"
                       >
                         {sendingDigest ? (
-                          <SpinnerGap className="w-4 h-4 animate-spin" />
+                          <KolorSpinner size={14} color="#6C2EDB" />
                         ) : digestSent === 'sent' ? (
                           <CheckCircle className="w-4 h-4" />
                         ) : (
@@ -730,7 +730,7 @@ export default function Settings() {
                         className="px-5 py-2.5 bg-[#6C2EDB] text-white rounded-lg text-sm font-semibold hover:bg-[#5B27B5] disabled:opacity-50 transition flex items-center gap-2"
                         data-testid="settings-change-password-btn"
                       >
-                        {changingPassword ? <><SpinnerGap className="w-4 h-4 animate-spin" /> Changing...</> : 'Change Password'}
+                        {changingPassword ? <><KolorSpinner size={14} color="white" /> Changing...</> : 'Change Password'}
                       </button>
                     </div>
                   </div>
@@ -854,7 +854,7 @@ function BrandTab({
             <label style={{ cursor: 'pointer' }} data-testid="brand-logo-upload-btn">
               <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLogoUpload} />
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--surface-base)', fontSize: 12, fontWeight: 600, color: 'var(--text-primary)', cursor: 'pointer' }}>
-                {uploadingLogo ? <SpinnerGap style={{ width: 14, height: 14 }} className="animate-spin" /> : null}
+                {uploadingLogo ? <KolorSpinner size={14} color="#6C2EDB" /> : null}
                 {uploadingLogo ? 'Uploading...' : 'Upload logo'}
               </span>
             </label>
@@ -938,7 +938,7 @@ function BrandTab({
           }}
           data-testid="brand-save-btn"
         >
-          {savingBrand ? <><SpinnerGap style={{ width: 14, height: 14 }} className="animate-spin" /> Saving...</> : 'Save brand'}
+          {savingBrand ? <><KolorSpinner size={14} color="white" /> Saving...</> : 'Save brand'}
         </button>
       </div>
 

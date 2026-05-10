@@ -87,7 +87,17 @@ export default function CRMAlerts({ onLeadClick }: { onLeadClick?: (leadId: stri
       {/* Alerts List */}
       <div className="divide-y divide-[#262626] max-h-[320px] overflow-y-auto">
         {loading && alerts.length === 0 ? (
-          <div className="p-4 md:p-8 text-center text-text-tertiary text-sm">Loading alerts...</div>
+          <div className="p-4 space-y-2" data-testid="crm-alerts-loading">
+            {[1,2,3].map(i => (
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-light-100">
+                <div className="w-8 h-8 ks-shimmer rounded-lg" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 w-3/4 ks-shimmer rounded" />
+                  <div className="h-2.5 w-1/2 ks-shimmer rounded opacity-60" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : alerts.length === 0 ? (
           <div className="p-4 md:p-8 text-center">
             <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-2">

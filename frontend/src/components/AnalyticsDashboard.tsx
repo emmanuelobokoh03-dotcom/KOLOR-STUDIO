@@ -8,7 +8,7 @@ import { Users } from '@phosphor-icons/react/dist/csr/Users'
 import { Trophy } from '@phosphor-icons/react/dist/csr/Trophy'
 import { ChartBar } from '@phosphor-icons/react/dist/csr/ChartBar'
 import { ArrowsClockwise } from '@phosphor-icons/react/dist/csr/ArrowsClockwise'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import KolorSpinner from './KolorSpinner'
 import { ArrowUpRight } from '@phosphor-icons/react/dist/csr/ArrowUpRight'
 import { ArrowDownRight } from '@phosphor-icons/react/dist/csr/ArrowDownRight'
 import { Minus } from '@phosphor-icons/react/dist/csr/Minus'
@@ -96,8 +96,27 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="h-7 w-48 ks-shimmer rounded-lg" />
+            <div className="h-4 w-72 ks-shimmer rounded opacity-60" />
+          </div>
+          <div className="h-9 w-24 ks-shimmer rounded-lg" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="rounded-xl p-5 border border-light-100 space-y-3">
+              <div className="h-9 w-9 ks-shimmer rounded-lg" />
+              <div className="h-4 w-24 ks-shimmer rounded" />
+              <div className="h-8 w-32 ks-shimmer rounded" />
+            </div>
+          ))}
+        </div>
+        <div className="rounded-xl border border-light-100 p-5">
+          <div className="h-5 w-40 ks-shimmer rounded mb-4" />
+          <div className="h-48 ks-shimmer rounded-xl" />
+        </div>
       </div>
     )
   }
