@@ -613,6 +613,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **SubmitInquiry**: left panel `#FFFFFF` → `#F4F0FD` (brand-tinted, matches palette + creates intentional two-tone layout). Border `#EDE8F5` → `#DDD6FE`. Submit button SpinnerGap → KolorSpinner.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.06 s, no warnings). Commit `c932007`.
 
+### Iteration 181 — Mobile Login + Auth Resilience + Critical CSS + Bundle Splits (Complete, Feb 2026)
+- **LandingPageV2 mobile login**: nav-login Link `hidden sm:block` → `block` (visible on all screen sizes — was hidden below 640px).
+- **Dashboard auth resilience**: `authApi.getMe()` now retries once after 800ms before navigating to `/login`. Eliminates redirect-loop on cold Railway start where the first request may 500.
+- **Critical CSS in `index.html`**: `ks-shimmer` keyframe + `.ks-shimmer` rule + `#root:empty::before { background: #080612 }` injected directly into `<head>`. Skeleton + dark background paint before React bundle parses → no white flash on cold load.
+- **Bundle splits**: `CRMAlerts` and `NeedsAttentionSection` converted from eager to lazy in `Dashboard.tsx`; render sites wrapped in `<Suspense fallback={…}>`. Dashboard chunk 442 KB → 437 KB; new `CRMAlerts-*.js` 14.5 KB / 4.9 KB gz separate chunk. Parallel `Promise.all` for fetchLeads/fetchStats/fetchPendingContracts was already in place from iter-172 (verified).
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.17 s, no warnings). Commit `b6f0141`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
