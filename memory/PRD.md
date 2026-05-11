@@ -626,6 +626,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **index.html**: favicon `<link>` tags now reference proper sizes; `#root:empty` upgraded from plain dark `::before` to a full branded splash — inline SVG K mark (same 4-quadrant geometry as `KolorSpinner`) inside violet 72×72 container, KOLOR / STUDIO wordmark below, `ks-fade-in` animation (`prefers-reduced-motion` safe). React mount replaces splash content seamlessly.
 - Build gate: `npm run build` ✓ (6.93 s, no warnings, no TS changes). Commit `69e0c23`.
 
+### Iteration 183 — OG Card Pure-PIL Rebuild + Manifest + Meta Title (Complete, Feb 2026)
+- **Root cause of iter-182 blank OG card**: `kolor-mark.png` is violet (108,46,218) on transparent BG; pasted on violet container → blank result.
+- **OG card fix**: Pure PIL drawing — K mark drawn from SVG polygon/arc coordinates as WHITE on violet container. Uses `LiberationSans-Bold/Regular` (DejaVu unavailable in container). AI image-analysis verified all elements visible: K mark, KOLOR/STUDIO wordmark, "The studio behind your best work." tagline, sub line, 4 feature pills, kolorstudio.app URL. File 29.5 KB (efficient compression on flat-color regions).
+- **site.webmanifest**: replaced single legacy entry with full icon set (16/32/192/512 + apple-touch-icon), correct `purpose` flags, brand `background_color: #080612` + `theme_color: #6C2EDB`.
+- **index.html titles**: `<title>` + `og:title` + `twitter:title` → "KOLOR Studio — CRM for Photographers, Designers & Artists" (58 chars, OG-optimal, all 3 disciplines).
+- Build gate: `npm run build` ✓ (6.51 s, no warnings). Commit `e3bb33a`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
