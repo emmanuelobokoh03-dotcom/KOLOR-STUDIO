@@ -32,6 +32,32 @@
     <meta name="twitter:image" content="https://kolorstudio.app/og-card.png" />
     <meta name="twitter:title" content="KOLOR Studio — CRM for Photographers and Artists" />
     <meta name="twitter:description" content="Leads, quotes, contracts, and calendar — in one tool built for photographers, designers, and fine artists." />
+
+    <!-- Iter 181 — Critical CSS: shimmer skeleton + dark background render before React bundle parses -->
+    <style id="ks-critical">
+      @media (prefers-reduced-motion: no-preference) {
+        @keyframes ks-shimmer {
+          0%   { background-position: -200% 0; }
+          100% { background-position:  200% 0; }
+        }
+        .ks-shimmer {
+          background: linear-gradient(90deg,#ede9fe 0%,#ddd6fe 20%,#c4b5fd 40%,#ddd6fe 60%,#ede9fe 80%);
+          background-size: 200% 100%;
+          animation: ks-shimmer 1.6s ease-in-out infinite;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .ks-shimmer { background: #ede9fe; }
+      }
+      /* Loading screen shown before React mounts — eliminates white flash on cold load */
+      #root:empty::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: #080612;
+        z-index: 9999;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

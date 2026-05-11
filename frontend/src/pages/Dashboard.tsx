@@ -36,12 +36,13 @@ import { useOnboardingTour } from '../components/OnboardingTour'
 import OnboardingWizard, { useOnboardingWizard } from '../components/OnboardingWizard'
 import { SmartSuggestion } from '../components/SmartSuggestion'
 import { CelebrationModal, checkCelebration, Achievement, achievements } from '../components/CelebrationModal'
-import CRMAlerts from '../components/CRMAlerts'
+// Iter 181 — lazify conditionally-rendered heavy components to shrink Dashboard chunk.
+const CRMAlerts = lazy(() => import('../components/CRMAlerts'))
 const RevenueDashboard = lazy(() => import('../components/RevenueDashboard'))
 import CalendarConnectionWidget from '../components/CalendarConnectionWidget'
 import OnboardingChecklist from '../components/OnboardingChecklist'
 import AHAModal from '../components/AHAModal'
-import NeedsAttentionSection from '../components/NeedsAttentionSection'
+const NeedsAttentionSection = lazy(() => import('../components/NeedsAttentionSection'))
 import RevenueGoalWidget from '../components/RevenueGoalWidget'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
 import DemoProjectBanner from '../components/DemoProjectBanner'
@@ -241,7 +242,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     const init = async () => {
-      const userResult = await authApi.getMe()
+      let userResult = await authApi.getMe()
+      // Iter 181 — retry once after 800ms before giving up. Handles cold Railway start
+      // where the first request may return 500 and otherwise loops user back to /login.
+      if (userResult.error) {
+        await new Promise(r => setTimeout(r, 800))
+        userResult = await authApi.getMe()
+      }
       if (userResult.error) {
         localStorage.removeItem('user')
         navigate('/login')
@@ -1133,12 +1140,14 @@ const Dashboard = () => {
         </div>
 
         {(viewMode === 'kanban' || viewMode === 'list') && needsAttention.length > 0 && (
-          <NeedsAttentionSection
-            items={needsAttention}
-            lang={lang}
-            currencySymbol={user?.currencySymbol}
-            onLeadClick={setSelectedLead}
-          />
+          <Suspense fallback={null}>
+            <NeedsAttentionSection
+              items={needsAttention}
+              lang={lang}
+              currencySymbol={user?.currencySymbol}
+              onLeadClick={setSelectedLead}
+            />
+          </Suspense>
         )}
 
         {/* Lead-management chrome (stat cards + filter toolbar) — only visible for lead-focused views */}
@@ -1475,13 +1484,17 @@ const Dashboard = () => {
             <aside className="hidden lg:block space-y-4" data-testid="dashboard-right-sidebar">
               {/* Iter 146 — Task 1b: CRM Alerts + Revenue Dashboard moved into sidebar */}
               <div data-tour="crm-alerts">
-                <CRMAlerts onLeadClick={(leadId) => {
-                  const lead = leads.find(l => l.id === leadId)
-                  if (lead) setSelectedLead(lead)
-                }} />
+                <Suspense fallback={<div className="bg-light-50 rounded-2xl border border-light-200 h-32 ks-shimmer" />}>
+                  <CRMAlerts onLeadClick={(leadId) => {
+                    const lead = leads.find(l => l.id === leadId)
+                    if (lead) setSelectedLead(lead)
+                  }} />
+                </Suspense>
               </div>
               <div data-tour="revenue-dashboard">
-                <RevenueDashboard />
+                <Suspense fallback={<div className="bg-light-50 rounded-2xl border border-light-200 h-32 ks-shimmer" />}>
+                  <RevenueDashboard />
+                </Suspense>
               </div>
 
               {/* Revenue Goal Widget */}
