@@ -620,6 +620,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **Bundle splits**: `CRMAlerts` and `NeedsAttentionSection` converted from eager to lazy in `Dashboard.tsx`; render sites wrapped in `<Suspense fallback={…}>`. Dashboard chunk 442 KB → 437 KB; new `CRMAlerts-*.js` 14.5 KB / 4.9 KB gz separate chunk. Parallel `Promise.all` for fetchLeads/fetchStats/fetchPendingContracts was already in place from iter-172 (verified).
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.17 s, no warnings). Commit `b6f0141`.
 
+### Iteration 182 — OG Card + Favicon Set + Branded Pre-React Splash (Complete, Feb 2026)
+- **og-card.png** regenerated (15 KB) with current converging-pinwheel mark inside #6C2EDB rounded container, divider line, feature pills (Leads / Quotes / Contracts / Calendar), strong hierarchy. Old asset was from iter-166, predating the iter-175 mark swap.
+- **Favicon set generated from `kolor-mark.png`**: `favicon-32.png` (0.7 KB), `favicon-16.png` (0.4 KB), `apple-touch-icon.png` (5 KB, iOS), `favicon-192.png` (5.3 KB, PWA), `favicon-512.png` (15.6 KB, PWA large), `favicon-mark.png` refreshed (5 KB). All use mark-in-violet-container.
+- **index.html**: favicon `<link>` tags now reference proper sizes; `#root:empty` upgraded from plain dark `::before` to a full branded splash — inline SVG K mark (same 4-quadrant geometry as `KolorSpinner`) inside violet 72×72 container, KOLOR / STUDIO wordmark below, `ks-fade-in` animation (`prefers-reduced-motion` safe). React mount replaces splash content seamlessly.
+- Build gate: `npm run build` ✓ (6.93 s, no warnings, no TS changes). Commit `69e0c23`.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
