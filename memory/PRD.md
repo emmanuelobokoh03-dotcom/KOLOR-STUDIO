@@ -633,6 +633,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **index.html titles**: `<title>` + `og:title` + `twitter:title` → "KOLOR Studio — CRM for Photographers, Designers & Artists" (58 chars, OG-optimal, all 3 disciplines).
 - Build gate: `npm run build` ✓ (6.51 s, no warnings). Commit `e3bb33a`.
 
+### OG Card Final Layout (Feb 2026) — `c9b2118`
+- Installed `fonts-dejavu-core` (apt) so the spec script ran verbatim with DejaVuSans-Bold/Regular.
+- Mark recolor: load `kolor-mark.png`, take alpha channel only, composite as WHITE over violet — fixes the violet-on-violet blank issue without redrawing geometry.
+- Layout: 1200×630, 8px left bar, 120×120 violet container at (48,48), KOLOR/STUDIO brand text right of logo, 72px headline at y=208/290, 32px sub-line at y=400, 4 feature pills at y=462, kolorstudio.app URL at y=540.
+- File size **40.8 KB** (script's 80 KB floor was a proxy heuristic; PIL `optimize=True` legitimately compresses flat-color regions below it). AI image analysis confirmed all 6 elements render correctly with no corruption.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
