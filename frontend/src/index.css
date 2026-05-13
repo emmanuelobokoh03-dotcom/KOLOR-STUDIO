@@ -945,3 +945,72 @@ select:focus {
 @media (prefers-reduced-motion: reduce) {
   .ks-shimmer { background: #ede9fe; }
 }
+
+/* ─── Iter 185: Landing page elevation ──────────────────────────────── */
+
+/* Spotlight sweep on section headings */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lp-spotlight {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+  .lp-spotlight-text {
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0.65) 0%,
+      rgba(255,255,255,1)    40%,
+      rgba(167,139,250,1)    52%,
+      rgba(255,255,255,1)    64%,
+      rgba(255,255,255,0.65) 100%
+    );
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: lp-spotlight 4.5s ease-in-out infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-spotlight-text { color: #ffffff; -webkit-text-fill-color: #ffffff; }
+}
+
+/* Decorative beam sweep on dark sections */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lp-beam {
+    0%   { transform: translateX(-120%) skewX(-12deg); }
+    100% { transform: translateX(220%) skewX(-12deg); }
+  }
+  .lp-beam-container {
+    position: relative;
+    overflow: hidden;
+  }
+  .lp-beam-container::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 35%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(108,46,219,0.06), transparent);
+    animation: lp-beam 7s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+/* Mockup tilt — transform applied by JS */
+.lp-mockup-tilt {
+  transition: transform 200ms ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Feature card glow on hover */
+@media (prefers-reduced-motion: no-preference) {
+  .lp-feature-card {
+    transition: transform 280ms cubic-bezier(0.4,0,0.2,1),
+                box-shadow 280ms cubic-bezier(0.4,0,0.2,1);
+  }
+  .lp-feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 60px rgba(108,46,219,0.18);
+  }
+}

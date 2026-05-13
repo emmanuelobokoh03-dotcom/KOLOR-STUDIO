@@ -224,7 +224,9 @@ function ArtistMockup() {
 }
 
 function FeatureRowsSection() {
-  const rows: Array<{ label: string; title: string; body: string; mockup: JSX.Element; flip?: boolean }> = [
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  const rows = [
     {
       label: 'FOR PHOTOGRAPHERS',
       title: 'Every inquiry. Organised.',
@@ -236,7 +238,6 @@ function FeatureRowsSection() {
       title: 'Look professional from day one.',
       body: 'Send branded proposals in minutes. When they accept, a project agreement goes out automatically. Get paid faster in your currency, wherever your clients are.',
       mockup: <QuoteMockup />,
-      flip: true,
     },
     {
       label: 'FOR FINE ARTISTS',
@@ -245,68 +246,130 @@ function FeatureRowsSection() {
       mockup: <ArtistMockup />,
     },
   ]
-  // Iter 143 — animate mockup entrance when the row gains the `revealed` class (set by the existing IO at the page root).
+
   useEffect(() => {
-    const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
-    const skipAnimation = isReducedMotion || isMobile
+    const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (isReducedMotion) return
+    const items = document.querySelectorAll<HTMLElement>('[data-feature-item]')
+    if (!items.length) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setActiveIndex(Number(entry.target.getAttribute('data-feature-item')))
+          }
+        })
+      },
+      { threshold: 0.55, rootMargin: '-5% 0px -5% 0px' }
+    )
+    items.forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
 
-    // Iter 154 — On mobile or reduced-motion: reveal all mockups immediately,
-    // skip observer machinery (MutationObserver timing fails on narrow viewports)
-    if (skipAnimation) {
-      document.querySelectorAll<HTMLElement>('.mockup-animate').forEach(el => {
-        el.style.opacity = '1'
-        el.style.transform = 'translateY(0)'
-      })
-      return
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const el = document.querySelector<HTMLElement>('.lp-mockup-sticky')
+    if (!el) return
+    const onMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect()
+      const rx = ((e.clientY - (rect.top + rect.height/2)) / (rect.height/2)) * 3
+      const ry = ((e.clientX - (rect.left + rect.width/2)) / (rect.width/2)) * -3
+      el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`
     }
-
-    const sections = document.querySelectorAll<HTMLElement>('[data-feature-row]')
-    const observers: MutationObserver[] = []
-
-    sections.forEach(section => {
-      const mockup = section.querySelector<HTMLElement>('.mockup-animate')
-      if (!mockup) return
-
-      const apply = () => {
-        mockup.style.opacity = '1'
-        mockup.style.transform = 'translateY(0)'
-      }
-
-      if (section.classList.contains('revealed')) { apply(); return }
-
-      const obs = new MutationObserver(() => {
-        if (section.classList.contains('revealed')) { apply(); obs.disconnect() }
-      })
-      obs.observe(section, { attributes: true, attributeFilter: ['class'] })
-      observers.push(obs)
-    })
-
-    return () => observers.forEach(o => o.disconnect())
+    const onLeave = () => { el.style.transform = '' }
+    window.addEventListener('mousemove', onMove, { passive: true })
+    el.addEventListener('mouseleave', onLeave)
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      el.removeEventListener('mouseleave', onLeave)
+    }
   }, [])
 
   return (
     <section className="py-16 px-6" id="features" data-testid="features-section">
-      <div className="max-w-5xl mx-auto space-y-20">
-        {rows.map((row, i) => (
-          <div
-            key={i}
-            data-feature-row
-            className={`reveal-section flex flex-col ${row.flip ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-6 md:gap-16`}
-          >
-            <div className="flex-1">
+      <div className="max-w-5xl mx-auto">
+
+        {/* Mobile: stacked layout */}
+        <div className="md:hidden space-y-20">
+          {rows.map((row, i) => (
+            <div key={i} className="reveal-section">
               <span className="text-xs font-mono font-bold tracking-[0.12em] text-purple-400 mb-3 block">{row.label}</span>
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">{row.title}</h3>
-              <p className="text-sm text-white/60 leading-relaxed">{row.body}</p>
+              <h3 className="text-2xl font-bold text-white mb-4 leading-tight">{row.title}</h3>
+              <p className="text-sm text-white/60 leading-relaxed mb-8">{row.body}</p>
+              <div>{row.mockup}</div>
             </div>
-            <div
-              className="flex-1 w-full mockup-animate"
-              style={{ opacity: 0, transform: 'translateY(24px)', transition: 'opacity 0.55s ease, transform 0.55s ease' }}
-            >
-              {row.mockup}
+          ))}
+        </div>
+
+        {/* Desktop: sticky mockup */}
+        <div className="hidden md:flex gap-16 items-start">
+
+          {/* Left: scrollable feature text */}
+          <div className="flex-1">
+            {rows.map((row, i) => (
+              <div
+                key={i}
+                data-feature-item={i}
+                className="min-h-[72vh] flex flex-col justify-center py-20 transition-all duration-500"
+                style={{ opacity: activeIndex === i ? 1 : 0.32 }}
+              >
+                <span
+                  className="text-xs font-mono font-bold tracking-[0.12em] mb-4 block transition-colors duration-400"
+                  style={{ color: activeIndex === i ? '#a78bfa' : 'rgba(167,139,250,0.35)' }}
+                >
+                  {row.label}
+                </span>
+                <h3
+                  className="text-3xl font-bold mb-5 leading-tight transition-colors duration-400"
+                  style={{ color: activeIndex === i ? '#ffffff' : 'rgba(255,255,255,0.4)' }}
+                >
+                  {row.title}
+                </h3>
+                <p
+                  className="text-sm leading-relaxed max-w-sm transition-colors duration-400"
+                  style={{ color: activeIndex === i ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.25)' }}
+                >
+                  {row.body}
+                </p>
+                <div className="flex gap-2 mt-8">
+                  {rows.map((_, j) => (
+                    <div
+                      key={j}
+                      className="h-0.5 rounded-full transition-all duration-500"
+                      style={{
+                        width: j === i && activeIndex === i ? 32 : 8,
+                        background: j === i && activeIndex === i
+                          ? '#6C2EDB' : 'rgba(255,255,255,0.1)',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Right: sticky mockup panel */}
+          <div className="flex-1" style={{ position: 'sticky', top: '16vh', height: '68vh', display: 'flex', alignItems: 'center' }}>
+            <div className="lp-mockup-sticky lp-mockup-tilt w-full" style={{ position: 'relative', transition: 'transform 200ms ease-out' }}>
+              {rows.map((row, i) => (
+                <div
+                  key={i}
+                  style={{
+                    position: i === 0 ? 'relative' : 'absolute',
+                    top: 0, left: 0, right: 0,
+                    opacity: activeIndex === i ? 1 : 0,
+                    transform: activeIndex === i ? 'translateY(0) scale(1)' : 'translateY(14px) scale(0.97)',
+                    transition: 'opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1)',
+                    pointerEvents: activeIndex === i ? 'auto' : 'none',
+                  }}
+                >
+                  {row.mockup}
+                </div>
+              ))}
             </div>
           </div>
-        ))}
+
+        </div>
       </div>
     </section>
   )
@@ -315,7 +378,7 @@ function FeatureRowsSection() {
 function SimpleFinalCTA({ onCta }: { onCta: () => void }) {
   return (
     <section className="py-20 px-6 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+      <h2 className="text-3xl md:text-4xl font-bold lp-spotlight-text mb-4">
         Your creative business.<br />Finally under control.
       </h2>
       <p className="text-white/50 text-sm mb-8 max-w-md mx-auto">
@@ -790,7 +853,7 @@ function ProblemSection() {
   ]
 
   return (
-    <section className="reveal-section" style={{ padding: '100px 24px' }} data-testid="problem-section" id="stories">
+    <section className="reveal-section lp-beam-container" style={{ padding: '100px 24px' }} data-testid="problem-section" id="stories">
       <div className="max-w-[1000px] mx-auto">
         <SectionLabel>The problem</SectionLabel>
 
@@ -1878,7 +1941,7 @@ function ProductDeepDiveSection() {
     <section className="reveal-section" style={{ padding: '80px 24px' }} data-testid="product-deepdive-section">
       <div className="max-w-[1000px] mx-auto">
         <SectionLabel>How KOLOR works</SectionLabel>
-        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-16" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15, color: '#ffffff' }}>
+        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-16 lp-spotlight-text" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', lineHeight: 1.15 }}>
           Built for every stage of your studio.
         </h2>
 
@@ -1922,7 +1985,7 @@ function MidPageCTA({ onCta }: { onCta: () => void }) {
           <span className="landing-pulse-dot w-1.5 h-1.5 rounded-full" style={{ background: '#6C2EDB' }} />
           <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>20 founder spots &middot; 3 remaining</span>
         </div>
-        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-5" style={{ fontSize: 'clamp(26px, 3vw, 38px)', lineHeight: 1.15, color: '#ffffff' }}>
+        <h2 className="font-display font-extrabold tracking-[-0.025em] mb-5 lp-spotlight-text" style={{ fontSize: 'clamp(26px, 3vw, 38px)', lineHeight: 1.15 }}>
           Stop losing clients to a slower reply.
         </h2>
         <p className="mb-8 leading-relaxed" style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', maxWidth: 480, margin: '0 auto 32px' }}>
@@ -1953,7 +2016,7 @@ function UrgencySection({ onCta }: { onCta: () => void }) {
   const endDate = getBetaEndDate()
 
   return (
-    <section className="reveal-section px-6 md:px-10 mb-20" data-testid="urgency-section" id="pricing">
+    <section className="reveal-section lp-beam-container px-6 md:px-10 mb-20" data-testid="urgency-section" id="pricing">
       <div
         className="relative overflow-hidden rounded-3xl max-w-[1000px] mx-auto text-center"
         style={{
