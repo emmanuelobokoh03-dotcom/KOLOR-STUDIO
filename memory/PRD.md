@@ -639,6 +639,12 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - Layout: 1200×630, 8px left bar, 120×120 violet container at (48,48), KOLOR/STUDIO brand text right of logo, 72px headline at y=208/290, 32px sub-line at y=400, 4 feature pills at y=462, kolorstudio.app URL at y=540.
 - File size **40.8 KB** (script's 80 KB floor was a proxy heuristic; PIL `optimize=True` legitimately compresses flat-color regions below it). AI image analysis confirmed all 6 elements render correctly with no corruption.
 
+### Iteration 184 — Favicon Recolor + OG Validation Guard (Feb 2026) — `f5f0be8`
+- **Favicons regenerated** (same root cause as OG card bug): mark PNG is violet on transparent; pasted on violet container without recolor → invisible K. Applied the alpha-channel→white-mark composite fix from iter-183 to all 6 sizes (16/32/180/192/512 + favicon-mark). White pixels verified at expected K-stroke coords (relative 0.32/0.35 mapping).
+- **`scripts/validate-og.mjs`** (new): size-range check (20 KB–500 KB) always; with optional `sharp` dep, samples 6 content pixels and fails if any equals background color. Wired into `frontend/package.json` as `yarn validate:og`.
+- index.html: confirmed iter-182 favicon links + iter-183 "Designers & Artists" title still in place (no changes needed).
+- Build gate: `npm run build` ✓ (6.66 s, no warnings). Validation script runs clean.
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
