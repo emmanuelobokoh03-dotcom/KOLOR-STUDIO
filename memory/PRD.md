@@ -645,6 +645,13 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - index.html: confirmed iter-182 favicon links + iter-183 "Designers & Artists" title still in place (no changes needed).
 - Build gate: `npm run build` ✓ (6.66 s, no warnings). Validation script runs clean.
 
+### Iteration 185 — Landing Page Elevation + Brand Asset Script (Feb 2026) — `8f950c7`
+- **Sticky FeatureRowsSection** (HoneyBook-style): mockup panel pinned via `position: sticky`; text column scrolls past with `IntersectionObserver` tracking the active row. Inactive rows fade to 32 % opacity + muted text. Progress dots animate width on active. Mockup crossfades + scales between features. Mouse parallax tilt (3°) on the sticky mockup. Mobile preserves the original stacked layout.
+- **CSS additions** (`index.css`): `.lp-spotlight-text` (animated gradient sweep on headings), `.lp-beam-container` (decorative light beam on dark sections), `.lp-mockup-tilt` (perspective+transform-style utility), `.lp-feature-card` (hover lift+glow). All inside `prefers-reduced-motion: no-preference` with safe fallbacks.
+- **Spotlight applied** to 3 simple-white H2s: SimpleFinalCTA, "Built for every stage of your studio.", "Stop losing clients to a slower reply." **Beam applied** to ProblemSection + UrgencySection.
+- **`scripts/generate-brand-assets.py`** (new): single-command regen of og-card + 6 favicons, with white-mark alpha compositing and multi-point pixel sampling to verify the K is visible. `yarn brand:rebuild` runs it then `validate-og.mjs`. Threshold lowered to 10 KB to match efficient PNG compression on flat-color regions.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.43 s, no warnings).
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
