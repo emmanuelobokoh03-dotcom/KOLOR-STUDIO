@@ -165,27 +165,19 @@ function ArtistMockup() {
   const barRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
     const bar = barRef.current
     if (!bar) return
-
-    if (isReducedMotion || isMobile) {
-      bar.style.width = '60%'
-      return
-    }
-
-    const section = bar.closest('[data-feature-row]')
-    if (!section) return
-
-    const apply = () => { bar.style.width = '60%' }
-    if (section.classList.contains('revealed')) { apply(); return }
-
-    const obs = new MutationObserver(() => {
-      if (section.classList.contains('revealed')) { apply(); obs.disconnect() }
-    })
-    obs.observe(section, { attributes: true, attributeFilter: ['class'] })
-    return () => obs.disconnect()
+    const isReducedMotion = typeof window !== 'undefined'
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (isReducedMotion) { bar.style.width = '60%'; return }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) { bar.style.width = '60%'; observer.disconnect() }
+      },
+      { threshold: 0.1 }
+    )
+    observer.observe(bar)
+    return () => observer.disconnect()
   }, [])
 
   return (
@@ -260,7 +252,7 @@ function FeatureRowsSection() {
           }
         })
       },
-      { threshold: 0.55, rootMargin: '-5% 0px -5% 0px' }
+      { threshold: 0.25 }
     )
     items.forEach(el => observer.observe(el))
     return () => observer.disconnect()
@@ -350,7 +342,7 @@ function FeatureRowsSection() {
 
           {/* Right: sticky mockup panel */}
           <div className="flex-1" style={{ position: 'sticky', top: '16vh', height: '68vh', display: 'flex', alignItems: 'center' }}>
-            <div className="lp-mockup-sticky lp-mockup-tilt w-full" style={{ position: 'relative', transition: 'transform 200ms ease-out' }}>
+            <div className="lp-mockup-sticky lp-mockup-tilt w-full" style={{ position: 'relative', transition: 'transform 200ms ease-out', minHeight: 300 }}>
               {rows.map((row, i) => (
                 <div
                   key={i}
@@ -502,6 +494,7 @@ function Nav({ onCta }: { onCta: () => void }) {
 
 /* ---------- SECTION 1: HERO ---------- */
 function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; variant?: 'control' | 'fine_art' }) {
+  const [activeTab, setActiveTab] = useState<'leads' | 'quotes' | 'contracts'>('leads')
   return (
     <section className="relative overflow-hidden" style={{ padding: '100px 0 80px' }} data-testid="hero-section" data-variant={variant}>
       {/* Ambient glows */}
@@ -736,60 +729,130 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
               </div>
 
               {/* Main content */}
-              <div className="flex-1 min-w-0 p-3 md:p-5 min-h-[240px] md:min-h-[340px]" style={{ background: '#100D20', overflow: 'hidden' }}>
-                <div className="flex items-start justify-between mb-3 gap-2">
+              <div className="flex-1 min-w-0 min-h-[240px] md:min-h-[340px]" style={{ background: '#100D20', overflow: 'hidden' }}>
+                <div className="px-3 md:px-5 pt-3 md:pt-4 flex items-start justify-between gap-2">
                   <div>
                     <div className="text-xs font-semibold text-white/80 whitespace-nowrap">Good morning, Sarah <span style={{ color: '#a78bfa' }}>&#10022;</span></div>
                   </div>
                   <div className="text-[10px] font-semibold text-white rounded-md px-2.5 py-1 whitespace-nowrap flex-shrink-0" style={{ background: '#6C2EDB' }}>+ New Lead</div>
                 </div>
 
-                {/* 4-stat row */}
-                <div className="flex gap-1.5 mb-4 overflow-x-auto scrollbar-hide pb-0.5">
-                  {[
-                    { label: 'Leads', val: '24' },
-                    { label: 'New', val: '8' },
-                    { label: 'Quoted', val: '6' },
-                    { label: 'Booked', val: '10' },
-                  ].map(s => (
-                    <div
-                      key={s.label}
-                      className="rounded-lg px-2.5 py-2 flex-shrink-0"
-                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', minWidth: 52 }}
+                {/* Tab switcher */}
+                <div className="flex border-b px-3 mt-3" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                  {(['leads', 'quotes', 'contracts'] as const).map(tab => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className="px-3 py-2 text-[10px] font-semibold capitalize transition-colors duration-150 border-b-2 -mb-px"
+                      style={{
+                        color: activeTab === tab ? '#a78bfa' : 'rgba(255,255,255,0.25)',
+                        borderBottomColor: activeTab === tab ? '#6C2EDB' : 'transparent',
+                        background: 'none',
+                      }}
+                      data-testid={`hero-tab-${tab}`}
                     >
-                      <div className="text-sm font-bold text-white/90">{s.val}</div>
-                      <div className="text-[10px] text-white/30 whitespace-nowrap">{s.label}</div>
-                    </div>
+                      {tab}
+                    </button>
                   ))}
                 </div>
 
-                {/* Mini table */}
-                <div className="rounded-lg overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
-                  {[
-                    { name: 'Jessica Liu', project: 'Wedding', status: 'Quoted', amount: '$4,200', statusColor: '#D97706', bg: 'rgba(217,119,6,0.1)' },
-                    { name: 'Marcus Reid', project: 'Portrait', status: 'Signed', amount: '$850', statusColor: '#059669', bg: 'rgba(5,150,105,0.1)' },
-                    { name: 'Anika Kapoor', project: 'Commercial', status: 'Inquiry', amount: '$6,500', statusColor: 'rgba(255,255,255,0.25)', bg: 'rgba(255,255,255,0.03)' },
-                  ].map((row, i) => (
-                    <div
-                      key={row.name}
-                      className="flex items-center justify-between px-3 py-2.5 text-xs"
-                      style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="font-medium text-white/70 truncate">{row.name}</span>
-                        <span className="text-white/25 hidden sm:inline flex-shrink-0">{row.project}</span>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span
-                          className="font-medium rounded px-1.5 py-0.5 text-[10px] whitespace-nowrap"
-                          style={{ borderLeft: `2px solid ${row.statusColor}`, background: row.bg, color: row.statusColor }}
+                <div className="p-3 md:p-5">
+                {activeTab === 'leads' && (
+                  <>
+                    {/* 4-stat row */}
+                    <div className="flex gap-1.5 mb-4 overflow-x-auto scrollbar-hide pb-0.5">
+                      {[
+                        { label: 'Leads', val: '24' },
+                        { label: 'New', val: '8' },
+                        { label: 'Quoted', val: '6' },
+                        { label: 'Booked', val: '10' },
+                      ].map(s => (
+                        <div
+                          key={s.label}
+                          className="rounded-lg px-2.5 py-2 flex-shrink-0"
+                          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', minWidth: 52 }}
                         >
-                          {row.status}
-                        </span>
-                        <span className="hidden sm:inline text-white/40 tabular-nums">{row.amount}</span>
-                      </div>
+                          <div className="text-sm font-bold text-white/90">{s.val}</div>
+                          <div className="text-[10px] text-white/30 whitespace-nowrap">{s.label}</div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+
+                    {/* Mini table */}
+                    <div className="rounded-lg overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
+                      {[
+                        { name: 'Jessica Liu', project: 'Wedding', status: 'Quoted', amount: '$4,200', statusColor: '#D97706', bg: 'rgba(217,119,6,0.1)' },
+                        { name: 'Marcus Reid', project: 'Portrait', status: 'Signed', amount: '$850', statusColor: '#059669', bg: 'rgba(5,150,105,0.1)' },
+                        { name: 'Anika Kapoor', project: 'Commercial', status: 'Inquiry', amount: '$6,500', statusColor: 'rgba(255,255,255,0.25)', bg: 'rgba(255,255,255,0.03)' },
+                      ].map((row, i) => (
+                        <div
+                          key={row.name}
+                          className="flex items-center justify-between px-3 py-2.5 text-xs"
+                          style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-medium text-white/70 truncate">{row.name}</span>
+                            <span className="text-white/25 hidden sm:inline flex-shrink-0">{row.project}</span>
+                          </div>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <span
+                              className="font-medium rounded px-1.5 py-0.5 text-[10px] whitespace-nowrap"
+                              style={{ borderLeft: `2px solid ${row.statusColor}`, background: row.bg, color: row.statusColor }}
+                            >
+                              {row.status}
+                            </span>
+                            <span className="hidden sm:inline text-white/40 tabular-nums">{row.amount}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {activeTab === 'quotes' && (
+                  <div className="space-y-2" data-testid="hero-quotes-tab">
+                    <div className="text-xs font-semibold text-white/60 mb-2">Recent Quotes</div>
+                    {[
+                      { client: 'Chiara B.', project: 'Brand Campaign', amount: '$6,400', status: 'Accepted', color: '#34d399' },
+                      { client: 'James O.',  project: 'Commission',     amount: '$2,800', status: 'Sent',     color: '#a78bfa' },
+                      { client: 'Lena M.',   project: 'Editorial',      amount: '$1,200', status: 'Draft',    color: 'rgba(255,255,255,0.3)' },
+                    ].map((q, i) => (
+                      <div key={i} className="flex items-center justify-between rounded-lg px-3 py-2.5 text-xs"
+                        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div>
+                          <p className="font-semibold text-white/80">{q.client}</p>
+                          <p className="text-[10px] text-white/35">{q.project}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-white/50 font-medium">{q.amount}</span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded"
+                            style={{ background: `${q.color}18`, color: q.color }}>{q.status}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {activeTab === 'contracts' && (
+                  <div className="space-y-2" data-testid="hero-contracts-tab">
+                    <div className="text-xs font-semibold text-white/60 mb-2">Commission Agreements</div>
+                    {[
+                      { client: 'Chiara B.', type: 'Service Agreement',   status: 'Signed', color: '#34d399' },
+                      { client: 'Marcus R.', type: 'Photography License',  status: 'Sent',   color: '#a78bfa' },
+                      { client: 'Anika K.',  type: 'Art Commission Brief', status: 'Draft',  color: 'rgba(255,255,255,0.3)' },
+                    ].map((c, i) => (
+                      <div key={i} className="flex items-center justify-between rounded-lg px-3 py-2.5 text-xs"
+                        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div>
+                          <p className="font-semibold text-white/80">{c.client}</p>
+                          <p className="text-[10px] text-white/35">{c.type}</p>
+                        </div>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded"
+                          style={{ background: `${c.color}18`, color: c.color }}>{c.status}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 </div>
               </div>
             </div>

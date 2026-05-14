@@ -992,7 +992,7 @@ select:focus {
     background: linear-gradient(90deg, transparent, rgba(108,46,219,0.06), transparent);
     animation: lp-beam 7s ease-in-out infinite;
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
   }
 }
 
