@@ -652,6 +652,22 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 - **`scripts/generate-brand-assets.py`** (new): single-command regen of og-card + 6 favicons, with white-mark alpha compositing and multi-point pixel sampling to verify the K is visible. `yarn brand:rebuild` runs it then `validate-og.mjs`. Threshold lowered to 10 KB to match efficient PNG compression on flat-color regions.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.43 s, no warnings).
 
+### Iteration 186 — Sticky Feature Bug Fixes + Hero Tab Switcher (Feb 2026) — `4876ad7`
+Five bugs from iter-185 fixed:
+- **Bug 1 — Mockup container collapse**: sticky panel had no `minHeight`; mockups 2/3 (position:absolute children) clipped to zero. Added `minHeight: 300`.
+- **Bug 2 — Observer never fires**: threshold `0.55` + `rootMargin -5%` was unreachable for 72vh-tall items. Simplified to `{ threshold: 0.25 }`.
+- **Bug 3 — ArtistMockup progress bar**: previously used `bar.closest('[data-feature-row]')` (legacy attr). Replaced with a direct `IntersectionObserver` on the bar element itself — animates to 60 % on first intersection.
+- **Bug 4 — Beam blocks clicks**: `lp-beam-container::after` had `z-index: 0`, blocking children (CTAs in UrgencySection). Set to `-1`.
+- **Bug 5 — Spotlight inline color**: verified no conflicts (already removed inline `color:#ffffff` during iter-185 spotlight wiring).
+
+Hero dashboard tab switcher:
+- `activeTab` state (`'leads' | 'quotes' | 'contracts'`), violet underline indicator, `text-[#a78bfa]` active label.
+- **Leads** (existing): 4-stat row + mini table (Jessica / Marcus / Anika).
+- **Quotes** (new): Recent Quotes list (Chiara / James / Lena) — Accepted / Sent / Draft pills.
+- **Contracts** (new): Commission Agreements (Chiara / Marcus / Anika) — Signed / Sent / Draft pills.
+- "Good morning, Sarah" header lifted above the tab strip so context persists across tabs. `data-testid="hero-tab-{tab}"` on each button.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.16 s, no warnings).
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
