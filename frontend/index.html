@@ -72,18 +72,9 @@
   <body>
     <div id="root" style="min-height:100vh;background:#080612;">
       <!-- Iter 182 — Branded splash: visible before React mounts, replaced when JS loads -->
-      <div class="ks-splash-inner" style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+      <div class="ks-splash-inner" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
         <div style="width:72px;height:72px;background:#6C2EDB;border-radius:16px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-          <svg viewBox="0 0 100 100" width="56" height="56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <g fill="#ffffff">
-              <rect x="44" y="6" width="8" height="40" rx="1"/>
-              <path d="M 44 22 A 24 24 0 0 0 20 46 L 44 46 Z"/>
-              <polygon points="52,6 94,6 94,30 52,48 44,36"/>
-              <rect x="44" y="54" width="8" height="40" rx="1"/>
-              <path d="M 44 54 L 20 54 A 24 24 0 0 0 44 78 Z"/>
-              <polygon points="52,52 94,70 94,94 52,94 44,64"/>
-            </g>
-          </svg>
+          <img src="/kolor-mark.png" width="56" height="56" style="filter:brightness(0) invert(1);display:block;" alt="" />
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
           <span style="font-family:system-ui,-apple-system,sans-serif;font-size:18px;font-weight:700;letter-spacing:0.18em;color:#ffffff;line-height:1;">KOLOR</span>
