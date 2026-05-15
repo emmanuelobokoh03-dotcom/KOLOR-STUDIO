@@ -59,7 +59,7 @@ export default function LandingPageV2() {
   }, [])
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: '#080612' }}>
+    <div className="min-h-screen" style={{ background: '#080612' }}>
       <Nav onCta={goSignup} />
       <HeroSection onCta={goSignup} variant={heroVariant} />
       <MarqueeSection />
@@ -278,7 +278,7 @@ function FeatureRowsSection() {
   }, [])
 
   return (
-    <section className="py-16 px-6" id="features" data-testid="features-section">
+    <section className="py-16 px-6" id="features" data-testid="features-section" style={{ overflowX: "clip" }}>
       <div className="max-w-5xl mx-auto">
 
         {/* Mobile: stacked layout */}
