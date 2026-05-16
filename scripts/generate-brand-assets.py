@@ -74,12 +74,12 @@ def make_og():
     cimg.paste(mark,(off,off),mark)
     img.paste(cimg.convert('RGB'),(CX,CY))
     try:
-        B=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',72)
-        Bs=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',30)
-        N=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',30)
-        Ns=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',18)
-        Np=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',22)
-        Nu=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',20)
+        B=ImageFont.truetype('/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',72)
+        Bs=ImageFont.truetype('/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',30)
+        N=ImageFont.truetype('/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',30)
+        Ns=ImageFont.truetype('/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',18)
+        Np=ImageFont.truetype('/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',22)
+        Nu=ImageFont.truetype('/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',20)
     except Exception:
         B=Bs=N=Ns=Np=Nu=ImageFont.load_default()
     draw.text((CX,CY+CS+18),'KOLOR',font=Bs,fill=(255,255,255))
@@ -95,6 +95,21 @@ def make_og():
             fill=(50,24,100),outline=BRAND,width=2)
         draw.text((px,py),f,font=Np,fill=(167,139,250)); px+=fw+pad*2+12
     draw.text((TX,TY+298),'kolorstudio.app',font=Nu,fill=BRAND)
+    # CTA pill — bottom right
+    try:
+        F_CTA = ImageFont.truetype(B, 24)
+        cta = 'Start free  →'
+        bb = draw.textbbox((0,0), cta, font=F_CTA)
+        tw = bb[2]-bb[0]
+        px2, py2 = 24, 12
+        pw = tw+px2*2
+        ph = bb[3]-bb[1]+py2*2
+        cx = W-pw-48
+        cy = H-ph-48
+        draw.rounded_rectangle([cx,cy,cx+pw,cy+ph], radius=ph//2, fill=BRAND)
+        draw.text((cx+px2, cy+py2-2), cta, font=F_CTA, fill=(255,255,255))
+    except Exception as e:
+        print('CTA pill warning:', e)
     out=PUB/'og-card.png'
     img.save(str(out),'PNG',optimize=True)
     sz=out.stat().st_size
