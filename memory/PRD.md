@@ -676,6 +676,12 @@ Hero dashboard tab switcher:
 - **Tab switcher touch targets**: `py-2.5 text-[11px]` for comfortable 44 px+ touch targets.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.19 s, no warnings).
 
+### Iteration 189 — Swipe-to-Dismiss + Idle Reveal + Prebuild OG Guard (Feb 2026) — `016b332`
+- **Swipe-to-dismiss**: mobile drawer accepts `pointerDown`/`pointerUp` events; horizontal swipe of 60 px+ closes the menu. Pure pointer events — works on iOS Safari, Android Chrome, and desktop mouse drag.
+- **Idle reveal**: 2 s blunt `setTimeout` replaced with `requestIdleCallback({ timeout: 1500 })` that reveals only sections within `window.innerHeight + 100 px`. Falls back to `setTimeout 800 ms` on Safari (no `requestIdleCallback`). Result: ~100 ms reveal on Chrome/Firefox instead of always waiting 2 s.
+- **Prebuild OG guard**: `npm run build` now runs `node ../scripts/validate-og.mjs` first via the `prebuild` hook. Confirmed: build log shows `> kolor-studio-frontend@1.0.0 prebuild` → `og-card.png size validation PASSED` → `> kolor-studio-frontend@1.0.0 build` chain. Broken OG cards can no longer ship undetected.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.95 s including prebuild).
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
