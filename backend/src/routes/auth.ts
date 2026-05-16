@@ -262,7 +262,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production' || req.protocol === 'https',
-      sameSite: 'lax',
+      sameSite: 'none',
       ...(rememberMe && { maxAge: 7 * 24 * 60 * 60 * 1000 }), // 7 days if remembering, session-only otherwise
       path: '/',
     });
@@ -297,7 +297,7 @@ router.post('/logout', (_req: Request, res: Response): void => {
   res.clearCookie('auth_token', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'none',
     path: '/',
   });
   res.json({ message: 'Logged out successfully' });
@@ -947,7 +947,7 @@ router.get('/google/callback', async (req: Request, res: Response): Promise<void
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production' || req.protocol === 'https',
-      sameSite: 'lax',
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/',
     });
