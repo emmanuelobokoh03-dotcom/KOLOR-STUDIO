@@ -1014,3 +1014,11 @@ select:focus {
     box-shadow: 0 24px 60px rgba(108,46,219,0.18);
   }
 }
+
+/* Beam — narrower on mobile */
+@media (max-width: 768px) {
+  .lp-beam-container::after {
+    width: 40%;
+    opacity: 0.6;
+  }
+}

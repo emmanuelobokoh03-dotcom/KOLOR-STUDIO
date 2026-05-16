@@ -41,21 +41,45 @@ export default function LandingPageV2() {
 
   /* Scroll-reveal observer */
   useEffect(() => {
+    const elements = Array.from(document.querySelectorAll<Element>('.reveal-section'))
+
+    const reveal = (el: Element, delay = 0) => {
+      setTimeout(() => el.classList.add('revealed'), delay)
+    }
+
+    // Immediately reveal elements already in viewport (fixes iOS on-load issue)
+    elements.forEach((el, i) => {
+      const rect = el.getBoundingClientRect()
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        reveal(el, i * 60)
+      }
+    })
+
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry, i) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => {
-              entry.target.classList.add('revealed')
-            }, i * 80)
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !entry.target.classList.contains('revealed')) {
+            reveal(entry.target)
             observer.unobserve(entry.target)
           }
         })
       },
-      { threshold: 0.05 }
+      { threshold: 0, rootMargin: '0px 0px -30px 0px' }
     )
-    document.querySelectorAll('.reveal-section').forEach(el => observer.observe(el))
+
+    elements.forEach(el => {
+      if (!el.classList.contains('revealed')) observer.observe(el)
+    })
+
     return () => observer.disconnect()
+  }, [])
+
+  // Fallback: force-reveal all after 2s — catches iOS Safari edge cases
+  useEffect(() => {
+    const t = setTimeout(() => {
+      document.querySelectorAll('.reveal-section').forEach(el => el.classList.add('revealed'))
+    }, 2000)
+    return () => clearTimeout(t)
   }, [])
 
   return (
@@ -391,6 +415,7 @@ function SimpleFinalCTA({ onCta }: { onCta: () => void }) {
 function Nav({ onCta }: { onCta: () => void }) {
   const [, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState<string>('')
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 60)
@@ -468,6 +493,17 @@ function Nav({ onCta }: { onCta: () => void }) {
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-[5px]"
+            onClick={() => setMenuOpen(m => !m)}
+            aria-label="Toggle menu"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
+            data-testid="nav-hamburger"
+          >
+            <span className="block w-5 h-px transition-all duration-200" style={{ background: 'rgba(255,255,255,0.7)', transform: menuOpen ? 'rotate(45deg) translateY(6px)' : 'none' }} />
+            <span className="block w-5 h-px transition-all duration-200" style={{ background: 'rgba(255,255,255,0.7)', opacity: menuOpen ? 0 : 1 }} />
+            <span className="block w-5 h-px transition-all duration-200" style={{ background: 'rgba(255,255,255,0.7)', transform: menuOpen ? 'rotate(-45deg) translateY(-6px)' : 'none' }} />
+          </button>
           <Link
             to="/login"
             className="block text-sm font-medium transition-colors duration-150"
@@ -488,6 +524,34 @@ function Nav({ onCta }: { onCta: () => void }) {
           </button>
         </div>
       </div>
+
+      {menuOpen && (
+        <div className="md:hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(8,6,18,0.98)' }} data-testid="nav-mobile-drawer">
+          <div className="px-6 py-2 flex flex-col">
+            {[
+              { label: 'Features', id: 'features' },
+              { label: 'Pricing', id: 'pricing' },
+              { label: 'Stories', id: 'stories' },
+            ].map(({ label, id }) => (
+              <button
+                key={label}
+                onClick={() => {
+                  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+                  setMenuOpen(false)
+                }}
+                style={{
+                  background: 'none', border: 'none', borderBottom: '1px solid rgba(255,255,255,0.06)',
+                  color: 'rgba(255,255,255,0.75)', fontSize: 15, fontWeight: 500,
+                  padding: '14px 0', textAlign: 'left', cursor: 'pointer', width: '100%',
+                }}
+                data-testid={`nav-mobile-${id}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   )
 }
@@ -496,7 +560,7 @@ function Nav({ onCta }: { onCta: () => void }) {
 function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; variant?: 'control' | 'fine_art' }) {
   const [activeTab, setActiveTab] = useState<'leads' | 'quotes' | 'contracts'>('leads')
   return (
-    <section className="relative overflow-hidden" style={{ padding: '100px 0 80px' }} data-testid="hero-section" data-variant={variant}>
+    <section className="relative overflow-hidden" style={{ padding: 'clamp(60px,10vw,100px) 0 clamp(40px,6vw,80px)' }} data-testid="hero-section" data-variant={variant}>
       {/* Ambient glows */}
       <div className="absolute pointer-events-none" style={{ top: '10%', left: '50%', transform: 'translateX(-50%)', width: 800, height: 600, background: 'radial-gradient(ellipse, rgba(108,46,219,0.28) 0%, rgba(108,46,219,0.06) 50%, transparent 70%)', zIndex: 0 }} />
       <div className="absolute pointer-events-none" style={{ top: '20%', left: '30%', transform: 'translateX(-50%)', width: 400, height: 300, background: 'radial-gradient(ellipse, rgba(232,137,26,0.07) 0%, transparent 60%)', zIndex: 0 }} />
@@ -743,7 +807,7 @@ function HeroSection({ onCta, variant = 'control' }: { onCta: () => void; varian
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className="px-3 py-2 text-[10px] font-semibold capitalize transition-colors duration-150 border-b-2 -mb-px"
+                      className="px-3 py-2.5 text-[11px] font-semibold capitalize transition-colors duration-150 border-b-2 -mb-px"
                       style={{
                         color: activeTab === tab ? '#a78bfa' : 'rgba(255,255,255,0.25)',
                         borderBottomColor: activeTab === tab ? '#6C2EDB' : 'transparent',
