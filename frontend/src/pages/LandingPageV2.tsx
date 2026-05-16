@@ -471,9 +471,9 @@ function Nav({ onCta }: { onCta: () => void }) {
       }}
       data-testid="landing-nav"
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-2.5">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-10 py-2 md:py-2.5">
         <div className="flex items-center gap-3">
-            <KolorLogo animated variant="light" size="md" markOnly={true} />
+            <KolorLogo animated variant="light" size="sm" markOnly={true} />
             <div className="flex flex-col justify-center">
               <span style={{ fontFamily: 'system-ui,-apple-system,sans-serif', fontSize: 17, fontWeight: 700, letterSpacing: '0.18em', color: '#ffffff', lineHeight: 1 }}>KOLOR</span>
               <span style={{ fontFamily: 'system-ui,-apple-system,sans-serif', fontSize: 8.5, fontWeight: 500, letterSpacing: '0.22em', color: 'rgba(255,255,255,0.42)', lineHeight: 1, marginTop: 2 }}>STUDIO</span>
@@ -530,13 +530,15 @@ function Nav({ onCta }: { onCta: () => void }) {
           </Link>
           <button
             onClick={onCta}
-            className="text-sm font-semibold text-white rounded-lg transition-colors duration-150"
-            style={{ background: '#6C2EDB', padding: '8px 18px' }}
+            className="text-xs md:text-sm font-semibold text-white rounded-lg transition-colors duration-150"
+            style={{ background: '#6C2EDB', padding: '6px 12px' }}
             onMouseEnter={e => (e.currentTarget.style.background = '#5522B8')}
             onMouseLeave={e => (e.currentTarget.style.background = '#6C2EDB')}
             data-testid="nav-cta"
           >
-            Start free <span className="inline-block ml-0.5">&rarr;</span>
+            <span className="hidden sm:inline">Start free </span>
+            <span className="sm:hidden">Start </span>
+            <span className="inline-block ml-0.5">&rarr;</span>
           </button>
         </div>
       </div>
