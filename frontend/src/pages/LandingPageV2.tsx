@@ -74,12 +74,28 @@ export default function LandingPageV2() {
     return () => observer.disconnect()
   }, [])
 
-  // Fallback: force-reveal all after 2s — catches iOS Safari edge cases
+  // Fallback: reveal visible sections on idle — faster than 2s timeout,
+  // still catches iOS Safari IntersectionObserver edge cases
   useEffect(() => {
-    const t = setTimeout(() => {
-      document.querySelectorAll('.reveal-section').forEach(el => el.classList.add('revealed'))
-    }, 2000)
-    return () => clearTimeout(t)
+    const revealVisible = () => {
+      document.querySelectorAll<Element>('.reveal-section').forEach(el => {
+        const rect = el.getBoundingClientRect()
+        if (rect.top < window.innerHeight + 100) {
+          el.classList.add('revealed')
+        }
+      })
+    }
+
+    // Use requestIdleCallback if available (Chrome/Firefox),
+    // fall back to setTimeout 800ms for Safari
+    let handle: number | ReturnType<typeof setTimeout>
+    if ('requestIdleCallback' in window) {
+      handle = requestIdleCallback(revealVisible, { timeout: 1500 })
+      return () => cancelIdleCallback(handle as number)
+    } else {
+      handle = setTimeout(revealVisible, 800)
+      return () => clearTimeout(handle as ReturnType<typeof setTimeout>)
+    }
   }, [])
 
   return (
@@ -526,7 +542,17 @@ function Nav({ onCta }: { onCta: () => void }) {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(8,6,18,0.98)' }} data-testid="nav-mobile-drawer">
+        <div className="md:hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(8,6,18,0.98)' }} data-testid="nav-mobile-drawer"
+          onPointerDown={(e) => {
+            const startX = e.clientX
+            const el = e.currentTarget
+            const onUp = (ev: PointerEvent) => {
+              if (Math.abs(ev.clientX - startX) > 60) setMenuOpen(false)
+              el.removeEventListener('pointerup', onUp)
+            }
+            el.addEventListener('pointerup', onUp)
+          }}
+        >
           <div className="px-6 py-2 flex flex-col">
             {[
               { label: 'Features', id: 'features' },
