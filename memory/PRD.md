@@ -668,6 +668,14 @@ Hero dashboard tab switcher:
 - "Good morning, Sarah" header lifted above the tab strip so context persists across tabs. `data-testid="hero-tab-{tab}"` on each button.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.16 s, no warnings).
 
+### Iteration 188 — Landing Page Mobile Experience (Feb 2026) — `d4d0ad6`
+- **Hamburger menu**: animated 3-bar → X icon (`md:hidden`), mobile drawer with Features/Pricing/Stories scroll links that close on tap. `data-testid`s: `nav-hamburger`, `nav-mobile-drawer`, `nav-mobile-{id}`.
+- **Scroll reveal — iOS Safari fix**: switched from `threshold: 0.05` to `threshold: 0` + `rootMargin '0px 0px -30px 0px'`. Added on-mount synchronous reveal for elements already in viewport (via `getBoundingClientRect`), plus a 2 s timeout fallback that force-reveals everything to catch iOS edge cases where IO never fires.
+- **Beam mobile cap**: `@media (max-width: 768px) { .lp-beam-container::after { width: 40%; opacity: 0.6 } }` (desktop value left at 50 %, intensified in `d42f484`).
+- **Hero padding**: `clamp(60px,10vw,100px) 0 clamp(40px,6vw,80px)` — saves ~40 px on small screens.
+- **Tab switcher touch targets**: `py-2.5 text-[11px]` for comfortable 44 px+ touch targets.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.19 s, no warnings).
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
