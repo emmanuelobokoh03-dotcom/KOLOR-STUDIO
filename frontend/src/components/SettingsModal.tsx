@@ -4,6 +4,7 @@ import { X } from '@phosphor-icons/react/dist/csr/X'
 import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
 import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
 import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import KolorSpinner from './KolorSpinner'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { Globe } from '@phosphor-icons/react/dist/csr/Globe'
@@ -129,7 +130,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
     return (
       <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50" role="presentation">
         <div className="bg-surface-base rounded-2xl p-6 md:p-8" role="status" aria-label="Loading settings">
-          <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary" aria-hidden="true" />
+          <KolorSpinner size={32} />
           <span className="sr-only">Loading settings...</span>
         </div>
       </div>
@@ -149,7 +150,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
         aria-labelledby="settings-title"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-white p-4 md:p-6 flex-shrink-0">
+        <div className="text-white p-4 md:p-6 flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A0A3C 0%, #2D1470 100%)' }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <GearSix weight="duotone" className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />

@@ -60,10 +60,13 @@
       /* Branded splash — visible before React mounts */
       #root:empty {
         position: fixed;
-        inset: 0;
+        top: 0; left: 0; right: 0; bottom: 0;
         background: #080612;
+        display: -webkit-flex;
         display: flex;
+        -webkit-align-items: center;
         align-items: center;
+        -webkit-justify-content: center;
         justify-content: center;
         z-index: 9999;
       }
@@ -72,7 +75,7 @@
   <body>
     <div id="root" style="min-height:100vh;background:#080612;">
       <!-- Iter 182 — Branded splash: visible before React mounts, replaced when JS loads -->
-      <div class="ks-splash-inner" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+      <div class="ks-splash-inner" style="position:fixed;top:0;left:0;right:0;bottom:0;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;gap:16px;">
         <div style="width:72px;height:72px;background:#6C2EDB;border-radius:16px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
           <img src="/kolor-mark.png" width="56" height="56" style="filter:brightness(0) invert(1);display:block;" alt="" />
         </div>

@@ -243,7 +243,7 @@ export function HelpButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-brand-primary hover:brightness-110 text-white rounded-full shadow-lg shadow-brand-primary/20 hover:shadow-xl hover:shadow-brand-primary/30 flex items-center justify-center transition-all duration-200 hover:scale-110 md:bottom-6 md:right-6"
+      className="fixed bottom-20 right-4 z-50 w-11 h-11 bg-brand-primary hover:brightness-110 text-white rounded-full shadow-lg shadow-brand-primary/20 hover:shadow-xl hover:shadow-brand-primary/30 flex items-center justify-center transition-all duration-200 hover:scale-110 md:bottom-6 md:right-6 lg:bottom-6 lg:right-6"
       aria-label="Open help panel"
       data-testid="help-button"
     >

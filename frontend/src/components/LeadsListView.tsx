@@ -211,8 +211,8 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
         >
           {getInitials(lead.clientName)}
         </div>
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5 min-w-0">
             <span className="text-xs font-semibold text-text-primary truncate">{lead.clientName}</span>
             {isStale && (
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-[10px] font-medium text-amber-700 flex-shrink-0" data-testid={`stale-badge-${lead.id}`}>
