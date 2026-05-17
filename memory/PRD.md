@@ -682,6 +682,15 @@ Hero dashboard tab switcher:
 - **Prebuild OG guard**: `npm run build` now runs `node ../scripts/validate-og.mjs` first via the `prebuild` hook. Confirmed: build log shows `> kolor-studio-frontend@1.0.0 prebuild` → `og-card.png size validation PASSED` → `> kolor-studio-frontend@1.0.0 build` chain. Broken OG cards can no longer ship undetected.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.95 s including prebuild).
 
+### Iteration 190 — Mobile Polish (Feb 2026) — `b30ae5b`
+- **HelpButton**: `bottom-6` → `bottom-20 right-4` on mobile to clear the 64 px bottom nav. `md:bottom-6 md:right-6` restores desktop placement. Size 12 → 11 for tighter mobile feel.
+- **SettingsModal header**: `bg-gradient-to-r from-brand-primary` → `linear-gradient(135deg, #1A0A3C 0%, #2D1470 100%)`. Header now always uses KOLOR's dark brand, never the user's custom palette.
+- **SettingsModal loading**: SpinnerGap → KolorSpinner size=32 (SpinnerGap import retained for the button-internal use at line 464).
+- **LeadsListView truncation**: client-name wrapper gains `flex-1` (was only `min-w-0`); inner flex row containing name + stale badge gains `min-w-0`. Long names now truncate properly through both flex levels on narrow screens.
+- **iOS Safari splash**: `inset: 0` → explicit `top/left/right/bottom`, plus `-webkit-flex` prefixes on `display/align/justify` across both the CSS rule and the inline splash markup. Renders correctly on older iOS Safari that misses `inset` shorthand.
+- Fix 6 (auth lockout: clear `loginAttempts` + `lockedUntil` on successful password reset) was **already shipped in iter-160** (lines 694–695 of `auth.ts`). No backend changes required.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.71 s, prebuild validation passed).
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
