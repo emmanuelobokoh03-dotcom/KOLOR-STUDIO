@@ -156,7 +156,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
               <GearSix weight="duotone" className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />
               <div>
                 <h2 id="settings-title" className="text-xl font-bold">Settings</h2>
-                <p className="text-purple-600 text-sm">Manage your preferences</p>
+                <p className="text-sm" style={{ color: "rgba(255,255,255,0.55)" }}>Manage your preferences</p>
               </div>
             </div>
             <button 

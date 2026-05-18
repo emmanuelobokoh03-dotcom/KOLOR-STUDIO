@@ -199,7 +199,7 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
   return (
     <div
       className="lead-card-hover grid items-center px-4 py-[11px] cursor-pointer transition-all duration-150 group border-b border-[var(--border)] last:border-b-0"
-      style={{ gridTemplateColumns: '1fr 80px 96px 72px 80px' }}
+      style={{ gridTemplateColumns: 'minmax(0,1fr) 80px 90px' }}
       onClick={() => onLeadClick(lead)}
       data-testid={`lead-row-${lead.id}`}
     >
@@ -230,13 +230,13 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
         {lead.projectType ? lead.projectType.replace(/_/g, ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase()) : '—'}
       </div>
 
-      {/* Key date cell */}
-      <div className="text-xs text-[var(--text-secondary)] tabular-nums">
+      {/* Key date cell — hidden on mobile */}
+      <div className="hidden sm:block text-xs text-[var(--text-secondary)] tabular-nums">
         {formatKeyDate(lead.keyDate || lead.eventDate)}
       </div>
 
-      {/* Value cell */}
-      <div className="text-xs font-semibold text-text-primary tabular-nums">
+      {/* Value cell — hidden on mobile */}
+      <div className="hidden sm:block text-xs font-semibold text-text-primary tabular-nums">
         {formatCurrency(lead.estimatedValue, currencySymbol)}
       </div>
 
@@ -410,7 +410,7 @@ export default function LeadsListView({ leads, lang, currencySymbol = '$', onLea
         {/* Header */}
         <div
           className="grid items-center px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface-background)]"
-          style={{ gridTemplateColumns: '1fr 80px 96px 72px 80px' }}
+          style={{ gridTemplateColumns: 'minmax(0,1fr) 80px 90px' }}
         >
           <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
           <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Type</span>
