@@ -199,7 +199,7 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
   return (
     <div
       className="lead-card-hover grid items-center px-4 py-[11px] cursor-pointer transition-all duration-150 group border-b border-[var(--border)] last:border-b-0"
-      style={{ gridTemplateColumns: 'minmax(0,1fr) 80px 90px' }}
+      style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}
       onClick={() => onLeadClick(lead)}
       data-testid={`lead-row-${lead.id}`}
     >
@@ -225,18 +225,18 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
         </div>
       </div>
 
-      {/* Type cell */}
-      <div className="text-xs text-[var(--text-secondary)] truncate">
+      {/* Type cell — desktop only */}
+      <div className="hidden md:block text-xs text-[var(--text-secondary)] truncate">
         {lead.projectType ? lead.projectType.replace(/_/g, ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase()) : '—'}
       </div>
 
-      {/* Key date cell — hidden on mobile */}
-      <div className="hidden sm:block text-xs text-[var(--text-secondary)] tabular-nums">
+      {/* Key date cell — desktop only */}
+      <div className="hidden md:block text-xs text-[var(--text-secondary)] tabular-nums">
         {formatKeyDate(lead.keyDate || lead.eventDate)}
       </div>
 
-      {/* Value cell — hidden on mobile */}
-      <div className="hidden sm:block text-xs font-semibold text-text-primary tabular-nums">
+      {/* Value cell — desktop only */}
+      <div className="hidden md:block text-xs font-semibold text-text-primary tabular-nums">
         {formatCurrency(lead.estimatedValue, currencySymbol)}
       </div>
 
@@ -410,12 +410,12 @@ export default function LeadsListView({ leads, lang, currencySymbol = '$', onLea
         {/* Header */}
         <div
           className="grid items-center px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface-background)]"
-          style={{ gridTemplateColumns: 'minmax(0,1fr) 80px 90px' }}
+          style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}
         >
           <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
-          <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Type</span>
-          <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</span>
-          <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Value</span>
+          <span className="hidden md:block text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Type</span>
+          <span className="hidden md:block text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</span>
+          <span className="hidden md:block text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Value</span>
           <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Status</span>
         </div>
 

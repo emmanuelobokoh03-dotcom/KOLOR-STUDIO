@@ -239,7 +239,8 @@ export default function HelpPanel({ open, onClose, startTour, onAction }: HelpPa
 }
 
 // Floating Help Button
-export function HelpButton({ onClick }: { onClick: () => void }) {
+export function HelpButton({ onClick, hidden = false }: { onClick: () => void; hidden?: boolean }) {
+  if (hidden) return null
   return (
     <button
       onClick={onClick}

@@ -1649,7 +1649,10 @@ const Dashboard = () => {
         />
       )}
       <div data-tour="help-button">
-        <HelpButton onClick={() => setShowHelpPanel(true)} />
+        <HelpButton
+          onClick={() => setShowHelpPanel(true)}
+          hidden={showSettings || !!selectedLead}
+        />
       </div>
       <HelpPanel
         open={showHelpPanel}
