@@ -222,6 +222,13 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
             )}
           </div>
           <p className="text-[10px] text-[var(--text-secondary)] truncate">{contextLabel}</p>
+          <p className="md:hidden text-[10px] truncate mt-0.5" style={{ color: 'var(--text-secondary)', opacity: 0.65 }}>
+            {[
+              lead.projectType ? lead.projectType.replace(/_/g, ' ').toLowerCase().replace(/^\w/, (ch: string) => ch.toUpperCase()) : null,
+              (lead.keyDate || lead.eventDate) ? formatKeyDate(lead.keyDate || lead.eventDate) : null,
+              lead.estimatedValue ? formatCurrency(lead.estimatedValue, currencySymbol) : null,
+            ].filter(Boolean).join(' · ')}
+          </p>
         </div>
       </div>
 

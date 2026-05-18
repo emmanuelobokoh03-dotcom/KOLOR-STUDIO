@@ -39,7 +39,7 @@ async function validate() {
   const stat = statSync(OG_PATH)
   console.log(`og-card.png: ${(stat.size / 1024).toFixed(1)} KB`)
 
-  if (stat.size < 10_000) {
+  if (stat.size < 25_000) {
     console.error('FAIL: og-card.png is suspiciously small (< 10KB)')
     console.error('      Render likely failed — expected 15-200KB')
     process.exit(1)
