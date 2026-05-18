@@ -691,6 +691,12 @@ Hero dashboard tab switcher:
 - Fix 6 (auth lockout: clear `loginAttempts` + `lockedUntil` on successful password reset) was **already shipped in iter-160** (lines 694–695 of `auth.ts`). No backend changes required.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.71 s, prebuild validation passed).
 
+### Iteration 191 — Leads Mobile Grid Fix + Help Button Modal Hiding (Feb 2026) — `c989204`
+- **Root cause of "EOice" overlap**: `LeadRow` rendered **5 children** into a **3-column** CSS grid (`minmax(0,1fr) 80px 90px`), so the value + status cells wrapped onto a second visual line and stacked over the avatar/name on narrow viewports. The `hidden sm:block` masking was insufficient because the grid template itself still allocated tracks for the hidden cells.
+- **Fix**: lead row + header grid → `minmax(0,1fr) auto` (2 tracks). Type, key date, and value cells (rows + headers) now have `hidden md:block`. Status badge column always visible — primary mobile info. Desktop layout unchanged.
+- **HelpButton**: gained `hidden?: boolean` prop, returns `null` when `true`. Dashboard now passes `hidden={showSettings || !!selectedLead}` — the floating help button vanishes whenever Settings or Lead Detail modal is open, eliminating overlap with their sticky footers (Save Settings button, etc.). On desktop the FAB still appears whenever no modal is open.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.18 s, prebuild OG validation passed).
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
