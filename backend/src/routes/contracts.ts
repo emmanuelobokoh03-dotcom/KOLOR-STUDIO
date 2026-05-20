@@ -380,6 +380,17 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
     // All side effects fire after responding — failures are logged, not surfaced to client
     setImmediate(async () => {
 
+      // 0. Flip lead status to BOOKED — the definitive booking event
+      try {
+        await prisma.lead.update({
+          where: { id: contract.leadId },
+          data: { status: 'BOOKED' },
+        });
+        console.log('[CONTRACT] Lead status set to BOOKED for lead:', contract.leadId);
+      } catch (err) {
+        console.error('[CONTRACT] Failed to set lead BOOKED:', err);
+      }
+
       // 1. Notify studio owner
       if (contract.lead.assignedTo?.email) {
         try {

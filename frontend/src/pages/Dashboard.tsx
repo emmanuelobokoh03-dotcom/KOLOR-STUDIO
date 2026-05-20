@@ -1232,6 +1232,18 @@ const Dashboard = () => {
               )}
             </button>
 
+            {/* Mobile: share form icon button — always visible, not buried in filter panel */}
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="p-2.5 rounded-xl border border-brand-primary/30 bg-brand-primary/[0.08] text-purple-600 transition-all duration-200 touch-target md:hidden relative"
+              data-testid="mobile-share-form-toolbar"
+              aria-label="Share inquiry form"
+              title="Share inquiry form"
+            >
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#E8891A]" aria-hidden="true" />
+              <LinkIcon className="w-4 h-4" aria-hidden="true" />
+            </button>
+
             <button
               onClick={handleRefresh}
               className="p-2.5 hover:bg-light-100 rounded-xl transition-all duration-200 touch-target hidden md:flex items-center gap-2"
@@ -1593,6 +1605,47 @@ const Dashboard = () => {
         onViewChange={handleViewChange}
         onOpenSettings={() => setShowSettings(true)}
       />
+
+      {/* Mobile FAB — Add Lead + Share Form. Only on kanban/list views. Above bottom nav. */}
+      {(viewMode === 'kanban' || viewMode === 'list') && (
+        <div
+          className="fixed bottom-[72px] right-4 z-40 flex flex-col items-end gap-2 lg:hidden"
+          data-testid="mobile-fab-group"
+        >
+          <button
+            onClick={() => setShowShareModal(true)}
+            className="flex items-center gap-2 px-3.5 py-2.5 rounded-full shadow-lg text-xs font-semibold transition-all duration-200 active:scale-95"
+            style={{
+              background: 'rgba(108,46,219,0.10)',
+              border: '1px solid rgba(108,46,219,0.30)',
+              color: '#6C2EDB',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              minHeight: '44px',
+            }}
+            aria-label="Share inquiry form"
+            data-testid="mobile-fab-share"
+          >
+            <LinkIcon className="w-4 h-4" />
+            <span>Share form</span>
+          </button>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-4 py-3 rounded-full shadow-lg text-sm font-bold transition-all duration-200 active:scale-95"
+            style={{
+              background: '#6C2EDB',
+              color: '#fff',
+              minHeight: '48px',
+              boxShadow: '0 4px 20px rgba(108,46,219,0.35)',
+            }}
+            aria-label="Add lead"
+            data-testid="mobile-fab-add-lead"
+          >
+            <Plus className="w-4 h-4" />
+            <span>{lang.newLead.replace('+ ', '')}</span>
+          </button>
+        </div>
+      )}
 
       {/* Modals */}
       {selectedLead && (

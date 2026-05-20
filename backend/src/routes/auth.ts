@@ -710,6 +710,15 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
     // Send password changed confirmation email
     sendPasswordChangedEmail({ email: user.email, firstName: user.firstName }).catch(e => console.error('Password changed email failed:', e));
 
+    // Clear any existing auth cookie — the tokenVersion has incremented,
+    // so any old session cookie would cause a 401 loop on next page load.
+    res.clearCookie('auth_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
+
     res.json({
       message: 'Password has been reset successfully. You can now log in with your new password.'
     });
