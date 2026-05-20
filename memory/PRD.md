@@ -697,6 +697,14 @@ Hero dashboard tab switcher:
 - **HelpButton**: gained `hidden?: boolean` prop, returns `null` when `true`. Dashboard now passes `hidden={showSettings || !!selectedLead}` — the floating help button vanishes whenever Settings or Lead Detail modal is open, eliminating overlap with their sticky footers (Save Settings button, etc.). On desktop the FAB still appears whenever no modal is open.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.18 s, prebuild OG validation passed).
 
+### Iteration 192 — Mobile FAB + Contract→BOOKED + Reset Cookie Clear (Feb 2026) — `5df83f9`
+- **Mobile FAB on Dashboard**: floating action button group above bottom nav (`bottom-[72px] right-4 z-40 lg:hidden`) — primary "+ {lang.newLead}" violet button opens `AddLeadModal`; secondary "Share form" glass-purple button opens `ShareFormModal`. Visible only on kanban/list views. All testids: `mobile-fab-group`, `mobile-fab-share`, `mobile-fab-add-lead`.
+- **Mobile toolbar Share Form**: icon button next to the filter funnel (`mobile-share-form-toolbar`), `md:hidden`, amber dot indicator. No longer buried inside the collapsible filter panel — single-tap access.
+- **Contract → BOOKED (CRITICAL)**: `POST /api/contracts/:id/agree` was firing email side-effects in `setImmediate` but never flipping the lead status. Added side-effect #0 inside the same `setImmediate` block: `prisma.lead.update({ where: { id: contract.leadId }, data: { status: 'BOOKED' } })`. Wrapped in try/catch, logs `[CONTRACT] Lead status set to BOOKED`. Fixes silently broken pipeline post-signing.
+- **Password reset cookie clear**: `POST /api/auth/reset-password` now calls `res.clearCookie('auth_token', { httpOnly, secure: NODE_ENV==='production', sameSite: 'lax', path: '/' })` before sending the success JSON. Mirrors the existing logout endpoint pattern. Eliminates the 401 redirect loop where the stale cookie (with the pre-reset `tokenVersion`) caused `authMiddleware` to bounce the user back to `/login` even with the correct new password.
+- Build gate: `tsc --noEmit` ✓ (frontend + backend), `npm run build` ✓ (6.96 s, prebuild OG validation passed).
+- **Requires Railway redeploy** (both `auth.ts` and `contracts.ts` changed).
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
