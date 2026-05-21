@@ -321,7 +321,7 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
   }
 });
 
-// POST /api/contracts/:id/agree (PUBLIC - verified by portalToken)
+// POST /api/contracts/:id/agree (PUBLIC - verified by portalToken) — iter-192 deployed
 router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise<void> => {
   try {
     const id = req.params.id as string;
