@@ -540,25 +540,10 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface-base">
-        <header className="glass-header sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 md:w-8 md:h-8 ks-shimmer rounded-lg" />
-              <div className="w-28 md:w-32 h-6 ks-shimmer rounded-lg" />
-            </div>
-          </div>
-        </header>
-        <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8 pb-24 lg:pb-8">
-          <div className="space-y-2">
-            <div className="h-7 md:h-8 w-48 md:w-64 ks-shimmer rounded-lg" />
-            <div className="h-4 md:h-5 w-36 md:w-48 ks-shimmer rounded-lg opacity-60" />
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-            {[1, 2, 3, 4].map(i => <StatCardSkeleton key={i} />)}
-          </div>
-          <KanbanSkeleton />
-        </main>
+      <div className="min-h-screen bg-surface-base flex flex-col items-center justify-center gap-5">
+        <KolorLogo variant="dark" size="lg" linkTo={null} />
+        <KolorSpinner size={36} />
+        <p className="text-xs text-text-tertiary tracking-wide">Loading your studio…</p>
       </div>
     )
   }
@@ -1235,7 +1220,8 @@ const Dashboard = () => {
             {/* Mobile: share form icon button — always visible, not buried in filter panel */}
             <button
               onClick={() => setShowShareModal(true)}
-              className="p-2.5 rounded-xl border border-brand-primary/30 bg-brand-primary/[0.08] text-purple-600 transition-all duration-200 touch-target md:hidden relative"
+              className="p-2.5 rounded-xl border border-brand-primary/30 text-purple-600 transition-all duration-200 touch-target md:hidden relative"
+              style={{ background: 'rgba(108,46,219,0.08)' }}
               data-testid="mobile-share-form-toolbar"
               aria-label="Share inquiry form"
               title="Share inquiry form"
@@ -1606,37 +1592,43 @@ const Dashboard = () => {
         onOpenSettings={() => setShowSettings(true)}
       />
 
-      {/* Mobile FAB — Add Lead + Share Form. Only on kanban/list views. Above bottom nav. */}
+      {/* Mobile FAB — Add Lead (primary) + Share Form (secondary).
+           Only on kanban/list views. Fixed above bottom nav.
+           pointer-events-none on wrapper so only the buttons intercept taps. */}
       {(viewMode === 'kanban' || viewMode === 'list') && (
         <div
-          className="fixed bottom-[72px] right-4 z-40 flex flex-col items-end gap-2 lg:hidden"
+          className="fixed bottom-[80px] right-4 z-30 flex flex-col items-end gap-2 lg:hidden pointer-events-none"
           data-testid="mobile-fab-group"
         >
+          {/* Secondary: Share form — pill style */}
           <button
             onClick={() => setShowShareModal(true)}
-            className="flex items-center gap-2 px-3.5 py-2.5 rounded-full shadow-lg text-xs font-semibold transition-all duration-200 active:scale-95"
+            className="pointer-events-auto flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-200 active:scale-95"
             style={{
-              background: 'rgba(108,46,219,0.10)',
-              border: '1px solid rgba(108,46,219,0.30)',
+              background: 'rgba(255,255,255,0.92)',
+              border: '1px solid rgba(108,46,219,0.25)',
               color: '#6C2EDB',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              minHeight: '44px',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              minHeight: '40px',
+              boxShadow: '0 2px 12px rgba(108,46,219,0.15)',
             }}
             aria-label="Share inquiry form"
             data-testid="mobile-fab-share"
           >
-            <LinkIcon className="w-4 h-4" />
+            <LinkIcon className="w-3.5 h-3.5" />
             <span>Share form</span>
           </button>
+
+          {/* Primary: Add lead — solid brand pill */}
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-3 rounded-full shadow-lg text-sm font-bold transition-all duration-200 active:scale-95"
+            className="pointer-events-auto flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold transition-all duration-200 active:scale-95"
             style={{
               background: '#6C2EDB',
               color: '#fff',
               minHeight: '48px',
-              boxShadow: '0 4px 20px rgba(108,46,219,0.35)',
+              boxShadow: '0 4px 20px rgba(108,46,219,0.40)',
             }}
             aria-label="Add lead"
             data-testid="mobile-fab-add-lead"
