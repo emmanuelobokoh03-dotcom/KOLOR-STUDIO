@@ -703,7 +703,18 @@ Hero dashboard tab switcher:
 - **Contract → BOOKED (CRITICAL)**: `POST /api/contracts/:id/agree` was firing email side-effects in `setImmediate` but never flipping the lead status. Added side-effect #0 inside the same `setImmediate` block: `prisma.lead.update({ where: { id: contract.leadId }, data: { status: 'BOOKED' } })`. Wrapped in try/catch, logs `[CONTRACT] Lead status set to BOOKED`. Fixes silently broken pipeline post-signing.
 - **Password reset cookie clear**: `POST /api/auth/reset-password` now calls `res.clearCookie('auth_token', { httpOnly, secure: NODE_ENV==='production', sameSite: 'lax', path: '/' })` before sending the success JSON. Mirrors the existing logout endpoint pattern. Eliminates the 401 redirect loop where the stale cookie (with the pre-reset `tokenVersion`) caused `authMiddleware` to bounce the user back to `/login` even with the correct new password.
 - Build gate: `tsc --noEmit` ✓ (frontend + backend), `npm run build` ✓ (6.96 s, prebuild OG validation passed).
-- **Requires Railway redeploy** (both `auth.ts` and `contracts.ts` changed).
+- **Requires Railway redeploy** (both `auth.ts` and `contracts.ts` changed). Trigger commit `9e01227` added a no-op comment to force redeploy.
+
+### Iteration 193 — Branded Loading Screen + FAB Positioning Fixes (Feb 2026) — `4c19f67`
+- **Loading screen** (`if (loading) {...}` early-return in Dashboard.tsx): replaced raw shimmer skeleton (header + 4 stat cards + Kanban) with `KolorLogo size="lg"` + `KolorSpinner size={36}` + "Loading your studio…" tag centred on `bg-surface-base`. Mirrors the `#root:empty` branded splash from iter-182, so cold-load and post-mount loading state share one visual language.
+- **Mobile FAB** (positioning + tap interception):
+  - `z-40` → `z-30` (still above content, now below modals)
+  - `bottom-[72px]` → `bottom-[80px]` (clears the bottom nav properly)
+  - Wrapper `pointer-events-none` + buttons `pointer-events-auto` so the FAB region doesn't block taps on content behind the buttons themselves
+  - Share form pill: opaque-glass `rgba(255,255,255,0.92)` + `backdrop-blur(12px)` so it reads as floating, not colliding with content
+  - Primary pill padding `4/3` → `5/3` for stronger thumb target; share pill height `44 px` → `40 px` to enforce visual hierarchy
+- **Toolbar share button bg**: `bg-brand-primary/[0.08]` → inline `style={{ background: 'rgba(108,46,219,0.08)' }}` for cross-Tailwind-version safety. The bracket form was valid in Tailwind 3, but the inline style is bulletproof.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.59 s, prebuild OG validation passed).
 
 ## Test Credentials
 - Email: bookingtest@test.com
