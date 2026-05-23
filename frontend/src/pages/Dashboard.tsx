@@ -540,9 +540,8 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface-base flex flex-col items-center justify-center gap-5">
-        <KolorLogo variant="dark" size="lg" linkTo={null} />
-        <KolorSpinner size={36} />
+      <div className="min-h-screen bg-surface-base flex flex-col items-center justify-center gap-4">
+        <KolorSpinner size={40} />
         <p className="text-xs text-text-tertiary tracking-wide">Loading your studio…</p>
       </div>
     )
@@ -1696,7 +1695,7 @@ const Dashboard = () => {
       <div data-tour="help-button">
         <HelpButton
           onClick={() => setShowHelpPanel(true)}
-          hidden={showSettings || !!selectedLead}
+          hidden={showSettings || !!selectedLead || showAddModal || showShareModal || showFeedback}
         />
       </div>
       <HelpPanel

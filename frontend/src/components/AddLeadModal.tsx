@@ -15,7 +15,7 @@ import {
   leadsApi 
 } from '../services/api'
 import { X } from '@phosphor-icons/react/dist/csr/X'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import KolorSpinner from './KolorSpinner'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
@@ -189,7 +189,7 @@ export default function AddLeadModal({ onClose, onLeadCreated, user }: AddLeadMo
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose} role="presentation">
       <div 
         ref={modalRef}
-        className="glass-modal w-full md:rounded-2xl md:shadow-2xl md:max-w-2xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl"
+        className="glass-modal w-full md:rounded-2xl md:shadow-2xl md:max-w-2xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
         data-testid="add-lead-modal"
         role="dialog"
@@ -210,7 +210,7 @@ export default function AddLeadModal({ onClose, onLeadCreated, user }: AddLeadMo
         </div>
 
         {/* Content */}
-        <div className="p-4 md:p-6 overflow-y-auto flex-1 md:max-h-[70vh]">
+        <div className="p-4 md:p-6 overflow-y-auto flex-1 min-h-0">
           {error && (
             <div className="mb-5 p-4 bg-danger-light border border-danger-border rounded-card flex items-center gap-3 text-danger-text animate-fade-in" role="alert">
               <WarningCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
@@ -477,7 +477,7 @@ export default function AddLeadModal({ onClose, onLeadCreated, user }: AddLeadMo
               >
                 {loading ? (
                   <>
-                    <SpinnerGap className="w-4 h-4 animate-spin" aria-hidden="true" />
+                    <KolorSpinner size={16} color="white" />
                     <span>{uploadingCover ? 'Uploading image...' : 'Creating...'}</span>
                   </>
                 ) : 'Create Lead'}
