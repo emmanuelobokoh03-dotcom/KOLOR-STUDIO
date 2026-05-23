@@ -716,6 +716,15 @@ Hero dashboard tab switcher:
 - **Toolbar share button bg**: `bg-brand-primary/[0.08]` → inline `style={{ background: 'rgba(108,46,219,0.08)' }}` for cross-Tailwind-version safety. The bracket form was valid in Tailwind 3, but the inline style is bulletproof.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.59 s, prebuild OG validation passed).
 
+### Iteration 194 — Settings Header + Loading + Help Z-Index + AddLeadModal Mobile (Feb 2026) — `8089a5c`
+- **Loading screen simplified**: removed `KolorLogo` from the Dashboard `if (loading)` block. Now just `KolorSpinner size={40}` + "Loading your studio…" caption on `bg-surface-base`. Logo still appears in header + mobile nav. Cleaner cold-load feel.
+- **SettingsModal "Settings" invisible on mobile (root cause)**: global design-system CSS applies `color: var(--text-primary)` to every `h2`, overriding the parent div's `text-white`. Fix: added `text-white` directly on the `<h2 id="settings-title">`. The "Settings" heading is now legible on the `#1A0A3C → #2D1470` gradient header.
+- **HelpButton hidden condition extended**: was `showSettings || !!selectedLead`, now `showSettings || !!selectedLead || showAddModal || showShareModal || showFeedback`. The "?" FAB no longer collides with the Add Lead / Share Form / Feedback modal layers.
+- **AddLeadModal mobile scroll (Safari fix)**: `flex flex-col` added to the modal wrapper; content area replaced `md:max-h-[70vh]` cap with `min-h-0`. The previous `flex-1` child inside an unconstrained-height flex parent broke `overflow-y-auto` on iOS Safari. Now scrolls smoothly with no cut-off.
+- **AddLeadModal submit spinner**: `SpinnerGap` → `KolorSpinner size={16} color="white"`. `SpinnerGap` import removed (no remaining usage in this file).
+- **LoadingScreen.tsx audited**: already uses KolorSpinner (iter-176 parallax-tilt variant). No change needed.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.81 s, prebuild OG validation passed).
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
