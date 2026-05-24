@@ -1643,7 +1643,7 @@ const Dashboard = () => {
         <Suspense fallback={null}>
           <LeadDetailModal
             lead={selectedLead}
-            onClose={() => { setSelectedLead(null); setSelectedLeadInitialTab(undefined) }}
+            onClose={() => { setSelectedLead(null); setSelectedLeadInitialTab(undefined); fetchLeads(); fetchStats() }}
             onUpdate={handleLeadUpdate}
             onCelebrate={triggerCelebration}
             initialTab={selectedLeadInitialTab}

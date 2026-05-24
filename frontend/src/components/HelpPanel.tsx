@@ -244,7 +244,7 @@ export function HelpButton({ onClick, hidden = false }: { onClick: () => void; h
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-24 right-4 z-40 w-11 h-11 bg-brand-primary hover:brightness-110 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 lg:bottom-8 lg:right-6 lg:w-12 lg:h-12"
+      className="fixed bottom-[82px] left-4 z-40 w-11 h-11 bg-brand-primary hover:brightness-110 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 lg:bottom-8 lg:left-auto lg:right-6 lg:w-12 lg:h-12"
       aria-label="Open help panel"
       data-testid="help-button"
     >

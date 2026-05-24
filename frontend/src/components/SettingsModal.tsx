@@ -3,7 +3,6 @@ import { useModalA11y } from '../hooks/useModalA11y'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
 import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import KolorSpinner from './KolorSpinner'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
@@ -462,7 +461,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
             data-testid="save-settings-btn"
           >
             {saving ? (
-              <SpinnerGap className="w-4 h-4 animate-spin" />
+              <KolorSpinner size={16} color="white" />
             ) : saved ? (
               <Check className="w-4 h-4" />
             ) : (
