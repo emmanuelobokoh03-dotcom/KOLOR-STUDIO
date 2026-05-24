@@ -725,6 +725,13 @@ Hero dashboard tab switcher:
 - **LoadingScreen.tsx audited**: already uses KolorSpinner (iter-176 parallax-tilt variant). No change needed.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (6.81 s, prebuild OG validation passed).
 
+### Iteration 195 — Help Button Left + SettingsModal Spinner + Passive Refresh (Feb 2026) — `01c933a`
+- **HelpButton repositioned**: mobile `bottom-24 right-4` → `bottom-[82px] left-4` (right-4 was directly under the FAB → collision). Desktop unchanged via `lg:left-auto lg:right-6 lg:bottom-8`. Help button now sits bottom-LEFT on mobile, FAB sits bottom-RIGHT — both visible without overlap.
+- **SettingsModal Save button**: `SpinnerGap` → `KolorSpinner size={16} color="white"`. `SpinnerGap` import removed (no remaining usage in this file).
+- **Dashboard passive refresh**: `LeadDetailModal onClose` now calls `fetchLeads() + fetchStats()` after `setSelectedLead(null)`. Contract-signed → BOOKED status flips appear in the lead list and stat cards on modal close without the user needing F5.
+- Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.11 s, prebuild OG validation passed).
+- **SpinnerGap migration deferred items** (loading states still using SpinnerGap, candidates for next sweep): `ClientPortalMessages:101`, `CalendarViewNew:320`, `CalendarConnectionWidget:126/172`, `QuoteBuilderModal:378/381/467/755`, `MarkAsDeliveredButton:64`, `TestimonialsManagement:115`. **Intentional (keep)**: `DeliverablesTab:61` (IN_PROGRESS status icon, not a loading state).
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
