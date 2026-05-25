@@ -26,7 +26,6 @@ import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
 import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
 import { ChatCircle } from '@phosphor-icons/react/dist/csr/ChatCircle'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { Scroll } from '@phosphor-icons/react/dist/csr/Scroll'
 import { ShieldCheck } from '@phosphor-icons/react/dist/csr/ShieldCheck'
@@ -491,11 +490,11 @@ export default function ClientPortal() {
                 </span>
               )}
             </div>
-            <span className="text-sm font-bold tracking-widest text-white/80 uppercase">{studioName}</span>
+            <span className="text-sm font-bold tracking-widest text-white/90 uppercase">{studioName}</span>
           </div>
 
           <p className="text-xs font-medium text-white/50 uppercase tracking-widest mb-1.5">Project Portal</p>
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight">{data.project.title}</h1>
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight leading-tight">{data.project.title}</h1>
 
           <div className="flex items-center gap-2.5 mt-4">
             <span className={`w-2 h-2 rounded-full ${
@@ -783,7 +782,7 @@ export default function ClientPortal() {
                         data-testid={`accept-quote-${quote.id}`}
                       >
                         {quoteAccepting === quote.quoteToken ? (
-                          <><SpinnerGap className="w-4 h-4 animate-spin" /> Processing...</>
+                          <><KolorSpinner size={16} color="white" /> Processing...</>
                         ) : (
                           <><CheckCircle weight="bold" className="w-4 h-4" /> Accept Quote</>
                         )}
@@ -906,7 +905,7 @@ export default function ClientPortal() {
                           data-testid={`sign-agreement-btn-${contract.id}`}
                         >
                           {signing === contract.id ? (
-                            <><SpinnerGap className="w-4 h-4 animate-spin" /> Signing...</>
+                            <><KolorSpinner size={16} color="white" /> Signing...</>
                           ) : (
                             <><ShieldCheck weight="bold" className="w-4 h-4" /> Sign Agreement</>
                           )}
@@ -1040,8 +1039,8 @@ export default function ClientPortal() {
                   </span>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-white/80">{studioName} is here to help.</p>
-                  <p className="text-[10px] text-white/40 mt-0.5">Reply to your portal email or use the message box above.</p>
+                  <p className="text-xs font-semibold text-white/80">Questions about your project?</p>
+                  <p className="text-[10px] text-white/40 mt-0.5">Use the message box above or reach out directly.</p>
                 </div>
               </div>
               <a

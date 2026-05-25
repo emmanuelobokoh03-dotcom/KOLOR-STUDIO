@@ -1,12 +1,12 @@
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import KolorSpinner from './KolorSpinner'
 import { Calendar as BigCalendar, dateFnsLocalizer, Views, SlotInfo } from 'react-big-calendar'
 import type { CalendarProps } from 'react-big-calendar'
 import { format, parse, startOfWeek, getDay, addMonths, subMonths } from 'date-fns'
 import { enUS } from 'date-fns/locale'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
 import { Video } from '@phosphor-icons/react/dist/csr/Video'
 import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
@@ -317,7 +317,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
         <div className="min-w-[600px] h-full">
         {loading && events.length === 0 ? (
           <div className="h-full flex items-center justify-center">
-            <SpinnerGap className="w-8 h-8 animate-spin text-purple-600" />
+            <KolorSpinner size={32} />
           </div>
         ) : !loading && events.length === 0 ? (
           <EmptyState

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import KolorLogo from '../components/KolorLogo'
@@ -139,6 +139,7 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [selectedLeadInitialTab, setSelectedLeadInitialTab] = useState<string | undefined>(undefined)
+  const leadModalModified = useRef(false)
   const [showAddModal, setShowAddModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
@@ -1643,8 +1644,13 @@ const Dashboard = () => {
         <Suspense fallback={null}>
           <LeadDetailModal
             lead={selectedLead}
-            onClose={() => { setSelectedLead(null); setSelectedLeadInitialTab(undefined); fetchLeads(); fetchStats() }}
-            onUpdate={handleLeadUpdate}
+            onClose={() => {
+              if (leadModalModified.current) { fetchLeads(); fetchStats() }
+              leadModalModified.current = false
+              setSelectedLead(null)
+              setSelectedLeadInitialTab(undefined)
+            }}
+            onUpdate={(lead) => { leadModalModified.current = true; handleLeadUpdate(lead) }}
             onCelebrate={triggerCelebration}
             initialTab={selectedLeadInitialTab}
             userIndustry={user?.industry as any}

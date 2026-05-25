@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import KolorSpinner from './KolorSpinner'
 import { Star as StarIcon } from '@phosphor-icons/react/dist/csr/Star'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { X } from '@phosphor-icons/react/dist/csr/X'
@@ -8,7 +9,6 @@ import { ThumbsUp } from '@phosphor-icons/react/dist/csr/ThumbsUp'
 import { ThumbsDown } from '@phosphor-icons/react/dist/csr/ThumbsDown'
 import { Trophy } from '@phosphor-icons/react/dist/csr/Trophy'
 import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
 interface Testimonial {
   id: string
@@ -112,7 +112,7 @@ export default function TestimonialsManagement() {
 
       {/* Testimonials List */}
       {loading ? (
-        <div className="text-center py-12 text-text-tertiary"><SpinnerGap className="w-5 h-5 animate-spin mx-auto" /></div>
+        <div className="text-center py-12 flex justify-center"><KolorSpinner size={20} /></div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12">
           <ChatText weight="duotone" className="w-10 h-10 text-text-primary mx-auto mb-3" />

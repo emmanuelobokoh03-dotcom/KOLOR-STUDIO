@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import KolorSpinner from './KolorSpinner'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
 import { ChatCircle } from '@phosphor-icons/react/dist/csr/ChatCircle'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 interface Message {
   id: string
   content: string
@@ -98,7 +98,7 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
       <div className="p-4 md:p-6 space-y-3 max-h-80 overflow-y-auto bg-surface-base" data-testid="portal-messages-list">
         {loading ? (
           <div className="flex justify-center py-8">
-            <SpinnerGap className="w-6 h-6 animate-spin text-text-secondary" />
+            <KolorSpinner size={24} />
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center py-8">

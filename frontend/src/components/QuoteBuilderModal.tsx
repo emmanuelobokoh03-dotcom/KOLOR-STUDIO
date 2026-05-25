@@ -4,7 +4,6 @@ import KolorSpinner from './KolorSpinner'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
@@ -375,10 +374,10 @@ export default function QuoteBuilderModal({
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <button onClick={handleSave} disabled={loading} className="h-8 px-3 rounded-lg text-xs font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center gap-1.5 disabled:opacity-50" data-testid="save-draft-btn">
-              {loading ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <FloppyDisk className="w-3 h-3" />} Save draft
+              {loading ? <KolorSpinner size={12} /> : <FloppyDisk className="w-3 h-3" />} Save draft
             </button>
             <button onClick={handleSend} disabled={sending} className="h-8 px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center gap-1.5 disabled:opacity-50" style={{ background: '#6C2EDB' }} data-testid="send-quote-btn">
-              {sending ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <PaperPlaneTilt className="w-3 h-3" />} Send {lang.quote} →
+              {sending ? <KolorSpinner size={12} /> : <PaperPlaneTilt className="w-3 h-3" />} Send {lang.quote} →
             </button>
             <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--surface-background)] transition-colors text-[var(--text-secondary)]" aria-label="Close" title="Close (Esc)">
               <X className="w-4 h-4" />
@@ -464,7 +463,7 @@ export default function QuoteBuilderModal({
                   {showTemplateDropdown && (
                     <div className="absolute right-0 top-6 w-56 bg-[var(--surface-base)] rounded-lg shadow-xl z-20 max-h-48 overflow-y-auto" style={{ border: '0.5px solid var(--border)' }}>
                       {loadingTemplates ? (
-                        <div className="p-3 text-center"><SpinnerGap className="w-4 h-4 animate-spin mx-auto text-[var(--text-secondary)]" /></div>
+                        <div className="p-3 text-center flex justify-center"><KolorSpinner size={14} /></div>
                       ) : templates.length === 0 ? (
                         <div className="p-3 text-center text-xs text-[var(--text-tertiary)]">No packages saved yet</div>
                       ) : (
@@ -752,7 +751,7 @@ export default function QuoteBuilderModal({
             <div className="flex gap-2">
               <button onClick={() => setShowSaveTemplateModal(false)} className="flex-1 py-2 rounded-lg text-xs font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition">Cancel</button>
               <button onClick={saveAsTemplate} disabled={savingTemplate} className="flex-1 py-2 rounded-lg text-xs font-semibold text-white transition disabled:opacity-50 flex items-center justify-center gap-1.5" style={{ background: '#6C2EDB' }} data-testid="confirm-save-template">
-                {savingTemplate ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk className="w-3.5 h-3.5" />} Save
+                {savingTemplate ? <KolorSpinner size={14} /> : <FloppyDisk className="w-3.5 h-3.5" />} Save
               </button>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import KolorSpinner from './KolorSpinner'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { Package } from '@phosphor-icons/react/dist/csr/Package'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { leadsApi } from '../services/api'
 
 interface Props {
@@ -61,7 +61,7 @@ export default function MarkAsDeliveredButton({ leadId, leadStatus, pipelineStat
       className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-xl transition disabled:opacity-50"
       data-testid="mark-delivered-btn"
     >
-      {marking ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <Package weight="bold" className="w-4 h-4" />}
+      {marking ? <KolorSpinner size={16} /> : <Package weight="bold" className="w-4 h-4" />}
       {marking ? 'Delivering...' : 'Mark as Delivered'}
     </button>
   )

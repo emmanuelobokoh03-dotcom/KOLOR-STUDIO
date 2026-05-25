@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
+import KolorSpinner from './KolorSpinner'
 import { GoogleLogo } from '@phosphor-icons/react/dist/csr/GoogleLogo'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { LinkBreak } from '@phosphor-icons/react/dist/csr/LinkBreak'
 import { CalendarCheck } from '@phosphor-icons/react/dist/csr/CalendarCheck'
 const API_URL = import.meta.env.VITE_API_URL || ''
@@ -123,7 +123,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
           <button onClick={handleDisconnect} disabled={actionLoading}
             className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition disabled:opacity-50 flex-shrink-0"
             data-testid="calendar-widget-disconnect">
-            {actionLoading ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <LinkBreak className="w-3.5 h-3.5" />}
+            {actionLoading ? <KolorSpinner size={14} /> : <LinkBreak className="w-3.5 h-3.5" />}
             Disconnect
           </button>
         </div>
@@ -169,7 +169,7 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
           className="w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-all hover:shadow-lg hover:shadow-purple-600/20"
           data-testid="calendar-widget-connect">
           {actionLoading ? (
-            <SpinnerGap className="w-4 h-4 animate-spin" />
+            <KolorSpinner size={16} />
           ) : (
             <>
               <GoogleLogo weight="bold" className="w-4 h-4" />
