@@ -732,6 +732,15 @@ Hero dashboard tab switcher:
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (7.11 s, prebuild OG validation passed).
 - **SpinnerGap migration deferred items** (loading states still using SpinnerGap, candidates for next sweep): `ClientPortalMessages:101`, `CalendarViewNew:320`, `CalendarConnectionWidget:126/172`, `QuoteBuilderModal:378/381/467/755`, `MarkAsDeliveredButton:64`, `TestimonialsManagement:115`. **Intentional (keep)**: `DeliverablesTab:61` (IN_PROGRESS status icon, not a loading state).
 
+## Iteration 196 — Portal Polish + SpinnerGap Sweep + wasModified Ref (Feb 2026) — ✅ SHIPPED
+- **ClientPortal**: Footer copy "{studioName} is here to help" → "Questions about your project?" (avoids rendering studio owner's name as support copy). Header h1 added `leading-tight` for mobile line height. Studio name opacity /80 → /90 for legibility. SpinnerGap → KolorSpinner in both "Processing..." and "Signing..." buttons. SpinnerGap import removed.
+- **SpinnerGap → KolorSpinner sweep (7 files, 11 loading states)**: ClientPortalMessages, CalendarViewNew, CalendarConnectionWidget (×2), QuoteBuilderModal (×4), MarkAsDeliveredButton, TestimonialsManagement. All KolorSpinner imports added, SpinnerGap imports removed.
+- **AddLeadModal**: Already correct from iter-194 (`flex flex-col` + `min-h-0` confirmed in place).
+- **Dashboard wasModified ref**: `useRef` added to react import. `leadModalModified = useRef(false)` declared after `selectedLeadInitialTab`. LeadDetailModal `onUpdate` wired to set `leadModalModified.current = true`. `onClose` gates `fetchLeads()` + `fetchStats()` on the ref, then resets it. Eliminates redundant `/api/leads` + `/api/stats` calls on peek-and-close interactions.
+- **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
+- Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
