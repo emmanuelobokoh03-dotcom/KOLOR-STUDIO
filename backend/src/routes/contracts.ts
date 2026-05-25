@@ -143,7 +143,7 @@ router.post('/leads/:leadId/contracts', authMiddleware, async (req: AuthRequest,
       studioName,
     });
 
-    // Build industry-aware title
+    // Build industry-aware title — serviceType first, projectType fallback, then template default
     const SERVICE_TITLES: Record<string, string> = {
       WEDDING_PHOTO: 'Wedding Photography Services Agreement',
       PORTRAIT_PHOTO: 'Portrait Photography Services Agreement',
@@ -157,8 +157,29 @@ router.post('/leads/:leadId/contracts', authMiddleware, async (req: AuthRequest,
       DIGITAL_ART: 'Digital Art Commission Agreement',
       PHOTOGRAPHY: 'Photography Services Agreement',
       VIDEOGRAPHY: 'Videography Services Agreement',
+      // projectType values (lead type dropdown)
+      COMMISSION: 'Art Commission Agreement',
+      SERVICE: 'Professional Services Agreement',
+      PROJECT: 'Project Agreement',
+      PRODUCT_SALE: 'Product Sale Agreement',
+      PORTRAIT: 'Portrait Photography Agreement',
+      WEDDING: 'Wedding Photography Agreement',
+      EVENT: 'Event Photography Agreement',
+      COMMERCIAL: 'Commercial Services Agreement',
+      EDITORIAL: 'Editorial Services Agreement',
+      BRANDING: 'Brand Identity Agreement',
+      LOGO: 'Logo Design Agreement',
+      PACKAGING: 'Packaging Design Agreement',
+      SOCIAL_MEDIA: 'Social Media Design Agreement',
+      PRINT: 'Print Design Agreement',
+      MURAL: 'Mural Commission Agreement',
+      SCULPTURE: 'Sculpture Commission Agreement',
+      MIXED_MEDIA: 'Mixed Media Commission Agreement',
     };
-    const contractTitle = title || SERVICE_TITLES[lead.serviceType] || template.title;
+    const contractTitle = title
+      || SERVICE_TITLES[lead.serviceType as string]
+      || SERVICE_TITLES[lead.projectType as string]
+      || template.title;
 
     const contract = await prisma.contract.create({
       data: {

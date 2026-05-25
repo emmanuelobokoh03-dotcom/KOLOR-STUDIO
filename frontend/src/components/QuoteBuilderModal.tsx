@@ -363,24 +363,30 @@ export default function QuoteBuilderModal({
         aria-labelledby="quote-builder-title"
       >
         {/* ═══ Header ═══ */}
-        <div className="flex items-center justify-between px-5 py-3.5 flex-shrink-0" style={{ borderBottom: '0.5px solid var(--border)' }}>
-          <div className="min-w-0">
-            <h2 id="quote-builder-title" className="text-sm font-extrabold text-text-primary truncate">
-              {existingQuote ? `${lang.quote} #${existingQuote.quoteNumber || existingQuote.id.slice(-4).toUpperCase()}` : `New ${lang.quote} — ${lead.clientName}`}
-            </h2>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              {existingQuote?.quoteNumber || 'New'} · {statusLabel} · {existingQuote ? new Date(existingQuote.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Today'}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button onClick={handleSave} disabled={loading} className="h-8 px-3 rounded-lg text-xs font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center gap-1.5 disabled:opacity-50" data-testid="save-draft-btn">
-              {loading ? <KolorSpinner size={12} /> : <FloppyDisk className="w-3 h-3" />} Save draft
-            </button>
-            <button onClick={handleSend} disabled={sending} className="h-8 px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center gap-1.5 disabled:opacity-50" style={{ background: '#6C2EDB' }} data-testid="send-quote-btn">
-              {sending ? <KolorSpinner size={12} /> : <PaperPlaneTilt className="w-3 h-3" />} Send {lang.quote} →
-            </button>
-            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--surface-background)] transition-colors text-[var(--text-secondary)]" aria-label="Close" title="Close (Esc)">
+        <div className="flex-shrink-0 px-4 pt-3.5 pb-3" style={{ borderBottom: '0.5px solid var(--border)' }}>
+          {/* Row 1: title + close */}
+          <div className="flex items-start justify-between gap-2 mb-2.5">
+            <div className="min-w-0">
+              <h2 id="quote-builder-title" className="text-sm font-extrabold text-text-primary truncate">
+                {existingQuote ? `${lang.quote} #${existingQuote.quoteNumber || existingQuote.id.slice(-4).toUpperCase()}` : `New ${lang.quote}`}
+              </h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5 truncate">
+                {lead.clientName} · {statusLabel} · {existingQuote ? new Date(existingQuote.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Today'}
+              </p>
+            </div>
+            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--surface-background)] transition-colors text-[var(--text-secondary)] flex-shrink-0 mt-0.5" aria-label="Close" title="Close (Esc)">
               <X className="w-4 h-4" />
+            </button>
+          </div>
+          {/* Row 2: action buttons — full width on mobile */}
+          <div className="flex items-center gap-2">
+            <button onClick={handleSave} disabled={loading} className="flex-1 md:flex-none h-9 px-3 rounded-lg text-xs font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50" data-testid="save-draft-btn">
+              {loading ? <KolorSpinner size={12} /> : <FloppyDisk className="w-3 h-3" />}
+              <span>Save draft</span>
+            </button>
+            <button onClick={handleSend} disabled={sending} className="flex-1 md:flex-none h-9 px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50" style={{ background: '#6C2EDB' }} data-testid="send-quote-btn">
+              {sending ? <KolorSpinner size={12} /> : <PaperPlaneTilt className="w-3 h-3" />}
+              <span>Send {lang.quote} →</span>
             </button>
           </div>
         </div>

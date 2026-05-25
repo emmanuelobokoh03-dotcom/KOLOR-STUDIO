@@ -26,8 +26,10 @@ import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
 import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 import { Ruler } from '@phosphor-icons/react/dist/csr/Ruler'
+import { getIndustryLanguage, IndustryType } from '../utils/industryLanguage'
 interface DeliverablesTabProps {
   leadId: string;
+  userIndustry?: IndustryType;
 }
 
 const TYPE_ICONS: Record<DeliverableType, React.ElementType> = {
@@ -89,7 +91,8 @@ const emptyForm: DeliverableForm = {
   weight: '', sessionDate: '', sessionLocation: '', sessionDuration: '', dueDate: '', notes: '',
 };
 
-export default function DeliverablesTab({ leadId }: DeliverablesTabProps) {
+export default function DeliverablesTab({ leadId, userIndustry }: DeliverablesTabProps) {
+  const lang = getIndustryLanguage(userIndustry)
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

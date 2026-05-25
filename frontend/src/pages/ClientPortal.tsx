@@ -481,20 +481,27 @@ export default function ClientPortal() {
         <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${brandColor}30 0%, transparent 70%)` }} />
         <div className="relative max-w-3xl mx-auto px-5 pt-8 pb-7">
           <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.12)' }}>
+            <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0" style={{ background: brandLogo ? 'rgba(255,255,255,0.12)' : '#6C2EDB' }}>
               {brandLogo ? (
                 <img src={brandLogo} alt={studioName} className="w-full h-full object-contain" />
               ) : (
-                <span className="text-xs font-extrabold text-white/90">
-                  {studioName.charAt(0).toUpperCase()}
-                </span>
+                <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M16 4L22 10H10L16 4Z" fill="rgba(255,255,255,0.55)"/>
+                  <path d="M16 4L10 10V4H16Z" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M28 16L22 10V22L28 16Z" fill="rgba(255,255,255,0.4)"/>
+                  <path d="M28 16L22 22H28V16Z" fill="rgba(255,255,255,0.7)"/>
+                  <path d="M16 28L10 22H22L16 28Z" fill="rgba(255,255,255,0.55)"/>
+                  <path d="M16 28L22 22V28H16Z" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M4 16L10 22V10L4 16Z" fill="rgba(255,255,255,0.4)"/>
+                  <path d="M4 16L10 10H4V16Z" fill="rgba(255,255,255,0.7)"/>
+                </svg>
               )}
             </div>
             <span className="text-sm font-bold tracking-widest text-white/90 uppercase">{studioName}</span>
           </div>
 
-          <p className="text-xs font-medium text-white/50 uppercase tracking-widest mb-1.5">Project Portal</p>
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight leading-tight">{data.project.title}</h1>
+          <p className="text-xs font-medium text-white/50 uppercase tracking-widest mb-1.5 relative z-10">Project Portal</p>
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight leading-tight relative z-10">{data.project.title}</h1>
 
           <div className="flex items-center gap-2.5 mt-4">
             <span className={`w-2 h-2 rounded-full ${
@@ -1013,12 +1020,23 @@ export default function ClientPortal() {
               style={{ background: '#1a1625' }}
             >
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ background: '#6C2EDB' }}
+                className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0"
+                style={{ background: brandLogo ? 'rgba(255,255,255,0.08)' : '#6C2EDB' }}
               >
-                <span className="text-xs font-extrabold text-white">
-                  {studioName.charAt(0).toUpperCase()}
-                </span>
+                {brandLogo ? (
+                  <img src={brandLogo} alt={studioName} className="w-full h-full object-contain" />
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M16 4L22 10H10L16 4Z" fill="rgba(255,255,255,0.55)"/>
+                    <path d="M16 4L10 10V4H16Z" fill="rgba(255,255,255,0.9)"/>
+                    <path d="M28 16L22 10V22L28 16Z" fill="rgba(255,255,255,0.4)"/>
+                    <path d="M28 16L22 22H28V16Z" fill="rgba(255,255,255,0.7)"/>
+                    <path d="M16 28L10 22H22L16 28Z" fill="rgba(255,255,255,0.55)"/>
+                    <path d="M16 28L22 22V28H16Z" fill="rgba(255,255,255,0.9)"/>
+                    <path d="M4 16L10 22V10L4 16Z" fill="rgba(255,255,255,0.4)"/>
+                    <path d="M4 16L10 10H4V16Z" fill="rgba(255,255,255,0.7)"/>
+                  </svg>
+                )}
               </div>
               <div>
                 <p className="text-xs font-semibold text-white/80">Questions about your project?</p>

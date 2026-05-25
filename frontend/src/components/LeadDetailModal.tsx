@@ -20,7 +20,7 @@ import { CurrencyDollar } from '@phosphor-icons/react/dist/csr/CurrencyDollar'
 import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
 import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import KolorSpinner from './KolorSpinner'
 import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
 import { ArrowsLeftRight } from '@phosphor-icons/react/dist/csr/ArrowsLeftRight'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
@@ -1063,7 +1063,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                         className="h-7 px-3 rounded-md text-[10px] font-semibold text-white bg-[#6C2EDB] transition disabled:opacity-40 flex items-center gap-1.5"
                         data-testid="save-note-button"
                       >
-                        {addingNote ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <FloppyDisk className="w-3 h-3" />}
+                        {addingNote ? <KolorSpinner size={12} /> : <FloppyDisk className="w-3 h-3" />}
                         Save note
                       </button>
                     </div>
@@ -1144,7 +1144,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                       className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-[#6C2EDB] transition disabled:opacity-40 flex items-center gap-1.5"
                       data-testid="notes-tab-save"
                     >
-                      {addingNote ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk className="w-3.5 h-3.5" />}
+                      {addingNote ? <KolorSpinner size={14} /> : <FloppyDisk className="w-3.5 h-3.5" />}
                       Save Note
                     </button>
                   </div>
@@ -1168,112 +1168,11 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               </div>
             ) : activeTab === 'activity' ? (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
-                {/* Discovery Call Card */}
-                {['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED'].includes(lead.status) && (
-                  <div data-testid="discovery-call-card">
-                    {!lead.discoveryCallScheduled && !lead.discoveryCallCompletedAt && (
-                      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200 p-4">
-                        <div className="flex items-start gap-3">
-                          <div className="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                            <PhoneCall weight="duotone" className="w-4.5 h-4.5 text-purple-600" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-text-primary">Schedule {lang.discoveryCall}</h4>
-                            <p className="text-xs text-text-secondary mt-0.5">Book a call to discuss project details before sending a quote</p>
-                          </div>
-                          <button
-                            onClick={() => setShowBookingModal(true)}
-                            className="flex items-center gap-1.5 px-3 py-2 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition flex-shrink-0"
-                            data-testid="schedule-discovery-btn"
-                          >
-                            <PhoneCall weight="bold" className="w-3.5 h-3.5" />
-                            Schedule {lang.discoveryCall}
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {lead.discoveryCallScheduled && !lead.discoveryCallCompletedAt && (
-                      <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
-                        <div className="flex items-start gap-3">
-                          <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                            <CalendarBlank weight="duotone" className="w-4.5 h-4.5 text-blue-600" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-blue-900">{lang.discoveryCall} Scheduled</h4>
-                            <p className="text-xs text-blue-700 mt-0.5">Waiting for call to complete before sending quote</p>
-                          </div>
-                          <button
-                            onClick={handleCompleteDiscoveryCall}
-                            className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition flex-shrink-0"
-                            data-testid="complete-discovery-btn"
-                          >
-                            <Checks weight="bold" className="w-3.5 h-3.5" />
-                            Mark Complete
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {lead.discoveryCallCompletedAt && (
-                      <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-4">
-                        <div className="flex items-start gap-3">
-                          <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                            <CheckCircle weight="fill" className="w-4.5 h-4.5 text-emerald-600" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-emerald-900">{lang.discoveryCall} Completed</h4>
-                            <p className="text-xs text-emerald-700 mt-0.5">
-                              {new Date(lead.discoveryCallCompletedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                              {lead.discoveryCallNotes && ` — ${lead.discoveryCallNotes}`}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => setActiveTab('quotes')}
-                            className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 text-white text-xs font-medium rounded-lg hover:bg-emerald-700 transition flex-shrink-0"
-                            data-testid="send-quote-after-discovery-btn"
-                          >
-                            <Receipt weight="bold" className="w-3.5 h-3.5" />
-                            Send Quote
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Add Note */}
-                <div className="bg-surface-base rounded-xl p-4 md:p-5 border border-light-200">
-                  <h3 className="text-sm font-semibold text-text-secondary mb-3 flex items-center gap-2">
-                    <ChatText className="w-4 h-4" />
-                    Add Note
-                  </h3>
-                  <textarea
-                    value={newNote}
-                    onChange={(e) => setNewNote(e.target.value)}
-                    placeholder="Write a note about this lead..."
-                    className="w-full px-4 py-3 bg-light-50 border border-light-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm text-text-primary placeholder-gray-400 transition-all duration-200"
-                    rows={3}
-                    data-testid="note-input"
-                  />
-                  <div className="flex justify-end mt-3">
-                    <button
-                      onClick={handleAddNote}
-                      disabled={addingNote || !newNote.trim()}
-                      className="px-4 py-2.5 bg-brand-primary text-white rounded-xl text-sm font-medium hover:bg-brand-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
-                      data-testid="save-note-button"
-                    >
-                      {addingNote ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
-                      Save Note
-                    </button>
-                  </div>
-                </div>
-
                 {/* Activity Timeline */}
                 <div>
                   <h3 className="text-sm font-semibold text-text-secondary mb-4 flex items-center gap-2">
                     <ClockCounterClockwise className="w-4 h-4" />
-                    Activity ClockCounterClockwise
+                    Activity
                   </h3>
 
                   {loadingActivities ? (
@@ -1369,7 +1268,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                   
                   {uploading ? (
                     <div className="py-4">
-                      <SpinnerGap weight="duotone" className="w-10 h-10 text-brand-primary animate-spin mx-auto mb-3" />
+                      <KolorSpinner size={40} />
                       <p className="text-sm text-text-secondary">{uploadProgress}</p>
                     </div>
                   ) : (
@@ -1606,7 +1505,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               />
             ) : activeTab === 'deliverables' ? (
               <div className="p-4 md:p-6">
-                <DeliverablesTab leadId={lead.id} />
+                <DeliverablesTab leadId={lead.id} userIndustry={userIndustry} />
               </div>
             ) : activeTab === 'contracts' ? (
               <ContractsTab leadId={lead.id} lead={lead} onContractSigned={() => onCelebrate?.('first_contract', 'firstContract')} />
@@ -1614,7 +1513,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               <div className="p-4 md:p-6 flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-[400px]" data-testid="messages-thread">
                   {loadingMessages ? (
-                    <div className="flex justify-center py-8"><SpinnerGap className="w-5 h-5 animate-spin text-text-tertiary" /></div>
+                    <div className="flex justify-center py-8"><KolorSpinner size={20} /></div>
                   ) : messages.length === 0 ? (
                     <div className="text-center py-8">
                       <ChatCircle weight="duotone" className="w-10 h-10 mx-auto mb-3 text-text-primary" />
@@ -1692,7 +1591,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                         disabled={saving}
                         className="px-4 py-2 bg-brand-primary text-white rounded-xl text-sm hover:bg-brand-primary flex items-center gap-2 transition-all duration-200"
                       >
-                        {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
+                        {saving ? <KolorSpinner size={16} /> : <FloppyDisk className="w-4 h-4" />}
                         Save
                       </button>
                     </div>
@@ -1936,7 +1835,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                         data-testid="send-portal-link-btn"
                       >
                         {sendingPortalLink ? (
-                          <><SpinnerGap className="w-4 h-4 animate-spin" /> Sending...</>
+                          <><KolorSpinner size={16} /> Sending...</>
                         ) : portalLinkSent ? (
                           <><CheckCircle className="w-4 h-4" /> Sent to {lead.clientEmail}</>
                         ) : (

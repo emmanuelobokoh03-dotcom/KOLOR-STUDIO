@@ -13,13 +13,24 @@ import {
 export function startScheduler(): void {
   // ── DAILY at 9am UTC ──
   cron.schedule('0 9 * * *', async () => {
-    console.log('[Scheduler] Running daily checks...');
-    await runStaleLeadNudges();
-    await runQuoteViewedNudges();
-    await runContractUnsignedWarnings();
-    await runContractUnsignedFinalWarning();
-    await runPaymentNudges();
-    await runQuoteExpiryWarnings();
+    console.log('[Scheduler] Running daily checks (parallel)...');
+    const results = await Promise.allSettled([
+      runStaleLeadNudges(),
+      runQuoteViewedNudges(),
+      runContractUnsignedWarnings(),
+      runContractUnsignedFinalWarning(),
+      runPaymentNudges(),
+      runQuoteExpiryWarnings(),
+    ]);
+    const failed = results.filter(r => r.status === 'rejected');
+    if (failed.length > 0) {
+      failed.forEach((r, i) => {
+        if (r.status === 'rejected') {
+          console.error(`[Scheduler] Daily job ${i} failed:`, r.reason);
+        }
+      });
+    }
+    console.log(`[Scheduler] Daily checks complete — ${results.length - failed.length}/${results.length} jobs succeeded`);
   });
 
   // ── MONDAY 8am UTC (weekly report) ──
