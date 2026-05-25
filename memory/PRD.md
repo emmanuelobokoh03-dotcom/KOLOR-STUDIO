@@ -740,6 +740,17 @@ Hero dashboard tab switcher:
 - **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
 - Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
 
+## Iteration 198 — Activity Tab Cleanup + Deliverables i18n + Quote Builder Mobile + Contract Titles + Portal + Parallel Scheduler (Feb 2026) — ✅ SHIPPED
+- **LeadDetailModal Activity tab**: removed duplicate "Discovery Call Card" (3 states) and "Add Note" block — both already exist in the action row and Notes tab respectively. Activity timeline log only. Fixed stray "ClockCounterClockwise" word in heading. SpinnerGap → KolorSpinner in all 6 remaining loading states; SpinnerGap import removed.
+- **DeliverablesTab**: interface accepts `userIndustry?: IndustryType`. Imports `getIndustryLanguage` and derives `lang` for industry-aware copy. LeadDetailModal passes `userIndustry={userIndustry}` when rendering.
+- **QuoteBuilderModal mobile header**: two-row layout (title+close above, Save+Send `flex-1` full-width buttons below on mobile). Eliminates "New Q..." truncation on iPhone 375px.
+- **ClientPortal**: h1 + "Project Portal" label now `relative z-10` to render above gradient overlay. Header + footer logo: 8-segment KOLOR pinwheel SVG replaces letter-initial fallback; `brandLogoUrl` still preferred when studio has set a custom logo.
+- **contracts.ts SERVICE_TITLES**: extended with 17 `projectType` enum values (COMMISSION → "Art Commission Agreement", WEDDING → "Wedding Photography Agreement", MURAL/SCULPTURE/MIXED_MEDIA for fine art, etc.). Lookup order: `title → SERVICE_TITLES[serviceType] → SERVICE_TITLES[projectType] → template.title`. Fine Art commissions now titled correctly.
+- **scheduler.ts**: daily 9am job parallelised with `Promise.allSettled` — six jobs (stale leads, quote viewed, contract unsigned warning + final warning, payment nudges, quote expiry) run concurrently. Per-job rejection logged; success count summary printed.
+- **Diagnostic (no patch)**: Files API already sends `credentials: 'include'` via central `request()` helper (`api.ts:52`) — no patch needed. Resend `SENDER_EMAIL` defaults to `onboarding@resend.dev` sandbox; production must verify a domain.
+- Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
+
+
 ## Iteration 197 — Portal Contact Cleanup + Scheduler Audit (Feb 2026) — ✅ SHIPPED
 - **ClientPortal**: Removed old "Have Questions? / {name} is here to help" contact section that was rendering as a duplicate dark block above the footer. Footer panel: removed Contact Us mailto button, simplified layout to left-aligned studio badge + "Questions about your project?" text.
 - **Scheduler audit (NO backend changes needed)**:
