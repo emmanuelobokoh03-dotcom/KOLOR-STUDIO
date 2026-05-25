@@ -740,6 +740,16 @@ Hero dashboard tab switcher:
 - **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
 - Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
 
+## Iteration 197 — Portal Contact Cleanup + Scheduler Audit (Feb 2026) — ✅ SHIPPED
+- **ClientPortal**: Removed old "Have Questions? / {name} is here to help" contact section that was rendering as a duplicate dark block above the footer. Footer panel: removed Contact Us mailto button, simplified layout to left-aligned studio badge + "Questions about your project?" text.
+- **Scheduler audit (NO backend changes needed)**:
+  - `server.ts` line 414: `startScheduler()` is called and gated by `ENABLE_SCHEDULER=true` env flag (Iter 152 pattern).
+  - `schema.prisma` lines 559-561: `weeklyReportEnabled`, `staleLeadEmailEnabled`, `quoteNudgeEmailEnabled` all present with `@default(true)`.
+  - `scheduler.ts`: all 3 preference fields properly queried in their respective jobs (lines 50/82/115/272).
+  - `scheduler.ts` line 243: `businessName` already included in quote expiry `assignedTo` select — `sendQuoteExpiryNoticeToClient` receives correct studio name.
+- Build: `npx tsc --noEmit` clean on backend + frontend. `npm run build` clean in 7.99s. Commit `eb371d1` (local, pending push via "Save to GitHub").
+
+
 
 ## Test Credentials
 - Email: bookingtest@test.com
