@@ -740,6 +740,28 @@ Hero dashboard tab switcher:
 - **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
 - Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
 
+## Iteration 199 — Redesign Phase 1: Tab Reduction + Dashboard Simplification (Feb 2026) — ✅ SHIPPED
+- **LeadDetailModal: 8 tabs → 5 tabs**. New layout: **Overview · Pipeline · Files & Notes · Messages · Activity**.
+  - **Pipeline tab** merges Quotes + Contracts into one unified commercial view with section headers (`lang.quotes` / `lang.contracts`). No tab-switching between offer and agreement stages.
+  - **Files & Notes tab** appends notes textarea + history below file list. One scroll surface, no switching between Files/Notes/Deliverables.
+  - **Timeline tab REMOVED** (zero users need project milestones in a CRM for solo creatives).
+  - **Deliverables tab REMOVED** — `MarkAsDeliveredButton` already lives at top of Files tab; the dedicated tab was redundant.
+  - **Notes tab block** removed (unreachable after tab array reduction).
+  - Dead imports removed (`ProjectTimeline`, `DeliverablesTab`).
+  - `activeTab` union type narrowed to 5 valid values; `initialTab` map handles legacy `'quotes'/'contracts'/'notes'/'timeline'/'deliverables'` deep-links by routing to the appropriate new tab.
+  - `getPrimaryActionTab` now returns `'pipeline'` (was conditional `'quotes'/'contracts'`).
+- **Dashboard simplification**:
+  - **4 stat cards → 2**: "Active leads" (Total − Booked − Lost) + "Booked". Removed Total and Quoted breakdowns — solo creatives need to know "how many am I working with" and "how many confirmed", not conversion math.
+  - **QuickActions widget removed** (desktop sidebar + mobile stack). FAB on mobile and lead list on desktop already cover all the actions.
+  - **Recent Activity feed removed** (desktop + mobile). Duplicated the activity tab inside each lead; an empty feed was worse than no feed.
+  - **Calendar Connection widget removed** from sidebar — moves to Settings in Phase 4.
+  - **Mobile-only section** now shows only `OnboardingChecklist`.
+  - Dead imports removed (`CalendarConnectionWidget`, `ActivityFeed`, `QuickActions`).
+- **Bundle impact**: `LeadDetailModal` 139 KB → 127 KB (-12 KB / -8.6%). `Dashboard` 437 KB → 408 KB (-29 KB / -6.6%). Total **~41 KB raw / ~13 KB gzipped** off primary work surfaces.
+- Build: backend untouched. Frontend tsc clean. Vite build clean (6.49s). Commit `bb9d9ba` (+80 / -173 net deletion).
+- **Phase 2+ deferred**: Today screen (`GET /api/today`), vertical timeline client view, nav simplification (Today/Clients/Settings), Calendar as Settings integration, 3-button action bar.
+
+
 ## Iteration 198 — Activity Tab Cleanup + Deliverables i18n + Quote Builder Mobile + Contract Titles + Portal + Parallel Scheduler (Feb 2026) — ✅ SHIPPED
 - **LeadDetailModal Activity tab**: removed duplicate "Discovery Call Card" (3 states) and "Add Note" block — both already exist in the action row and Notes tab respectively. Activity timeline log only. Fixed stray "ClockCounterClockwise" word in heading. SpinnerGap → KolorSpinner in all 6 remaining loading states; SpinnerGap import removed.
 - **DeliverablesTab**: interface accepts `userIndustry?: IndustryType`. Imports `getIndustryLanguage` and derives `lang` for industry-aware copy. LeadDetailModal passes `userIndustry={userIndustry}` when rendering.
