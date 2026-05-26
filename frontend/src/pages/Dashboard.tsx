@@ -39,7 +39,6 @@ import { CelebrationModal, checkCelebration, Achievement, achievements } from '.
 // Iter 181 — lazify conditionally-rendered heavy components to shrink Dashboard chunk.
 const CRMAlerts = lazy(() => import('../components/CRMAlerts'))
 const RevenueDashboard = lazy(() => import('../components/RevenueDashboard'))
-import CalendarConnectionWidget from '../components/CalendarConnectionWidget'
 import OnboardingChecklist from '../components/OnboardingChecklist'
 import AHAModal from '../components/AHAModal'
 const NeedsAttentionSection = lazy(() => import('../components/NeedsAttentionSection'))
@@ -51,8 +50,6 @@ import { StatusBadge } from '../components/StatusBadge'
 import { EmptyState } from '../components/EmptyState'
 import { StatCard } from '../components/StatCard'
 import { SmartNudgeBanner } from '../components/SmartNudgeBanner'
-import { ActivityFeed } from '../components/ActivityFeed'
-import { QuickActions } from '../components/QuickActions'
 import { getIndustryLanguage } from '../utils/industryLanguage'
 import { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
 import { Receipt } from '@phosphor-icons/react/dist/csr/Receipt'
@@ -1137,43 +1134,21 @@ const Dashboard = () => {
 
         {/* Lead-management chrome (stat cards + filter toolbar) — only visible for lead-focused views */}
         {(viewMode === 'kanban' || viewMode === 'list') && (<>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-4 md:mb-8">
+        <div className="grid grid-cols-2 gap-3 md:gap-5 mb-4 md:mb-8">
           <StatCard
             icon={Users}
-            label={`Total ${lang.leads}`}
-            value={stats?.total || 0}
-            trend={{ direction: 'neutral', label: 'all time' }}
+            label={`Active ${lang.leads}`}
+            value={(stats?.total || 0) - (stats?.statusCounts?.BOOKED || 0) - (stats?.statusCounts?.LOST || 0)}
+            trend={{ direction: 'neutral', label: 'in pipeline' }}
             sparkline={toSparkline(monthlyTrend, 'count', stats?.total || 0)}
             accentColor="brand"
             active={statusFilter === null}
             onClick={() => clearStatusFilter()}
-            testId="stat-total-leads"
-          />
-          <StatCard
-            icon={TrendUp}
-            label={`New ${lang.leads}`}
-            value={stats?.statusCounts?.NEW || 0}
-            trend={{ direction: 'neutral', label: 'awaiting review' }}
-            sparkline={toSparkline(monthlyTrend, 'count', stats?.statusCounts?.NEW || 0)}
-            accentColor="brand"
-            active={statusFilter === 'NEW'}
-            onClick={() => handleFilterByStatus(statusFilter === 'NEW' ? null : 'NEW')}
-            testId="stat-new-leads"
-          />
-          <StatCard
-            icon={CalendarBlank}
-            label="Quoted"
-            value={stats?.statusCounts?.QUOTED || 0}
-            trend={{ direction: 'neutral', label: 'pending approval' }}
-            sparkline={toSparkline(monthlyTrend, 'count', stats?.statusCounts?.QUOTED || 0)}
-            accentColor="amber"
-            active={statusFilter === 'QUOTED'}
-            onClick={() => handleFilterByStatus(statusFilter === 'QUOTED' ? null : 'QUOTED')}
-            testId="stat-quoted"
+            testId="stat-active-leads"
           />
           <StatCard
             icon={CurrencyDollar}
-            label="Booked"
+            label={`Booked`}
             value={stats?.statusCounts?.BOOKED || 0}
             trend={{ direction: bookedTrend, label: bookedTrend === 'neutral' ? 'confirmed' : `${Math.abs(analytics?.overview.bookedThisMonth.changePercent ?? 0)}% vs last month` }}
             sparkline={toSparkline(monthlyTrend, 'revenue', stats?.statusCounts?.BOOKED || 0)}
@@ -1504,83 +1479,16 @@ const Dashboard = () => {
 
               {/* Onboarding Checklist */}
               <OnboardingChecklist onOpenSettings={(tab) => { setSettingsInitialTab(tab as any); setShowSettings(true); }} />
-
-              {/* Activity Feed */}
-              <div className="glass-card rounded-xl border border-light-200 p-4" data-testid="activity-feed-card">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary">Recent Activity</h3>
-                </div>
-                <ActivityFeed onLeadClick={(leadId) => {
-                  const lead = leads.find(l => l.id === leadId)
-                  if (lead) setSelectedLead(lead)
-                  else leadsApi.getOne(leadId).then(r => { if (r.data?.lead) setSelectedLead(r.data.lead) })
-                }} />
-              </div>
-
-              {/* Quick Actions */}
-              <QuickActions
-                leads={leads}
-                lang={lang}
-                onSendQuote={handleQuickSendQuote}
-                onFollowUpStale={handleQuickFollowUp}
-                onCheckSchedule={handleQuickCheckSchedule}
-                onAddLead={() => setShowAddModal(true)}
-              />
-
-              {/* Google Calendar Connection Widget */}
-              {!calendarHintDismissed && (
-                <div data-testid="calendar-widget-section">
-                  <CalendarConnectionWidget
-                    onStatusChange={(connected) => {
-                      setCalendarConnected(connected)
-                      if (connected) {
-                        setCalendarHintDismissed(true)
-                        localStorage.setItem('kolor_calendar_hint_dismissed', 'true')
-                      }
-                    }}
-                  />
-                  {!calendarConnected && (
-                    <div className="flex justify-end mt-1.5">
-                      <button
-                        onClick={() => {
-                          setCalendarHintDismissed(true)
-                          localStorage.setItem('kolor_calendar_hint_dismissed', 'true')
-                        }}
-                        className="text-xs text-text-tertiary hover:text-text-secondary transition"
-                        data-testid="dismiss-calendar-widget"
-                      >
-                        Dismiss
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
             </aside>
           )}
         </div>{/* /Two-column layout */}
         </>
         )}
 
-        {/* Mobile-only: Onboarding + Activity Feed + Quick Actions (stacked below content) */}
+        {/* Mobile-only: Onboarding checklist */}
         {(viewMode === 'kanban' || viewMode === 'list') && (
-          <div className="lg:hidden mt-4 space-y-4">
+          <div className="lg:hidden mt-4">
             <OnboardingChecklist onOpenSettings={(tab) => { setSettingsInitialTab(tab as any); setShowSettings(true); }} />
-            <div className="glass-card rounded-xl border border-light-200 p-4" data-testid="activity-feed-card-mobile">
-              <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-3">Recent Activity</h3>
-              <ActivityFeed onLeadClick={(leadId) => {
-                const lead = leads.find(l => l.id === leadId)
-                if (lead) setSelectedLead(lead)
-                else leadsApi.getOne(leadId).then(r => { if (r.data?.lead) setSelectedLead(r.data.lead) })
-              }} />
-            </div>
-            <QuickActions
-              leads={leads}
-              lang={lang}
-              onSendQuote={handleQuickSendQuote}
-              onFollowUpStale={handleQuickFollowUp}
-              onCheckSchedule={handleQuickCheckSchedule}
-              onAddLead={() => setShowAddModal(true)}
-            />
           </div>
         )}
       </main>
