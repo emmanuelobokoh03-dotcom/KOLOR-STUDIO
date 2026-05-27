@@ -740,6 +740,20 @@ Hero dashboard tab switcher:
 - **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
 - Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
 
+## Iteration 200 — Redesign Phase 2: Overview Reorder + Sticky Notes + Action Bar (Feb 2026) — ✅ SHIPPED
+- **Overview tab split panel**: timeline (right panel) renders **first on mobile** (`order-1 md:order-2`), fields render below (`order-2 md:order-1`). Right panel gets `md:border-l` for vertical-stack visual separation. Solves "scroll past all editable fields to reach activity context" mobile UX bug.
+- **Right panel polish**: Heading renamed `Timeline` → `Recent` (no conflict with removed Timeline tab). Item cap reduced 15 → 8. Added always-visible key facts row at top: `StatusBadge` + estimated value pill with `currencySymbol`.
+- **Files & Notes — sticky note input on mobile**: Previous notes moved above textarea inside the scrollable area (so old notes don't get hidden by sticky bar). Textarea + Save button extracted into a sibling block with `sticky bottom-0 md:relative`, frosted glass background (`var(--surface-base)` + `backdrop-blur 12px`), top border. `pb-36 md:pb-6` on file content prevents last row hiding behind sticky bar. Fragment-wrapped Files tab to allow two siblings inside the conditional.
+- **Three-button action bar**: persistent across ALL tabs, rendered between tab nav and content area. Buttons (each 32px, `active:scale-95` tap feedback, full-bleed):
+  - **Send {lang.quote}** (primary, purple) — switches to Pipeline tab where `QuotesTab` handles the actual builder.
+  - **Upload file** — switches to Files & Notes tab.
+  - **Message** — switches to Messages tab.
+  Eliminates header-button hunt; single consistent action surface.
+- Step 5 in spec (remove header send-offer-btn / schedule-discovery-header-btn) was a no-op — those buttons no longer exist in the current header.
+- **Bundle impact**: `LeadDetailModal` 127 → 129 KB (+2 KB / +1.6%) — net growth from new action bar JSX, worth the UX simplification.
+- Build: frontend tsc clean. Vite build clean (6.92s). Commit `7de5ced` (+88 / -30 net add).
+
+
 ## Iteration 199 — Redesign Phase 1: Tab Reduction + Dashboard Simplification (Feb 2026) — ✅ SHIPPED
 - **LeadDetailModal: 8 tabs → 5 tabs**. New layout: **Overview · Pipeline · Files & Notes · Messages · Activity**.
   - **Pipeline tab** merges Quotes + Contracts into one unified commercial view with section headers (`lang.quotes` / `lang.contracts`). No tab-switching between offer and agreement stages.
