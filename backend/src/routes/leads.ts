@@ -989,6 +989,198 @@ router.post('/:id/send-email', authMiddleware, async (req: AuthRequest, res: Res
 // MILESTONE ENDPOINTS
 // ==========================================
 
+// GET /api/leads/:id/timeline - Unified client timeline event feed (Phase 3)
+router.get('/:id/timeline', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const leadId = req.params.id as string;
+
+    const [lead, quotes, contracts] = await Promise.all([
+      prisma.lead.findFirst({
+        where: { id: leadId, assignedToId: req.userId! },
+        select: {
+          id: true, status: true, clientName: true, projectType: true,
+          projectTitle: true, estimatedValue: true, keyDate: true, eventDate: true,
+          createdAt: true, discoveryCallScheduled: true, discoveryCallCompletedAt: true,
+          pipelineStatus: true,
+        },
+      }),
+      prisma.quote.findMany({
+        where: { leadId },
+        orderBy: { createdAt: 'asc' },
+        select: { id: true, status: true, total: true, createdAt: true, sentAt: true, viewedAt: true, acceptedAt: true, validUntil: true, quoteNumber: true },
+      }),
+      prisma.contract.findMany({
+        where: { leadId },
+        orderBy: { createdAt: 'asc' },
+        select: { id: true, status: true, title: true, createdAt: true, sentAt: true, clientAgreed: true, clientAgreedAt: true },
+      }),
+    ]);
+
+    if (!lead) { res.status(404).json({ error: 'Lead not found' }); return; }
+
+    type EventStatus = 'done' | 'active' | 'pending';
+    interface TimelineEvent {
+      id: string;
+      type: string;
+      date: Date | null;
+      status: EventStatus;
+      label: string;
+      sublabel?: string;
+      actionLabel?: string;
+      actionRoute?: string;
+    }
+
+    const events: TimelineEvent[] = [];
+    const now = new Date();
+
+    // 1. Inquiry received
+    events.push({
+      id: `inquiry-${lead.id}`,
+      type: 'INQUIRY_RECEIVED',
+      date: lead.createdAt,
+      status: 'done',
+      label: 'Inquiry received',
+      sublabel: new Date(lead.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    });
+
+    // 2. Discovery call events
+    if (lead.discoveryCallScheduled) {
+      events.push({
+        id: `discovery-scheduled-${lead.id}`,
+        type: 'DISCOVERY_SCHEDULED',
+        date: lead.createdAt,
+        status: lead.discoveryCallCompletedAt ? 'done' : 'active',
+        label: 'Discovery call scheduled',
+        sublabel: lead.discoveryCallCompletedAt ? 'Completed' : 'Upcoming',
+        actionLabel: lead.discoveryCallCompletedAt ? undefined : 'Mark complete',
+        actionRoute: lead.discoveryCallCompletedAt ? undefined : 'pipeline',
+      });
+    }
+
+    if (lead.discoveryCallCompletedAt) {
+      events.push({
+        id: `discovery-completed-${lead.id}`,
+        type: 'DISCOVERY_COMPLETED',
+        date: lead.discoveryCallCompletedAt,
+        status: 'done',
+        label: 'Discovery call completed',
+      });
+    }
+
+    // 3. Quotes
+    for (const quote of quotes) {
+      const qNum = quote.quoteNumber ? `#${quote.quoteNumber}` : quote.id.slice(-4).toUpperCase();
+      const value = quote.total ? ` · $${quote.total.toLocaleString()}` : '';
+
+      if (quote.sentAt) {
+        const isExpired = quote.validUntil && new Date(quote.validUntil) < now && quote.status !== 'ACCEPTED';
+        const quoteStatus: EventStatus = quote.status === 'ACCEPTED' ? 'done' : isExpired ? 'active' : (quote.status === 'SENT' || quote.status === 'VIEWED') ? 'active' : 'done';
+        events.push({
+          id: `quote-sent-${quote.id}`,
+          type: 'QUOTE_SENT',
+          date: quote.sentAt,
+          status: quoteStatus,
+          label: `Offer sent ${qNum}${value}`,
+          sublabel: quote.status === 'ACCEPTED' ? `Accepted ${quote.acceptedAt ? new Date(quote.acceptedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}` : quote.status === 'VIEWED' ? 'Viewed — awaiting decision' : isExpired ? 'Expired — consider resending' : 'Sent — awaiting response',
+          actionLabel: (quote.status === 'SENT' || quote.status === 'VIEWED') ? 'Follow up' : undefined,
+          actionRoute: 'pipeline',
+        });
+      }
+
+      if (quote.status === 'ACCEPTED' && quote.acceptedAt) {
+        events.push({
+          id: `quote-accepted-${quote.id}`,
+          type: 'QUOTE_ACCEPTED',
+          date: quote.acceptedAt,
+          status: 'done',
+          label: `Offer accepted${value}`,
+          sublabel: new Date(quote.acceptedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        });
+      }
+    }
+
+    // 4. Contracts
+    for (const contract of contracts) {
+      if (contract.sentAt) {
+        const daysSinceSent = Math.floor((now.getTime() - new Date(contract.sentAt).getTime()) / 86400000);
+        const contractStatus: EventStatus = contract.clientAgreed ? 'done' : 'active';
+        events.push({
+          id: `contract-sent-${contract.id}`,
+          type: 'CONTRACT_SENT',
+          date: contract.sentAt,
+          status: contractStatus,
+          label: contract.clientAgreed ? `${contract.title || 'Agreement'} signed` : `${contract.title || 'Agreement'} sent`,
+          sublabel: contract.clientAgreed
+            ? `Signed ${contract.clientAgreedAt ? new Date(contract.clientAgreedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}`
+            : `Day ${daysSinceSent} — awaiting signature`,
+          actionLabel: !contract.clientAgreed ? 'Send reminder' : undefined,
+          actionRoute: 'pipeline',
+        });
+      }
+
+      if (contract.clientAgreed && contract.clientAgreedAt) {
+        events.push({
+          id: `contract-signed-${contract.id}`,
+          type: 'CONTRACT_SIGNED',
+          date: contract.clientAgreedAt,
+          status: 'done',
+          label: 'Contract signed',
+          sublabel: new Date(contract.clientAgreedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        });
+      }
+    }
+
+    // 5. Delivery event
+    if (lead.pipelineStatus === 'COMPLETED') {
+      events.push({
+        id: `delivered-${lead.id}`,
+        type: 'DELIVERED',
+        date: now,
+        status: 'done',
+        label: 'Work delivered',
+        sublabel: 'Completed',
+      });
+    }
+
+    // 6. Pending next step
+    const STATUS_NEXT_STEPS: Record<string, { type: string; label: string; actionLabel: string; actionRoute: string }> = {
+      NEW: { type: 'NEXT_REPLY', label: 'Reply to inquiry', actionLabel: 'Message', actionRoute: 'messages' },
+      REVIEWING: { type: 'NEXT_CALL', label: 'Schedule discovery call', actionLabel: 'Schedule', actionRoute: 'overview' },
+      CONTACTED: { type: 'NEXT_CALL', label: 'Complete discovery call', actionLabel: 'Mark done', actionRoute: 'overview' },
+      QUALIFIED: { type: 'NEXT_QUOTE', label: 'Send offer', actionLabel: 'Send offer', actionRoute: 'pipeline' },
+      QUOTED: { type: 'NEXT_FOLLOWUP', label: 'Follow up on offer', actionLabel: 'Follow up', actionRoute: 'pipeline' },
+      FINALIZING: { type: 'NEXT_CONTRACT', label: 'Send agreement', actionLabel: 'New contract', actionRoute: 'pipeline' },
+      BOOKED: { type: 'NEXT_DELIVERY', label: 'Mark as delivered', actionLabel: 'Mark delivered', actionRoute: 'files' },
+    };
+
+    const nextStep = STATUS_NEXT_STEPS[lead.status];
+    if (nextStep && lead.pipelineStatus !== 'COMPLETED') {
+      events.push({
+        id: `next-${lead.id}`,
+        type: nextStep.type,
+        date: null,
+        status: 'pending',
+        label: nextStep.label,
+        actionLabel: nextStep.actionLabel,
+        actionRoute: nextStep.actionRoute,
+      });
+    }
+
+    // Sort by date ascending (null/pending at end)
+    events.sort((a, b) => {
+      if (!a.date) return 1;
+      if (!b.date) return -1;
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+
+    res.json({ events, leadId: lead.id, generatedAt: now });
+  } catch (error) {
+    console.error('Get timeline error:', error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+
 // GET /api/leads/:id/milestones - Get timeline & milestones for a lead
 router.get('/:id/milestones', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {

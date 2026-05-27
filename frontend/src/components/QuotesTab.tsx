@@ -38,9 +38,10 @@ interface QuoteTabProps {
   lead: Lead;
   onQuoteUpdate?: () => void;
   onQuoteSent?: () => void;
+  autoOpenBuilder?: boolean;
 }
 
-export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTabProps) {
+export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBuilder }: QuoteTabProps) {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
   const [showBuilder, setShowBuilder] = useState(false);
@@ -59,6 +60,13 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent }: QuoteTab
     fetchQuotes();
     fetchUserSettings();
   }, [lead.id]);
+
+  // Open the quote builder immediately when triggered from the action bar
+  useEffect(() => {
+    if (autoOpenBuilder) {
+      setShowBuilder(true);
+    }
+  }, [autoOpenBuilder]);
 
   const fetchQuotes = async () => {
     setLoading(true);

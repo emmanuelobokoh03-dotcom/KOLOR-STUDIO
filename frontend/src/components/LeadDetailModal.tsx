@@ -21,6 +21,7 @@ import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
 import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
 import KolorSpinner from './KolorSpinner'
+import ClientTimeline from './ClientTimeline'
 import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
 import { ArrowsLeftRight } from '@phosphor-icons/react/dist/csr/ArrowsLeftRight'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
@@ -176,6 +177,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     (initialTab === 'details' ? 'overview' : initialTab === 'activity' ? 'activity' : (initialTab === 'quotes' || initialTab === 'contracts') ? 'pipeline' : initialTab === 'notes' ? 'files' : initialTab === 'deliverables' ? 'files' : initialTab === 'timeline' ? 'activity' : initialTab as any) || 'overview'
   );
   const [showEmailComposer, setShowEmailComposer] = useState(false);
+  const [openQuoteBuilder, setOpenQuoteBuilder] = useState(false);
+  const [showTimelineView, setShowTimelineView] = useState(() => new URLSearchParams(window.location.search).has('timeline'));
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [formData, setFormData] = useState({
     status: lead.status,
@@ -824,7 +827,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             data-testid="lead-action-bar"
           >
             <button
-              onClick={() => setActiveTab('pipeline')}
+              onClick={() => { setActiveTab('pipeline'); setOpenQuoteBuilder(true); }}
               className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-semibold text-white transition-all active:scale-95"
               style={{ background: '#6C2EDB' }}
               data-testid="action-send-offer"
@@ -1164,14 +1167,35 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               </div>
             ) : activeTab === 'activity' ? (
               <div className="p-4 md:p-6 space-y-4 md:space-y-6">
-                {/* Activity Timeline */}
+                {/* Activity Timeline — toggle between log and ClientTimeline view */}
                 <div>
-                  <h3 className="text-sm font-semibold text-text-secondary mb-4 flex items-center gap-2">
-                    <ClockCounterClockwise className="w-4 h-4" />
-                    Activity
-                  </h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
+                      <ClockCounterClockwise className="w-4 h-4" />
+                      {showTimelineView ? 'Project Timeline' : 'Activity'}
+                    </h3>
+                    <button
+                      onClick={() => setShowTimelineView(v => !v)}
+                      className="text-[10px] font-medium px-2.5 py-1 rounded-md border transition-colors"
+                      style={{
+                        border: '0.5px solid var(--border)',
+                        color: showTimelineView ? '#6C2EDB' : 'var(--text-tertiary)',
+                        background: showTimelineView ? '#ede9fe' : 'transparent',
+                      }}
+                      data-testid="toggle-timeline-view"
+                    >
+                      Timeline view
+                    </button>
+                  </div>
 
-                  {loadingActivities ? (
+                  {showTimelineView ? (
+                    <ClientTimeline
+                      leadId={lead.id}
+                      userIndustry={userIndustry}
+                      onTabChange={(tab) => setActiveTab(tab as any)}
+                      currencySymbol={currencySymbol}
+                    />
+                  ) : loadingActivities ? (
                     <ActivitySkeleton />
                   ) : activities.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="activities-empty-state">
@@ -1552,6 +1576,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                     lead={lead}
                     onQuoteUpdate={() => { fetchActivities(); }}
                     onQuoteSent={() => onCelebrate?.('first_quote', 'firstQuote')}
+                    autoOpenBuilder={openQuoteBuilder}
+                    key={openQuoteBuilder ? 'auto-open' : 'normal'}
                   />
                 </div>
                 {/* Agreements section */}
