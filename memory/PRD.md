@@ -740,6 +740,28 @@ Hero dashboard tab switcher:
 - **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
 - Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
 
+## Iteration 201 — Phase 3: One-Tap Quote + GET /api/leads/:id/timeline + ClientTimeline (Feb 2026) — ✅ SHIPPED
+- **One-tap quote from action bar**:
+  - `QuotesTab` accepts `autoOpenBuilder?: boolean` prop. `useEffect` sets `showBuilder=true` when flag flips.
+  - `LeadDetailModal` action bar `Send Quote` button: `setActiveTab('pipeline')` + `setOpenQuoteBuilder(true)`. `QuotesTab` receives the flag and opens the builder in a single render. `key` prop forces remount when flag flips, guaranteeing the effect fires even when Pipeline tab was already mounted.
+- **Backend `GET /api/leads/:id/timeline`** (new endpoint, ~120 lines in `backend/src/routes/leads.ts`):
+  - Parallel query: lead + quotes + contracts.
+  - Assembles chronological `TimelineEvent[]` with `status: 'done' | 'active' | 'pending'`.
+  - Events: inquiry / discovery scheduled / discovery completed / quote sent / quote accepted / contract sent / contract signed / delivered.
+  - Computed pending "next step" appended via `STATUS_NEXT_STEPS` map keyed by `lead.status`.
+  - Schema-aware fixes: `discoveryCallScheduled` is a `Boolean` (not Date) — uses `lead.createdAt` as placement date; `DELIVERED` is NOT an `ActivityType` enum value — delivery derives from `pipelineStatus === 'COMPLETED'`.
+- **`ClientTimeline.tsx` (new, 138 lines)**:
+  - Renders vertical event list from new endpoint.
+  - Done = purple `#6C2EDB` filled check (with solid purple connector line); Active = amber `#f59e0b` clock; Pending = dashed border circle (opacity-50).
+  - Inline action buttons styled by status (active = amber tint, default = purple tint).
+  - Routes via `onTabChange` callback when `actionRoute` present.
+  - `VITE_API_URL` / `REACT_APP_BACKEND_URL` env fallback chain for fetch base URL.
+- **Feature flag**: Activity tab now shows a "Timeline view" toggle button. URL `?timeline=1` opens with the view enabled by default. Existing activity log preserved side-by-side.
+- **Bundle**: `LeadDetailModal` 129 → 132 KB (+3 KB).
+- Build: backend tsc clean. Frontend tsc + build clean (6.71s). Commit `8462d4c` (+372 / -8 with new ClientTimeline.tsx).
+- ⚠️ **Backend changed → Railway redeploy required** after push.
+
+
 ## Iteration 200 — Redesign Phase 2: Overview Reorder + Sticky Notes + Action Bar (Feb 2026) — ✅ SHIPPED
 - **Overview tab split panel**: timeline (right panel) renders **first on mobile** (`order-1 md:order-2`), fields render below (`order-2 md:order-1`). Right panel gets `md:border-l` for vertical-stack visual separation. Solves "scroll past all editable fields to reach activity context" mobile UX bug.
 - **Right panel polish**: Heading renamed `Timeline` → `Recent` (no conflict with removed Timeline tab). Item cap reduced 15 → 8. Added always-visible key facts row at top: `StatusBadge` + estimated value pill with `currencySymbol`.
