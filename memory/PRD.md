@@ -740,6 +740,18 @@ Hero dashboard tab switcher:
 - **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
 - Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
 
+## Iteration 204 — EmailComposer Title + Quote Builder Audit (Feb 2026) — ✅ SHIPPED
+- **EmailComposer title** (line 101): `"Send Quotes"` / `"Send Contract"` → `"Send Quote"` / `"Send Agreement"`. The button label at line 241 was already correctly fixed in iter-203.
+- **QuoteBuilderModal design audit — 4 gaps closed**:
+  - **Gap 1 (Valid-until)**: Added `min={today}` to the valid-until date input. Prevents selecting past dates that would create already-expired quotes.
+  - **Gap 2 (Key date editable)**: Key date cell in the client card is now an editable `<input type="date">` (`defaultValue={lead.keyDate || lead.eventDate}`). The fine-art conditional that hid the cell was removed — artists may want to set a date too.
+  - **Gap 3 (Responsive line items grid)**: Grid columns `1fr 72px 72px 28px` → `1fr minmax(48px,64px) minmax(56px,80px) 28px`. Description column gets more breathing room on iPhone SE (320px) and small Android. Applied to both header and rows via `replace_all`.
+  - **Gap 4 (Overflow blocking iOS input focus)**: Line items card `overflow-hidden` → `overflow: visible`. iOS Safari was preventing input focus when an ancestor had `overflow:hidden` during virtual-keyboard resize.
+- **Sidebar send button spinner**: `KolorSpinner color` now adapts — `white` when sending a new quote (purple bg), `var(--text-secondary)` when sending a reminder on an already-sent quote (transparent bg).
+- **Deferred to P2 post-launch** (require schema changes): deposit due date, payment schedule due dates, note field repositioning, discount field.
+- Build: frontend tsc + Vite build clean (6.91s). Commit `dad92a8` (+21 / -14 across 2 files).
+
+
 ## Iteration 203 — Send Button Label + iOS Mobile Inputs + Pipeline Skeleton + Header Cleanup (Feb 2026) — ✅ SHIPPED
 - **EmailComposer**: Send button label `"PaperPlaneTilt Quotes/Contract"` (icon component name accidentally rendered as text) → `"Send Quote/Agreement/Email"` based on type. Was visible to every user sending a contract.
 - **QuoteBuilderModal iOS Safari fixes**:
