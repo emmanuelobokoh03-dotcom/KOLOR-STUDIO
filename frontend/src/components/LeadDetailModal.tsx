@@ -537,13 +537,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     if (diffMins < 60) return `${diffMins} min ago`;
     if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
     if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-    
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    });
+
+    const datePart = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const timePart = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    return `${datePart}, ${timePart}`;
   };
 
   const isImageFile = (file: LeadFile) => file.mimeType?.startsWith('image/');

@@ -394,10 +394,31 @@ export default function QuoteBuilderModal({
         {/* ═══ Status Pipeline Bar ═══ */}
         <PipelineBar status={existingQuote?.status} />
 
+        {/* ═══ Mobile value bar — hidden on desktop (sidebar handles this) ═══ */}
+        <div
+          className="md:hidden flex items-center justify-between gap-3 px-4 py-2 flex-shrink-0"
+          style={{ borderBottom: '0.5px solid var(--border)', background: 'var(--surface-background)' }}
+          data-testid="mobile-value-bar"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-sm font-extrabold text-text-primary tabular-nums flex-shrink-0">{formatCurrency(total, effectiveCurrency)}</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] truncate">{lead.projectTitle}</span>
+          </div>
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium flex-shrink-0" style={
+            existingQuote?.status === 'ACCEPTED' ? { background: 'rgba(16,185,129,0.1)', color: '#065F46' }
+              : existingQuote?.status === 'SENT' ? { background: 'rgba(108,46,219,0.1)', color: '#6C2EDB' }
+              : existingQuote?.status === 'VIEWED' ? { background: 'rgba(245,158,11,0.1)', color: '#92400E' }
+              : { background: 'rgba(245,158,11,0.08)', color: '#92400E' }
+          }>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: existingQuote?.status === 'ACCEPTED' ? '#059669' : existingQuote?.status === 'SENT' ? '#6C2EDB' : '#D97706' }} />
+            {existingQuote?.status === 'ACCEPTED' ? 'Approved' : existingQuote?.status === 'SENT' ? 'Sent' : existingQuote?.status === 'VIEWED' ? 'Viewed' : 'Draft'}
+          </span>
+        </div>
+
         {/* ═══ Two-column body ═══ */}
-        <div className="flex-1 flex flex-col md:flex-row" style={{ minHeight: 0 }}>
+        <div className="flex-1 flex flex-col md:flex-row min-h-0">
           {/* Left column — builder area */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-4 min-w-0" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="flex-1 overflow-y-auto p-5 space-y-4 min-w-0 min-h-0" style={{ WebkitOverflowScrolling: 'touch' }}>
 
             {/* Alerts */}
             {error && (
@@ -655,8 +676,8 @@ export default function QuoteBuilderModal({
             </div>
           </div>
 
-          {/* ═══ Right column — sidebar ═══ */}
-          <div className="w-full md:w-[220px] flex-shrink-0 overflow-y-auto p-4 space-y-4" style={{ borderLeft: '0.5px solid var(--border)', background: 'var(--surface-base)' }}>
+          {/* ═══ Right column — sidebar (desktop only) ═══ */}
+          <div className="hidden md:flex md:flex-col md:w-[220px] flex-shrink-0 overflow-y-auto p-4 space-y-4" style={{ borderLeft: '0.5px solid var(--border)', background: 'var(--surface-base)' }}>
 
             {/* Value summary */}
             <div className="rounded-lg px-3.5 py-3" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-background)' }} data-testid="value-summary">
