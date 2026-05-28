@@ -740,6 +740,20 @@ Hero dashboard tab switcher:
 - **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
 - Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
 
+## Iteration 203 — Send Button Label + iOS Mobile Inputs + Pipeline Skeleton + Header Cleanup (Feb 2026) — ✅ SHIPPED
+- **EmailComposer**: Send button label `"PaperPlaneTilt Quotes/Contract"` (icon component name accidentally rendered as text) → `"Send Quote/Agreement/Email"` based on type. Was visible to every user sending a contract.
+- **QuoteBuilderModal iOS Safari fixes**:
+  - Description/qty/price inputs: `touchAction: manipulation` (prevents iOS double-tap zoom), `minHeight: 36px` (proper touch target), `background: transparent` moved from Tailwind class to style prop, `WebkitUserSelect: text` on text input.
+  - Modal body: `minHeight: 0` flex strategy replaces `overflow-hidden` — iOS Safari was clipping child `overflow-y-auto` scroll areas inside the modal.
+  - Left column: `WebkitOverflowScrolling: touch` for momentum scrolling.
+- **LeadDetailModal header cleanup**:
+  - `modal-schedule-call` button REMOVED from header (discovery call accessible only from Overview tab checklist now — single location per redesign).
+  - Discovery notes input lifted out of the removed button's inline tooltip into a standalone centered overlay modal (still triggered by `handleCompleteDiscoveryCall` from Overview tab).
+  - Work type / Project type / Source: raw enum strings (`"SERVICE"`, `"BRAND_DESIGN"`) now display title-case (`"Service"`, `"Brand Design"`) in Project Details metadata rows. 5 occurrences fixed.
+- **QuotesTab loading skeleton**: 2 shimmer card placeholders (`ks-shimmer`) replace bare `SpinnerGap` — Pipeline tab no longer appears frozen during Railway cold-start fetch.
+- Build: frontend tsc + Vite build clean (6.69s). Commit `060a968` (+44 / -41 across 4 files).
+
+
 ## Iteration 202 — Fix: One-Tap Quote Bugs (Wrong Quote / Always Triggers) (Feb 2026) — ✅ SHIPPED
 - **Bug 1**: action bar "Send Quote" sometimes opened a previously-viewed quote instead of a blank one. **Fix**: `autoOpenBuilder` useEffect in `QuotesTab` now explicitly calls `setEditingQuote(null)` before `setShowBuilder(true)`.
 - **Bug 2**: QuoteBuilder fired on every Pipeline tab render (e.g. "New Contract" navigation also triggered the quote builder). Root cause: `key={openQuoteBuilder ? 'auto-open' : 'normal'}` was permanently stuck as `'auto-open'` because the boolean was never reset → every Pipeline render remounted `QuotesTab` and re-fired the effect. **Fix**:
