@@ -177,6 +177,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     (initialTab === 'details' ? 'overview' : initialTab === 'activity' ? 'activity' : (initialTab === 'quotes' || initialTab === 'contracts') ? 'pipeline' : initialTab === 'notes' ? 'files' : initialTab === 'deliverables' ? 'files' : initialTab === 'timeline' ? 'activity' : initialTab as any) || 'overview'
   );
   const [showEmailComposer, setShowEmailComposer] = useState(false);
+  const [openQuoteBuilderKey, setOpenQuoteBuilderKey] = useState(0);
   const [openQuoteBuilder, setOpenQuoteBuilder] = useState(false);
   const [showTimelineView, setShowTimelineView] = useState(() => new URLSearchParams(window.location.search).has('timeline'));
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -827,7 +828,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             data-testid="lead-action-bar"
           >
             <button
-              onClick={() => { setActiveTab('pipeline'); setOpenQuoteBuilder(true); }}
+              onClick={() => { setActiveTab('pipeline'); setOpenQuoteBuilderKey(k => k + 1); setOpenQuoteBuilder(true); }}
               className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-semibold text-white transition-all active:scale-95"
               style={{ background: '#6C2EDB' }}
               data-testid="action-send-offer"
@@ -1577,7 +1578,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                     onQuoteUpdate={() => { fetchActivities(); }}
                     onQuoteSent={() => onCelebrate?.('first_quote', 'firstQuote')}
                     autoOpenBuilder={openQuoteBuilder}
-                    key={openQuoteBuilder ? 'auto-open' : 'normal'}
+                    onBuilderOpened={() => setOpenQuoteBuilder(false)}
+                    key={openQuoteBuilderKey}
                   />
                 </div>
                 {/* Agreements section */}

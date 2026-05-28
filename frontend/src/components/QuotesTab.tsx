@@ -39,9 +39,10 @@ interface QuoteTabProps {
   onQuoteUpdate?: () => void;
   onQuoteSent?: () => void;
   autoOpenBuilder?: boolean;
+  onBuilderOpened?: () => void;
 }
 
-export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBuilder }: QuoteTabProps) {
+export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBuilder, onBuilderOpened }: QuoteTabProps) {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
   const [showBuilder, setShowBuilder] = useState(false);
@@ -61,10 +62,15 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBu
     fetchUserSettings();
   }, [lead.id]);
 
-  // Open the quote builder immediately when triggered from the action bar
+  // Open a NEW quote builder immediately when triggered from the action bar
+  // Explicitly null editingQuote so we always get a blank new quote
+  // Call onBuilderOpened() so the parent resets the trigger flag to false,
+  // preventing the builder from re-firing on subsequent pipeline tab renders
   useEffect(() => {
     if (autoOpenBuilder) {
+      setEditingQuote(null);
       setShowBuilder(true);
+      onBuilderOpened?.();
     }
   }, [autoOpenBuilder]);
 
