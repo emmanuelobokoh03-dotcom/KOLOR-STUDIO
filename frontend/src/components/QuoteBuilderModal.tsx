@@ -436,30 +436,35 @@ export default function QuoteBuilderModal({
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Project</p>
                   <p className="text-xs font-semibold text-text-primary truncate mt-0.5">{lead.projectTitle}</p>
                 </div>
-                {/* Hide the keyDate cell for fine-art commissions when no date is set — fine art rarely has a fixed date */}
-                {!(userIndustry === 'FINE_ART' && !lead.keyDate && !lead.eventDate) ? (
-                  <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
-                    <p className="text-xs font-semibold text-text-primary mt-0.5">{lead.keyDate || lead.eventDate ? new Date(lead.keyDate || lead.eventDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}</p>
-                  </div>
-                ) : (
-                  <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }} aria-hidden="true" />
-                )}
+                {/* Key date — always editable in quote builder, even for fine art (artist can choose to set or leave blank) */}
+                <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }}>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
+                  <input
+                    type="date"
+                    defaultValue={(lead.keyDate || lead.eventDate || '').toString().split('T')[0]}
+                    className="text-xs font-semibold text-text-primary mt-0.5 bg-transparent w-full cursor-pointer"
+                    placeholder="Set date"
+                    title={lang.keyDate}
+                    data-testid="quote-key-date-input"
+                  />
+                </div>
                 <div className="px-3.5 py-2.5">
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Valid until</p>
                   <input
                     type="date"
                     value={validUntil}
                     onChange={e => setValidUntil(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
                     className="text-xs font-semibold text-text-primary mt-0.5 bg-transparent w-full cursor-pointer"
                     data-testid="valid-until-input"
+                    title="Quote expiry date"
                   />
                 </div>
               </div>
             </div>
 
             {/* Line items card */}
-            <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="line-items-card">
+            <div className="rounded-xl" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)', overflow: 'visible' }} data-testid="line-items-card">
               <div className="flex items-center justify-between px-3.5 py-2.5" style={{ borderBottom: '0.5px solid var(--border)' }}>
                 <span className="text-xs font-bold text-text-primary">{lang.quote} items</span>
                 <div className="relative">
@@ -486,7 +491,7 @@ export default function QuoteBuilderModal({
               </div>
 
               {/* Column headers */}
-              <div className="grid items-center px-3.5 py-2" style={{ gridTemplateColumns: '1fr 72px 72px 28px', borderBottom: '0.5px solid var(--border)', background: 'var(--surface-background)' }}>
+              <div className="grid items-center px-3.5 py-2" style={{ gridTemplateColumns: '1fr minmax(48px, 64px) minmax(56px, 80px) 28px', borderBottom: '0.5px solid var(--border)', background: 'var(--surface-background)' }}>
                 <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Description</span>
                 <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-center">Qty</span>
                 <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] text-right">Price</span>
@@ -495,7 +500,7 @@ export default function QuoteBuilderModal({
 
               {/* Line item rows */}
               {lineItems.map((item, index) => (
-                <div key={index} className="grid items-center px-3.5 py-2.5 group hover:bg-[var(--surface-background)] transition-colors" style={{ gridTemplateColumns: '1fr 72px 72px 28px', borderBottom: '0.5px solid var(--border-light, var(--border))' }} data-testid={`line-item-${index}`}>
+                <div key={index} className="grid items-center px-3.5 py-2.5 group hover:bg-[var(--surface-background)] transition-colors" style={{ gridTemplateColumns: '1fr minmax(48px, 64px) minmax(56px, 80px) 28px', borderBottom: '0.5px solid var(--border-light, var(--border))' }} data-testid={`line-item-${index}`}>
                   <div>
                     <input
                       type="text"
@@ -680,7 +685,9 @@ export default function QuoteBuilderModal({
               style={{ background: existingQuote?.status && existingQuote.status !== 'DRAFT' ? 'transparent' : '#6C2EDB', border: existingQuote?.status && existingQuote.status !== 'DRAFT' ? '1px solid var(--border)' : undefined, color: existingQuote?.status && existingQuote.status !== 'DRAFT' ? 'var(--text-secondary)' : 'white' }}
               data-testid="sidebar-send-btn"
             >
-              {sending ? <KolorSpinner size={12} color="white" /> : <PaperPlaneTilt className="w-3.5 h-3.5" />}
+              {sending
+                ? <KolorSpinner size={12} color={existingQuote?.status && existingQuote.status !== 'DRAFT' ? 'var(--text-secondary)' : 'white'} />
+                : <PaperPlaneTilt className="w-3.5 h-3.5" />}
               {existingQuote?.status && existingQuote.status !== 'DRAFT' ? 'Send reminder →' : `Send to ${clientFirstName} →`}
             </button>
 

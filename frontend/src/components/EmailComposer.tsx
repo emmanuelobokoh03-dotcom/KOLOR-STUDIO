@@ -98,7 +98,7 @@ export default function EmailComposer({
             </div>
             <div>
               <h2 className="text-lg font-semibold text-text-primary" data-testid="email-composer-title">
-                {type === 'quote' ? 'Send Quotes' : 'Send Contract'}
+                {type === 'quote' ? 'Send Quote' : 'Send Agreement'}
               </h2>
               <p className="text-xs text-text-secondary">Customize your message to {firstName}</p>
             </div>
