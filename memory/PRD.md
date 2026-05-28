@@ -740,6 +740,16 @@ Hero dashboard tab switcher:
 - **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
 - Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
 
+## Iteration 205 — QuoteBuilderModal Mobile Definitive Fix + Lead Header Date (Feb 2026) — ✅ SHIPPED
+- **QuoteBuilderModal root cause**: iter-203's `style={{ minHeight: 0 }}` inline on the flex-col body combined with `overflow-hidden` on the modal wrapper caused iOS Safari to collapse the `flex-1` left column to zero height. The `flex-shrink-0` right sidebar remained visible, giving the appearance that only the value summary rendered. **Definitive fix**:
+  - Body container: inline `style={{ minHeight: 0 }}` → Tailwind `min-h-0` class (same CSS, avoids specificity conflict).
+  - Left column: added `min-h-0` so `flex-1` grows correctly within the `min-h-0` flex parent in Safari.
+  - Right sidebar: `w-full md:w-[220px]` → `hidden md:flex md:flex-col md:w-[220px]`. **Sidebar is now desktop-only.** Header already has Save draft + Send Quote on mobile so no actions lost.
+  - **Mobile value bar (new)**: compact total + project title + status pill (Draft/Sent/Viewed/Approved color-coded) added below the pipeline step bar on mobile via `md:hidden`. Users still see quote value without the sidebar.
+- **LeadDetailModal `formatTimeAgo` fix**: combined date+time options in `toLocaleDateString` produced `"Apr 18 at 5:40 PM"` — the word "at" was forced by the Intl formatter, causing awkward wrapping on narrow screens. Split into separate `toLocaleDateString` (date only) + `toLocaleTimeString` (time only) joined with a comma → `"Apr 18, 5:40 PM"` on a single line.
+- Build: frontend tsc + Vite build clean (7.29s). Commit `f79f31e` (+29 / -11 across 2 files).
+
+
 ## Iteration 204 — EmailComposer Title + Quote Builder Audit (Feb 2026) — ✅ SHIPPED
 - **EmailComposer title** (line 101): `"Send Quotes"` / `"Send Contract"` → `"Send Quote"` / `"Send Agreement"`. The button label at line 241 was already correctly fixed in iter-203.
 - **QuoteBuilderModal design audit — 4 gaps closed**:
