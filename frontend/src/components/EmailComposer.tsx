@@ -238,7 +238,7 @@ export default function EmailComposer({
             {sending ? (
               <><KolorSpinner size={14} color="white" /> Sending...</>
             ) : (
-              <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> PaperPlaneTilt {type === 'quote' ? 'Quotes' : 'Contract'}</>
+              <><PaperPlaneTilt weight="bold" className="w-4 h-4" /> Send {type === 'quote' ? 'Quote' : type === 'contract' ? 'Agreement' : 'Email'}</>
             )}
           </button>
         </div>

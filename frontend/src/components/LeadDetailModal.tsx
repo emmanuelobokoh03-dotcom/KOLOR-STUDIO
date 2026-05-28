@@ -654,15 +654,15 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     const industry = userIndustry || 'PHOTOGRAPHY'
     if (industry === 'PHOTOGRAPHY') {
       return [...base,
-        { label: 'Project type', value: lead.projectType?.replace(/_/g, ' ') },
+        { label: 'Project type', value: lead.projectType?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) },
         { label: lang.keyDate, value: lead.keyDate ? new Date(lead.keyDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : undefined },
         { label: 'Location', value: lead.timeline },
-        { label: 'Source', value: lead.source?.replace(/_/g, ' ') },
+        { label: 'Source', value: lead.source?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) },
       ]
     }
     if (industry === 'FINE_ART') {
       return [...base,
-        { label: 'Work type', value: lead.projectType?.replace(/_/g, ' ') },
+        { label: 'Work type', value: lead.projectType?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) },
         { label: lang.keyDate, value: lead.keyDate ? new Date(lead.keyDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : undefined },
         { label: 'Medium', value: lead.medium },
         { label: 'Dimensions', value: lead.dimensions },
@@ -671,10 +671,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     }
     // DESIGN default
     return [...base,
-      { label: 'Project type', value: lead.projectType?.replace(/_/g, ' ') },
+      { label: 'Project type', value: lead.projectType?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) },
       { label: lang.keyDate, value: lead.keyDate ? new Date(lead.keyDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : undefined },
       { label: 'Company', value: lead.clientCompany },
-      { label: 'Source', value: lead.source?.replace(/_/g, ' ') },
+      { label: 'Source', value: lead.source?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) },
     ]
   }
   return (
@@ -741,34 +741,6 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               >
                 {getPrimaryActionLabel(lead.status)}
               </button>
-              <button
-                onClick={() => {
-                  if (!lead.discoveryCallScheduled) setShowBookingModal(true)
-                  else if (!lead.discoveryCallCompletedAt) handleCompleteDiscoveryCall()
-                }}
-                className="min-h-[44px] px-3 rounded-lg text-xs font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center gap-1"
-                data-testid="modal-schedule-call"
-              >
-                <PhoneCall className="w-3.5 h-3.5" aria-hidden="true" />
-                {!lead.discoveryCallScheduled ? `Schedule ${lang.discoveryCall.toLowerCase()}` : !lead.discoveryCallCompletedAt ? `Complete ${lang.discoveryCall.toLowerCase()}` : `${lang.discoveryCall} done`}
-              </button>
-              {showDiscoveryNotesInput && (
-                <div className="absolute top-full left-0 right-0 z-10 mt-1 p-3 rounded-lg bg-[var(--surface-base)] border border-[var(--border)] shadow-lg" data-testid="discovery-notes-input">
-                  <p className="text-[11px] font-medium text-[var(--text-secondary)] mb-2">Call notes (optional)</p>
-                  <textarea
-                    value={discoveryNotesValue}
-                    onChange={e => setDiscoveryNotesValue(e.target.value)}
-                    className="w-full text-xs rounded-lg border border-[var(--border)] bg-[var(--surface-background)] px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-[#6C2EDB]"
-                    rows={3}
-                    placeholder="What did you discuss?"
-                    autoFocus
-                  />
-                  <div className="flex gap-2 mt-2">
-                    <button onClick={handleSaveDiscoveryNotes} className="px-3 py-1.5 rounded-lg text-[11px] font-semibold text-white bg-[#6C2EDB] hover:bg-[#5B27C0]">Save</button>
-                    <button onClick={() => setShowDiscoveryNotesInput(false)} className="px-3 py-1.5 rounded-lg text-[11px] font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-background)]">Cancel</button>
-                  </div>
-                </div>
-              )}
               <button
                 onClick={() => setShowEmailComposer(true)}
                 className="min-h-[44px] px-3 rounded-lg text-xs font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center"
@@ -1944,6 +1916,26 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             onSent={() => { fetchActivities(); }}
           />
         </Suspense>
+      )}
+
+      {showDiscoveryNotesInput && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50" onClick={() => setShowDiscoveryNotesInput(false)} data-testid="discovery-notes-overlay">
+          <div className="bg-[var(--surface-base)] rounded-xl border border-[var(--border)] shadow-2xl max-w-md w-full p-4" onClick={(e) => e.stopPropagation()}>
+            <p className="text-xs font-semibold text-text-primary mb-3">{lang.discoveryCall} call notes (optional)</p>
+            <textarea
+              value={discoveryNotesValue}
+              onChange={e => setDiscoveryNotesValue(e.target.value)}
+              className="w-full text-xs rounded-lg border border-[var(--border)] bg-[var(--surface-background)] px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-[#6C2EDB]"
+              rows={4}
+              placeholder="What did you discuss?"
+              autoFocus
+            />
+            <div className="flex justify-end gap-2 mt-3">
+              <button onClick={() => setShowDiscoveryNotesInput(false)} className="px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-background)]">Cancel</button>
+              <button onClick={handleSaveDiscoveryNotes} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#6C2EDB] hover:bg-[#5B27C0]">Save</button>
+            </div>
+          </div>
+        </div>
       )}
 
       {showBookingModal && (

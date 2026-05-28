@@ -395,9 +395,9 @@ export default function QuoteBuilderModal({
         <PipelineBar status={existingQuote?.status} />
 
         {/* ═══ Two-column body ═══ */}
-        <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
+        <div className="flex-1 flex flex-col md:flex-row" style={{ minHeight: 0 }}>
           {/* Left column — builder area */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-4 min-w-0">
+          <div className="flex-1 overflow-y-auto p-5 space-y-4 min-w-0" style={{ WebkitOverflowScrolling: 'touch' }}>
 
             {/* Alerts */}
             {error && (
@@ -502,7 +502,8 @@ export default function QuoteBuilderModal({
                       value={item.description}
                       onChange={e => updateLineItem(index, 'description', e.target.value)}
                       placeholder="Item description"
-                      className="w-full bg-transparent text-xs font-semibold text-text-primary placeholder:text-[var(--text-tertiary)] focus:outline-none"
+                      className="w-full text-xs font-semibold text-text-primary placeholder:text-[var(--text-tertiary)] focus:outline-none py-1"
+                      style={{ background: 'transparent', touchAction: 'manipulation', WebkitUserSelect: 'text', userSelect: 'text', minHeight: '36px' }}
                       data-testid={`line-desc-${index}`}
                     />
                   </div>
@@ -513,7 +514,7 @@ export default function QuoteBuilderModal({
                       onChange={e => updateLineItem(index, 'quantity', e.target.value)}
                       min={1}
                       className="w-12 text-center bg-[var(--surface-background)] rounded-[5px] text-xs py-1 tabular-nums focus:outline-none focus:ring-1 focus:ring-[#6C2EDB]"
-                      style={{ border: '0.5px solid var(--border)' }}
+                      style={{ border: '0.5px solid var(--border)', touchAction: 'manipulation', minHeight: '36px' }}
                       data-testid={`line-qty-${index}`}
                     />
                   </div>
@@ -523,7 +524,8 @@ export default function QuoteBuilderModal({
                       value={item.price || ''}
                       onChange={e => updateLineItem(index, 'price', e.target.value)}
                       placeholder="0"
-                      className="w-full text-right bg-transparent text-xs font-semibold text-text-primary tabular-nums placeholder:text-[var(--text-tertiary)] focus:outline-none"
+                      className="w-full text-right text-xs font-semibold text-text-primary tabular-nums placeholder:text-[var(--text-tertiary)] focus:outline-none py-1"
+                      style={{ background: 'transparent', touchAction: 'manipulation', minHeight: '36px' }}
                       data-testid={`line-price-${index}`}
                     />
                   </div>

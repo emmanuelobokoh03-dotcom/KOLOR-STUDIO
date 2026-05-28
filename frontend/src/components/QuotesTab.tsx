@@ -217,8 +217,17 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBu
 
   if (loading) {
     return (
-      <div className="flex justify-center py-12">
-        <SpinnerGap className="w-6 h-6 animate-spin text-brand-primary" />
+      <div className="space-y-3 py-2" data-testid="quotes-loading-skeleton">
+        {[1, 2].map(i => (
+          <div key={i} className="rounded-xl border border-light-200 p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="h-3.5 w-20 ks-shimmer rounded" />
+              <div className="h-5 w-16 ks-shimmer rounded-full" />
+            </div>
+            <div className="h-7 w-28 ks-shimmer rounded" />
+            <div className="h-3 w-36 ks-shimmer rounded" />
+          </div>
+        ))}
       </div>
     );
   }
