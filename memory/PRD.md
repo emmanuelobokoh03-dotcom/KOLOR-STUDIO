@@ -740,6 +740,20 @@ Hero dashboard tab switcher:
 - **Note**: Broader SpinnerGap migration still pending in ~30 other files (LeadDetailModal, EmailComposerModal, SchedulingSettings, PortfolioSettings, Quotes, Contracts, ResetPassword, ForgotPassword, Signup, Login, etc). Deferred to keep iter focused.
 - Build: `npx tsc --noEmit` clean. `npm run build` clean (7.06s). Commit `d58f74d` (local, pending push via "Save to GitHub").
 
+## Iteration 206 — Phase 4: Nav Simplification + Quote Builder Fixes + statusColors Utility (Feb 2026) — ✅ SHIPPED
+- **MobileBottomNav rewritten**: 5 items → 3 items. **Today · Clients · Settings**. "Today" maps to `kanban` view (Phase 4 will swap in TodayScreen), "Clients" to `list` view. Quotes/Calendar removed (now accessible from lead Pipeline tab and Settings). Unused imports removed (`CalendarDots`, `Receipt`, `useNavigate`, `useLocation`).
+- **Dashboard desktop sidebar Workspace**: 5 items → 3 items. **Today · Clients · Analytics**. Quotes/Contracts removed. Labels: Dashboard→Today, Leads→Clients.
+- **QuoteBuilderModal fixes**:
+  - `projectType` badge: `"SERVICE"` / `"BRAND_DESIGN"` → `"Service"` / `"Brand Design"` via `.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())`.
+  - **Valid-until + key date locale fix**: native `<input type="date">` uses device locale (German iPhones showed `"28. Jun 2026"`). Replaced with formatted `<span>` (en-US locale, `"Jun 28, 2026"`) + transparent overlay input that still pops the OS date picker on tap. Calendar SVG icon added as visual hint.
+  - **Mobile value bar status pill** refactored to use `getQuoteStatusPillStyle` — eliminated 3 nested ternaries.
+- **NEW `utils/statusColors.ts`** (single source of truth):
+  - `getQuoteStatusPillStyle(status)`: centralised pill styles for all 6 quote statuses (DRAFT/SENT/VIEWED/ACCEPTED/DECLINED/EXPIRED).
+  - `getLeadStatusPillStyle(status)`: same for 8 lead statuses.
+  - `PillStyle` interface exports `{ background, color, dotColor, label }`. Ready for future drop-in migration in QuotesTab and LeadCard.
+- Build: frontend tsc + Vite build clean (7.17s). `Dashboard` bundle -1 KB. Commit `ecd87b8` (+117 / -80 across 4 files including new utility).
+
+
 ## Iteration 205 — QuoteBuilderModal Mobile Definitive Fix + Lead Header Date (Feb 2026) — ✅ SHIPPED
 - **QuoteBuilderModal root cause**: iter-203's `style={{ minHeight: 0 }}` inline on the flex-col body combined with `overflow-hidden` on the modal wrapper caused iOS Safari to collapse the `flex-1` left column to zero height. The `flex-shrink-0` right sidebar remained visible, giving the appearance that only the value summary rendered. **Definitive fix**:
   - Body container: inline `style={{ minHeight: 0 }}` → Tailwind `min-h-0` class (same CSS, avoids specificity conflict).
