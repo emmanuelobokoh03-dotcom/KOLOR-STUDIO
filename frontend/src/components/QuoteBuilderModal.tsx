@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
 import KolorSpinner from './KolorSpinner'
+import { getQuoteStatusPillStyle } from '../utils/statusColors'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
@@ -404,15 +405,12 @@ export default function QuoteBuilderModal({
             <span className="text-sm font-extrabold text-text-primary tabular-nums flex-shrink-0">{formatCurrency(total, effectiveCurrency)}</span>
             <span className="text-[10px] text-[var(--text-tertiary)] truncate">{lead.projectTitle}</span>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium flex-shrink-0" style={
-            existingQuote?.status === 'ACCEPTED' ? { background: 'rgba(16,185,129,0.1)', color: '#065F46' }
-              : existingQuote?.status === 'SENT' ? { background: 'rgba(108,46,219,0.1)', color: '#6C2EDB' }
-              : existingQuote?.status === 'VIEWED' ? { background: 'rgba(245,158,11,0.1)', color: '#92400E' }
-              : { background: 'rgba(245,158,11,0.08)', color: '#92400E' }
-          }>
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: existingQuote?.status === 'ACCEPTED' ? '#059669' : existingQuote?.status === 'SENT' ? '#6C2EDB' : '#D97706' }} />
-            {existingQuote?.status === 'ACCEPTED' ? 'Approved' : existingQuote?.status === 'SENT' ? 'Sent' : existingQuote?.status === 'VIEWED' ? 'Viewed' : 'Draft'}
-          </span>
+          {(() => { const ps = getQuoteStatusPillStyle(existingQuote?.status); return (
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium flex-shrink-0" style={{ background: ps.background, color: ps.color }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: ps.dotColor }} />
+              {ps.label}
+            </span>
+          ); })()}
         </div>
 
         {/* ═══ Two-column body ═══ */}
@@ -448,7 +446,7 @@ export default function QuoteBuilderModal({
                 </div>
                 {lead.projectType && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-50 text-[#6C2EDB] flex-shrink-0">
-                    {lead.projectType.replace(/_/g, ' ')}
+                    {lead.projectType.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (ch: string) => ch.toUpperCase())}
                   </span>
                 )}
               </div>
@@ -457,29 +455,52 @@ export default function QuoteBuilderModal({
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Project</p>
                   <p className="text-xs font-semibold text-text-primary truncate mt-0.5">{lead.projectTitle}</p>
                 </div>
-                {/* Key date — always editable in quote builder, even for fine art (artist can choose to set or leave blank) */}
-                <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }}>
+                {/* Key date — formatted display with hidden date input to avoid locale-based formatting */}
+                <div className="px-3.5 py-2.5 relative" style={{ borderRight: '0.5px solid var(--border)' }}>
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
-                  <input
-                    type="date"
-                    defaultValue={(lead.keyDate || lead.eventDate || '').toString().split('T')[0]}
-                    className="text-xs font-semibold text-text-primary mt-0.5 bg-transparent w-full cursor-pointer"
-                    placeholder="Set date"
-                    title={lang.keyDate}
-                    data-testid="quote-key-date-input"
-                  />
+                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group">
+                    <span className="text-xs font-semibold text-text-primary">
+                      {(lead.keyDate || lead.eventDate)
+                        ? new Date(((lead.keyDate || lead.eventDate) as string) + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                        : '—'}
+                    </span>
+                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" className="text-[var(--text-tertiary)] group-hover:text-[#6C2EDB] transition-colors" aria-hidden="true">
+                      <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
+                      <path d="M5 1v3M11 1v3M2 7h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    </svg>
+                    <input
+                      type="date"
+                      defaultValue={(lead.keyDate || lead.eventDate || '').toString().split('T')[0]}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      title={lang.keyDate}
+                      data-testid="quote-key-date-input"
+                      aria-label={lang.keyDate}
+                    />
+                  </label>
                 </div>
-                <div className="px-3.5 py-2.5">
+                <div className="px-3.5 py-2.5 relative">
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Valid until</p>
-                  <input
-                    type="date"
-                    value={validUntil}
-                    onChange={e => setValidUntil(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    className="text-xs font-semibold text-text-primary mt-0.5 bg-transparent w-full cursor-pointer"
-                    data-testid="valid-until-input"
-                    title="Quote expiry date"
-                  />
+                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group">
+                    <span className="text-xs font-semibold text-text-primary">
+                      {validUntil
+                        ? new Date(validUntil + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                        : 'Set date'}
+                    </span>
+                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" className="text-[var(--text-tertiary)] group-hover:text-[#6C2EDB] transition-colors" aria-hidden="true">
+                      <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
+                      <path d="M5 1v3M11 1v3M2 7h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    </svg>
+                    <input
+                      type="date"
+                      value={validUntil}
+                      onChange={e => setValidUntil(e.target.value)}
+                      min={new Date().toISOString().split('T')[0]}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      data-testid="valid-until-input"
+                      title="Quote expiry date"
+                      aria-label="Valid until date"
+                    />
+                  </label>
                 </div>
               </div>
             </div>

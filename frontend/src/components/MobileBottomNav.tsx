@@ -1,9 +1,6 @@
-import { useNavigate, useLocation } from 'react-router-dom'
 import { SquaresFour } from '@phosphor-icons/react/dist/csr/SquaresFour'
-import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
 import { List } from '@phosphor-icons/react/dist/csr/List'
 import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
-import { Receipt } from '@phosphor-icons/react/dist/csr/Receipt'
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
 
 interface MobileBottomNavProps {
@@ -13,75 +10,45 @@ interface MobileBottomNavProps {
 }
 
 export default function MobileBottomNav({ viewMode, onViewChange, onOpenSettings }: MobileBottomNavProps) {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const isCalendar = location.pathname === '/calendar'
-
-  const isActive = (mode: ViewMode) => viewMode === mode && !isCalendar
+  const isActive = (mode: ViewMode) => viewMode === mode
 
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 bg-light-50 border-t border-light-200 z-50 lg:hidden safe-bottom"
       data-testid="mobile-bottom-nav"
     >
-      <div className="flex items-center justify-around px-1 pt-2 pb-1">
+      <div className="flex items-center justify-around px-2 pt-2 pb-1">
 
-        {/* Dashboard */}
+        {/* Today — dashboard home (Phase 4: will become TodayScreen) */}
         <button
           onClick={() => onViewChange('kanban')}
-          className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-2 rounded-xl min-w-[52px] min-h-[44px] touch-target transition-all duration-200 ${
+          className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-4 rounded-xl min-w-[72px] min-h-[44px] touch-target transition-all duration-200 ${
             isActive('kanban') ? 'text-purple-600' : 'text-text-tertiary active:text-purple-600'
           }`}
-          aria-label="Dashboard"
-          data-testid="bottom-nav-kanban"
+          aria-label="Today"
+          data-testid="bottom-nav-today"
         >
           <SquaresFour weight={isActive('kanban') ? 'fill' : 'regular'} className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Dashboard</span>
+          <span className="text-[10px] font-medium">Today</span>
         </button>
 
-        {/* Leads */}
+        {/* Clients — lead list */}
         <button
           onClick={() => onViewChange('list')}
-          className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-2 rounded-xl min-w-[52px] min-h-[44px] touch-target transition-all duration-200 ${
+          className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-4 rounded-xl min-w-[72px] min-h-[44px] touch-target transition-all duration-200 ${
             isActive('list') ? 'text-purple-600' : 'text-text-tertiary active:text-purple-600'
           }`}
-          aria-label="Leads"
-          data-testid="bottom-nav-leads"
+          aria-label="Clients"
+          data-testid="bottom-nav-clients"
         >
           <List weight={isActive('list') ? 'fill' : 'regular'} className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Leads</span>
-        </button>
-
-        {/* Quotes */}
-        <button
-          onClick={() => onViewChange('quotes')}
-          className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-2 rounded-xl min-w-[52px] min-h-[44px] touch-target transition-all duration-200 ${
-            isActive('quotes') ? 'text-purple-600' : 'text-text-tertiary active:text-purple-600'
-          }`}
-          aria-label="Quotes"
-          data-testid="bottom-nav-quotes"
-        >
-          <Receipt weight={isActive('quotes') ? 'fill' : 'regular'} className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Quotes</span>
-        </button>
-
-        {/* Calendar */}
-        <button
-          onClick={() => navigate('/calendar')}
-          className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-2 rounded-xl min-w-[52px] min-h-[44px] touch-target transition-all duration-200 ${
-            isCalendar ? 'text-purple-600' : 'text-text-tertiary active:text-purple-600'
-          }`}
-          aria-label="Calendar"
-          data-testid="bottom-nav-calendar"
-        >
-          <CalendarDots weight={isCalendar ? 'fill' : 'regular'} className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Calendar</span>
+          <span className="text-[10px] font-medium">Clients</span>
         </button>
 
         {/* Settings */}
         <button
           onClick={() => onOpenSettings()}
-          className="flex flex-col items-center justify-center gap-0.5 py-1.5 px-2 rounded-xl min-w-[52px] min-h-[44px] touch-target transition-all duration-200 text-text-tertiary active:text-purple-600"
+          className="flex flex-col items-center justify-center gap-0.5 py-1.5 px-4 rounded-xl min-w-[72px] min-h-[44px] touch-target transition-all duration-200 text-text-tertiary active:text-purple-600"
           aria-label="Settings"
           data-testid="bottom-nav-settings"
         >

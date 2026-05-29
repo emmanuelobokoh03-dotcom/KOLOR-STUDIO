@@ -612,10 +612,8 @@ const Dashboard = () => {
         <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-2">Workspace</div>
         <div className="group">
         {([
-          { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Dashboard' },
-          { mode: 'list' as ViewMode, icon: ListIcon, label: 'Leads', badge: stats?.total },
-          { mode: 'quotes' as ViewMode, icon: Receipt, label: lang.quotes },
-          { mode: 'contracts' as ViewMode, icon: ShieldCheck, label: lang.contracts },
+          { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Today' },
+          { mode: 'list' as ViewMode, icon: ListIcon, label: 'Clients', badge: stats?.total },
           { mode: 'analytics' as ViewMode, icon: ChartBar, label: 'Analytics' },
         ]).map(({ mode, icon: Icon, label, badge }) => (
           <button
