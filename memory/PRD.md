@@ -868,7 +868,25 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
-## Iteration 197 — Portal Contact Cleanup + Scheduler Audit (Feb 2026) — ✅ SHIPPED
+## Iteration 207 — TodayScreen + GET /api/today + Status Colors Migration (Feb 2026) — ✅ SHIPPED
+- **NEW endpoint `GET /api/today`** (`backend/src/routes/today.ts`, registered in `server.ts`): single authenticated call returns `{ attention, inProgress, generatedAt }`.
+  - `attention` (up to 8 items, priority-sorted): new inquiries (priority 70 base, -10/day age), unsigned contracts (80 + 3/day, max 100), expiring quotes within 3 days (75 + 5/day in window, max 100), viewed quotes 72h+ ago (60 + 2/day), stale leads 7d+ untouched (40 + days).
+  - `inProgress` (up to 10): active leads (not BOOKED/LOST) sorted by `updatedAt` desc.
+  - Uses `Promise.all` for 6 parallel Prisma queries.
+- **NEW `TodayScreen.tsx`**: replaces KanbanBoard at the kanban viewMode slot. Three sections:
+  1. Greeting header ("Good morning/afternoon/evening, [firstName]" + formatted date).
+  2. **Needs attention**: urgency-coloured cards (purple=new_inquiry, amber=contract/quote_expiring, blue=quote_viewed, gray=stale_lead). Tapping routes to lead modal at correct tab.
+  3. **In progress**: list of active leads with avatar, project type, estimatedValue, status pill via `getLeadStatusPillStyle`.
+  4. **Empty state**: "All clear" + Add Client CTA.
+  - Loading state: 3 shimmer skeleton cards.
+- **Dashboard.tsx**: `viewMode === 'kanban'` branch swapped from `KanbanBoard` to `TodayScreen`. `onLeadClick` checks local `leads` array first, falls back to `leadsApi.getOne(leadId)` for uncached leads. Greeting computed from `new Date().getHours()`.
+- **Status colors migration (Step 1)**: `import { getQuoteStatusPillStyle, getLeadStatusPillStyle } from '../utils/statusColors'` added to `LeadsListView.tsx`, `LeadDetailModal.tsx`, `Quotes.tsx`, `Contracts.tsx` — imports landed for future inline replacement.
+- Build: backend `tsc --noEmit` clean. Frontend `tsc --noEmit` + `npm run build` clean (7.43s). Commit `cba556d` (local, pending push via "Save to GitHub").
+
+
+## Iteration 196-206 — Phase 1-4 UX Redesign (see CHANGELOG)
+- Iter 196: Footer polish, `SpinnerGap` sweep, `wasModified` ref fetching.
+- Iter 197: Portal contact cleanup, scheduler audit.
 - **ClientPortal**: Removed old "Have Questions? / {name} is here to help" contact section that was rendering as a duplicate dark block above the footer. Footer panel: removed Contact Us mailto button, simplified layout to left-aligned studio badge + "Questions about your project?" text.
 - **Scheduler audit (NO backend changes needed)**:
   - `server.ts` line 414: `startScheduler()` is called and gated by `ENABLE_SCHEDULER=true` env flag (Iter 152 pattern).
