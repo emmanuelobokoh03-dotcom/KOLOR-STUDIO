@@ -61,6 +61,7 @@ import { processSequences } from './services/sequenceEngine';
 import { apiLimiter, authLimiter, emailLimiter, uploadLimiter, portalLimiter } from './middleware/rateLimiter';
 import { ensureBucketExists } from './services/storage';
 import digestRoutes from './routes/digest';
+import todayRoutes from './routes/today';
 import { processOnboardingSequences } from './services/onboardingService';
 import { processQuoteFollowUpSequences } from './services/quoteFollowUpService';
 import { processScheduledEmails } from './services/scheduledEmailService';
@@ -260,6 +261,7 @@ app.use('/api/testimonials', testimonialRoutes); // Testimonials: /api/testimoni
 app.use('/api/sequences', sequencesRoutes); // Email sequences: /api/sequences/*
 app.use('/api/payments', paymentRoutes); // Payments: /api/payments/*
 app.use('/api/digest', digestRoutes); // Digest: /api/digest/*
+app.use('/api/today', todayRoutes); // Today: /api/today
 app.use('/api/track', trackingRoutes); // Email tracking: /api/track/* (public, no auth)
 app.use('/api/user', userRoutes); // User account: /api/user/* (GDPR delete)
 app.use('/api/meeting-types', meetingTypesRoutes); // Meeting types: /api/meeting-types/*

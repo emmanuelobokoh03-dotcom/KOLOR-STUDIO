@@ -10,6 +10,7 @@ import {
   leadsApi 
 } from '../services/api'
 import { getIndustryLanguage, IndustryType } from '../utils/industryLanguage'
+import { getQuoteStatusPillStyle, getLeadStatusPillStyle } from '../utils/statusColors'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { User } from '@phosphor-icons/react/dist/csr/User'
 import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'

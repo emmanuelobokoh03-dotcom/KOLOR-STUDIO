@@ -27,6 +27,7 @@ import { IndustryLanguage } from '../utils/industryLanguage'
 import { EmptyState } from '../components/EmptyState'
 import EmailComposer from '../components/EmailComposer'
 import { trackEvent } from '../utils/analytics'
+import { getQuoteStatusPillStyle, getLeadStatusPillStyle } from '../utils/statusColors'
 
 interface ContractsPageProps {
   lang: IndustryLanguage

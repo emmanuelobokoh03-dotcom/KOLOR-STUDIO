@@ -7,6 +7,7 @@ import { MagnifyingGlass } from '@phosphor-icons/react/dist/csr/MagnifyingGlass'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Lead, LeadStatus, LEAD_STATUS_LABELS } from '../services/api'
 import { IndustryLanguage } from '../utils/industryLanguage'
+import { getQuoteStatusPillStyle, getLeadStatusPillStyle } from '../utils/statusColors'
 import { StatusBadge } from './StatusBadge'
 
 interface LeadsListViewProps {

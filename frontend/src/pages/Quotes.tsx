@@ -25,6 +25,7 @@ import { IndustryLanguage } from '../utils/industryLanguage'
 import QuoteBuilderModal from '../components/QuoteBuilderModal'
 import EmailComposer from '../components/EmailComposer'
 import { EmptyState } from '../components/EmptyState'
+import { getQuoteStatusPillStyle, getLeadStatusPillStyle } from '../utils/statusColors'
 import {
   trackQuoteSent,
   trackQuoteDuplicated,

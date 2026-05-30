@@ -56,6 +56,7 @@ import { Receipt } from '@phosphor-icons/react/dist/csr/Receipt'
 import { ShieldCheck } from '@phosphor-icons/react/dist/csr/ShieldCheck'
 import LeadsListView from '../components/LeadsListView'
 import KolorSpinner from '../components/KolorSpinner'
+import TodayScreen from '../components/TodayScreen'
 import NumberFlow from '@number-flow/react'
 
 // Iter 172 — lazy heavy sub-views to shrink initial Dashboard chunk.
@@ -1424,17 +1425,27 @@ const Dashboard = () => {
             />
           </div>
         ) : viewMode === 'kanban' ? (
-          <div data-tour="kanban-board">
-            <Suspense fallback={<div className="flex items-center justify-center h-64"><KolorSpinner size={32} /></div>}>
-              <KanbanBoard
-                leads={filteredLeads}
-                onLeadClick={setSelectedLead}
-                onStatusChange={handleStatusChange}
-                onLeadDelete={handleLeadDelete}
-                user={user || undefined}
-              />
-            </Suspense>
-          </div>
+          <TodayScreen
+            userIndustry={user?.primaryIndustry as any}
+            currencySymbol={user?.currencySymbol || '$'}
+            onLeadClick={(leadId, tab) => {
+              const lead = leads.find(l => l.id === leadId)
+              if (lead) {
+                if (tab) setSelectedLeadInitialTab(tab)
+                setSelectedLead(lead)
+              } else {
+                leadsApi.getOne(leadId).then(r => {
+                  if (r.data?.lead) {
+                    if (tab) setSelectedLeadInitialTab(tab)
+                    setSelectedLead(r.data.lead)
+                  }
+                })
+              }
+            }}
+            onAddLead={() => setShowAddModal(true)}
+            onShareForm={() => setShowShareModal(true)}
+            greeting={`Good ${new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, ${user?.firstName || ''}`}
+          />
         ) : (
           <LeadsListView
             leads={filteredLeads}
