@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
+import KolorSpinner from './KolorSpinner'
 import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
 import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
 import { EyeSlash } from '@phosphor-icons/react/dist/csr/EyeSlash'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 export default function EmailSignatureSettings() {
@@ -82,7 +82,7 @@ export default function EmailSignatureSettings() {
           className="flex-1 px-4 py-2.5 bg-purple-500 text-white rounded-lg text-sm font-semibold hover:bg-purple-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           data-testid="signature-save-btn"
         >
-          {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : saved ? <FloppyDisk className="w-4 h-4" /> : <EnvelopeSimple className="w-4 h-4" />}
+          {saving ? <KolorSpinner size={16} /> : saved ? <FloppyDisk className="w-4 h-4" /> : <EnvelopeSimple className="w-4 h-4" />}
           {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Signature'}
         </button>
       </div>

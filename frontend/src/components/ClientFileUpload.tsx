@@ -4,7 +4,7 @@ import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import KolorSpinner from './KolorSpinner'
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 // Allowed file extensions
@@ -259,7 +259,7 @@ export default function ClientFileUpload({ token, onUploadComplete }: ClientFile
                 >
                   {uploading ? (
                     <>
-                      <SpinnerGap className="w-4 h-4 animate-spin" aria-hidden="true" />
+                      <KolorSpinner size={16} />
                       Uploading...
                     </>
                   ) : (

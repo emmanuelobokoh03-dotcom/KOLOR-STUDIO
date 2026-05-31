@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Lightning } from '@phosphor-icons/react/dist/csr/Lightning'
 import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 import { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
 import { getIndustryLanguage, IndustryType } from '../utils/industryLanguage'
 import { getLeadStatusPillStyle } from '../utils/statusColors'
@@ -61,6 +63,7 @@ export default function TodayScreen({
 }: TodayScreenProps) {
   const [data, setData] = useState<TodayData | null>(null)
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
   const lang = getIndustryLanguage(userIndustry)
 
   useEffect(() => {
@@ -209,6 +212,23 @@ export default function TodayScreen({
           </button>
         </div>
       )}
+      {/* Calendar & Booking shortcut */}
+      <button
+        onClick={() => navigate('/calendar')}
+        className="w-full flex items-center justify-between py-3 px-4 rounded-xl transition-colors"
+        style={{ border: '0.5px solid var(--border)', background: 'var(--surface-background)' }}
+        data-testid="today-calendar-link"
+      >
+        <div className="flex items-center gap-2.5">
+          <CalendarBlank weight="duotone" className="w-4 h-4 text-purple-500" aria-hidden="true" />
+          <div>
+            <p className="text-xs font-semibold text-text-primary text-left">Calendar & Booking</p>
+            <p className="text-[10px] text-text-secondary text-left">Schedule sessions and manage bookings</p>
+          </div>
+        </div>
+        <ArrowRight className="w-3.5 h-3.5 text-text-tertiary flex-shrink-0" aria-hidden="true" />
+      </button>
+
     </div>
   )
 }

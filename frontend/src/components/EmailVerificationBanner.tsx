@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { authApi, User } from '../services/api'
+import KolorSpinner from './KolorSpinner'
 
 interface EmailVerificationBannerProps {
   user: User | null;
@@ -52,7 +52,7 @@ export default function EmailVerificationBanner({ user }: EmailVerificationBanne
               data-testid="resend-verification-btn"
             >
               {sending ? (
-                <span className="flex items-center gap-1"><SpinnerGap className="w-3.5 h-3.5 animate-spin" /> Sending...</span>
+                <span className="flex items-center gap-1"><KolorSpinner size={14} /> Sending...</span>
               ) : sent ? 'Sent!' : 'Resend Email'}
             </button>
             <button

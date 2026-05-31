@@ -12,7 +12,6 @@ import { PenNib } from '@phosphor-icons/react/dist/csr/PenNib'
 import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
 import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
@@ -23,6 +22,7 @@ import {
   LEAD_STATUS_LABELS, SERVICE_TYPE_LABELS,
 } from '../services/api'
 import { StatusBadge } from './StatusBadge'
+import KolorSpinner from './KolorSpinner'
 
 // ─── Shared helpers ────────────────────────────────────────
 
@@ -72,7 +72,7 @@ const EmptyWidget = ({ message }: { message: string }) => (
 
 const LoadingDots = () => (
   <div className="flex items-center justify-center py-6">
-    <SpinnerGap className="w-5 h-5 text-purple-600 animate-spin" />
+    <KolorSpinner size={20} />
   </div>
 )
 

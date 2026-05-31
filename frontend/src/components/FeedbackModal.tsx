@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
+import KolorSpinner from './KolorSpinner'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Bug } from '@phosphor-icons/react/dist/csr/Bug'
 import { Lightbulb } from '@phosphor-icons/react/dist/csr/Lightbulb'
 import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 interface FeedbackModalProps {
@@ -238,7 +238,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
             className="flex items-center gap-2 px-5 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition font-medium disabled:opacity-50"
             data-testid="submit-feedback-btn"
           >
-            {sending ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <PaperPlaneTilt weight="bold" className="w-4 h-4" />}
+            {sending ? <KolorSpinner size={16} /> : <PaperPlaneTilt weight="bold" className="w-4 h-4" />}
             Submit Feedback
           </button>
         </div>

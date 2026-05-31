@@ -884,10 +884,10 @@ const Dashboard = () => {
         )}
 
         {/* Smart Nudge Banner — stale leads needing follow-up */}
-        {viewMode !== 'quotes' && viewMode !== 'contracts' && <SmartNudgeBanner leads={leads} onLeadClick={setSelectedLead} />}
+        {viewMode === 'list' && <SmartNudgeBanner leads={leads} onLeadClick={setSelectedLead} />}
 
         {/* Smart Suggestion */}
-        {viewMode !== 'quotes' && viewMode !== 'contracts' && (
+        {viewMode === 'list' && (
         <SmartSuggestion
           leadCount={leads.length}
           hasQuotes={leads.some(l => (l.quotesCount || 0) > 0)}
@@ -1096,6 +1096,7 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         {/* Hero metric — dominant pipeline stat */}
+        {viewMode === 'list' && (
         <div
           className="mb-6 px-2"
           style={{
@@ -1119,8 +1120,9 @@ const Dashboard = () => {
             <span className="text-xs sm:text-sm" style={{ color: 'rgba(0,0,0,0.35)' }}>{lang.leads.toLowerCase()} in pipeline</span>
           </div>
         </div>
+        )}
 
-        {(viewMode === 'kanban' || viewMode === 'list') && needsAttention.length > 0 && (
+        {viewMode === 'list' && needsAttention.length > 0 && (
           <Suspense fallback={null}>
             <NeedsAttentionSection
               items={needsAttention}
@@ -1132,7 +1134,7 @@ const Dashboard = () => {
         )}
 
         {/* Lead-management chrome (stat cards + filter toolbar) — only visible for lead-focused views */}
-        {(viewMode === 'kanban' || viewMode === 'list') && (<>
+        {viewMode === 'list' && (<>
         <div className="grid grid-cols-2 gap-3 md:gap-5 mb-4 md:mb-8">
           <StatCard
             icon={Users}

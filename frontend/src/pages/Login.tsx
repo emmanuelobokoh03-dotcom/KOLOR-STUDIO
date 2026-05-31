@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { authApi } from '../services/api'
 import { trackLogin } from '../utils/analytics'
 import KolorLogo from '../components/KolorLogo'
+import KolorSpinner from '../components/KolorSpinner'
 
 /* SVG helpers */
 const StarIcon = () => <svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 0l1.12 3.45H10L6.94 5.59l1.18 3.41L5 6.91 1.88 9l1.18-3.41L0 3.45h3.88z" fill="#E8891A" /></svg>
@@ -168,7 +168,7 @@ const Login = () => {
             </div>
 
             <button type="submit" disabled={loading} className="w-full rounded-lg text-white text-sm font-bold tracking-[0.01em] transition-all duration-fast active:scale-[0.97]" style={{ height: 46, background: loading ? 'rgba(108,46,219,0.7)' : '#6C2EDB', cursor: loading ? 'not-allowed' : 'pointer' }} onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#5522B8' }} onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#6C2EDB' }} data-testid="login-submit">
-              {loading ? <span className="inline-flex items-center gap-2"><SpinnerGap className="w-4 h-4 animate-spin" />Signing in...</span> : 'Sign in to KOLOR →'}
+              {loading ? <span className="inline-flex items-center gap-2"><KolorSpinner size={16} />Signing in...</span> : 'Sign in to KOLOR →'}
             </button>
           </form>
 

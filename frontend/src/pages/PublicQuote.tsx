@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { XCircle } from '@phosphor-icons/react/dist/csr/XCircle'
 import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
 import { Phone } from '@phosphor-icons/react/dist/csr/Phone'
@@ -12,6 +11,7 @@ import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
 import { quotesApi, Quote, PAYMENT_TERMS_OPTIONS } from '../services/api'
 import { formatCurrency, CurrencySettings, getMergedCurrencySettings } from '../utils/currency'
 import { trackQuoteViewed, trackQuoteAccepted, trackQuoteDeclined } from '../utils/analytics'
+import KolorSpinner from '../components/KolorSpinner'
 
 export default function PublicQuote() {
   const { quoteToken } = useParams<{ quoteToken: string }>();
@@ -134,7 +134,7 @@ export default function PublicQuote() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <SpinnerGap weight="duotone" className="w-12 h-12 animate-spin text-brand-primary mx-auto mb-4" />
+          <KolorSpinner size={48} />
           <p className="text-gray-600">Loading quote...</p>
         </div>
       </div>
@@ -372,7 +372,7 @@ export default function PublicQuote() {
                   data-testid="accept-quote-btn"
                 >
                   {accepting ? (
-                    <SpinnerGap className="w-5 h-5 animate-spin" />
+                    <KolorSpinner size={20} />
                   ) : (
                     <CheckCircle className="w-5 h-5" />
                   )}
@@ -438,7 +438,7 @@ export default function PublicQuote() {
                 data-testid="confirm-decline-btn"
               >
                 {declining ? (
-                  <SpinnerGap className="w-4 h-4 animate-spin" />
+                  <KolorSpinner size={16} />
                 ) : (
                   <XCircle className="w-4 h-4" />
                 )}

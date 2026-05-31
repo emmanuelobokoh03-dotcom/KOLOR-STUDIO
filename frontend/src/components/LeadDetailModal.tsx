@@ -179,6 +179,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
   );
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [openQuoteBuilderKey, setOpenQuoteBuilderKey] = useState(0);
+  const [mountedTabs, setMountedTabs] = useState<Set<string>>(new Set(['overview']));
   const [openQuoteBuilder, setOpenQuoteBuilder] = useState(false);
   const [showTimelineView, setShowTimelineView] = useState(() => new URLSearchParams(window.location.search).has('timeline'));
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -774,7 +775,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             ]).map(({ key, label, badge }) => (
               <button
                 key={key}
-                onClick={() => setActiveTab(key)}
+                onClick={() => { setMountedTabs(prev => new Set(Array.from(prev).concat([key]))); setActiveTab(key) }}
                 className={`relative px-3 py-2.5 text-xs font-medium whitespace-nowrap transition-colors ${
                   activeTab === key
                     ? 'text-[#6C2EDB] font-semibold'
@@ -798,7 +799,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             data-testid="lead-action-bar"
           >
             <button
-              onClick={() => { setActiveTab('pipeline'); setOpenQuoteBuilderKey(k => k + 1); setOpenQuoteBuilder(true); }}
+              onClick={() => { setMountedTabs(prev => new Set(Array.from(prev).concat(['pipeline']))); setActiveTab('pipeline'); setOpenQuoteBuilderKey(k => k + 1); setOpenQuoteBuilder(true); }}
               className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-semibold text-white transition-all active:scale-95"
               style={{ background: '#6C2EDB' }}
               data-testid="action-send-offer"
@@ -807,7 +808,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               Send {lang.quote}
             </button>
             <button
-              onClick={() => setActiveTab('files')}
+              onClick={() => { setMountedTabs(prev => new Set(Array.from(prev).concat(['files']))); setActiveTab('files'); }}
               className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-medium border transition-all active:scale-95"
               style={{ border: '0.5px solid var(--border)', color: 'var(--text-primary)', background: 'var(--surface-base)' }}
               data-testid="action-upload-file"
@@ -816,7 +817,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               Upload file
             </button>
             <button
-              onClick={() => setActiveTab('messages')}
+              onClick={() => { setMountedTabs(prev => new Set(Array.from(prev).concat(['messages']))); setActiveTab('messages'); }}
               className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-medium border transition-all active:scale-95"
               style={{ border: '0.5px solid var(--border)', color: 'var(--text-primary)', background: 'var(--surface-base)' }}
               data-testid="action-message"
@@ -1543,25 +1544,29 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                   <h3 className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">
                     {lang.quotes}
                   </h3>
-                  <QuotesTab
-                    lead={lead}
-                    onQuoteUpdate={() => { fetchActivities(); }}
-                    onQuoteSent={() => onCelebrate?.('first_quote', 'firstQuote')}
-                    autoOpenBuilder={openQuoteBuilder}
-                    onBuilderOpened={() => setOpenQuoteBuilder(false)}
-                    key={openQuoteBuilderKey}
-                  />
+                  {mountedTabs.has('pipeline') && (
+                    <QuotesTab
+                      lead={lead}
+                      onQuoteUpdate={() => { fetchActivities(); }}
+                      onQuoteSent={() => onCelebrate?.('first_quote', 'firstQuote')}
+                      autoOpenBuilder={openQuoteBuilder}
+                      onBuilderOpened={() => setOpenQuoteBuilder(false)}
+                      key={openQuoteBuilderKey}
+                    />
+                  )}
                 </div>
                 {/* Agreements section */}
                 <div>
                   <h3 className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">
                     {lang.contracts}
                   </h3>
-                  <ContractsTab
-                    leadId={lead.id}
-                    lead={lead}
-                    onContractSigned={() => onCelebrate?.('first_contract', 'firstContract')}
-                  />
+                  {mountedTabs.has('pipeline') && (
+                    <ContractsTab
+                      leadId={lead.id}
+                      lead={lead}
+                      onContractSigned={() => onCelebrate?.('first_contract', 'firstContract')}
+                    />
+                  )}
                 </div>
               </div>
             ) : activeTab === 'messages' ? (

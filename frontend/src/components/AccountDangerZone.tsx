@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import KolorSpinner from './KolorSpinner'
 import { Warning } from '@phosphor-icons/react/dist/csr/Warning'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 export default function AccountDangerZone() {
@@ -106,7 +106,7 @@ export default function AccountDangerZone() {
                 className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 data-testid="delete-confirm-btn"
               >
-                {deleting && <SpinnerGap className="w-4 h-4 animate-spin" />}
+                {deleting && <KolorSpinner size={16} />}
                 {deleting ? 'Deleting...' : 'Delete Forever'}
               </button>
             </div>

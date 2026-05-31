@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import KolorSpinner from './KolorSpinner'
 import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Star } from '@phosphor-icons/react/dist/csr/Star'
 import { Pencil } from '@phosphor-icons/react/dist/csr/Pencil'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { Image } from '@phosphor-icons/react/dist/csr/Image'
 import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
@@ -228,7 +228,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
       {/* Loading */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <SpinnerGap className="w-8 h-8 animate-spin text-purple-600" />
+          <KolorSpinner size={32} />
         </div>
       ) : items.length === 0 ? (
         /* Empty State */
@@ -526,7 +526,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
               >
                 {saving ? (
                   <>
-                    <SpinnerGap className="w-4 h-4 animate-spin" />
+                    <KolorSpinner size={16} />
                     Saving...
                   </>
                 ) : (

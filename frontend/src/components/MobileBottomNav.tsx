@@ -1,6 +1,7 @@
 import { SquaresFour } from '@phosphor-icons/react/dist/csr/SquaresFour'
 import { List } from '@phosphor-icons/react/dist/csr/List'
 import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
+import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
 type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
 
 interface MobileBottomNavProps {
@@ -14,7 +15,8 @@ export default function MobileBottomNav({ viewMode, onViewChange, onOpenSettings
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 bg-light-50 border-t border-light-200 z-50 lg:hidden safe-bottom"
+      className="fixed bottom-0 left-0 right-0 bg-light-50 border-t border-light-200 z-50 lg:hidden"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)', transform: 'translateZ(0)', WebkitTransform: 'translateZ(0)' }}
       data-testid="mobile-bottom-nav"
     >
       <div className="flex items-center justify-around px-2 pt-2 pb-1">
@@ -45,10 +47,23 @@ export default function MobileBottomNav({ viewMode, onViewChange, onOpenSettings
           <span className="text-[10px] font-medium">Clients</span>
         </button>
 
+        {/* Portfolio */}
+        <button
+          onClick={() => onViewChange('portfolio')}
+          className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-3 rounded-xl min-w-[60px] min-h-[44px] touch-target transition-all duration-200 ${
+            isActive('portfolio') ? 'text-purple-600' : 'text-text-tertiary active:text-purple-600'
+          }`}
+          aria-label="Portfolio"
+          data-testid="bottom-nav-portfolio"
+        >
+          <Briefcase weight={isActive('portfolio') ? 'fill' : 'regular'} className="w-5 h-5" />
+          <span className="text-[10px] font-medium">Portfolio</span>
+        </button>
+
         {/* Settings */}
         <button
           onClick={() => onOpenSettings()}
-          className="flex flex-col items-center justify-center gap-0.5 py-1.5 px-4 rounded-xl min-w-[72px] min-h-[44px] touch-target transition-all duration-200 text-text-tertiary active:text-purple-600"
+          className="flex flex-col items-center justify-center gap-0.5 py-1.5 px-3 rounded-xl min-w-[60px] min-h-[44px] touch-target transition-all duration-200 text-text-tertiary active:text-purple-600"
           aria-label="Settings"
           data-testid="bottom-nav-settings"
         >

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IndustryType, authApi } from '../services/api'
+import KolorSpinner from './KolorSpinner'
 import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
 import { PenNib } from '@phosphor-icons/react/dist/csr/PenNib'
 import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
@@ -97,7 +97,7 @@ export default function IndustryOnboarding() {
             We've created your "<span className="text-purple-600">{templateName}</span>" workflow template
           </p>
           <div className="flex items-center justify-center gap-2 text-sm text-text-tertiary">
-            <SpinnerGap className="w-4 h-4 animate-spin" />
+            <KolorSpinner size={16} />
             Taking you to your dashboard...
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function IndustryOnboarding() {
             data-testid="onboarding-continue"
           >
             {loading ? (
-              <><SpinnerGap className="w-5 h-5 animate-spin" /> Setting up...</>
+              <><KolorSpinner size={20} /> Setting up...</>
             ) : (
               <>Continue <ArrowRight className="w-5 h-5" /></>
             )}

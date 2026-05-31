@@ -7,7 +7,6 @@ import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
 import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { XCircle } from '@phosphor-icons/react/dist/csr/XCircle'
 import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
@@ -28,6 +27,7 @@ import QuoteBuilderModal from './QuoteBuilderModal'
 import EmailComposer from './EmailComposer'
 import PaymentTracker from './PaymentTracker'
 import { EmptyState } from './EmptyState'
+import KolorSpinner from './KolorSpinner'
 import { 
   trackQuoteCreated, 
   trackQuoteSent, 
@@ -338,7 +338,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBu
                         data-testid={`send-quote-${quote.id}`}
                       >
                         {sendingId === quote.id ? (
-                          <SpinnerGap className="w-4 h-4 animate-spin" />
+                          <KolorSpinner size={16} />
                         ) : (
                           <PaperPlaneTilt weight="bold" className="w-4 h-4" />
                         )}
@@ -426,7 +426,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBu
                             className="w-full px-4 py-2 text-left text-sm hover:bg-red-50 text-red-400 flex items-center gap-2"
                           >
                             {deletingId === quote.id ? (
-                              <SpinnerGap className="w-4 h-4 animate-spin" />
+                              <KolorSpinner size={16} />
                             ) : (
                               <Trash className="w-4 h-4" />
                             )}

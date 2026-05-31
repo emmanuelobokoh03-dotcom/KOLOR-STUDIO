@@ -8,7 +8,6 @@ import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
 import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { ShieldCheck } from '@phosphor-icons/react/dist/csr/ShieldCheck'
 import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
@@ -28,6 +27,7 @@ import { EmptyState } from '../components/EmptyState'
 import EmailComposer from '../components/EmailComposer'
 import { trackEvent } from '../utils/analytics'
 import { getQuoteStatusPillStyle, getLeadStatusPillStyle } from '../utils/statusColors'
+import KolorSpinner from '../components/KolorSpinner'
 
 interface ContractsPageProps {
   lang: IndustryLanguage
@@ -443,7 +443,7 @@ export default function ContractsPage({ lang, user, leads, onLeadClick, onLeadCl
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <SpinnerGap className="w-6 h-6 animate-spin text-[#6C2EDB]" />
+        <KolorSpinner size={24} />
       </div>
     )
   }

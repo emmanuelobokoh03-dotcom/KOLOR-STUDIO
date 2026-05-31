@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import { CreditCard } from '@phosphor-icons/react/dist/csr/CreditCard'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { paymentsApi } from '../services/api'
+import KolorSpinner from './KolorSpinner'
 
 interface PaymentTrackerProps {
   incomeId: string
@@ -122,7 +122,7 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
               data-testid="send-deposit-btn"
             >
               {actionLoading === 'deposit' ? (
-                <SpinnerGap className="w-3 h-3 animate-spin" />
+                <KolorSpinner size={12} />
               ) : (
                 <ArrowSquareOut className="w-3 h-3" />
               )}
@@ -167,7 +167,7 @@ export default function PaymentTracker({ incomeId, totalAmount, currencySymbol =
               data-testid="send-final-btn"
             >
               {actionLoading === 'final' ? (
-                <SpinnerGap className="w-3 h-3 animate-spin" />
+                <KolorSpinner size={12} />
               ) : (
                 <ArrowSquareOut className="w-3 h-3" />
               )}

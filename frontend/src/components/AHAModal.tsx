@@ -3,9 +3,9 @@ import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
 import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
 import { authApi } from '../services/api'
+import KolorSpinner from './KolorSpinner'
 
 interface AHAModalProps {
   userFirstName: string
@@ -135,7 +135,7 @@ export default function AHAModal({ userFirstName, userEmail, userIndustry, onDis
 
           {state === 'sending' && (
             <div className="py-8 text-center">
-              <SpinnerGap className="w-10 h-10 text-brand-primary animate-spin mx-auto mb-4" />
+              <KolorSpinner size={40} />
               <p className="text-sm font-medium text-text-primary">Sending your sample {quoteTerm}\u2026</p>
               <p className="text-xs text-text-secondary mt-1">This takes about 5 seconds</p>
             </div>

@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
 import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
 import { Video } from '@phosphor-icons/react/dist/csr/Video'
 import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
@@ -22,6 +21,7 @@ import { EyeSlash } from '@phosphor-icons/react/dist/csr/EyeSlash'
 import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { leadsApi, CalendarEvent, User, ServiceType, SERVICE_TYPE_LABELS } from '../services/api'
 import { formatCurrency, CurrencySettings } from '../utils/currency'
+import KolorSpinner from './KolorSpinner'
 
 interface CalendarViewProps {
   user: User | null;
@@ -437,7 +437,7 @@ export default function CalendarView({ user, onLeadClick }: CalendarViewProps) {
       {/* Calendar Content */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <SpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
+          <KolorSpinner size={32} />
         </div>
       ) : hasNoBookings ? (
         /* Empty State */

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
+import KolorSpinner from './KolorSpinner'
 import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { Circle } from '@phosphor-icons/react/dist/csr/Circle'
 import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
 import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { DotsSixVertical } from '@phosphor-icons/react/dist/csr/DotsSixVertical'
 import { Flag } from '@phosphor-icons/react/dist/csr/Flag'
 import { format, isPast, isFuture, isToday } from 'date-fns';
@@ -131,7 +131,7 @@ export default function ProjectTimeline({ leadId, token, editable = false }: Pro
   allItems.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
   // ── Render ───────────────────────────────────────────
-  if (loading) return <div className="flex items-center justify-center py-10"><SpinnerGap className="w-6 h-6 animate-spin text-brand-primary" /></div>;
+  if (loading) return <div className="flex items-center justify-center py-10"><KolorSpinner size={24} /></div>;
 
   const emptyTextCls = isPortal ? 'text-text-secondary' : 'text-text-secondary';
   const headingCls = isPortal ? 'text-gray-900' : 'text-text-primary';
@@ -201,7 +201,7 @@ export default function ProjectTimeline({ leadId, token, editable = false }: Pro
             <button onClick={addMilestone} disabled={saving || !newName.trim() || !newDate}
               className="flex items-center gap-1.5 px-4 py-1.5 bg-brand-primary text-white rounded-lg text-xs font-medium hover:opacity-90 disabled:opacity-40 transition-all"
               data-testid="save-milestone-btn">
-              {saving ? <SpinnerGap className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />} Add
+              {saving ? <KolorSpinner size={12} /> : <Plus className="w-3 h-3" />} Add
             </button>
           </div>
         </div>
@@ -277,7 +277,7 @@ export default function ProjectTimeline({ leadId, token, editable = false }: Pro
                             }`}
                             data-testid={`toggle-milestone-${item.id}`}
                           >
-                            {togglingId === item.id ? <SpinnerGap className="w-3 h-3 animate-spin" /> : item.completed ? 'Undo' : 'Done'}
+                            {togglingId === item.id ? <KolorSpinner size={12} /> : item.completed ? 'Undo' : 'Done'}
                           </button>
                           <button
                             onClick={() => deleteMilestone(item.id)}

@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
 import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
@@ -9,6 +8,7 @@ import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
 import { authApi } from '../services/api'
 import { trackSignup } from '../utils/analytics'
 import KolorLogo from '../components/KolorLogo'
+import KolorSpinner from '../components/KolorSpinner'
 
 /* SVG helpers */
 const CheckSvg = () => <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3" fill="none" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -355,7 +355,7 @@ const Signup = () => {
                 onMouseLeave={e => { if (industry && !loading) e.currentTarget.style.background = '#6C2EDB' }}
                 data-testid="signup-submit"
               >
-                {loading ? <span className="inline-flex items-center gap-2"><SpinnerGap className="w-4 h-4 animate-spin" />Setting up your studio...</span> : 'Set up my studio \u2192'}
+                {loading ? <span className="inline-flex items-center gap-2"><KolorSpinner size={16} />Setting up your studio...</span> : 'Set up my studio \u2192'}
               </button>
             </>
           )}

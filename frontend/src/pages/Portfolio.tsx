@@ -4,7 +4,6 @@ import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Star } from '@phosphor-icons/react/dist/csr/Star'
 import { Pencil } from '@phosphor-icons/react/dist/csr/Pencil'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { Image } from '@phosphor-icons/react/dist/csr/Image'
 import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
@@ -558,7 +557,7 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
               >
                 {saving ? (
                   <>
-                    <SpinnerGap className="w-4 h-4 animate-spin" />
+                    <KolorSpinner size={16} />
                     Saving...
                   </>
                 ) : (

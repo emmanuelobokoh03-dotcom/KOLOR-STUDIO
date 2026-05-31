@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import KolorSpinner from '../components/KolorSpinner'
 import { Link } from 'react-router-dom'
 import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
@@ -153,7 +153,7 @@ const ForgotPassword = () => {
             >
               {loading ? (
                 <>
-                  <SpinnerGap className="w-5 h-5 animate-spin" />
+                  <KolorSpinner size={20} />
                   Sending...
                 </>
               ) : (

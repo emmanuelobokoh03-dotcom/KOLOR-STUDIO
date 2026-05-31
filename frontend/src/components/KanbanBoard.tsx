@@ -19,6 +19,7 @@ import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
 import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
 import { trackLeadStatusChanged, trackLeadDeleted } from '../utils/analytics'
 import { getIndustryLanguage } from '../utils/industryLanguage'
+import { getQuoteStatusPillStyle, getLeadStatusPillStyle } from '../utils/statusColors'
 
 interface KanbanBoardProps {
   leads: Lead[];

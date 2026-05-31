@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { leadsApi } from '../services/api';
+import KolorSpinner from './KolorSpinner'
 
 interface DemoProjectBannerProps {
   demoLeadId: string;
@@ -50,7 +50,7 @@ export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted }: 
             className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-red-400 transition-colors disabled:opacity-50"
             data-testid="delete-demo-btn"
           >
-            {deleting ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <Trash className="w-3.5 h-3.5" />}
+            {deleting ? <KolorSpinner size={14} /> : <Trash className="w-3.5 h-3.5" />}
             {deleting ? 'Deleting...' : 'Remove demo project'}
           </button>
         </div>

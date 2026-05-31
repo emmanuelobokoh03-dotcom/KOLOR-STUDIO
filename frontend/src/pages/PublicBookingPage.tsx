@@ -5,7 +5,7 @@ import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
 import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
 import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
+import KolorSpinner from '../components/KolorSpinner'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { User } from '@phosphor-icons/react/dist/csr/User'
 import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
@@ -221,7 +221,7 @@ export default function PublicBookingPage() {
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', background: '#F9F7FE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <SpinnerGap className="w-8 h-8 animate-spin" style={{ color: primaryColor }} />
+        <KolorSpinner size={32} />
       </div>
     )
   }
@@ -424,7 +424,7 @@ export default function PublicBookingPage() {
 
               {loadingSlots ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 0' }}>
-                  <SpinnerGap className="w-6 h-6 animate-spin" style={{ color: primaryColor }} />
+                  <KolorSpinner size={24} />
                 </div>
               ) : slots.length === 0 ? (
                 <div style={{ background: '#FFFFFF', borderRadius: 12, border: '0.5px solid #EDE8F5', padding: 32, textAlign: 'center' }}>
@@ -575,7 +575,7 @@ export default function PublicBookingPage() {
                     }}
                     data-testid="confirm-booking"
                   >
-                    {submitting ? <SpinnerGap className="w-5 h-5 animate-spin" /> : <Check className="w-5 h-5" />}
+                    {submitting ? <KolorSpinner size={20} /> : <Check className="w-5 h-5" />}
                     Confirm Booking
                   </button>
                 </div>

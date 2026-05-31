@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
+import KolorSpinner from '../components/KolorSpinner'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
@@ -122,7 +122,7 @@ const ResetPassword = () => {
                 Your password has been changed successfully. Redirecting you to the login page...
               </p>
               <div className="flex items-center justify-center gap-2 text-purple-600">
-                <SpinnerGap className="w-4 h-4 animate-spin" />
+                <KolorSpinner size={16} />
                 <span className="text-sm">Redirecting...</span>
               </div>
             </div>
@@ -267,7 +267,7 @@ const ResetPassword = () => {
             >
               {loading ? (
                 <>
-                  <SpinnerGap className="w-5 h-5 animate-spin" />
+                  <KolorSpinner size={20} />
                   Resetting...
                 </>
               ) : (

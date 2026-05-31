@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { XCircle } from '@phosphor-icons/react/dist/csr/XCircle'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { authApi } from '../services/api'
+import KolorSpinner from '../components/KolorSpinner'
 
 export default function VerifyEmail() {
   const { token } = useParams<{ token: string }>()
@@ -37,7 +37,7 @@ export default function VerifyEmail() {
       <div className="max-w-md w-full text-center">
         {status === 'loading' && (
           <>
-            <SpinnerGap weight="duotone" className="w-16 h-16 mx-auto mb-4 text-brand-primary animate-spin" />
+            <KolorSpinner size={64} />
             <h2 className="text-2xl font-bold text-text-primary mb-2">Verifying Email...</h2>
             <p className="text-text-secondary">Please wait while we verify your email address.</p>
           </>

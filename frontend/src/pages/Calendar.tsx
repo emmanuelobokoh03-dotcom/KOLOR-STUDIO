@@ -13,7 +13,6 @@ import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
 import { User as UserIcon } from '@phosphor-icons/react/dist/csr/User'
 import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { SignOut } from '@phosphor-icons/react/dist/csr/SignOut'
 import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
 import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
@@ -35,6 +34,7 @@ import {
 } from 'date-fns'
 import { authApi, calendarApi, CalendarDerivedEvent, User as UserType } from '../services/api'
 import { getIndustryLanguage } from '../utils/industryLanguage'
+import KolorSpinner from '../components/KolorSpinner'
 import { toast } from 'sonner'
 
 type CalendarView = 'month' | 'week' | 'list'
@@ -202,7 +202,7 @@ export default function Calendar() {
   if (loading) {
     return (
       <div className="min-h-screen bg-surface-base flex items-center justify-center">
-        <SpinnerGap className="w-8 h-8 text-brand-primary animate-spin" />
+        <KolorSpinner size={32} />
       </div>
     )
   }
@@ -1061,7 +1061,7 @@ function CreateEventModal({
               className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-brand-primary rounded-lg hover:brightness-110 transition disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="calendar-modal-save"
             >
-              {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+              {saving ? <KolorSpinner size={16} /> : <CheckCircle className="w-4 h-4" />}
               {saving ? 'Saving...' : 'Create Event'}
             </button>
           </div>

@@ -6,7 +6,6 @@ import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
 import { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
 import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
@@ -348,7 +347,7 @@ export default function BookingModal({
                 <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
                 {loadingLeads ? (
                   <div className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-secondary text-sm flex items-center gap-2">
-                    <SpinnerGap className="w-4 h-4 animate-spin" />
+                    <KolorSpinner size={16} />
                     Loading leads...
                   </div>
                 ) : availableLeads.length === 0 ? (

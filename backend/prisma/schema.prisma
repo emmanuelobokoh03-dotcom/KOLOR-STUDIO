@@ -422,7 +422,10 @@ model Quote {
   viewedAt         DateTime?
   acceptedAt       DateTime?
   declinedAt       DateTime?
-  declineReason    String?
+  declineReason       String?
+  depositDueDate      DateTime?
+  finalPaymentDueDate DateTime?
+  depositPercent      Int?
   leadId           String
   createdById      String
   currency         String?

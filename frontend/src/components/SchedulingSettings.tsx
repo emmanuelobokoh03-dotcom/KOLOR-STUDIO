@@ -5,7 +5,6 @@ import { Clock } from '@phosphor-icons/react/dist/csr/Clock'
 import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
@@ -19,6 +18,7 @@ import { GoogleLogo } from '@phosphor-icons/react/dist/csr/GoogleLogo'
 import { Link as LinkIcon } from '@phosphor-icons/react/dist/csr/Link'
 import { LinkBreak } from '@phosphor-icons/react/dist/csr/LinkBreak'
 import { meetingTypesApi, availabilityApi, MeetingType, AvailabilitySlot } from '../services/api'
+import KolorSpinner from './KolorSpinner'
 import { toast } from 'sonner'
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -272,7 +272,7 @@ export default function SchedulingSettings() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <SpinnerGap className="w-6 h-6 animate-spin text-brand-primary" />
+        <KolorSpinner size={24} />
       </div>
     )
   }
@@ -325,7 +325,7 @@ export default function SchedulingSettings() {
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition disabled:opacity-50"
               data-testid="disconnect-google-calendar"
             >
-              {calendarLoading ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <LinkBreak className="w-3.5 h-3.5" />}
+              {calendarLoading ? <KolorSpinner size={14} /> : <LinkBreak className="w-3.5 h-3.5" />}
               Disconnect
             </button>
           ) : (
@@ -335,7 +335,7 @@ export default function SchedulingSettings() {
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition disabled:opacity-50"
               data-testid="connect-google-calendar"
             >
-              {calendarLoading ? <SpinnerGap className="w-3.5 h-3.5 animate-spin" /> : <LinkIcon className="w-3.5 h-3.5" />}
+              {calendarLoading ? <KolorSpinner size={14} /> : <LinkIcon className="w-3.5 h-3.5" />}
               Connect
             </button>
           )}
@@ -544,7 +544,7 @@ export default function SchedulingSettings() {
                 className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 disabled:opacity-50 transition"
                 data-testid="save-meeting-type"
               >
-                {savingType ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
+                {savingType ? <KolorSpinner size={16} /> : <FloppyDisk className="w-4 h-4" />}
                 {editingType.id ? 'Update' : 'Create'}
               </button>
             </div>
@@ -615,7 +615,7 @@ export default function SchedulingSettings() {
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 disabled:opacity-50 transition mt-4"
               data-testid="save-availability"
             >
-              {savingAvailability ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
+              {savingAvailability ? <KolorSpinner size={16} /> : <FloppyDisk className="w-4 h-4" />}
               Save Availability
             </button>
           </div>

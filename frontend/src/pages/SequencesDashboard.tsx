@@ -7,7 +7,6 @@ import { Pause } from '@phosphor-icons/react/dist/csr/Pause'
 import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
 import { Users } from '@phosphor-icons/react/dist/csr/Users'
 import { Lightning } from '@phosphor-icons/react/dist/csr/Lightning'
-import { SpinnerGap } from '@phosphor-icons/react/dist/csr/SpinnerGap'
 import { EnvelopeOpen } from '@phosphor-icons/react/dist/csr/EnvelopeOpen'
 import { TrendUp } from '@phosphor-icons/react/dist/csr/TrendUp'
 import { Tray } from '@phosphor-icons/react/dist/csr/Tray'
@@ -19,6 +18,7 @@ import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
 import { sequencesApi } from '../services/api'
 import type { CustomSequence, SequenceStepFull, NewStep } from '../services/api'
+import KolorSpinner from '../components/KolorSpinner'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -207,7 +207,7 @@ function SequenceCard({ seq, onToggle, onViewDetail }: {
           }`}
           data-testid={`toggle-${seq.id}`}
         >
-          {toggling ? <SpinnerGap className="w-4 h-4 animate-spin" /> : seq.active ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          {toggling ? <KolorSpinner size={16} /> : seq.active ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
           {toggling ? '...' : seq.active ? 'Pause' : 'Activate'}
         </button>
       </div>
@@ -302,7 +302,7 @@ function SequenceDetailModal({ seq, onClose }: { seq: SequenceData; onClose: () 
           </h3>
           {loadingEnrollments ? (
             <div className="flex justify-center py-8">
-              <SpinnerGap className="w-6 h-6 text-purple-400 animate-spin" />
+              <KolorSpinner size={24} />
             </div>
           ) : enrollments.length === 0 ? (
             <div className="text-center py-8">
@@ -596,7 +596,7 @@ export default function SequencesDashboard() {
       <div data-testid="send-log-tab">
         {loadingLog ? (
           <div className="flex items-center justify-center py-16">
-            <SpinnerGap className="w-6 h-6 text-purple-400 animate-spin" />
+            <KolorSpinner size={24} />
           </div>
         ) : emailLog.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 16px' }}>
@@ -942,7 +942,7 @@ function SequenceBuilder({ sequence, onClose, onSaved, onCreated }: {
               className="mt-4 px-5 py-2.5 bg-brand-primary text-white rounded-lg text-sm font-semibold hover:brightness-110 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-h-[44px]"
               data-testid="save-seq-metadata-btn"
             >
-              {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : null}
+              {saving ? <KolorSpinner size={16} /> : null}
               {isEdit ? 'Save changes' : 'Create sequence'}
             </button>
           </div>
