@@ -868,6 +868,23 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 208 — Today isolation · Calendar shortcut · Lazy Pipeline · SpinnerGap FINAL · Schema (Feb 2026) — ✅ SHIPPED
+- **Dashboard isolation**: TodayScreen (kanban viewMode) now renders without any of the legacy dashboard chrome. Stat cards, SmartNudgeBanner, SmartSuggestion, needsAttention strip, pipeline counter — all gated to `viewMode === 'list'` only. Today screen is now a clean, focused surface.
+- **TodayScreen calendar shortcut**: full-width "Calendar & Booking" button at the bottom of TodayScreen navigates to `/calendar` via `useNavigate`. Restores calendar access from mobile (kanban viewMode was the only Today entry point).
+- **MobileBottomNav iOS fix**: Replaced `safe-bottom` class with inline `paddingBottom: env(safe-area-inset-bottom, 0px)` + `transform: translateZ(0)` to force GPU compositing layer. Eliminates the jitter/shift caused by iOS Safari's toolbar collapsing during scroll.
+- **MobileBottomNav 4-item layout**: Today · Clients · **Portfolio** · Settings. Briefcase icon added. Per-item width reduced to `min-w-[60px] px-3` to fit comfortably on 375px screens.
+- **LeadDetailModal lazy mount**:
+  - New `mountedTabs: Set<string>` state initialised with `['overview']`.
+  - QuotesTab and ContractsTab JSX wrapped in `{mountedTabs.has('pipeline') && (...)}` — they only mount (and fire their fetch APIs) when the Pipeline tab is first opened.
+  - Tab click handler, Send Offer button, Upload button, Message button all add their target tab to `mountedTabs` before switching.
+  - Eliminates 5-7 unnecessary API calls per lead modal open (previously QuotesTab + ContractsTab + their nested data always fetched on mount).
+- **SpinnerGap → KolorSpinner — FINAL sweep**: 51 animate-spin loading state instances replaced across 29 files (DeliverablesTab, ProjectTimeline, AccountDangerZone, EmailVerificationBanner, PaymentTracker, BookingModal, FeedbackModal, EmailSignatureSettings, IndustryWidgets, ClientFileUpload, AHAModal, IndustryOnboarding, FileComments, DemoProjectBanner, QuotesTab, CalendarView, PortfolioSettings, SchedulingSettings, EmailComposerModal, ForgotPassword, Quotes, PublicBookingPage, Portfolio, PublicQuote, SequencesDashboard, VerifyEmail, Calendar, ResetPassword, Signup, Login, Contracts, PublicPortfolio). KolorSpinner imports added to all 26 files that needed them. **Kept intentionally**: `StatusIndicator.tsx:78` and `DeliverablesTab.tsx:63` IN_PROGRESS — spinner IS the status metaphor.
+- **KanbanBoard.tsx**: `statusColors` utility import added (rounds out the migration sweep for files with inline hex status colors).
+- **Schema (`add_quote_payment_schedule` migration `20260225000000`)**: Quote model gains `depositDueDate DateTime?`, `finalPaymentDueDate DateTime?`, `depositPercent Int?`. Migration file created manually (shadow DB failed on remote due to legacy migration drift — direct migration SQL committed to be applied on Railway deploy via `prisma migrate deploy`). Prisma client regenerated locally.
+- Build: backend `tsc --noEmit` clean. Frontend `tsc --noEmit` + `npm run build` clean (7.15s). Commit `cb53651` (local, pending push via "Save to GitHub").
+- **P2 backlog still open**: Quote Builder UI wiring for the new payment-schedule fields (depositDueDate input, finalPaymentDueDate input, discount field, note position after totals).
+
+
 ## Iteration 207 — TodayScreen + GET /api/today + Status Colors Migration (Feb 2026) — ✅ SHIPPED
 - **NEW endpoint `GET /api/today`** (`backend/src/routes/today.ts`, registered in `server.ts`): single authenticated call returns `{ attention, inProgress, generatedAt }`.
   - `attention` (up to 8 items, priority-sorted): new inquiries (priority 70 base, -10/day age), unsigned contracts (80 + 3/day, max 100), expiring quotes within 3 days (75 + 5/day in window, max 100), viewed quotes 72h+ ago (60 + 2/day), stale leads 7d+ untouched (40 + days).
