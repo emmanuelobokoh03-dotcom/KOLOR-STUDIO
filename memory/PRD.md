@@ -868,6 +868,24 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 209 — Payment plan timeline · Deposit date fields (Feb 2026) — ✅ SHIPPED
+- **QuoteBuilderModal payment schedule card**: rendered below the payment terms selector when `paymentTerms !== 'FULL_PAYMENT'`. Three fields:
+  - **Deposit %** — clamped 1-100 number input (default 50).
+  - **Deposit Due** — formatted display (`Jun 28`) with hidden `<input type="date">` overlay (`min={today}`).
+  - **Final Payment Due** — formatted display with hidden date overlay (`min={depositDueDate || today}`).
+  - All three fields hydrate from `existingQuote` when editing.
+- **backend/routes/quotes.ts**:
+  - `POST /:leadId/quotes` (create): destructures and persists `depositDueDate`, `finalPaymentDueDate`, `depositPercent`.
+  - `PATCH /:quoteId` (update): conditional `updateData` assignment for each field (`undefined` → not changed, `null` → cleared).
+  - `GET /public/:quoteToken`: no change — uses `include` not `select`, so the new top-level Quote fields are returned by default.
+- **PublicQuote.tsx payment plan widget**: rendered between totals and terms when `(depositDueDate || depositPercent)` and quote is not yet accepted/declined.
+  - Step 1: brand-purple numbered badge, "Deposit (50%)", formatted due date, amount = `total × percent/100`.
+  - Step 2: muted badge, "Final Payment (50%)", formatted due date (or "Due on completion"), amount = remaining.
+  - Subtle CTA: "Accept the quote to receive your deposit payment link" — primes the existing accept-and-pay flow.
+- **api.ts**: `Quote` interface extended with `depositDueDate?: string | null`, `finalPaymentDueDate?: string | null`, `depositPercent?: number | null`.
+- Build: backend `tsc --noEmit` clean. Frontend `tsc --noEmit` + `npm run build` clean (6.58s). Commit `9708ef9` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 208 — Today isolation · Calendar shortcut · Lazy Pipeline · SpinnerGap FINAL · Schema (Feb 2026) — ✅ SHIPPED
 - **Dashboard isolation**: TodayScreen (kanban viewMode) now renders without any of the legacy dashboard chrome. Stat cards, SmartNudgeBanner, SmartSuggestion, needsAttention strip, pipeline counter — all gated to `viewMode === 'list'` only. Today screen is now a clean, focused surface.
 - **TodayScreen calendar shortcut**: full-width "Calendar & Booking" button at the bottom of TodayScreen navigates to `/calendar` via `useNavigate`. Restores calendar access from mobile (kanban viewMode was the only Today entry point).
