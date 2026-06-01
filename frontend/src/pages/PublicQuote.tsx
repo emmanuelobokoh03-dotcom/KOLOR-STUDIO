@@ -299,6 +299,68 @@ export default function PublicQuote() {
               </div>
             </div>
 
+            {/* Payment Plan Timeline — shown when deposit schedule is set */}
+            {(quote.depositDueDate || quote.depositPercent) && quote.status !== 'ACCEPTED' && quote.status !== 'DECLINED' && (
+              <div className="mb-8" data-testid="payment-plan-widget">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Schedule</h2>
+                <div className="border border-gray-200 rounded-xl overflow-hidden">
+                  {/* Deposit */}
+                  <div className="p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-brand-primary flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-[10px] font-bold">1</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          Deposit ({quote.depositPercent ?? 50}%)
+                        </p>
+                        {quote.depositDueDate && (
+                          <p className="text-xs text-gray-500">
+                            Due {new Date(quote.depositDueDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-brand-primary">
+                        {formatCurrency(quote.total * ((quote.depositPercent ?? 50) / 100), currencySettings)}
+                      </p>
+                    </div>
+                  </div>
+                  {/* Final payment */}
+                  <div className="p-4 flex items-center justify-between border-t border-gray-100">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                        <span className="text-gray-500 text-[10px] font-bold">2</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          Final Payment ({100 - (quote.depositPercent ?? 50)}%)
+                        </p>
+                        {quote.finalPaymentDueDate && (
+                          <p className="text-xs text-gray-500">
+                            Due {new Date(quote.finalPaymentDueDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                          </p>
+                        )}
+                        {!quote.finalPaymentDueDate && (
+                          <p className="text-xs text-gray-500">Due on completion</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-gray-700">
+                        {formatCurrency(quote.total * ((100 - (quote.depositPercent ?? 50)) / 100), currencySettings)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                {/* Deposit note */}
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  Accept the quote to receive your deposit payment link
+                </p>
+              </div>
+            )}
+
             {/* Terms */}
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="bg-brand-primary/5 rounded-xl p-4">

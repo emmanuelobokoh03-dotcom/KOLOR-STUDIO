@@ -141,7 +141,7 @@ router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Res
   try {
     const leadId = req.params.leadId as string;
     const userId = req.userId!;
-    const { lineItems, tax, paymentTerms, validUntil, terms, currency, currencySymbol, currencyPosition, numberFormat } = req.body;
+    const { lineItems, tax, paymentTerms, validUntil, terms, currency, currencySymbol, currencyPosition, numberFormat, depositDueDate, finalPaymentDueDate, depositPercent } = req.body;
 
 
     // Validate lead exists and belongs to user
@@ -217,6 +217,9 @@ router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Res
         currencySymbol: currencySymbol || null,
         currencyPosition: currencyPosition || null,
         numberFormat: numberFormat || null,
+        depositDueDate: depositDueDate ? new Date(depositDueDate) : null,
+        finalPaymentDueDate: finalPaymentDueDate ? new Date(finalPaymentDueDate) : null,
+        depositPercent: depositPercent ?? null,
       },
       include: {
         lead: {
@@ -448,7 +451,7 @@ router.patch('/:quoteId', authMiddleware, async (req: AuthRequest, res: Response
   try {
     const quoteId = req.params.quoteId as string;
     const userId = req.userId!;
-    const { lineItems, tax, paymentTerms, validUntil, terms } = req.body;
+    const { lineItems, tax, paymentTerms, validUntil, terms, depositDueDate, finalPaymentDueDate, depositPercent } = req.body;
 
     // Find quote
     const existingQuote = await prisma.quote.findFirst({
@@ -500,6 +503,9 @@ router.patch('/:quoteId', authMiddleware, async (req: AuthRequest, res: Response
     if (paymentTerms !== undefined) updateData.paymentTerms = paymentTerms;
     if (validUntil !== undefined) updateData.validUntil = new Date(validUntil);
     if (terms !== undefined) updateData.terms = terms;
+    if (depositDueDate !== undefined) updateData.depositDueDate = depositDueDate ? new Date(depositDueDate) : null;
+    if (finalPaymentDueDate !== undefined) updateData.finalPaymentDueDate = finalPaymentDueDate ? new Date(finalPaymentDueDate) : null;
+    if (depositPercent !== undefined) updateData.depositPercent = depositPercent ?? null;
 
     const quote = await prisma.quote.update({
       where: { id: quoteId },

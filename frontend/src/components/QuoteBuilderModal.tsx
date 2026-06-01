@@ -201,6 +201,19 @@ export default function QuoteBuilderModal({
   );
   const [tax, setTax] = useState(existingQuote?.tax || userCurrencySettings?.defaultTaxRate || 0);
   const [paymentTerms, setPaymentTerms] = useState(existingQuote?.paymentTerms || 'DEPOSIT_50');
+  const [depositDueDate, setDepositDueDate] = useState<string>(
+    existingQuote?.depositDueDate
+      ? new Date(existingQuote.depositDueDate).toISOString().split('T')[0]
+      : ''
+  );
+  const [finalPaymentDueDate, setFinalPaymentDueDate] = useState<string>(
+    existingQuote?.finalPaymentDueDate
+      ? new Date(existingQuote.finalPaymentDueDate).toISOString().split('T')[0]
+      : ''
+  );
+  const [depositPercent, setDepositPercent] = useState<number>(
+    existingQuote?.depositPercent ?? 50
+  );
   const [validUntil, setValidUntil] = useState(() => {
     if (existingQuote?.validUntil) {
       return new Date(existingQuote.validUntil).toISOString().split('T')[0];
@@ -256,6 +269,9 @@ export default function QuoteBuilderModal({
       name: templateName.trim(), description: templateDescription.trim() || undefined,
       lineItems: lineItems.map(item => ({ description: item.description, quantity: item.quantity, price: item.price })),
       paymentTerms, terms: terms || undefined,
+      depositDueDate: depositDueDate || undefined,
+      finalPaymentDueDate: finalPaymentDueDate || undefined,
+      depositPercent: paymentTerms !== 'FULL_PAYMENT' ? depositPercent : undefined,
     };
     const result = await quoteTemplatesApi.create(templateData);
     setSavingTemplate(false);
@@ -695,6 +711,79 @@ export default function QuoteBuilderModal({
                 {PAYMENT_TERMS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
               </select>
             </div>
+
+            {/* Payment schedule dates — show when not full payment */}
+            {paymentTerms !== 'FULL_PAYMENT' && (
+              <div className="rounded-xl" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="payment-schedule-card">
+                <div className="px-3.5 py-2" style={{ borderBottom: '0.5px solid var(--border)', background: 'var(--surface-background)' }}>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Payment Schedule</span>
+                </div>
+                <div className="grid grid-cols-3" style={{ borderBottom: '0.5px solid var(--border)' }}>
+                  <div className="px-3.5 py-2.5" style={{ borderRight: '0.5px solid var(--border)' }}>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Deposit %</p>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <input
+                        type="number"
+                        value={depositPercent}
+                        onChange={e => setDepositPercent(Math.min(100, Math.max(1, Number(e.target.value))))}
+                        min={1}
+                        max={100}
+                        className="w-10 text-xs font-semibold text-text-primary bg-transparent focus:outline-none tabular-nums"
+                        style={{ touchAction: 'manipulation' }}
+                        data-testid="deposit-percent-input"
+                      />
+                      <span className="text-[10px] text-[var(--text-tertiary)]">%</span>
+                    </div>
+                  </div>
+                  <div className="px-3.5 py-2.5 col-span-2">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Deposit Due</p>
+                    <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative">
+                      <span className="text-xs font-semibold text-text-primary">
+                        {depositDueDate
+                          ? new Date(depositDueDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                          : 'Set date'}
+                      </span>
+                      <svg width="10" height="10" viewBox="0 0 16 16" fill="none" className="text-[var(--text-tertiary)]" aria-hidden="true">
+                        <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
+                        <path d="M5 1v3M11 1v3M2 7h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                      </svg>
+                      <input
+                        type="date"
+                        value={depositDueDate}
+                        onChange={e => setDepositDueDate(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        data-testid="deposit-due-date-input"
+                        aria-label="Deposit due date"
+                      />
+                    </label>
+                  </div>
+                </div>
+                <div className="px-3.5 py-2.5">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Final Payment Due</p>
+                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative">
+                    <span className="text-xs font-semibold text-text-primary">
+                      {finalPaymentDueDate
+                        ? new Date(finalPaymentDueDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                        : 'Set date'}
+                    </span>
+                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none" className="text-[var(--text-tertiary)]" aria-hidden="true">
+                      <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
+                      <path d="M5 1v3M11 1v3M2 7h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    </svg>
+                    <input
+                      type="date"
+                      value={finalPaymentDueDate}
+                      onChange={e => setFinalPaymentDueDate(e.target.value)}
+                      min={depositDueDate || new Date().toISOString().split('T')[0]}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      data-testid="final-payment-date-input"
+                      aria-label="Final payment due date"
+                    />
+                  </label>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ═══ Right column — sidebar (desktop only) ═══ */}

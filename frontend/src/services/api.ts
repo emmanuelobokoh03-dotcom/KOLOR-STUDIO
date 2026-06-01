@@ -814,6 +814,9 @@ export interface Quote {
   acceptedAt?: string;
   declinedAt?: string;
   declineReason?: string;
+  depositDueDate?: string | null;
+  finalPaymentDueDate?: string | null;
+  depositPercent?: number | null;
   // Currency override fields (per-quote)
   currency?: string | null;
   currencySymbol?: string | null;
