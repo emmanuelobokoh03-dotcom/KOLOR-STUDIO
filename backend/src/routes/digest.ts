@@ -35,8 +35,11 @@ router.post('/send', authMiddleware, async (req: AuthRequest, res: Response): Pr
       return;
     }
 
-    if (!digest.hasActivity && digest.nextActions.length === 0) {
-      res.json({ message: 'No activity this week — digest email skipped', skipped: true, digest });
+    // Send digest if there's recent activity OR pending next actions
+    // Only skip if the pipeline is truly empty and nothing to report
+    const hasAnythingToReport = digest.hasActivity || digest.nextActions.length > 0
+    if (!hasAnythingToReport) {
+      res.json({ message: 'No activity or pending actions this week — digest email skipped', skipped: true, digest });
       return;
     }
 

@@ -615,7 +615,7 @@ export default function ClientPortal() {
               </div>
               <div>
                 <p className="text-[10px] text-gray-400 font-semibold uppercase">Service Type</p>
-                <p className="text-sm font-semibold text-gray-900">{data.project.serviceType}</p>
+                <p className="text-sm font-semibold text-gray-900">{data.project.serviceType?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (ch: string) => ch.toUpperCase()) || '—'}</p>
               </div>
             </div>
 

@@ -49,6 +49,7 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBu
   const [editingQuote, setEditingQuote] = useState<Quote | null>(null);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [userCurrencySettings, setUserCurrencySettings] = useState<Partial<CurrencySettings>>({});
@@ -421,16 +422,25 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBu
                         )}
                         {quote.status === 'DRAFT' && (
                           <button
-                            onClick={() => handleDeleteQuote(quote.id)}
+                            onClick={() => {
+                              if (confirmDeleteId === quote.id) {
+                                handleDeleteQuote(quote.id)
+                                setConfirmDeleteId(null)
+                              } else {
+                                setConfirmDeleteId(quote.id)
+                                setTimeout(() => setConfirmDeleteId(prev => prev === quote.id ? null : prev), 3000)
+                              }
+                            }}
                             disabled={deletingId === quote.id}
-                            className="w-full px-4 py-2 text-left text-sm hover:bg-red-50 text-red-400 flex items-center gap-2"
+                            className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 transition ${confirmDeleteId === quote.id ? 'bg-red-50 text-red-700 font-semibold' : 'hover:bg-red-50 text-red-400'}`}
+                            data-testid={`delete-quote-${quote.id}`}
                           >
                             {deletingId === quote.id ? (
                               <KolorSpinner size={16} />
                             ) : (
                               <Trash className="w-4 h-4" />
                             )}
-                            Delete
+                            {confirmDeleteId === quote.id ? 'Confirm delete?' : 'Delete'}
                           </button>
                         )}
                       </div>

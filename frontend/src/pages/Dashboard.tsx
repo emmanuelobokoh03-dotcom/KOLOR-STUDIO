@@ -22,7 +22,6 @@ import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
 import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
-import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
 import AddLeadModal from '../components/AddLeadModal'
 import ShareFormModal from '../components/ShareFormModal'
@@ -146,7 +145,7 @@ const Dashboard = () => {
   // Iter 146 — Task 1d: collapse industry widgets by default
   const [showIndustryWidgets, setShowIndustryWidgets] = useState(false)
   // Iter 146 — Task 2b: sidebar user block dropdown with Settings + Logout
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  // userMenu removed in iter-211 — user block opens Settings directly
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
   const [stats, setStats] = useState<{ total: number; statusCounts: Record<string, number> } | null>(null)
   const [showBookingModal, setShowBookingModal] = useState(false)
@@ -573,7 +572,7 @@ const Dashboard = () => {
         <div
           className="flex items-center gap-2.5 rounded-xl p-2.5 mb-1 cursor-pointer transition-all duration-150 border border-transparent hover:border-purple-200"
           style={{ background: 'var(--surface-background)' }}
-          onClick={() => setUserMenuOpen(v => !v)}
+          onClick={() => setShowSettings(true)}
           data-testid="sidebar-user-block"
         >
           <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)' }}>
@@ -583,25 +582,9 @@ const Dashboard = () => {
             <div className="text-xs font-bold text-text-primary truncate">{user?.firstName} {user?.lastName}</div>
             <div className="text-xs text-text-secondary">Beta · Free plan</div>
           </div>
-          <CaretDown weight="bold" className={`w-3 h-3 text-text-tertiary transition-transform duration-150 ${userMenuOpen ? 'rotate-180' : ''}`} />
         </div>
 
-        {/* Iter 146 — User menu dropdown: Settings + Log out */}
-        {userMenuOpen && (
-          <div
-            className="rounded-lg border overflow-hidden mb-4 animate-fade-in"
-            style={{ background: 'var(--surface-background)', borderColor: 'var(--border)' }}
-          >
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-red-500 hover:bg-red-50 transition"
-              data-testid="sidebar-logout-btn"
-            >
-              <SignOut weight="regular" className="w-[13px] h-[13px]" /> Log out
-            </button>
-          </div>
-        )}
-        {!userMenuOpen && <div className="mb-3" />}
+        <div className="mb-3" />
 
         {/* Workspace nav */}
         <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-2">Workspace</div>
@@ -785,13 +768,9 @@ const Dashboard = () => {
             {/* Nav items */}
             <div className="flex-1 overflow-y-auto py-2">
               {([
-                { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Pipeline' },
-                { mode: 'list' as ViewMode, icon: ListIcon, label: 'List View' },
-                { mode: 'quotes' as ViewMode, icon: Receipt, label: lang.quotes },
-                { mode: 'contracts' as ViewMode, icon: ShieldCheck, label: lang.contracts },
-                { mode: 'analytics' as ViewMode, icon: ChartBar, label: 'Analytics' },
+                { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Today' },
+                { mode: 'list' as ViewMode, icon: ListIcon, label: 'Clients' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
-                { mode: 'sequences' as ViewMode, icon: Envelope, label: 'Sequences' },
               ]).map(({ mode, icon: Icon, label }) => (
                 <button
                   key={mode}
@@ -801,7 +780,7 @@ const Dashboard = () => {
                       ? 'text-brand-primary bg-brand-primary/10 border-r-2 border-brand-primary'
                       : 'text-text-secondary hover:bg-light-100 hover:text-text-primary'
                   }`}
-                  data-testid={`sidebar-${mode}`}
+                  data-testid={`mobile-menu-${mode}`}
                 >
                   <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-5 h-5" aria-hidden="true" />
                   {label}
@@ -810,10 +789,10 @@ const Dashboard = () => {
               <button
                 onClick={() => { setMobileMenuOpen(false); navigate('/calendar') }}
                 className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 touch-target text-text-secondary hover:bg-light-100 hover:text-text-primary"
-                data-testid="sidebar-calendar"
+                data-testid="mobile-menu-calendar"
               >
                 <CalendarDots weight="regular" className="w-5 h-5" aria-hidden="true" />
-                Calendar
+                Calendar & Booking
               </button>
             </div>
             {/* Sidebar Footer */}
@@ -833,10 +812,11 @@ const Dashboard = () => {
                 Help
               </button>
               <button
-                onClick={() => { setShowFeedback(true); setMobileMenuOpen(false); }}
-                className="w-full flex items-center gap-3 px-3 py-3 text-sm text-text-secondary hover:bg-light-100 rounded-xl transition-all duration-200 touch-target"
+                onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                className="w-full flex items-center gap-3 px-3 py-3 text-sm text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 touch-target"
+                data-testid="mobile-menu-logout"
               >
-                <Envelope className="w-5 h-5" aria-hidden="true" /> Feedback
+                <SignOut className="w-5 h-5" aria-hidden="true" /> Log out
               </button>
             </div>
           </div>
@@ -1457,8 +1437,8 @@ const Dashboard = () => {
 
           </div>{/* /Left column */}
 
-          {/* Right sidebar — visible on desktop for kanban/list views */}
-          {(viewMode === 'kanban' || viewMode === 'list') && (
+          {/* Right sidebar — list view only (CRM Alerts + Revenue) */}
+          {viewMode === 'list' && (
             <aside className="hidden lg:block space-y-4" data-testid="dashboard-right-sidebar">
               {/* Iter 146 — Task 1b: CRM Alerts + Revenue Dashboard moved into sidebar */}
               <div data-tour="crm-alerts">

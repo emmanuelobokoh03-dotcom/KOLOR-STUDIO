@@ -363,11 +363,14 @@ export default function Calendar() {
         </div>
       )}
 
-      {/* Mobile day panel (click on a day) — shows day's events list */}
+      {/* Mobile day bottom sheet (click on a day) — shows day's events list */}
       {showMobileDaySheet && !selectedEvent && (
-        <div className="lg:hidden fixed inset-0 z-40" data-testid="calendar-day-mobile-panel">
+        <div className="lg:hidden fixed inset-0 z-40 flex flex-col justify-end" data-testid="calendar-day-mobile-panel">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowMobileDaySheet(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-light-50 border-l border-light-200 overflow-y-auto animate-slide-left">
+          <div className="relative bg-light-50 rounded-t-2xl border-t border-light-200 max-h-[75vh] overflow-y-auto animate-slide-up">
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 bg-light-300 rounded-full" />
+            </div>
             <DaySidebar
               selectedDate={selectedDate}
               events={getEventsForDay(selectedDate)}
