@@ -341,7 +341,10 @@ export default function Calendar() {
                 event={selectedEvent}
                 onClose={() => setSelectedEvent(null)}
                 onDelete={handleDeleteEvent}
-                onNavigateToLead={(leadId) => navigate(`/dashboard?leadId=${leadId}`)}
+                onNavigateToLead={(leadId) => {
+                  navigate('/')
+                  setTimeout(() => window.dispatchEvent(new CustomEvent('kolor:openLead', { detail: { leadId } })), 100)
+                }}
               />
             )}
           </div>
@@ -357,7 +360,10 @@ export default function Calendar() {
               event={selectedEvent}
               onClose={() => setSelectedEvent(null)}
               onDelete={handleDeleteEvent}
-              onNavigateToLead={(leadId) => navigate(`/dashboard?leadId=${leadId}`)}
+              onNavigateToLead={(leadId) => {
+                navigate('/')
+                setTimeout(() => window.dispatchEvent(new CustomEvent('kolor:openLead', { detail: { leadId } })), 100)
+              }}
             />
           </div>
         </div>

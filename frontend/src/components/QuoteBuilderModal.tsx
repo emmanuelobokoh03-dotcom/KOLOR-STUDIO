@@ -214,6 +214,12 @@ export default function QuoteBuilderModal({
   const [depositPercent, setDepositPercent] = useState<number>(
     existingQuote?.depositPercent ?? 50
   );
+  const [shootDate, setShootDate] = useState<string>(
+    (() => {
+      const d = lead.keyDate || lead.eventDate
+      return d ? new Date(d).toISOString().split('T')[0] : ''
+    })()
+  );
   const [validUntil, setValidUntil] = useState(() => {
     if (existingQuote?.validUntil) {
       return new Date(existingQuote.validUntil).toISOString().split('T')[0];
@@ -476,8 +482,8 @@ export default function QuoteBuilderModal({
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
                   <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative" style={{ zIndex: 2 }}>
                     <span className="text-xs font-semibold text-text-primary">
-                      {(lead.keyDate || lead.eventDate)
-                        ? new Date(((lead.keyDate || lead.eventDate) as string) + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                      {shootDate
+                        ? new Date(shootDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
                         : '—'}
                     </span>
                     <svg width="11" height="11" viewBox="0 0 16 16" fill="none" className="text-[var(--text-tertiary)] group-hover:text-[#6C2EDB] transition-colors" aria-hidden="true">
@@ -486,7 +492,8 @@ export default function QuoteBuilderModal({
                     </svg>
                     <input
                       type="date"
-                      defaultValue={(lead.keyDate || lead.eventDate || '').toString().split('T')[0]}
+                      value={shootDate}
+                      onChange={e => setShootDate(e.target.value)}
                       className="absolute inset-0 opacity-0 cursor-pointer"
                       title={lang.keyDate}
                       data-testid="quote-key-date-input"

@@ -36,7 +36,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise
         where: {
           lead: { assignedToId: userId },
           clientAgreed: false,
-          status: { in: ['SENT', 'VIEWED'] },
+          sentAt: { not: null },
         },
         orderBy: { sentAt: 'asc' },
         take: 5,

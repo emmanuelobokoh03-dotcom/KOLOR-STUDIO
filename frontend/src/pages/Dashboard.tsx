@@ -238,6 +238,25 @@ const Dashboard = () => {
     }, [])
     .slice(0, 5)
 
+  // Listen for lead-open requests from Calendar page (View Lead button)
+  useEffect(() => {
+    const handleOpenLead = (e: Event) => {
+      const ce = e as CustomEvent<{ leadId: string }>
+      const leadId = ce.detail?.leadId
+      if (!leadId) return
+      const lead = leads.find(l => l.id === leadId)
+      if (lead) {
+        setSelectedLead(lead)
+      } else {
+        leadsApi.getOne(leadId).then(r => {
+          if (r.data?.lead) setSelectedLead(r.data.lead)
+        })
+      }
+    }
+    window.addEventListener('kolor:openLead', handleOpenLead)
+    return () => window.removeEventListener('kolor:openLead', handleOpenLead)
+  }, [leads])
+
   useEffect(() => {
     const init = async () => {
       let userResult = await authApi.getMe()
@@ -847,7 +866,7 @@ const Dashboard = () => {
         </div>
 
         {/* Demo Project Banner */}
-        {showDemoBanner && leads.some(l => l.isDemoData) && (
+        {viewMode === 'kanban' && showDemoBanner && leads.some(l => l.isDemoData) && (
           <DemoProjectBanner
             demoLeadId={leads.find(l => l.isDemoData)!.id}
             onDismiss={() => setShowDemoBanner(false)}
@@ -956,7 +975,7 @@ const Dashboard = () => {
         )}
 
         {/* Pending Contract Review Banner */}
-        {pendingContracts.length > 0 && (
+        {viewMode === 'kanban' && pendingContracts.length > 0 && (
           <div className="mb-4 md:mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5" data-testid="pending-contract-banner">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -1490,7 +1509,7 @@ const Dashboard = () => {
            pointer-events-none on wrapper so only the buttons intercept taps. */}
       {(viewMode === 'kanban' || viewMode === 'list') && (
         <div
-          className="fixed bottom-[80px] right-4 z-30 flex flex-col items-end gap-2 lg:hidden pointer-events-none"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+88px)] right-4 z-30 flex flex-col items-end gap-2 lg:hidden pointer-events-none"
           data-testid="mobile-fab-group"
         >
           {/* Secondary: Share form — pill style */}
