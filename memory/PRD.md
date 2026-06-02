@@ -868,6 +868,29 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 210 — Review Contract route · Archive confirm · Activity tab removed · Calendar · AddLeadModal · Desktop UX · Analytics/Sequences hidden (Feb 2026) — ✅ SHIPPED
+- **Dashboard Review Contract fix**: `setSelectedLeadInitialTab('contracts')` → `'pipeline'`. Tab was renamed in iter-199; button was routing to a non-existent tab and opening blank Overview.
+- **DemoProjectBanner**: optional `onExplore?: () => void` prop + "Click to explore →" link. Dashboard wires it to open the demo lead modal directly.
+- **LeadDetailModal Archive confirmation**: new `confirmArchive` state. First tap: button text becomes "Confirm archive?" in red (`#DC2626`). Second tap: `leadsApi.update(lead.id, { status: 'LOST' })` + close. Prevents accidental archival.
+- **Activity tab fully removed**:
+  - Removed from tab array (5 → 4 tabs: Overview · Pipeline · Files & Notes · Messages).
+  - `activeTab` union narrowed to 4 values.
+  - 84-line `activeTab === 'activity'` render branch deleted (was duplicate of Recent section in Overview).
+  - LeadDetailModal bundle shrank ~16KB gzip (132.99 KB → 116.82 KB).
+- **Calendar gear removed**: `calendar-settings-btn` and its unused `GearSix` import removed — redundant with Settings already in sidebar/nav.
+- **AddLeadModal background fix**: `glass-modal` class (unresolved CSS custom class causing grey background) replaced with `bg-[var(--surface-base,#FDFCFF)]` inline fallback.
+- **Desktop UX cleanup**:
+  - Settings button removed from user dropdown (already in sidebar).
+  - Sidebar footer Feedback button replaced with Log out button (`SignOut` icon) — Logout now always-visible.
+- **Analytics + Sequences hidden** (deferred to Pro tier — routes intact):
+  - Removed from Workspace sidebar section (Analytics).
+  - Removed from Account sidebar section (Sequences).
+  - Removed from desktop view-toggle icon strip. Strip now shows Today · Clients · Portfolio.
+- **QuoteBuilderModal shoot date z-index fix**: container `zIndex: 1` + label overlay `position: relative; zIndex: 2` so the transparent hidden date input receives touch events correctly on iOS.
+- **⚠️ FLAGGED for Emmanuel**: `SENDER_EMAIL` env var is NOT SET on Railway. Without it, all client emails (weekly digest, quote/contract notifications, portal invites) silently fall to Resend sandbox. Add `SENDER_EMAIL=noreply@kolorstudio.app` in Railway → backend → Variables. Cannot be set by Emergent.
+- Build: frontend `tsc --noEmit` + `npm run build` clean (6.38s). Commit `da4e117` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 209 — Payment plan timeline · Deposit date fields (Feb 2026) — ✅ SHIPPED
 - **QuoteBuilderModal payment schedule card**: rendered below the payment terms selector when `paymentTerms !== 'FULL_PAYMENT'`. Three fields:
   - **Deposit %** — clamped 1-100 number input (default 50).
