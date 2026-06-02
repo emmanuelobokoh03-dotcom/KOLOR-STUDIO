@@ -868,6 +868,24 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 212 — Surface elevation · Today urgency hierarchy · Action bar (Feb 2026) — ✅ SHIPPED
+- **Surface elevation (`index.css` + `tailwind.config.js`)**:
+  - `--surface-background`: `#F9F7FE` → `#F4F1FA` (light-100 in the existing scale).
+  - `body { background-color }`: `#F9F7FE` → `#F4F1FA` — cards on `#FDFCFF` now visually separate from page.
+  - `surface.page = #F4F1FA` Tailwind token added.
+  - `--surface-base` stays `#FDFCFF` — white cards/modal surfaces unchanged. Single CSS change gives the entire app new depth.
+- **TodayScreen three-tier urgency hierarchy**:
+  - New `URGENCY_CONFIG` (legacy `URGENCY_COLORS` retained for compat). Card background stays `#FDFCFF` across all tiers — urgency is communicated entirely via left border + tiny meta label.
+  - **CRITICAL** (contract_unsigned, payment_overdue): 3px solid `#A32D2D` left border, red meta (`DAY N · CONTRACT`, `N DAYS OVERDUE · PAYMENT`), red chip on `#FCEBEB`.
+  - **WARNING** (quote_expiring, quote_viewed): amber left border `#B45309`, amber meta (`EXPIRES SOON · OFFER`, `VIEWED · AWAITING DECISION`), amber chip on `#FEF3C7`.
+  - **NEW** (new_inquiry): brand-purple `#6C2EDB` left border, `NEW INQUIRY` meta, purple chip on `#EDE9FE`.
+  - **STALE**: 1px muted `#DDD6EA` border + 72% opacity — visually recedes.
+  - Section label gains `N critical` red badge when any critical items exist.
+  - In-progress rows now use `background: var(--surface-base)` so they pop against the elevated page bg.
+- **LeadDetailModal action bar hierarchy**: Send [Quote] now `flex-[2]`, `h-9`, `rounded-xl`, with `boxShadow: 0 1px 4px rgba(108,46,219,0.35)` — visually dominant commercial CTA. Upload + Message: `flex-1`, `h-9`, `text-[11px]`, secondary text color. Label "Upload file" → "Upload" so the dominant button keeps room on narrow screens.
+- Build: frontend `tsc --noEmit` + `npm run build` clean (6.85s). Commit `18a349d` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 211 — Dropdown removal · Sidebar gating · Portal · Calendar mobile popover · Digest threshold · Two-tap confirm · Mobile menu (Feb 2026) — ✅ SHIPPED
 - **User dropdown removed**: caret, dropdown panel, `userMenuOpen` state all retired. User block now opens Settings directly on click. `CaretDown` import removed.
 - **Right sidebar gated to list view only**: `(viewMode === 'kanban' || viewMode === 'list')` → `viewMode === 'list'`. CRM Alerts + Revenue + Goal + Onboarding no longer pollute Today.
