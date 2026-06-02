@@ -76,7 +76,8 @@ export default {
         surface: {
           base: '#FDFCFF',
           white: '#FDFCFF',
-          background: '#F9F7FE',
+          background: '#F4F1FA',
+          page: '#F4F1FA',
           card: '#FDFCFF',
           hover: '#F4F1FA',
           elevated: '#FDFCFF',

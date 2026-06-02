@@ -269,7 +269,7 @@ select:focus {
     /* Surface colors — warm purple-tinted neutrals */
     --surface-base: #FDFCFF;
     --surface-elevated: #FDFCFF;
-    --surface-background: #F9F7FE;
+    --surface-background: #F4F1FA;
     --surface-hover: #F4F1FA;
 
     /* Border colors — warm purple-tinted */
@@ -306,7 +306,7 @@ select:focus {
   body {
     font-family: var(--font-sans);
     font-weight: 400;
-    background-color: #F9F7FE;
+    background-color: #F4F1FA;
     color: #1A1A2E;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

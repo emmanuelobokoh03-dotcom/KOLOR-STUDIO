@@ -46,12 +46,60 @@ interface TodayScreenProps {
   greeting?: string
 }
 
+// Three-tier urgency system — colour communicates priority before the user reads anything
+type UrgencyTier = {
+  tier: 'critical' | 'warning' | 'new' | 'stale'
+  bg: string
+  border: string
+  metaColor: string
+  chipBg: string
+  chipColor: string
+  dot: string
+  opacity?: number
+  metaLabel: (item: AttentionItem) => string
+}
+
+const URGENCY_CONFIG: Record<string, UrgencyTier> = {
+  contract_unsigned: {
+    tier: 'critical', bg: '#FDFCFF', border: '#A32D2D',
+    metaColor: '#A32D2D', chipBg: '#FCEBEB', chipColor: '#A32D2D', dot: '#A32D2D',
+    metaLabel: (item) => `DAY ${item.daysOverdue ?? 1} · CONTRACT`,
+  },
+  payment_overdue: {
+    tier: 'critical', bg: '#FDFCFF', border: '#A32D2D',
+    metaColor: '#A32D2D', chipBg: '#FCEBEB', chipColor: '#A32D2D', dot: '#A32D2D',
+    metaLabel: (item) => `${item.daysOverdue ?? 1} DAYS OVERDUE · PAYMENT`,
+  },
+  quote_expiring: {
+    tier: 'warning', bg: '#FDFCFF', border: '#B45309',
+    metaColor: '#854F0B', chipBg: '#FEF3C7', chipColor: '#854F0B', dot: '#D97706',
+    metaLabel: () => `EXPIRES SOON · OFFER`,
+  },
+  quote_viewed: {
+    tier: 'warning', bg: '#FDFCFF', border: '#B45309',
+    metaColor: '#854F0B', chipBg: '#FEF3C7', chipColor: '#854F0B', dot: '#D97706',
+    metaLabel: () => `VIEWED · AWAITING DECISION`,
+  },
+  new_inquiry: {
+    tier: 'new', bg: '#FDFCFF', border: '#6C2EDB',
+    metaColor: '#4A1FA0', chipBg: '#EDE9FE', chipColor: '#4A1FA0', dot: '#6C2EDB',
+    metaLabel: () => `NEW INQUIRY`,
+  },
+  stale_lead: {
+    tier: 'stale', bg: '#FDFCFF', border: '#DDD6EA',
+    metaColor: '#9CA3AF', chipBg: 'var(--surface-background)', chipColor: '#6B7280', dot: '#9CA3AF',
+    opacity: 0.72,
+    metaLabel: (item) => `${item.daysOverdue ?? 7} DAYS · NO UPDATE`,
+  },
+}
+
+// Legacy compat
 const URGENCY_COLORS: Record<string, { bg: string; color: string; dot: string }> = {
-  new_inquiry:       { bg: 'rgba(108,46,219,0.08)', color: '#6C2EDB', dot: '#6C2EDB' },
-  contract_unsigned: { bg: 'rgba(245,158,11,0.10)', color: '#92400E', dot: '#D97706' },
-  quote_expiring:    { bg: 'rgba(245,158,11,0.10)', color: '#92400E', dot: '#D97706' },
-  quote_viewed:      { bg: 'rgba(59,130,246,0.08)', color: '#1E40AF', dot: '#3B82F6' },
-  stale_lead:        { bg: 'rgba(107,114,128,0.08)', color: '#374151', dot: '#9CA3AF' },
+  new_inquiry:       { bg: '#FDFCFF', color: '#4A1FA0', dot: '#6C2EDB' },
+  contract_unsigned: { bg: '#FDFCFF', color: '#A32D2D', dot: '#A32D2D' },
+  quote_expiring:    { bg: '#FDFCFF', color: '#854F0B', dot: '#D97706' },
+  quote_viewed:      { bg: '#FDFCFF', color: '#854F0B', dot: '#D97706' },
+  stale_lead:        { bg: '#FDFCFF', color: '#6B7280', dot: '#9CA3AF' },
 }
 
 export default function TodayScreen({
@@ -113,35 +161,68 @@ export default function TodayScreen({
 
       {hasAttention && (
         <section data-testid="attention-section">
-          <div className="flex items-center gap-2 mb-3">
-            <Lightning weight="fill" className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" />
-            <h2 className="text-[10px] font-bold uppercase tracking-[0.08em] text-text-secondary">
-              Needs attention
-            </h2>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Lightning weight="fill" className="w-3.5 h-3.5" style={{ color: '#D97706' }} aria-hidden="true" />
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.08em] text-text-secondary">
+                Needs attention
+              </h2>
+            </div>
+            {(() => {
+              const critical = data!.attention.filter(i =>
+                URGENCY_CONFIG[i.type]?.tier === 'critical'
+              ).length
+              return critical > 0 ? (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#FCEBEB', color: '#A32D2D' }}>
+                  {critical} critical
+                </span>
+              ) : null
+            })()}
           </div>
           <div className="space-y-2">
             {data!.attention.map(item => {
-              const uc = URGENCY_COLORS[item.type] || URGENCY_COLORS.stale_lead
+              const cfg = URGENCY_CONFIG[item.type] || URGENCY_CONFIG.stale_lead
               return (
                 <div
                   key={item.id}
-                  className="rounded-xl p-3.5 flex items-center gap-3 cursor-pointer hover:brightness-95 transition-all active:scale-[0.99]"
-                  style={{ background: uc.bg, border: `0.5px solid ${uc.dot}30` }}
+                  className="rounded-xl cursor-pointer transition-all active:scale-[0.99] overflow-hidden"
+                  style={{
+                    background: cfg.bg,
+                    border: `0.5px solid ${cfg.border}40`,
+                    borderLeft: `3px solid ${cfg.border}`,
+                    opacity: cfg.opacity ?? 1,
+                  }}
                   onClick={() => onLeadClick(item.leadId, item.actionRoute)}
                   data-testid={`attention-item-${item.id}`}
                 >
-                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: uc.dot }} aria-hidden="true" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-text-primary truncate">{item.label}</p>
-                    <p className="text-[10px] text-text-secondary mt-0.5 truncate">{item.sublabel}</p>
+                  <div className="px-3.5 py-3 flex items-center gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p
+                        className="text-[9px] font-bold tracking-[0.07em] mb-0.5 truncate"
+                        style={{ color: cfg.metaColor }}
+                      >
+                        {cfg.metaLabel(item)}
+                      </p>
+                      <p className="text-xs font-semibold text-text-primary truncate leading-tight">
+                        {item.label}
+                      </p>
+                      {item.sublabel && (
+                        <p className="text-[10px] mt-0.5 truncate" style={{ color: 'var(--text-secondary)' }}>
+                          {item.sublabel}
+                        </p>
+                      )}
+                    </div>
+                    {item.actionLabel && (
+                      <button
+                        onClick={e => { e.stopPropagation(); onLeadClick(item.leadId, item.actionRoute) }}
+                        className="flex-shrink-0 flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
+                        style={{ background: cfg.chipBg, color: cfg.chipColor }}
+                      >
+                        {item.actionLabel}
+                        <ArrowRight className="w-3 h-3" aria-hidden="true" />
+                      </button>
+                    )}
                   </div>
-                  <span
-                    className="text-[10px] font-semibold px-2 py-1 rounded-lg flex-shrink-0 flex items-center gap-1"
-                    style={{ background: 'rgba(255,255,255,0.7)', color: uc.color }}
-                  >
-                    {item.actionLabel}
-                    <ArrowRight className="w-3 h-3" aria-hidden="true" />
-                  </span>
                 </div>
               )
             })}
@@ -161,7 +242,7 @@ export default function TodayScreen({
                 <div
                   key={lead.id}
                   className="flex items-center justify-between py-2.5 px-3.5 rounded-xl hover:bg-[var(--surface-background)] transition-colors cursor-pointer active:scale-[0.99]"
-                  style={{ border: '0.5px solid var(--border)' }}
+                  style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }}
                   onClick={() => onLeadClick(lead.id)}
                   data-testid={`in-progress-${lead.id}`}
                 >
