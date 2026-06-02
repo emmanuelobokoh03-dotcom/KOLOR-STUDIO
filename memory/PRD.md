@@ -868,6 +868,18 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 211 — Dropdown removal · Sidebar gating · Portal · Calendar mobile popover · Digest threshold · Two-tap confirm · Mobile menu (Feb 2026) — ✅ SHIPPED
+- **User dropdown removed**: caret, dropdown panel, `userMenuOpen` state all retired. User block now opens Settings directly on click. `CaretDown` import removed.
+- **Right sidebar gated to list view only**: `(viewMode === 'kanban' || viewMode === 'list')` → `viewMode === 'list'`. CRM Alerts + Revenue + Goal + Onboarding no longer pollute Today.
+- **Mobile hamburger menu simplified**: Today · Clients · Portfolio · Calendar & Booking (was 7 items + separate Calendar). Old testids renamed `sidebar-*` → `mobile-menu-*`. Feedback button replaced with Log out (SignOut icon, red treatment).
+- **Calendar mobile day sheet**: converted from right-side slide-in to a bottom sheet with drag-handle + `animate-slide-up`. DaySidebar rendered inside.
+- **ClientPortal service type**: raw enum → title case (`PHOTOGRAPHY` → `Photography`, `FINE_ART` → `Fine Art`). h1 z-10 + pinwheel logo were already shipped in iter-197.
+- **Digest threshold relaxed** (`backend/routes/digest.ts`): now sends if `hasActivity || nextActions.length > 0`. Previously skipped weeks where no fresh inbound activity existed even if contracts/quotes were stale; those items land in `nextActions`, so the digest now fires for them.
+- **QuotesTab delete two-tap**: same pattern as Archive — first tap "Confirm delete?" in red with 3s auto-cancel; second tap executes.
+- **⚠️ Still flagged**: `SENDER_EMAIL` env var on Railway still required for any of these emails to reach clients (see iter-210 flag).
+- Build: backend `tsc --noEmit` clean. Frontend `tsc --noEmit` + `npm run build` clean (6.93s). Commit `e0bfd62` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 210 — Review Contract route · Archive confirm · Activity tab removed · Calendar · AddLeadModal · Desktop UX · Analytics/Sequences hidden (Feb 2026) — ✅ SHIPPED
 - **Dashboard Review Contract fix**: `setSelectedLeadInitialTab('contracts')` → `'pipeline'`. Tab was renamed in iter-199; button was routing to a non-existent tab and opening blank Overview.
 - **DemoProjectBanner**: optional `onExplore?: () => void` prop + "Click to explore →" link. Dashboard wires it to open the demo lead modal directly.
