@@ -593,12 +593,6 @@ const Dashboard = () => {
             style={{ background: 'var(--surface-background)', borderColor: 'var(--border)' }}
           >
             <button
-              onClick={() => { setShowSettings(true); setUserMenuOpen(false); }}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-text-secondary hover:bg-surface-base hover:text-text-primary transition"
-            >
-              <GearSix weight="regular" className="w-[13px] h-[13px]" /> Settings
-            </button>
-            <button
               onClick={handleLogout}
               className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-red-500 hover:bg-red-50 transition"
               data-testid="sidebar-logout-btn"
@@ -615,7 +609,6 @@ const Dashboard = () => {
         {([
           { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Today' },
           { mode: 'list' as ViewMode, icon: ListIcon, label: 'Clients', badge: stats?.total },
-          { mode: 'analytics' as ViewMode, icon: ChartBar, label: 'Analytics' },
         ]).map(({ mode, icon: Icon, label, badge }) => (
           <button
             key={mode}
@@ -652,7 +645,6 @@ const Dashboard = () => {
         <div className="group">
         {([
           { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
-          { mode: 'sequences' as ViewMode, icon: Envelope, label: 'Sequences' },
         ]).map(({ mode, icon: Icon, label }) => (
           <button
             key={mode}
@@ -699,12 +691,12 @@ const Dashboard = () => {
           Help
         </button>
         <button
-          onClick={() => setShowFeedback(true)}
+          onClick={handleLogout}
           className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-text-secondary hover:bg-surface-background transition-all duration-150"
-          data-testid="sidebar-feedback-btn"
+          data-testid="sidebar-logout-footer"
         >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 2h12v9H9l-3 3v-3H2V2z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/></svg>
-          Feedback
+          <SignOut className="w-[14px] h-[14px]" weight="regular" />
+          Log out
         </button>
       </aside>
 
@@ -880,6 +872,10 @@ const Dashboard = () => {
             demoLeadId={leads.find(l => l.isDemoData)!.id}
             onDismiss={() => setShowDemoBanner(false)}
             onDeleted={() => { setShowDemoBanner(false); fetchLeads(); }}
+            onExplore={() => {
+              const demoLead = leads.find(l => l.isDemoData)
+              if (demoLead) setSelectedLead(demoLead)
+            }}
           />
         )}
 
@@ -998,7 +994,7 @@ const Dashboard = () => {
                     onClick={() => {
                       const lead = leads.find(l => l.id === pendingContracts[0].lead?.id)
                       if (lead) {
-                        setSelectedLeadInitialTab('contracts')
+                        setSelectedLeadInitialTab('pipeline')
                         setSelectedLead(lead)
                       }
                     }}
@@ -1223,11 +1219,9 @@ const Dashboard = () => {
             {/* Desktop view toggles */}
             <div className="hidden md:flex bg-surface-base rounded-xl p-1 border border-light-200">
               {([
-                { mode: 'kanban' as ViewMode, icon: SquaresFour, title: 'Pipeline View' },
-                { mode: 'list' as ViewMode, icon: ListIcon, title: 'List View' },
-                { mode: 'analytics' as ViewMode, icon: ChartBar, title: 'Analytics' },
+                { mode: 'kanban' as ViewMode, icon: SquaresFour, title: 'Today' },
+                { mode: 'list' as ViewMode, icon: ListIcon, title: 'Clients' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, title: 'Portfolio' },
-                { mode: 'sequences' as ViewMode, icon: Envelope, title: 'Sequences' },
               ]).map(({ mode, icon: Icon, title }) => (
                 <button
                   key={mode}

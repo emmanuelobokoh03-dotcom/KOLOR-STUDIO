@@ -14,7 +14,6 @@ import { User as UserIcon } from '@phosphor-icons/react/dist/csr/User'
 import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { SignOut } from '@phosphor-icons/react/dist/csr/SignOut'
-import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
 import { Camera } from '@phosphor-icons/react/dist/csr/Camera'
 import { Video } from '@phosphor-icons/react/dist/csr/Video'
 import { Palette } from '@phosphor-icons/react/dist/csr/Palette'
@@ -225,13 +224,7 @@ export default function Calendar() {
             <h1 className="text-sm md:text-base font-semibold text-text-primary hidden md:block">Calendar</h1>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate('/settings')}
-              className="p-2 text-text-secondary hover:text-text-primary hover:bg-light-100 rounded-lg transition"
-              data-testid="calendar-settings-btn"
-            >
-              <GearSix className="w-4 h-4" />
-            </button>
+
           </div>
         </div>
       </header>

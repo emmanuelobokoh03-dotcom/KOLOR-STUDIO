@@ -472,9 +472,9 @@ export default function QuoteBuilderModal({
                   <p className="text-xs font-semibold text-text-primary truncate mt-0.5">{lead.projectTitle}</p>
                 </div>
                 {/* Key date — formatted display with hidden date input to avoid locale-based formatting */}
-                <div className="px-3.5 py-2.5 relative" style={{ borderRight: '0.5px solid var(--border)' }}>
+                <div className="px-3.5 py-2.5 relative" style={{ borderRight: '0.5px solid var(--border)', zIndex: 1 }}>
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
-                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group">
+                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative" style={{ zIndex: 2 }}>
                     <span className="text-xs font-semibold text-text-primary">
                       {(lead.keyDate || lead.eventDate)
                         ? new Date(((lead.keyDate || lead.eventDate) as string) + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })

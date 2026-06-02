@@ -174,11 +174,12 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [newNote, setNewNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'pipeline' | 'files' | 'messages' | 'activity'>(
+  const [activeTab, setActiveTab] = useState<'overview' | 'pipeline' | 'files' | 'messages'>(
     (initialTab === 'details' ? 'overview' : initialTab === 'activity' ? 'activity' : (initialTab === 'quotes' || initialTab === 'contracts') ? 'pipeline' : initialTab === 'notes' ? 'files' : initialTab === 'deliverables' ? 'files' : initialTab === 'timeline' ? 'activity' : initialTab as any) || 'overview'
   );
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [openQuoteBuilderKey, setOpenQuoteBuilderKey] = useState(0);
+  const [confirmArchive, setConfirmArchive] = useState(false);
   const [mountedTabs, setMountedTabs] = useState<Set<string>>(new Set(['overview']));
   const [openQuoteBuilder, setOpenQuoteBuilder] = useState(false);
   const [showTimelineView, setShowTimelineView] = useState(() => new URLSearchParams(window.location.search).has('timeline'));
@@ -750,16 +751,22 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               <button
                 onClick={async () => {
                   if (!window.confirm('Mark this lead as Lost? You can restore it by changing the status.')) return
+                  if (!confirmArchive) {
+                    setConfirmArchive(true)
+                    return
+                  }
                   const result = await leadsApi.update(lead.id, { status: 'LOST' })
                   if (result.data?.lead) {
                     onUpdate(result.data.lead)
                     onClose()
                   }
+                  setConfirmArchive(false)
                 }}
                 className="min-h-[44px] px-3 rounded-lg text-xs font-medium text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50 transition-colors sm:ml-auto flex items-center"
                 data-testid="modal-archive-action"
+                style={confirmArchive ? { color: '#DC2626' } : undefined}
               >
-                Archive
+                {confirmArchive ? 'Confirm archive?' : 'Archive'}
               </button>
             </div>
           </div>
@@ -771,7 +778,6 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               { key: 'pipeline' as const, label: 'Pipeline' },
               { key: 'files' as const, label: 'Files & Notes', badge: files.length || undefined },
               { key: 'messages' as const, label: 'Messages', badge: messages.filter(m => m.from === 'CLIENT' && !m.read).length || undefined },
-              { key: 'activity' as const, label: 'Activity' },
             ]).map(({ key, label, badge }) => (
               <button
                 key={key}
@@ -1132,90 +1138,6 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                           <p className="text-xs font-medium text-[var(--text-secondary)]">{getNextStep(lead.status)}</p>
                           <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">Upcoming</p>
                         </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : activeTab === 'activity' ? (
-              <div className="p-4 md:p-6 space-y-4 md:space-y-6">
-                {/* Activity Timeline — toggle between log and ClientTimeline view */}
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
-                      <ClockCounterClockwise className="w-4 h-4" />
-                      {showTimelineView ? 'Project Timeline' : 'Activity'}
-                    </h3>
-                    <button
-                      onClick={() => setShowTimelineView(v => !v)}
-                      className="text-[10px] font-medium px-2.5 py-1 rounded-md border transition-colors"
-                      style={{
-                        border: '0.5px solid var(--border)',
-                        color: showTimelineView ? '#6C2EDB' : 'var(--text-tertiary)',
-                        background: showTimelineView ? '#ede9fe' : 'transparent',
-                      }}
-                      data-testid="toggle-timeline-view"
-                    >
-                      Timeline view
-                    </button>
-                  </div>
-
-                  {showTimelineView ? (
-                    <ClientTimeline
-                      leadId={lead.id}
-                      userIndustry={userIndustry}
-                      onTabChange={(tab) => setActiveTab(tab as any)}
-                      currencySymbol={currencySymbol}
-                    />
-                  ) : loadingActivities ? (
-                    <ActivitySkeleton />
-                  ) : activities.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 md:py-16 px-6 text-center" data-testid="activities-empty-state">
-                      <div className="text-5xl md:text-6xl mb-5 md:mb-6 opacity-40 select-none">&#x1F4CA;</div>
-                      <h3 className="text-lg md:text-xl font-semibold text-text-primary mb-2">Project activity appears here</h3>
-                      <p className="text-sm text-text-secondary max-w-md leading-relaxed">
-                        See a timeline of all communications, file uploads, and status changes for this project.
-                      </p>
-                      <p className="text-xs text-text-tertiary mt-4 max-w-sm">
-                        <strong>Pro tip:</strong> Every action you take is automatically logged here.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="relative">
-                      <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-light-200" />
-                      <div className="space-y-4">
-                        {activities.map((activity) => {
-                          const Icon = ACTIVITY_ICONS[activity.type] || Note;
-                          const colorClass = ACTIVITY_COLORS[activity.type] || 'bg-light-100 text-text-secondary';
-
-                          return (
-                            <div key={activity.id} className="relative flex gap-4 group" data-testid={`activity-${activity.id}`}>
-                              <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass} transition-transform duration-200 group-hover:scale-110`}>
-                                <Icon className="w-4 h-4" />
-                              </div>
-                              <div className="flex-1 pb-4">
-                                <div className="bg-surface-base border border-light-200 rounded-xl p-4 hover:border-light-300 transition-all duration-200">
-                                  <div className="flex items-start justify-between mb-2">
-                                    <span className="text-xs font-medium text-text-tertiary uppercase tracking-wide">
-                                      {activity.type.replace(/_/g, ' ')}
-                                    </span>
-                                    <span className="text-xs text-text-tertiary" title={formatDate(activity.createdAt)}>
-                                      {formatTimeAgo(activity.createdAt)}
-                                    </span>
-                                  </div>
-                                  <p className="text-sm text-text-secondary whitespace-pre-wrap">
-                                    {activity.description}
-                                  </p>
-                                  {activity.user && (
-                                    <p className="text-xs text-gray-600 mt-2">
-                                      by {activity.user.firstName} {activity.user.lastName}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
                       </div>
                     </div>
                   )}

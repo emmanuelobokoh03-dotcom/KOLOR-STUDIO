@@ -9,9 +9,10 @@ interface DemoProjectBannerProps {
   demoLeadId: string;
   onDismiss: () => void;
   onDeleted: () => void;
+  onExplore?: () => void;
 }
 
-export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted }: DemoProjectBannerProps) {
+export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted, onExplore }: DemoProjectBannerProps) {
   const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -44,6 +45,15 @@ export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted }: 
             Click on <strong className="text-text-primary">"Sarah Johnson (Demo)"</strong> below to explore quotes, files, timeline, and more.
             Delete it anytime once you're ready to add your own clients.
           </p>
+          {onExplore && (
+            <button
+              onClick={onExplore}
+              className="text-xs font-semibold text-brand-primary hover:text-brand-primary/80 transition-colors underline"
+              data-testid="explore-demo-btn"
+            >
+              Click to explore →
+            </button>
+          )}
           <button
             onClick={handleDelete}
             disabled={deleting}
