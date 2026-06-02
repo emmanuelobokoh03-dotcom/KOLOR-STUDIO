@@ -868,6 +868,15 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 213 — Banner persistence · today.ts contract · FAB · shoot date · Calendar View Lead (Feb 2026) — ✅ SHIPPED
+- **DemoBanner + Pending-Contract banner gated to `viewMode === 'kanban'`** — both were rendering above the viewMode conditional in Dashboard and showing on Clients/Portfolio views too. Now Today-only.
+- **`backend/routes/today.ts` contract query fix**: removed `status: { in: ['SENT', 'VIEWED'] }` filter. Now uses `clientAgreed: false` + `sentAt: { not: null }` — the correct predicate. Contracts created without the email flow remain status `DRAFT` but have a `sentAt` timestamp; the old filter excluded them and made Today show "All clear" while contracts sat unsigned.
+- **FAB positioning**: `bottom-[80px]` → `bottom-[calc(env(safe-area-inset-bottom,0px)+88px)]`. Eliminates overlap with Calendar shortcut on iPhone 14+ with dynamic safe area insets.
+- **QuoteBuilderModal shoot date controlled**: new `shootDate` state initialised from `lead.keyDate || lead.eventDate`. `defaultValue` (uncontrolled) replaced with `value={shootDate}` + `onChange={e => setShootDate(e.target.value)}`. Visible span now reads from state, so it re-renders immediately after the iOS date picker selection.
+- **Calendar View Lead bridge**: `EventSidePanel.onNavigateToLead` no longer routes to `/dashboard?leadId=…`. It navigates to `/` and dispatches `window.dispatchEvent(new CustomEvent('kolor:openLead', { detail: { leadId } }))` after a 100 ms timeout. Dashboard mounts a global listener that looks up the lead in local state (or fetches via `leadsApi.getOne`) and calls `setSelectedLead`. No page reload, no query-string parsing, modal opens directly.
+- Build: backend `tsc --noEmit` clean. Frontend `tsc --noEmit` + `npm run build` clean (6.79s). Commit `e1daedc` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 212 — Surface elevation · Today urgency hierarchy · Action bar (Feb 2026) — ✅ SHIPPED
 - **Surface elevation (`index.css` + `tailwind.config.js`)**:
   - `--surface-background`: `#F9F7FE` → `#F4F1FA` (light-100 in the existing scale).
