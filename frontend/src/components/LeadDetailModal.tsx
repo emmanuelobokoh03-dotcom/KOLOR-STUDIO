@@ -245,6 +245,18 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     fetchMessages();
   }, [lead.id]);
 
+  // Auto-open quote builder or pre-mount pipeline when opened via quick action
+  useEffect(() => {
+    if (initialTab === 'quotes') {
+      setMountedTabs(prev => new Set(Array.from(prev).concat(['pipeline'])));
+      setOpenQuoteBuilderKey(k => k + 1);
+      setOpenQuoteBuilder(true);
+    } else if (initialTab === 'contracts' || initialTab === 'pipeline') {
+      setMountedTabs(prev => new Set(Array.from(prev).concat(['pipeline'])));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const fetchMessages = async () => {
     setLoadingMessages(true);
     try {

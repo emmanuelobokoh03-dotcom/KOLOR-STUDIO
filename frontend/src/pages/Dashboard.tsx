@@ -238,6 +238,32 @@ const Dashboard = () => {
     }, [])
     .slice(0, 5)
 
+  // Read ?openLead=<id> URL param on mount — survives mobile Safari full-page reload
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const urlLeadId = params.get('openLead')
+    const urlTab = params.get('openLeadTab') || undefined
+    if (!urlLeadId) return
+    // Clear param from URL without triggering navigation
+    window.history.replaceState({}, '', window.location.pathname)
+    const tryOpen = () => {
+      const lead = leads.find(l => l.id === urlLeadId)
+      if (lead) {
+        if (urlTab) setSelectedLeadInitialTab(urlTab)
+        setSelectedLead(lead)
+      } else {
+        leadsApi.getOne(urlLeadId).then(r => {
+          if (r.data?.lead) {
+            if (urlTab) setSelectedLeadInitialTab(urlTab)
+            setSelectedLead(r.data.lead)
+          }
+        })
+      }
+    }
+    if (leads.length > 0) tryOpen()
+    else setTimeout(tryOpen, 1000)
+  }, [leads])
+
   // Listen for lead-open requests from Calendar page and other entry points
   useEffect(() => {
     const handleOpenLead = (e: Event) => {
