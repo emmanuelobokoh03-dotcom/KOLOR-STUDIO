@@ -868,6 +868,14 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 215 — View signed in list · Quick action tab · Archive native confirm (Feb 2026) — ✅ SHIPPED
+- **`LeadsListView.getPrimaryAction`** (the real source of the "View signed" sighting): BOOKED branch `'View signed'` → `` `View ${lang.contract}` `` (matches modal header copy). All three branches now route to `tab: 'pipeline'` instead of the deprecated `'quotes'/'contracts'` tab names.
+- **`Dashboard.handleQuickSendQuote`**: `setSelectedLeadInitialTab('quotes')` → `'pipeline'`. The `quotes` tab was unified into Pipeline back in iter-199; this callsite had been missed.
+- **`LeadDetailModal` Archive button**: dropped `window.confirm('Mark this lead as Lost?…')`. Native dialog is blocked on iOS Safari PWA standalone and was double-prompting (browser dialog + two-tap state). Two-tap confirmation is now the sole flow — first tap turns the button red and shows `Confirm archive?`, second tap within 3s executes the LOST status update. Matches the pattern proven in iter-210.
+- **No change to `industryLanguage.ts`** — already maps `keyDate` correctly per industry (`Shoot date` / `Deadline` / `Delivery date`). QuoteBuilderModal reads `lang.keyDate` driven by the user's primaryIndustry; per-account label tracking already works.
+- Build: frontend `tsc --noEmit` + `npm run build` clean (6.47s). Commit `8e7c87f` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 214 — Calendar View Lead route fix · View [contract] label · Portal z-index · useOpenLead hook (Feb 2026) — ✅ SHIPPED
 - **Calendar back button** (`pages/Calendar.tsx`): `navigate('/dashboard')` → `navigate('/')`. The dashboard route is mounted at `/`, the old path fell through to the public landing page.
 - **New `src/hooks/useOpenLead.ts`**: single reusable hook for "open lead modal from anywhere".
