@@ -868,6 +868,22 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 216 — Lead list layout fix · Calendar View Lead timing (Feb 2026) — ✅ SHIPPED
+- **LeadsListView quick action labels shortened**: `Send Commission Agreement` / `View Commission Agreement` were collapsing the lead row's text container to near-zero width on mobile (pushed flex beyond viewport). New mapping:
+  - NEW / REVIEWING / CONTACTED / QUALIFIED → `` `Send ${lang.quote}` `` (kept — quote labels are short)
+  - QUOTED / NEGOTIATING → `'Send'` (was the long contract label)
+  - BOOKED → `'View'`
+  Full industry-aware labels remain in the lead modal header where space exists.
+- **Primary action button safety net**: `max-w-[120px] truncate` added to prevent any future label from re-introducing the row collapse.
+- **`useOpenLead` delay**: 150ms → 400ms. The shorter delay wasn't enough when Railway backend is cold-starting and Dashboard's leads fetch hasn't resolved by the time `kolor:openLead` fires.
+- **Dashboard `kolor:openLead` listener** rewritten:
+  - Tries cached `leads.find()` first.
+  - Falls through to direct `leadsApi.getOne(leadId)` fetch when cache misses (handles still-loading cold-start case).
+  - 1s retry fallback after fetch failure catches the rare slow Railway response.
+  - Reads optional `tab` from event detail so future callers (digest links, CRM Alerts, etc.) can target a specific tab on open.
+- Build: frontend `tsc --noEmit` + `npm run build` clean (6.60s). Commit `2be8f12` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 215 — View signed in list · Quick action tab · Archive native confirm (Feb 2026) — ✅ SHIPPED
 - **`LeadsListView.getPrimaryAction`** (the real source of the "View signed" sighting): BOOKED branch `'View signed'` → `` `View ${lang.contract}` `` (matches modal header copy). All three branches now route to `tab: 'pipeline'` instead of the deprecated `'quotes'/'contracts'` tab names.
 - **`Dashboard.handleQuickSendQuote`**: `setSelectedLeadInitialTab('quotes')` → `'pipeline'`. The `quotes` tab was unified into Pipeline back in iter-199; this callsite had been missed.
