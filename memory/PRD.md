@@ -868,6 +868,19 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 214 — Calendar View Lead route fix · View [contract] label · Portal z-index · useOpenLead hook (Feb 2026) — ✅ SHIPPED
+- **Calendar back button** (`pages/Calendar.tsx`): `navigate('/dashboard')` → `navigate('/')`. The dashboard route is mounted at `/`, the old path fell through to the public landing page.
+- **New `src/hooks/useOpenLead.ts`**: single reusable hook for "open lead modal from anywhere".
+  - If `window.location.pathname !== '/'`: `navigate('/')` then dispatch `kolor:openLead` after 150 ms.
+  - If already on `/`: dispatch immediately.
+  - Accepts optional `tab` arg for direct tab targeting.
+- **Calendar `EventSidePanel.onNavigateToLead`** (both desktop sidebar and mobile overlay) now call `openLead(leadId)` instead of inline `navigate('/') + setTimeout(dispatch)`. Removes two copies of the same logic.
+- **LeadDetailModal `getPrimaryActionLabel`** for BOOKED status: `'View signed'` → `` `View ${lang.contract}` ``. Renders as "View contract" / "View booking agreement" / "View commission agreement" depending on the studio's primary industry. Matches the rest of the action-bar copy.
+- **ClientPortal h1 + "Project Portal" label**: `relative z-10` → `relative z-20`. Gradient overlay also uses z-10; the title was being obscured on certain viewport widths.
+- **No change to `industryLanguage.ts`**: investigation confirmed keyDate is already mapped per industry (Photography 'Shoot date', Design 'Deadline', Fine Art 'Delivery date'). QuoteBuilderModal already reads `lang.keyDate`, so the label tracks the user's primary industry automatically.
+- Build: frontend `tsc --noEmit` + `npm run build` clean (6.75s). Commit `cd47318` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 213 — Banner persistence · today.ts contract · FAB · shoot date · Calendar View Lead (Feb 2026) — ✅ SHIPPED
 - **DemoBanner + Pending-Contract banner gated to `viewMode === 'kanban'`** — both were rendering above the viewMode conditional in Dashboard and showing on Clients/Portfolio views too. Now Today-only.
 - **`backend/routes/today.ts` contract query fix**: removed `status: { in: ['SENT', 'VIEWED'] }` filter. Now uses `clientAgreed: false` + `sentAt: { not: null }` — the correct predicate. Contracts created without the email flow remain status `DRAFT` but have a `sentAt` timestamp; the old filter excluded them and made Today show "All clear" while contracts sat unsigned.
