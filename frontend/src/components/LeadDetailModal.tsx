@@ -750,21 +750,20 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               </button>
               <button
                 onClick={async () => {
-                  if (!window.confirm('Mark this lead as Lost? You can restore it by changing the status.')) return
                   if (!confirmArchive) {
                     setConfirmArchive(true)
+                    setTimeout(() => setConfirmArchive(false), 3000)
                     return
                   }
+                  setConfirmArchive(false)
                   const result = await leadsApi.update(lead.id, { status: 'LOST' })
                   if (result.data?.lead) {
                     onUpdate(result.data.lead)
                     onClose()
                   }
-                  setConfirmArchive(false)
                 }}
-                className="min-h-[44px] px-3 rounded-lg text-xs font-medium text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50 transition-colors sm:ml-auto flex items-center"
+                className={`min-h-[44px] px-3 rounded-lg text-xs font-medium transition-colors sm:ml-auto flex items-center ${confirmArchive ? 'text-red-600 bg-red-50 font-semibold' : 'text-[var(--text-tertiary)] hover:text-red-500 hover:bg-red-50'}`}
                 data-testid="modal-archive-action"
-                style={confirmArchive ? { color: '#DC2626' } : undefined}
               >
                 {confirmArchive ? 'Confirm archive?' : 'Archive'}
               </button>

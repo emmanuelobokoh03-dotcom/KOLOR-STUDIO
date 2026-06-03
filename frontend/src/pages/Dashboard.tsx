@@ -532,7 +532,7 @@ const Dashboard = () => {
   const handleQuickSendQuote = (lead: Lead | null) => {
     if (lead) {
       setSelectedLead(lead)
-      setSelectedLeadInitialTab('quotes')
+      setSelectedLeadInitialTab('pipeline')
     } else {
       setShowAddModal(true)
     }

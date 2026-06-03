@@ -78,12 +78,12 @@ function getStatusContextLabel(lead: Lead, lang: IndustryLanguage): string {
 
 function getPrimaryAction(lead: Lead, lang: IndustryLanguage): { label: string; tab: string } {
   if (['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED'].includes(lead.status)) {
-    return { label: `Send ${lang.quote}`, tab: 'quotes' }
+    return { label: `Send ${lang.quote}`, tab: 'pipeline' }
   }
   if (['QUOTED', 'NEGOTIATING'].includes(lead.status)) {
-    return { label: `Send ${lang.contract}`, tab: 'contracts' }
+    return { label: `Send ${lang.contract}`, tab: 'pipeline' }
   }
-  return { label: 'View signed', tab: 'contracts' }
+  return { label: `View ${lang.contract}`, tab: 'pipeline' }
 }
 
 // ── Stats Strip ──
