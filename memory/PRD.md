@@ -868,6 +868,13 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 217 — Send Offer auto-open · Pipeline lazy mount on quick action · Calendar URL param (Feb 2026) — ✅ SHIPPED
+- **`LeadDetailModal` mount-time `initialTab` reaction**: new useEffect that fires when the modal opens. If `initialTab === 'quotes'`, it pre-mounts the `pipeline` tab AND sets `openQuoteBuilder=true` (`openQuoteBuilderKey` bumped). If `initialTab === 'contracts' | 'pipeline'`, it pre-mounts the pipeline tab so `QuotesTab` + `ContractsTab` render. Fixes empty-tab UX when arriving from the "Send Offer" / "Review Contract" quick actions — the lazy-mount gate introduced in iter-208 was preventing render until the user manually tapped the tab.
+- **`useOpenLead` URL-param fallback**: cross-route opens now navigate to `/?openLead=<id>(&openLeadTab=<tab>)` instead of plain `/`. Mobile Safari occasionally triggers a full-page reload on navigation, which destroys the in-memory CustomEvent listener; the URL param survives the reload. CustomEvent is still dispatched 400 ms later as the SPA-fast path. Same-route opens stay event-only (no URL noise).
+- **Dashboard `?openLead=` reader**: new useEffect on mount reads the URL param, opens the lead via cache → `leadsApi.getOne` → 1s retry, and clears the param via `history.replaceState` without re-navigating. The existing CustomEvent listener stays as the SPA path.
+- Build: frontend `tsc --noEmit` + `npm run build` clean (6.91s). Commit `ea5cffd` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 216 — Lead list layout fix · Calendar View Lead timing (Feb 2026) — ✅ SHIPPED
 - **LeadsListView quick action labels shortened**: `Send Commission Agreement` / `View Commission Agreement` were collapsing the lead row's text container to near-zero width on mobile (pushed flex beyond viewport). New mapping:
   - NEW / REVIEWING / CONTACTED / QUALIFIED → `` `Send ${lang.quote}` `` (kept — quote labels are short)
