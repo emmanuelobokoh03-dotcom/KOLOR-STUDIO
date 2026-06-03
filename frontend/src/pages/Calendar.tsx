@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useOpenLead } from '../hooks/useOpenLead'
 import KolorLogo from '../components/KolorLogo'
 import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
 import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
@@ -54,6 +55,7 @@ const EVENT_TYPE_CONFIG: Record<string, { label: string; icon: React.ReactNode }
 
 export default function Calendar() {
   const navigate = useNavigate()
+  const openLead = useOpenLead()
   const [user, setUser] = useState<UserType | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -213,7 +215,7 @@ export default function Calendar() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/')}
               className="flex items-center gap-2 group hover:opacity-80 transition-opacity"
               data-testid="calendar-back-to-dashboard"
               aria-label="Back to dashboard"
@@ -341,10 +343,7 @@ export default function Calendar() {
                 event={selectedEvent}
                 onClose={() => setSelectedEvent(null)}
                 onDelete={handleDeleteEvent}
-                onNavigateToLead={(leadId) => {
-                  navigate('/')
-                  setTimeout(() => window.dispatchEvent(new CustomEvent('kolor:openLead', { detail: { leadId } })), 100)
-                }}
+                onNavigateToLead={(leadId) => openLead(leadId)}
               />
             )}
           </div>
@@ -360,10 +359,7 @@ export default function Calendar() {
               event={selectedEvent}
               onClose={() => setSelectedEvent(null)}
               onDelete={handleDeleteEvent}
-              onNavigateToLead={(leadId) => {
-                navigate('/')
-                setTimeout(() => window.dispatchEvent(new CustomEvent('kolor:openLead', { detail: { leadId } })), 100)
-              }}
+              onNavigateToLead={(leadId) => openLead(leadId)}
             />
           </div>
         </div>

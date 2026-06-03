@@ -500,8 +500,8 @@ export default function ClientPortal() {
             <span className="text-sm font-bold tracking-widest text-white/90 uppercase">{studioName}</span>
           </div>
 
-          <p className="text-xs font-medium text-white/50 uppercase tracking-widest mb-1.5 relative z-10">Project Portal</p>
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight leading-tight relative z-10">{data.project.title}</h1>
+          <p className="text-xs font-medium text-white/50 uppercase tracking-widest mb-1.5 relative z-20">Project Portal</p>
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight leading-tight relative z-20">{data.project.title}</h1>
 
           <div className="flex items-center gap-2.5 mt-4">
             <span className={`w-2 h-2 rounded-full ${

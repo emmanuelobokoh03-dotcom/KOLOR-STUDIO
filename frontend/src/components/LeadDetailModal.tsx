@@ -635,7 +635,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
   const getPrimaryActionLabel = (status: LeadStatus) => {
     if (['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED'].includes(status)) return `Send ${lang.quote}`
     if (['QUOTED', 'NEGOTIATING'].includes(status)) return `Send ${lang.contract}`
-    return 'View signed'
+    return `View ${lang.contract}`
   }
 
   const getPrimaryActionTab = (_status: LeadStatus) => {
