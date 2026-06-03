@@ -81,9 +81,9 @@ function getPrimaryAction(lead: Lead, lang: IndustryLanguage): { label: string; 
     return { label: `Send ${lang.quote}`, tab: 'pipeline' }
   }
   if (['QUOTED', 'NEGOTIATING'].includes(lead.status)) {
-    return { label: `Send ${lang.contract}`, tab: 'pipeline' }
+    return { label: 'Send', tab: 'pipeline' }
   }
-  return { label: `View ${lang.contract}`, tab: 'pipeline' }
+  return { label: 'View', tab: 'pipeline' }
 }
 
 // ── Stats Strip ──
@@ -253,7 +253,7 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150" data-testid={`quick-actions-${lead.id}`}>
           <button
             onClick={(e) => { e.stopPropagation(); onLeadClickTab?.(lead, primaryAction.tab) }}
-            className="h-8 px-2.5 rounded-md text-[10px] font-semibold text-white whitespace-nowrap transition-colors"
+            className="h-8 px-2.5 rounded-md text-[10px] font-semibold text-white whitespace-nowrap transition-colors max-w-[120px] truncate"
             style={{ background: '#6C2EDB' }}
             data-testid={`primary-action-${lead.id}`}
           >

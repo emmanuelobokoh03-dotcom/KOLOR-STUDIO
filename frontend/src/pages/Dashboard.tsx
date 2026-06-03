@@ -238,20 +238,36 @@ const Dashboard = () => {
     }, [])
     .slice(0, 5)
 
-  // Listen for lead-open requests from Calendar page (View Lead button)
+  // Listen for lead-open requests from Calendar page and other entry points
   useEffect(() => {
     const handleOpenLead = (e: Event) => {
-      const ce = e as CustomEvent<{ leadId: string }>
+      const ce = e as CustomEvent<{ leadId: string; tab?: string }>
       const leadId = ce.detail?.leadId
+      const tab = ce.detail?.tab
       if (!leadId) return
+      // Try from already-loaded leads first
       const lead = leads.find(l => l.id === leadId)
       if (lead) {
+        if (tab) setSelectedLeadInitialTab(tab)
         setSelectedLead(lead)
-      } else {
-        leadsApi.getOne(leadId).then(r => {
-          if (r.data?.lead) setSelectedLead(r.data.lead)
-        })
+        return
       }
+      // Leads may still be loading — fetch directly
+      leadsApi.getOne(leadId).then(r => {
+        if (r.data?.lead) {
+          if (tab) setSelectedLeadInitialTab(tab)
+          setSelectedLead(r.data.lead)
+        }
+      }).catch(() => {
+        // Retry once after leads finish loading
+        setTimeout(() => {
+          const retryLead = leads.find(l => l.id === leadId)
+          if (retryLead) {
+            if (tab) setSelectedLeadInitialTab(tab)
+            setSelectedLead(retryLead)
+          }
+        }, 1000)
+      })
     }
     window.addEventListener('kolor:openLead', handleOpenLead)
     return () => window.removeEventListener('kolor:openLead', handleOpenLead)

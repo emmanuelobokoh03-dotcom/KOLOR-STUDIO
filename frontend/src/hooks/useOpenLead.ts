@@ -23,7 +23,7 @@ export function useOpenLead() {
         window.dispatchEvent(new CustomEvent('kolor:openLead', {
           detail: { leadId, tab },
         }))
-      }, 150)
+      }, 400)
     } else {
       window.dispatchEvent(new CustomEvent('kolor:openLead', {
         detail: { leadId, tab },
