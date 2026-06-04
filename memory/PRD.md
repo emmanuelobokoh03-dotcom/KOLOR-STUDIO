@@ -868,6 +868,15 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 219 — Timeline transition: backend event feed + LeadDetailModal → LeadTimelineView (Feb 2026) — ✅ SHIPPED
+- **Backend `GET /api/leads/:id/timeline`** (`backend/src/routes/leads.ts`): Single parallel Prisma query (quotes + contracts + activities) returns typed stage array — Inquiry → Offer → Agreement → Deposit → Delivery → Final payment → Complete. Per-stage status computed: done/active/warning/upcoming. Detects deposit overdue, contract unsigned-but-sent. Uses correct schema fields (`depositPaidAt`, `finalPaidAt`).
+- **`LeadTimelineView.tsx` (new)**: Single scrollable stage list replacing the 4-tab modal body. Three visual tiers: green-check done (strikethrough), amber warning, purple active dot, muted dashed upcoming (55% opacity). Active + warning stages expand by default; expandable cards show offer total/status/valid-until, contract reminder button, deposit amount + payment link, final payment amount. Persistent note input at bottom (Enter to submit).
+- **`LeadDetailModal.tsx`**: 4-tab bar (Overview · Pipeline · Files & Notes · Messages) and ~1000 lines of conditional tab body REMOVED. `activeTab`, `mountedTabs`, `getPrimaryActionTab` state/helpers deleted. Action bar buttons rewired: Send Offer → `QuoteBuilderModal` mounted directly; Upload → triggers `fileInputRef`; Message → opens `EmailComposerModal`. Header primary action button also opens QuoteBuilder directly.
+- **Bundle impact**: LeadDetailModal bundle dropped to ~25 KB (was ~80 KB).
+- Build gates: `npx tsc --noEmit` clean on backend + frontend; `npm run build` clean. Commit `7206813` (local — Railway push pending Emmanuel's `git push`).
+
+
+
 ## Iteration 218 — CRITICAL routing fix · Pipeline single endpoint · Railway keep-alive interval (Feb 2026) — ✅ SHIPPED
 - **CRITICAL routing fix**: App.tsx maps `/` → `LandingPageV2` (public) and `/dashboard` → `Dashboard` (authenticated). Every `navigate('/')` in the authenticated codebase was routing users to the public landing page.
   - `Calendar` back button → `navigate('/dashboard')`.
