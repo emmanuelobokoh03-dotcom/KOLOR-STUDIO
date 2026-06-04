@@ -868,6 +868,18 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 218 — CRITICAL routing fix · Pipeline single endpoint · Railway keep-alive interval (Feb 2026) — ✅ SHIPPED
+- **CRITICAL routing fix**: App.tsx maps `/` → `LandingPageV2` (public) and `/dashboard` → `Dashboard` (authenticated). Every `navigate('/')` in the authenticated codebase was routing users to the public landing page.
+  - `Calendar` back button → `navigate('/dashboard')`.
+  - `useOpenLead` hook: `isDashboard` check + URL-param navigation target updated to `/dashboard`.
+  - `Dashboard` `replaceState` target hardcoded to `'/dashboard'` (was `window.location.pathname` which retained accidental subpaths).
+  - `PublicQuote` + `NotFound` still navigate to `/` — those are public exits, correct.
+- **NEW `GET /api/pipeline/:leadId`** (`backend/src/routes/pipeline.ts`): single authenticated endpoint returning `{ quotes (with embedded incomeRecords), contracts, userSettings, leadId }` via `Promise.all`. Replaces 3-5 separate API calls per Pipeline tab open. Eliminates N+1 `paymentsApi.getByQuote` lookups by inlining `incomeRecords` (id/amount/status/depositAmount/depositPaid/depositPaidAt/finalAmount/finalPaid/finalPaidAt/receivedDate/expectedDate). Registered as `app.use('/api/pipeline', pipelineRoutes)`.
+- **`QuotesTab.fetchQuotes`** rewritten to call the pipeline endpoint and build `incomeMap` from embedded data. Falls back to `quotesApi.getByLead` on error.
+- **App.tsx keep-alive ping**: was once-on-mount; now `setInterval(ping, 4 * 60 * 1000)`. Railway spins down at ~5min idle — 4min interval keeps the backend warm for active users, eliminating cold-start delays after tab inactivity.
+- Build: backend `tsc --noEmit` clean. Frontend `tsc --noEmit` + `npm run build` clean (8.42s). Commit `996c0a4` (local, pending push via "Save to GitHub").
+
+
 ## Iteration 217 — Send Offer auto-open · Pipeline lazy mount on quick action · Calendar URL param (Feb 2026) — ✅ SHIPPED
 - **`LeadDetailModal` mount-time `initialTab` reaction**: new useEffect that fires when the modal opens. If `initialTab === 'quotes'`, it pre-mounts the `pipeline` tab AND sets `openQuoteBuilder=true` (`openQuoteBuilderKey` bumped). If `initialTab === 'contracts' | 'pipeline'`, it pre-mounts the pipeline tab so `QuotesTab` + `ContractsTab` render. Fixes empty-tab UX when arriving from the "Send Offer" / "Review Contract" quick actions — the lazy-mount gate introduced in iter-208 was preventing render until the user manually tapped the tab.
 - **`useOpenLead` URL-param fallback**: cross-route opens now navigate to `/?openLead=<id>(&openLeadTab=<tab>)` instead of plain `/`. Mobile Safari occasionally triggers a full-page reload on navigation, which destroys the in-memory CustomEvent listener; the URL param survives the reload. CustomEvent is still dispatched 400 ms later as the SPA-fast path. Same-route opens stay event-only (no URL noise).
