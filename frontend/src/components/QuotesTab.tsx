@@ -77,17 +77,34 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBu
 
   const fetchQuotes = async () => {
     setLoading(true);
-    const result = await quotesApi.getByLead(lead.id);
-    if (result.data?.quotes) {
-      setQuotes(result.data.quotes);
-      // Fetch income IDs for accepted quotes (for payment tracker)
-      const accepted = result.data.quotes.filter(q => q.status === 'ACCEPTED');
-      const map: Record<string, string> = {};
-      await Promise.all(accepted.map(async (q) => {
-        const payRes = await paymentsApi.getByQuote(q.id);
-        if (payRes.data?.incomeId) map[q.id] = payRes.data.incomeId;
-      }));
-      setIncomeMap(map);
+    try {
+      // Single pipeline endpoint — replaces quotesApi.getByLead + N paymentsApi.getByQuote
+      const API_URL = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${API_URL}/api/pipeline/${lead.id}`, {
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.quotes)) {
+          setQuotes(data.quotes);
+          // Build incomeId map from embedded incomeRecords (no N+1 fetches)
+          const map: Record<string, string> = {};
+          data.quotes.forEach((q: any) => {
+            if (q.status === 'ACCEPTED' && Array.isArray(q.incomeRecords) && q.incomeRecords[0]?.id) {
+              map[q.id] = q.incomeRecords[0].id;
+            }
+          });
+          setIncomeMap(map);
+        }
+      } else {
+        // Fallback to original call if pipeline endpoint is unavailable
+        const result = await quotesApi.getByLead(lead.id);
+        if (result.data?.quotes) setQuotes(result.data.quotes);
+      }
+    } catch (e) {
+      console.error('Pipeline fetch error:', e);
+      const result = await quotesApi.getByLead(lead.id);
+      if (result.data?.quotes) setQuotes(result.data.quotes);
     }
     setLoading(false);
   };

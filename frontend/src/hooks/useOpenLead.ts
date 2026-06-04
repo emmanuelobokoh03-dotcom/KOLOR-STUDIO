@@ -12,7 +12,7 @@ export function useOpenLead() {
   const navigate = useNavigate()
 
   const openLead = useCallback((leadId: string, tab?: string) => {
-    const isDashboard = window.location.pathname === '/'
+    const isDashboard = window.location.pathname === '/dashboard'
 
     if (isDashboard) {
       // Already on dashboard — dispatch immediately
@@ -26,7 +26,7 @@ export function useOpenLead() {
     const params = new URLSearchParams()
     params.set('openLead', leadId)
     if (tab) params.set('openLeadTab', tab)
-    navigate(`/?${params.toString()}`)
+    navigate(`/dashboard?${params.toString()}`)
 
     // Also fire CustomEvent shortly after — primary path for SPA navigation
     setTimeout(() => {

@@ -245,7 +245,7 @@ const Dashboard = () => {
     const urlTab = params.get('openLeadTab') || undefined
     if (!urlLeadId) return
     // Clear param from URL without triggering navigation
-    window.history.replaceState({}, '', window.location.pathname)
+    window.history.replaceState({}, '', '/dashboard')
     const tryOpen = () => {
       const lead = leads.find(l => l.id === urlLeadId)
       if (lead) {

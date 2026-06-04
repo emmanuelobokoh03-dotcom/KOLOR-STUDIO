@@ -41,12 +41,15 @@ function App() {
     return () => window.removeEventListener('kolor-consent-update', handler)
   }, [])
 
-  // Iter 163 — Keep-alive ping: wake Railway backend before user hits login/signup.
-  // Railway developer tier spins down after inactivity; this eliminates the cold-start
-  // delay the user would otherwise experience on their first API call.
+  // Keep-alive ping: wake Railway on mount and re-ping every 4 minutes.
+  // Railway spins down after ~5min inactivity; a 4min interval keeps the
+  // backend warm for active users — zero cold starts after first load.
   useEffect(() => {
-    fetch(`${API_URL}/api/health`, { method: 'GET', credentials: 'omit' })
-      .catch(() => { /* silently ignore — just a warm-up ping */ })
+    const ping = () => fetch(`${API_URL}/api/health`, { method: 'GET', credentials: 'omit' })
+      .catch(() => { /* silently ignore */ })
+    ping()
+    const interval = setInterval(ping, 4 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [])
 
   return (

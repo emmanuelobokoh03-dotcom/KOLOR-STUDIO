@@ -215,7 +215,7 @@ export default function Calendar() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/dashboard')}
               className="flex items-center gap-2 group hover:opacity-80 transition-opacity"
               data-testid="calendar-back-to-dashboard"
               aria-label="Back to dashboard"
