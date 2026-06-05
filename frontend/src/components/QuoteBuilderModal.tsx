@@ -200,7 +200,7 @@ export default function QuoteBuilderModal({
     existingQuote?.lineItems || [{ description: '', quantity: 1, price: 0, total: 0 }]
   );
   const [tax, setTax] = useState(existingQuote?.tax || userCurrencySettings?.defaultTaxRate || 0);
-  const [discount, setDiscount] = useState(0);
+  const [discount, setDiscount] = useState(existingQuote?.discountPercent ?? 0);
   const [paymentTerms, setPaymentTerms] = useState(existingQuote?.paymentTerms || 'DEPOSIT_50');
   const [depositDueDate, setDepositDueDate] = useState<string>(
     existingQuote?.depositDueDate
@@ -325,7 +325,7 @@ export default function QuoteBuilderModal({
     setLoading(true); setError('');
     const data: CreateQuoteData = {
       lineItems: lineItems.map(item => ({ description: item.description, quantity: item.quantity, price: item.price })),
-      tax, paymentTerms, validUntil, terms,
+      tax, discountPercent: discount, paymentTerms, validUntil, terms,
       ...(useCurrencyOverride && currencyOverride.currency && {
         currency: currencyOverride.currency, currencySymbol: currencyOverride.currencySymbol,
         currencyPosition: currencyOverride.currencyPosition || 'BEFORE', numberFormat: currencyOverride.numberFormat,
@@ -342,7 +342,7 @@ export default function QuoteBuilderModal({
     setSending(true); setError('');
     const data: CreateQuoteData = {
       lineItems: lineItems.map(item => ({ description: item.description, quantity: item.quantity, price: item.price })),
-      tax, paymentTerms, validUntil, terms,
+      tax, discountPercent: discount, paymentTerms, validUntil, terms,
       ...(useCurrencyOverride && currencyOverride.currency && {
         currency: currencyOverride.currency, currencySymbol: currencyOverride.currencySymbol,
         currencyPosition: currencyOverride.currencyPosition || 'BEFORE', numberFormat: currencyOverride.numberFormat,

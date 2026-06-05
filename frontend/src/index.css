@@ -269,7 +269,7 @@ select:focus {
     /* Surface colors — warm purple-tinted neutrals */
     --surface-base: #FDFCFF;
     --surface-elevated: #FDFCFF;
-    --surface-background: #F4F1FA;
+    --surface-background: #F0EDF8;
     --surface-hover: #F4F1FA;
 
     /* Border colors — warm purple-tinted */
@@ -283,15 +283,24 @@ select:focus {
     --text-tertiary: #6B7280;
     --text-disabled: #9CA3AF;
 
-    /* Brand colors — deeper purple */
+    /* Brand colors — deeper purple + tonal range mirroring KOLOR mark */
     --brand-primary: #6C2EDB;
-    --brand-hover: #5B22C4;
+    --brand-hover: #9B6AEF;
+    --brand-pressed: #4A1FA0;
+    --brand-subtle: #C4AAFA;
+    --brand-fill: #EDE9FE;
 
-    /* Accent warm — amber */
+    /* Accent warm — amber (legacy alias kept) */
     --accent-warm: #E8891A;
     --accent-warm-hover: #C46E0E;
     --accent-warm-light: #FFF6E8;
     --accent-warm-tint: #FDDFA0;
+
+    /* Two-amber semantic system */
+    --amber-financial: #E8891A;
+    --amber-financial-bg: #FFF6E8;
+    --amber-urgency: #F59E0B;
+    --amber-urgency-bg: #FEF3C7;
 
     /* Transitions */
     --transition-fast: 150ms ease-in-out;
@@ -306,7 +315,7 @@ select:focus {
   body {
     font-family: var(--font-sans);
     font-weight: 400;
-    background-color: #F4F1FA;
+    background-color: #F0EDF8;
     color: #1A1A2E;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

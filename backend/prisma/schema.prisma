@@ -409,6 +409,8 @@ model Quote {
   lineItems        Json
   subtotal         Float
   tax              Float       @default(0)
+  discountPercent  Float       @default(0)
+  discountAmount   Float       @default(0)
   taxAmount        Float       @default(0)
   total            Float
   paymentTerms     String

@@ -284,6 +284,12 @@ export default function PublicQuote() {
                   <span className="text-gray-600">Subtotal</span>
                   <span className="text-gray-900">{formatCurrency(quote.subtotal, currencySettings)}</span>
                 </div>
+                {(quote.discountPercent ?? 0) > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Discount ({quote.discountPercent}%)</span>
+                    <span className="font-medium" style={{ color: '#3B6D11' }}>-{formatCurrency(quote.discountAmount ?? 0, currencySettings)}</span>
+                  </div>
+                )}
                 {quote.tax > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Tax ({quote.tax}%)</span>

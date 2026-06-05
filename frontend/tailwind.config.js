@@ -20,6 +20,11 @@ export default {
           800: '#4A1BA3',
           900: '#3D1584',
           DEFAULT: '#6C2EDB',
+          // Tonal range mirroring KOLOR mark
+          hover: '#9B6AEF',
+          pressed: '#4A1FA0',
+          subtle: '#C4AAFA',
+          fill: '#EDE9FE',
         },
 
         // Purple Scale (backwards compat — mirrors brand)
@@ -34,6 +39,14 @@ export default {
           700: '#5B22C4',
           800: '#4A1BA3',
           900: '#3D1584',
+        },
+
+        // ── Two-amber semantic system (financial vs urgency) ────
+        amber: {
+          financial: '#E8891A',
+          financialBg: '#FFF6E8',
+          urgency: '#F59E0B',
+          urgencyBg: '#FEF3C7',
         },
 
         // ── Accent Warm (Amber — #E8891A primary) ───────────────
@@ -76,8 +89,8 @@ export default {
         surface: {
           base: '#FDFCFF',
           white: '#FDFCFF',
-          background: '#F4F1FA',
-          page: '#F4F1FA',
+          background: '#F0EDF8',
+          page: '#F0EDF8',
           card: '#FDFCFF',
           hover: '#F4F1FA',
           elevated: '#FDFCFF',

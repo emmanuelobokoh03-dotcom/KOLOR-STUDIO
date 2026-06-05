@@ -801,6 +801,8 @@ export interface Quote {
   subtotal: number;
   tax: number;
   taxAmount: number;
+  discountPercent?: number;
+  discountAmount?: number;
   total: number;
   paymentTerms: string;
   validUntil: string;
@@ -855,6 +857,7 @@ export interface Quote {
 export interface CreateQuoteData {
   lineItems: Omit<QuoteLineItem, 'total'>[];
   tax?: number;
+  discountPercent?: number;
   paymentTerms?: string;
   validUntil?: string;
   terms?: string;

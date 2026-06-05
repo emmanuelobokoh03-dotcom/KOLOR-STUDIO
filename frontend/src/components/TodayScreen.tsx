@@ -71,13 +71,13 @@ const URGENCY_CONFIG: Record<string, UrgencyTier> = {
     metaLabel: (item) => `${item.daysOverdue ?? 1} DAYS OVERDUE · PAYMENT`,
   },
   quote_expiring: {
-    tier: 'warning', bg: '#FDFCFF', border: '#B45309',
-    metaColor: '#854F0B', chipBg: '#FEF3C7', chipColor: '#854F0B', dot: '#D97706',
+    tier: 'warning', bg: '#FDFCFF', border: '#F59E0B',
+    metaColor: '#92400E', chipBg: '#FEF3C7', chipColor: '#854F0B', dot: '#D97706',
     metaLabel: () => `EXPIRES SOON · OFFER`,
   },
   quote_viewed: {
-    tier: 'warning', bg: '#FDFCFF', border: '#B45309',
-    metaColor: '#854F0B', chipBg: '#FEF3C7', chipColor: '#854F0B', dot: '#D97706',
+    tier: 'warning', bg: '#FDFCFF', border: '#F59E0B',
+    metaColor: '#92400E', chipBg: '#FEF3C7', chipColor: '#854F0B', dot: '#D97706',
     metaLabel: () => `VIEWED · AWAITING DECISION`,
   },
   new_inquiry: {

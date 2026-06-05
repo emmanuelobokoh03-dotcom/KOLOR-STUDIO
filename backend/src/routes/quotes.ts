@@ -129,11 +129,13 @@ async function generateQuoteNumber(): Promise<string> {
 }
 
 // Helper to calculate quote totals
-function calculateTotals(lineItems: any[], taxPercentage: number) {
+function calculateTotals(lineItems: any[], taxPercentage: number, discountPercentage: number = 0) {
   const subtotal = lineItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-  const taxAmount = subtotal * (taxPercentage / 100);
-  const total = subtotal + taxAmount;
-  return { subtotal, taxAmount, total };
+  const discountAmount = subtotal * (Math.min(100, Math.max(0, discountPercentage)) / 100);
+  const taxableAmount = subtotal - discountAmount;
+  const taxAmount = taxableAmount * (taxPercentage / 100);
+  const total = taxableAmount + taxAmount;
+  return { subtotal, discountAmount, taxAmount, total };
 }
 
 // POST /api/leads/:leadId/quotes - Create quote
@@ -141,7 +143,7 @@ router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Res
   try {
     const leadId = req.params.leadId as string;
     const userId = req.userId!;
-    const { lineItems, tax, paymentTerms, validUntil, terms, currency, currencySymbol, currencyPosition, numberFormat, depositDueDate, finalPaymentDueDate, depositPercent } = req.body;
+    const { lineItems, tax, discountPercent, paymentTerms, validUntil, terms, currency, currencySymbol, currencyPosition, numberFormat, depositDueDate, finalPaymentDueDate, depositPercent } = req.body;
 
 
     // Validate lead exists and belongs to user
@@ -185,7 +187,7 @@ router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Res
       return;
     }
 
-    const { subtotal, taxAmount, total } = calculateTotals(processedLineItems, taxPercentage);
+    const { subtotal, discountAmount, taxAmount, total } = calculateTotals(processedLineItems, taxPercentage, Number(discountPercent) || 0);
 
     // Validate valid until date
     const validUntilDate = validUntil ? new Date(validUntil) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -207,6 +209,8 @@ router.post('/:leadId/quotes', authMiddleware, async (req: AuthRequest, res: Res
         subtotal,
         tax: taxPercentage,
         taxAmount,
+        discountPercent: Number(discountPercent) || 0,
+        discountAmount,
         total,
         paymentTerms: paymentTerms || 'DEPOSIT_50',
         validUntil: validUntilDate,
@@ -451,7 +455,7 @@ router.patch('/:quoteId', authMiddleware, async (req: AuthRequest, res: Response
   try {
     const quoteId = req.params.quoteId as string;
     const userId = req.userId!;
-    const { lineItems, tax, paymentTerms, validUntil, terms, depositDueDate, finalPaymentDueDate, depositPercent } = req.body;
+    const { lineItems, tax, discountPercent, paymentTerms, validUntil, terms, depositDueDate, finalPaymentDueDate, depositPercent } = req.body;
 
     // Find quote
     const existingQuote = await prisma.quote.findFirst({
@@ -485,18 +489,24 @@ router.patch('/:quoteId', authMiddleware, async (req: AuthRequest, res: Response
       }));
 
       const taxPercentage = tax !== undefined ? Number(tax) : existingQuote.tax;
-      const { subtotal, taxAmount, total } = calculateTotals(processedLineItems, taxPercentage);
+      const discountPercentage = discountPercent !== undefined ? Number(discountPercent) : (existingQuote.discountPercent ?? 0);
+      const { subtotal, discountAmount, taxAmount, total } = calculateTotals(processedLineItems, taxPercentage, discountPercentage);
 
       updateData.lineItems = processedLineItems;
       updateData.subtotal = subtotal;
       updateData.tax = taxPercentage;
       updateData.taxAmount = taxAmount;
+      updateData.discountPercent = discountPercentage;
+      updateData.discountAmount = discountAmount;
       updateData.total = total;
-    } else if (tax !== undefined) {
-      const taxPercentage = Number(tax);
-      const totals = calculateTotals(existingQuote.lineItems as any[], taxPercentage);
+    } else if (tax !== undefined || discountPercent !== undefined) {
+      const taxPercentage = tax !== undefined ? Number(tax) : existingQuote.tax;
+      const discountPercentage = discountPercent !== undefined ? Number(discountPercent) : (existingQuote.discountPercent ?? 0);
+      const totals = calculateTotals(existingQuote.lineItems as any[], taxPercentage, discountPercentage);
       updateData.tax = taxPercentage;
       updateData.taxAmount = totals.taxAmount;
+      updateData.discountPercent = discountPercentage;
+      updateData.discountAmount = totals.discountAmount;
       updateData.total = totals.total;
     }
 
