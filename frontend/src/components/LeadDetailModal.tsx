@@ -746,14 +746,16 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
 
             {/* Action row */}
             <div className="relative flex items-center gap-2 gap-y-2 mt-3.5 flex-wrap" data-testid="modal-action-row">
-              <button
-                onClick={() => setActiveTab(getPrimaryActionTab(lead.status) as any)}
-                className="min-h-[44px] px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center"
-                style={{ background: '#6C2EDB' }}
-                data-testid="modal-primary-action"
-              >
-                {getPrimaryActionLabel(lead.status)}
-              </button>
+              {!showTimelineView && (
+                <button
+                  onClick={() => setActiveTab(getPrimaryActionTab(lead.status) as any)}
+                  className="min-h-[44px] px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center"
+                  style={{ background: '#6C2EDB' }}
+                  data-testid="modal-primary-action"
+                >
+                  {getPrimaryActionLabel(lead.status)}
+                </button>
+              )}
               <button
                 onClick={() => setShowEmailComposer(true)}
                 className="min-h-[44px] px-3 rounded-lg text-xs font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors flex items-center"
@@ -828,7 +830,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             </button>
             {/* Secondary actions */}
             <button
-              onClick={() => { setMountedTabs(prev => new Set(Array.from(prev).concat(['files']))); setActiveTab('files'); }}
+              onClick={() => { setShowTimelineView(false); setMountedTabs(prev => new Set(Array.from(prev).concat(['files']))); setActiveTab('files'); }}
               className="flex-1 flex items-center justify-center gap-1 h-9 rounded-xl text-[11px] font-medium transition-all active:scale-95"
               style={{ border: '0.5px solid var(--border)', color: 'var(--text-secondary)', background: 'var(--surface-base)' }}
               data-testid="action-upload-file"
@@ -837,7 +839,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               Upload
             </button>
             <button
-              onClick={() => { setMountedTabs(prev => new Set(Array.from(prev).concat(['messages']))); setActiveTab('messages'); }}
+              onClick={() => { setShowTimelineView(false); setMountedTabs(prev => new Set(Array.from(prev).concat(['messages']))); setActiveTab('messages'); }}
               className="flex-1 flex items-center justify-center gap-1 h-9 rounded-xl text-[11px] font-medium transition-all active:scale-95"
               style={{ border: '0.5px solid var(--border)', color: 'var(--text-secondary)', background: 'var(--surface-base)' }}
               data-testid="action-message"
@@ -1173,6 +1175,16 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               </div>
             ) : activeTab === 'files' ? (
               <>
+              {showTimelineView === false && (
+                <button
+                  onClick={() => setShowTimelineView(true)}
+                  className="flex items-center gap-1.5 px-4 pt-3 pb-0 text-[11px] font-medium transition-colors"
+                  style={{ color: 'var(--text-tertiary)' }}
+                  data-testid="back-to-timeline-files"
+                >
+                  ← Timeline
+                </button>
+              )}
               <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-36 md:pb-6">
                 {/* Mark as Delivered */}
                 <MarkAsDeliveredButton
@@ -1521,6 +1533,16 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               </div>
             ) : activeTab === 'messages' ? (
               <div className="p-4 md:p-6 flex flex-col h-full">
+                {showTimelineView === false && (
+                  <button
+                    onClick={() => setShowTimelineView(true)}
+                    className="flex items-center gap-1.5 text-[11px] font-medium transition-colors flex-shrink-0 mb-3 self-start"
+                    style={{ color: 'var(--text-tertiary)' }}
+                    data-testid="back-to-timeline-messages"
+                  >
+                    ← Timeline
+                  </button>
+                )}
                 <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-[400px]" data-testid="messages-thread">
                   {loadingMessages ? (
                     <div className="flex justify-center py-8"><KolorSpinner size={20} /></div>

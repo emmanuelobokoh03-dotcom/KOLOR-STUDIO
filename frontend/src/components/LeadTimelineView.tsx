@@ -128,7 +128,7 @@ export default function LeadTimelineView({
 
             {/* Content */}
             <div className={`flex-1 pb-5 min-w-0 ${isPending ? 'opacity-50' : ''}`}>
-              <p className={`text-sm font-medium leading-tight ${
+              <p className={`text-sm font-medium leading-tight truncate ${
                 isDone ? 'text-text-primary' :
                 isActive ? 'text-text-primary' :
                 'text-text-secondary'
