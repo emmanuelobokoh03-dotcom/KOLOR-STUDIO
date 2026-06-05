@@ -23,6 +23,7 @@ import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
 import KolorSpinner from './KolorSpinner'
 import ClientTimeline from './ClientTimeline'
+const QuoteBuilderModalRoot = lazy(() => import('./QuoteBuilderModal'))
 import LeadTimelineView from './LeadTimelineView'
 import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
 import { ArrowsLeftRight } from '@phosphor-icons/react/dist/csr/ArrowsLeftRight'
@@ -820,7 +821,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
           >
             {/* Primary — commercial action, dominant weight */}
             <button
-              onClick={() => { setMountedTabs(prev => new Set(Array.from(prev).concat(['pipeline']))); setActiveTab('pipeline'); setOpenQuoteBuilderKey(k => k + 1); setOpenQuoteBuilder(true); }}
+              onClick={() => { if (!showTimelineView) { setMountedTabs(prev => new Set(Array.from(prev).concat(['pipeline']))); setActiveTab('pipeline'); } setOpenQuoteBuilderKey(k => k + 1); setOpenQuoteBuilder(true); }}
               className="flex-[2] flex items-center justify-center gap-1.5 h-9 rounded-xl text-xs font-semibold text-white transition-all active:scale-95"
               style={{ background: '#6C2EDB', boxShadow: '0 1px 4px rgba(108,46,219,0.35)' }}
               data-testid="action-send-offer"
@@ -1922,6 +1923,24 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             fetchActivities();
           }}
         />
+      )}
+
+      {/* Timeline mode: QuoteBuilderModal at root level — bypasses tab mounting */}
+      {showTimelineView && openQuoteBuilder && (
+        <Suspense fallback={null}>
+          <QuoteBuilderModalRoot
+            key={openQuoteBuilderKey}
+            lead={lead}
+            userIndustry={userIndustry}
+            onClose={() => setOpenQuoteBuilder(false)}
+            onSaved={() => { setOpenQuoteBuilder(false); fetchActivities(); }}
+            onSent={() => {
+              setOpenQuoteBuilder(false);
+              fetchActivities();
+              onCelebrate?.('first_quote', 'firstQuote');
+            }}
+          />
+        </Suspense>
       )}
     </>
   );
