@@ -868,6 +868,27 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 223 — Discount persistence + Colour system refinement (Feb 2026) — ✅ SHIPPED
+
+**Discount persistence (full stack)**:
+- `schema.prisma`: added `discountPercent Float @default(0)` + `discountAmount Float @default(0)` to Quote model.
+- Migration `20260605000000_add_quote_discount` applied via `prisma db push` (shadow DB blocked by historical drift; pattern matches Iter 151/152). Verified columns exist on Supabase via `information_schema.columns`.
+- `quotes.ts` `calculateTotals` now takes `discountPercentage`: computes `discountAmount`, taxes the discounted subtotal, totals = subtotal − discount + tax (correct financial order). Create + update endpoints destructure `discountPercent` from body, persist `discountPercent` + `discountAmount`. Update branch handles tax-only / discount-only / line-items-changed.
+- `api.ts`: `CreateQuoteData.discountPercent?: number`; `Quote` type gains `discountPercent?` + `discountAmount?`.
+- `QuoteBuilderModal.tsx`: `discount` state hydrates from `existingQuote?.discountPercent ?? 0`; both `handleSave` and `handleSend` payloads include `discountPercent: discount`.
+- `PublicQuote.tsx`: discount row renders between Subtotal and Tax (`Discount (X%)` label + green `-$X.XX`) when `discountPercent > 0`.
+
+**Colour system refinement (3 moves)**:
+- Surface hierarchy: `--surface-background` `#F4F1FA → #F0EDF8` (deeper purple tint). Cards on `#FDFCFF` now visibly separate from page. Body `background-color` synced. Tailwind `surface.background` + `surface.page` also `#F0EDF8`.
+- Tonal primary range: added `--brand-pressed #4A1FA0`, `--brand-hover #9B6AEF`, `--brand-subtle #C4AAFA`, `--brand-fill #EDE9FE` (mirrors KOLOR mark's 3-stop range). Exposed as `brand.hover/pressed/subtle/fill` in Tailwind.
+- Two-amber semantic system: `--amber-financial #E8891A / -bg #FFF6E8` (money) vs `--amber-urgency #F59E0B / -bg #FEF3C7` (time pressure). Tailwind `amber.{financial,financialBg,urgency,urgencyBg}`. `TodayScreen` warning tier updated to urgency amber (`#F59E0B` border, `#92400E` meta).
+
+Build gates: `npx tsc --noEmit` (backend + frontend, with `NODE_OPTIONS=--max-old-space-size=4096`) + `npm run build` all clean. Commit `1aa9a24` (local — `git push` needs Emmanuel's auth).
+
+**Railway redeploy required** for `schema.prisma` + `quotes.ts` changes.
+
+
+
 ## Iteration 222 — Tab chrome suppression · Note reposition · Discount field (Feb 2026) — ✅ SHIPPED
 - **`LeadDetailModal.tsx`**: new `arrivedFromTimeline` `useState(false)` (state, not ref — needs re-render). Set true when Upload/Message is tapped from timeline mode; cleared when the `← Timeline` back link is tapped. Tab bar and header primary action button now gated on `!showTimelineView && !arrivedFromTimeline`, so the Files & Notes / Messages surface arrives via a clean back-link-only chrome when reached from the timeline.
 - **`QuoteBuilderModal.tsx`**: (1) `Note to client` card moved to render AFTER the Totals card — secondary info now follows the financial summary. (2) Discount field becomes functional: `useState(0)`, inline % input matching the Tax pattern, clamped 0–100, shows `-$X.XX` in green when set / `—` when zero. Computation: `discountAmount = subtotal * discount/100`; tax now applies to `(subtotal - discountAmount)`; `total = subtotal - discountAmount + taxAmount`.
