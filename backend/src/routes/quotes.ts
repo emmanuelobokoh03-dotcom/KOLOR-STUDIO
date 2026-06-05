@@ -654,6 +654,8 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
         studioName: (quote as any).createdBy.studioName || `${(quote as any).createdBy.firstName}'s Studio`,
         customSubject: customSubject || undefined,
         customMessage: customMessage || undefined,
+        discountPercent: (quote as any).discountPercent || 0,
+        discountAmount: (quote as any).discountAmount || 0,
       };
       console.log('[QUOTE SEND] Sending email to:', emailData.clientEmail, '| Quote:', emailData.quoteNumber);
       console.log('[QUOTE SEND] Data check - portalToken:', !!emailData.portalToken, '| quoteToken:', !!emailData.quoteToken, '| studioName:', emailData.studioName);

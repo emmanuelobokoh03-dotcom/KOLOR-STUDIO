@@ -730,6 +730,8 @@ interface QuoteEmailData {
   studioName: string;
   customSubject?: string;
   customMessage?: string;
+  discountPercent?: number;
+  discountAmount?: number;
 }
 
 export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
@@ -790,6 +792,10 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
           <p style="margin: 0; font-size: 42px; font-weight: 700; color: ${EmailColors.successText}; line-height: 1; font-family: ${EmailFonts.heading};">
             ${formattedTotal}
           </p>
+          ${(data.discountPercent ?? 0) > 0 ? `
+          <p style="margin: ${EmailSpacing.sm} 0 0 0; font-size: 12px; color: #3B6D11; font-weight: 600; font-family: ${EmailFonts.body};">
+            ✓ Includes ${data.discountPercent}% discount (-${currencyPosition === 'BEFORE' ? currencySymbol : ''}${(data.discountAmount ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${currencyPosition === 'AFTER' ? currencySymbol : ''})
+          </p>` : ''}
           <p style="margin: ${EmailSpacing.sm} 0 0 0; font-size: 13px; color: ${EmailColors.textTertiary}; font-family: ${EmailFonts.body};">
             Quote ${data.quoteNumber}
           </p>

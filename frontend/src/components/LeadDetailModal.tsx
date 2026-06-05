@@ -184,8 +184,10 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
   const [confirmArchive, setConfirmArchive] = useState(false);
   const [mountedTabs, setMountedTabs] = useState<Set<string>>(new Set(['overview']));
   const [openQuoteBuilder, setOpenQuoteBuilder] = useState(false);
+  const [timelineQuote, setTimelineQuote] = useState<any>(null);
   const [showTimelineView, setShowTimelineView] = useState(true); // true = timeline view (default); false = classic tabs
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [scrollToContracts, setScrollToContracts] = useState(false);
   const [formData, setFormData] = useState({
     status: lead.status,
     priority: lead.priority,
@@ -259,6 +261,19 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Fetch the most recent draft quote for this lead (used by timeline mode)
+  const fetchDraftQuote = async () => {
+    try {
+      const API_URL = (import.meta as any).env?.VITE_API_URL || ''
+      const res = await fetch(`${API_URL}/api/pipeline/${lead.id}`, { credentials: 'include' })
+      if (res.ok) {
+        const data = await res.json()
+        const draft = (data.quotes || []).find((q: any) => q.status === 'DRAFT')
+        setTimelineQuote(draft || null)
+      }
+    } catch { /* silent — falls back to new quote */ }
+  }
 
   const fetchMessages = async () => {
     setLoadingMessages(true);
@@ -822,7 +837,18 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
           >
             {/* Primary — commercial action, dominant weight */}
             <button
-              onClick={() => { if (!showTimelineView) { setMountedTabs(prev => new Set(Array.from(prev).concat(['pipeline']))); setActiveTab('pipeline'); } setOpenQuoteBuilderKey(k => k + 1); setOpenQuoteBuilder(true); }}
+              onClick={async () => {
+                if (!showTimelineView) {
+                  setMountedTabs(prev => new Set(Array.from(prev).concat(['pipeline'])));
+                  setActiveTab('pipeline');
+                  setOpenQuoteBuilderKey(k => k + 1);
+                  setOpenQuoteBuilder(true);
+                } else {
+                  await fetchDraftQuote();
+                  setOpenQuoteBuilderKey(k => k + 1);
+                  setOpenQuoteBuilder(true);
+                }
+              }}
               className="flex-[2] flex items-center justify-center gap-1.5 h-9 rounded-xl text-xs font-semibold text-white transition-all active:scale-95"
               style={{ background: '#6C2EDB', boxShadow: '0 1px 4px rgba(108,46,219,0.35)' }}
               data-testid="action-send-offer"
@@ -857,10 +883,11 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               <LeadTimelineView
                 leadId={lead.id}
                 currencySymbol={currencySymbol}
-                onTabChange={(tab) => {
+                onTabChange={(tab, section) => {
                   setShowTimelineView(false)
                   setMountedTabs(prev => new Set(Array.from(prev).concat([tab])))
                   setActiveTab(tab as any)
+                  if (section === 'contracts') setScrollToContracts(true)
                 }}
                 onAddNote={async (note) => {
                   await leadsApi.addNote(lead.id, note)
@@ -1520,7 +1547,11 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                   )}
                 </div>
                 {/* Agreements section */}
-                <div>
+                <div ref={el => {
+                  if (el && scrollToContracts) {
+                    setTimeout(() => { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); setScrollToContracts(false); }, 100);
+                  }
+                }} data-testid="agreements-section">
                   <h3 className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)] mb-3">
                     {lang.contracts}
                   </h3>
@@ -1933,10 +1964,12 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             key={openQuoteBuilderKey}
             lead={lead}
             userIndustry={userIndustry}
-            onClose={() => setOpenQuoteBuilder(false)}
-            onSaved={() => { setOpenQuoteBuilder(false); fetchActivities(); }}
+            existingQuote={timelineQuote ?? undefined}
+            onClose={() => { setOpenQuoteBuilder(false); setTimelineQuote(null); }}
+            onSaved={() => { setOpenQuoteBuilder(false); setTimelineQuote(null); fetchActivities(); }}
             onSent={() => {
               setOpenQuoteBuilder(false);
+              setTimelineQuote(null);
               fetchActivities();
               onCelebrate?.('first_quote', 'firstQuote');
             }}

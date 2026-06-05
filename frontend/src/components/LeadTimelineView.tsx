@@ -20,7 +20,7 @@ interface TimelineEvent {
 interface LeadTimelineViewProps {
   leadId: string
   currencySymbol?: string
-  onTabChange?: (tab: string) => void
+  onTabChange?: (tab: string, section?: string) => void
   onAddNote: (note: string) => Promise<void>
 }
 
@@ -142,7 +142,10 @@ export default function LeadTimelineView({
               )}
               {event.actionLabel && event.actionRoute && onTabChange && (
                 <button
-                  onClick={() => onTabChange(event.actionRoute!)}
+                  onClick={() => {
+                    const section = (event.type === 'CONTRACT_SENT' || event.type === 'CONTRACT_VIEWED' || event.type === 'CONTRACT_SIGNED') ? 'contracts' : undefined
+                    onTabChange(event.actionRoute!, section)
+                  }}
                   className={`mt-2 inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-md transition-colors ${
                     isActive
                       ? 'bg-[#fef3c7] text-[#92400e] hover:bg-[#fde68a]'
