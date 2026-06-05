@@ -23,6 +23,7 @@ import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
 import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
 import KolorSpinner from './KolorSpinner'
 import ClientTimeline from './ClientTimeline'
+import LeadTimelineView from './LeadTimelineView'
 import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
 import { ArrowsLeftRight } from '@phosphor-icons/react/dist/csr/ArrowsLeftRight'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
@@ -182,7 +183,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
   const [confirmArchive, setConfirmArchive] = useState(false);
   const [mountedTabs, setMountedTabs] = useState<Set<string>>(new Set(['overview']));
   const [openQuoteBuilder, setOpenQuoteBuilder] = useState(false);
-  const [showTimelineView, setShowTimelineView] = useState(() => new URLSearchParams(window.location.search).has('timeline'));
+  const [showTimelineView, setShowTimelineView] = useState(true); // true = timeline view (default); false = classic tabs
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [formData, setFormData] = useState({
     status: lead.status,
@@ -846,9 +847,23 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             </button>
           </div>
 
-          {/* Content */}
+          {/* Content — timeline view or tab view */}
           <div className="flex-1 overflow-y-auto">
-            {activeTab === 'overview' ? (
+            {showTimelineView ? (
+              <LeadTimelineView
+                leadId={lead.id}
+                currencySymbol={currencySymbol}
+                onTabChange={(tab) => {
+                  setShowTimelineView(false)
+                  setMountedTabs(prev => new Set(Array.from(prev).concat([tab])))
+                  setActiveTab(tab as any)
+                }}
+                onAddNote={async (note) => {
+                  await leadsApi.addNote(lead.id, note)
+                  fetchActivities()
+                }}
+              />
+            ) : activeTab === 'overview' ? (
               <div className="grid grid-cols-1 md:grid-cols-[1fr_240px] h-full" data-testid="overview-split-panel">
                 {/* ═══ Left Panel — fields (order-2 on mobile, order-1 on desktop) ═══ */}
                 <div className="p-5 overflow-y-auto space-y-5 border-r-0 md:border-r order-2 md:order-1" style={{ borderColor: 'var(--border)' }}>
