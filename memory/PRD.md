@@ -868,6 +868,14 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 219 (retry) — Additive timeline view alongside existing tabs (Feb 2026) — ✅ SHIPPED
+- **`LeadTimelineView.tsx` (new)**: Consumes the existing `GET /api/leads/:id/timeline` endpoint's `{ events: TimelineEvent[] }` shape directly. Three visual states (done = purple check, active = amber clock, pending = dashed circle 50% opacity) with a vertical connector line between events. Action buttons (e.g. "Follow up") call `onTabChange` to jump to the relevant classic tab. Persistent note input at bottom — Enter submits via `leadsApi.addNote`. Loading, error and empty states each rendered explicitly so a fetch failure never blanks the modal.
+- **`LeadDetailModal.tsx` (additive, zero removals)**: `showTimelineView` default flipped to `true`. Content wrapper now branches: `showTimelineView ? <LeadTimelineView /> : <existing 4-tab structure>`. The Overview / Pipeline / Files & Notes / Messages tab tree is left fully intact as the else branch. Action buttons in the timeline call `onTabChange(route)` which sets `showTimelineView=false`, mounts the target tab via `setMountedTabs`, and switches `activeTab` — instant fallback to classic tabs at any time.
+- **Rollback path**: change `useState(true)` to `useState(false)` on the showTimelineView state to revert to classic tabs without removing any code.
+- Build gates: `npx tsc --noEmit` clean (frontend + backend), `npm run build` clean. Commit `b92a072` (local — `git push origin main` requires Emmanuel's auth from chat input).
+
+
+
 ## Iteration 219 — Timeline transition: backend event feed + LeadDetailModal → LeadTimelineView (Feb 2026) — ✅ SHIPPED
 - **Backend `GET /api/leads/:id/timeline`** (`backend/src/routes/leads.ts`): Single parallel Prisma query (quotes + contracts + activities) returns typed stage array — Inquiry → Offer → Agreement → Deposit → Delivery → Final payment → Complete. Per-stage status computed: done/active/warning/upcoming. Detects deposit overdue, contract unsigned-but-sent. Uses correct schema fields (`depositPaidAt`, `finalPaidAt`).
 - **`LeadTimelineView.tsx` (new)**: Single scrollable stage list replacing the 4-tab modal body. Three visual tiers: green-check done (strikethrough), amber warning, purple active dot, muted dashed upcoming (55% opacity). Active + warning stages expand by default; expandable cards show offer total/status/valid-until, contract reminder button, deposit amount + payment link, final payment amount. Persistent note input at bottom (Enter to submit).
