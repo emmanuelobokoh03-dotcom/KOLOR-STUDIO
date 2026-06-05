@@ -868,6 +868,13 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 222 — Tab chrome suppression · Note reposition · Discount field (Feb 2026) — ✅ SHIPPED
+- **`LeadDetailModal.tsx`**: new `arrivedFromTimeline` `useState(false)` (state, not ref — needs re-render). Set true when Upload/Message is tapped from timeline mode; cleared when the `← Timeline` back link is tapped. Tab bar and header primary action button now gated on `!showTimelineView && !arrivedFromTimeline`, so the Files & Notes / Messages surface arrives via a clean back-link-only chrome when reached from the timeline.
+- **`QuoteBuilderModal.tsx`**: (1) `Note to client` card moved to render AFTER the Totals card — secondary info now follows the financial summary. (2) Discount field becomes functional: `useState(0)`, inline % input matching the Tax pattern, clamped 0–100, shows `-$X.XX` in green when set / `—` when zero. Computation: `discountAmount = subtotal * discount/100`; tax now applies to `(subtotal - discountAmount)`; `total = subtotal - discountAmount + taxAmount`.
+- Build gates: `npx tsc --noEmit` + `npm run build` both clean. Commit `0bb0184` (local — `git push` needs Emmanuel's auth).
+
+
+
 ## Iteration 221 — Send Offer works in timeline mode (Feb 2026) — ✅ SHIPPED
 - **Root cause**: `QuoteBuilderModal` lives inside `QuotesTab` which only mounts when the Pipeline tab is rendered. In timeline mode (`showTimelineView=true`) the Pipeline tab never mounts, so `setOpenQuoteBuilder(true)` had nothing to trigger.
 - **`LeadDetailModal.tsx`**: added a root-level lazy import `QuoteBuilderModalRoot = lazy(() => import('./QuoteBuilderModal'))`, plus a sibling `Suspense`-wrapped render at the modal's bottom that fires only when `showTimelineView && openQuoteBuilder`. Send Offer action-bar handler now skips `setActiveTab('pipeline')` in timeline mode and just sets `openQuoteBuilder=true`. Existing `QuoteBuilderModal` inside `QuotesTab` untouched for classic-tab mode.
