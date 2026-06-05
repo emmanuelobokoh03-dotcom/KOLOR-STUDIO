@@ -783,8 +783,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             </div>
           </div>
 
-          {/* ═══ Tab Navigation — underline style ═══ */}
-          <div className="flex-shrink-0 flex items-center gap-0 overflow-x-auto scrollbar-hide px-5" style={{ borderBottom: '0.5px solid var(--border)' }}>
+          {/* ═══ Tab Navigation — hidden in timeline mode ═══ */}
+          {!showTimelineView && <div className="flex-shrink-0 flex items-center gap-0 overflow-x-auto scrollbar-hide px-5" style={{ borderBottom: '0.5px solid var(--border)' }}>
             {([
               { key: 'overview' as const, label: 'Overview' },
               { key: 'pipeline' as const, label: 'Pipeline' },
@@ -808,7 +808,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                 {activeTab === key && <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#6C2EDB] rounded-full" />}
               </button>
             ))}
-          </div>
+          </div>}
 
           {/* ═══ Three-button action bar — Send Offer dominant, Upload/Message secondary ═══ */}
           <div
