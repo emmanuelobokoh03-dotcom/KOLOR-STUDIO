@@ -233,6 +233,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
   const [discoveryNotesValue, setDiscoveryNotesValue] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [arrivedFromTimeline, setArrivedFromTimeline] = useState(false);
 
   const [copiedLink, setCopiedLink] = useState(false);
   const [sendingPortalLink, setSendingPortalLink] = useState(false);
@@ -747,7 +748,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
 
             {/* Action row */}
             <div className="relative flex items-center gap-2 gap-y-2 mt-3.5 flex-wrap" data-testid="modal-action-row">
-              {!showTimelineView && (
+              {!showTimelineView && !arrivedFromTimeline && (
                 <button
                   onClick={() => setActiveTab(getPrimaryActionTab(lead.status) as any)}
                   className="min-h-[44px] px-3.5 rounded-lg text-xs font-semibold text-white transition-colors flex items-center"
@@ -786,8 +787,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             </div>
           </div>
 
-          {/* ═══ Tab Navigation — hidden in timeline mode ═══ */}
-          {!showTimelineView && <div className="flex-shrink-0 flex items-center gap-0 overflow-x-auto scrollbar-hide px-5" style={{ borderBottom: '0.5px solid var(--border)' }}>
+          {/* ═══ Tab Navigation — hidden in timeline mode + when arrived from timeline ═══ */}
+          {!showTimelineView && !arrivedFromTimeline && <div className="flex-shrink-0 flex items-center gap-0 overflow-x-auto scrollbar-hide px-5" style={{ borderBottom: '0.5px solid var(--border)' }}>
             {([
               { key: 'overview' as const, label: 'Overview' },
               { key: 'pipeline' as const, label: 'Pipeline' },
@@ -831,7 +832,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
             </button>
             {/* Secondary actions */}
             <button
-              onClick={() => { setShowTimelineView(false); setMountedTabs(prev => new Set(Array.from(prev).concat(['files']))); setActiveTab('files'); }}
+              onClick={() => { setArrivedFromTimeline(true); setShowTimelineView(false); setMountedTabs(prev => new Set(Array.from(prev).concat(['files']))); setActiveTab('files'); }}
               className="flex-1 flex items-center justify-center gap-1 h-9 rounded-xl text-[11px] font-medium transition-all active:scale-95"
               style={{ border: '0.5px solid var(--border)', color: 'var(--text-secondary)', background: 'var(--surface-base)' }}
               data-testid="action-upload-file"
@@ -840,7 +841,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               Upload
             </button>
             <button
-              onClick={() => { setShowTimelineView(false); setMountedTabs(prev => new Set(Array.from(prev).concat(['messages']))); setActiveTab('messages'); }}
+              onClick={() => { setArrivedFromTimeline(true); setShowTimelineView(false); setMountedTabs(prev => new Set(Array.from(prev).concat(['messages']))); setActiveTab('messages'); }}
               className="flex-1 flex items-center justify-center gap-1 h-9 rounded-xl text-[11px] font-medium transition-all active:scale-95"
               style={{ border: '0.5px solid var(--border)', color: 'var(--text-secondary)', background: 'var(--surface-base)' }}
               data-testid="action-message"
@@ -1178,7 +1179,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               <>
               {showTimelineView === false && (
                 <button
-                  onClick={() => setShowTimelineView(true)}
+                  onClick={() => { setArrivedFromTimeline(false); setShowTimelineView(true); }}
                   className="flex items-center gap-1.5 px-4 pt-3 pb-0 text-[11px] font-medium transition-colors"
                   style={{ color: 'var(--text-tertiary)' }}
                   data-testid="back-to-timeline-files"
@@ -1536,7 +1537,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               <div className="p-4 md:p-6 flex flex-col h-full">
                 {showTimelineView === false && (
                   <button
-                    onClick={() => setShowTimelineView(true)}
+                    onClick={() => { setArrivedFromTimeline(false); setShowTimelineView(true); }}
                     className="flex items-center gap-1.5 text-[11px] font-medium transition-colors flex-shrink-0 mb-3 self-start"
                     style={{ color: 'var(--text-tertiary)' }}
                     data-testid="back-to-timeline-messages"

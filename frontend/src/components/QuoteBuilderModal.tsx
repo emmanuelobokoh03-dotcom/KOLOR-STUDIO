@@ -200,6 +200,7 @@ export default function QuoteBuilderModal({
     existingQuote?.lineItems || [{ description: '', quantity: 1, price: 0, total: 0 }]
   );
   const [tax, setTax] = useState(existingQuote?.tax || userCurrencySettings?.defaultTaxRate || 0);
+  const [discount, setDiscount] = useState(0);
   const [paymentTerms, setPaymentTerms] = useState(existingQuote?.paymentTerms || 'DEPOSIT_50');
   const [depositDueDate, setDepositDueDate] = useState<string>(
     existingQuote?.depositDueDate
@@ -291,8 +292,9 @@ export default function QuoteBuilderModal({
 
   // Calculate totals
   const subtotal = lineItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-  const taxAmount = subtotal * (tax / 100);
-  const total = subtotal + taxAmount;
+  const discountAmount = subtotal * (discount / 100);
+  const taxAmount = (subtotal - discountAmount) * (tax / 100);
+  const total = subtotal - discountAmount + taxAmount;
 
   const updateLineItem = (index: number, field: keyof QuoteLineItem, value: string | number) => {
     const updated = [...lineItems];
@@ -621,24 +623,6 @@ export default function QuoteBuilderModal({
               </button>
             </div>
 
-            {/* Notes / Terms */}
-            <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="notes-card">
-              <div className="px-3.5 py-2.5" style={{ borderBottom: '0.5px solid var(--border)' }}>
-                <span className="text-xs font-bold text-text-primary">Note to {lang.client}</span>
-              </div>
-              <div className="p-3.5">
-                <textarea
-                  value={terms}
-                  onChange={e => setTerms(e.target.value)}
-                  placeholder={`Add a personal note to ${lang.client.toLowerCase()} — context, next steps, or a warm introduction to the ${lang.quote.toLowerCase()}...`}
-                  className="w-full bg-[var(--surface-background)] text-text-primary text-xs placeholder:text-[var(--text-tertiary)] resize-none rounded-lg px-3 py-2.5"
-                  style={{ border: '0.5px solid var(--border-dark, var(--border))', minHeight: '72px' }}
-                  rows={3}
-                  data-testid="terms-textarea"
-                />
-              </div>
-            </div>
-
             {/* Totals card */}
             <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="totals-card">
               <div className="px-3.5">
@@ -647,8 +631,24 @@ export default function QuoteBuilderModal({
                   <span className="text-xs font-semibold text-text-primary tabular-nums">{formatCurrency(subtotal, effectiveCurrency)}</span>
                 </div>
                 <div className="flex items-center justify-between py-2" style={{ borderBottom: '0.5px solid var(--border)' }}>
-                  <span className="text-xs text-[var(--text-secondary)]">Discount</span>
-                  <span className="text-xs text-[var(--text-secondary)]">—</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-[var(--text-secondary)]">Discount</span>
+                    <input
+                      type="number"
+                      value={discount || ''}
+                      onChange={e => setDiscount(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
+                      className="w-10 text-center bg-[var(--surface-background)] rounded text-[10px] py-0.5 tabular-nums focus:outline-none"
+                      style={{ border: '0.5px solid var(--border)' }}
+                      placeholder="0"
+                      min="0"
+                      max="100"
+                      data-testid="discount-input"
+                    />
+                    <span className="text-[10px] text-[var(--text-tertiary)]">%</span>
+                  </div>
+                  <span className="text-xs font-semibold tabular-nums" style={{ color: discount > 0 ? '#3B6D11' : 'var(--text-secondary)' }}>
+                    {discount > 0 ? `-${formatCurrency(discountAmount, effectiveCurrency)}` : '—'}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-1.5">
@@ -670,6 +670,24 @@ export default function QuoteBuilderModal({
               <div className="flex items-center justify-between px-3.5 py-3" style={{ background: 'rgba(108,46,219,0.04)', borderTop: '0.5px solid rgba(108,46,219,0.10)' }}>
                 <span className="text-sm font-bold text-text-primary">Total</span>
                 <span className="text-xl font-extrabold text-text-primary tabular-nums" data-testid="quote-total">{formatCurrency(total, effectiveCurrency)}</span>
+              </div>
+            </div>
+
+            {/* Notes / Terms — moved after totals: secondary info follows financial summary */}
+            <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--border)', background: 'var(--surface-base)' }} data-testid="notes-card">
+              <div className="px-3.5 py-2.5" style={{ borderBottom: '0.5px solid var(--border)' }}>
+                <span className="text-xs font-bold text-text-primary">Note to {lang.client}</span>
+              </div>
+              <div className="p-3.5">
+                <textarea
+                  value={terms}
+                  onChange={e => setTerms(e.target.value)}
+                  placeholder={`Add a personal note to ${lang.client.toLowerCase()} — context, next steps, or a warm introduction to the ${lang.quote.toLowerCase()}...`}
+                  className="w-full bg-[var(--surface-background)] text-text-primary text-xs placeholder:text-[var(--text-tertiary)] resize-none rounded-lg px-3 py-2.5"
+                  style={{ border: '0.5px solid var(--border-dark, var(--border))', minHeight: '72px' }}
+                  rows={3}
+                  data-testid="terms-textarea"
+                />
               </div>
             </div>
 
