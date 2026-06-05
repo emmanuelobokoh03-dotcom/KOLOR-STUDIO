@@ -868,6 +868,13 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 221 — Send Offer works in timeline mode (Feb 2026) — ✅ SHIPPED
+- **Root cause**: `QuoteBuilderModal` lives inside `QuotesTab` which only mounts when the Pipeline tab is rendered. In timeline mode (`showTimelineView=true`) the Pipeline tab never mounts, so `setOpenQuoteBuilder(true)` had nothing to trigger.
+- **`LeadDetailModal.tsx`**: added a root-level lazy import `QuoteBuilderModalRoot = lazy(() => import('./QuoteBuilderModal'))`, plus a sibling `Suspense`-wrapped render at the modal's bottom that fires only when `showTimelineView && openQuoteBuilder`. Send Offer action-bar handler now skips `setActiveTab('pipeline')` in timeline mode and just sets `openQuoteBuilder=true`. Existing `QuoteBuilderModal` inside `QuotesTab` untouched for classic-tab mode.
+- Build gates: `npx tsc --noEmit` + `npm run build` both clean. Commit `299f881` (local — `git push` needs Emmanuel's auth).
+
+
+
 ## Iteration 220 — Timeline polish: header btn + back nav + truncation (Feb 2026) — ✅ SHIPPED
 - **`LeadDetailModal.tsx`**: (1) header primary action button (View Commission Agreement / Send quote) wrapped in `!showTimelineView &&` — hidden in timeline mode so the timeline stage cards are the canonical action surface. (2) Action-bar Upload + Message buttons now call `setShowTimelineView(false)` before switching tabs so the tab bar becomes visible. (3) Files & Notes and Messages tabs gained a `← Timeline` back link at the top (rendered only when `showTimelineView === false`) so the user can return to the timeline without closing the modal.
 - **`LeadTimelineView.tsx`**: event label `<p>` now carries `truncate` (parent flex container already had `min-w-0`). Long quote numbers like `#SAMPLE-MO4I82K8` truncate with ellipsis on narrow viewports.
