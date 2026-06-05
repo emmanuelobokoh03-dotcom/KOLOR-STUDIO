@@ -868,6 +868,15 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 224 — Quote draft loading · Contract scroll · Discount in email (Feb 2026) — ✅ SHIPPED
+- **`LeadDetailModal.tsx`**: new `timelineQuote` state + `fetchDraftQuote` helper. Send Offer in timeline mode now hits `/api/pipeline/:leadId`, finds the most recent `DRAFT` quote and passes it as `existingQuote` to `QuoteBuilderModalRoot` — no more lost-draft surprises. State resets on close/save/send. Added `scrollToContracts` state; Pipeline tab `Agreements` `<div>` now has a ref callback that calls `scrollIntoView({behavior:'smooth'})` once after mount and resets the flag.
+- **`LeadTimelineView.tsx`**: `onTabChange` prop signature widened to `(tab, section?)`. Contract events (`CONTRACT_SENT`, `CONTRACT_VIEWED`, `CONTRACT_SIGNED`) pass `section="contracts"` so the parent knows to scroll to the agreements section on tab switch.
+- **`email.ts` `sendQuoteEmail`**: `QuoteEmailData` extended with `discountPercent?` + `discountAmount?`. The Investment highlight box now renders a green `✓ Includes X% discount (-$Y.YY)` sub-line when `discountPercent > 0`. Currency-symbol position is honoured.
+- **`quotes.ts` send route**: passes `discountPercent` + `discountAmount` from the DB row into the email payload.
+- Build gates: backend + frontend `tsc --noEmit` + frontend `npm run build` all clean. Commit `68035a5` (local — `git push` needs Emmanuel's auth). **Railway redeploy required** (backend/email + quotes route changed).
+
+
+
 ## Iteration 223 — Discount persistence + Colour system refinement (Feb 2026) — ✅ SHIPPED
 
 **Discount persistence (full stack)**:
