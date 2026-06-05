@@ -868,6 +868,13 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 220 — Timeline polish: header btn + back nav + truncation (Feb 2026) — ✅ SHIPPED
+- **`LeadDetailModal.tsx`**: (1) header primary action button (View Commission Agreement / Send quote) wrapped in `!showTimelineView &&` — hidden in timeline mode so the timeline stage cards are the canonical action surface. (2) Action-bar Upload + Message buttons now call `setShowTimelineView(false)` before switching tabs so the tab bar becomes visible. (3) Files & Notes and Messages tabs gained a `← Timeline` back link at the top (rendered only when `showTimelineView === false`) so the user can return to the timeline without closing the modal.
+- **`LeadTimelineView.tsx`**: event label `<p>` now carries `truncate` (parent flex container already had `min-w-0`). Long quote numbers like `#SAMPLE-MO4I82K8` truncate with ellipsis on narrow viewports.
+- Build gates: `npx tsc --noEmit` + `npm run build` both clean. Commit `591858c` (local — `git push` needs Emmanuel's auth).
+
+
+
 ## Iteration 219 (retry) — Additive timeline view alongside existing tabs (Feb 2026) — ✅ SHIPPED
 - **`LeadTimelineView.tsx` (new)**: Consumes the existing `GET /api/leads/:id/timeline` endpoint's `{ events: TimelineEvent[] }` shape directly. Three visual states (done = purple check, active = amber clock, pending = dashed circle 50% opacity) with a vertical connector line between events. Action buttons (e.g. "Follow up") call `onTabChange` to jump to the relevant classic tab. Persistent note input at bottom — Enter submits via `leadsApi.addNote`. Loading, error and empty states each rendered explicitly so a fetch failure never blanks the modal.
 - **`LeadDetailModal.tsx` (additive, zero removals)**: `showTimelineView` default flipped to `true`. Content wrapper now branches: `showTimelineView ? <LeadTimelineView /> : <existing 4-tab structure>`. The Overview / Pipeline / Files & Notes / Messages tab tree is left fully intact as the else branch. Action buttons in the timeline call `onTabChange(route)` which sets `showTimelineView=false`, mounts the target tab via `setMountedTabs`, and switches `activeTab` — instant fallback to classic tabs at any time.
