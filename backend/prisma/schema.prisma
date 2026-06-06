@@ -1090,3 +1090,10 @@ model ProcessedWebhookEvent {
 
   @@map("processed_webhook_events")
 }
+
+
+model WaitlistEntry {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}

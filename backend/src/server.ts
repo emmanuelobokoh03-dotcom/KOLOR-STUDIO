@@ -49,6 +49,7 @@ import analyticsRoutes from './routes/analytics';
 import quoteTemplatesRoutes from './routes/quote-templates';
 import bookingsRoutes from './routes/bookings';
 import portfolioRoutes from './routes/portfolio';
+import waitlistRoutes from './routes/waitlist';
 import workflowTemplatesRoutes from './routes/workflow-templates';
 import deliverablesRoutes from './routes/deliverables';
 import contractsRoutes from './routes/contracts';
@@ -241,6 +242,7 @@ app.use('/api/', apiLimiter); // general limiter last (least restrictive)
 // API Routes - all prefixed with /api for K8s ingress routing
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadsRoutes);
+app.use('/api/waitlist', waitlistRoutes);
 app.use('/api/leads', activitiesRoutes); // Activities: /api/leads/:id/activities
 app.use('/api/leads', filesRoutes); // Files: /api/leads/:id/files
 app.use('/api/leads', messageRoutes); // Messages: /api/leads/:id/messages

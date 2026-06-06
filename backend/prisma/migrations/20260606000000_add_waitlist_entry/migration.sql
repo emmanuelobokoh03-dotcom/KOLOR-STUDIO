@@ -1,0 +1,8 @@
+-- WaitlistEntry: emails captured from the landing page for public launch notification
+CREATE TABLE IF NOT EXISTS "WaitlistEntry" (
+  "id" TEXT NOT NULL,
+  "email" TEXT NOT NULL,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "WaitlistEntry_pkey" PRIMARY KEY ("id")
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "WaitlistEntry_email_key" ON "WaitlistEntry"("email");
