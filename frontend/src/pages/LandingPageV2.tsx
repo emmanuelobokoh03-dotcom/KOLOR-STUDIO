@@ -93,7 +93,19 @@ export default function LandingPageV2() {
       })
     }, { threshold: 0.15 })
     ;[priceRef, tlRef, lossRef, indRef].forEach(r => r.current && obs.observe(r.current))
-    return () => obs.disconnect()
+
+    // Generic reveal — handles all .lp-rv sections not in specific refs
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('vis')
+          revealObs.unobserve(e.target)
+        }
+      })
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' })
+    document.querySelectorAll('.lp-rv').forEach(el => revealObs.observe(el))
+
+    return () => { obs.disconnect(); revealObs.disconnect() }
   }, [priceCounted])
 
   const heroH = typeof window !== 'undefined' ? window.innerHeight : 800
@@ -225,9 +237,9 @@ export default function LandingPageV2() {
     .lp-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.18em; text-transform:uppercase; padding:4px 9px; border-radius:2px; display:inline-block; margin-bottom:28px; color:var(--cream-muted); border:.5px solid var(--bg-faint); }
     .lp-tag.oc { background:var(--brand); border-color:var(--brand); color:#fff; }
     .lp-in-name { font-family:'Fraunces',serif; font-weight:700; font-size:clamp(24px,2.8vw,36px); line-height:1; letter-spacing:-.02em; color:var(--cream); margin-bottom:14px; }
-    .lp-in-pain { font-size:13px; line-height:1.72; color:var(--cream-dim); font-weight:300; margin-bottom:32px; }
+    .lp-in-pain { font-size:13px; line-height:1.72; color:rgba(245,240,232,.68); font-weight:300; margin-bottom:32px; }
     .lp-il { list-style:none; display:flex; flex-direction:column; gap:9px; }
-    .lp-il li { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.06em; color:var(--cream-muted); display:flex; align-items:center; gap:9px; }
+    .lp-il li { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.06em; color:rgba(245,240,232,.6); display:flex; align-items:center; gap:9px; }
     .lp-il li::before { content:''; display:block; width:3px; height:3px; border-radius:50%; background:var(--brand-light); flex-shrink:0; }
     .lp-ph { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; margin-bottom:56px; }
     .lp-flow { display:flex; flex-direction:column; }
@@ -342,7 +354,11 @@ export default function LandingPageV2() {
 
       <nav className={`lp-nav${navScrolled ? ' sc' : ''}`}>
         <a href="/" className="lp-logo" aria-label="KOLOR Studio home">
-          <div className="lp-mark">{MARK}</div>
+          <img
+            src="/kolor-mark.png"
+            alt="KOLOR Studio mark"
+            style={{ height: '28px', width: 'auto', display: 'block' }}
+          />
           <span className="lp-wm">Kolor Studio</span>
         </a>
         <a
