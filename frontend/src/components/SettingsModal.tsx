@@ -474,7 +474,7 @@ export default function SettingsModal({ onClose, onSettingsUpdate, onRestartTuto
 
         {/* Restart Tutorial */}
         {onRestartTutorial && (
-          <div className="px-6 pb-4 border-t border-light-200 pt-4 flex-shrink-0">
+          <div className="px-6 pb-20 md:pb-4 border-t border-light-200 pt-4 flex-shrink-0">
             <button
               onClick={() => { onRestartTutorial(); onClose(); }}
               className="flex items-center gap-2 text-sm text-text-tertiary hover:text-purple-400 transition-colors"
