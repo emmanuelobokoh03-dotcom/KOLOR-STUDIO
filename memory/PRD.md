@@ -868,6 +868,46 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 225 — Landing page rebuild: The Studio Wall + conversion layer (Feb 2026) — ✅ SHIPPED
+
+**Full rewrite of `frontend/src/pages/LandingPageV2.tsx`** (2407 → 850 lines net).
+
+**Copy**:
+- Hero: "Your talent is exceptional. Your admin is losing you money." (italic Fraunces, line-mask reveal, final line in outline → solid letter-spacing compress).
+- Sub paragraph leads with the international differentiator, not the feature list.
+- Loss section header: "costing you clients" (was "costs you jobs"); Berlin loss card uses €4,000 (was £); body rewritten US-centric → felt.
+- Industries: "Photography. Design. Fine Art. Built for all three — not bolted on." Fine Art pill changed from "Blue ocean" to "No one else built this for you".
+- Flow header: "From their first message to your final payment."
+- Pricing: removed self-undermining future-pricing hint; founding-member count cut from **20 → 10 studios**.
+- Global: "Built where most CRMs don't go."
+- Close: three parallel "deserves a contract / a portal / to get paid" statements building to the CTA.
+- All CTAs standardised to "Claim your studio".
+
+**Motion**:
+- Three easing tokens (`--ease-out` Expo, `--ease-settle`, `--ease-spring`) on `:root`.
+- Hero: line-mask reveal (`overflow:hidden` containers, `translateY` only — no layout reflow); final "losing you money" line transitions both `transform` and `letter-spacing` (0.5em → -0.035em) and color (outline → solid) over 1s with `ease-settle`.
+- Scroll: `requestAnimationFrame` lerp loop drives both the page background tint and the ghost-K rotation (0 → 3° over one viewport).
+- Timeline mock: `scaleY(0→1)` connectors from `transform-origin: top` (correct technique, replaces the `max-height` hack). Per-event sequence: dot → label (+60ms) → connector (+160ms) → next dot.
+- Industry panels: spring hover lift (`translateY(-2px)` with `--ease-spring`).
+- CTA buttons: magnetic pull on `mousemove` (5px max displacement), 4 separate refs (`btn1..btn4`) to avoid the duplicate-ref TypeScript hazard. Returns to origin with `transition: transform 0.5s var(--ease-out)`.
+- `prefers-reduced-motion` respected.
+
+**Conversion additions (Studio Wall extension)**:
+- Eylem Yentur testimonial slotted between industries and flow sections — italic Fraunces blockquote, DM Mono attribution (Designer · Berlin, Germany).
+- Quote builder mockup as a second product surface alongside the timeline card — Naira line items, 10% discount in green, Send Offer button. Two-column grid (`.lp-mock-grid`) collapses to single column at ≤960 px.
+- Email capture below the pricing CTA — single field, no name. `POST /api/waitlist` with success-state replacement copy. Uses `VITE_API_URL` for the API host.
+
+**Backend (waitlist)**:
+- New `backend/src/routes/waitlist.ts`: `POST /api/waitlist` validates email, upserts into `WaitlistEntry` via `executeRawUnsafe` ON CONFLICT DO NOTHING, fires non-blocking Resend confirmation (`SENDER_EMAIL` env honoured).
+- New Prisma model `WaitlistEntry` (`id`, `email @unique`, `createdAt`) + migration `20260606000000_add_waitlist_entry` (db push + `migrate resolve --applied`).
+- `server.ts`: route imported + mounted at `/api/waitlist`.
+
+**Fonts**: Fraunces + DM Mono + DM Sans preconnected in `frontend/index.html`.
+
+Build gates: backend + frontend `tsc --noEmit` clean (4 GB heap); `npm run build` clean (6.7 s). Commit `e0f57d6` (local — `git push` needs Emmanuel's auth). **Railway redeploy required** (waitlist route + schema). Vercel picks up frontend.
+
+
+
 ## Iteration 224 — Quote draft loading · Contract scroll · Discount in email (Feb 2026) — ✅ SHIPPED
 - **`LeadDetailModal.tsx`**: new `timelineQuote` state + `fetchDraftQuote` helper. Send Offer in timeline mode now hits `/api/pipeline/:leadId`, finds the most recent `DRAFT` quote and passes it as `existingQuote` to `QuoteBuilderModalRoot` — no more lost-draft surprises. State resets on close/save/send. Added `scrollToContracts` state; Pipeline tab `Agreements` `<div>` now has a ref callback that calls `scrollIntoView({behavior:'smooth'})` once after mount and resets the flag.
 - **`LeadTimelineView.tsx`**: `onTabChange` prop signature widened to `(tab, section?)`. Contract events (`CONTRACT_SENT`, `CONTRACT_VIEWED`, `CONTRACT_SIGNED`) pass `section="contracts"` so the parent knows to scroll to the agreements section on tab switch.
