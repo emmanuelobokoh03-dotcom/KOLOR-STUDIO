@@ -26,6 +26,7 @@ export default function LandingPageV2() {
   const [lossVisible, setLossVisible] = useState(false)
   const [indVisible, setIndVisible] = useState(false)
   const [heroReady, setHeroReady] = useState(false)
+  const [waitlistCount, setWaitlistCount] = useState<number | null>(null)
   const [notifyEmail, setNotifyEmail] = useState('')
   const [notifySubmitted, setNotifySubmitted] = useState(false)
   const [notifyLoading, setNotifyLoading] = useState(false)
@@ -54,6 +55,14 @@ export default function LandingPageV2() {
 
   useEffect(() => {
     document.title = 'KOLOR Studio \u2014 Studio management for independent creatives'
+    // Fetch waitlist count for social proof counter
+    {
+      const apiUrl = (import.meta as any).env?.VITE_API_URL || ''
+      fetch(`${apiUrl}/api/waitlist/count`)
+        .then(r => r.json())
+        .then(d => { if (typeof d.count === 'number') setWaitlistCount(d.count) })
+        .catch(() => {})
+    }
     const t = setTimeout(() => setHeroReady(true), 60)
 
     const onScroll = () => {
@@ -746,7 +755,20 @@ export default function LandingPageV2() {
               </div>
             </div>
             <div className="lp-pr" ref={priceRef}>
-              <div className="lp-fb">Founding member &mdash; first 10 studios</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '28px', flexWrap: 'wrap' }}>
+                <div className="lp-fb" style={{ margin: 0 }}>Founding member &mdash; first 10 studios</div>
+                {waitlistCount !== null && waitlistCount > 0 && (
+                  <div style={{
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: '9px',
+                    letterSpacing: '.12em',
+                    textTransform: 'uppercase',
+                    color: 'var(--cream-muted)',
+                  }}>
+                    {waitlistCount} {waitlistCount === 1 ? 'creative' : 'creatives'} already waiting
+                  </div>
+                )}
+              </div>
               <div className="lp-pn">${priceCount}</div>
               <div className="lp-ps">One-time &middot; lifetime access at founding rate</div>
               <ul className="lp-feat">
@@ -874,9 +896,9 @@ export default function LandingPageV2() {
       <footer className="lp-footer">
         <div className="lp-flt">&copy; 2026 KOLOR Studio &middot; kolorstudio.app</div>
         <div className="lp-fr">
-          <a href="https://x.com/kolor_studio" className="lp-fl" target="_blank" rel="noopener noreferrer">X</a>
-          <a href="https://instagram.com/kolorcreativestudio" className="lp-fl" target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a href="https://tiktok.com/@kolorcreativestudio" className="lp-fl" target="_blank" rel="noopener noreferrer">TikTok</a>
+          <a href="https://x.com/kolor_studio" className="lp-fl" target="_blank" rel="noopener noreferrer">@kolor_studio</a>
+          <a href="https://instagram.com/kolorcreativestudio" className="lp-fl" target="_blank" rel="noopener noreferrer">@kolorcreativestudio</a>
+          <a href="https://tiktok.com/@kolorcreativestudio" className="lp-fl" target="_blank" rel="noopener noreferrer">@kolorcreativestudio</a>
           <a href="mailto:hello@kolorstudio.app" className="lp-fl">Contact</a>
           <a href="/privacy" className="lp-fl">Privacy</a>
         </div>

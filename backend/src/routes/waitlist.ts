@@ -45,4 +45,14 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
   }
 })
 
+// GET /api/waitlist/count — public, no auth required
+router.get('/count', async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const count = await prisma.waitlistEntry.count()
+    res.json({ count })
+  } catch {
+    res.json({ count: 0 })
+  }
+})
+
 export default router

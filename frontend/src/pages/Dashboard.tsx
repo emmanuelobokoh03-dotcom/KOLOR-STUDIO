@@ -39,7 +39,7 @@ import { CelebrationModal, checkCelebration, Achievement, achievements } from '.
 const CRMAlerts = lazy(() => import('../components/CRMAlerts'))
 const RevenueDashboard = lazy(() => import('../components/RevenueDashboard'))
 import OnboardingChecklist from '../components/OnboardingChecklist'
-import AHAModal from '../components/AHAModal'
+import OnboardingFlow from '../components/OnboardingFlow'
 const NeedsAttentionSection = lazy(() => import('../components/NeedsAttentionSection'))
 import RevenueGoalWidget from '../components/RevenueGoalWidget'
 import EmailVerificationBanner from '../components/EmailVerificationBanner'
@@ -613,7 +613,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-surface-base flex overflow-x-hidden">
 
       {/* Onboarding Wizard for new users */}
-      {showWizard && (
+      {showWizard && !showAHAModal && (
         <OnboardingWizard onComplete={() => setShowWizard(false)} />
       )}
 
@@ -1676,11 +1676,11 @@ const Dashboard = () => {
         onClose={() => setShowCelebration(false)}
       />
       {showAHAModal && user && (
-        <AHAModal
+        <OnboardingFlow
           userFirstName={user.firstName}
           userEmail={user.email}
           userIndustry={(user as any).industry || user.primaryIndustry}
-          onDismiss={() => setShowAHAModal(false)}
+          onComplete={() => setShowAHAModal(false)}
         />
       )}
     </div>
