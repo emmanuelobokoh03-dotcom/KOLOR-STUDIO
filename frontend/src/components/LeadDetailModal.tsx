@@ -884,6 +884,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                 leadId={lead.id}
                 currencySymbol={currencySymbol}
                 onTabChange={(tab, section) => {
+                  setArrivedFromTimeline(true)
                   setShowTimelineView(false)
                   setMountedTabs(prev => new Set(Array.from(prev).concat([tab])))
                   setActiveTab(tab as any)
@@ -1529,6 +1530,18 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
               </div>
               </>
             ) : activeTab === 'pipeline' ? (
+              <>
+              {arrivedFromTimeline && (
+                <button
+                  onClick={() => { setArrivedFromTimeline(false); setShowTimelineView(true); }}
+                  className="flex items-center gap-1.5 px-4 pt-3 pb-0 text-[11px] font-medium transition-colors"
+                  style={{ color: 'var(--text-tertiary)' }}
+                  data-testid="back-to-timeline-pipeline"
+                >
+                  ← Timeline
+                </button>
+              )}
+              <div>
               <div className="p-4 md:p-6 space-y-6">
                 {/* Offers section */}
                 <div>
@@ -1564,6 +1577,8 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
                   )}
                 </div>
               </div>
+              </div>
+              </>
             ) : activeTab === 'messages' ? (
               <div className="p-4 md:p-6 flex flex-col h-full">
                 {showTimelineView === false && (

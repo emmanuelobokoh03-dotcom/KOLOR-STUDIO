@@ -896,9 +896,9 @@ export default function LandingPageV2() {
       <footer className="lp-footer">
         <div className="lp-flt">&copy; 2026 KOLOR Studio &middot; kolorstudio.app</div>
         <div className="lp-fr">
-          <a href="https://x.com/kolor_studio" className="lp-fl" target="_blank" rel="noopener noreferrer">@kolor_studio</a>
-          <a href="https://instagram.com/kolorcreativestudio" className="lp-fl" target="_blank" rel="noopener noreferrer">@kolorcreativestudio</a>
-          <a href="https://tiktok.com/@kolorcreativestudio" className="lp-fl" target="_blank" rel="noopener noreferrer">@kolorcreativestudio</a>
+          <a href="https://x.com/kolor_studio" className="lp-fl" target="_blank" rel="noopener noreferrer">X &middot; @kolor_studio</a>
+          <a href="https://instagram.com/kolorcreativestudio" className="lp-fl" target="_blank" rel="noopener noreferrer">Instagram &middot; @kolorcreativestudio</a>
+          <a href="https://tiktok.com/@kolorcreativestudio" className="lp-fl" target="_blank" rel="noopener noreferrer">TikTok &middot; @kolorcreativestudio</a>
           <a href="mailto:hello@kolorstudio.app" className="lp-fl">Contact</a>
           <a href="/privacy" className="lp-fl">Privacy</a>
         </div>
