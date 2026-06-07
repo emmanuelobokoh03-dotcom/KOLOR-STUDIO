@@ -809,7 +809,7 @@ const Dashboard = () => {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden" data-testid="mobile-sidebar">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-light-50 border-r border-light-200 animate-slide-left flex flex-col">
+          <div className="absolute left-0 top-0 bottom-0 w-72 bg-light-50 border-r border-light-200 animate-slide-left flex flex-col" style={{ paddingBottom: "calc(65px + env(safe-area-inset-bottom))" }}>
             {/* Sidebar Header */}
             <div className="flex items-center justify-between p-4 border-b border-light-200">
               <KolorLogo variant="dark" size="md" linkTo={null} />
