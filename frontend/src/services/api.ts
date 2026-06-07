@@ -691,7 +691,7 @@ export interface Lead {
 
 export interface CreateLeadData {
   clientName: string;
-  clientEmail: string;
+  clientEmail?: string;
   clientPhone?: string;
   clientCompany?: string;
   serviceType: ServiceType;
