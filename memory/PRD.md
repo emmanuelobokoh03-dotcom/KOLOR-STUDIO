@@ -868,6 +868,28 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 226 — Onboarding flow + waitlist counter (Feb 2026) — ✅ SHIPPED
+
+**`OnboardingFlow.tsx` (new, 4-step modal)** replacing `AHAModal` as the first-login experience:
+- **Step 1 — Welcome / Industry**: auto-skipped if the user already has `primaryIndustry`. Three equal options (Photography / Design / Fine Art) with one-line descs. Selection saves via the existing `authApi.onboarding(value)` (non-blocking try/catch).
+- **Step 2 — First client**: name (required) + email (optional). On save creates a real `Lead` via `leadsApi.create` with `serviceType: OTHER`, placeholder description, and the chosen industry. Email defaults to `unknown@placeholder.local` if left blank so it satisfies the required-field schema; user can edit later. Skip button advances to step 3 without creating anything.
+- **Step 3 — Sample offer**: existing aha moment via `authApi.sendSampleQuote` — sends to the user's own email. Success state shows the recipient inbox confirmation + a "Preview the [quote]" link to the public quote URL. Error state offers retry / skip.
+- **Step 4 — Done**: "Your studio is ready" with a "Go to my studio" CTA. Sets `kolor_aha_completed` in localStorage on dismiss/finish (same flag the dashboard already checks).
+- 4-pill progress bar at the top expands as steps complete. Industry-aware copy throughout via `getIndustryLanguage` (`lang.client`, `lang.quote`).
+
+**`Dashboard.tsx`** wiring:
+- `OnboardingFlow` replaces `AHAModal` at the `showAHAModal` render site; `AHAModal` import removed.
+- `showAHAModal` state + all existing guards (tour, wizard, leads count) unchanged — non-breaking swap.
+- `OnboardingWizard` render gated on `!showAHAModal` so the two flows can't overlap on first login.
+
+**Waitlist counter (landing page)**:
+- New `waitlistCount` state in `LandingPageV2.tsx`. Fetches `GET /api/waitlist/count` on mount (uses `VITE_API_URL`). Counter renders next to the founding-member badge as "X creatives already waiting" — singular form for 1, hidden when 0.
+- New `GET /api/waitlist/count` endpoint in `backend/src/routes/waitlist.ts` — public (no auth), returns `{ count }` via `prisma.waitlistEntry.count()`, falls back to 0 on error.
+
+Build gates: backend + frontend `tsc --noEmit` clean (4 GB heap), `npm run build` clean (6.3 s). Commit `6104bb6` (local — `git push` needs Emmanuel's auth). **Railway redeploy required** (new GET route).
+
+
+
 ## Iteration 225 — Landing page rebuild: The Studio Wall + conversion layer (Feb 2026) — ✅ SHIPPED
 
 **Full rewrite of `frontend/src/pages/LandingPageV2.tsx`** (2407 → 850 lines net).
