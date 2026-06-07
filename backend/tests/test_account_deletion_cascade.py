@@ -46,28 +46,28 @@ class TestRouteAudit:
         headers = self._get_auth_headers()
         res = requests.get(f"{BASE_URL}/api/leads", headers=headers)
         assert res.status_code == 200, f"GET /api/leads failed: {res.text}"
-        print(f"✓ GET /api/leads with auth returns 200")
+        print("✓ GET /api/leads with auth returns 200")
     
     def test_settings_endpoint_with_auth_returns_200(self):
         """GET /api/settings with auth should return 200"""
         headers = self._get_auth_headers()
         res = requests.get(f"{BASE_URL}/api/settings", headers=headers)
         assert res.status_code == 200, f"GET /api/settings failed: {res.text}"
-        print(f"✓ GET /api/settings with auth returns 200")
+        print("✓ GET /api/settings with auth returns 200")
     
     def test_analytics_revenue_pipeline_with_auth_returns_200(self):
         """GET /api/analytics/revenue-pipeline with auth should return 200"""
         headers = self._get_auth_headers()
         res = requests.get(f"{BASE_URL}/api/analytics/revenue-pipeline", headers=headers)
         assert res.status_code == 200, f"GET /api/analytics/revenue-pipeline failed: {res.text}"
-        print(f"✓ GET /api/analytics/revenue-pipeline with auth returns 200")
+        print("✓ GET /api/analytics/revenue-pipeline with auth returns 200")
     
     def test_sequences_dashboard_with_auth_returns_200(self):
         """GET /api/sequences/dashboard with auth should return 200"""
         headers = self._get_auth_headers()
         res = requests.get(f"{BASE_URL}/api/sequences/dashboard", headers=headers)
         assert res.status_code == 200, f"GET /api/sequences/dashboard failed: {res.text}"
-        print(f"✓ GET /api/sequences/dashboard with auth returns 200")
+        print("✓ GET /api/sequences/dashboard with auth returns 200")
 
 
 class TestAccountDeletionAuth:
@@ -77,7 +77,7 @@ class TestAccountDeletionAuth:
         """DELETE /api/user/account without auth token returns 401"""
         res = requests.delete(f"{BASE_URL}/api/user/account", json={"password": "TestPass123!"})
         assert res.status_code == 401, f"Expected 401, got {res.status_code}: {res.text}"
-        print(f"✓ DELETE /api/user/account without token returns 401")
+        print("✓ DELETE /api/user/account without token returns 401")
     
     def test_delete_account_without_password_returns_400(self):
         """DELETE /api/user/account without password returns 400"""
@@ -191,7 +191,7 @@ class TestAccountDeletionCascade:
         # Verify lead exists
         verify_lead_res = requests.get(f"{BASE_URL}/api/leads/{lead_id}", headers=headers)
         assert verify_lead_res.status_code == 200, f"Lead verification failed: {verify_lead_res.text}"
-        print(f"✓ Step 4: Verified lead exists")
+        print("✓ Step 4: Verified lead exists")
         
         # Step 3: Delete account with correct password
         # This is where the original bug occurred - foreign key constraints blocked deletion
@@ -212,11 +212,11 @@ class TestAccountDeletionCascade:
         })
         assert login_after_delete.status_code == 401, \
             f"Account should be deleted, login should return 401, got {login_after_delete.status_code}: {login_after_delete.text}"
-        print(f"✓ Step 6: Verified account is deleted - login returns 401")
+        print("✓ Step 6: Verified account is deleted - login returns 401")
         
-        print(f"\n✅ CASCADE DELETION TEST PASSED")
-        print(f"   User with lead data was successfully deleted.")
-        print(f"   Prisma onDelete:Cascade rules are working correctly.")
+        print("\n✅ CASCADE DELETION TEST PASSED")
+        print("   User with lead data was successfully deleted.")
+        print("   Prisma onDelete:Cascade rules are working correctly.")
     
     def test_after_deletion_login_fails(self):
         """After account deletion, login should fail with 401"""
@@ -245,7 +245,7 @@ class TestAccountDeletionCascade:
             "password": "TestPass123!"
         })
         assert delete_res.status_code == 200, f"Deletion failed: {delete_res.text}"
-        print(f"✓ Account deleted")
+        print("✓ Account deleted")
         
         # Verify login fails
         time.sleep(0.5)
@@ -254,7 +254,7 @@ class TestAccountDeletionCascade:
             "password": "TestPass123!"
         })
         assert login_after.status_code == 401, f"Expected 401, got {login_after.status_code}"
-        print(f"✓ Login after deletion correctly returns 401")
+        print("✓ Login after deletion correctly returns 401")
 
 
 if __name__ == "__main__":

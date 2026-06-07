@@ -31,7 +31,7 @@ def auth_token(session):
     })
     if response.status_code == 200:
         token = response.json().get("token")
-        print(f"✓ Login successful, got token")
+        print("✓ Login successful, got token")
         return token
     else:
         print(f"✗ Login failed: {response.status_code} - {response.text}")
@@ -91,7 +91,7 @@ class TestPortalUploadEndpoint:
         data = response.json()
         assert len(data["files"]) == 1
         assert data["files"][0]["uploadedBy"] == "client"
-        print(f"✓ Image uploaded successfully")
+        print("✓ Image uploaded successfully")
 
     def test_upload_valid_pdf_file(self, session):
         """Client can upload a valid .pdf file"""
@@ -111,7 +111,7 @@ class TestPortalUploadEndpoint:
         data = response.json()
         assert len(data["files"]) == 1
         assert data["files"][0]["uploadedBy"] == "client"
-        print(f"✓ PDF uploaded successfully")
+        print("✓ PDF uploaded successfully")
 
     def test_upload_blocked_exe_file(self, session):
         """Blocked file type .exe should be rejected"""
@@ -128,7 +128,7 @@ class TestPortalUploadEndpoint:
         print(f"EXE upload response: {response.status_code} - {response.text[:200]}")
         # Should be rejected - either 400 or 500 with error
         assert response.status_code in [400, 500], f"Expected rejection, got {response.status_code}"
-        print(f"✓ .exe file correctly rejected")
+        print("✓ .exe file correctly rejected")
 
     def test_upload_blocked_sh_file(self, session):
         """Blocked file type .sh should be rejected"""
@@ -144,7 +144,7 @@ class TestPortalUploadEndpoint:
         
         print(f"SH upload response: {response.status_code}")
         assert response.status_code in [400, 500], f"Expected rejection, got {response.status_code}"
-        print(f"✓ .sh file correctly rejected")
+        print("✓ .sh file correctly rejected")
 
     def test_upload_blocked_js_file(self, session):
         """Blocked file type .js should be rejected"""
@@ -160,7 +160,7 @@ class TestPortalUploadEndpoint:
         
         print(f"JS upload response: {response.status_code}")
         assert response.status_code in [400, 500], f"Expected rejection, got {response.status_code}"
-        print(f"✓ .js file correctly rejected")
+        print("✓ .js file correctly rejected")
 
     def test_upload_blocked_bat_file(self, session):
         """Blocked file type .bat should be rejected"""
@@ -176,7 +176,7 @@ class TestPortalUploadEndpoint:
         
         print(f"BAT upload response: {response.status_code}")
         assert response.status_code in [400, 500], f"Expected rejection, got {response.status_code}"
-        print(f"✓ .bat file correctly rejected")
+        print("✓ .bat file correctly rejected")
 
     def test_upload_multiple_files(self, session):
         """Client can upload up to 5 files at once"""
@@ -206,7 +206,7 @@ class TestPortalUploadEndpoint:
         
         print(f"No files upload response: {response.status_code}")
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
-        print(f"✓ Empty upload correctly rejected")
+        print("✓ Empty upload correctly rejected")
 
     def test_upload_invalid_token(self, session):
         """Upload with invalid token should return 404"""
@@ -221,7 +221,7 @@ class TestPortalUploadEndpoint:
         
         print(f"Invalid token upload response: {response.status_code}")
         assert response.status_code == 404, f"Expected 404, got {response.status_code}"
-        print(f"✓ Invalid token correctly returns 404")
+        print("✓ Invalid token correctly returns 404")
 
 
 class TestPortalGetFilesEndpoint:
@@ -252,7 +252,7 @@ class TestPortalGetFilesEndpoint:
         
         print(f"Invalid token get files response: {response.status_code}")
         assert response.status_code == 404
-        print(f"✓ Invalid token correctly returns 404")
+        print("✓ Invalid token correctly returns 404")
 
 
 class TestPortalDataIncludesClientFiles:
@@ -275,9 +275,9 @@ class TestPortalDataIncludesClientFiles:
         for file in files:
             if "uploadedBy" in file:
                 print(f"  File: {file.get('name')}, uploadedBy: {file.get('uploadedBy')}")
-                assert file["uploadedBy"] in ["client", "creative"], f"uploadedBy should be 'client' or 'creative'"
+                assert file["uploadedBy"] in ["client", "creative"], "uploadedBy should be 'client' or 'creative'"
         
-        print(f"✓ Portal data correctly includes files with uploadedBy field")
+        print("✓ Portal data correctly includes files with uploadedBy field")
 
     def test_portal_shows_client_uploaded_files(self, session):
         """Portal should show files uploaded by client with 'client' indicator"""
@@ -290,9 +290,9 @@ class TestPortalDataIncludesClientFiles:
         print(f"Found {len(client_files)} client-uploaded files in portal")
         
         if len(client_files) > 0:
-            print(f"✓ Client-uploaded files visible in portal")
+            print("✓ Client-uploaded files visible in portal")
         else:
-            print(f"⚠ No client-uploaded files found yet (this may be OK if tests run first)")
+            print("⚠ No client-uploaded files found yet (this may be OK if tests run first)")
 
 
 class TestPortalFileDownload:
@@ -320,7 +320,7 @@ class TestPortalFileDownload:
         print(f"Download response: {download_response.status_code}")
         # Should redirect to file URL or return file content
         assert download_response.status_code in [200, 302, 307], f"Expected redirect or success, got {download_response.status_code}"
-        print(f"✓ File download endpoint working")
+        print("✓ File download endpoint working")
 
     def test_download_invalid_file(self, session):
         """Download with invalid file ID should return 404"""
@@ -331,7 +331,7 @@ class TestPortalFileDownload:
         
         print(f"Invalid file download response: {response.status_code}")
         assert response.status_code == 404
-        print(f"✓ Invalid file ID correctly returns 404")
+        print("✓ Invalid file ID correctly returns 404")
 
 
 class TestCreativeDashboardShowsClientUploads:
@@ -361,9 +361,9 @@ class TestCreativeDashboardShowsClientUploads:
             print(f"    - {f.get('originalName')}, uploadedBy: {f.get('uploadedBy')}")
         
         if len(client_uploads) > 0:
-            print(f"✓ Creative dashboard correctly shows client-uploaded files with badge")
+            print("✓ Creative dashboard correctly shows client-uploaded files with badge")
         else:
-            print(f"⚠ No client-uploaded files found for this lead yet")
+            print("⚠ No client-uploaded files found for this lead yet")
 
 
 class TestFileValidationRules:
@@ -390,7 +390,7 @@ class TestFileValidationRules:
             print(f"✓ Max 5 files enforced - uploaded {len(data.get('files', []))} files")
         else:
             # Error is also acceptable
-            print(f"✓ Max 5 files enforced - request rejected")
+            print("✓ Max 5 files enforced - request rejected")
 
     def test_allowed_extensions_pass(self, session):
         """Allowed extensions should pass validation"""
@@ -409,7 +409,7 @@ class TestFileValidationRules:
             print(f"Extension {ext}: {response.status_code}")
             assert response.status_code == 200, f"Extension {ext} should be allowed"
         
-        print(f"✓ All allowed extensions pass validation")
+        print("✓ All allowed extensions pass validation")
 
 
 if __name__ == "__main__":

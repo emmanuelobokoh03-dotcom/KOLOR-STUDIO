@@ -134,7 +134,7 @@ class TestSignupNoDemo:
         leads = leads_data.get("leads", leads_data) if isinstance(leads_data, dict) else leads_data
         
         # Filter to find demo leads assigned to this user
-        user_demo_leads = [lead for lead in leads if lead.get('assignedToId') == user_id and lead.get('isDemoData') == True]
+        user_demo_leads = [lead for lead in leads if lead.get('assignedToId') == user_id and lead.get('isDemoData')]
         
         print(f"Total leads visible: {len(leads) if isinstance(leads, list) else 'unknown'}")
         print(f"Demo leads assigned to this user: {len(user_demo_leads)}")

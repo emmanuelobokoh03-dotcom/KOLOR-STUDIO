@@ -6,7 +6,6 @@ import pytest
 import requests
 import os
 import uuid
-from datetime import datetime
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://hardened-crm-2.preview.emergentagent.com').rstrip('/')
 
@@ -119,7 +118,7 @@ class TestMilestonesCRUD:
         milestone = data["milestone"]
         assert milestone["name"] == unique_name
         assert milestone["description"] == "Test milestone for pytest"
-        assert milestone["completed"] == False
+        assert not milestone["completed"]
         assert milestone["completedAt"] is None
         
         # Store for cleanup
@@ -155,7 +154,7 @@ class TestMilestonesCRUD:
         assert response.status_code == 200
         
         data = response.json()
-        assert data["milestone"]["completed"] == True
+        assert data["milestone"]["completed"]
         assert data["milestone"]["completedAt"] is not None
         print(f"Milestone marked complete at {data['milestone']['completedAt']}")
 
@@ -172,7 +171,7 @@ class TestMilestonesCRUD:
         assert response.status_code == 200
         
         data = response.json()
-        assert data["milestone"]["completed"] == False
+        assert not data["milestone"]["completed"]
         assert data["milestone"]["completedAt"] is None
         print("Milestone completion undone")
 
@@ -284,7 +283,7 @@ class TestExistingMilestones:
         
         if completed:
             assert completed["name"] == "First Look Preview"
-            assert completed["completed"] == True
+            assert completed["completed"]
             assert completed["completedAt"] is not None
             print(f"Verified completed milestone: {completed['name']}")
         else:
@@ -300,7 +299,7 @@ class TestExistingMilestones:
         
         if pending:
             assert pending["name"] == "Album Design"
-            assert pending["completed"] == False
+            assert not pending["completed"]
             assert pending["completedAt"] is None
             print(f"Verified pending milestone: {pending['name']}")
         else:

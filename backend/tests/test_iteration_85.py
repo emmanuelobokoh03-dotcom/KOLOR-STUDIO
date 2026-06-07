@@ -71,7 +71,7 @@ class TestGoogleCalendarConfigCheck:
             assert "authUrl" in data
             if data["authUrl"]:
                 assert "accounts.google.com" in data["authUrl"] or "google" in data["authUrl"].lower()
-                print(f"Auth URL generated successfully")
+                print("Auth URL generated successfully")
         else:
             print(f"Auth URL not available (config not set): {response.status_code}")
     
@@ -161,7 +161,7 @@ class TestDiscoveryCallWorkflow:
         assert response.status_code == 200, f"Failed to schedule: {response.text}"
         data = response.json()
         assert "lead" in data
-        assert data["lead"]["discoveryCallScheduled"] == True
+        assert data["lead"]["discoveryCallScheduled"]
         print(f"Discovery call scheduled for lead {test_lead['id']}")
     
     def test_complete_discovery_call(self, auth_token, test_lead):
@@ -180,7 +180,7 @@ class TestDiscoveryCallWorkflow:
         assert "lead" in data
         assert data["lead"]["discoveryCallCompletedAt"] is not None
         assert data["lead"]["discoveryCallNotes"] == "Client wants wedding photography, budget $5000"
-        print(f"Discovery call completed with notes")
+        print("Discovery call completed with notes")
 
 
 class TestServiceTypes:

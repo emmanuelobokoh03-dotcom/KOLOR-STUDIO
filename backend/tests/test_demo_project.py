@@ -95,9 +95,9 @@ class TestDemoProjectFeature:
         leads = data.get("leads", [])
         
         # Find the demo lead
-        demo_leads = [l for l in leads if l.get("isDemoData") == True]
+        demo_leads = [ld for ld in leads if ld.get("isDemoData")]
         
-        assert len(demo_leads) >= 1, f"Expected at least 1 demo lead, found {len(demo_leads)}. All leads: {[l.get('clientName') for l in leads]}"
+        assert len(demo_leads) >= 1, f"Expected at least 1 demo lead, found {len(demo_leads)}. All leads: {[ld.get('clientName') for ld in leads]}"
         
         demo_lead = demo_leads[0]
         
@@ -106,7 +106,7 @@ class TestDemoProjectFeature:
         assert demo_lead["serviceType"] == "PHOTOGRAPHY"
         assert demo_lead["projectTitle"] == "Wedding Photography"
         assert demo_lead["status"] == "QUOTED"
-        assert demo_lead["isDemoData"] == True
+        assert demo_lead["isDemoData"]
     
     def test_demo_lead_has_correct_fields(self, new_user_token):
         """Test that demo lead has all expected fields populated"""
@@ -117,7 +117,7 @@ class TestDemoProjectFeature:
         
         assert response.status_code == 200
         leads = response.json().get("leads", [])
-        demo_leads = [l for l in leads if l.get("isDemoData") == True]
+        demo_leads = [ld for ld in leads if ld.get("isDemoData")]
         
         if len(demo_leads) == 0:
             pytest.skip("No demo lead found - may already have leads")
@@ -155,7 +155,7 @@ class TestDemoProjectFeature:
         
         # Existing user emmanuelobokoh03@gmail.com should have real leads
         # Most leads should NOT be demo data
-        non_demo_leads = [l for l in leads if l.get("isDemoData") != True]
+        non_demo_leads = [ld for ld in leads if not ld.get("isDemoData")]
         
         # Expecting existing user to have some non-demo leads
         assert len(non_demo_leads) > 0, "Existing user should have some non-demo leads"
@@ -171,7 +171,7 @@ class TestDemoProjectFeature:
         assert response.status_code == 200
         
         leads = response.json().get("leads", [])
-        demo_leads = [l for l in leads if l.get("isDemoData") == True]
+        demo_leads = [ld for ld in leads if ld.get("isDemoData")]
         
         if len(demo_leads) == 0:
             pytest.skip("No demo lead found to delete")
@@ -185,7 +185,7 @@ class TestDemoProjectFeature:
         # Verify deletion
         verify_response = requests.get(f"{BASE_URL}/api/leads", headers=headers)
         remaining_leads = verify_response.json().get("leads", [])
-        remaining_demo_leads = [l for l in remaining_leads if l.get("id") == demo_lead_id]
+        remaining_demo_leads = [ld for ld in remaining_leads if ld.get("id") == demo_lead_id]
         assert len(remaining_demo_leads) == 0, "Demo lead should be deleted"
 
 
@@ -226,7 +226,7 @@ class TestDemoQuoteCreation:
         assert leads_response.status_code == 200
         
         leads = leads_response.json().get("leads", [])
-        demo_leads = [l for l in leads if l.get("isDemoData") == True]
+        demo_leads = [ld for ld in leads if ld.get("isDemoData")]
         
         if len(demo_leads) == 0:
             pytest.skip("No demo lead found")
@@ -253,7 +253,7 @@ class TestDemoQuoteCreation:
         # Get leads to find demo lead
         leads_response = requests.get(f"{BASE_URL}/api/leads", headers=headers)
         leads = leads_response.json().get("leads", [])
-        demo_leads = [l for l in leads if l.get("isDemoData") == True]
+        demo_leads = [ld for ld in leads if ld.get("isDemoData")]
         
         if len(demo_leads) == 0:
             pytest.skip("No demo lead found")
@@ -308,7 +308,7 @@ class TestDemoActivityAndInteraction:
         # Get demo lead
         leads_response = requests.get(f"{BASE_URL}/api/leads", headers=headers)
         leads = leads_response.json().get("leads", [])
-        demo_leads = [l for l in leads if l.get("isDemoData") == True]
+        demo_leads = [ld for ld in leads if ld.get("isDemoData")]
         
         if len(demo_leads) == 0:
             pytest.skip("No demo lead found")

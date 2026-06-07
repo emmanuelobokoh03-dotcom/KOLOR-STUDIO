@@ -49,7 +49,7 @@ class TestDigestPreview:
         """POST /api/digest/send without auth should return 401"""
         response = requests.post(f"{BASE_URL}/api/digest/send")
         assert response.status_code == 401
-        print(f"✓ Unauthenticated digest send returns 401")
+        print("✓ Unauthenticated digest send returns 401")
     
     def test_digest_send_authenticated(self):
         """POST /api/digest/send with auth should return 200"""
@@ -147,7 +147,7 @@ class TestForgotPasswordRateLimit:
         """Test forgot-password requires email"""
         response = requests.post(f"{BASE_URL}/api/auth/forgot-password", json={})
         assert response.status_code == 400
-        print(f"✓ Forgot password validation works (400 for missing email)")
+        print("✓ Forgot password validation works (400 for missing email)")
 
 
 class TestAuthCleanup:
@@ -168,7 +168,7 @@ class TestAuthCleanup:
         assert response.status_code == 400
         data = response.json()
         assert "Invalid Token" in data.get("error", "") or "invalid" in data.get("message", "").lower()
-        print(f"✓ Reset password endpoint handles invalid tokens correctly")
+        print("✓ Reset password endpoint handles invalid tokens correctly")
 
 
 class TestRegressionChecks:
@@ -191,7 +191,7 @@ class TestRegressionChecks:
         assert response.status_code == 200
         data = response.json()
         assert "settings" in data
-        print(f"✓ Settings endpoint works")
+        print("✓ Settings endpoint works")
     
     def test_leads_endpoint(self, auth_session):
         """GET /api/leads should work"""

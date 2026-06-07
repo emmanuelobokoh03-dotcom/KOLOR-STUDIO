@@ -131,7 +131,7 @@ class TestSequenceCRUD:
         assert seq["name"] == payload["name"]
         assert seq["description"] == payload["description"]
         assert seq["trigger"] == payload["trigger"]
-        assert seq["active"] == True
+        assert seq["active"]
         assert len(seq["steps"]) == 2
         assert seq["steps"][0]["delayDays"] == 2
         assert seq["steps"][1]["delayDays"] == 5
@@ -174,7 +174,7 @@ class TestSequenceCRUD:
         seq = data["sequence"]
         assert seq["name"] == payload["name"]
         assert seq["description"] == payload["description"]
-        assert seq["active"] == False
+        assert not seq["active"]
         print(f"✓ Updated sequence: {seq['name']}")
 
     def test_delete_sequence(self, auth_headers):
@@ -264,7 +264,7 @@ class TestStepCRUD:
         seq_id = getattr(TestStepCRUD, 'test_sequence_id', None)
         if seq_id:
             requests.delete(f"{BASE_URL}/api/sequences/{seq_id}", headers=auth_headers)
-            print(f"✓ Cleaned up test sequence")
+            print("✓ Cleaned up test sequence")
 
 
 class TestEnrollmentManagement:
@@ -282,7 +282,7 @@ class TestEnrollmentManagement:
         response = requests.post(f"{BASE_URL}/api/sequences", headers=auth_headers, json=payload)
         assert response.status_code == 201
         TestEnrollmentManagement.test_sequence_id = response.json()["sequence"]["id"]
-        print(f"✓ Created enrollment test sequence")
+        print("✓ Created enrollment test sequence")
 
     def test_manual_enroll_lead(self, auth_headers):
         """POST /api/sequences/:id/enroll/:leadId - Manually enroll lead"""
@@ -587,7 +587,7 @@ class TestAutoStopPortalMessage:
         )
         if response.status_code == 201:
             TestAutoStopPortalMessage.enrollment_id = response.json()["enrollment"]["id"]
-            print(f"✓ Enrolled Cokespice in test sequence")
+            print("✓ Enrolled Cokespice in test sequence")
         elif response.status_code == 400:
             # Already enrolled
             detail_resp = requests.get(f"{BASE_URL}/api/sequences/{seq_id}", headers=auth_headers)
@@ -693,7 +693,7 @@ class TestNewUserSignupSeedSequence:
         
         assert quote_followup is not None, "Default 'Quote Follow-Up' sequence not found"
         assert quote_followup["trigger"] == "QUOTE_SENT"
-        assert quote_followup["active"] == True
+        assert quote_followup["active"]
         
         # Check steps: Day 3, 7, 10
         steps = quote_followup["steps"]

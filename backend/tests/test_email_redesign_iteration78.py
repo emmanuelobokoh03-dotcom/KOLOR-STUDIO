@@ -28,7 +28,7 @@ class TestHealthAndAuth:
         data = response.json()
         assert data["status"] == "ok"
         assert "KOLOR STUDIO API" in data["message"]
-        print(f"PASS: Health check OK - Backend running with all cron jobs active")
+        print("PASS: Health check OK - Backend running with all cron jobs active")
     
     def test_login_endpoint(self):
         """Test login still works after email service changes"""
@@ -88,7 +88,7 @@ class TestMeetingBookingAPIs:
         data = response.json()
         # Should return availability settings
         assert data is not None
-        print(f"PASS: Availability API working")
+        print("PASS: Availability API working")
     
     def test_public_booking_page_data(self):
         """Test public booking page data API works"""
@@ -98,7 +98,7 @@ class TestMeetingBookingAPIs:
         assert "meetingTypes" in data
         # Brand settings are in 'user' object, not separate 'brandSettings'
         assert "user" in data
-        print(f"PASS: Public booking data API returned user's booking page data")
+        print("PASS: Public booking data API returned user's booking page data")
     
     def test_meeting_booking_triggers_email_code_path(self):
         """Test meeting booking API - triggers sendMeetingConfirmationEmail and sendMeetingNotificationToOwner"""
@@ -122,9 +122,9 @@ class TestMeetingBookingAPIs:
         # 201 = created, 400 = validation error (time slot taken), both indicate API works
         assert response.status_code in [201, 400]
         if response.status_code == 201:
-            print(f"PASS: Meeting booking created - email code path triggered")
+            print("PASS: Meeting booking created - email code path triggered")
         else:
-            print(f"PASS: Meeting booking API responded with validation (slot may be taken)")
+            print("PASS: Meeting booking API responded with validation (slot may be taken)")
 
 
 class TestOtherAPIs:
@@ -144,13 +144,13 @@ class TestOtherAPIs:
         """Test leads API works"""
         response = requests.get(f"{BASE_URL}/api/leads", headers=self.headers)
         assert response.status_code == 200
-        print(f"PASS: Leads API working")
+        print("PASS: Leads API working")
     
     def test_settings_api(self):
         """Test settings API works"""
         response = requests.get(f"{BASE_URL}/api/settings", headers=self.headers)
         assert response.status_code == 200
-        print(f"PASS: Settings API working")
+        print("PASS: Settings API working")
     
     def test_analytics_api(self):
         """Test analytics API works"""
@@ -163,13 +163,13 @@ class TestOtherAPIs:
         """Test quote templates API works"""
         response = requests.get(f"{BASE_URL}/api/quote-templates", headers=self.headers)
         assert response.status_code == 200
-        print(f"PASS: Quote templates API working")
+        print("PASS: Quote templates API working")
     
     def test_portfolio_api(self):
         """Test portfolio API works"""
         response = requests.get(f"{BASE_URL}/api/portfolio", headers=self.headers)
         assert response.status_code == 200
-        print(f"PASS: Portfolio API working")
+        print("PASS: Portfolio API working")
 
 
 class TestEmailDesignSystemIntegration:
@@ -190,7 +190,7 @@ class TestEmailDesignSystemIntegration:
         )
         # 404 = user not found, 200 = email sent, both indicate email service loaded
         assert response.status_code in [200, 404, 400]
-        print(f"PASS: Email service loaded (forgot-password endpoint responding)")
+        print("PASS: Email service loaded (forgot-password endpoint responding)")
 
 
 if __name__ == "__main__":

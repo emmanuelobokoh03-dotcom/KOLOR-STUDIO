@@ -8,7 +8,6 @@ Tests for:
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://hardened-crm-2.preview.emergentagent.com')
 
@@ -48,7 +47,7 @@ class TestDigestEndpoint:
         data = resp.json()
         assert "message" in data, f"Response missing 'message': {data}"
         assert data.get("message") == "Weekly pipeline reports dispatched", f"Unexpected message: {data}"
-        assert data.get("success") == True, f"Expected success=true: {data}"
+        assert data.get("success"), f"Expected success=true: {data}"
         print(f"✓ POST /api/digest/weekly returns 200 with message: {data['message']}")
 
 

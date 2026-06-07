@@ -93,7 +93,7 @@ class TestAuthenticatedMessagesAPI:
         msg = data["message"]
         assert msg["content"] == unique_content, "Content should match what was sent"
         assert msg["from"] == "CREATIVE", "Message should be from CREATIVE"
-        assert msg["read"] == True, "Creative messages should be marked as read"
+        assert msg["read"], "Creative messages should be marked as read"
         assert "id" in msg, "Message should have an id"
         assert "createdAt" in msg, "Message should have createdAt"
         
@@ -111,7 +111,7 @@ class TestAuthenticatedMessagesAPI:
         data = response.json()
         assert "error" in data, "Error response should have 'error' field"
         
-        print(f"SUCCESS: Empty message correctly rejected with 400")
+        print("SUCCESS: Empty message correctly rejected with 400")
 
     def test_creative_send_whitespace_only_message_fails(self, auth_headers):
         """Test POST /api/leads/:leadId/messages with whitespace-only content returns 400"""
@@ -177,7 +177,7 @@ class TestPortalMessagesAPI:
             assert "id" in msg, "Message should have id"
             assert "content" in msg, "Message should have content"
             assert "from" in msg, "Message should have 'from' field"
-            assert msg["from"] in ["CLIENT", "CREATIVE"], f"from should be CLIENT or CREATIVE"
+            assert msg["from"] in ["CLIENT", "CREATIVE"], "from should be CLIENT or CREATIVE"
             assert "read" in msg, "Message should have 'read' field"
             assert "createdAt" in msg, "Message should have createdAt"
         
@@ -201,7 +201,7 @@ class TestPortalMessagesAPI:
         msg = data["message"]
         assert msg["content"] == unique_content, "Content should match what was sent"
         assert msg["from"] == "CLIENT", "Message should be from CLIENT"
-        assert msg["read"] == False, "Client messages should start as unread"
+        assert not msg["read"], "Client messages should start as unread"
         assert "id" in msg, "Message should have an id"
         assert "createdAt" in msg, "Message should have createdAt"
         
@@ -253,8 +253,8 @@ class TestMessagingFlow:
         assert response.status_code == 200, f"Portal get failed: {response.text}"
         messages = response.json()["messages"]
         found = any(m["id"] == creative_msg_id for m in messages)
-        assert found, f"Creative message not found in portal messages"
-        print(f"Step 2: Client sees message in portal")
+        assert found, "Creative message not found in portal messages"
+        print("Step 2: Client sees message in portal")
         
         # Step 3: Client sends a reply via portal
         client_msg = f"Thanks for reaching out! - {uuid.uuid4().hex[:8]}"
@@ -275,8 +275,8 @@ class TestMessagingFlow:
         assert response.status_code == 200, f"Creative get failed: {response.text}"
         messages = response.json()["messages"]
         found = any(m["id"] == client_msg_id for m in messages)
-        assert found, f"Client message not found in creative messages"
-        print(f"Step 4: Creative sees client reply")
+        assert found, "Client message not found in creative messages"
+        print("Step 4: Creative sees client reply")
         
         # Step 5: Verify unread count increased
         response = requests.get(
@@ -294,7 +294,7 @@ class TestMessagingFlow:
             headers=auth_headers
         )
         assert response.status_code == 200, f"Mark read failed: {response.text}"
-        print(f"Step 6: Messages marked as read")
+        print("Step 6: Messages marked as read")
         
         print("SUCCESS: Full messaging flow completed!")
 

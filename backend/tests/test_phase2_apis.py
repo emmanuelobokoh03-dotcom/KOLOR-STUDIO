@@ -399,7 +399,7 @@ class TestRegressionDashboard:
         data = response.json()
         # Data is nested under overview.conversionRate / overview.pipelineValue
         assert "overview" in data or "metrics" in data
-        print(f"✅ GET /api/analytics/dashboard working")
+        print("✅ GET /api/analytics/dashboard working")
 
 
 if __name__ == "__main__":

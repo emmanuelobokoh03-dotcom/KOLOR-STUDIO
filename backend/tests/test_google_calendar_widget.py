@@ -4,7 +4,6 @@ Tests for the new dashboard Calendar Connection Widget feature
 """
 import pytest
 import requests
-import os
 
 BASE_URL = "https://hardened-crm-2.preview.emergentagent.com"
 
@@ -55,7 +54,7 @@ class TestGoogleCalendarStatus:
         
         # For test user, calendar is likely not connected
         if not data["connected"]:
-            assert data.get("provider") is None or data.get("provider") == None
+            assert data.get("provider") is None or data.get("provider") is None
         else:
             assert "provider" in data
 
@@ -104,7 +103,7 @@ class TestGoogleCalendarDisconnect:
         # Should succeed even if not connected (idempotent)
         assert response.status_code == 200, f"Disconnect failed: {response.text}"
         data = response.json()
-        assert data.get("success") == True, "Response should indicate success"
+        assert data.get("success"), "Response should indicate success"
 
 
 class TestCalendarWidgetIntegration:

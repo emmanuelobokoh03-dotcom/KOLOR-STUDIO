@@ -5,7 +5,6 @@ Tests for custom subject/message in quote and contract send endpoints
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://hardened-crm-2.preview.emergentagent.com')
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"

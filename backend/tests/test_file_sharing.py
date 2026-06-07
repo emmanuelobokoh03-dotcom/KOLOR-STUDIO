@@ -65,7 +65,7 @@ class TestFileSharing:
         data = response.json()
         assert "file" in data
         assert data["file"]["id"] == SHARED_FILE_ID
-        assert data["file"]["sharedWithClient"] == True
+        assert data["file"]["sharedWithClient"]
         assert data["file"]["sharedAt"] is not None
         print(f"✓ Share ON test passed: file {SHARED_FILE_ID} is now shared")
     
@@ -81,7 +81,7 @@ class TestFileSharing:
         data = response.json()
         assert "file" in data
         assert data["file"]["id"] == SHARED_FILE_ID
-        assert data["file"]["sharedWithClient"] == False
+        assert not data["file"]["sharedWithClient"]
         assert data["file"]["sharedAt"] is None
         print(f"✓ Share OFF test passed: file {SHARED_FILE_ID} is now private")
     
@@ -94,7 +94,7 @@ class TestFileSharing:
         
         assert response.status_code == 200
         data = response.json()
-        assert data["file"]["sharedWithClient"] == True
+        assert data["file"]["sharedWithClient"]
         print(f"✓ Share restored to ON for file {SHARED_FILE_ID}")
     
     def test_toggle_share_requires_auth(self):
@@ -174,7 +174,7 @@ class TestPortalSharedFiles:
             print(f"  - File: {file['name']} (ID: {file['id']})")
         
         # Check if our known shared file is present
-        shared_file_ids = [f["id"] for f in files]
+        [f["id"] for f in files]
         # The shared file should be in the list (if not recently toggled off)
         print(f"✓ Portal returns shared files correctly. Count: {len(files)}")
     

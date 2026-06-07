@@ -127,7 +127,7 @@ class TestBrandSettingsAPI:
         assert brand["primaryColor"].startswith("#"), "primaryColor should be hex format"
         assert brand["accentColor"].startswith("#"), "accentColor should be hex format"
         
-        print(f"✓ Brand settings retrieved:")
+        print("✓ Brand settings retrieved:")
         print(f"  - Primary: {brand['primaryColor']}")
         print(f"  - Accent: {brand['accentColor']}")
         print(f"  - Font: {brand['fontFamily']}")
@@ -157,7 +157,7 @@ class TestBrandSettingsAPI:
         verify_brand = verify_response.json().get("brand", {})
         assert verify_brand["primaryColor"] == test_color, "Updated color should persist"
         
-        print(f"✓ Brand settings update and persistence verified")
+        print("✓ Brand settings update and persistence verified")
         print(f"  - Updated primary color to: {test_color}")
         
         # Restore original color
@@ -184,7 +184,7 @@ class TestPortalEndpoint:
             assert "project" in data or "client" in data or "status" in data
             print(f"✓ Portal endpoint accessible for token: {TEST_PORTAL_TOKEN}")
         else:
-            print(f"✓ Portal endpoint exists (token may be invalid/expired)")
+            print("✓ Portal endpoint exists (token may be invalid/expired)")
 
 
 class TestHealthCheck:

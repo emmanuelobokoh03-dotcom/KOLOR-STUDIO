@@ -9,7 +9,6 @@ Tests for:
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://hardened-crm-2.preview.emergentagent.com')
 
@@ -80,7 +79,7 @@ class TestPhase1MessageNotifications(TestAuth):
             data = response.json()
             assert "message" in data
             assert data["message"]["from"] == "CLIENT"
-            print(f"✅ Portal message sent successfully. Check backend logs for '[MESSAGE NOTIFICATION] Email sent to creative'")
+            print("✅ Portal message sent successfully. Check backend logs for '[MESSAGE NOTIFICATION] Email sent to creative'")
     
     def test_lead_message_creative_to_client(self, auth_token):
         """
@@ -104,7 +103,7 @@ class TestPhase1MessageNotifications(TestAuth):
             data = response.json()
             assert "message" in data
             assert data["message"]["from"] == "CREATIVE"
-            print(f"✅ Creative message sent successfully. Check backend logs for '[MESSAGE NOTIFICATION] Email sent to client'")
+            print("✅ Creative message sent successfully. Check backend logs for '[MESSAGE NOTIFICATION] Email sent to client'")
         else:
             print(f"ℹ️ Lead {LEAD_ID} not accessible to this test user (may be assigned to different user)")
 
@@ -137,7 +136,7 @@ class TestPhase1WorkProgressNotifications(TestAuth):
         if response.status_code == 200:
             data = response.json()
             assert "deliverable" in data or "message" in data
-            print(f"✅ Deliverable status updated. Check backend logs for '[WORK NOTIFICATION] Email sent to client'")
+            print("✅ Deliverable status updated. Check backend logs for '[WORK NOTIFICATION] Email sent to client'")
         else:
             print(f"ℹ️ Deliverable {DELIVERABLE_ID} not accessible to this test user")
 
@@ -181,7 +180,7 @@ class TestPhase3RevenuePipeline(TestAuth):
             assert "value" in pipeline[stage], f"Missing 'value' in {stage}"
             assert "clients" in pipeline[stage], f"Missing 'clients' in {stage}"
         
-        print(f"✅ Revenue Pipeline API working correctly")
+        print("✅ Revenue Pipeline API working correctly")
         print(f"   Total Value: {data['currencySymbol']}{data['totalValue']}")
         for stage in required_stages:
             print(f"   {stage}: count={pipeline[stage]['count']}, value={pipeline[stage]['value']}")
@@ -221,9 +220,9 @@ class TestPhase2QuoteModalSelectors:
         assert "[&>option]:bg-" in content or "option" in content, \
             "Quote modal should have option element styling for dropdowns"
         
-        print(f"✅ Quote modal select elements have proper dark-mode styling")
-        print(f"   - Found border, background, and text color styling")
-        print(f"   - Dropdown options will be visible on dark backgrounds")
+        print("✅ Quote modal select elements have proper dark-mode styling")
+        print("   - Found border, background, and text color styling")
+        print("   - Dropdown options will be visible on dark backgrounds")
 
 
 class TestBackendHealth:
@@ -233,7 +232,7 @@ class TestBackendHealth:
         """Test backend health endpoint"""
         response = requests.get(f"{BASE_URL}/api/health")
         assert response.status_code == 200
-        print(f"✅ Backend health check passed")
+        print("✅ Backend health check passed")
     
     def test_dashboard_analytics(self, auth_token=None):
         """Test dashboard analytics endpoint"""
@@ -255,7 +254,7 @@ class TestBackendHealth:
         data = response.json()
         assert "overview" in data
         assert "metrics" in data
-        print(f"✅ Dashboard analytics working")
+        print("✅ Dashboard analytics working")
 
 
 # Run tests if executed directly

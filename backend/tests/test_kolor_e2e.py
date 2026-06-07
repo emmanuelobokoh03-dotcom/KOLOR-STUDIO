@@ -327,10 +327,10 @@ class TestSuite9_RevenueDashboard:
         """Get revenue stats"""
         response = requests.get(f"{BASE_URL}/api/analytics/revenue", headers=auth_headers)
         assert response.status_code == 200
-        data = response.json()
+        response.json()
         
         # Should have revenue data
-        print(f"✓ Revenue stats endpoint working")
+        print("✓ Revenue stats endpoint working")
     
     def test_11b_get_crm_alerts(self, auth_headers):
         """Get CRM alerts"""

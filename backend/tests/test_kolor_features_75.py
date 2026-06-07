@@ -9,7 +9,6 @@ Tests for:
 import os
 import pytest
 import requests
-import json
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://hardened-crm-2.preview.emergentagent.com').rstrip('/')
 
@@ -139,7 +138,7 @@ class TestMilestonesAPI:
         data = response.json()
         assert "milestone" in data, "Response should contain 'milestone' key"
         milestone = data["milestone"]
-        assert milestone["completed"] == True, "Milestone should be marked as completed"
+        assert milestone["completed"], "Milestone should be marked as completed"
         assert milestone.get("completedAt") is not None, "completedAt should be set"
     
     def test_delete_milestone(self, auth_headers):

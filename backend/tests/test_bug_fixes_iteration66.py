@@ -65,7 +65,7 @@ class TestEmailSignatureAPI:
         # Verify response contains updated settings
         assert "settings" in data, "settings key missing from response"
         assert data["settings"]["emailSignature"] == test_signature, "emailSignature was not updated"
-        print(f"Email signature updated successfully")
+        print("Email signature updated successfully")
     
     def test_settings_get_returns_updated_email_signature(self, auth_token):
         """Verify emailSignature persisted after PATCH"""

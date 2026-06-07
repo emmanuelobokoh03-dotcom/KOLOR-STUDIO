@@ -4,8 +4,6 @@ Tests: Security headers (helmet), gzip compression, rate limiting, health endpoi
 """
 import pytest
 import requests
-import time
-import os
 
 # Base URL from environment - using the public preview URL
 BASE_URL = "https://hardened-crm-2.preview.emergentagent.com"
@@ -73,7 +71,7 @@ class TestSecurityHeaders:
         assert header is not None, "Missing content-security-policy header"
         # Should allow plausible.io scripts
         assert "plausible.io" in header, f"CSP should allow plausible.io: {header}"
-        print(f"✅ Content-Security-Policy present (allows plausible.io)")
+        print("✅ Content-Security-Policy present (allows plausible.io)")
 
 
 class TestGzipCompression:
@@ -113,7 +111,7 @@ class TestAuthentication:
         
         # Check for auth cookie (HTTP-only cookie named 'token')
         cookies = response.cookies
-        token_cookie = cookies.get("token")
+        cookies.get("token")
         
         # Also check Set-Cookie header
         set_cookie = response.headers.get("set-cookie", "")
@@ -133,7 +131,7 @@ class TestAuthentication:
         )
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        print(f"✅ Invalid login correctly returns 401")
+        print("✅ Invalid login correctly returns 401")
     
     def test_dashboard_access_with_cookie(self):
         """Test dashboard API access with auth cookie"""
@@ -150,7 +148,7 @@ class TestAuthentication:
         leads_response = session.get(f"{BASE_URL}/api/leads")
         
         assert leads_response.status_code == 200, f"Dashboard access failed: {leads_response.status_code}"
-        print(f"✅ Dashboard API access successful with cookie auth")
+        print("✅ Dashboard API access successful with cookie auth")
         
         return leads_response.json()
 

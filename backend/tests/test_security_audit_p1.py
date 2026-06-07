@@ -10,7 +10,6 @@ import pytest
 import requests
 import os
 import uuid
-import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
@@ -154,7 +153,7 @@ class TestAccountDeletion:
             "password": "TestPass123!"
         })
         assert login_res2.status_code == 401, f"Account should be deleted, login should fail, got {login_res2.status_code}"
-        print(f"✓ Verified account is deleted - login attempt returns 401")
+        print("✓ Verified account is deleted - login attempt returns 401")
 
 
 class TestPasswordResetHardening:
@@ -221,7 +220,7 @@ class TestBasicAuth:
         data = res.json()
         assert "token" in data, "Response should contain token"
         assert "user" in data, "Response should contain user"
-        print(f"✓ Login successful for security@test.com")
+        print("✓ Login successful for security@test.com")
 
 
 if __name__ == "__main__":

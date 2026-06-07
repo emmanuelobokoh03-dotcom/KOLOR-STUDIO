@@ -49,7 +49,7 @@ class TestHTTPOnlyCookieAuth:
         assert "HttpOnly" in set_cookie_header, "Cookie should be HttpOnly"
         assert "Path=/" in set_cookie_header, "Cookie should have Path=/"
         
-        print(f"✅ Login sets HTTP-Only cookie correctly")
+        print("✅ Login sets HTTP-Only cookie correctly")
         print(f"   Set-Cookie: {set_cookie_header[:100]}...")
     
     def test_auth_me_with_cookie(self):
@@ -72,7 +72,7 @@ class TestHTTPOnlyCookieAuth:
         assert "id" in data["user"]
         assert "firstName" in data["user"]
         
-        print(f"✅ GET /api/auth/me works with cookie auth")
+        print("✅ GET /api/auth/me works with cookie auth")
         print(f"   User: {data['user']['firstName']} ({data['user']['email']})")
     
     def test_auth_me_without_cookie_returns_401(self):
@@ -87,7 +87,7 @@ class TestHTTPOnlyCookieAuth:
         data = response.json()
         assert "error" in data or "message" in data
         
-        print(f"✅ GET /api/auth/me returns 401 without auth")
+        print("✅ GET /api/auth/me returns 401 without auth")
     
     def test_protected_route_without_cookie_returns_401(self):
         """GET /api/leads should return 401 without cookie"""
@@ -97,7 +97,7 @@ class TestHTTPOnlyCookieAuth:
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
         
-        print(f"✅ Protected route /api/leads returns 401 without auth")
+        print("✅ Protected route /api/leads returns 401 without auth")
     
     def test_protected_route_with_cookie_works(self):
         """GET /api/leads should work with auth_token cookie"""
@@ -116,7 +116,7 @@ class TestHTTPOnlyCookieAuth:
         data = leads_response.json()
         assert "leads" in data, "Response should include leads array"
         
-        print(f"✅ Protected route /api/leads works with cookie auth")
+        print("✅ Protected route /api/leads works with cookie auth")
         print(f"   Found {len(data['leads'])} leads")
     
     def test_logout_clears_cookie(self):
@@ -142,10 +142,10 @@ class TestHTTPOnlyCookieAuth:
         assert "logged out" in data["message"].lower() or "success" in data["message"].lower()
         
         # Check Set-Cookie header clears the cookie
-        set_cookie_header = logout_response.headers.get("Set-Cookie", "")
+        logout_response.headers.get("Set-Cookie", "")
         # Cookie should be cleared (empty value or expired)
         
-        print(f"✅ POST /api/auth/logout clears cookie")
+        print("✅ POST /api/auth/logout clears cookie")
         print(f"   Response: {data['message']}")
     
     def test_after_logout_auth_me_returns_401(self):
@@ -169,7 +169,7 @@ class TestHTTPOnlyCookieAuth:
         
         assert me_response.status_code == 401, f"Expected 401 after logout, got {me_response.status_code}"
         
-        print(f"✅ After logout, /api/auth/me returns 401")
+        print("✅ After logout, /api/auth/me returns 401")
     
     def test_bearer_token_fallback_still_works(self):
         """Auth middleware should still accept Bearer token in Authorization header (backward compat)"""
@@ -194,7 +194,7 @@ class TestHTTPOnlyCookieAuth:
         data = me_response.json()
         assert data["user"]["email"] == self.test_email
         
-        print(f"✅ Bearer token fallback still works for backward compatibility")
+        print("✅ Bearer token fallback still works for backward compatibility")
     
     def test_invalid_credentials_returns_401(self):
         """POST /api/auth/login with invalid credentials should return 401"""
@@ -208,7 +208,7 @@ class TestHTTPOnlyCookieAuth:
         # Should not set cookie on failed login
         assert "auth_token" not in response.cookies
         
-        print(f"✅ Invalid credentials return 401 without setting cookie")
+        print("✅ Invalid credentials return 401 without setting cookie")
 
 
 class TestCookieSecurityAttributes:
@@ -238,11 +238,11 @@ class TestCookieSecurityAttributes:
         # Max-Age should be set (7 days = 604800 seconds)
         assert "Max-Age=" in set_cookie, "Cookie should have Max-Age set"
         
-        print(f"✅ Cookie has correct security attributes")
-        print(f"   HttpOnly: ✓")
-        print(f"   SameSite=Lax: ✓")
-        print(f"   Path=/: ✓")
-        print(f"   Max-Age: ✓")
+        print("✅ Cookie has correct security attributes")
+        print("   HttpOnly: ✓")
+        print("   SameSite=Lax: ✓")
+        print("   Path=/: ✓")
+        print("   Max-Age: ✓")
 
 
 if __name__ == "__main__":

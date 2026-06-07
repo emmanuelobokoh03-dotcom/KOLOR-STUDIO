@@ -10,7 +10,6 @@ import pytest
 import requests
 import os
 import re
-from http.cookies import SimpleCookie
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://hardened-crm-2.preview.emergentagent.com')
 
