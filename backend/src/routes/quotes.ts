@@ -73,14 +73,14 @@ async function autoGenerateContract(quoteId: string): Promise<string | null> {
     try {
       const emailSent = await sendContractSentEmail({
         clientName: lead.clientName,
-        clientEmail: lead.clientEmail,
+        clientEmail: lead.clientEmail ?? '',
         projectTitle: lead.projectTitle,
         contractTitle: contract.title,
         studioName,
         portalUrl,
       });
       if (emailSent) {
-        console.log('[AUTOPILOT] Contract email sent to client:', lead.clientEmail);
+        console.log('[AUTOPILOT] Contract email sent to client:', lead.clientEmail ?? '');
       } else {
         console.warn('[AUTOPILOT] Contract email failed to send — contract still marked SENT in DB');
       }
@@ -92,7 +92,7 @@ async function autoGenerateContract(quoteId: string): Promise<string | null> {
       lead.id,
       quote.createdById,
       'CONTRACT_SIGNED',
-      `Contract auto-generated and sent to ${lead.clientEmail}: "${contract.title}"`,
+      `Contract auto-generated and sent to ${lead.clientEmail ?? ''}: "${contract.title}"`,
     );
 
     return contract.id;
@@ -641,7 +641,7 @@ router.post('/:quoteId/send', authMiddleware, async (req: AuthRequest, res: Resp
     try {
       const emailData = {
         clientName: (quote as any).lead.clientName,
-        clientEmail: (quote as any).lead.clientEmail,
+        clientEmail: (quote as any).lead.clientEmail ?? '',
         projectTitle: (quote as any).lead.projectTitle,
         quoteNumber: quote.quoteNumber,
         total: quote.total,

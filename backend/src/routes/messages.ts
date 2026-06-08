@@ -95,11 +95,11 @@ router.post('/:leadId/messages', authMiddleware, async (req: AuthRequest, res: R
     });
 
     // Send email notification to client (non-blocking)
-    if (lead.clientEmail) {
+    if (lead.clientEmail ?? '') {
       const creativeName = `${creative?.firstName || ''} ${creative?.lastName || ''}`.trim() || 'Studio';
       import('../services/email').then(({ sendClientMessageNotification }) => {
         sendClientMessageNotification({
-          to: lead.clientEmail,
+          to: lead.clientEmail ?? '',
           from: creativeName,
           messagePreview: content.trim(),
           portalUrl: `${process.env.FRONTEND_URL || ''}/portal/${lead.portalToken || ''}`,

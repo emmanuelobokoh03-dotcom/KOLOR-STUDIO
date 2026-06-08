@@ -267,7 +267,7 @@ async function runQuoteExpiryWarnings(): Promise<void> {
       await sendQuoteExpiryNoticeToClient(
         { email: user.email, businessName: user.businessName, industry: user.primaryIndustry },
         { total: quote.total ?? undefined, validUntil: quote.validUntil },
-        { clientName: quote.lead.clientName, clientEmail: quote.lead.clientEmail, portalToken: quote.lead.portalToken }
+        { clientName: quote.lead.clientName, clientEmail: quote.lead.clientEmail ?? '', portalToken: quote.lead.portalToken }
       );
     }
     console.log(`[Scheduler] Quote expiry warnings: ${quotes.length} checked`);

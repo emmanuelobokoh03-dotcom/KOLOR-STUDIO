@@ -10,7 +10,7 @@ export async function enrollInOnboarding(leadId: string) {
     },
   });
 
-  if (!lead || !lead.clientEmail) {
+  if (!lead || !(lead.clientEmail ?? '')) {
     console.error('[ONBOARDING] Lead not found or no email:', leadId);
     return null;
   }
@@ -38,7 +38,7 @@ export async function enrollInOnboarding(leadId: string) {
 
   try {
     const sent = await sendClientOnboardingEmail(1, {
-      to: lead.clientEmail,
+      to: lead.clientEmail ?? '',
       clientName: lead.clientName,
       creativeName,
       projectType: lead.serviceType || 'Project',
@@ -117,7 +117,7 @@ export async function processOnboardingSequences() {
 
     try {
       const sent = await sendClientOnboardingEmail(2, {
-        to: e.lead.clientEmail,
+        to: e.lead.clientEmail ?? '',
         clientName: e.lead.clientName,
         creativeName,
         projectType: e.lead.serviceType || 'Project',
@@ -171,7 +171,7 @@ export async function processOnboardingSequences() {
 
     try {
       const sent = await sendClientOnboardingEmail(3, {
-        to: e.lead.clientEmail,
+        to: e.lead.clientEmail ?? '',
         clientName: e.lead.clientName,
         creativeName,
         projectType: e.lead.serviceType || 'Project',

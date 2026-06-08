@@ -53,14 +53,14 @@ async function sendAutoResponse(lead: any) {
 
     await sendAutoResponseEmail({
       clientName: lead.clientName,
-      clientEmail: lead.clientEmail,
+      clientEmail: lead.clientEmail ?? '',
       creativeName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
       studioName: user.studioName || undefined,
       message,
       portalUrl: portfolioUrl,
     });
 
-    await logActivity(lead.id, null, 'EMAIL_SENT', `Auto-response sent to ${lead.clientEmail}`, { emailType: 'auto_response' });
+    await logActivity(lead.id, null, 'EMAIL_SENT', `Auto-response sent to ${lead.clientEmail ?? ''}`, { emailType: 'auto_response' });
   } catch (err) {
     console.error('[AutoResponse] Error:', err);
   }
@@ -677,7 +677,7 @@ router.patch('/:id', authMiddleware, async (req: AuthRequest, res: Response): Pr
 
       sendStatusChangeNotification({
         clientName: existingLead.clientName,
-        clientEmail: existingLead.clientEmail,
+        clientEmail: existingLead.clientEmail ?? '',
         projectTitle: existingLead.projectTitle,
         newStatus: updates.status,
         portalToken: existingLead.portalToken,
@@ -763,7 +763,7 @@ router.patch('/:id/status', authMiddleware, async (req: AuthRequest, res: Respon
       // Send email notification to client (non-blocking)
       sendStatusChangeNotification({
         clientName: existingLead.clientName,
-        clientEmail: existingLead.clientEmail,
+        clientEmail: existingLead.clientEmail ?? '',
         projectTitle: existingLead.projectTitle,
         newStatus: status,
         portalToken: existingLead.portalToken,
@@ -827,7 +827,7 @@ router.post('/:id/send-portal-link', authMiddleware, async (req: AuthRequest, re
     // Send the portal link email
     const success = await sendPortalLinkEmail({
       clientName: lead.clientName,
-      clientEmail: lead.clientEmail,
+      clientEmail: lead.clientEmail ?? '',
       projectTitle: lead.projectTitle,
       portalToken: lead.portalToken,
     });
@@ -837,15 +837,15 @@ router.post('/:id/send-portal-link', authMiddleware, async (req: AuthRequest, re
       id,
       userId,
       'EMAIL_SENT',
-      `Portal link email ${success ? 'sent' : 'attempted'} to ${lead.clientEmail}`,
-      { emailType: 'portal_link', clientEmail: lead.clientEmail, success }
+      `Portal link email ${success ? 'sent' : 'attempted'} to ${lead.clientEmail ?? ''}`,
+      { emailType: 'portal_link', clientEmail: lead.clientEmail ?? '', success }
     );
 
     if (!success) {
       // Email failed but we still log the attempt
       res.status(200).json({ 
         message: 'Email could not be sent (Resend domain not verified for production emails)',
-        sentTo: lead.clientEmail,
+        sentTo: lead.clientEmail ?? '',
         warning: 'In test mode, emails can only be sent to the owner email. Verify your domain at resend.com for production.'
       });
       return;
@@ -853,7 +853,7 @@ router.post('/:id/send-portal-link', authMiddleware, async (req: AuthRequest, re
 
     res.json({ 
       message: 'Portal link sent successfully',
-      sentTo: lead.clientEmail 
+      sentTo: lead.clientEmail ?? '' 
     });
   } catch (error) {
     console.error('Send portal link error:', error);
@@ -943,7 +943,7 @@ router.post('/:id/send-email', authMiddleware, async (req: AuthRequest, res: Res
     try {
       const { sendCustomEmail } = await import('../services/email');
       await sendCustomEmail({
-        to: lead.clientEmail,
+        to: lead.clientEmail ?? '',
         subject: subject.trim(),
         htmlBody: body,
         cc: cc?.trim() || undefined,
@@ -1329,31 +1329,31 @@ router.post('/:id/mark-delivered', authMiddleware, async (req: AuthRequest, res:
 
     // 4. Send delivery email
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (user && lead.clientEmail) {
+    if (user && (lead.clientEmail ?? '')) {
       const portalUrl = `${process.env.FRONTEND_URL}/portal/${lead.portalToken}`;
       sendDeliveryNotificationEmail({
         clientName: lead.clientName,
-        clientEmail: lead.clientEmail,
+        clientEmail: lead.clientEmail ?? '',
         creativeName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
         studioName: user.studioName || undefined,
         projectTitle: lead.projectTitle,
         portalUrl,
       }).catch(e => console.error('[Delivery] Email error:', e));
-      await logActivity(lead.id, userId, 'EMAIL_SENT', `Delivery notification sent to ${lead.clientEmail}`, { emailType: 'delivery_notification' });
+      await logActivity(lead.id, userId, 'EMAIL_SENT', `Delivery notification sent to ${lead.clientEmail ?? ''}`, { emailType: 'delivery_notification' });
     }
 
     // 5. Send testimonial request email
-    if (user && lead.clientEmail) {
+    if (user && (lead.clientEmail ?? '')) {
       const testimonialUrl = `${process.env.FRONTEND_URL}/portal/${lead.portalToken}`;
       sendTestimonialRequestEmail({
         clientName: lead.clientName,
-        clientEmail: lead.clientEmail,
+        clientEmail: lead.clientEmail ?? '',
         creativeName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
         studioName: user.studioName || undefined,
         projectTitle: lead.projectTitle,
         testimonialUrl,
       }).catch(e => console.error('[Delivery] Testimonial email error:', e));
-      await logActivity(lead.id, userId, 'EMAIL_SENT', `Testimonial request sent to ${lead.clientEmail}`, { emailType: 'testimonial_request' });
+      await logActivity(lead.id, userId, 'EMAIL_SENT', `Testimonial request sent to ${lead.clientEmail ?? ''}`, { emailType: 'testimonial_request' });
     }
 
     // 6. Auto-send final payment link if deposit was paid

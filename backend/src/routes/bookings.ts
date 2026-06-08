@@ -261,7 +261,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
     try {
       await sendBookingConfirmationEmail({
         clientName: booking.lead.clientName,
-        clientEmail: booking.lead.clientEmail,
+        clientEmail: booking.lead.clientEmail ?? '',
         projectTitle: booking.lead.projectTitle,
         bookingDate: start,
         duration: calculatedDuration,

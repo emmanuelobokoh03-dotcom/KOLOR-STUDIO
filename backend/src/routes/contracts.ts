@@ -309,13 +309,13 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
     const studioName = contract.lead.assignedTo?.studioName || `${contract.lead.assignedTo?.firstName} ${contract.lead.assignedTo?.lastName}`;
     const portalUrl = `${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/portal/${contract.lead.portalToken}`;
 
-    console.log('[CONTRACT SEND] Sending contract email to:', contract.lead.clientEmail, '| Contract:', contract.title);
+    console.log('[CONTRACT SEND] Sending contract email to:', contract.lead.clientEmail ?? '', '| Contract:', contract.title);
     let emailSent = false;
     let emailError: string | undefined;
     try {
       emailSent = await sendContractSentEmail({
         clientName: contract.lead.clientName,
-        clientEmail: contract.lead.clientEmail,
+        clientEmail: contract.lead.clientEmail ?? '',
         projectTitle: contract.lead.projectTitle,
         contractTitle: contract.title,
         studioName: studioName || 'Studio',
@@ -329,7 +329,7 @@ router.post('/contracts/:id/send', authMiddleware, async (req: AuthRequest, res:
       console.error('[CONTRACT SEND] Email exception:', err);
     }
 
-    await logActivity(contract.lead.id, req.userId as string, 'CONTRACT_SIGNED', `Contract "${contract.title}" sent to ${contract.lead.clientEmail}`);
+    await logActivity(contract.lead.id, req.userId as string, 'CONTRACT_SIGNED', `Contract "${contract.title}" sent to ${contract.lead.clientEmail ?? ''}`);
     res.json({
       contract: updated,
       emailSent,
@@ -443,7 +443,7 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
           where: { leadId: contract.leadId, status: { in: ['ACCEPTED', 'SENT'] } },
           orderBy: { createdAt: 'desc' },
         });
-        if (quote && contract.lead.clientEmail) {
+        if (quote && (contract.lead.clientEmail ?? '')) {
           const studioDisplayName = contract.lead.assignedTo?.studioName
             || `${contract.lead.assignedTo?.firstName || ''} ${contract.lead.assignedTo?.lastName || ''}`.trim()
             || 'Studio';
@@ -452,7 +452,7 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
           const portalUrl = `${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/portal/${contract.lead.portalToken}`;
           await sendDepositPaymentEmail({
             clientName: contract.lead.clientName,
-            clientEmail: contract.lead.clientEmail,
+            clientEmail: contract.lead.clientEmail ?? '',
             creativeName: studioDisplayName,
             studioName: studioDisplayName,
             projectTitle: contract.lead.projectTitle,

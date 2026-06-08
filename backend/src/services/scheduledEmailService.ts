@@ -46,7 +46,7 @@ export async function processScheduledEmails(): Promise<void> {
         if (type === 'TESTIMONIAL_REQUEST') {
           await sendTestimonialRequestEmail({
             clientName: lead.clientName,
-            clientEmail: lead.clientEmail,
+            clientEmail: lead.clientEmail ?? '',
             creativeName,
             studioName,
             projectTitle: lead.projectTitle,
@@ -56,7 +56,7 @@ export async function processScheduledEmails(): Promise<void> {
           const meta = (metadata as any) || {};
           await sendFileReviewReminderEmail({
             clientName: lead.clientName,
-            clientEmail: lead.clientEmail,
+            clientEmail: lead.clientEmail ?? '',
             creativeName,
             studioName,
             projectTitle: lead.projectTitle,
@@ -80,7 +80,7 @@ export async function processScheduledEmails(): Promise<void> {
           where: { id: scheduled.id },
           data: { sentAt: new Date() },
         });
-        console.log(`[ScheduledEmails] Sent ${type} to ${lead.clientEmail}`);
+        console.log(`[ScheduledEmails] Sent ${type} to ${lead.clientEmail ?? ''}`);
       } catch (err) {
         console.error(`[ScheduledEmails] Failed to send ${scheduled.id}:`, err);
       }

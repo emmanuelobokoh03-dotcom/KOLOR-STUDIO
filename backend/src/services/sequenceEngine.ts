@@ -143,7 +143,7 @@ export async function processSequences(): Promise<{ sent: number; completed: num
         // Send email AFTER DB is updated — failure here is logged but does not
         // roll back the enrollment state (intentional: prevents duplicate sends)
         await sendSequenceEmail({
-          clientEmail: enrollment.lead.clientEmail,
+          clientEmail: enrollment.lead.clientEmail ?? '',
           clientName: enrollment.lead.clientName,
           studioName,
           subject,

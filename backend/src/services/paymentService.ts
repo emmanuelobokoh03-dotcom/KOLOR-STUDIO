@@ -265,7 +265,7 @@ export const paymentService = {
       const txnData = await paystackInitializeTransaction({
         amount: depositAmount,
         currency,
-        email: income.lead.clientEmail,
+        email: income.lead.clientEmail ?? '',
         reference,
         callbackUrl,
         metadata: {
@@ -287,7 +287,7 @@ export const paymentService = {
 
       sendDepositPaymentEmail({
         clientName: income.lead.clientName,
-        clientEmail: income.lead.clientEmail,
+        clientEmail: income.lead.clientEmail ?? '',
         creativeName,
         studioName: income.user?.studioName || undefined,
         projectTitle: income.lead.projectTitle,
@@ -313,7 +313,7 @@ export const paymentService = {
       productDescription: `30% deposit for ${income.description}`,
       successUrl,
       cancelUrl,
-      customerEmail: income.lead.clientEmail,
+      customerEmail: income.lead.clientEmail ?? '',
       metadata: {
         incomeId: income.id,
         type: 'deposit',
@@ -333,7 +333,7 @@ export const paymentService = {
 
     sendDepositPaymentEmail({
       clientName: income.lead.clientName,
-      clientEmail: income.lead.clientEmail,
+      clientEmail: income.lead.clientEmail ?? '',
       creativeName,
       studioName: income.user?.studioName || undefined,
       projectTitle: income.lead.projectTitle,
@@ -366,7 +366,7 @@ export const paymentService = {
       const txnData = await paystackInitializeTransaction({
         amount: finalAmount,
         currency,
-        email: income.lead.clientEmail,
+        email: income.lead.clientEmail ?? '',
         reference,
         callbackUrl,
         metadata: {
@@ -388,7 +388,7 @@ export const paymentService = {
 
       sendFinalPaymentEmail({
         clientName: income.lead.clientName,
-        clientEmail: income.lead.clientEmail,
+        clientEmail: income.lead.clientEmail ?? '',
         creativeName,
         studioName: income.user?.studioName || undefined,
         projectTitle: income.lead.projectTitle,
@@ -413,7 +413,7 @@ export const paymentService = {
       productDescription: `Remaining balance for ${income.description}`,
       successUrl,
       cancelUrl,
-      customerEmail: income.lead.clientEmail,
+      customerEmail: income.lead.clientEmail ?? '',
       metadata: {
         incomeId: income.id,
         type: 'final',
@@ -429,7 +429,7 @@ export const paymentService = {
 
     sendFinalPaymentEmail({
       clientName: income.lead.clientName,
-      clientEmail: income.lead.clientEmail,
+      clientEmail: income.lead.clientEmail ?? '',
       creativeName,
       studioName: income.user?.studioName || undefined,
       projectTitle: income.lead.projectTitle,
@@ -500,7 +500,7 @@ export const paymentService = {
           const creativeName = `${depositIncome.user.firstName || ''} ${depositIncome.user.lastName || ''}`.trim();
           sendDepositReceivedEmail({
             clientName: depositIncome.lead.clientName,
-            clientEmail: depositIncome.lead.clientEmail,
+            clientEmail: depositIncome.lead.clientEmail ?? '',
             creativeName,
             studioName: depositIncome.user.studioName || undefined,
             projectTitle: depositIncome.lead.projectTitle,
@@ -550,7 +550,7 @@ export const paymentService = {
           const creativeName = `${finalIncome.user.firstName || ''} ${finalIncome.user.lastName || ''}`.trim();
           sendFinalPaymentReceivedEmail({
             clientName: finalIncome.lead.clientName,
-            clientEmail: finalIncome.lead.clientEmail,
+            clientEmail: finalIncome.lead.clientEmail ?? '',
             creativeName,
             studioName: finalIncome.user.studioName || undefined,
             projectTitle: finalIncome.lead.projectTitle,
@@ -678,7 +678,7 @@ export const paymentService = {
         const creativeName = `${fullIncome.user.firstName || ''} ${fullIncome.user.lastName || ''}`.trim();
         sendDepositReceivedEmail({
           clientName: fullIncome.lead.clientName,
-          clientEmail: fullIncome.lead.clientEmail,
+          clientEmail: fullIncome.lead.clientEmail ?? '',
           creativeName,
           studioName: fullIncome.user.studioName || undefined,
           projectTitle: fullIncome.lead.projectTitle,
@@ -735,7 +735,7 @@ export const paymentService = {
         const creativeName = `${fullIncome.user.firstName || ''} ${fullIncome.user.lastName || ''}`.trim();
         sendFinalPaymentReceivedEmail({
           clientName: fullIncome.lead.clientName,
-          clientEmail: fullIncome.lead.clientEmail,
+          clientEmail: fullIncome.lead.clientEmail ?? '',
           creativeName,
           studioName: fullIncome.user.studioName || undefined,
           projectTitle: fullIncome.lead.projectTitle,

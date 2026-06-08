@@ -88,7 +88,7 @@ export async function processQuoteFollowUpSequences() {
 
     try {
       const sent = await sendQuoteFollowUpEmail(1, {
-        to: quote.lead.clientEmail,
+        to: quote.lead.clientEmail ?? '',
         clientName: quote.lead.clientName,
         creativeName,
         projectType: quote.lead.serviceType || quote.lead.projectTitle || 'Project',
@@ -140,7 +140,7 @@ export async function processQuoteFollowUpSequences() {
 
     try {
       const sent = await sendQuoteFollowUpEmail(2, {
-        to: quote.lead.clientEmail,
+        to: quote.lead.clientEmail ?? '',
         clientName: quote.lead.clientName,
         creativeName,
         projectType: quote.lead.serviceType || quote.lead.projectTitle || 'Project',
@@ -195,7 +195,7 @@ export async function processQuoteFollowUpSequences() {
 
     try {
       const sent = await sendQuoteFollowUpEmail(3, {
-        to: quote.lead.clientEmail,
+        to: quote.lead.clientEmail ?? '',
         clientName: quote.lead.clientName,
         creativeName,
         projectType: quote.lead.serviceType || quote.lead.projectTitle || 'Project',
