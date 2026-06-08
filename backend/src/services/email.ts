@@ -380,7 +380,7 @@ const STATUS_CLIENT_MESSAGES: Record<string, { subject: string; title: string; m
 
 interface StatusChangeData {
   clientName: string;
-  clientEmail: string;
+  clientEmail: string | null;
   projectTitle: string;
   newStatus: string;
   portalToken: string;
@@ -464,7 +464,7 @@ export async function sendStatusChangeNotification(data: StatusChangeData): Prom
   try {
     const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
-      to: [data.clientEmail],
+      to: [data.clientEmail ?? ''],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
       subject: `${data.projectTitle}: ${statusConfig.subject}`,
       html: getEmailTemplate(content, 'Project Update'),
@@ -559,7 +559,7 @@ export async function sendPortalLinkEmail(data: PortalLinkData): Promise<boolean
   try {
     const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
-      to: [data.clientEmail],
+      to: [data.clientEmail ?? ''],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
       subject: `Your Project Portal: ${data.projectTitle}`,
       html: getEmailTemplate(content, 'Project Portal'),
@@ -836,7 +836,7 @@ export async function sendQuoteEmail(data: QuoteEmailData): Promise<boolean> {
     console.log('[EMAIL] Calling resend.emails.send for quote:', data.quoteNumber);
     const { error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
-      to: [data.clientEmail],
+      to: [data.clientEmail ?? ''],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
       subject: data.customSubject || `Quote from KOLOR STUDIO - ${data.projectTitle}`,
       html: getEmailTemplate(content, 'Your Quote'),
@@ -1423,7 +1423,7 @@ export async function sendContractSentEmail(data: ContractSentEmailData): Promis
     console.log('[EMAIL] Calling resend.emails.send for contract:', data.contractTitle);
     const { data: resendData, error } = await resend.emails.send({
       from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
-      to: [data.clientEmail],
+      to: [data.clientEmail ?? ''],
       replyTo: OWNER_EMAIL || SENDER_EMAIL,
       subject: data.customSubject || `Agreement for ${data.projectTitle} - ${data.studioName}`,
       html: getEmailTemplate(content, 'Your Agreement'),
@@ -2716,7 +2716,7 @@ export async function sendMeetingConfirmationEmail(data: MeetingConfirmationData
   try {
     const { error } = await resend.emails.send({
       from: `${data.studioName} <${SENDER_EMAIL}>`,
-      to: [data.clientEmail],
+      to: [data.clientEmail ?? ''],
       subject: `Meeting Confirmed: ${data.meetingTypeName} with ${data.studioName}`,
       html: getEmailTemplate(content, 'Meeting Confirmation'),
     });
@@ -2821,7 +2821,7 @@ export async function sendMeetingReminderEmail(data: {
   try {
     const { error } = await resend.emails.send({
       from: `${data.studioName} <${SENDER_EMAIL}>`,
-      to: [data.clientEmail],
+      to: [data.clientEmail ?? ''],
       subject: `Reminder: ${data.meetingTypeName} with ${data.studioName} — ${formattedDate}`,
       html: getEmailTemplate(content, 'Meeting Reminder'),
     });
@@ -3640,7 +3640,7 @@ export async function sendSampleQuoteEmail(data: {
 
     const { error } = await resend.emails.send({
       from: `KOLOR Studio <${SENDER_EMAIL}>`,
-      to: [data.clientEmail],
+      to: [data.clientEmail ?? ''],
       subject: `[Preview] ${data.studioName} sent you a ${lang.quote.toLowerCase()} — ${formattedTotal}`,
       html,
     });
