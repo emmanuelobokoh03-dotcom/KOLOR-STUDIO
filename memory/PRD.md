@@ -868,6 +868,15 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 227b — Synthetic community seed (Feb 2026) — ✅ SHIPPED
+- `backend/scripts/seed-community.ts` — idempotent upsert seed
+- 40 synthetic profiles across 3 industries & 12 cities (Lagos, Nairobi, Accra, Joburg, London, Berlin, São Paulo, Cape Town, Kampala, Paris, Dubai, Cairo, Lisbon, Toronto, Amsterdam)
+- Live counts: 459 posts · 4166 likes · 798 comments · 335 follows
+- All records flagged `isSynthetic=true` — excluded from analytics/emails/notifications
+- Command: `npm run seed:community` (from backend/)
+- Commit: d5648ad (local; needs Save to GitHub push)
+- Next: iter-228 community UI (Feed, PostCard, CommentThread, DMView, Discover)
+
 ## Iteration 227a — Community schema silent infrastructure migration (Feb 2026) — ✅ SHIPPED
 - Eight additive Prisma models: CommunityProfile, Post, Comment, PostLike, DMThread, DMMessage, Follow, Notification
 - Two new enums: Availability (OPEN/BOOKED/UNAVAILABLE), NotificationType (4 values)
