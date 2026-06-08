@@ -11,6 +11,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
+    "seed:community": "ts-node --project tsconfig.json scripts/seed-community.ts",
     "start:worker": "node dist/worker.js",
     "dev:worker": "nodemon src/worker.ts"
   },
