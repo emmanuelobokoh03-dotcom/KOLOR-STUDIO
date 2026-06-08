@@ -868,6 +868,18 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 227a — Community schema silent infrastructure migration (Feb 2026) — ✅ SHIPPED
+- Eight additive Prisma models: CommunityProfile, Post, Comment, PostLike, DMThread, DMMessage, Follow, Notification
+- Two new enums: Availability (OPEN/BOOKED/UNAVAILABLE), NotificationType (4 values)
+- User.communityProfile relation added (1:1, optional)
+- Applied via `prisma db push` + `migrate resolve` (shadow DB drift pattern)
+- Prisma client regenerated with 921 community references
+- Zero UI, zero changes to existing tables, zero new TS errors
+- All 8 tables verified queryable against live Supabase
+- Migration file: backend/prisma/migrations/20260607000000_add_community_schema/
+- Commit: 2d1663f (local). User must push via "Save to GitHub" and redeploy Railway.
+- Next: iter-227b synthetic seed (40 users, 400+ posts) → iter-228 community UI
+
 ## Iteration 226 — Onboarding flow + waitlist counter (Feb 2026) — ✅ SHIPPED
 
 **`OnboardingFlow.tsx` (new, 4-step modal)** replacing `AHAModal` as the first-login experience:
