@@ -251,7 +251,7 @@ model Interaction {
 model Lead {
   id                String                @id @default(cuid())
   clientName        String
-  clientEmail       String
+  clientEmail       String?
   clientPhone       String?
   clientCompany     String?
   serviceType       ServiceType
@@ -531,6 +531,7 @@ model User {
   defaultTaxRate       Float                @default(0)
   numberFormat         String               @default("1,000.00")
   primaryIndustry      IndustryType?
+  communityProfile     CommunityProfile?
   industry             CreativeIndustry     @default(PHOTOGRAPHY)
   businessName         String?
   speciality           String?
@@ -1096,4 +1097,138 @@ model WaitlistEntry {
   id        String   @id @default(uuid())
   email     String   @unique
   createdAt DateTime @default(now())
+}
+
+
+// ═══════════════════════════════════════════════════════
+// COMMUNITY — iter-227a
+// Eight additive models. Zero changes to existing tables.
+// ═══════════════════════════════════════════════════════
+
+model CommunityProfile {
+  id           String          @id @default(cuid())
+  userId       String          @unique
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio          String?         @db.VarChar(150)
+  city         String?
+  availability Availability    @default(OPEN)
+  isPublic     Boolean         @default(true)
+  isSynthetic  Boolean         @default(false)
+  joinedAt     DateTime        @default(now())
+  posts        Post[]
+  comments     Comment[]
+  following    Follow[]        @relation("follower")
+  followers    Follow[]        @relation("following")
+  sentMessages DMMessage[]
+  threadsA     DMThread[]      @relation("participantA")
+  threadsB     DMThread[]      @relation("participantB")
+  notifications Notification[]
+}
+
+model Post {
+  id        String           @id @default(cuid())
+  authorId  String
+  author    CommunityProfile @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content   String           @db.VarChar(500)
+  images    String[]
+  industry  CreativeIndustry
+  createdAt DateTime         @default(now())
+  editedAt  DateTime?
+  isDeleted Boolean          @default(false)
+  likes     PostLike[]
+  comments  Comment[]
+
+  @@index([industry, createdAt(sort: Desc)])
+  @@index([authorId, createdAt(sort: Desc)])
+}
+
+model Comment {
+  id              String           @id @default(cuid())
+  postId          String
+  post            Post             @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId        String
+  author          CommunityProfile @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content         String           @db.VarChar(300)
+  parentCommentId String?
+  createdAt       DateTime         @default(now())
+  isDeleted       Boolean          @default(false)
+
+  @@index([postId, createdAt])
+}
+
+model PostLike {
+  userId    String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, postId])
+  @@index([postId])
+}
+
+model DMThread {
+  id           String           @id @default(cuid())
+  participantA String
+  participantB String
+  partA        CommunityProfile @relation("participantA", fields: [participantA], references: [id], onDelete: Cascade)
+  partB        CommunityProfile @relation("participantB", fields: [participantB], references: [id], onDelete: Cascade)
+  messages     DMMessage[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([participantA, participantB])
+  @@index([participantA, updatedAt(sort: Desc)])
+  @@index([participantB, updatedAt(sort: Desc)])
+}
+
+model DMMessage {
+  id       String           @id @default(cuid())
+  threadId String
+  thread   DMThread         @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  senderId String
+  sender   CommunityProfile @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content  String           @db.VarChar(1000)
+  sentAt   DateTime         @default(now())
+  readAt   DateTime?
+
+  @@index([threadId, sentAt])
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  follower    CommunityProfile @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   CommunityProfile @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime         @default(now())
+
+  @@id([followerId, followingId])
+  @@index([followingId])
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  recipientId String
+  recipient   CommunityProfile @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  postId      String?
+  commentId   String?
+  fromUserId  String?
+  threadId    String?
+  isRead      Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+
+  @@index([recipientId, isRead, createdAt(sort: Desc)])
+}
+
+enum Availability {
+  OPEN
+  BOOKED
+  UNAVAILABLE
+}
+
+enum NotificationType {
+  POST_LIKED
+  POST_COMMENTED
+  DM_RECEIVED
+  NEW_FOLLOWER
 }
