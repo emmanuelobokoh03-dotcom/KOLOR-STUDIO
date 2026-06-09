@@ -20,6 +20,21 @@ async function createNotification(
   } catch { /* non-blocking — notification failure never breaks primary action */ }
 }
 
+// ─── Input sanitisation ────────────────────────────────────────────────────
+// Strips HTML tags and encodes dangerous characters.
+// Applied to all user-supplied text before storage.
+function sanitizeInput(input: string): string {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;')
+    .replace(/`/g, '&#x60;')
+    .trim()
+}
+
 // ─── Feed ─────────────────────────────────────────────────────────────────
 
 // GET /api/community/feed?industry=&cursor=
@@ -86,7 +101,7 @@ router.post('/posts', authMiddleware, async (req: AuthRequest, res: Response): P
     }
 
     const post = await prisma.post.create({
-      data: { authorId: profile.id, content: content.trim(), industry: industry || 'PHOTOGRAPHY', images: images || [] },
+      data: { authorId: profile.id, content: sanitizeInput(content.trim()), industry: industry || 'PHOTOGRAPHY', images: images || [] },
       include: {
         author: { select: { id: true, userId: true, bio: true, city: true,
           user: { select: { firstName: true, lastName: true, primaryIndustry: true } } } },
@@ -111,7 +126,7 @@ router.patch('/posts/:id', authMiddleware, async (req: AuthRequest, res: Respons
     const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
     if (post.createdAt < dayAgo) { res.status(403).json({ error: 'Posts can only be edited within 24 hours' }); return }
 
-    const updated = await prisma.post.update({ where: { id: post.id }, data: { content: content.trim(), editedAt: new Date() } })
+    const updated = await prisma.post.update({ where: { id: post.id }, data: { content: sanitizeInput(content.trim()), editedAt: new Date() } })
     res.json({ post: updated })
   } catch (e) { res.status(500).json({ error: 'Failed to edit post' }) }
 })
@@ -173,7 +188,7 @@ router.post('/posts/:id/comments', authMiddleware, async (req: AuthRequest, res:
     if (!profile) profile = await prisma.communityProfile.create({ data: { userId: req.userId! } })
 
     const comment = await prisma.comment.create({
-      data: { postId: (req.params.id as string), authorId: profile.id, content: content.trim(), parentCommentId: parentCommentId || null },
+      data: { postId: (req.params.id as string), authorId: profile.id, content: sanitizeInput(content.trim()), parentCommentId: parentCommentId || null },
       include: { author: { select: { id: true, userId: true, city: true,
         user: { select: { firstName: true, lastName: true, primaryIndustry: true } } } } },
     })
@@ -208,7 +223,7 @@ router.patch('/profile', authMiddleware, async (req: AuthRequest, res: Response)
     }
     const updated = await prisma.communityProfile.update({
       where: { userId: req.userId! },
-      data: { ...(bio !== undefined && { bio }), ...(city !== undefined && { city }),
+      data: { ...(bio !== undefined && { bio: sanitizeInput(bio) }), ...(city !== undefined && { city: sanitizeInput(city) }),
                ...(availability !== undefined && { availability }), ...(isPublic !== undefined && { isPublic }) },
       include: { user: { select: { firstName: true, lastName: true, primaryIndustry: true } } },
     })
@@ -291,6 +306,15 @@ router.post('/dms/:userId', authMiddleware, async (req: AuthRequest, res: Respon
 // GET /api/community/dms/:threadId/messages?after=
 router.get('/dms/:threadId/messages', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+    // Verify requesting user is a participant in this thread
+    const myProfile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
+    if (!myProfile) { res.status(403).json({ error: 'No profile' }); return }
+
+    const thread = await prisma.dMThread.findUnique({ where: { id: (req.params.threadId as string) } })
+    if (!thread || (thread.participantA !== myProfile.id && thread.participantB !== myProfile.id)) {
+      res.status(404).json({ error: 'Thread not found' }); return
+    }
+
     const { after } = req.query
     const messages = await prisma.dMMessage.findMany({
       where: { threadId: (req.params.threadId as string), ...(after ? { sentAt: { gt: new Date(after as string) } } : {}) },
@@ -312,8 +336,14 @@ router.post('/dms/:threadId/messages', authMiddleware, async (req: AuthRequest, 
     const profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
     if (!profile) { res.status(403).json({ error: 'No profile' }); return }
 
+    // Verify sender is a participant in this thread
+    const thread = await prisma.dMThread.findUnique({ where: { id: (req.params.threadId as string) } })
+    if (!thread || (thread.participantA !== profile.id && thread.participantB !== profile.id)) {
+      res.status(403).json({ error: 'Not a participant in this thread' }); return
+    }
+
     const message = await prisma.dMMessage.create({
-      data: { threadId: (req.params.threadId as string), senderId: profile.id, content: content.trim() },
+      data: { threadId: (req.params.threadId as string), senderId: profile.id, content: sanitizeInput(content.trim()) },
       include: { sender: { select: { id: true, userId: true,
         user: { select: { firstName: true, lastName: true } } } } },
     })
@@ -321,11 +351,8 @@ router.post('/dms/:threadId/messages', authMiddleware, async (req: AuthRequest, 
     await prisma.dMThread.update({ where: { id: (req.params.threadId as string) }, data: { updatedAt: new Date() } })
 
     // Notify the other participant
-    const thread = await prisma.dMThread.findUnique({ where: { id: (req.params.threadId as string) } })
-    if (thread) {
-      const recipientId = thread.participantA === profile.id ? thread.participantB : thread.participantA
-      await createNotification(recipientId, 'DM_RECEIVED', { threadId: (req.params.threadId as string), fromUserId: profile.id })
-    }
+    const recipientId = thread.participantA === profile.id ? thread.participantB : thread.participantA
+    await createNotification(recipientId, 'DM_RECEIVED', { threadId: (req.params.threadId as string), fromUserId: profile.id })
 
     res.json({ message })
   } catch (e) { res.status(500).json({ error: 'Failed' }) }

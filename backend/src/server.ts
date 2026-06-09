@@ -105,6 +105,13 @@ app.set('trust proxy', 1);
 // SECURITY & PERFORMANCE MIDDLEWARE
 // =====================
 
+// X-Robots-Tag: noindex on all API routes
+// Prevents error messages and internal API structure from appearing in search results
+app.use('/api', (_req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow')
+  next()
+})
+
 // Helmet — security headers (CSP, HSTS, X-Frame, etc.)
 app.use(helmet({
   contentSecurityPolicy: {
