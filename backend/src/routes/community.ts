@@ -5,6 +5,21 @@ import { authMiddleware, AuthRequest } from '../middleware/auth'
 const router = Router()
 const prisma = new PrismaClient()
 
+// ─── Notification helper ───────────────────────────────────────────────────
+async function createNotification(
+  recipientId: string,
+  type: 'POST_LIKED' | 'POST_COMMENTED' | 'DM_RECEIVED' | 'NEW_FOLLOWER',
+  meta: { postId?: string; commentId?: string; fromUserId?: string; threadId?: string }
+) {
+  try {
+    // Don't notify yourself
+    if (meta.fromUserId && meta.fromUserId === recipientId) return
+    await prisma.notification.create({
+      data: { recipientId, type, ...meta },
+    })
+  } catch { /* non-blocking — notification failure never breaks primary action */ }
+}
+
 // ─── Feed ─────────────────────────────────────────────────────────────────
 
 // GET /api/community/feed?industry=&cursor=
@@ -125,6 +140,9 @@ router.post('/posts/:id/like', authMiddleware, async (req: AuthRequest, res: Res
       res.json({ liked: false })
     } else {
       await prisma.postLike.create({ data: { userId: profile.id, postId: (req.params.id as string) } })
+      // Notify post author
+      const likedPost = await prisma.post.findUnique({ where: { id: (req.params.id as string) }, select: { authorId: true } })
+      if (likedPost) await createNotification(likedPost.authorId, 'POST_LIKED', { postId: (req.params.id as string), fromUserId: profile.id })
       res.json({ liked: true })
     }
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
@@ -159,6 +177,9 @@ router.post('/posts/:id/comments', authMiddleware, async (req: AuthRequest, res:
       include: { author: { select: { id: true, userId: true, city: true,
         user: { select: { firstName: true, lastName: true, primaryIndustry: true } } } } },
     })
+    // Notify post author
+    const commentedPost = await prisma.post.findUnique({ where: { id: (req.params.id as string) }, select: { authorId: true } })
+    if (commentedPost) await createNotification(commentedPost.authorId, 'POST_COMMENTED', { postId: (req.params.id as string), commentId: comment.id, fromUserId: profile.id })
     res.json({ comment })
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
 })
@@ -236,6 +257,12 @@ router.get('/dms', authMiddleware, async (req: AuthRequest, res: Response): Prom
       orderBy: { updatedAt: 'desc' },
       include: {
         messages: { orderBy: { sentAt: 'desc' }, take: 1 },
+        partA: {
+          select: { id: true, city: true, user: { select: { firstName: true, lastName: true } } }
+        },
+        partB: {
+          select: { id: true, city: true, user: { select: { firstName: true, lastName: true } } }
+        },
       },
     })
     res.json({ threads, myProfileId: profile.id })
@@ -293,6 +320,13 @@ router.post('/dms/:threadId/messages', authMiddleware, async (req: AuthRequest, 
 
     await prisma.dMThread.update({ where: { id: (req.params.threadId as string) }, data: { updatedAt: new Date() } })
 
+    // Notify the other participant
+    const thread = await prisma.dMThread.findUnique({ where: { id: (req.params.threadId as string) } })
+    if (thread) {
+      const recipientId = thread.participantA === profile.id ? thread.participantB : thread.participantA
+      await createNotification(recipientId, 'DM_RECEIVED', { threadId: (req.params.threadId as string), fromUserId: profile.id })
+    }
+
     res.json({ message })
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
 })
@@ -326,6 +360,7 @@ router.post('/follows/:profileId', authMiddleware, async (req: AuthRequest, res:
       res.json({ following: false })
     } else {
       await prisma.follow.create({ data: { followerId: profile.id, followingId: (req.params.profileId as string) } })
+      await createNotification((req.params.profileId as string), 'NEW_FOLLOWER', { fromUserId: profile.id })
       res.json({ following: true })
     }
   } catch (e) { res.status(500).json({ error: 'Failed' }) }

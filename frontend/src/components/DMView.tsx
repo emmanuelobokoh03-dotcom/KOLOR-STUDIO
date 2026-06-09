@@ -120,18 +120,25 @@ export default function DMView() {
                 }}
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
-                    style={{ background: '#6C2EDB' }}>
-                    DM
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-text-primary truncate">
-                      Conversation
-                    </p>
-                    {lastMsg && (
-                      <p className="text-[10px] text-[var(--text-tertiary)] truncate">{lastMsg.content}</p>
-                    )}
-                  </div>
+                  {(() => {
+                    const other = thread.participantA === myProfileId ? thread.partB : thread.partA
+                    const name = other ? `${other.user?.firstName || ''} ${other.user?.lastName || ''}`.trim() : 'Community member'
+                    const initials = name ? name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) : '?'
+                    return (
+                      <>
+                        <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
+                          style={{ background: '#6C2EDB' }}>
+                          {initials}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-text-primary truncate">{name}</p>
+                          {lastMsg && (
+                            <p className="text-[10px] text-[var(--text-tertiary)] truncate">{lastMsg.content}</p>
+                          )}
+                        </div>
+                      </>
+                    )
+                  })()}
                 </div>
               </button>
             )

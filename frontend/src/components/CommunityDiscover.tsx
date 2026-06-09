@@ -25,7 +25,7 @@ const INDUSTRY_LABELS: Record<string, string> = {
   OTHER: 'Creative',
 }
 
-export default function CommunityDiscover() {
+export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileId: string) => void }) {
   const [industry, setIndustry] = useState('ALL')
   const [profiles, setProfiles] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -67,6 +67,15 @@ export default function CommunityDiscover() {
         else next.delete(profileId)
         return next
       })
+    } catch { /* silent */ }
+  }
+
+  const handleMessage = async (profileId: string) => {
+    try {
+      await fetch(`${API}/api/community/dms/${profileId}`, {
+        method: 'POST', credentials: 'include'
+      })
+      onStartDM?.(profileId)
     } catch { /* silent */ }
   }
 
@@ -132,17 +141,32 @@ export default function CommunityDiscover() {
                       style={{ color: avail.color, background: avail.color + '18' }}>
                       {avail.label}
                     </span>
-                    <button
-                      onClick={() => handleFollow(profile.id)}
-                      data-testid={`discover-follow-${profile.id}`}
-                      className="text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-all"
-                      style={{
-                        background: isFollowing ? 'var(--surface-background)' : '#6C2EDB',
-                        color: isFollowing ? 'var(--text-secondary)' : '#fff',
-                        border: '0.5px solid ' + (isFollowing ? 'var(--border)' : '#6C2EDB'),
-                      }}>
-                      {isFollowing ? 'Following' : 'Follow'}
-                    </button>
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={() => handleFollow(profile.id)}
+                        data-testid={`discover-follow-${profile.id}`}
+                        className="text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-all"
+                        style={{
+                          background: isFollowing ? 'var(--surface-background)' : '#6C2EDB',
+                          color: isFollowing ? 'var(--text-secondary)' : '#fff',
+                          border: '0.5px solid ' + (isFollowing ? 'var(--border)' : '#6C2EDB'),
+                        }}>
+                        {isFollowing ? 'Following' : 'Follow'}
+                      </button>
+                      {onStartDM && (
+                        <button
+                          onClick={() => handleMessage(profile.id)}
+                          data-testid={`discover-message-${profile.id}`}
+                          className="text-[11px] font-medium px-3 py-1.5 rounded-lg transition-all"
+                          style={{
+                            background: 'var(--surface-background)',
+                            color: 'var(--text-secondary)',
+                            border: '0.5px solid var(--border)',
+                          }}>
+                          DM
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               )
