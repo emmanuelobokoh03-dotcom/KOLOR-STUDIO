@@ -115,8 +115,9 @@ export default function DMView() {
                 data-testid={`dm-thread-${thread.id}`}
                 className="w-full text-left px-4 py-3 transition-colors border-b"
                 style={{
-                  background: isActive ? 'var(--surface-background)' : 'transparent',
+                  background: isActive ? '#EDE9FE' : 'transparent',
                   borderColor: 'var(--border)',
+                  borderLeft: isActive ? '3px solid #6C2EDB' : '3px solid transparent',
                 }}
               >
                 <div className="flex items-center gap-2.5">
@@ -148,11 +149,13 @@ export default function DMView() {
 
       {/* Conversation */}
       {activeThread ? (
-        <div className="flex flex-col md:flex-1"
+        <div className="flex flex-col"
           style={{
             position: 'absolute',
-            inset: 0,
-            background: 'var(--surface-base)',
+            top: 0, left: 0, right: 0, bottom: 0,
+            width: '100%',
+            height: '100%',
+            background: 'var(--surface-base, #fff)',
             zIndex: 10,
           }}>
           <div className="md:hidden flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
