@@ -1,8 +1,8 @@
 import { SquaresFour } from '@phosphor-icons/react/dist/csr/SquaresFour'
 import { List } from '@phosphor-icons/react/dist/csr/List'
 import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
-import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
-type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
+import { Users } from '@phosphor-icons/react/dist/csr/Users'
+type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts' | 'community';
 
 interface MobileBottomNavProps {
   viewMode: ViewMode;
@@ -47,17 +47,17 @@ export default function MobileBottomNav({ viewMode, onViewChange, onOpenSettings
           <span className="text-[10px] font-medium">Clients</span>
         </button>
 
-        {/* Portfolio */}
+        {/* Community */}
         <button
-          onClick={() => onViewChange('portfolio')}
+          onClick={() => onViewChange('community')}
           className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-3 rounded-xl min-w-[60px] min-h-[44px] touch-target transition-all duration-200 ${
-            isActive('portfolio') ? 'text-purple-600' : 'text-text-tertiary active:text-purple-600'
+            isActive('community') ? 'text-purple-600' : 'text-text-tertiary active:text-purple-600'
           }`}
-          aria-label="Portfolio"
-          data-testid="bottom-nav-portfolio"
+          aria-label="Community"
+          data-testid="bottom-nav-community"
         >
-          <Briefcase weight={isActive('portfolio') ? 'fill' : 'regular'} className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Portfolio</span>
+          <Users weight={isActive('community') ? 'fill' : 'regular'} className="w-5 h-5" />
+          <span className="text-[10px] font-medium">Community</span>
         </button>
 
         {/* Settings */}

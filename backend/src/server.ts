@@ -58,6 +58,7 @@ import testimonialRoutes from './routes/testimonials';
 import sequencesRoutes from './routes/sequences';
 import webhookRoutes from './routes/webhooks';
 import paymentRoutes from './routes/payments';
+import communityRoutes from './routes/community';
 import { processSequences } from './services/sequenceEngine';
 import { apiLimiter, authLimiter, emailLimiter, uploadLimiter, portalLimiter } from './middleware/rateLimiter';
 import { ensureBucketExists } from './services/storage';
@@ -242,6 +243,7 @@ app.use('/api/', apiLimiter); // general limiter last (least restrictive)
 // API Routes - all prefixed with /api for K8s ingress routing
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadsRoutes);
+app.use('/api/community', communityRoutes);
 app.use('/api/waitlist', waitlistRoutes);
 app.use('/api/leads', activitiesRoutes); // Activities: /api/leads/:id/activities
 app.use('/api/leads', filesRoutes); // Files: /api/leads/:id/files

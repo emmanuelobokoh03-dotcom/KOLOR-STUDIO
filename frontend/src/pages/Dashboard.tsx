@@ -21,6 +21,7 @@ import { ChartBar } from '@phosphor-icons/react/dist/csr/ChartBar'
 import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
+import { Bell } from '@phosphor-icons/react/dist/csr/Bell'
 import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
 import AddLeadModal from '../components/AddLeadModal'
@@ -65,11 +66,14 @@ const LeadDetailModal = lazy(() => import('../components/LeadDetailModal'))
 const SettingsModal = lazy(() => import('../components/SettingsModal'))
 const AnalyticsDashboard = lazy(() => import('../components/AnalyticsDashboard'))
 const PortfolioPage = lazy(() => import('./Portfolio'))
+const CommunityFeed = lazy(() => import('../components/CommunityFeed'))
+const CommunityDiscover = lazy(() => import('../components/CommunityDiscover'))
+const DMView = lazy(() => import('../components/DMView'))
 const SequencesDashboard = lazy(() => import('./SequencesDashboard'))
 const QuotesPage = lazy(() => import('./Quotes'))
 const ContractsPage = lazy(() => import('./Contracts'))
 
-type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts';
+type ViewMode = 'kanban' | 'list' | 'analytics' | 'calendar' | 'portfolio' | 'sequences' | 'quotes' | 'contracts' | 'community';
 
 // Skeleton components for loading states
 // Iter 177 — shimmer keyframe moved to global index.css (.ks-shimmer)
@@ -125,7 +129,7 @@ const Dashboard = () => {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   // Deep-link support: read `?view=quotes|contracts|analytics|sequences|portfolio|list|kanban|calendar` from the URL so tabs can be bookmarked/shared.
-  const VALID_VIEWS: ViewMode[] = ['kanban', 'list', 'analytics', 'calendar', 'portfolio', 'sequences', 'quotes', 'contracts']
+  const VALID_VIEWS: ViewMode[] = ['kanban', 'list', 'analytics', 'calendar', 'portfolio', 'sequences', 'quotes', 'contracts', 'community']
   const initialViewFromUrl = searchParams.get('view') as ViewMode | null
   const initialView: ViewMode = (initialViewFromUrl && VALID_VIEWS.includes(initialViewFromUrl)) ? initialViewFromUrl : 'kanban'
   const [user, setUser] = useState<UserType | null>(null)
@@ -149,6 +153,8 @@ const Dashboard = () => {
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
   const [stats, setStats] = useState<{ total: number; statusCounts: Record<string, number> } | null>(null)
   const [showBookingModal, setShowBookingModal] = useState(false)
+  const [unreadNotifs, setUnreadNotifs] = useState(0)
+  const [communityTab, setCommunityTab] = useState<'feed' | 'discover' | 'dms'>('feed')
   const [bookingLead, setBookingLead] = useState<Lead | null>(null)
   const [projectTypeFilter, setProjectTypeFilter] = useState<string>('')
   const [industryFilter, setIndustryFilter] = useState<string>('')
@@ -263,6 +269,22 @@ const Dashboard = () => {
     if (leads.length > 0) tryOpen()
     else setTimeout(tryOpen, 1000)
   }, [leads])
+
+  // Iter 228 — poll community notification unread count
+  useEffect(() => {
+    if (!user) return
+    const API_URL = (import.meta as any).env?.VITE_API_URL || ''
+    const fetchUnread = () => {
+      fetch(`${API_URL}/api/community/notifications`, { credentials: 'include' })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => { if (d) setUnreadNotifs(d.unread || 0) })
+        .catch(() => {})
+    }
+    fetchUnread()
+    const id = setInterval(fetchUnread, 60000)
+    return () => clearInterval(id)
+  }, [user])
+
 
   // Listen for lead-open requests from Calendar page and other entry points
   useEffect(() => {
@@ -689,6 +711,7 @@ const Dashboard = () => {
         <div className="group">
         {([
           { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
+          { mode: 'community' as ViewMode, icon: Users, label: 'Community' },
         ]).map(({ mode, icon: Icon, label }) => (
           <button
             key={mode}
@@ -797,6 +820,18 @@ const Dashboard = () => {
                   data-testid="dashboard-search"
                 />
               </div>
+              {/* Notification bell — community unread count */}
+              <button
+                onClick={() => { handleViewChange('community'); setCommunityTab('feed') }}
+                className="relative w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors"
+                aria-label={unreadNotifs > 0 ? `${unreadNotifs} unread notifications` : 'Community'}
+                data-testid="header-notification-bell"
+              >
+                <Bell className="w-4 h-4" />
+                {unreadNotifs > 0 && (
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#E8891A]" aria-hidden="true" />
+                )}
+              </button>
               {/* Iter 144 — HelpMenu + Settings gear removed from top header (kept in sidebar). */}
             </div>
             {/* Iter 170 — header CTA removed; entry points: empty state, kanban "+" columns, keyboard shortcut, sidebar. */}
@@ -1451,6 +1486,30 @@ const Dashboard = () => {
           <Suspense fallback={<div className="flex items-center justify-center h-64"><KolorSpinner size={32} /></div>}>
             <PortfolioPage user={user} />
           </Suspense>
+        ) : viewMode === 'community' ? (
+          <div className="flex flex-col h-full" data-testid="community-view">
+            <div className="flex gap-0 border-b px-4 sticky top-0 z-10"
+              style={{ borderColor: 'var(--border)', background: 'var(--surface-base)' }}>
+              {(['feed', 'discover', 'dms'] as const).map(tab => (
+                <button key={tab} onClick={() => setCommunityTab(tab)}
+                  data-testid={`community-tab-${tab}`}
+                  className="px-4 py-3 text-xs font-medium capitalize transition-colors relative"
+                  style={{ color: communityTab === tab ? '#6C2EDB' : 'var(--text-tertiary)' }}>
+                  {tab === 'dms' ? 'Messages' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {communityTab === tab && (
+                    <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#6C2EDB] rounded-full" />
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <Suspense fallback={<div className="flex justify-center py-12"><KolorSpinner size={28} /></div>}>
+                {communityTab === 'feed' && <CommunityFeed userIndustry={user?.primaryIndustry as any} userId={user?.id} />}
+                {communityTab === 'discover' && <CommunityDiscover />}
+                {communityTab === 'dms' && <DMView />}
+              </Suspense>
+            </div>
+          </div>
         ) : filteredLeads.length === 0 && !loading ? (
           <div className="bg-light-50 rounded-xl border border-light-200 p-6 md:p-12">
             <EmptyState
