@@ -868,6 +868,20 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 228b — Notification hooks + DM names + Discover message btn (Feb 2026) — ✅ SHIPPED
+- `community.ts`: Added `createNotification()` helper (non-blocking, self-notify guard) — hooked into 4 actions:
+  - Like → POST_LIKED to post author
+  - Comment → POST_COMMENTED to post author
+  - DM message → DM_RECEIVED to other participant
+  - Follow → NEW_FOLLOWER to followed profile
+  - **Bell is now functional** (was decorative in 228)
+- `community.ts` `/dms` query: includes `partA`/`partB` with first/last names (reused existing schema relations — no schema change required)
+- `DMView.tsx`: thread list resolves other participant name + initials avatar instead of "Conversation" placeholder
+- `CommunityDiscover.tsx`: added `onStartDM` prop + DM button per profile card
+- `Dashboard.tsx`: wires `onStartDM` to switch to Messages sub-tab
+- Build gates: backend `tsc --noEmit` 0 errors · frontend `tsc --noEmit` 0 errors · `vite build` ✅ (~7s)
+- Local commit: `2a5aefc` — needs Save-to-GitHub push + Railway redeploy
+
 ## Iteration 228 — Community UI (Feed · DMs · Discover · Notifications) (Feb 2026) — ✅ SHIPPED
 - Backend: `backend/src/routes/community.ts` — 17 REST endpoints mounted at `/api/community`
   - Feed (`/feed`, `/trending`), posts CRUD + like + comments, profile (`/profile/me`, `/profile`), discover, DMs (threads + messages + read receipts), follows, notifications, reports
