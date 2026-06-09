@@ -92,7 +92,7 @@ export default function DMView() {
   if (loading) return <div className="flex justify-center py-12"><KolorSpinner size={28} /></div>
 
   return (
-    <div className="flex" style={{ height: 'calc(100dvh - 120px)', overflow: 'hidden' }} data-testid="dm-view">
+    <div className="flex relative" style={{ height: 'calc(100dvh - 120px)', overflow: 'hidden' }} data-testid="dm-view">
 
       {/* Thread list */}
       <div className={`${activeThread ? 'hidden md:flex' : 'flex'} w-full md:w-72 flex-col flex-shrink-0 border-r overflow-y-auto`}
@@ -148,8 +148,13 @@ export default function DMView() {
 
       {/* Conversation */}
       {activeThread ? (
-        <div className="flex flex-col fixed md:relative inset-0 md:inset-auto md:flex-1 z-20 md:z-auto"
-          style={{ background: 'var(--surface-base)' }}>
+        <div className="flex flex-col md:flex-1"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'var(--surface-base)',
+            zIndex: 10,
+          }}>
           <div className="md:hidden flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
             <button onClick={() => setActiveThread(null)}
               className="text-xs text-[var(--text-secondary)] underline">
