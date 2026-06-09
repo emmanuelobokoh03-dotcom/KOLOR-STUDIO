@@ -80,7 +80,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 pb-24" data-testid="community-discover">
+    <div className="max-w-4xl mx-auto px-4 py-6" data-testid="community-discover" style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom))" }}>
       <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide">
         {INDUSTRY_FILTERS.map(f => (
           <button

@@ -862,7 +862,7 @@ const Dashboard = () => {
               <p className="text-xs text-text-secondary mt-0.5">{user?.studioName || `${user?.firstName}'s Studio`}</p>
             </div>
             {/* Nav items */}
-            <div className="flex-1 overflow-y-auto py-2">
+            <div style={{ flex: 1, overflowY: "auto", minHeight: 0, paddingTop: "8px", paddingBottom: "8px" }}>
               {([
                 { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Today' },
                 { mode: 'list' as ViewMode, icon: ListIcon, label: 'Clients' },
@@ -1487,7 +1487,7 @@ const Dashboard = () => {
             <PortfolioPage user={user} />
           </Suspense>
         ) : viewMode === 'community' ? (
-          <div className="flex flex-col h-full" data-testid="community-view">
+          <div className="flex flex-col" data-testid="community-view" style={{ height: 'calc(100dvh - 64px)', overflow: 'hidden' }}>
             <div className="flex gap-0 border-b px-4 sticky top-0 z-10"
               style={{ borderColor: 'var(--border)', background: 'var(--surface-base)' }}>
               {(['feed', 'discover', 'dms'] as const).map(tab => (

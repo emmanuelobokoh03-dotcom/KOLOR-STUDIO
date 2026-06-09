@@ -92,7 +92,7 @@ export default function DMView() {
   if (loading) return <div className="flex justify-center py-12"><KolorSpinner size={28} /></div>
 
   return (
-    <div className="flex" style={{ minHeight: 'calc(100vh - 180px)' }} data-testid="dm-view">
+    <div className="flex" style={{ height: 'calc(100dvh - 120px)', overflow: 'hidden' }} data-testid="dm-view">
 
       {/* Thread list */}
       <div className={`${activeThread ? 'hidden md:flex' : 'flex'} w-full md:w-72 flex-col flex-shrink-0 border-r overflow-y-auto`}
@@ -148,14 +148,15 @@ export default function DMView() {
 
       {/* Conversation */}
       {activeThread ? (
-        <div className="flex-1 flex flex-col">
+        <div className="flex flex-col fixed md:relative inset-0 md:inset-auto md:flex-1 z-20 md:z-auto"
+          style={{ background: 'var(--surface-base)' }}>
           <div className="md:hidden flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
             <button onClick={() => setActiveThread(null)}
               className="text-xs text-[var(--text-secondary)] underline">
               ← Back
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
+          <div className="overflow-y-auto p-4 flex flex-col gap-2" style={{ flex: 1, minHeight: 0 }}>
             {messages.map((msg, i) => {
               const isMe = msg.sender?.id === myProfileId
               return (

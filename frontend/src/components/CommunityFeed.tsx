@@ -104,7 +104,7 @@ export default function CommunityFeed({ userIndustry, userId }: CommunityFeedPro
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 pb-24" data-testid="community-feed">
+    <div className="max-w-2xl mx-auto px-4 py-6" style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom))" }} data-testid="community-feed">
 
       {/* Trending rail */}
       {trending.length > 0 && (

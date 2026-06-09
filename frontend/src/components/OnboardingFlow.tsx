@@ -49,7 +49,7 @@ export default function OnboardingFlow({
     try {
       await leadsApi.create({
         clientName: clientName.trim(),
-        clientEmail: clientEmail.trim() || 'unknown@placeholder.local',
+        clientEmail: clientEmail.trim() || undefined,
         serviceType: 'OTHER' as any,
         projectTitle: 'First project',
         description: '',
