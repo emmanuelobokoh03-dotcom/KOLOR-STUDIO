@@ -6,6 +6,7 @@ import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { Flag } from '@phosphor-icons/react/dist/csr/Flag'
 import CommentThread from './CommentThread'
+import { linkifyText } from '../utils/linkifyText'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
@@ -191,7 +192,7 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
             </div>
           </div>
         ) : (
-          <p className="text-sm text-text-primary leading-relaxed">{content}</p>
+          <p className="text-sm text-text-primary leading-relaxed" dangerouslySetInnerHTML={{ __html: linkifyText(content) }} />
         )}
       </div>
 

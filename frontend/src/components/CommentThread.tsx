@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import KolorSpinner from './KolorSpinner'
+import { linkifyText } from '../utils/linkifyText'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
@@ -56,7 +57,7 @@ export default function CommentThread({ postId }: { postId: string }) {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-text-primary leading-relaxed mt-0.5">{c.content}</p>
+                <p className="text-xs text-text-primary leading-relaxed mt-0.5" dangerouslySetInnerHTML={{ __html: linkifyText(c.content) }} />
               </div>
             </div>
           ))}
