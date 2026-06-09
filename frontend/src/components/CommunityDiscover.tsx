@@ -27,6 +27,8 @@ const INDUSTRY_LABELS: Record<string, string> = {
 
 export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileId: string) => void }) {
   const [industry, setIndustry] = useState('ALL')
+  const [cityFilter, setCityFilter] = useState('')
+  const [cityInput, setCityInput] = useState('')
   const [profiles, setProfiles] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [cursor, setCursor] = useState<string | null>(null)
@@ -37,6 +39,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
     setLoading(true)
     try {
       const params = new URLSearchParams({ industry: ind })
+      if (cityFilter.trim()) params.set('city', cityFilter.trim())
       if (cur) params.set('cursor', cur)
       const res = await fetch(`${API}/api/community/discover?${params}`, { credentials: 'include' })
       const data = await res.json()
@@ -53,7 +56,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
     setCursor(null)
     fetchProfiles(industry)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [industry])
+  }, [industry, cityFilter])
 
   const handleFollow = async (profileId: string) => {
     try {
@@ -97,6 +100,39 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
             {f.label}
           </button>
         ))}
+      </div>
+
+      {/* City filter */}
+      <div className="flex gap-2 mb-4">
+        <input
+          type="text"
+          value={cityInput}
+          onChange={e => setCityInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && setCityFilter(cityInput)}
+          placeholder="Filter by city..."
+          className="flex-1 text-xs rounded-full px-4 py-2 outline-none"
+          style={{
+            border: '0.5px solid var(--border)',
+            background: 'var(--surface-background)',
+            color: 'var(--text-primary)',
+          }}
+        />
+        {cityInput && (
+          <button
+            onClick={() => setCityFilter(cityInput)}
+            className="text-xs font-medium px-3 py-2 rounded-full flex-shrink-0 text-white"
+            style={{ background: '#6C2EDB' }}>
+            Search
+          </button>
+        )}
+        {cityFilter && (
+          <button
+            onClick={() => { setCityFilter(''); setCityInput('') }}
+            className="text-xs px-3 py-2 rounded-full flex-shrink-0"
+            style={{ border: '0.5px solid var(--border)', color: 'var(--text-secondary)' }}>
+            Clear
+          </button>
+        )}
       </div>
 
       {loading && profiles.length === 0 ? (
