@@ -149,22 +149,50 @@ export default function DMView() {
 
       {/* Conversation */}
       {activeThread ? (
-        <div className="flex flex-col"
-          style={{
+        <div style={{
             position: 'absolute',
             top: 0, left: 0, right: 0, bottom: 0,
-            width: '100%',
-            height: '100%',
-            background: 'var(--surface-base, #fff)',
+            display: 'flex',
+            flexDirection: 'column',
+            background: '#fff',
             zIndex: 10,
+            overflow: 'hidden',
           }}>
-          <div className="md:hidden flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
-            <button onClick={() => setActiveThread(null)}
-              className="text-xs text-[var(--text-secondary)] underline">
-              ← Back
+          <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '12px 16px',
+              borderBottom: '0.5px solid #e5e7eb',
+              flexShrink: 0,
+              background: '#fff',
+            }}>
+            <button
+              onClick={() => setActiveThread(null)}
+              style={{
+                fontSize: '13px',
+                color: '#6C2EDB',
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+              }}>
+              ← Back to messages
             </button>
           </div>
-          <div className="overflow-y-auto p-4 flex flex-col gap-2" style={{ flex: 1, minHeight: 0 }}>
+          <div style={{
+              flex: 1,
+              minHeight: 0,
+              overflowY: 'auto',
+              padding: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+              gap: '8px',
+            }}>
             {messages.map((msg, i) => {
               const isMe = msg.sender?.id === myProfileId
               return (
@@ -183,7 +211,16 @@ export default function DMView() {
               )
             })}
           </div>
-          <div className="p-4 border-t flex gap-2" style={{ borderColor: 'var(--border)' }}>
+          <div style={{
+              padding: '12px 16px',
+              borderTop: '0.5px solid #e5e7eb',
+              display: 'flex',
+              gap: '8px',
+              alignItems: 'center',
+              flexShrink: 0,
+              background: '#fff',
+              paddingBottom: 'calc(12px + env(safe-area-inset-bottom))',
+            }}>
             <input
               type="text"
               value={input}
