@@ -868,6 +868,14 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 229-security — DM IDOR fix + Content sanitisation + API noindex (Feb 2026) — ✅ SHIPPED
+- **CRITICAL — DM IDOR fix**: GET + POST `/api/community/dms/:threadId/messages` now verify the requesting user's CommunityProfile is `participantA` or `participantB` before reading/writing. Attack vector closed.
+- **Content sanitisation**: `sanitizeInput()` helper encodes `&<>"'/`` before storage — applied to post content (create + edit), comment content, DM message content, profile bio, profile city
+- **X-Robots-Tag: noindex** on all `/api/*` routes via Express middleware in `server.ts`
+- Build gates: backend `tsc --noEmit` 0 errors
+- Local commit: `575fbf4 fix(security): DM IDOR + content sanitisation + API noindex`
+- **Security posture: ✅ ready for beta launch** (IDOR · stored XSS · noindex · helmet · rate limit · webhook sigs · git history all green)
+
 ## Iteration 228b — Notification hooks + DM names + Discover message btn (Feb 2026) — ✅ SHIPPED
 - `community.ts`: Added `createNotification()` helper (non-blocking, self-notify guard) — hooked into 4 actions:
   - Like → POST_LIKED to post author
