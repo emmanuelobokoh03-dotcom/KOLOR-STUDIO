@@ -868,6 +868,27 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 228 — Community UI (Feed · DMs · Discover · Notifications) (Feb 2026) — ✅ SHIPPED
+- Backend: `backend/src/routes/community.ts` — 17 REST endpoints mounted at `/api/community`
+  - Feed (`/feed`, `/trending`), posts CRUD + like + comments, profile (`/profile/me`, `/profile`), discover, DMs (threads + messages + read receipts), follows, notifications, reports
+  - Auto-creates `CommunityProfile` on first interaction
+- Frontend components (5 new + 1 inline):
+  - `CommunityFeed.tsx` — trending rail (smart enhancement: top-3 most-liked past 7 days), industry filter, compose with milestone keyword detection prompt, paginated post list
+  - `PostCard.tsx` — like/comment/edit/delete/report, industry color border, optimistic like toggle, server-enforced 24h edit window
+  - `CommentThread.tsx` — expandable below PostCard
+  - `DMView.tsx` — thread list + conversation, 10s polling, mobile-first split layout with back button, read receipts
+  - `CommunityDiscover.tsx` — 24-card grid, follow toggle, availability pill, industry filter
+  - `CommunityProfileSettings` (inline in SettingsModal) — opt-in toggle, bio (150), city, availability
+- Navigation:
+  - MobileBottomNav: Portfolio tab → **Community tab** (Users icon)
+  - Dashboard ViewMode: `community` added + sub-tabs (Feed / Discover / Messages)
+  - Dashboard sidebar: Community nav item under Account
+  - SettingsModal: Community tab
+  - Header notification bell (60s polling, amber dot when unread > 0)
+- Build gates: backend `tsc --noEmit` 0 errors · frontend `tsc --noEmit` 0 errors · `vite build` ✅
+- Local commit: `2c6b1c4` — needs Save-to-GitHub push + Railway redeploy
+- Backlog: Notification creation hooks (currently only consumed, not created — needs hooks on like/comment/DM/follow events)
+
 ## Iteration 227b — Synthetic community seed (Feb 2026) — ✅ SHIPPED
 - `backend/scripts/seed-community.ts` — idempotent upsert seed
 - 40 synthetic profiles across 3 industries & 12 cities (Lagos, Nairobi, Accra, Joburg, London, Berlin, São Paulo, Cape Town, Kampala, Paris, Dubai, Cairo, Lisbon, Toronto, Amsterdam)
