@@ -868,6 +868,14 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Community Email Notifications (Feb 2026) — ✅ SHIPPED
+- `email.ts`: 4 new functions — `sendCommunityDMNotification`, `sendCommunityLikeNotification`, `sendCommunityCommentNotification`, `sendCommunityFollowNotification`. Each uses `getEmailTemplate()` + Resend; returns `false` when `isResendSandbox` is true.
+- `community.ts` `createNotification()` extended: fetches recipient profile + user email, skips synthetic / placeholder accounts, fetches sender display name, then dispatches the matching email non-blockingly with `.catch()`.
+- Like + Comment callers now pass `postContent` / `commentContent` (queries widened to include `content`).
+- Build gate: backend `tsc --noEmit` **0 errors**.
+- Local commit: `52b28c6 feat: community email notifications`.
+- ⚠️ Requires `SENDER_EMAIL=noreply@kolorstudio.app` (or non-sandbox) in Railway env, otherwise emails silently no-op.
+
 ## Iteration 229-security — DM IDOR fix + Content sanitisation + API noindex (Feb 2026) — ✅ SHIPPED
 - **CRITICAL — DM IDOR fix**: GET + POST `/api/community/dms/:threadId/messages` now verify the requesting user's CommunityProfile is `participantA` or `participantB` before reading/writing. Attack vector closed.
 - **Content sanitisation**: `sanitizeInput()` helper encodes `&<>"'/`` before storage — applied to post content (create + edit), comment content, DM message content, profile bio, profile city
