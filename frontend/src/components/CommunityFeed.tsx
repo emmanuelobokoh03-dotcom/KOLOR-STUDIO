@@ -140,7 +140,7 @@ export default function CommunityFeed({ userIndustry, userId }: CommunityFeedPro
             key={f.value}
             onClick={() => setIndustry(f.value)}
             data-testid={`feed-filter-${f.value.toLowerCase()}`}
-            className="flex-shrink-0 text-xs font-medium px-3 py-1.5 rounded-full transition-all"
+            className="flex-shrink-0 text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 active:opacity-70"
             style={{
               background: industry === f.value ? '#6C2EDB' : 'var(--surface-background)',
               color: industry === f.value ? '#fff' : 'var(--text-secondary)',
@@ -184,7 +184,7 @@ export default function CommunityFeed({ userIndustry, userId }: CommunityFeedPro
               onClick={handlePost}
               disabled={posting}
               data-testid="feed-compose-submit"
-              className="text-xs font-semibold px-4 py-2 rounded-lg text-white transition-all"
+              className="text-xs font-semibold px-4 py-2 rounded-lg text-white transition-all active:scale-95 active:opacity-80"
               style={{ background: '#6C2EDB' }}
             >
               {posting ? 'Posting...' : 'Post'}

@@ -137,7 +137,7 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
           <button
             onClick={() => setShowMenu(!showMenu)}
             data-testid="post-menu-toggle"
-            className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--text-tertiary)] hover:bg-[var(--surface-background)] transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--text-tertiary)] hover:bg-[var(--surface-background)] active:bg-[var(--surface-background)] active:scale-90 transition-colors"
           >
             <DotsThree className="w-4 h-4" weight="bold" />
           </button>

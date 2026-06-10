@@ -181,7 +181,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
                       <button
                         onClick={() => handleFollow(profile.id)}
                         data-testid={`discover-follow-${profile.id}`}
-                        className="text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-all"
+                        className="text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-all active:scale-95 active:opacity-70"
                         style={{
                           background: isFollowing ? 'var(--surface-background)' : '#6C2EDB',
                           color: isFollowing ? 'var(--text-secondary)' : '#fff',
@@ -193,7 +193,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
                         <button
                           onClick={() => handleMessage(profile.id)}
                           data-testid={`discover-message-${profile.id}`}
-                          className="text-[11px] font-medium px-3 py-1.5 rounded-lg transition-all"
+                          className="text-[11px] font-medium px-3 py-1.5 rounded-lg transition-all active:scale-95 active:opacity-70"
                           style={{
                             background: 'var(--surface-background)',
                             color: 'var(--text-secondary)',
