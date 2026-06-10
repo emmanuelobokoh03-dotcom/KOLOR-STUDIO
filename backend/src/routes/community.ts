@@ -1,6 +1,12 @@
 import { Router, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
 import { authMiddleware, AuthRequest } from '../middleware/auth'
+import {
+  sendCommunityDMNotification,
+  sendCommunityLikeNotification,
+  sendCommunityCommentNotification,
+  sendCommunityFollowNotification,
+} from '../services/email'
 
 const router = Router()
 const prisma = new PrismaClient()
@@ -9,14 +15,99 @@ const prisma = new PrismaClient()
 async function createNotification(
   recipientId: string,
   type: 'POST_LIKED' | 'POST_COMMENTED' | 'DM_RECEIVED' | 'NEW_FOLLOWER',
-  meta: { postId?: string; commentId?: string; fromUserId?: string; threadId?: string }
+  meta: {
+    postId?: string
+    commentId?: string
+    fromUserId?: string
+    threadId?: string
+    // Email context — passed by callers when available
+    postContent?: string
+    commentContent?: string
+  }
 ) {
   try {
     // Don't notify yourself
     if (meta.fromUserId && meta.fromUserId === recipientId) return
+
+    // Create in-app notification row
     await prisma.notification.create({
-      data: { recipientId, type, ...meta },
+      data: {
+        recipientId,
+        type,
+        postId: meta.postId,
+        commentId: meta.commentId,
+        fromUserId: meta.fromUserId,
+        threadId: meta.threadId,
+      },
     })
+
+    // Fetch recipient details for email
+    const recipient = await prisma.communityProfile.findUnique({
+      where: { id: recipientId },
+      include: { user: { select: { email: true, firstName: true, lastName: true } } },
+    })
+
+    // Skip email for synthetic users or missing email
+    if (!recipient || recipient.isSynthetic) return
+    const recipientEmail = recipient.user?.email
+    const recipientName = `${recipient.user?.firstName || ''} ${recipient.user?.lastName || ''}`.trim()
+    if (!recipientEmail || recipientEmail.includes('placeholder') || recipientEmail.includes('synthetic')) return
+
+    // Fetch sender name for email copy
+    let senderName = 'A community member'
+    if (meta.fromUserId) {
+      const sender = await prisma.communityProfile.findUnique({
+        where: { id: meta.fromUserId },
+        include: { user: { select: { firstName: true, lastName: true } } },
+      })
+      if (sender?.user) {
+        senderName = `${sender.user.firstName || ''} ${sender.user.lastName || ''}`.trim() || senderName
+      }
+    }
+
+    // Dispatch email — non-blocking
+    if (type === 'DM_RECEIVED') {
+      sendCommunityDMNotification({
+        recipientEmail,
+        recipientName,
+        senderName,
+        threadId: meta.threadId || '',
+      }).catch(e => console.error('[COMMUNITY EMAIL] DM notification failed:', e))
+    }
+
+    if (type === 'POST_LIKED' && meta.postContent) {
+      sendCommunityLikeNotification({
+        recipientEmail,
+        recipientName,
+        likerName: senderName,
+        postPreview: meta.postContent,
+      }).catch(e => console.error('[COMMUNITY EMAIL] Like notification failed:', e))
+    }
+
+    if (type === 'POST_COMMENTED' && meta.postContent) {
+      sendCommunityCommentNotification({
+        recipientEmail,
+        recipientName,
+        commenterName: senderName,
+        commentContent: meta.commentContent || '',
+        postPreview: meta.postContent,
+      }).catch(e => console.error('[COMMUNITY EMAIL] Comment notification failed:', e))
+    }
+
+    if (type === 'NEW_FOLLOWER') {
+      const sender = await prisma.communityProfile.findUnique({
+        where: { id: meta.fromUserId || '' },
+        include: { user: { select: { primaryIndustry: true } } },
+      })
+      sendCommunityFollowNotification({
+        recipientEmail,
+        recipientName,
+        followerName: senderName,
+        followerIndustry: sender?.user?.primaryIndustry || undefined,
+        followerCity: sender?.city || undefined,
+      }).catch(e => console.error('[COMMUNITY EMAIL] Follow notification failed:', e))
+    }
+
   } catch { /* non-blocking — notification failure never breaks primary action */ }
 }
 
@@ -156,8 +247,12 @@ router.post('/posts/:id/like', authMiddleware, async (req: AuthRequest, res: Res
     } else {
       await prisma.postLike.create({ data: { userId: profile.id, postId: (req.params.id as string) } })
       // Notify post author
-      const likedPost = await prisma.post.findUnique({ where: { id: (req.params.id as string) }, select: { authorId: true } })
-      if (likedPost) await createNotification(likedPost.authorId, 'POST_LIKED', { postId: (req.params.id as string), fromUserId: profile.id })
+      const likedPost = await prisma.post.findUnique({ where: { id: (req.params.id as string) }, select: { authorId: true, content: true } })
+      if (likedPost) await createNotification(likedPost.authorId, 'POST_LIKED', {
+        postId: (req.params.id as string),
+        fromUserId: profile.id,
+        postContent: likedPost.content,
+      })
       res.json({ liked: true })
     }
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
@@ -193,8 +288,14 @@ router.post('/posts/:id/comments', authMiddleware, async (req: AuthRequest, res:
         user: { select: { firstName: true, lastName: true, primaryIndustry: true } } } } },
     })
     // Notify post author
-    const commentedPost = await prisma.post.findUnique({ where: { id: (req.params.id as string) }, select: { authorId: true } })
-    if (commentedPost) await createNotification(commentedPost.authorId, 'POST_COMMENTED', { postId: (req.params.id as string), commentId: comment.id, fromUserId: profile.id })
+    const commentedPost = await prisma.post.findUnique({ where: { id: (req.params.id as string) }, select: { authorId: true, content: true } })
+    if (commentedPost) await createNotification(commentedPost.authorId, 'POST_COMMENTED', {
+      postId: (req.params.id as string),
+      commentId: comment.id,
+      fromUserId: profile.id,
+      postContent: commentedPost.content,
+      commentContent: content.trim(),
+    })
     res.json({ comment })
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
 })

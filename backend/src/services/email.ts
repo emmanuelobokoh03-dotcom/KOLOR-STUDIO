@@ -3652,3 +3652,188 @@ export async function sendSampleQuoteEmail(data: {
   }
 }
 
+
+// ═══════════════════════════════════════════════════════
+// COMMUNITY EMAIL NOTIFICATIONS
+// ═══════════════════════════════════════════════════════
+
+export interface CommunityDMNotificationData {
+  recipientEmail: string
+  recipientName: string
+  senderName: string
+  threadId: string
+}
+
+export async function sendCommunityDMNotification(
+  data: CommunityDMNotificationData
+): Promise<boolean> {
+  if (!resend || isResendSandbox) return false
+  try {
+    const content = `
+      <p style="font-size:16px;font-weight:600;color:#1a1a2e;margin:0 0 12px">
+        You have a new message on KOLOR Studio
+      </p>
+      <p style="color:#555;margin:0 0 20px;line-height:1.6">
+        <strong>${data.senderName}</strong> sent you a message in the KOLOR community.
+      </p>
+      <a href="https://kolorstudio.app?view=community&tab=dms"
+        style="display:inline-block;background:#6C2EDB;color:#fff;padding:12px 24px;
+               border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
+        View message →
+      </a>
+      <p style="color:#999;font-size:12px;margin-top:24px;line-height:1.5">
+        You're receiving this because someone messaged you on KOLOR Studio.<br>
+        You can manage notification preferences in your community settings.
+      </p>
+    `
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [data.recipientEmail],
+      subject: `New message from ${data.senderName} — KOLOR Studio`,
+      html: getEmailTemplate(content, 'New Message'),
+    })
+    if (error) { console.error('[EMAIL] Community DM notification failed:', error); return false }
+    return true
+  } catch (e) {
+    console.error('[EMAIL] Community DM notification exception:', e)
+    return false
+  }
+}
+
+export interface CommunityLikeNotificationData {
+  recipientEmail: string
+  recipientName: string
+  likerName: string
+  postPreview: string
+}
+
+export async function sendCommunityLikeNotification(
+  data: CommunityLikeNotificationData
+): Promise<boolean> {
+  if (!resend || isResendSandbox) return false
+  try {
+    const preview = data.postPreview.length > 80
+      ? data.postPreview.slice(0, 80) + '...'
+      : data.postPreview
+    const content = `
+      <p style="font-size:16px;font-weight:600;color:#1a1a2e;margin:0 0 12px">
+        ${data.likerName} liked your post
+      </p>
+      <p style="color:#777;font-style:italic;margin:0 0 20px;padding:12px 16px;
+                background:#f8f6ff;border-left:3px solid #6C2EDB;border-radius:4px;
+                line-height:1.6;font-size:14px">
+        "${preview}"
+      </p>
+      <a href="https://kolorstudio.app?view=community"
+        style="display:inline-block;background:#6C2EDB;color:#fff;padding:12px 24px;
+               border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
+        See your post →
+      </a>
+    `
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [data.recipientEmail],
+      subject: `${data.likerName} liked your post — KOLOR Studio`,
+      html: getEmailTemplate(content, 'Post Liked'),
+    })
+    if (error) { console.error('[EMAIL] Community like notification failed:', error); return false }
+    return true
+  } catch (e) {
+    console.error('[EMAIL] Community like notification exception:', e)
+    return false
+  }
+}
+
+export interface CommunityCommentNotificationData {
+  recipientEmail: string
+  recipientName: string
+  commenterName: string
+  commentContent: string
+  postPreview: string
+}
+
+export async function sendCommunityCommentNotification(
+  data: CommunityCommentNotificationData
+): Promise<boolean> {
+  if (!resend || isResendSandbox) return false
+  try {
+    const postPreview = data.postPreview.length > 60
+      ? data.postPreview.slice(0, 60) + '...'
+      : data.postPreview
+    const commentPreview = data.commentContent.length > 200
+      ? data.commentContent.slice(0, 200) + '...'
+      : data.commentContent
+    const content = `
+      <p style="font-size:16px;font-weight:600;color:#1a1a2e;margin:0 0 12px">
+        ${data.commenterName} commented on your post
+      </p>
+      <p style="color:#777;font-style:italic;margin:0 0 8px;padding:12px 16px;
+                background:#f8f6ff;border-left:3px solid #6C2EDB;border-radius:4px;
+                line-height:1.6;font-size:13px">
+        Your post: "${postPreview}"
+      </p>
+      <p style="color:#444;margin:0 0 20px;padding:12px 16px;
+                background:#f5f5f5;border-radius:4px;line-height:1.6;font-size:14px">
+        ${data.commenterName}: "${commentPreview}"
+      </p>
+      <a href="https://kolorstudio.app?view=community"
+        style="display:inline-block;background:#6C2EDB;color:#fff;padding:12px 24px;
+               border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
+        Reply →
+      </a>
+    `
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [data.recipientEmail],
+      subject: `${data.commenterName} commented on your post — KOLOR Studio`,
+      html: getEmailTemplate(content, 'New Comment'),
+    })
+    if (error) { console.error('[EMAIL] Community comment notification failed:', error); return false }
+    return true
+  } catch (e) {
+    console.error('[EMAIL] Community comment notification exception:', e)
+    return false
+  }
+}
+
+export interface CommunityFollowNotificationData {
+  recipientEmail: string
+  recipientName: string
+  followerName: string
+  followerIndustry?: string
+  followerCity?: string
+}
+
+export async function sendCommunityFollowNotification(
+  data: CommunityFollowNotificationData
+): Promise<boolean> {
+  if (!resend || isResendSandbox) return false
+  try {
+    const subtitle = [data.followerIndustry, data.followerCity].filter(Boolean).join(' · ')
+    const content = `
+      <p style="font-size:16px;font-weight:600;color:#1a1a2e;margin:0 0 12px">
+        ${data.followerName} is now following you
+      </p>
+      ${subtitle ? `<p style="color:#777;font-size:13px;margin:0 0 20px">${subtitle}</p>` : ''}
+      <p style="color:#555;margin:0 0 20px;line-height:1.6">
+        Your work is reaching more creatives on KOLOR Studio.
+      </p>
+      <a href="https://kolorstudio.app?view=community&tab=discover"
+        style="display:inline-block;background:#6C2EDB;color:#fff;padding:12px 24px;
+               border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
+        View community →
+      </a>
+    `
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: [data.recipientEmail],
+      subject: `${data.followerName} started following you — KOLOR Studio`,
+      html: getEmailTemplate(content, 'New Follower'),
+    })
+    if (error) { console.error('[EMAIL] Community follow notification failed:', error); return false }
+    return true
+  } catch (e) {
+    console.error('[EMAIL] Community follow notification exception:', e)
+    return false
+  }
+}
