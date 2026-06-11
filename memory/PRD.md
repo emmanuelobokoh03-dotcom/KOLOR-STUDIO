@@ -868,6 +868,14 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Community Polish (Feb 2026) — ✅ SHIPPED
+- **Bell dropdown** (`Dashboard.tsx`): tap header bell → dropdown of latest 5 notifications with type labels (♥/○/→/+), unread dot, "Mark all read", click-outside close. DM items jump to Messages tab; others to Feed.
+- **Email opt-out** (schema + `community.ts` + `SettingsModal.tsx`): added `CommunityProfile.communityEmailsEnabled Boolean @default(true)` (migration applied via db push + migrate resolve). `createNotification` skips email when `false`. PATCH `/api/community/profile` accepts the field. Settings → Community has a toggle that loads + saves it.
+- **Definitive button active states** — replaced Tailwind `active:` classes with inline `onMouseDown`/`onTouchStart`/`onTouchEnd` style toggling on PostCard (like, comment), CommunityFeed (filter pills, post submit), CommunityDiscover (follow, DM). Works reliably on iOS Safari and Android Chrome.
+- **Debug cleanup**: removed SENDER_EMAIL startup logs in `email.ts` and per-request log in `community.ts`.
+- Build gates: backend `tsc --noEmit` 0 errors · frontend `tsc --noEmit` 0 errors · `vite build` ✅.
+- Local commit: `e3e8168 feat: community polish — bell dropdown + email toggle + active states`.
+
 ## Community Email Notifications (Feb 2026) — ✅ SHIPPED
 - `email.ts`: 4 new functions — `sendCommunityDMNotification`, `sendCommunityLikeNotification`, `sendCommunityCommentNotification`, `sendCommunityFollowNotification`. Each uses `getEmailTemplate()` + Resend; returns `false` when `isResendSandbox` is true.
 - `community.ts` `createNotification()` extended: fetches recipient profile + user email, skips synthetic / placeholder accounts, fetches sender display name, then dispatches the matching email non-blockingly with `.catch()`.
