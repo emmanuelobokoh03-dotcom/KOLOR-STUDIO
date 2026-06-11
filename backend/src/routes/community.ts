@@ -131,6 +131,7 @@ function sanitizeInput(input: string): string {
 // GET /api/community/feed?industry=&cursor=
 router.get('/feed', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+    console.log('[COMMUNITY] Feed request | SENDER_EMAIL:', process.env.SENDER_EMAIL || 'NOT SET')
     const { industry, cursor } = req.query
     const take = 20
     const where: any = { isDeleted: false }
