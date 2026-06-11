@@ -15,6 +15,8 @@ const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
 
 // Detect if using Resend sandbox (onboarding@resend.dev)
 const isResendSandbox = SENDER_EMAIL.includes('resend.dev');
+console.log('[EMAIL] SENDER_EMAIL at startup:', SENDER_EMAIL);
+console.log('[EMAIL] isResendSandbox:', isResendSandbox);
 if (isResendSandbox) {
   console.warn('[EMAIL] WARNING: Using Resend sandbox sender (onboarding@resend.dev). Emails can ONLY be sent to the account owner email. Verify a domain at resend.com/domains to send to clients.');
 }
