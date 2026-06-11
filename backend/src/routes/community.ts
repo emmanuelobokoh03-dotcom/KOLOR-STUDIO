@@ -47,8 +47,9 @@ async function createNotification(
       include: { user: { select: { email: true, firstName: true, lastName: true } } },
     })
 
-    // Skip email for synthetic users or missing email
+    // Skip email for synthetic users, missing email, or opted-out users
     if (!recipient || recipient.isSynthetic) return
+    if (recipient.communityEmailsEnabled === false) return
     const recipientEmail = recipient.user?.email
     const recipientName = `${recipient.user?.firstName || ''} ${recipient.user?.lastName || ''}`.trim()
     if (!recipientEmail || recipientEmail.includes('placeholder') || recipientEmail.includes('synthetic')) return
@@ -131,7 +132,6 @@ function sanitizeInput(input: string): string {
 // GET /api/community/feed?industry=&cursor=
 router.get('/feed', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    console.log('[COMMUNITY] Feed request | SENDER_EMAIL:', process.env.SENDER_EMAIL || 'NOT SET')
     const { industry, cursor } = req.query
     const take = 20
     const where: any = { isDeleted: false }
@@ -325,7 +325,7 @@ router.patch('/profile', authMiddleware, async (req: AuthRequest, res: Response)
     }
     const updated = await prisma.communityProfile.update({
       where: { userId: req.userId! },
-      data: { ...(bio !== undefined && { bio: sanitizeInput(bio) }), ...(city !== undefined && { city: sanitizeInput(city) }),
+      data: { ...(bio !== undefined && { bio: sanitizeInput(bio) }), ...(city !== undefined && { city: sanitizeInput(city) }), ...(req.body.communityEmailsEnabled !== undefined && { communityEmailsEnabled: req.body.communityEmailsEnabled }),
                ...(availability !== undefined && { availability }), ...(isPublic !== undefined && { isPublic }) },
       include: { user: { select: { firstName: true, lastName: true, primaryIndustry: true } } },
     })

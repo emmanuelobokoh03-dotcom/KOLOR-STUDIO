@@ -154,6 +154,8 @@ const Dashboard = () => {
   const [stats, setStats] = useState<{ total: number; statusCounts: Record<string, number> } | null>(null)
   const [showBookingModal, setShowBookingModal] = useState(false)
   const [unreadNotifs, setUnreadNotifs] = useState(0)
+  const [notifList, setNotifList] = useState<any[]>([])
+  const [showBellDropdown, setShowBellDropdown] = useState(false)
   const [communityTab, setCommunityTab] = useState<'feed' | 'discover' | 'dms'>('feed')
   const [bookingLead, setBookingLead] = useState<Lead | null>(null)
   const [projectTypeFilter, setProjectTypeFilter] = useState<string>('')
@@ -277,7 +279,12 @@ const Dashboard = () => {
     const fetchUnread = () => {
       fetch(`${API_URL}/api/community/notifications`, { credentials: 'include' })
         .then(r => r.ok ? r.json() : null)
-        .then(d => { if (d) setUnreadNotifs(d.unread || 0) })
+        .then(d => {
+          if (d) {
+            setUnreadNotifs(d.unread || 0)
+            setNotifList(d.notifications || [])
+          }
+        })
         .catch(() => {})
     }
     fetchUnread()
@@ -632,7 +639,7 @@ const Dashboard = () => {
     <>
       <AnnouncementBanner />
       <EmailVerificationBanner user={user} />
-    <div className="min-h-screen bg-surface-base flex overflow-x-hidden">
+    <div className="min-h-screen bg-surface-base flex overflow-x-hidden" onClick={(e) => { if (showBellDropdown && !(e.target as Element).closest('[data-testid="bell-wrapper"]')) setShowBellDropdown(false) }}>
 
       {/* Onboarding Wizard for new users */}
       {showWizard && !showAHAModal && (
@@ -820,18 +827,110 @@ const Dashboard = () => {
                   data-testid="dashboard-search"
                 />
               </div>
-              {/* Notification bell — community unread count */}
-              <button
-                onClick={() => { handleViewChange('community'); setCommunityTab('feed') }}
-                className="relative w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--surface-background)] transition-colors"
-                aria-label={unreadNotifs > 0 ? `${unreadNotifs} unread notifications` : 'Community'}
-                data-testid="header-notification-bell"
-              >
-                <Bell className="w-4 h-4" />
-                {unreadNotifs > 0 && (
-                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#E8891A]" aria-hidden="true" />
+              {/* Notification bell — dropdown on tap (iter-228c) */}
+              <div className="relative" data-testid="bell-wrapper">
+                <button
+                  onClick={() => setShowBellDropdown(prev => !prev)}
+                  className="relative w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--surface-background)] active:scale-90 transition-all"
+                  aria-label={unreadNotifs > 0 ? `${unreadNotifs} unread notifications` : 'Notifications'}
+                  data-testid="header-notification-bell"
+                >
+                  <Bell className="w-4 h-4" />
+                  {unreadNotifs > 0 && (
+                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#E8891A]" aria-hidden="true" />
+                  )}
+                </button>
+
+                {showBellDropdown && (
+                  <div
+                    className="absolute right-0 top-10 z-50 rounded-2xl shadow-xl overflow-hidden"
+                    style={{
+                      width: '300px',
+                      background: 'var(--surface-base)',
+                      border: '0.5px solid var(--border)',
+                    }}
+                    data-testid="bell-dropdown"
+                  >
+                    <div className="flex items-center justify-between px-4 py-3 border-b"
+                      style={{ borderColor: 'var(--border)' }}>
+                      <span className="text-xs font-bold text-text-primary">Notifications</span>
+                      {unreadNotifs > 0 && (
+                        <button
+                          onClick={() => {
+                            const API_URL = (import.meta as any).env?.VITE_API_URL || ''
+                            fetch(`${API_URL}/api/community/notifications/read`, {
+                              method: 'PATCH', credentials: 'include'
+                            }).then(() => {
+                              setUnreadNotifs(0)
+                              setNotifList(prev => prev.map(n => ({ ...n, isRead: true })))
+                            })
+                          }}
+                          data-testid="bell-mark-all-read"
+                          className="text-[10px] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
+                        >
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
+                    {notifList.length === 0 ? (
+                      <div className="px-4 py-6 text-center text-xs text-[var(--text-tertiary)]">
+                        No notifications yet
+                      </div>
+                    ) : (
+                      notifList.slice(0, 5).map((n: any) => {
+                        const labels: Record<string, string> = {
+                          POST_LIKED: '♥ liked your post',
+                          POST_COMMENTED: '○ commented on your post',
+                          DM_RECEIVED: '→ sent you a message',
+                          NEW_FOLLOWER: '+ started following you',
+                        }
+                        return (
+                          <button
+                            key={n.id}
+                            onClick={() => {
+                              const API_URL = (import.meta as any).env?.VITE_API_URL || ''
+                              handleViewChange('community')
+                              setCommunityTab(n.type === 'DM_RECEIVED' ? 'dms' : 'feed')
+                              setShowBellDropdown(false)
+                              fetch(`${API_URL}/api/community/notifications/read`, {
+                                method: 'PATCH', credentials: 'include'
+                              }).then(() => setUnreadNotifs(0))
+                            }}
+                            className="w-full text-left px-4 py-3 border-b flex items-center gap-2 hover:bg-[var(--surface-background)] transition-colors"
+                            style={{ borderColor: 'var(--border)' }}
+                          >
+                            <div
+                              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                              style={{ background: n.isRead ? 'transparent' : '#E8891A' }}
+                            />
+                            <span className="text-xs text-text-primary flex-1 truncate">
+                              {labels[n.type] || 'New notification'}
+                            </span>
+                            <span className="text-[10px] text-[var(--text-tertiary)] flex-shrink-0">
+                              {(() => {
+                                const diff = Date.now() - new Date(n.createdAt).getTime()
+                                const mins = Math.floor(diff / 60000)
+                                if (mins < 1) return 'just now'
+                                if (mins < 60) return `${mins}m`
+                                const hrs = Math.floor(mins / 60)
+                                if (hrs < 24) return `${hrs}h`
+                                return `${Math.floor(hrs / 24)}d`
+                              })()}
+                            </span>
+                          </button>
+                        )
+                      })
+                    )}
+                    <button
+                      onClick={() => { handleViewChange('community'); setCommunityTab('feed'); setShowBellDropdown(false) }}
+                      className="w-full px-4 py-3 text-xs font-medium text-center hover:bg-[var(--surface-background)] transition-colors"
+                      style={{ color: '#6C2EDB' }}
+                    >
+                      Go to Community →
+                    </button>
+                  </div>
                 )}
-              </button>
+              </div>
               {/* Iter 144 — HelpMenu + Settings gear removed from top header (kept in sidebar). */}
             </div>
             {/* Iter 170 — header CTA removed; entry points: empty state, kanban "+" columns, keyboard shortcut, sidebar. */}

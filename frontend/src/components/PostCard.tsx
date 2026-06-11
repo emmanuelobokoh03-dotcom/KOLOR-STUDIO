@@ -200,14 +200,25 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
       <div className="flex items-center gap-1 px-4 py-3">
         <button onClick={handleLike}
           data-testid="post-like-btn"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all"
-          style={{ color: liked ? '#E8891A' : 'var(--text-tertiary)' }}>
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg"
+          style={{ color: liked ? '#E8891A' : 'var(--text-tertiary)', transition: 'transform 0.1s, opacity 0.1s' }}
+          onMouseDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.88)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.6' }}
+          onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+          onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.88)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.6' }}
+          onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}>
           <Heart weight={liked ? 'fill' : 'regular'} className="w-4 h-4" />
           <span className="text-xs tabular-nums">{likeCount}</span>
         </button>
         <button onClick={() => setShowComments(!showComments)}
           data-testid="post-comment-toggle"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[var(--text-tertiary)] transition-all hover:text-[var(--text-secondary)]">
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:text-[var(--text-secondary)]"
+          style={{ color: 'var(--text-tertiary)', transition: 'transform 0.1s, opacity 0.1s' }}
+          onMouseDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.88)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.6' }}
+          onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+          onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.88)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.6' }}
+          onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}>
           <ChatCircle className="w-4 h-4" />
           <span className="text-xs tabular-nums">{post._count?.comments || 0}</span>
         </button>

@@ -181,24 +181,36 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
                       <button
                         onClick={() => handleFollow(profile.id)}
                         data-testid={`discover-follow-${profile.id}`}
-                        className="text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-all active:scale-95 active:opacity-70"
+                        className="text-[11px] font-semibold px-3 py-1.5 rounded-lg"
                         style={{
                           background: isFollowing ? 'var(--surface-background)' : '#6C2EDB',
                           color: isFollowing ? 'var(--text-secondary)' : '#fff',
                           border: '0.5px solid ' + (isFollowing ? 'var(--border)' : '#6C2EDB'),
-                        }}>
+                          transition: 'transform 0.1s, opacity 0.1s',
+                        }}
+                        onMouseDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.9)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.7' }}
+                        onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+                        onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.9)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.7' }}
+                        onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}>
                         {isFollowing ? 'Following' : 'Follow'}
                       </button>
                       {onStartDM && (
                         <button
                           onClick={() => handleMessage(profile.id)}
                           data-testid={`discover-message-${profile.id}`}
-                          className="text-[11px] font-medium px-3 py-1.5 rounded-lg transition-all active:scale-95 active:opacity-70"
+                          className="text-[11px] font-medium px-3 py-1.5 rounded-lg"
                           style={{
                             background: 'var(--surface-background)',
                             color: 'var(--text-secondary)',
                             border: '0.5px solid var(--border)',
-                          }}>
+                            transition: 'transform 0.1s, opacity 0.1s',
+                          }}
+                          onMouseDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.9)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.7' }}
+                          onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+                          onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.9)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.7' }}
+                          onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}>
                           DM
                         </button>
                       )}

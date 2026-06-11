@@ -140,12 +140,18 @@ export default function CommunityFeed({ userIndustry, userId }: CommunityFeedPro
             key={f.value}
             onClick={() => setIndustry(f.value)}
             data-testid={`feed-filter-${f.value.toLowerCase()}`}
-            className="flex-shrink-0 text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 active:opacity-70"
+            className="flex-shrink-0 text-xs font-medium px-3 py-1.5 rounded-full"
             style={{
               background: industry === f.value ? '#6C2EDB' : 'var(--surface-background)',
               color: industry === f.value ? '#fff' : 'var(--text-secondary)',
               border: '0.5px solid ' + (industry === f.value ? '#6C2EDB' : 'var(--border)'),
+              transition: 'transform 0.1s, opacity 0.1s, background 0.2s, color 0.2s',
             }}
+            onMouseDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.92)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.7' }}
+            onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+            onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.92)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.7' }}
+            onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
           >
             {f.label}
           </button>
@@ -184,8 +190,12 @@ export default function CommunityFeed({ userIndustry, userId }: CommunityFeedPro
               onClick={handlePost}
               disabled={posting}
               data-testid="feed-compose-submit"
-              className="text-xs font-semibold px-4 py-2 rounded-lg text-white transition-all active:scale-95 active:opacity-80"
-              style={{ background: '#6C2EDB' }}
+              className="text-xs font-semibold px-4 py-2 rounded-lg text-white"
+              style={{ background: '#6C2EDB', transition: 'transform 0.1s, opacity 0.1s' }}
+              onMouseDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.92)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.8' }}
+              onMouseUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
+              onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.92)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.8' }}
+              onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
             >
               {posting ? 'Posting...' : 'Post'}
             </button>

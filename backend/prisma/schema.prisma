@@ -1114,6 +1114,7 @@ model CommunityProfile {
   availability Availability    @default(OPEN)
   isPublic     Boolean         @default(true)
   isSynthetic  Boolean         @default(false)
+  communityEmailsEnabled Boolean @default(true)
   joinedAt     DateTime        @default(now())
   posts        Post[]
   comments     Comment[]

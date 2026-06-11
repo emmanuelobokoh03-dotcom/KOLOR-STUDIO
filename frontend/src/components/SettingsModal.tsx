@@ -29,6 +29,7 @@ function CommunityProfileSettings() {
   const [bio, setBio] = useState('')
   const [city, setCity] = useState('')
   const [availability, setAvailability] = useState('OPEN')
+  const [emailsEnabled, setEmailsEnabled] = useState(true)
   const [isPublic, setIsPublic] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -41,6 +42,7 @@ function CommunityProfileSettings() {
           setBio(d.profile.bio || '')
           setCity(d.profile.city || '')
           setAvailability(d.profile.availability || 'OPEN')
+          setEmailsEnabled(d.profile.communityEmailsEnabled !== false)
           setIsPublic(d.profile.isPublic !== false)
         }
       }).catch(() => {})
@@ -53,7 +55,7 @@ function CommunityProfileSettings() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ bio, city, availability, isPublic }),
+        body: JSON.stringify({ bio, city, availability, isPublic, communityEmailsEnabled: emailsEnabled }),
       })
       if (res.ok) { setSaved(true); setTimeout(() => setSaved(false), 2000) }
     } catch { /* silent */ }
@@ -80,6 +82,20 @@ function CommunityProfileSettings() {
           style={{ background: isPublic ? '#6C2EDB' : '#d1d5db' }}>
           <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all"
             style={{ left: isPublic ? '1.25rem' : '0.125rem' }} />
+        </button>
+      </div>
+      <div className="flex items-center justify-between p-3 rounded-lg bg-surface-background border border-light-200">
+        <div>
+          <p className="text-xs font-medium text-text-primary">Email notifications</p>
+          <p className="text-[10px] text-text-tertiary mt-0.5">Receive emails for likes, comments, DMs and follows</p>
+        </div>
+        <button
+          onClick={() => setEmailsEnabled(!emailsEnabled)}
+          data-testid="community-emails-toggle"
+          className="w-10 h-5 rounded-full transition-all flex-shrink-0 relative"
+          style={{ background: emailsEnabled ? '#6C2EDB' : '#d1d5db' }}>
+          <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all"
+            style={{ left: emailsEnabled ? '1.25rem' : '0.125rem' }} />
         </button>
       </div>
       <div>
