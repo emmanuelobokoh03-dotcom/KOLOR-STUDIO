@@ -827,6 +827,7 @@ const Dashboard = () => {
                   data-testid="dashboard-search"
                 />
               </div>
+            </div>
               {/* Notification bell — dropdown on tap (iter-228c) */}
               <div className="relative" data-testid="bell-wrapper">
                 <button
@@ -932,7 +933,6 @@ const Dashboard = () => {
                 )}
               </div>
               {/* Iter 144 — HelpMenu + Settings gear removed from top header (kept in sidebar). */}
-            </div>
             {/* Iter 170 — header CTA removed; entry points: empty state, kanban "+" columns, keyboard shortcut, sidebar. */}
             {/* Iter 146 — Task 2b: Logout moved from header into sidebar user block dropdown. */}
           </div>
