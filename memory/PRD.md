@@ -868,6 +868,15 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Community First-Time Onboarding Intro (Feb 2026) — ✅ SHIPPED
+- **Schema**: `CommunityProfile.hasSeenCommunityIntro Boolean @default(false)` + migration `20260613174137_community_intro_flag` (applied via `db push` + `migrate resolve`).
+- **`community.ts` PATCH `/profile`**: accepts `hasSeenCommunityIntro`.
+- **`CommunityFeed.tsx`**: on mount fetches `/profile/me`; if `hasSeenCommunityIntro === false && !isSynthetic` shows a welcome modal explaining what's public, what's emailed, and how to manage settings. "Got it" dismisses + marks seen; "Edit my profile" dismisses + opens Settings → Community via new `onOpenSettings` prop.
+- **`Dashboard.tsx`**: wires `onOpenSettings` via existing `setSettingsInitialTab` + `setShowSettings`.
+- Build gates: backend + frontend `tsc --noEmit` 0 errors · `vite build` ✅.
+- Local commit: `8a964f4 feat: community first-time onboarding intro`.
+- Mobile bell fix (`77877c7`) also shipped — bell moved out of `hidden lg:flex` wrapper.
+
 ## Community Polish (Feb 2026) — ✅ SHIPPED
 - **Bell dropdown** (`Dashboard.tsx`): tap header bell → dropdown of latest 5 notifications with type labels (♥/○/→/+), unread dot, "Mark all read", click-outside close. DM items jump to Messages tab; others to Feed.
 - **Email opt-out** (schema + `community.ts` + `SettingsModal.tsx`): added `CommunityProfile.communityEmailsEnabled Boolean @default(true)` (migration applied via db push + migrate resolve). `createNotification` skips email when `false`. PATCH `/api/community/profile` accepts the field. Settings → Community has a toggle that loads + saves it.
