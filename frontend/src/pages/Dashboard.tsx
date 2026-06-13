@@ -1603,7 +1603,7 @@ const Dashboard = () => {
             </div>
             <div className="flex-1 overflow-y-auto">
               <Suspense fallback={<div className="flex justify-center py-12"><KolorSpinner size={28} /></div>}>
-                {communityTab === 'feed' && <CommunityFeed userIndustry={user?.primaryIndustry as any} userId={user?.id} />}
+                {communityTab === 'feed' && <CommunityFeed userIndustry={user?.primaryIndustry as any} userId={user?.id} onOpenSettings={(tab) => { setSettingsInitialTab(tab as any); setShowSettings(true) }} />}
                 {communityTab === 'discover' && <CommunityDiscover onStartDM={() => setCommunityTab('dms')} />}
                 {communityTab === 'dms' && <DMView />}
               </Suspense>

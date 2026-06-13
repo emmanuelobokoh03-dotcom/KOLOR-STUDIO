@@ -325,7 +325,7 @@ router.patch('/profile', authMiddleware, async (req: AuthRequest, res: Response)
     }
     const updated = await prisma.communityProfile.update({
       where: { userId: req.userId! },
-      data: { ...(bio !== undefined && { bio: sanitizeInput(bio) }), ...(city !== undefined && { city: sanitizeInput(city) }), ...(req.body.communityEmailsEnabled !== undefined && { communityEmailsEnabled: req.body.communityEmailsEnabled }),
+      data: { ...(bio !== undefined && { bio: sanitizeInput(bio) }), ...(city !== undefined && { city: sanitizeInput(city) }), ...(req.body.communityEmailsEnabled !== undefined && { communityEmailsEnabled: req.body.communityEmailsEnabled }), ...(req.body.hasSeenCommunityIntro !== undefined && { hasSeenCommunityIntro: req.body.hasSeenCommunityIntro }),
                ...(availability !== undefined && { availability }), ...(isPublic !== undefined && { isPublic }) },
       include: { user: { select: { firstName: true, lastName: true, primaryIndustry: true } } },
     })

@@ -1115,6 +1115,7 @@ model CommunityProfile {
   isPublic     Boolean         @default(true)
   isSynthetic  Boolean         @default(false)
   communityEmailsEnabled Boolean @default(true)
+  hasSeenCommunityIntro  Boolean @default(false)
   joinedAt     DateTime        @default(now())
   posts        Post[]
   comments     Comment[]

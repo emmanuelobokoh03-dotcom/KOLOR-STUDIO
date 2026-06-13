@@ -22,9 +22,10 @@ const MILESTONE_KEYWORDS = ['commission', 'delivered', 'signed', 'paid', 'comple
 interface CommunityFeedProps {
   userIndustry?: string | null
   userId?: string
+  onOpenSettings?: (tab: string) => void
 }
 
-export default function CommunityFeed({ userIndustry, userId }: CommunityFeedProps) {
+export default function CommunityFeed({ userIndustry, userId, onOpenSettings }: CommunityFeedProps) {
   const [industry, setIndustry] = useState(userIndustry || 'ALL')
   const [posts, setPosts] = useState<any[]>([])
   const [trending, setTrending] = useState<any[]>([])
@@ -35,6 +36,7 @@ export default function CommunityFeed({ userIndustry, userId }: CommunityFeedPro
   const [posting, setPosting] = useState(false)
   const [showMilestone, setShowMilestone] = useState(false)
   const [myProfileId, setMyProfileId] = useState<string | null>(null)
+  const [showIntro, setShowIntro] = useState(false)
   const composeRef = useRef<HTMLTextAreaElement>(null)
 
   const fetchFeed = useCallback(async (ind: string, cur?: string | null) => {
@@ -67,6 +69,30 @@ export default function CommunityFeed({ userIndustry, userId }: CommunityFeedPro
     fetchFeed(industry)
     fetchTrending()
   }, [industry, fetchFeed, fetchTrending])
+
+  // First-time community intro modal — show once per user
+  useEffect(() => {
+    fetch(`${API}/api/community/profile/me`, { credentials: 'include' })
+      .then(r => r.json())
+      .then(d => {
+        if (d?.profile && d.profile.hasSeenCommunityIntro === false && !d.profile.isSynthetic) {
+          setShowIntro(true)
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  const dismissIntro = (openSettings: boolean) => {
+    setShowIntro(false)
+    fetch(`${API}/api/community/profile`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ hasSeenCommunityIntro: true }),
+    }).catch(() => {})
+    if (openSettings && onOpenSettings) onOpenSettings('community')
+  }
+
 
   const handleCompose = (val: string) => {
     setCompose(val)
@@ -105,6 +131,68 @@ export default function CommunityFeed({ userIndustry, userId }: CommunityFeedPro
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6" style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom))" }} data-testid="community-feed">
+
+      {showIntro && (
+        <div
+          data-testid="community-intro-modal"
+          style={{
+            position: 'fixed', inset: 0, zIndex: 100,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '20px',
+          }}
+          onClick={() => dismissIntro(false)}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: 'var(--surface-base)',
+              borderRadius: '20px',
+              padding: '28px 24px',
+              maxWidth: '380px',
+              width: '100%',
+            }}
+          >
+            <h3 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>
+              Welcome to the KOLOR Community
+            </h3>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '12px' }}>
+              This is a space for independent creatives — Photography, Design and Fine Art — to share wins, ask questions and connect.
+            </p>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '12px' }}>
+              Your name, industry, city and bio are visible to other members in Discover. Posts and comments are visible to the whole community.
+            </p>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
+              You'll get an email when someone likes, comments, follows or messages you — you can turn this off anytime in Settings → Community.
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => dismissIntro(false)}
+                data-testid="community-intro-got-it"
+                style={{
+                  flex: 1, padding: '10px 16px', borderRadius: '10px',
+                  background: '#6C2EDB', color: '#fff', fontSize: '13px',
+                  fontWeight: 600, border: 'none', cursor: 'pointer',
+                }}
+              >
+                Got it
+              </button>
+              <button
+                onClick={() => dismissIntro(true)}
+                data-testid="community-intro-edit-profile"
+                style={{
+                  flex: 1, padding: '10px 16px', borderRadius: '10px',
+                  background: 'transparent', color: 'var(--text-secondary)', fontSize: '13px',
+                  fontWeight: 600, border: '0.5px solid var(--border)', cursor: 'pointer',
+                }}
+              >
+                Edit my profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* Trending rail */}
       {trending.length > 0 && (
