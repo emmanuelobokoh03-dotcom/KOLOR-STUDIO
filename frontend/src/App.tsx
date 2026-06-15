@@ -23,6 +23,7 @@ const CalendarPage = lazy(() => import('./pages/Calendar'))
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
 import NotFound from './pages/NotFound'
+import AuthCallback from './pages/AuthCallback'
 import { Toaster } from 'sonner'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
@@ -80,6 +81,7 @@ function App() {
         <Route path="/testimonial/:token" element={<SubmitTestimonial />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/book/:userId" element={<PublicBookingPage />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/onboarding" element={<IndustryOnboarding />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />

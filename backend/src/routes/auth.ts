@@ -962,11 +962,63 @@ router.get('/google/callback', async (req: Request, res: Response): Promise<void
     });
 
     // New users → onboarding to select industry; existing users → dashboard
+    // Token relay pattern: pass JWT as URL param so frontend can exchange it
+    // for a proper cookie via a credentialed POST (avoids sameSite:lax cross-origin issue)
     const isNewUser = !user.primaryIndustry;
-    res.redirect(`${frontendUrl}${isNewUser ? '/onboarding' : '/dashboard'}`);
+    const destination = isNewUser ? '/onboarding' : '/dashboard';
+    res.redirect(`${frontendUrl}/auth/callback?t=${token}&next=${destination}`);
   } catch (error) {
     console.error('[Google Auth] Callback error:', error);
     res.redirect(`${frontendUrl}/login?error=google_failed`);
+  }
+});
+
+// POST /api/auth/exchange-token — Exchange OAuth token param for httpOnly cookie
+// Called by frontend AuthCallback page immediately after Google OAuth redirect.
+// Validates the JWT and re-sets the auth cookie in a proper credentialed response.
+router.post('/exchange-token', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { token } = req.body;
+    if (!token || typeof token !== 'string') {
+      res.status(400).json({ error: 'Token required' });
+      return;
+    }
+
+    const jwtSecret = process.env.JWT_SECRET!;
+    let payload: any;
+    try {
+      payload = jwt.verify(token, jwtSecret);
+    } catch {
+      res.status(401).json({ error: 'Invalid or expired token' });
+      return;
+    }
+
+    // Verify user still exists
+    const user = await prisma.user.findUnique({
+      where: { id: payload.userId },
+      select: { id: true, tokenVersion: true, primaryIndustry: true }
+    });
+    if (!user || user.tokenVersion !== payload.tokenVersion) {
+      res.status(401).json({ error: 'Invalid token' });
+      return;
+    }
+
+    // Re-set the cookie via a proper credentialed response
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production' || req.protocol === 'https',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
+    });
+
+    res.json({
+      success: true,
+      isNewUser: !user.primaryIndustry,
+    });
+  } catch (error) {
+    console.error('[Auth] Token exchange error:', error);
+    res.status(500).json({ error: 'Exchange failed' });
   }
 });
 
