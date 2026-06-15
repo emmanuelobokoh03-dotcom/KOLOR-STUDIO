@@ -868,6 +868,16 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Fix — Google OAuth Cookie Cross-Origin (Feb 2026) — ✅ SHIPPED
+- **Root cause**: OAuth callback at `api.kolorstudio.app` set `auth_token` cookie then immediately redirected to `kolorstudio.app/onboarding`. `sameSite: lax` blocked the cookie on subsequent cross-origin API calls, returning 401 on onboarding completion.
+- **Fix — token relay pattern**:
+  - `auth.ts`: OAuth callback now redirects to `/auth/callback?t=<jwt>&next=<dest>` instead of directly to onboarding/dashboard
+  - `auth.ts`: new `POST /api/auth/exchange-token` validates JWT, checks `tokenVersion`, re-sets cookie via a proper credentialed response
+  - `AuthCallback.tsx` (new): spinner page that POSTs the token via `credentials: 'include'`, then navigates to the `next` destination
+  - `App.tsx`: new `/auth/callback` route
+- Build gates: backend `tsc --noEmit` 0 errors · frontend `tsc --noEmit` 0 errors · `vite build` ✅.
+- Local commit: `e6add4b fix: Google OAuth cookie cross-origin issue`.
+
 ## Community First-Time Onboarding Intro (Feb 2026) — ✅ SHIPPED
 - **Schema**: `CommunityProfile.hasSeenCommunityIntro Boolean @default(false)` + migration `20260613174137_community_intro_flag` (applied via `db push` + `migrate resolve`).
 - **`community.ts` PATCH `/profile`**: accepts `hasSeenCommunityIntro`.
