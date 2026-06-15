@@ -33,6 +33,7 @@ export default function AuthCallback() {
       .then(data => {
         if (data.success) {
           // Small delay to ensure cookie is set before navigation
+          window.history.replaceState({}, '', '/auth/callback')
           setTimeout(() => navigate(next, { replace: true }), 100)
         } else {
           setError(data.error || 'Authentication failed. Please try again.')
