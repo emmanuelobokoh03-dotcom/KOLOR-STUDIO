@@ -2917,10 +2917,17 @@ export async function sendWelcomeEmail(user: {
   if (!resend) return false;
   try {
     const lang = getIndustryLanguage(user.industry);
-    const industryLabel = user.industry === 'DESIGN' ? 'design' : user.industry === 'FINE_ART' ? 'fine art' : 'photography';
-    const isFounder = userCount !== undefined && userCount <= 20;
+    // Industry-specific welcome copy (covers all 3 supported industries)
+    const industryMeta: Record<string, { label: string; studio: string }> = {
+      PHOTOGRAPHY: { label: 'photography', studio: 'studio' },
+      DESIGN:      { label: 'design',      studio: 'workspace' },
+      FINE_ART:    { label: 'fine art',    studio: 'commission studio' },
+    };
+    const meta = industryMeta[user.industry || 'PHOTOGRAPHY'] || industryMeta.PHOTOGRAPHY;
+    const industryLabel = meta.label;
+    const isFounder = userCount !== undefined && userCount <= 10;
     const founderNote = isFounder
-      ? highlightBox(`You're founding member #${userCount} of 20. You have lifetime access — no monthly fees, ever.`)
+      ? highlightBox(`You're founding member #${userCount} of 10. You have lifetime access — no monthly fees, ever.`)
       : '';
 
     const stepsTable = `
@@ -2945,11 +2952,7 @@ export async function sendWelcomeEmail(user: {
         </tr>
       </table>`;
 
-    const subjectMap: Record<string, string> = {
-      PHOTOGRAPHY: `Your studio is ready, ${user.firstName}`,
-      DESIGN: `Your workspace is ready, ${user.firstName}`,
-      FINE_ART: `Your commission studio is ready, ${user.firstName}`,
-    };
+    const subjectLine = `Your ${meta.studio} is ready, ${user.firstName}`;
 
     const html = buildEmailTemplate({
       headline: `Welcome to KOLOR Studio, ${user.firstName}`,
@@ -2967,7 +2970,7 @@ export async function sendWelcomeEmail(user: {
     const { error } = await resend.emails.send({
       from: `KOLOR Studio <${SENDER_EMAIL}>`,
       to: [user.email],
-      subject: subjectMap[user.industry || 'PHOTOGRAPHY'] || subjectMap.PHOTOGRAPHY,
+      subject: subjectLine,
       html,
     });
     if (error) { console.error('[EMAIL] Welcome email failed:', error); return false; }
@@ -3063,7 +3066,7 @@ export async function sendBetaWelcomeEmail(user: {
       headline: 'You made it. You\'re in the first 20.',
       body: `
         <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
-          You have lifetime access to KOLOR Studio. No monthly fees, no expiry. As one of the 20 founding members, you get full access to every feature \u2014 now and as the product grows.
+          You have lifetime access to KOLOR Studio. No monthly fees, no expiry. As one of the 10 founding members, you get full access to every feature — now and as the product grows.
         </p>
         ${successBox(`Lifetime access \u00b7 Full access \u00b7 Founding member #${userNumber} of 20`)}
         <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
@@ -3467,11 +3470,11 @@ export async function sendBetaFullAlert(user21: {
   if (!resend || !ADMIN_EMAIL) return false;
   try {
     const html = buildEmailTemplate({
-      headline: 'Beta is full \u2014 20/20 free spots claimed',
+      headline: 'Beta is full — 10/10 founding spots claimed',
       body: `
         <p style="font-size:14px;color:#1A1A2E;line-height:1.65;margin:0;font-family:Arial,Helvetica,sans-serif;">
-          The 21st user just signed up: <strong>${user21.firstName}</strong> (${user21.email}) at ${new Date().toLocaleString('en-US')}.<br>
-          Pricing tier now shifts to $9/month for users 21\u201350.
+          The 11th user just signed up: <strong>${user21.firstName}</strong> (${user21.email}) at ${new Date().toLocaleString('en-US')}.<br>
+          Pricing tier now shifts to $9/month for users 11+.
         </p>`,
       emailType: 'system',
     });
@@ -3479,7 +3482,7 @@ export async function sendBetaFullAlert(user21: {
     const { error } = await resend.emails.send({
       from: `KOLOR System <${SENDER_EMAIL}>`,
       to: [ADMIN_EMAIL],
-      subject: 'Beta is full \u2014 20/20 free spots claimed',
+      subject: 'Beta is full — 10/10 founding spots claimed',
       html,
     });
     if (error) { console.error('[EMAIL] Beta full alert failed:', error); return false; }
@@ -3521,27 +3524,21 @@ export async function sendPaymentNudge(
   user: { email: string; firstName: string; industry?: string | null },
   contract: { id: string; clientName: string; clientAgreedAt: Date | null }
 ): Promise<boolean> {
+  if (!resend) return false;
   try {
-    const { Resend } = await import('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    if (!process.env.RESEND_API_KEY) {
-      console.warn('[Email] RESEND_API_KEY not set — skipping payment nudge');
-      return false;
-    }
-
     const hoursElapsed = contract.clientAgreedAt
       ? Math.floor((Date.now() - new Date(contract.clientAgreedAt).getTime()) / 3600000)
       : 48;
 
     const { error } = await resend.emails.send({
-      from: `KOLOR Studio <${process.env.SENDER_EMAIL || 'noreply@kolorstudio.app'}>`,
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
       to: user.email,
       subject: `Payment pending — ${contract.clientName} signed ${hoursElapsed}h ago`,
       html: `
         <p>Hi ${user.firstName},</p>
         <p><strong>${contract.clientName}</strong> signed their contract ${hoursElapsed} hours ago but hasn't completed their deposit yet.</p>
         <p>Log in to KOLOR to send them a payment link or follow up directly.</p>
-        <p><a href="${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/dashboard">Open KOLOR &rarr;</a></p>
+        <p><a href="${FRONTEND_URL}/dashboard">Open KOLOR &rarr;</a></p>
         <p style="color:#999;font-size:12px;">This is an automated reminder from KOLOR Studio.</p>
       `,
     });
