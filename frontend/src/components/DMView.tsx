@@ -14,6 +14,7 @@ export default function DMView() {
   const [sending, setSending] = useState(false)
   const [loading, setLoading] = useState(true)
   const lastMsgRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const lastTimestampRef = useRef<string | null>(null)
 
@@ -65,6 +66,9 @@ export default function DMView() {
   }, [activeThread, fetchMessages])
 
   useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+    }
     lastMsgRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
@@ -183,7 +187,9 @@ export default function DMView() {
               ← Back to messages
             </button>
           </div>
-          <div style={{
+          <div
+            ref={messagesContainerRef}
+            style={{
               flex: 1,
               minHeight: 0,
               overflowY: 'auto',
@@ -193,6 +199,21 @@ export default function DMView() {
               justifyContent: 'flex-end',
               gap: '8px',
             }}>
+            {messages.length === 0 && (
+              <div style={{
+                textAlign: 'center',
+                padding: '24px 16px',
+                color: 'var(--text-tertiary)',
+                fontSize: '12px',
+                lineHeight: 1.6,
+              }}>
+                <p style={{ fontSize: '24px', marginBottom: '8px' }}>✉️</p>
+                <p style={{ fontWeight: 600, marginBottom: '4px', color: 'var(--text-secondary)' }}>
+                  Start the conversation
+                </p>
+                <p>Say hello and introduce yourself</p>
+              </div>
+            )}
             {messages.map((msg, i) => {
               const isMe = msg.sender?.id === myProfileId
               return (
@@ -228,15 +249,27 @@ export default function DMView() {
               placeholder="Type a message..."
               maxLength={1000}
               data-testid="dm-message-input"
-              className="flex-1 text-sm rounded-xl px-4 py-2.5 outline-none"
-              style={{ background: 'var(--surface-background)', border: '0.5px solid var(--border)', color: 'var(--text-primary)' }}
+              className="flex-1 text-sm rounded-xl px-4 py-3 outline-none"
+              style={{
+                background: 'var(--surface-background)',
+                border: '1.5px solid var(--border)',
+                color: 'var(--text-primary)',
+                fontSize: '14px',
+                transition: 'border-color 0.15s',
+              }}
+              onFocus={e => e.currentTarget.style.borderColor = '#6C2EDB'}
+              onBlur={e => e.currentTarget.style.borderColor = 'var(--border)'}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
             />
             <button onClick={handleSend} disabled={!input.trim() || sending}
               data-testid="dm-message-send"
               className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all"
-              style={{ background: input.trim() ? '#6C2EDB' : 'var(--surface-background)',
-                       border: '0.5px solid var(--border)' }}>
+              style={{
+                background: '#6C2EDB',
+                border: 'none',
+                opacity: input.trim() ? 1 : 0.35,
+                transition: 'opacity 0.15s',
+              }}>
               <PaperPlaneTilt weight="fill" className="w-4 h-4"
                 style={{ color: input.trim() ? '#fff' : 'var(--text-tertiary)' }} />
             </button>
