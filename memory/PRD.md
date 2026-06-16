@@ -868,6 +868,14 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Email System Audit — 3 Gaps Resolved (Feb 2026) — ✅ SHIPPED
+- **`sendPaymentNudge`** no longer re-instantiates Resend on every call — uses module-level `resend` + `SENDER_EMAIL` + `FRONTEND_URL` (fixes sandbox-guard bypass and wasteful client creation).
+- **`sendWelcomeEmail`** replaced fragile hardcoded ternary with explicit `industryMeta` map covering all 3 supported industries (PHOTOGRAPHY/DESIGN/FINE_ART) for both label + studio framing; dynamic subject ("Your studio/workspace/commission studio is ready, {name}"); founder count + body copy corrected 20 → 10.
+- **`sendBetaFullAlert`** copy updated: 10/10 founding spots, 11th user trigger, "users 11+" pricing tier.
+- Build gate: backend `tsc --noEmit` 0 errors.
+- Local commit: `fdc0383 fix: email system audit — 3 gaps resolved`.
+- **Non-blocking gaps noted for post-beta**: `sendHealthCheckFailureAlert` (scaffold, not wired), `sendNewDeviceLoginEmail` (scaffold, not called), community emails use inline HTML vs design helpers, no unsubscribe link on community/marketing emails (acceptable for closed beta; required before public launch).
+
 ## Fix — Google OAuth Cookie Cross-Origin (Feb 2026) — ✅ SHIPPED
 - **Root cause**: OAuth callback at `api.kolorstudio.app` set `auth_token` cookie then immediately redirected to `kolorstudio.app/onboarding`. `sameSite: lax` blocked the cookie on subsequent cross-origin API calls, returning 401 on onboarding completion.
 - **Fix — token relay pattern**:
