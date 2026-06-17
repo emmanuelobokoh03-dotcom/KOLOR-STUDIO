@@ -868,6 +868,15 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 230 — Audit Fixes Round A (Feb 2026) — ✅ SHIPPED
+- **Footer**: email domain `kolorstudio.com` → `kolorstudio.app` (5 refs); 5 dead `<Link to="/">` placeholders (Features/Pricing/Templates/Integrations/Blog) converted to non-interactive `<span>`; social links wired to real handles (`@kolorcreativestudio` on Instagram, `@kolor_studio` on X/Twitter).
+- **PrivacyPolicy**: domain refs `kolorstudio.com` → `kolorstudio.app` (6 refs).
+- **Backend `POST /community/posts`**: hardcoded `PHOTOGRAPHY` fallback replaced with proper `user.primaryIndustry → CreativeIndustry` mapping covering all 9 user-industry enum values (FINE_ART/SCULPTURE → FINE_ART; WEB_DESIGN/BRANDING/ILLUSTRATION/GRAPHIC_DESIGN/DESIGN → DESIGN; PHOTOGRAPHY/VIDEOGRAPHY/CONTENT_CREATION/OTHER/null → PHOTOGRAPHY).
+- **`CommunityFeed.tsx`** compose: same 9→3 industry mapping applied client-side so DESIGN-adjacent posts no longer silently default to PHOTOGRAPHY.
+- **`DMView.tsx`**: hardcoded `background: '#fff'` → `var(--surface-base)` (3 refs); `0.5px solid #e5e7eb` → `var(--border)` (2 refs). `#fff` retained for message-bubble text on purple (intentional).
+- Build gates: backend `tsc --noEmit` 0 errors · frontend `tsc --noEmit` 0 errors · `vite build` ✅.
+- Local commit: `951b860 fix: audit round A — broken links, wrong domains, industry mapping, DM theming`.
+
 ## Email System Audit — 3 Gaps Resolved (Feb 2026) — ✅ SHIPPED
 - **`sendPaymentNudge`** no longer re-instantiates Resend on every call — uses module-level `resend` + `SENDER_EMAIL` + `FRONTEND_URL` (fixes sandbox-guard bypass and wasteful client creation).
 - **`sendWelcomeEmail`** replaced fragile hardcoded ternary with explicit `industryMeta` map covering all 3 supported industries (PHOTOGRAPHY/DESIGN/FINE_ART) for both label + studio framing; dynamic subject ("Your studio/workspace/commission studio is ready, {name}"); founder count + body copy corrected 20 → 10.
