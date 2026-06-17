@@ -36,24 +36,24 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-text-primary mb-4">Product</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-text-tertiary hover:text-purple-600 text-sm transition">
+                <span className="text-text-tertiary text-sm">
                   Features
-                </Link>
+                </span>
               </li>
               <li>
-                <Link to="/" className="text-text-tertiary hover:text-purple-600 text-sm transition">
+                <span className="text-text-tertiary text-sm">
                   Pricing
-                </Link>
+                </span>
               </li>
               <li>
-                <Link to="/" className="text-text-tertiary hover:text-purple-600 text-sm transition">
+                <span className="text-text-tertiary text-sm">
                   Roadmap
-                </Link>
+                </span>
               </li>
               <li>
-                <Link to="/" className="text-text-tertiary hover:text-purple-600 text-sm transition">
+                <span className="text-text-tertiary text-sm">
                   Changelog
-                </Link>
+                </span>
               </li>
             </ul>
           </div>
@@ -63,12 +63,12 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-text-primary mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-text-tertiary hover:text-purple-600 text-sm transition">
+                <span className="text-text-tertiary text-sm">
                   About Us
-                </Link>
+                </span>
               </li>
               <li>
-                <a href="mailto:hello@kolorstudio.com" className="text-text-tertiary hover:text-purple-600 text-sm transition">
+                <a href="mailto:hello@kolorstudio.app" className="text-text-tertiary hover:text-purple-600 text-sm transition">
                   Contact
                 </a>
               </li>
@@ -90,20 +90,20 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-text-primary mb-4">Connect</h3>
             <ul className="space-y-2 mb-4">
               <li>
-                <a href="mailto:hello@kolorstudio.com" className="text-text-tertiary hover:text-purple-600 text-sm transition">
-                  hello@kolorstudio.com
+                <a href="mailto:hello@kolorstudio.app" className="text-text-tertiary hover:text-purple-600 text-sm transition">
+                  hello@kolorstudio.app
                 </a>
               </li>
               <li>
-                <a href="mailto:support@kolorstudio.com" className="text-text-tertiary hover:text-purple-600 text-sm transition">
-                  support@kolorstudio.com
+                <a href="mailto:support@kolorstudio.app" className="text-text-tertiary hover:text-purple-600 text-sm transition">
+                  support@kolorstudio.app
                 </a>
               </li>
             </ul>
             {/* Social Links */}
             <div className="flex items-center gap-3">
               <a 
-                href="https://instagram.com" 
+                href="https://instagram.com/kolorcreativestudio" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-light-100 rounded-lg flex items-center justify-center text-text-tertiary hover:text-purple-600 hover:bg-purple-50 transition"
@@ -111,7 +111,7 @@ export default function Footer() {
                 <InstagramLogo className="w-4 h-4" />
               </a>
               <a 
-                href="https://twitter.com" 
+                href="https://x.com/kolor_studio" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-light-100 rounded-lg flex items-center justify-center text-text-tertiary hover:text-purple-600 hover:bg-purple-50 transition"

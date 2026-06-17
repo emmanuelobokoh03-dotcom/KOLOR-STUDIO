@@ -192,8 +192,23 @@ router.post('/posts', authMiddleware, async (req: AuthRequest, res: Response): P
       profile = await prisma.communityProfile.create({ data: { userId: req.userId! } })
     }
 
+    // Resolve post industry: use provided value, fall back to user's actual industry
+    let postIndustry: any = industry
+    if (!postIndustry) {
+      const userRec = await prisma.user.findUnique({ where: { id: req.userId! }, select: { primaryIndustry: true } })
+      const pi = userRec?.primaryIndustry as string | null | undefined
+      if (pi === 'FINE_ART' || pi === 'SCULPTURE') {
+        postIndustry = 'FINE_ART'
+      } else if (pi === 'WEB_DESIGN' || pi === 'BRANDING' || pi === 'ILLUSTRATION' || pi === 'GRAPHIC_DESIGN' || pi === 'DESIGN') {
+        postIndustry = 'DESIGN'
+      } else {
+        // PHOTOGRAPHY, VIDEOGRAPHY, CONTENT_CREATION, OTHER, null → PHOTOGRAPHY
+        postIndustry = 'PHOTOGRAPHY'
+      }
+    }
+
     const post = await prisma.post.create({
-      data: { authorId: profile.id, content: sanitizeInput(content.trim()), industry: industry || 'PHOTOGRAPHY', images: images || [] },
+      data: { authorId: profile.id, content: sanitizeInput(content.trim()), industry: postIndustry, images: images || [] },
       include: {
         author: { select: { id: true, userId: true, bio: true, city: true,
           user: { select: { firstName: true, lastName: true, primaryIndustry: true } } } },

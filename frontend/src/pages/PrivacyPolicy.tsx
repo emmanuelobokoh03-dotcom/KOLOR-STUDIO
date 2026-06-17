@@ -370,7 +370,7 @@ export default function PrivacyPolicy() {
               </li>
             </ul>
             <p className="mt-4 text-sm text-text-tertiary">
-              To exercise these rights, email: <a href="mailto:privacy@kolorstudio.com" className="text-purple-600 hover:underline">privacy@kolorstudio.com</a>
+              To exercise these rights, email: <a href="mailto:privacy@kolorstudio.app" className="text-purple-600 hover:underline">privacy@kolorstudio.app</a>
             </p>
           </div>
         </section>
@@ -441,10 +441,10 @@ export default function PrivacyPolicy() {
             <p className="text-text-secondary mb-4">Questions about privacy?</p>
             <div className="space-y-2">
               <p className="text-text-secondary">
-                Email: <a href="mailto:privacy@kolorstudio.com" className="text-purple-600 hover:underline">privacy@kolorstudio.com</a>
+                Email: <a href="mailto:privacy@kolorstudio.app" className="text-purple-600 hover:underline">privacy@kolorstudio.app</a>
               </p>
               <p className="text-text-secondary">
-                Or: <a href="mailto:hello@kolorstudio.com" className="text-purple-600 hover:underline">hello@kolorstudio.com</a>
+                Or: <a href="mailto:hello@kolorstudio.app" className="text-purple-600 hover:underline">hello@kolorstudio.app</a>
               </p>
             </div>
           </div>

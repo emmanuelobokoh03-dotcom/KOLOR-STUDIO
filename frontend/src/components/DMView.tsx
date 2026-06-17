@@ -158,7 +158,7 @@ export default function DMView() {
             top: 0, left: 0, right: 0, bottom: 0,
             display: 'flex',
             flexDirection: 'column',
-            background: '#fff',
+            background: 'var(--surface-base)',
             zIndex: 10,
             overflow: 'hidden',
           }}>
@@ -166,9 +166,9 @@ export default function DMView() {
               display: 'flex',
               alignItems: 'center',
               padding: '12px 16px',
-              borderBottom: '0.5px solid #e5e7eb',
+              borderBottom: '0.5px solid var(--border)',
               flexShrink: 0,
-              background: '#fff',
+              background: 'var(--surface-base)',
             }}>
             <button
               onClick={() => setActiveThread(null)}
@@ -234,12 +234,12 @@ export default function DMView() {
           </div>
           <div style={{
               padding: '12px 16px',
-              borderTop: '0.5px solid #e5e7eb',
+              borderTop: '0.5px solid var(--border)',
               display: 'flex',
               gap: '8px',
               alignItems: 'center',
               flexShrink: 0,
-              background: '#fff',
+              background: 'var(--surface-base)',
               paddingBottom: 'calc(12px + env(safe-area-inset-bottom))',
             }}>
             <input

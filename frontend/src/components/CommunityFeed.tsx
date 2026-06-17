@@ -104,8 +104,11 @@ export default function CommunityFeed({ userIndustry, userId, onOpenSettings }: 
     if (!compose.trim() || posting) return
     setPosting(true)
     try {
-      const postIndustry = userIndustry === 'GRAPHIC_DESIGN' ? 'DESIGN'
-        : userIndustry === 'FINE_ART' ? 'FINE_ART' : 'PHOTOGRAPHY'
+      // Map user's primaryIndustry (9 values) to community Post industry (3 values)
+      const postIndustry =
+        (userIndustry === 'FINE_ART' || userIndustry === 'SCULPTURE') ? 'FINE_ART'
+        : (userIndustry === 'WEB_DESIGN' || userIndustry === 'BRANDING' || userIndustry === 'ILLUSTRATION' || userIndustry === 'GRAPHIC_DESIGN' || userIndustry === 'DESIGN') ? 'DESIGN'
+        : 'PHOTOGRAPHY'
       const res = await fetch(`${API}/api/community/posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
