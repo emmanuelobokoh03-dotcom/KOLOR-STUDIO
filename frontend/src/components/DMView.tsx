@@ -1,9 +1,22 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import KolorSpinner from './KolorSpinner'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { linkifyText } from '../utils/linkifyText'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 const POLL_INTERVAL = 10000
+
+function formatMessageTime(date: string): string {
+  const d = new Date(date)
+  const now = new Date()
+  const isToday = d.toDateString() === now.toDateString()
+  const yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1)
+  const isYesterday = d.toDateString() === yesterday.toDateString()
+  const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+  if (isToday) return time
+  if (isYesterday) return `Yesterday ${time}`
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ` ${time}`
+}
 
 export default function DMView() {
   const [threads, setThreads] = useState<any[]>([])
@@ -136,10 +149,20 @@ export default function DMView() {
                           {initials}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-text-primary truncate">{name}</p>
-                          {lastMsg && (
-                            <p className="text-[10px] text-[var(--text-tertiary)] truncate">{lastMsg.content}</p>
-                          )}
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-xs text-text-primary truncate" style={{ fontWeight: (lastMsg && lastMsg.senderId !== myProfileId && !lastMsg.readAt) ? 700 : 500 }}>{name}</p>
+                            {lastMsg && (
+                              <span className="text-[9px] text-[var(--text-tertiary)] flex-shrink-0 tabular-nums">{formatMessageTime(lastMsg.sentAt)}</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            {lastMsg && (
+                              <p className="text-[10px] text-[var(--text-tertiary)] truncate flex-1" style={{ fontWeight: (lastMsg && lastMsg.senderId !== myProfileId && !lastMsg.readAt) ? 600 : 400 }}>{lastMsg.content}</p>
+                            )}
+                            {lastMsg && lastMsg.senderId !== myProfileId && !lastMsg.readAt && (
+                              <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
+                            )}
+                          </div>
                         </div>
                       </>
                     )
@@ -219,14 +242,19 @@ export default function DMView() {
               return (
                 <div key={msg.id} ref={i === messages.length - 1 ? lastMsgRef : null}
                   className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                  <div className="max-w-[75%] px-3 py-2 text-sm"
-                    style={{
-                      background: isMe ? '#6C2EDB' : 'var(--surface-background)',
-                      color: isMe ? '#fff' : 'var(--text-primary)',
-                      border: isMe ? 'none' : '0.5px solid var(--border)',
-                      borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                    }}>
-                    {msg.content}
+                  <div className="max-w-[75%]">
+                    <div className="px-3 py-2 text-sm"
+                      style={{
+                        background: isMe ? '#6C2EDB' : 'var(--surface-background)',
+                        color: isMe ? '#fff' : 'var(--text-primary)',
+                        border: isMe ? 'none' : '0.5px solid var(--border)',
+                        borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                      }}
+                      dangerouslySetInnerHTML={{ __html: isMe ? linkifyText(msg.content).replace(/color:#6C2EDB/g, 'color:rgba(255,255,255,0.9)') : linkifyText(msg.content) }}
+                    />
+                    <p className="text-[9px] mt-0.5 px-1" style={{ color: 'var(--text-tertiary)', textAlign: isMe ? 'right' : 'left' }}>
+                      {formatMessageTime(msg.sentAt)}
+                    </p>
                   </div>
                 </div>
               )

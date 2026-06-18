@@ -127,6 +127,33 @@ function sanitizeInput(input: string): string {
     .trim()
 }
 
+// ─── Industry group mapping ───────────────────────────────────────────────
+// Maps all IndustryType enum values to the 3 community groups.
+// Single source of truth — used by POST /posts and GET /discover.
+const INDUSTRY_GROUPS: Record<string, string> = {
+  PHOTOGRAPHY: 'PHOTOGRAPHY',
+  VIDEOGRAPHY: 'PHOTOGRAPHY',
+  CONTENT_CREATION: 'PHOTOGRAPHY',
+  OTHER: 'PHOTOGRAPHY',
+  DESIGN: 'DESIGN',
+  GRAPHIC_DESIGN: 'DESIGN',
+  WEB_DESIGN: 'DESIGN',
+  BRANDING: 'DESIGN',
+  ILLUSTRATION: 'DESIGN',
+  FINE_ART: 'FINE_ART',
+  SCULPTURE: 'FINE_ART',
+}
+
+function getIndustryGroup(primaryIndustry: string | null | undefined): string {
+  return INDUSTRY_GROUPS[primaryIndustry || ''] || 'PHOTOGRAPHY'
+}
+
+function getIndustryGroupMembers(group: string): string[] {
+  return Object.entries(INDUSTRY_GROUPS)
+    .filter(([_, g]) => g === group)
+    .map(([k]) => k)
+}
+
 // ─── Feed ─────────────────────────────────────────────────────────────────
 
 // GET /api/community/feed?industry=&cursor=
@@ -192,19 +219,11 @@ router.post('/posts', authMiddleware, async (req: AuthRequest, res: Response): P
       profile = await prisma.communityProfile.create({ data: { userId: req.userId! } })
     }
 
-    // Resolve post industry: use provided value, fall back to user's actual industry
+    // Resolve post industry: use provided value, fall back to user's industry group
     let postIndustry: any = industry
     if (!postIndustry) {
       const userRec = await prisma.user.findUnique({ where: { id: req.userId! }, select: { primaryIndustry: true } })
-      const pi = userRec?.primaryIndustry as string | null | undefined
-      if (pi === 'FINE_ART' || pi === 'SCULPTURE') {
-        postIndustry = 'FINE_ART'
-      } else if (pi === 'WEB_DESIGN' || pi === 'BRANDING' || pi === 'ILLUSTRATION' || pi === 'GRAPHIC_DESIGN' || pi === 'DESIGN') {
-        postIndustry = 'DESIGN'
-      } else {
-        // PHOTOGRAPHY, VIDEOGRAPHY, CONTENT_CREATION, OTHER, null → PHOTOGRAPHY
-        postIndustry = 'PHOTOGRAPHY'
-      }
+      postIndustry = getIndustryGroup(userRec?.primaryIndustry as string)
     }
 
     const post = await prisma.post.create({
@@ -356,7 +375,9 @@ router.get('/discover', authMiddleware, async (req: AuthRequest, res: Response):
     const where: any = { isPublic: true }
     if (city) where.city = { contains: city as string, mode: 'insensitive' }
     if (industry && industry !== 'ALL') {
-      where.user = { primaryIndustry: industry }
+      const group = getIndustryGroup(industry as string)
+      const groupMembers = getIndustryGroupMembers(group)
+      where.user = { primaryIndustry: { in: groupMembers as any } }
     }
 
     const profiles = await prisma.communityProfile.findMany({
@@ -507,6 +528,19 @@ router.post('/follows/:profileId', authMiddleware, async (req: AuthRequest, res:
       await createNotification((req.params.profileId as string), 'NEW_FOLLOWER', { fromUserId: profile.id })
       res.json({ following: true })
     }
+  } catch (e) { res.status(500).json({ error: 'Failed' }) }
+})
+
+// GET /api/community/following/mine — returns IDs of profiles the user follows
+router.get('/following/mine', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
+    if (!profile) { res.json({ followingIds: [] }); return }
+    const follows = await prisma.follow.findMany({
+      where: { followerId: profile.id },
+      select: { followingId: true },
+    })
+    res.json({ followingIds: follows.map(f => f.followingId) })
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
 })
 

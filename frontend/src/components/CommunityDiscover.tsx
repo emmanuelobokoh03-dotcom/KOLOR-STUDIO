@@ -6,7 +6,7 @@ const API = (import.meta as any).env?.VITE_API_URL || ''
 const INDUSTRY_FILTERS = [
   { value: 'ALL', label: 'All' },
   { value: 'PHOTOGRAPHY', label: 'Photography' },
-  { value: 'GRAPHIC_DESIGN', label: 'Design' },
+  { value: 'DESIGN', label: 'Design' },
   { value: 'FINE_ART', label: 'Fine Art' },
 ]
 
@@ -50,6 +50,14 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
     } catch { /* silent */ }
     setLoading(false)
   }
+
+  // Fetch who we already follow so buttons show "Following" correctly
+  useEffect(() => {
+    fetch(`${API}/api/community/following/mine`, { credentials: 'include' })
+      .then(r => r.json())
+      .then(d => { if (d.followingIds) setFollowing(new Set(d.followingIds)) })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     setProfiles([])

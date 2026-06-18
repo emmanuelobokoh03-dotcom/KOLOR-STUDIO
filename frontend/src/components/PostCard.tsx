@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Heart } from '@phosphor-icons/react/dist/csr/Heart'
 import { ChatCircle } from '@phosphor-icons/react/dist/csr/ChatCircle'
 import { DotsThree } from '@phosphor-icons/react/dist/csr/DotsThree'
@@ -43,11 +43,22 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
     post.likes.some((l: any) => l.userId === myProfileId))
   const [liked, setLiked] = useState(initialLiked)
   const [likeCount, setLikeCount] = useState(post._count?.likes || 0)
+  const [commentCount, setCommentCount] = useState(post._count?.comments || 0)
   const [editing, setEditing] = useState(false)
   const [editContent, setEditContent] = useState(post.content)
   const [content, setContent] = useState(post.content)
   const [hidden, setHidden] = useState(false)
   const isMyPost = post.author?.userId === myUserId
+
+  // Close three-dot menu on any outside click
+  useEffect(() => {
+    if (!showMenu) return
+    const close = () => setShowMenu(false)
+    const t = setTimeout(() => document.addEventListener('click', close), 10)
+    return () => { clearTimeout(t); document.removeEventListener('click', close) }
+  }, [showMenu])
+
+  const handleCommentAdded = () => setCommentCount((prev: number) => prev + 1)
 
   const handleLike = async () => {
     const newLiked = !liked
@@ -220,13 +231,13 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
           onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.88)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.6' }}
           onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}>
           <ChatCircle className="w-4 h-4" />
-          <span className="text-xs tabular-nums">{post._count?.comments || 0}</span>
+          <span className="text-xs tabular-nums">{commentCount}</span>
         </button>
       </div>
 
       {/* Comments */}
       {showComments && (
-        <CommentThread postId={post.id} />
+        <CommentThread postId={post.id} onCommentAdded={handleCommentAdded} />
       )}
     </div>
   )

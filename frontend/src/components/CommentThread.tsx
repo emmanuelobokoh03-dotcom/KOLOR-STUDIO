@@ -4,7 +4,7 @@ import { linkifyText } from '../utils/linkifyText'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
-export default function CommentThread({ postId }: { postId: string }) {
+export default function CommentThread({ postId, onCommentAdded }: { postId: string; onCommentAdded?: () => void }) {
   const [comments, setComments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [input, setInput] = useState('')
@@ -29,7 +29,7 @@ export default function CommentThread({ postId }: { postId: string }) {
         body: JSON.stringify({ content: input.trim() }),
       })
       const data = await res.json()
-      if (data.comment) { setComments(prev => [...prev, data.comment]); setInput('') }
+      if (data.comment) { setComments(prev => [...prev, data.comment]); setInput(''); onCommentAdded?.() }
     } catch { /* silent */ }
     setPosting(false)
   }
