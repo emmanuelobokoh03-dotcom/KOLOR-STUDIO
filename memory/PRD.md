@@ -868,6 +868,15 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 231 — Audit Fixes Round B (Feb 2026) — ✅ SHIPPED
+- **Backend `community.ts`**: extracted single-source-of-truth `INDUSTRY_GROUPS` map + `getIndustryGroup()` / `getIndustryGroupMembers()` helpers. POST `/posts` refactored to call the helper. GET `/discover` now filters by industry **group** (`primaryIndustry IN [group members]`) so "Design" surfaces WEB_DESIGN/BRANDING/ILLUSTRATION users. Added `GET /following/mine` returning `{ followingIds: string[] }`.
+- **`CommunityDiscover.tsx`**: filter value `GRAPHIC_DESIGN` → `DESIGN` (matches Feed + backend); new mount-effect fetches `/following/mine` so follow buttons render correct state across navigation.
+- **`DMView.tsx`**: added `formatMessageTime()` helper (today: HH:MM, yesterday: "Yesterday HH:MM", older: "DD Mon HH:MM"); thread list shows unread indicators (bold name + purple dot when last message is from the other party and `readAt === null`) and last-message timestamps; individual messages render via `linkifyText` (URL → clickable anchor) and now display the formatted time underneath.
+- **`PostCard.tsx`**: added local `commentCount` state + `handleCommentAdded` callback wired into `CommentThread`; three-dot menu auto-closes via `document.click` listener.
+- **`CommentThread.tsx`**: accepts optional `onCommentAdded` prop, invoked on successful submit.
+- Build gates: backend `tsc --noEmit` 0 errors · frontend `tsc --noEmit` 0 errors · `vite build` ✅.
+- Local commit: `7413f06 feat: audit round B — industryGroup utility, Discover grouping, DM polish, PostCard fixes`.
+
 ## Iteration 230 — Audit Fixes Round A (Feb 2026) — ✅ SHIPPED
 - **Footer**: email domain `kolorstudio.com` → `kolorstudio.app` (5 refs); 5 dead `<Link to="/">` placeholders (Features/Pricing/Templates/Integrations/Blog) converted to non-interactive `<span>`; social links wired to real handles (`@kolorcreativestudio` on Instagram, `@kolor_studio` on X/Twitter).
 - **PrivacyPolicy**: domain refs `kolorstudio.com` → `kolorstudio.app` (6 refs).
