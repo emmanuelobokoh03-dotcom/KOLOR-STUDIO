@@ -868,6 +868,18 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 232 — Audit Fixes Round C: Styled ConfirmProvider (Feb 2026) — ✅ SHIPPED
+- **New `ConfirmProvider.tsx`**: context + styled modal (z-300, danger variant with red Warning icon, brand-tinted action button) exposing `useConfirm()` → `confirm(opts): Promise<boolean>`. Drop-in async replacement for `window.confirm()`.
+- **`App.tsx`**: Router wrapped in `<ConfirmProvider>` (inside `BrandThemeProvider`).
+- **7 `confirm()` call sites replaced** with styled modal: `PostCard` (delete post), `MarkAsDeliveredButton` (multi-line warning → single dialog), `CalendarConnectionWidget` (disconnect Google), `DemoProjectBanner` (delete demo), `QuotesTab` (delete quote), `PortfolioSettings` (delete item), `pages/Portfolio` (delete item). Each uses `variant: 'danger'` where destructive.
+- **Polish**:
+  - `CommentThread`: live `0/300` character counter (9px tertiary, tabular-nums) next to comment input.
+  - `DMView`: ← text replaced with `<ArrowLeft className="w-4 h-4" />` Phosphor icon + new import.
+  - `OnboardingFlow`: `'DM Mono', monospace` → `Inter, -apple-system, sans-serif` (design system compliance — DM Mono not loaded).
+  - `SettingsModal` community profile: availability label `"Open to commissions"` now industry-aware via new `userIndustry` state — Photography/Videography/Content → "Open for bookings", Fine Art/Sculpture → "Open to commissions", everything else (Design family) → "Available for projects". Fetched from `profile.user.primaryIndustry`.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (7.16s).
+- Local commit: `4df7987 feat: audit round C — styled ConfirmProvider replaces all window.confirm() + polish` (13 files, +156/-18). ⚠️ **`git push` failed locally — no GitHub creds in this environment. User must use "Save to Github" to ship to Vercel.**
+
 ## Iteration 231 — Audit Fixes Round B (Feb 2026) — ✅ SHIPPED
 - **Backend `community.ts`**: extracted single-source-of-truth `INDUSTRY_GROUPS` map + `getIndustryGroup()` / `getIndustryGroupMembers()` helpers. POST `/posts` refactored to call the helper. GET `/discover` now filters by industry **group** (`primaryIndustry IN [group members]`) so "Design" surfaces WEB_DESIGN/BRANDING/ILLUSTRATION users. Added `GET /following/mine` returning `{ followingIds: string[] }`.
 - **`CommunityDiscover.tsx`**: filter value `GRAPHIC_DESIGN` → `DESIGN` (matches Feed + backend); new mount-effect fetches `/following/mine` so follow buttons render correct state across navigation.
