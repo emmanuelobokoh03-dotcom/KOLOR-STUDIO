@@ -113,7 +113,7 @@ export default function OnboardingFlow({
               ))}
             </div>
             <p style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: 'Inter, -apple-system, sans-serif',
               fontSize: '10px',
               letterSpacing: '.12em',
               textTransform: 'uppercase',

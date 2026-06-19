@@ -22,6 +22,7 @@ import {
 import { CelebrationModal, checkCelebration, Achievement } from '../components/CelebrationModal'
 import SharePortfolio from '../components/SharePortfolio'
 import KolorSpinner from '../components/KolorSpinner'
+import { useConfirm } from '../components/ConfirmProvider'
 
 interface PortfolioPageProps {
   user: User | null;
@@ -30,6 +31,7 @@ interface PortfolioPageProps {
 export default function PortfolioPage({ user }: PortfolioPageProps) {
   const [items, setItems] = useState<PortfolioItem[]>([])
   const [loading, setLoading] = useState(true)
+  const { confirm } = useConfirm()
   const [error, setError] = useState('')
   const [linkCopied, setLinkCopied] = useState(false)
   
@@ -217,7 +219,8 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
 
   // Handle delete
   const handleDelete = async (item: PortfolioItem) => {
-    if (!confirm(`Delete "${item.title}"? This cannot be undone.`)) return
+    const yes = await confirm({ title: `Delete "${item.title}"?`, message: 'This cannot be undone.', confirmLabel: 'Delete', variant: 'danger' })
+    if (!yes) return
 
     const result = await portfolioApi.delete(item.id)
     if (!result.error) {

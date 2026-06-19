@@ -78,6 +78,7 @@ export default function CommentThread({ postId, onCommentAdded }: { postId: stri
           style={{ background: 'var(--surface-background)', border: '0.5px solid var(--border)', color: 'var(--text-primary)' }}
           onKeyDown={e => e.key === 'Enter' && handleSubmit()}
         />
+        <span className="text-[9px] text-[var(--text-tertiary)] self-center tabular-nums">{input.length}/300</span>
         {input.trim() && (
           <button onClick={handleSubmit} disabled={posting}
             data-testid="comment-submit"

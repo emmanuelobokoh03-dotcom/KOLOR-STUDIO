@@ -17,6 +17,7 @@ import {
   PortfolioCategory, 
   PORTFOLIO_CATEGORY_LABELS 
 } from '../services/api'
+import { useConfirm } from './ConfirmProvider'
 
 interface PortfolioSettingsProps {
   onClose?: () => void;
@@ -25,6 +26,7 @@ interface PortfolioSettingsProps {
 export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
   const [items, setItems] = useState<PortfolioItem[]>([])
   const [loading, setLoading] = useState(true)
+  const { confirm } = useConfirm()
   const [error, setError] = useState('')
   
   // Upload/Edit modal state
@@ -181,7 +183,8 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
 
   // Handle delete
   const handleDelete = async (item: PortfolioItem) => {
-    if (!confirm(`Delete "${item.title}"? This cannot be undone.`)) return
+    const yes = await confirm({ title: `Delete "${item.title}"?`, message: 'This cannot be undone.', confirmLabel: 'Delete', variant: 'danger' })
+    if (!yes) return
 
     const result = await portfolioApi.delete(item.id)
     if (!result.error) {

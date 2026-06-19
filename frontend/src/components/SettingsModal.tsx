@@ -33,6 +33,7 @@ function CommunityProfileSettings() {
   const [isPublic, setIsPublic] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [userIndustry, setUserIndustry] = useState('')
 
   useEffect(() => {
     fetch(`${API}/api/community/profile/me`, { credentials: 'include' })
@@ -44,6 +45,7 @@ function CommunityProfileSettings() {
           setAvailability(d.profile.availability || 'OPEN')
           setEmailsEnabled(d.profile.communityEmailsEnabled !== false)
           setIsPublic(d.profile.isPublic !== false)
+          setUserIndustry(d.profile.user?.primaryIndustry || '')
         }
       }).catch(() => {})
   }, [API])
@@ -121,7 +123,11 @@ function CommunityProfileSettings() {
           data-testid="community-availability-select"
           className="w-full text-sm rounded-lg outline-none bg-surface-background border border-light-200 text-text-primary"
           style={{ height: 40, padding: '0 12px' }}>
-          <option value="OPEN">Open to commissions</option>
+          <option value="OPEN">{
+            (userIndustry === 'FINE_ART' || userIndustry === 'SCULPTURE') ? 'Open to commissions'
+            : (userIndustry === 'PHOTOGRAPHY' || userIndustry === 'VIDEOGRAPHY' || userIndustry === 'CONTENT_CREATION') ? 'Open for bookings'
+            : 'Available for projects'
+          }</option>
           <option value="BOOKED">Currently booked</option>
           <option value="UNAVAILABLE">Taking a break</option>
         </select>

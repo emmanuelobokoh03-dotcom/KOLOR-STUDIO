@@ -3,6 +3,7 @@ import KolorSpinner from './KolorSpinner'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { Package } from '@phosphor-icons/react/dist/csr/Package'
 import { leadsApi } from '../services/api'
+import { useConfirm } from './ConfirmProvider'
 
 interface Props {
   leadId: string
@@ -13,17 +14,15 @@ interface Props {
 
 export default function MarkAsDeliveredButton({ leadId, leadStatus, pipelineStatus, onSuccess }: Props) {
   const [marking, setMarking] = useState(false)
+  const { confirm } = useConfirm()
 
   const handleDeliver = async () => {
-    if (!confirm(
-      'Mark this project as delivered?\n\n' +
-      'This will:\n' +
-      '- Share all your files with the client\n' +
-      '- Send them a delivery notification\n' +
-      '- Request a testimonial in 3 days\n' +
-      '- Send final payment link (if applicable)\n' +
-      '- Update project status to Completed'
-    )) return
+    const yes = await confirm({
+      title: 'Mark as delivered?',
+      message: 'This will share all files with the client, send a delivery notification, request a testimonial in 3 days, send the final payment link, and update the project status to Completed.',
+      confirmLabel: 'Mark delivered',
+    })
+    if (!yes) return
 
     setMarking(true)
     try {

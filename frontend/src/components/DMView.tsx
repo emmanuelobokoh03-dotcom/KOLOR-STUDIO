@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import KolorSpinner from './KolorSpinner'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
 import { linkifyText } from '../utils/linkifyText'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
@@ -207,7 +208,7 @@ export default function DMView() {
                 cursor: 'pointer',
                 padding: 0,
               }}>
-              ← Back to messages
+              <ArrowLeft className="w-4 h-4" /> Back
             </button>
           </div>
           <div

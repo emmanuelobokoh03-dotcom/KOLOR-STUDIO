@@ -4,6 +4,7 @@ import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { leadsApi } from '../services/api';
 import KolorSpinner from './KolorSpinner'
+import { useConfirm } from './ConfirmProvider'
 
 interface DemoProjectBannerProps {
   demoLeadId: string;
@@ -14,9 +15,11 @@ interface DemoProjectBannerProps {
 
 export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted, onExplore }: DemoProjectBannerProps) {
   const [deleting, setDeleting] = useState(false);
+  const { confirm } = useConfirm()
 
   const handleDelete = async () => {
-    if (!confirm('Delete the demo project? This cannot be undone.')) return;
+    const yes = await confirm({ title: 'Delete demo project?', message: 'This cannot be undone.', confirmLabel: 'Delete', variant: 'danger' })
+    if (!yes) return;
     setDeleting(true);
     try {
       await leadsApi.delete(demoLeadId);

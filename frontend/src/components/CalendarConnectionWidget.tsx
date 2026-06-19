@@ -5,6 +5,7 @@ import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 import { LinkBreak } from '@phosphor-icons/react/dist/csr/LinkBreak'
 import { CalendarCheck } from '@phosphor-icons/react/dist/csr/CalendarCheck'
+import { useConfirm } from './ConfirmProvider'
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 interface CalendarConnectionWidgetProps {
@@ -13,6 +14,7 @@ interface CalendarConnectionWidgetProps {
 
 export default function CalendarConnectionWidget({ onStatusChange }: CalendarConnectionWidgetProps) {
   const [connected, setConnected] = useState(false)
+  const { confirm } = useConfirm()
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
 
@@ -78,7 +80,8 @@ export default function CalendarConnectionWidget({ onStatusChange }: CalendarCon
   }
 
   const handleDisconnect = async () => {
-    if (!confirm('Disconnect Google Calendar? Bookings still work, but calendar sync will stop.')) return
+    const yes = await confirm({ title: 'Disconnect Google Calendar?', message: 'Your bookings will still work, but calendar sync will stop.', confirmLabel: 'Disconnect', variant: 'danger' })
+    if (!yes) return
     setActionLoading(true)
     try {
       const resp = await fetch(`${API_URL}/api/google-calendar/disconnect`, {

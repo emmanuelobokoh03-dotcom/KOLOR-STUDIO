@@ -33,6 +33,7 @@ import {
   trackQuoteSent, 
   trackQuoteDuplicated
 } from '../utils/analytics'
+import { useConfirm } from './ConfirmProvider'
 
 interface QuoteTabProps {
   lead: Lead;
@@ -45,6 +46,7 @@ interface QuoteTabProps {
 export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBuilder, onBuilderOpened }: QuoteTabProps) {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
+  const { confirm } = useConfirm()
   const [showBuilder, setShowBuilder] = useState(false);
   const [editingQuote, setEditingQuote] = useState<Quote | null>(null);
   const [sendingId, setSendingId] = useState<string | null>(null);
@@ -164,7 +166,8 @@ export default function QuotesTab({ lead, onQuoteUpdate, onQuoteSent, autoOpenBu
   };
 
   const handleDeleteQuote = async (quoteId: string) => {
-    if (!confirm('Are you sure you want to delete this quote?')) return;
+    const yes = await confirm({ title: 'Delete quote?', message: 'This quote will be permanently removed.', confirmLabel: 'Delete', variant: 'danger' })
+    if (!yes) return;
 
     setDeletingId(quoteId);
     const result = await quotesApi.delete(quoteId);

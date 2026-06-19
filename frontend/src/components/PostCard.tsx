@@ -7,6 +7,7 @@ import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { Flag } from '@phosphor-icons/react/dist/csr/Flag'
 import CommentThread from './CommentThread'
 import { linkifyText } from '../utils/linkifyText'
+import { useConfirm } from './ConfirmProvider'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
@@ -38,6 +39,7 @@ interface PostCardProps {
 
 export default function PostCard({ post, myUserId, myProfileId, industryColor = '#6C2EDB', onLikeToggle }: PostCardProps) {
   const [showComments, setShowComments] = useState(false)
+  const { confirm } = useConfirm()
   const [showMenu, setShowMenu] = useState(false)
   const initialLiked = !!(post.likes && post.likes.length > 0 && myProfileId &&
     post.likes.some((l: any) => l.userId === myProfileId))
@@ -89,7 +91,8 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
   }
 
   const handleDelete = async () => {
-    if (!confirm('Delete this post?')) return
+    const yes = await confirm({ title: 'Delete post?', message: 'This post will be permanently removed.', confirmLabel: 'Delete', variant: 'danger' })
+    if (!yes) return
     try {
       await fetch(`${API}/api/community/posts/${post.id}`, {
         method: 'DELETE', credentials: 'include'

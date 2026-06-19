@@ -24,6 +24,7 @@ import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
 import NotFound from './pages/NotFound'
 import AuthCallback from './pages/AuthCallback'
+import ConfirmProvider from './components/ConfirmProvider'
 import { Toaster } from 'sonner'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
@@ -55,6 +56,7 @@ function App() {
 
   return (
     <BrandThemeProvider>
+      <ConfirmProvider>
       <Router>
       {/* Skip navigation link for keyboard users */}
       <a
@@ -102,6 +104,7 @@ function App() {
       {/* AUDIT FIX [9.1]: Only render Analytics after consent */}
       {analyticsConsented && <Analytics />}
     </Router>
+      </ConfirmProvider>
     </BrandThemeProvider>
   )
 }
