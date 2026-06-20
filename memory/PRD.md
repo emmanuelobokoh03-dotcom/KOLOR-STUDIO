@@ -868,6 +868,22 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 234 — Audit Round D: Portal + Calendar + Grid + Portfolio Mobile (Feb 2026) — ✅ SHIPPED
+- **ClientPortal (6 fixes)**:
+  - 2× placeholder `<svg viewBox="0 0 32 32">` replaced with `studioName.charAt(0).toUpperCase()` initial (header + footer logo slots).
+  - "Project Portal" eyebrow softened to `text-[10px] text-white/40 tracking-[0.2em]`; studio name uplifted to `text-base font-extrabold tracking-[0.14em] text-white` for proper hierarchy.
+  - `handleDeclineQuote` now goes through `useConfirm` (danger variant) — irreversible action no longer fires on a single mobile tap.
+  - Footer gains Privacy Policy · Terms of Service links (10px grey) below "Powered by KOLOR STUDIO" — GDPR/CAN-SPAM compliance.
+  - `document.title` set to `${studioName} — ${data.project.title}` via dedicated useEffect (inline name lookup to avoid hoisting issue).
+  - 1× `ring-3` → `ring-2` (Tailwind v3 compatibility for the current-step quote pill).
+- **Calendar**: `handleDeleteEvent` now gated by `useConfirm` (danger variant). 3b currency fix deferred per script (requires `currencySymbol` prop threading through `EventSidePanel`).
+- **Settings**: Google Calendar disconnect button gated by `useConfirm` (danger). "Stripe Payments" removed from "Coming Soon" list — Stripe is live since Iter 138.
+- **LeadsListView**: header + LeadRow grids switched from inline `style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}` to responsive Tailwind classes `grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,1fr)_100px_80px_80px_auto]`. Desktop columns now align correctly for the 5 cells (was 2-template clashing with 5 children).
+- **Portfolio**: each card gets an always-visible mobile action row (Edit · Feature · Delete) inside `md:hidden`, since the existing `group-hover:opacity-100` overlay doesn't trigger on touch devices. 36px min-height touch targets, border-top divider, right-aligned Delete.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (6.37s).
+- Local commit: `3da179a fix: audit round D — portal polish, calendar confirm, grid fix, portfolio mobile` (5 files, +59/-28). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github" to ship to Vercel.**
+- **Deferred (P2)**: EventSidePanel currency symbol prop threading (3b). Filed for next iteration.
+
 ## Iteration 233 — Unsubscribe Link on Community Emails (Feb 2026) — ✅ SHIPPED
 - **`backend/src/services/email.ts`**: new `COMMUNITY_EMAIL_FOOTER` template-literal constant with a clickable "Manage notification preferences" link → `${FRONTEND_URL}/dashboard?view=community` (border-top divider, 12px grey, centered). Appended to the `content` of all 4 community email functions via `getEmailTemplate(content + COMMUNITY_EMAIL_FOOTER, ...)`: `sendCommunityDMNotification`, `sendCommunityLikeNotification`, `sendCommunityCommentNotification`, `sendCommunityFollowNotification`.
 - **DM email cleanup**: removed the old non-clickable footer paragraph ("You can manage notification preferences in your community settings") — the new footer replaces it.
