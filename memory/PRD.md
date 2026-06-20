@@ -868,6 +868,13 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 233 — Unsubscribe Link on Community Emails (Feb 2026) — ✅ SHIPPED
+- **`backend/src/services/email.ts`**: new `COMMUNITY_EMAIL_FOOTER` template-literal constant with a clickable "Manage notification preferences" link → `${FRONTEND_URL}/dashboard?view=community` (border-top divider, 12px grey, centered). Appended to the `content` of all 4 community email functions via `getEmailTemplate(content + COMMUNITY_EMAIL_FOOTER, ...)`: `sendCommunityDMNotification`, `sendCommunityLikeNotification`, `sendCommunityCommentNotification`, `sendCommunityFollowNotification`.
+- **DM email cleanup**: removed the old non-clickable footer paragraph ("You can manage notification preferences in your community settings") — the new footer replaces it.
+- **GDPR/CAN-SPAM**: all community emails now satisfy P1 compliance (machine-discoverable opt-out link). Functional opt-out already existed via `communityEmailsEnabled` toggle in Settings → Community.
+- Build gate: backend `tsc --noEmit` 0 errors.
+- Local commit: `aac1dd0 feat: add unsubscribe link to all 4 community notification emails (GDPR/CAN-SPAM)` (1 file, +12/-8). ⚠️ **`git push` failed locally — no GitHub creds in this environment. User must use "Save to Github" then redeploy Railway backend.**
+
 ## Iteration 232 — Audit Fixes Round C: Styled ConfirmProvider (Feb 2026) — ✅ SHIPPED
 - **New `ConfirmProvider.tsx`**: context + styled modal (z-300, danger variant with red Warning icon, brand-tinted action button) exposing `useConfirm()` → `confirm(opts): Promise<boolean>`. Drop-in async replacement for `window.confirm()`.
 - **`App.tsx`**: Router wrapped in `<ConfirmProvider>` (inside `BrandThemeProvider`).
