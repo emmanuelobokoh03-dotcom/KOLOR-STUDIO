@@ -3654,6 +3654,13 @@ export async function sendSampleQuoteEmail(data: {
 // COMMUNITY EMAIL NOTIFICATIONS
 // ═══════════════════════════════════════════════════════
 
+// ── Community email unsubscribe footer (GDPR/CAN-SPAM) ──
+const COMMUNITY_EMAIL_FOOTER = `
+  <p style="color:#999;font-size:12px;margin-top:24px;line-height:1.5;border-top:1px solid #eee;padding-top:16px;text-align:center">
+    <a href="${FRONTEND_URL}/dashboard?view=community" style="color:#999;text-decoration:underline">Manage notification preferences</a>
+  </p>
+`
+
 export interface CommunityDMNotificationData {
   recipientEmail: string
   recipientName: string
@@ -3678,16 +3685,13 @@ export async function sendCommunityDMNotification(
                border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
         View message →
       </a>
-      <p style="color:#999;font-size:12px;margin-top:24px;line-height:1.5">
-        You're receiving this because someone messaged you on KOLOR Studio.<br>
-        You can manage notification preferences in your community settings.
-      </p>
+
     `
     const { error } = await resend.emails.send({
       from: `KOLOR Studio <${SENDER_EMAIL}>`,
       to: [data.recipientEmail],
       subject: `New message from ${data.senderName} — KOLOR Studio`,
-      html: getEmailTemplate(content, 'New Message'),
+      html: getEmailTemplate(content + COMMUNITY_EMAIL_FOOTER, 'New Message'),
     })
     if (error) { console.error('[EMAIL] Community DM notification failed:', error); return false }
     return true
@@ -3731,7 +3735,7 @@ export async function sendCommunityLikeNotification(
       from: `KOLOR Studio <${SENDER_EMAIL}>`,
       to: [data.recipientEmail],
       subject: `${data.likerName} liked your post — KOLOR Studio`,
-      html: getEmailTemplate(content, 'Post Liked'),
+      html: getEmailTemplate(content + COMMUNITY_EMAIL_FOOTER, 'Post Liked'),
     })
     if (error) { console.error('[EMAIL] Community like notification failed:', error); return false }
     return true
@@ -3783,7 +3787,7 @@ export async function sendCommunityCommentNotification(
       from: `KOLOR Studio <${SENDER_EMAIL}>`,
       to: [data.recipientEmail],
       subject: `${data.commenterName} commented on your post — KOLOR Studio`,
-      html: getEmailTemplate(content, 'New Comment'),
+      html: getEmailTemplate(content + COMMUNITY_EMAIL_FOOTER, 'New Comment'),
     })
     if (error) { console.error('[EMAIL] Community comment notification failed:', error); return false }
     return true
@@ -3825,7 +3829,7 @@ export async function sendCommunityFollowNotification(
       from: `KOLOR Studio <${SENDER_EMAIL}>`,
       to: [data.recipientEmail],
       subject: `${data.followerName} started following you — KOLOR Studio`,
-      html: getEmailTemplate(content, 'New Follower'),
+      html: getEmailTemplate(content + COMMUNITY_EMAIL_FOOTER, 'New Follower'),
     })
     if (error) { console.error('[EMAIL] Community follow notification failed:', error); return false }
     return true
