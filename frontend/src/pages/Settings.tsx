@@ -20,6 +20,7 @@ import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
 import BrandPreview from '../components/BrandPreview'
 import PortfolioSettings from '../components/PortfolioSettings'
 import SharePortfolio from '../components/SharePortfolio'
+import { useConfirm } from '../components/ConfirmProvider'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -97,6 +98,7 @@ export default function Settings() {
   const [searchParams] = useSearchParams()
   const initialTab = (searchParams.get('tab') as Tab) || 'profile'
   const [activeTab, setActiveTab] = useState<Tab>(initialTab)
+  const { confirm } = useConfirm()
   const [settings, setSettings] = useState<UserSettings | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -626,6 +628,8 @@ export default function Settings() {
                         {calendarConnected ? (
                           <button
                             onClick={async () => {
+                              const yes = await confirm({ title: 'Disconnect Google Calendar?', message: 'Your bookings will still work, but calendar sync will stop.', confirmLabel: 'Disconnect', variant: 'danger' })
+                              if (!yes) return
                               await fetch(`${API_URL}/api/calendar/disconnect`, { method: 'POST', credentials: 'include' })
                               setCalendarConnected(false)
                               toast.success('Calendar disconnected')
@@ -655,7 +659,7 @@ export default function Settings() {
                     </div>
 
                     {/* Coming soon */}
-                    {['Stripe Payments', 'Zapier'].map(name => (
+                    {['Zapier'].map(name => (
                       <div key={name} className="p-4 rounded-lg border opacity-50" style={{ borderColor: 'var(--border)' }}>
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">

@@ -385,6 +385,30 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
                     </span>
                   )}
                 </div>
+                {/* Mobile actions — always visible on touch devices */}
+                <div className="flex items-center gap-2 md:hidden pt-2.5 mt-2.5 border-t border-light-100">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleEdit(item) }}
+                    className="flex items-center gap-1 text-[10px] font-medium text-[var(--text-secondary)] px-2 py-1.5 rounded-lg border border-light-200"
+                    style={{ minHeight: 36 }}
+                  >
+                    <Pencil className="w-3 h-3" /> Edit
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleToggleFeatured(item) }}
+                    className="flex items-center gap-1 text-[10px] font-medium px-2 py-1.5 rounded-lg border border-light-200"
+                    style={{ minHeight: 36, color: item.featured ? '#EAB308' : 'var(--text-secondary)' }}
+                  >
+                    <Star className={'w-3 h-3' + (item.featured ? ' fill-current' : '')} /> {item.featured ? 'Featured' : 'Feature'}
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleDelete(item) }}
+                    className="flex items-center gap-1 text-[10px] font-medium text-red-500 px-2 py-1.5 rounded-lg border border-red-200 ml-auto"
+                    style={{ minHeight: 36 }}
+                  >
+                    <Trash className="w-3 h-3" /> Delete
+                  </button>
+                </div>
               </div>
             </div>
           ))}

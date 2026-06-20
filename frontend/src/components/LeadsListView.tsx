@@ -199,8 +199,8 @@ function LeadRow({ lead, lang, currencySymbol, onLeadClick, onLeadClickTab }: {
 
   return (
     <div
-      className="lead-card-hover grid items-center px-4 py-[11px] cursor-pointer transition-all duration-150 group border-b border-[var(--border)] last:border-b-0"
-      style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}
+      className="lead-card-hover grid items-center px-4 py-[11px] cursor-pointer transition-all duration-150 group border-b border-[var(--border)] last:border-b-0 grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,1fr)_100px_80px_80px_auto]"
+      
       onClick={() => onLeadClick(lead)}
       data-testid={`lead-row-${lead.id}`}
     >
@@ -417,8 +417,8 @@ export default function LeadsListView({ leads, lang, currencySymbol = '$', onLea
       >
         {/* Header */}
         <div
-          className="grid items-center px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface-background)]"
-          style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}
+          className="grid items-center px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface-background)] grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,1fr)_100px_80px_80px_auto]"
+          
         >
           <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.client}</span>
           <span className="hidden md:block text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Type</span>

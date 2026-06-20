@@ -36,6 +36,7 @@ import { authApi, calendarApi, CalendarDerivedEvent, User as UserType } from '..
 import { getIndustryLanguage } from '../utils/industryLanguage'
 import KolorSpinner from '../components/KolorSpinner'
 import { toast } from 'sonner'
+import { useConfirm } from '../components/ConfirmProvider'
 
 type CalendarView = 'month' | 'week' | 'list'
 
@@ -71,6 +72,7 @@ export default function Calendar() {
   const [showGoogle, setShowGoogle] = useState(true)
 
   const lang = useMemo(() => getIndustryLanguage(user?.industry), [user?.industry])
+  const { confirm } = useConfirm()
 
   // Mobile detection for responsive layout
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
@@ -188,6 +190,8 @@ export default function Calendar() {
   }
 
   const handleDeleteEvent = async (eventId: string) => {
+    const yes = await confirm({ title: 'Delete event?', message: 'This event will be permanently removed.', confirmLabel: 'Delete', variant: 'danger' })
+    if (!yes) return
     // Extract the real ID (strip "manual-" prefix)
     const realId = eventId.replace('manual-', '')
     const result = await calendarApi.deleteEvent(realId)

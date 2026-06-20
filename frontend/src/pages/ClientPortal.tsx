@@ -36,6 +36,7 @@ import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 import { Confetti } from '@phosphor-icons/react/dist/csr/Confetti'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { trackPortalViewed } from '../utils/analytics';
+import { useConfirm } from '../components/ConfirmProvider'
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -257,6 +258,15 @@ export default function ClientPortal() {
   const [quoteAccepting, setQuoteAccepting] = useState<string | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const { confirm } = useConfirm()
+
+  // Set browser tab title to studio + project name
+  useEffect(() => {
+    if (data) {
+      const name = data.contact?.studioName || data.contact?.name || 'KOLOR STUDIO'
+      document.title = name + ' — ' + data.project.title
+    }
+  }, [data])
 
   useEffect(() => {
     fetchPortalData();
@@ -403,6 +413,8 @@ export default function ClientPortal() {
   };
 
   const handleDeclineQuote = async (quoteToken: string) => {
+    const yes = await confirm({ title: 'Decline this quote?', message: 'This action cannot be undone. The studio will be notified.', confirmLabel: 'Decline', variant: 'danger' })
+    if (!yes) return
     try {
       const response = await fetch(`${API_URL}/api/quotes/public/${quoteToken}/decline`, {
         method: 'POST',
@@ -485,22 +497,13 @@ export default function ClientPortal() {
               {brandLogo ? (
                 <img src={brandLogo} alt={studioName} className="w-full h-full object-contain" />
               ) : (
-                <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <path d="M16 4L22 10H10L16 4Z" fill="rgba(255,255,255,0.55)"/>
-                  <path d="M16 4L10 10V4H16Z" fill="rgba(255,255,255,0.9)"/>
-                  <path d="M28 16L22 10V22L28 16Z" fill="rgba(255,255,255,0.4)"/>
-                  <path d="M28 16L22 22H28V16Z" fill="rgba(255,255,255,0.7)"/>
-                  <path d="M16 28L10 22H22L16 28Z" fill="rgba(255,255,255,0.55)"/>
-                  <path d="M16 28L22 22V28H16Z" fill="rgba(255,255,255,0.9)"/>
-                  <path d="M4 16L10 22V10L4 16Z" fill="rgba(255,255,255,0.4)"/>
-                  <path d="M4 16L10 10H4V16Z" fill="rgba(255,255,255,0.7)"/>
-                </svg>
+                <span style={{ color: '#fff', fontSize: 12, fontWeight: 700 }}>{studioName.charAt(0).toUpperCase()}</span>
               )}
             </div>
-            <span className="text-sm font-bold tracking-widest text-white/90 uppercase">{studioName}</span>
+            <span className="text-base font-extrabold tracking-[0.14em] text-white uppercase">{studioName}</span>
           </div>
 
-          <p className="text-xs font-medium text-white/50 uppercase tracking-widest mb-1.5 relative z-20">Project Portal</p>
+          <p className="text-[10px] font-semibold text-white/40 uppercase tracking-[0.2em] mb-2 relative z-20">Project Portal</p>
           <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight leading-tight relative z-20">{data.project.title}</h1>
 
           <div className="flex items-center gap-2.5 mt-4">
@@ -572,7 +575,7 @@ export default function ClientPortal() {
                     <div key={step.key} className="flex flex-col items-center relative z-10">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                         isCompleted ? 'bg-[#6C2EDB] text-white' : 'bg-gray-50 text-gray-400 border border-gray-200'
-                      } ${isCurrent ? 'ring-3 ring-[#6C2EDB]/20' : ''}`}>
+                      } ${isCurrent ? 'ring-2 ring-[#6C2EDB]/20' : ''}`}>
                         <Icon weight={isCompleted ? 'fill' : 'regular'} className="w-3.5 h-3.5" />
                       </div>
                       <span className={`mt-2 text-[10px] font-semibold ${isCompleted ? 'text-[#6C2EDB]' : 'text-gray-400'}`}>{step.label}</span>
@@ -1026,16 +1029,7 @@ export default function ClientPortal() {
                 {brandLogo ? (
                   <img src={brandLogo} alt={studioName} className="w-full h-full object-contain" />
                 ) : (
-                  <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M16 4L22 10H10L16 4Z" fill="rgba(255,255,255,0.55)"/>
-                    <path d="M16 4L10 10V4H16Z" fill="rgba(255,255,255,0.9)"/>
-                    <path d="M28 16L22 10V22L28 16Z" fill="rgba(255,255,255,0.4)"/>
-                    <path d="M28 16L22 22H28V16Z" fill="rgba(255,255,255,0.7)"/>
-                    <path d="M16 28L10 22H22L16 28Z" fill="rgba(255,255,255,0.55)"/>
-                    <path d="M16 28L22 22V28H16Z" fill="rgba(255,255,255,0.9)"/>
-                    <path d="M4 16L10 22V10L4 16Z" fill="rgba(255,255,255,0.4)"/>
-                    <path d="M4 16L10 10H4V16Z" fill="rgba(255,255,255,0.7)"/>
-                  </svg>
+                  <span style={{ color: '#fff', fontSize: 12, fontWeight: 700 }}>{studioName.charAt(0).toUpperCase()}</span>
                 )}
               </div>
               <div>
@@ -1053,6 +1047,11 @@ export default function ClientPortal() {
               >
                 KOLOR STUDIO
               </Link>
+            </p>
+            <p className="text-center text-[10px] text-gray-400 mt-2">
+              <a href="/privacy" style={{ color: '#9CA3AF', textDecoration: 'underline' }}>Privacy Policy</a>
+              {' · '}
+              <a href="/terms" style={{ color: '#9CA3AF', textDecoration: 'underline' }}>Terms of Service</a>
             </p>
           </div>
         </footer>
