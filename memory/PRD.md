@@ -868,6 +868,17 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 235 — Audit Round E: Portal Header + TodayScreen Dates + ContractsTab (Feb 2026) — ✅ SHIPPED
+- **ClientPortal header**: removed `overflow-hidden` from `<header data-testid="portal-header">` (was clipping the title on narrow viewports). Inner container padding `px-5 pt-8 pb-7` → `px-6 pt-10 pb-8`. Title `<h1>` `text-xl sm:text-2xl leading-tight` → `text-2xl sm:text-3xl leading-snug break-words` (guaranteed wrap, no truncation). Status row `mt-4` → `mt-5` for more breathing room.
+- **TodayScreen**: in-progress card subtitle now includes the key/event date — `"Project Type · Jun 14 · $2,500"` — via `lead.keyDate ?? lead.eventDate` formatted as `Mon DD`. Inserted between project type and value.
+- **ContractsTab** (3 fixes):
+  - Hardcoded `https://kolorstudio.app/portal/${token}` → `${window.location.origin}/portal/${token}` (works on any deployed origin, including local dev and Vercel previews).
+  - "Creating contract…" spinner colour `white` → `#6C2EDB` (was invisible on white bg). Other spinners (Sending, etc.) left as-is since they sit on dark buttons.
+  - Removed duplicate `See full contract &rarr;` button — `Preview` action already invokes `setPreviewContract(contract)`.
+- **LeadsListView**: duplicate mobile filter chip strip (`data-testid="mobile-filter-chips"`) flipped from `md:hidden` to `hidden` — `TabRow` already handles mobile with counts.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (7.96s).
+- Local commit: `a06bdd8 fix: audit round E — portal header polish, TodayScreen dates, ContractsTab cleanup` (4 files, +9/-14). ⚠️ **`git push` failed locally — no GitHub creds. 4 commits pending (`4df7987` Iter 232, `aac1dd0` Iter 233, `3da179a` Iter 234, `a06bdd8` Iter 235). User must use "Save to Github" to ship.**
+
 ## Iteration 234 — Audit Round D: Portal + Calendar + Grid + Portfolio Mobile (Feb 2026) — ✅ SHIPPED
 - **ClientPortal (6 fixes)**:
   - 2× placeholder `<svg viewBox="0 0 32 32">` replaced with `studioName.charAt(0).toUpperCase()` initial (header + footer logo slots).
