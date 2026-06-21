@@ -386,7 +386,7 @@ export default function LeadsListView({ leads, lang, currencySymbol = '$', onLea
       </div>
 
       {/* Mobile filter chips */}
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 mb-2 md:hidden" data-testid="mobile-filter-chips">
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 mb-2 hidden" data-testid="mobile-filter-chips">
         {(['ALL', 'NEW', 'CONTACTED', 'QUOTED', 'BOOKED', 'LOST'] as const).map(s => (
           <button
             key={s}

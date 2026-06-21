@@ -489,9 +489,9 @@ export default function ClientPortal() {
       )}
 
       {/* ── Header ── */}
-      <header className="relative text-white overflow-hidden" style={{ background: '#1a1625' }} data-testid="portal-header">
+      <header className="relative text-white" style={{ background: '#1a1625' }} data-testid="portal-header">
         <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${brandColor}30 0%, transparent 70%)` }} />
-        <div className="relative max-w-3xl mx-auto px-5 pt-8 pb-7">
+        <div className="relative max-w-3xl mx-auto px-6 pt-10 pb-8">
           <div className="flex items-center gap-2.5 mb-5">
             <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0" style={{ background: brandLogo ? 'rgba(255,255,255,0.12)' : '#6C2EDB' }}>
               {brandLogo ? (
@@ -504,9 +504,9 @@ export default function ClientPortal() {
           </div>
 
           <p className="text-[10px] font-semibold text-white/40 uppercase tracking-[0.2em] mb-2 relative z-20">Project Portal</p>
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight leading-tight relative z-20">{data.project.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-snug relative z-20 break-words">{data.project.title}</h1>
 
-          <div className="flex items-center gap-2.5 mt-4">
+          <div className="flex items-center gap-2.5 mt-5">
             <span className={`w-2 h-2 rounded-full ${
               data.status.isBooked ? 'bg-emerald-400' :
               data.status.isLost ? 'bg-red-400' :

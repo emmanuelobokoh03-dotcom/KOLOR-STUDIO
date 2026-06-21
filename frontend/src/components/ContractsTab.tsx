@@ -396,7 +396,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
           </div>
           {creating && (
             <div className="flex items-center justify-center gap-2 mt-4 text-sm text-purple-600">
-              <KolorSpinner size={14} color="white" /> Creating contract...
+              <KolorSpinner size={14} color="#6C2EDB" /> Creating contract...
             </div>
           )}
         </div>
@@ -498,13 +498,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
                         aria-hidden="true"
                       />
                     </div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setPreviewContract(contract); }}
-                      className="w-full py-2 text-xs text-brand-600 hover:text-brand-700 font-medium border-t border-light-200 transition"
-                      data-testid={`see-full-contract-${contract.id}`}
-                    >
-                      See full contract &rarr;
-                    </button>
+
 
                     {/* Actions */}
                     <div className="px-3 md:px-4 py-3 border-t border-light-200 flex items-center gap-2 flex-wrap">
@@ -571,7 +565,7 @@ export default function ContractsTab({ leadId, lead, onContractSigned }: Contrac
           projectTitle={lead.projectTitle}
           userName={userName}
           studioName={studioName}
-          portalUrl={`https://kolorstudio.app/portal/${lead.portalToken}`}
+          portalUrl={`${window.location.origin}/portal/${lead.portalToken}`}
           onSend={handleEmailSend}
           onCancel={() => setEmailComposerContract(null)}
         />

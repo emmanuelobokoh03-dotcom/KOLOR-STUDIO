@@ -258,6 +258,7 @@ export default function TodayScreen({
                       <p className="text-xs font-semibold text-text-primary truncate">{lead.clientName}</p>
                       <p className="text-[10px] text-text-secondary truncate">
                         {lead.projectType?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) || lang.lead}
+                        {(lead.keyDate || lead.eventDate) ? ` · ${new Date(lead.keyDate || lead.eventDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
                         {lead.estimatedValue ? ` · ${currencySymbol}${lead.estimatedValue.toLocaleString()}` : ''}
                       </p>
                     </div>
