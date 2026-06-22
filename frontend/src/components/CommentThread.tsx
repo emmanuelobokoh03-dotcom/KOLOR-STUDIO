@@ -4,6 +4,12 @@ import { linkifyText } from '../utils/linkifyText'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
+const INDUSTRY_AVATAR_COLORS: Record<string, string> = {
+  PHOTOGRAPHY: '#1A6B4A', VIDEOGRAPHY: '#1A6B4A', CONTENT_CREATION: '#1A6B4A',
+  DESIGN: '#6C2EDB', GRAPHIC_DESIGN: '#6C2EDB', WEB_DESIGN: '#6C2EDB', BRANDING: '#6C2EDB', ILLUSTRATION: '#6C2EDB',
+  FINE_ART: '#A32D2D', SCULPTURE: '#A32D2D',
+}
+
 export default function CommentThread({ postId, onCommentAdded }: { postId: string; onCommentAdded?: () => void }) {
   const [comments, setComments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -43,7 +49,7 @@ export default function CommentThread({ postId, onCommentAdded }: { postId: stri
           {comments.map(c => (
             <div key={c.id} className="flex gap-2.5">
               <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0"
-                style={{ background: '#6C2EDB' }}>
+                style={{ background: INDUSTRY_AVATAR_COLORS[c.author?.user?.primaryIndustry || ''] || '#6C2EDB' }}>
                 {c.author?.user?.firstName?.[0]}{c.author?.user?.lastName?.[0]}
               </div>
               <div className="flex-1 min-w-0">

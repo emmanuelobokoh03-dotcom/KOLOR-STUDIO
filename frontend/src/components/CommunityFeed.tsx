@@ -204,22 +204,27 @@ export default function CommunityFeed({ userIndustry, userId, onOpenSettings }: 
             Popular this week
           </p>
           <div className="flex flex-col gap-2">
-            {trending.map((post, i) => (
-              <div key={post.id} className="flex items-start gap-3 p-3 rounded-xl"
-                style={{ background: 'var(--surface-background)', border: '0.5px solid var(--border)' }}>
-                <span className="text-xs font-bold tabular-nums text-[var(--text-tertiary)] w-4 flex-shrink-0 mt-0.5">
-                  {i + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-text-primary line-clamp-2">{post.content}</p>
-                  <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">
-                    {post.author?.user?.firstName} · {post._count?.likes} likes
-                  </p>
+            {trending.map((post) => {
+              const tColor = INDUSTRY_COLORS[post.industry] || '#6C2EDB'
+              const tName = post.author?.user?.firstName || 'Member'
+              return (
+                <div key={post.id}
+                  className="p-3.5 rounded-xl cursor-pointer transition-all active:scale-[0.98]"
+                  style={{ background: tColor + '08', border: '0.5px solid ' + tColor + '25', borderLeft: '3px solid ' + tColor }}
+                  onClick={() => setIndustry(post.industry)}
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-bold flex-shrink-0"
+                      style={{ background: tColor }}>
+                      {tName.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-[10px] font-semibold truncate" style={{ color: tColor }}>{tName}</span>
+                    <span className="text-[10px] text-[var(--text-tertiary)] ml-auto flex-shrink-0">♥ {post._count?.likes}</span>
+                  </div>
+                  <p className="text-xs text-text-primary leading-relaxed line-clamp-2">{post.content}</p>
                 </div>
-                <div className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5"
-                  style={{ background: INDUSTRY_COLORS[post.industry] || 'var(--border)' }} />
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
@@ -257,7 +262,12 @@ export default function CommunityFeed({ userIndustry, userId, onOpenSettings }: 
             ref={composeRef}
             value={compose}
             onChange={e => handleCompose(e.target.value)}
-            placeholder="Share something with your community..."
+            placeholder={
+              ['PHOTOGRAPHY', 'VIDEOGRAPHY', 'CONTENT_CREATION'].includes(userIndustry || '') ? 'What did you shoot today?'
+              : ['FINE_ART', 'SCULPTURE'].includes(userIndustry || '') ? "What's on the easel?"
+              : ['GRAPHIC_DESIGN', 'WEB_DESIGN', 'BRANDING', 'ILLUSTRATION', 'DESIGN'].includes(userIndustry || '') ? 'What are you working on?'
+              : 'Share something with your community...'
+            }
             maxLength={500}
             rows={compose ? 3 : 2}
             data-testid="feed-compose-input"

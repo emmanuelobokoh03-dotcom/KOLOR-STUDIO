@@ -11,6 +11,8 @@ import { useConfirm } from './ConfirmProvider'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
+const MILESTONE_KEYWORDS = ['commission', 'delivered', 'signed', 'paid', 'completed', 'booked', 'first client', 'first quote', 'sold', 'milestone']
+
 const INDUSTRY_LABELS: Record<string, string> = {
   PHOTOGRAPHY: 'Photography',
   DESIGN: 'Design',
@@ -51,6 +53,7 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
   const [content, setContent] = useState(post.content)
   const [hidden, setHidden] = useState(false)
   const isMyPost = post.author?.userId === myUserId
+  const isMilestone = MILESTONE_KEYWORDS.some(kw => content.toLowerCase().includes(kw))
 
   // Close three-dot menu on any outside click
   useEffect(() => {
@@ -120,9 +123,9 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
   return (
     <div className="rounded-2xl overflow-hidden" data-testid="post-card"
       style={{
-        background: 'var(--surface-base)',
-        border: '0.5px solid var(--border)',
-        borderLeft: `3px solid ${industryColor}`,
+        background: isMilestone ? '#FFFBEB' : 'var(--surface-base)',
+        border: '0.5px solid ' + (isMilestone ? '#FDE68A' : 'var(--border)'),
+        borderLeft: `3px solid ${isMilestone ? '#F59E0B' : industryColor}`,
       }}>
 
       {/* Header */}
@@ -183,6 +186,15 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
         </div>
       </div>
 
+      {/* Milestone badge */}
+      {isMilestone && (
+        <div className="px-4 pt-2">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1"
+            style={{ background: '#FEF3C7', color: '#92400E' }}>
+            🎉 Milestone
+          </span>
+        </div>
+      )}
       {/* Content */}
       <div className="px-4 pt-3 pb-0">
         {editing ? (

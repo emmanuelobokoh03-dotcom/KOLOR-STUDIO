@@ -749,12 +749,15 @@ export default function Settings() {
                     </p>
                     {/* TODO: Wire to account deletion endpoint */}
                     <button
-                      className="px-4 py-2 border border-red-300 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-50 transition"
-                      onClick={() => toast.error('Account deletion is not yet available. Contact support.')}
+                      className="px-4 py-2 border border-light-200 text-text-tertiary rounded-lg text-xs font-semibold cursor-not-allowed"
+                      disabled
                       data-testid="settings-delete-account-btn"
                     >
                       Delete Account
                     </button>
+                    <p className="text-[10px] text-[var(--text-tertiary)] mt-2">
+                      Account deletion coming soon. Contact <a href="mailto:hello@kolorstudio.app" className="underline hover:text-[var(--text-secondary)]">hello@kolorstudio.app</a> for requests.
+                    </p>
                   </div>
                 </div>
               )}

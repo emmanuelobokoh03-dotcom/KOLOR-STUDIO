@@ -3,6 +3,12 @@ import KolorSpinner from './KolorSpinner'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
+const INDUSTRY_AVATAR_COLORS: Record<string, string> = {
+  PHOTOGRAPHY: '#1A6B4A', VIDEOGRAPHY: '#1A6B4A', CONTENT_CREATION: '#1A6B4A',
+  DESIGN: '#6C2EDB', GRAPHIC_DESIGN: '#6C2EDB', WEB_DESIGN: '#6C2EDB', BRANDING: '#6C2EDB', ILLUSTRATION: '#6C2EDB',
+  FINE_ART: '#A32D2D', SCULPTURE: '#A32D2D',
+}
+
 const INDUSTRY_FILTERS = [
   { value: 'ALL', label: 'All' },
   { value: 'PHOTOGRAPHY', label: 'Photography' },
@@ -165,7 +171,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
                   style={{ background: 'var(--surface-base)', border: '0.5px solid var(--border)' }}>
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                      style={{ background: '#6C2EDB' }}>
+                      style={{ background: INDUSTRY_AVATAR_COLORS[profile.user?.primaryIndustry || ''] || '#6C2EDB' }}>
                       {initials}
                     </div>
                     <div className="flex-1 min-w-0">
