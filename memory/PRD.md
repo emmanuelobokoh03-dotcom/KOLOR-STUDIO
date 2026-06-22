@@ -868,6 +868,16 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 236 — Community Feed Visual Elevation + Round F (Feb 2026) — ✅ SHIPPED
+- **CommunityFeed compose placeholder** is now industry-aware: Photography/Videography/Content → "What did you shoot today?", Fine Art/Sculpture → "What's on the easel?", Graphic/Web/Branding/Illustration/Design → "What are you working on?", else fallback "Share something with your community...".
+- **Trending rail redesigned**: replaced the index-number + tiny dot card with an industry-tinted clickable card. Each card uses `tColor + '08'` background, `tColor + '25'` border, a 3px left border in `tColor`, an avatar circle with the author's first initial, the author name in `tColor`, a right-aligned `♥ N` likes count, and a 2-line excerpt. Clicking the card calls `setIndustry(post.industry)` to filter the feed to that industry.
+- **PostCard milestone styling**: added `MILESTONE_KEYWORDS = ['commission', 'delivered', 'signed', 'paid', 'completed', 'booked', 'first client', 'first quote', 'sold', 'milestone']`. `isMilestone = MILESTONE_KEYWORDS.some(kw => content.toLowerCase().includes(kw))`. When true, the card uses background `#FFFBEB`, border `#FDE68A`, left border `#F59E0B`, plus a `🎉 Milestone` chip (`bg-#FEF3C7` / `color-#92400E`) above the content.
+- **CommentThread & CommunityDiscover avatars**: added `INDUSTRY_AVATAR_COLORS` map (Photography family → `#1A6B4A` green, Design family → `#6C2EDB` purple, Fine Art family → `#A32D2D` red). Avatar `background` now reads from this map via `primaryIndustry`, falling back to purple. Same map added to both files.
+- **Settings** Delete Account: button now disabled (light-200 border, tertiary text, `cursor-not-allowed`) with helper text below: "Account deletion coming soon. Contact `hello@kolorstudio.app` for requests." Removed the misleading red destructive styling on a no-op button.
+- **Calendar** Round F item (CRA `REACT_APP_BACKEND_URL` fallback) was already clean in this branch — no-op.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (6.77s).
+- Local commit: `4e13446 feat: community feed visual elevation + Round F cleanup` (5 files, +60/-23). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github" to push.**
+
 ## Iteration 235 — Audit Round E: Portal Header + TodayScreen Dates + ContractsTab (Feb 2026) — ✅ SHIPPED
 - **ClientPortal header**: removed `overflow-hidden` from `<header data-testid="portal-header">` (was clipping the title on narrow viewports). Inner container padding `px-5 pt-8 pb-7` → `px-6 pt-10 pb-8`. Title `<h1>` `text-xl sm:text-2xl leading-tight` → `text-2xl sm:text-3xl leading-snug break-words` (guaranteed wrap, no truncation). Status row `mt-4` → `mt-5` for more breathing room.
 - **TodayScreen**: in-progress card subtitle now includes the key/event date — `"Project Type · Jun 14 · $2,500"` — via `lead.keyDate ?? lead.eventDate` formatted as `Mon DD`. Inserted between project type and value.
