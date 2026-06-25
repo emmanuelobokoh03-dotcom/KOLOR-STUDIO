@@ -1,5 +1,7 @@
 import { Router, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import multer from 'multer'
+import { createClient } from '@supabase/supabase-js'
 import { authMiddleware, AuthRequest } from '../middleware/auth'
 import {
   sendCommunityDMNotification,
@@ -127,6 +129,12 @@ function sanitizeInput(input: string): string {
     .trim()
 }
 
+// ─── Community image upload ───────────────────────────────────────────────────────────
+const communityUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+})
+
 // ─── Industry group mapping ───────────────────────────────────────────────
 // Maps all IndustryType enum values to the 3 community groups.
 // Single source of truth — used by POST /posts and GET /discover.
@@ -237,6 +245,39 @@ router.post('/posts', authMiddleware, async (req: AuthRequest, res: Response): P
     })
     res.json({ post })
   } catch (e) { res.status(500).json({ error: 'Failed to create post' }) }
+})
+
+// POST /api/community/upload-image
+router.post('/upload-image', authMiddleware, communityUpload.single('image') as any, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const file = (req as any).file
+    if (!file) { res.status(400).json({ error: 'No image provided' }); return }
+
+    const supabaseUrl = process.env.SUPABASE_URL
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY
+    if (!supabaseUrl || !supabaseKey) { res.status(500).json({ error: 'Storage not configured' }); return }
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    const ext = file.originalname.split('.').pop() || 'jpg'
+    const filePath = `community/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+
+    // Ensure bucket exists
+    const { data: buckets } = await supabase.storage.listBuckets()
+    if (!buckets?.find((b: any) => b.name === 'community-images')) {
+      await supabase.storage.createBucket('community-images', { public: true })
+    }
+
+    const { error: uploadErr } = await supabase.storage.from('community-images').upload(filePath, file.buffer, {
+      contentType: file.mimetype, upsert: false,
+    })
+    if (uploadErr) { console.error('[COMMUNITY] Upload error:', uploadErr); res.status(500).json({ error: 'Upload failed' }); return }
+
+    const { data: urlData } = supabase.storage.from('community-images').getPublicUrl(filePath)
+    res.json({ url: urlData.publicUrl })
+  } catch (e) {
+    console.error('[COMMUNITY] Image upload error:', e)
+    res.status(500).json({ error: 'Upload failed' })
+  }
 })
 
 // PATCH /api/community/posts/:id

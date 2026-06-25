@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import KolorSpinner from './KolorSpinner'
 import PostCard from './PostCard'
+import { ImageSquare } from '@phosphor-icons/react/dist/csr/ImageSquare'
+import { X } from '@phosphor-icons/react/dist/csr/X'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
@@ -23,9 +25,10 @@ interface CommunityFeedProps {
   userIndustry?: string | null
   userId?: string
   onOpenSettings?: (tab: string) => void
+  onNavigateToPortfolio?: () => void
 }
 
-export default function CommunityFeed({ userIndustry, userId, onOpenSettings }: CommunityFeedProps) {
+export default function CommunityFeed({ userIndustry, userId, onOpenSettings, onNavigateToPortfolio }: CommunityFeedProps) {
   const [industry, setIndustry] = useState(userIndustry || 'ALL')
   const [posts, setPosts] = useState<any[]>([])
   const [trending, setTrending] = useState<any[]>([])
@@ -38,6 +41,9 @@ export default function CommunityFeed({ userIndustry, userId, onOpenSettings }: 
   const [myProfileId, setMyProfileId] = useState<string | null>(null)
   const [showIntro, setShowIntro] = useState(false)
   const composeRef = useRef<HTMLTextAreaElement>(null)
+  const imageInputRef = useRef<HTMLInputElement>(null)
+  const [composeImage, setComposeImage] = useState<File | null>(null)
+  const [composeImagePreview, setComposeImagePreview] = useState<string | null>(null)
 
   const fetchFeed = useCallback(async (ind: string, cur?: string | null) => {
     try {
@@ -109,17 +115,34 @@ export default function CommunityFeed({ userIndustry, userId, onOpenSettings }: 
         (userIndustry === 'FINE_ART' || userIndustry === 'SCULPTURE') ? 'FINE_ART'
         : (userIndustry === 'WEB_DESIGN' || userIndustry === 'BRANDING' || userIndustry === 'ILLUSTRATION' || userIndustry === 'GRAPHIC_DESIGN' || userIndustry === 'DESIGN') ? 'DESIGN'
         : 'PHOTOGRAPHY'
+      // Upload image if selected
+      let imageUrls: string[] = []
+      if (composeImage) {
+        const formData = new FormData()
+        formData.append('image', composeImage)
+        try {
+          const uploadRes = await fetch(`${API}/api/community/upload-image`, {
+            method: 'POST', credentials: 'include', body: formData,
+          })
+          const uploadData = await uploadRes.json()
+          if (uploadData.url) imageUrls = [uploadData.url]
+        } catch { /* upload failed -- post without image */ }
+      }
+
       const res = await fetch(`${API}/api/community/posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ content: compose.trim(), industry: postIndustry }),
+        body: JSON.stringify({ content: compose.trim(), industry: postIndustry, images: imageUrls }),
       })
       const data = await res.json()
       if (data.post) {
         setPosts(prev => [data.post, ...prev])
         setCompose('')
         setShowMilestone(false)
+        setComposeImage(null)
+        setComposeImagePreview(null)
+        if (imageInputRef.current) imageInputRef.current.value = ''
       }
     } catch { /* silent */ }
     setPosting(false)
@@ -280,9 +303,46 @@ export default function CommunityFeed({ userIndustry, userId, onOpenSettings }: 
               data-testid="milestone-prompt">
               <span>🎉</span>
               <span>This sounds like a milestone — add it to your portfolio?</span>
-              <button className="ml-auto text-[10px] font-semibold underline">Add</button>
+              <button className="ml-auto text-[10px] font-semibold underline"
+                onClick={() => onNavigateToPortfolio?.()}>Add</button>
             </div>
           )}
+          {composeImagePreview && (
+            <div className="relative mt-2">
+              <img src={composeImagePreview} alt="" className="w-full rounded-xl object-cover" style={{ maxHeight: 200 }} />
+              <button
+                onClick={() => { setComposeImage(null); setComposeImagePreview(null); if (imageInputRef.current) imageInputRef.current.value = '' }}
+                className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center"
+                data-testid="compose-image-remove"
+              >
+                <X className="w-3.5 h-3.5 text-white" />
+              </button>
+            </div>
+          )}
+        </div>
+        {/* Image picker */}
+        <div className="px-4 pb-1 flex items-center">
+          <button
+            onClick={() => imageInputRef.current?.click()}
+            className="p-1.5 rounded-lg transition-colors"
+            style={{ color: composeImage ? '#6C2EDB' : 'var(--text-tertiary)' }}
+            data-testid="feed-compose-image-btn"
+          >
+            <ImageSquare className="w-4 h-4" />
+          </button>
+          <input
+            ref={imageInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            className="hidden"
+            onChange={e => {
+              const f = e.target.files?.[0]
+              if (f && f.size <= 5 * 1024 * 1024) {
+                setComposeImage(f)
+                setComposeImagePreview(URL.createObjectURL(f))
+              }
+            }}
+          />
         </div>
         {compose.trim() && (
           <div className="px-4 pb-3 flex items-center justify-between">

@@ -195,6 +195,25 @@ export default function PostCard({ post, myUserId, myProfileId, industryColor = 
           </span>
         </div>
       )}
+      {/* Images */}
+      {post.images && post.images.length > 0 && (
+        <div className="px-4 pt-3">
+          <img
+            src={post.images[0]}
+            alt=""
+            className="w-full rounded-xl object-cover"
+            style={{ maxHeight: 400 }}
+            loading="lazy"
+          />
+          {post.images.length > 1 && (
+            <div className="flex gap-1 mt-1">
+              {post.images.slice(1, 4).map((img: string, i: number) => (
+                <img key={i} src={img} alt="" className="flex-1 rounded-lg object-cover h-20" loading="lazy" />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       {/* Content */}
       <div className="px-4 pt-3 pb-0">
         {editing ? (
