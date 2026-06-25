@@ -868,6 +868,21 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 237 — Community Image Posts + Milestone Portfolio Link (Feb 2026) — ✅ SHIPPED
+- **Backend `POST /api/community/upload-image`** (in `community.ts`): multer memory storage, 5MB limit, accepts `image` field. Uses existing `multer` + `@supabase/supabase-js` packages. On first call auto-creates `community-images` public bucket via `listBuckets()` → `createBucket(..., { public: true })`. Path scheme `community/{Date.now()}-{rand}.{ext}`. Requires `SUPABASE_URL` + `SUPABASE_SERVICE_KEY` env vars (already set in Railway). Returns `{ url }` (public URL). Auth-guarded via `authMiddleware`.
+- **`CommunityFeed` compose**:
+  - New `ImageSquare` button in a small action row above the post button — tinted purple when an image is selected, tertiary otherwise.
+  - Hidden `<input type="file">` accepts PNG/JPEG/WebP/GIF, 5MB client-side cap.
+  - Image preview (max-h 200, rounded-xl) with circular X remove button (`data-testid="compose-image-remove"`).
+  - `handlePost` now uploads first via `POST /upload-image`, sets `imageUrls`, then passes `images: imageUrls` to `POST /posts` (backend already accepts this field). Failure to upload is non-fatal — post still goes through without the image.
+  - State clears after successful post: `composeImage`, `composeImagePreview`, and `imageInputRef.current.value`.
+  - New `onNavigateToPortfolio?: () => void` prop. Wired to the previously-decorative "Add" button on the milestone helper prompt.
+- **`PostCard`** renders images between milestone badge and content: first image as hero (max-h 400, `object-cover`, `loading="lazy"`), images 2–4 as a flex row of small thumbnails (h-20). 5th+ images currently not rendered (P2: gallery overlay).
+- **`Dashboard`** passes `onNavigateToPortfolio={() => handleViewChange('portfolio')}` to the feed tab's `CommunityFeed`.
+- Build gates: backend `tsc --noEmit` 0 errors · frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (6.97s).
+- Local commit: `1948e91 feat: community image posts + milestone portfolio link` (4 files, +124/-4). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github" to push and trigger both Vercel + Railway redeploy.**
+- **Production note**: backend Railway redeploy required (new endpoint). Frontend Vercel will auto-deploy from the same commit. `SUPABASE_URL` + `SUPABASE_SERVICE_KEY` must already be set in Railway env (they are — used by other upload features).
+
 ## Iteration 236 — Community Feed Visual Elevation + Round F (Feb 2026) — ✅ SHIPPED
 - **CommunityFeed compose placeholder** is now industry-aware: Photography/Videography/Content → "What did you shoot today?", Fine Art/Sculpture → "What's on the easel?", Graphic/Web/Branding/Illustration/Design → "What are you working on?", else fallback "Share something with your community...".
 - **Trending rail redesigned**: replaced the index-number + tiny dot card with an industry-tinted clickable card. Each card uses `tColor + '08'` background, `tColor + '25'` border, a 3px left border in `tColor`, an avatar circle with the author's first initial, the author name in `tColor`, a right-aligned `♥ N` likes count, and a 2-line excerpt. Clicking the card calls `setIndustry(post.industry)` to filter the feed to that industry.
