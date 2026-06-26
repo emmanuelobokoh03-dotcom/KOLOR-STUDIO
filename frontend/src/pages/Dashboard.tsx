@@ -24,11 +24,6 @@ import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
 import { Bell } from '@phosphor-icons/react/dist/csr/Bell'
 import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
-import AddLeadModal from '../components/AddLeadModal'
-import ShareFormModal from '../components/ShareFormModal'
-import FeedbackModal from '../components/FeedbackModal'
-import AnnouncementBanner from '../components/AnnouncementBanner'
-import BookingModal from '../components/BookingModal'
 import MobileBottomNav from '../components/MobileBottomNav'
 import HelpPanel, { HelpButton } from '../components/HelpPanel'
 import { PhotographyWidgets, FineArtWidgets, DesignWidgets } from '../components/IndustryWidgets'
@@ -39,12 +34,7 @@ import { CelebrationModal, checkCelebration, Achievement, achievements } from '.
 // Iter 181 — lazify conditionally-rendered heavy components to shrink Dashboard chunk.
 const CRMAlerts = lazy(() => import('../components/CRMAlerts'))
 const RevenueDashboard = lazy(() => import('../components/RevenueDashboard'))
-import OnboardingChecklist from '../components/OnboardingChecklist'
-import OnboardingFlow from '../components/OnboardingFlow'
 const NeedsAttentionSection = lazy(() => import('../components/NeedsAttentionSection'))
-import RevenueGoalWidget from '../components/RevenueGoalWidget'
-import EmailVerificationBanner from '../components/EmailVerificationBanner'
-import DemoProjectBanner from '../components/DemoProjectBanner'
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 import { StatusBadge } from '../components/StatusBadge'
 import { EmptyState } from '../components/EmptyState'
@@ -54,9 +44,7 @@ import { getIndustryLanguage } from '../utils/industryLanguage'
 import { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
 import { Receipt } from '@phosphor-icons/react/dist/csr/Receipt'
 import { ShieldCheck } from '@phosphor-icons/react/dist/csr/ShieldCheck'
-import LeadsListView from '../components/LeadsListView'
 import KolorSpinner from '../components/KolorSpinner'
-import TodayScreen from '../components/TodayScreen'
 import NumberFlow from '@number-flow/react'
 
 // Iter 172 — lazy heavy sub-views to shrink initial Dashboard chunk.
@@ -67,6 +55,18 @@ const SettingsModal = lazy(() => import('../components/SettingsModal'))
 const AnalyticsDashboard = lazy(() => import('../components/AnalyticsDashboard'))
 const PortfolioPage = lazy(() => import('./Portfolio'))
 const CommunityFeed = lazy(() => import('../components/CommunityFeed'))
+const AddLeadModal = lazy(() => import('../components/AddLeadModal'))
+const ShareFormModal = lazy(() => import('../components/ShareFormModal'))
+const FeedbackModal = lazy(() => import('../components/FeedbackModal'))
+const AnnouncementBanner = lazy(() => import('../components/AnnouncementBanner'))
+const BookingModal = lazy(() => import('../components/BookingModal'))
+const OnboardingChecklist = lazy(() => import('../components/OnboardingChecklist'))
+const OnboardingFlow = lazy(() => import('../components/OnboardingFlow'))
+const RevenueGoalWidget = lazy(() => import('../components/RevenueGoalWidget'))
+const EmailVerificationBanner = lazy(() => import('../components/EmailVerificationBanner'))
+const DemoProjectBanner = lazy(() => import('../components/DemoProjectBanner'))
+const LeadsListView = lazy(() => import('../components/LeadsListView'))
+const TodayScreen = lazy(() => import('../components/TodayScreen'))
 const CommunityDiscover = lazy(() => import('../components/CommunityDiscover'))
 const DMView = lazy(() => import('../components/DMView'))
 const SequencesDashboard = lazy(() => import('./SequencesDashboard'))
