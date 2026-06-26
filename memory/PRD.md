@@ -868,6 +868,17 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 239 — Performance: Dashboard Bundle + Async Fonts (Feb 2026) — ✅ SHIPPED
+- **`Dashboard.tsx`**: 12 conditionally-rendered components moved from eager imports to `lazy(() => import(...))`: `AddLeadModal`, `ShareFormModal`, `FeedbackModal`, `AnnouncementBanner`, `BookingModal`, `OnboardingChecklist`, `OnboardingFlow`, `RevenueGoalWidget`, `EmailVerificationBanner`, `DemoProjectBanner`, `LeadsListView`, `TodayScreen`. Each now ships as its own Vite chunk and only downloads when the user triggers the relevant view/modal. Total lazy count in Dashboard: 26 (was 14).
+- **`index.html`**: removed `Montserrat` + `Libre Baskerville` `<link rel="preload" as="font">` (landing-page only, loaded via CSS on demand). Google Fonts stylesheet (Fraunces / DM Mono / DM Sans) switched from render-blocking `rel="stylesheet"` to async via the `media="print" onload="this.media='all'"` trick + `<noscript>` fallback. Only `Inter` (the sole app UI font) remains as a critical preload.
+- **Measured impact** (post-build):
+  - `Dashboard.js`: 430.51 KB → **289.35 KB** (-33%)
+  - `Dashboard.js.gz`: 124.38 KB → **86.29 KB** (-31%)
+  - New on-demand chunks created: `AddLeadModal-*.js` 26.5 KB, `ShareFormModal-*.js` 24.3 KB, `LeadsListView-*.js` 20.7 KB, `BookingModal-*.js` 15.7 KB, `FeedbackModal-*.js` 11.4 KB, `OnboardingFlow-*.js` 10.1 KB, `OnboardingChecklist-*.js` 8.6 KB, `TodayScreen-*.js` 8.6 KB, `RevenueGoalWidget-*.js` 5.7 KB, plus banners.
+  - Expected first paint ~200–300 ms faster on 3G (async fonts) + 33% smaller initial Dashboard payload.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (6.75s).
+- Local commit: `784c310 perf: Dashboard bundle optimization — lazify 12 components + async fonts` (2 files, +14/-15). ⚠️ **`git push` failed locally — no GitHub creds. Push via "Save to Github".**
+
 ## Iteration 237 — Community Image Posts + Milestone Portfolio Link (Feb 2026) — ✅ SHIPPED
 - **Backend `POST /api/community/upload-image`** (in `community.ts`): multer memory storage, 5MB limit, accepts `image` field. Uses existing `multer` + `@supabase/supabase-js` packages. On first call auto-creates `community-images` public bucket via `listBuckets()` → `createBucket(..., { public: true })`. Path scheme `community/{Date.now()}-{rand}.{ext}`. Requires `SUPABASE_URL` + `SUPABASE_SERVICE_KEY` env vars (already set in Railway). Returns `{ url }` (public URL). Auth-guarded via `authMiddleware`.
 - **`CommunityFeed` compose**:
