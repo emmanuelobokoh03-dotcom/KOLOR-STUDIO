@@ -21,6 +21,35 @@ const INDUSTRY_COLORS: Record<string, string> = {
 
 const MILESTONE_KEYWORDS = ['commission', 'delivered', 'signed', 'paid', 'completed', 'booked', 'first client', 'first quote', 'sold']
 
+// Client-side image compression — resizes to 1600px max side, JPEG q=0.85
+// Drops a typical 5MB iPhone photo to ~300-400KB
+async function compressImage(file: File, maxSide = 1600, quality = 0.85): Promise<File> {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      let { width, height } = img
+      if (width > maxSide || height > maxSide) {
+        const ratio = Math.min(maxSide / width, maxSide / height)
+        width = Math.round(width * ratio)
+        height = Math.round(height * ratio)
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      canvas.getContext('2d')!.drawImage(img, 0, 0, width, height)
+      canvas.toBlob(
+        (blob) => resolve(blob
+          ? new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })
+          : file),
+        'image/jpeg',
+        quality
+      )
+    }
+    img.onerror = () => resolve(file)
+    img.src = URL.createObjectURL(file)
+  })
+}
+
 interface CommunityFeedProps {
   userIndustry?: string | null
   userId?: string
@@ -335,11 +364,12 @@ export default function CommunityFeed({ userIndustry, userId, onOpenSettings, on
             type="file"
             accept="image/png,image/jpeg,image/webp,image/gif"
             className="hidden"
-            onChange={e => {
+            onChange={async (e) => {
               const f = e.target.files?.[0]
-              if (f && f.size <= 5 * 1024 * 1024) {
-                setComposeImage(f)
-                setComposeImagePreview(URL.createObjectURL(f))
+              if (f && f.size <= 10 * 1024 * 1024) {
+                const compressed = await compressImage(f)
+                setComposeImage(compressed)
+                setComposeImagePreview(URL.createObjectURL(compressed))
               }
             }}
           />

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
 import { Warning } from '@phosphor-icons/react/dist/csr/Warning'
 
 interface ConfirmOptions {
@@ -25,6 +25,16 @@ export default function ConfirmProvider({ children }: { children: ReactNode }) {
   const confirm = useCallback((opts: ConfirmOptions): Promise<boolean> => {
     return new Promise(resolve => setState({ ...opts, resolve }))
   }, [])
+
+  // Dismiss on Esc key
+  useEffect(() => {
+    if (!state) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { state.resolve(false); setState(null) }
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [state])
 
   return (
     <ConfirmContext.Provider value={{ confirm }}>

@@ -141,6 +141,25 @@ const Dashboard = () => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [selectedLeadInitialTab, setSelectedLeadInitialTab] = useState<string | undefined>(undefined)
   const leadModalModified = useRef(false)
+
+  // Deep-link: ?leadId=xxx&section=contracts opens a lead to a specific tab
+  useEffect(() => {
+    const dlLeadId = searchParams.get('leadId')
+    const dlSection = searchParams.get('section')
+    if (!dlLeadId) return
+    leadsApi.getOne(dlLeadId).then(r => {
+      if (r.data?.lead) {
+        if (dlSection) setSelectedLeadInitialTab(dlSection)
+        setSelectedLead(r.data.lead)
+      }
+    }).catch(() => {})
+    // Clear deep-link params from URL
+    const cleaned = new URLSearchParams(searchParams)
+    cleaned.delete('leadId')
+    cleaned.delete('section')
+    setSearchParams(cleaned, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const [showAddModal, setShowAddModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
