@@ -868,6 +868,14 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 240 — CRMAlerts Query Perf + Trending Cache + Meta Fix (Feb 2026) — ✅ SHIPPED
+- **`backend/src/services/crm.ts` → `generateCRMAlerts`**: replaced `include` with `select`, fetching only the 7 Lead fields actually used by the alert logic (`id`, `clientName`, `projectTitle`, `pipelineStatus`, `nextFollowUpAt`, `createdAt`, `lastContactedAt`). Quote `include` slimmed to `select { status, sentAt }`. **Dropped unused `interactions` include entirely** (was being fetched but never read in the alert generator). Added `console.time`/`timeEnd('crm-alerts-query')` for Railway log visibility. Existing `@@index([assignedToId, status])` on Lead already supports the where clause — no schema change needed.
+- **`backend/src/routes/community.ts` → GET `/trending`**: added `res.set('Cache-Control', 'private, max-age=60')` before the JSON response. Prevents redundant refetch on every community tab switch; browsers will serve the cached payload for 60 seconds.
+- **`frontend/index.html`**: meta description copy fix — "Free for the first 20 users." → "Free for the first 10 founding members." (single occurrence; OG/Twitter descriptions don't include this phrase so they were unchanged).
+- Build gates: backend `tsc --noEmit` 0 errors · frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (6.88s).
+- Local commit: `72ecb08 perf: CRMAlerts query optimization + trending cache + meta fix` (6 files, +445/-98 — large stat because `git add -A` picked up previously-untracked `backend/tests/test_custom_sequences_api.py` + its `.pyc` cache; functional changes are 3 files / ~10 lines). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github" to push.**
+- **Production note**: Backend Railway redeploy required to ship alert query + cache header. Frontend Vercel will auto-deploy the meta change.
+
 ## Iteration 238 — Image Compression + Esc Key + Deep-Link URL Params (Feb 2026) — ✅ SHIPPED
 - **`CommunityFeed.tsx` client-side image compression**: new top-level `compressImage(file, maxSide=1600, quality=0.85)` utility using `<Image>` + `<canvas>.toBlob('image/jpeg', 0.85)`. Resizes to 1600px max side (preserves aspect ratio), drops a typical 5MB iPhone photo to ~300–400 KB before it ever hits the network. The file input's `onChange` is now `async`; raw cap raised from 5 MB → 10 MB (compression handles the reduction). Output filename gets a `.jpg` extension. On error, falls through with the original file.
 - **`ConfirmProvider.tsx` Esc key dismiss**: added `useEffect` (only mounts a `keydown` listener while `state !== null`) that resolves `false` and clears state on `Escape`. Listener is properly cleaned up on unmount/state change. Keyboard a11y for the new global confirm modal (Iter 232).
