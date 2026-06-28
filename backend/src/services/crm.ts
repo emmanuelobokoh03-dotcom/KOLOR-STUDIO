@@ -22,13 +22,21 @@ export const calculateNextFollowUp = (lead: any): Date | null => {
 };
 
 export const generateCRMAlerts = async (userId: string) => {
+  console.time('crm-alerts-query');
   const leads = await prisma.lead.findMany({
     where: { assignedToId: userId, status: { notIn: ['LOST'] } },
-    include: {
-      quotes: { orderBy: { createdAt: 'desc' }, take: 1 },
-      interactions: { orderBy: { createdAt: 'desc' }, take: 1 }
+    select: {
+      id: true,
+      clientName: true,
+      projectTitle: true,
+      pipelineStatus: true,
+      nextFollowUpAt: true,
+      createdAt: true,
+      lastContactedAt: true,
+      quotes: { select: { status: true, sentAt: true }, orderBy: { createdAt: 'desc' }, take: 1 },
     }
   });
+  console.timeEnd('crm-alerts-query');
 
   const alerts: any[] = [];
 

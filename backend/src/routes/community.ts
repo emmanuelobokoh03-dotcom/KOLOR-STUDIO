@@ -212,6 +212,7 @@ router.get('/trending', authMiddleware, async (req: AuthRequest, res: Response):
       orderBy: { likes: { _count: 'desc' } },
       take: 3,
     })
+    res.set('Cache-Control', 'private, max-age=60')
     res.json({ posts })
   } catch (e) { res.status(500).json({ error: 'Failed to fetch trending' }) }
 })
