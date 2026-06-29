@@ -8,6 +8,12 @@
   "theme_color": "#6C2EDB",
   "icons": [
     {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
       "src": "/favicon-16.png",
       "sizes": "16x16",
       "type": "image/png"
@@ -34,6 +40,38 @@
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
+    }
+  ],
+  "id": "/",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "orientation": "portrait-primary",
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard-overview.webp",
+      "sizes": "1600x1000",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "KOLOR dashboard \u2014 leads, quotes, and milestones in one view"
+    },
+    {
+      "src": "/screenshots/quote-builder.webp",
+      "sizes": "1400x900",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Quote builder with auto-contract generation"
+    },
+    {
+      "src": "/screenshots/client-portal.webp",
+      "sizes": "1400x900",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Client portal with deposit flow"
     }
   ]
 }
