@@ -868,6 +868,24 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 241 — Favicon / OG / PWA Manifest Modernization (Feb 2026) — ✅ SHIPPED
+- **Stale file deletion** (7 files, all confirmed unreferenced via grep across HTML/TS/TSX/JSON/webmanifest):
+  - `favicon-32x32.png`, `favicon-192x192.png`, `favicon-512x512.png` (April duplicates of May 13 set)
+  - `og-image.png` (superseded by `og-card.png`)
+  - `manifest.webmanifest` (superseded by `site.webmanifest`)
+  - `favicon-mark.png`, `og-card.svg` (orphaned)
+- **`frontend/index.html` meta additions** (5 batches):
+  - `<link rel="icon" type="image/svg+xml" href="/favicon.svg" />` — modern browsers prefer SVG, dark-mode adaptive.
+  - **theme-color split**: `(prefers-color-scheme: light)` → `#6C2EDB`; `(prefers-color-scheme: dark)` → `#080612` (replaces single dark-only `#080612`).
+  - **OG**: `og:site_name = "KOLOR Studio"`, `og:locale = "en_US"`.
+  - **Twitter**: `twitter:site` + `twitter:creator` = `@kolor_studio`.
+  - **Mobile web app set**: `mobile-web-app-capable`, `apple-mobile-web-app-capable`, `apple-mobile-web-app-title = "KOLOR"`, `apple-mobile-web-app-status-bar-style = "black-translucent"`, `application-name = "KOLOR Studio"`, `format-detection = "telephone=no"` (prevents iOS auto-linking phone numbers in posts/quotes).
+- **`site.webmanifest` upgrade**: added `id`, `scope`, `lang: en`, `dir: ltr`, `categories: [business, productivity]`, `orientation: portrait-primary`. SVG favicon prepended to `icons`. `screenshots` array added (dashboard 1600x1000, quote-builder 1400x900, client-portal 1400x900 — dimensions verified via PIL) for richer Chrome/Android install prompt.
+- **Review assets copied**: `og-card.png` (46 KB), `favicon.svg`, `favicon-512.png`, `apple-touch-icon.png` placed in `/mnt/user-data/outputs/iter241_assets/` for next-iteration visual review.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (6.58s).
+- Local commit: `e294cb6 chore: modernize favicon, OG, and PWA manifest to 2026 standards` (9 files, +51/-41). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github" to push.**
+- Frontend-only — no Railway redeploy needed.
+
 ## Iteration 240 — CRMAlerts Query Perf + Trending Cache + Meta Fix (Feb 2026) — ✅ SHIPPED
 - **`backend/src/services/crm.ts` → `generateCRMAlerts`**: replaced `include` with `select`, fetching only the 7 Lead fields actually used by the alert logic (`id`, `clientName`, `projectTitle`, `pipelineStatus`, `nextFollowUpAt`, `createdAt`, `lastContactedAt`). Quote `include` slimmed to `select { status, sentAt }`. **Dropped unused `interactions` include entirely** (was being fetched but never read in the alert generator). Added `console.time`/`timeEnd('crm-alerts-query')` for Railway log visibility. Existing `@@index([assignedToId, status])` on Lead already supports the where clause — no schema change needed.
 - **`backend/src/routes/community.ts` → GET `/trending`**: added `res.set('Cache-Control', 'private, max-age=60')` before the JSON response. Prevents redundant refetch on every community tab switch; browsers will serve the cached payload for 60 seconds.
