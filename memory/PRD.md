@@ -868,6 +868,20 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 242 — Meta Tag Copy: Industry Equality + Length Limits (Feb 2026) — ✅ SHIPPED
+- **Industry-equality fixes** (Fine Art was excluded in 4 spots — recurring bug pattern):
+  - `<title>`: "Artists" → "fine artists"
+  - `<meta name="description">`: "artists" → "fine artists"
+  - `<meta property="og:title">`: "Artists" → "fine artists"
+  - `<meta name="twitter:title">`: "Artists" → "fine artists"
+- **Length fixes**:
+  - `<title>` 61 → 55 chars (Google truncates ~60). Dropped "Studio" since `og:site_name = "KOLOR Studio"` (added Iter 241) already conveys it.
+  - `og:description` 140 → 99 chars (social previews truncate ~125 on mobile). Removed redundant "studio behind your best work" slogan — already lives in `og:image:alt`.
+  - `meta description`: minor reflow ("built for" → "for", "and calendar" → "calendar") to keep within ~155 chars.
+- **Style**: sentence case throughout (matches landing-page brand copy).
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (7.72s).
+- Local commit: `99f70a9 fix: meta tags — industry equality (fine artists) + length limits` (1 file, +6/-6). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github".**
+
 ## Iteration 241 — Favicon / OG / PWA Manifest Modernization (Feb 2026) — ✅ SHIPPED
 - **Stale file deletion** (7 files, all confirmed unreferenced via grep across HTML/TS/TSX/JSON/webmanifest):
   - `favicon-32x32.png`, `favicon-192x192.png`, `favicon-512x512.png` (April duplicates of May 13 set)
