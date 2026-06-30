@@ -868,6 +868,17 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 243 — Expanding FAB + Greeting Duplicate Diagnosis (Feb 2026) — ✅ SHIPPED
+- **New `frontend/src/components/FloatingActionMenu.tsx`**: single 56px circular `+` FAB (purple `#6C2EDB`, white icon, `0 4px 12px rgba(108,46,219,0.4)` shadow), anchored `right: 20px`, `bottom: calc(env(safe-area-inset-bottom) + 80px)`, `z-index: 60`. Tap toggles `isOpen` → backdrop (`rgba(0,0,0,0.3)`, 200ms fade) appears + 2 action pills stack above with stagger (Share form 0ms, New Lead 40ms, both 200ms cubic-bezier(0.4,0,0.2,1) translateY+scale). `+` rotates to `×` (45°) over 200ms. Backdrop tap or Esc closes. `handleAction(fn)` wraps each handler to fire the action 50ms after close starts. `aria-expanded`, descriptive `aria-label`, `tabIndex` gated on `isOpen`, `data-testid="fab-trigger"` + per-action testids.
+- **`Dashboard.tsx` swap**: removed the inline always-visible two-pill FAB JSX (1729–1771, 43 lines). Now renders `<FloatingActionMenu onShareForm={() => setShowShareModal(true)} onNewLead={() => setShowAddModal(true)} newLeadLabel={lang.newLead.replace('+ ', '')} />` wrapped in `lg:hidden` and the existing `viewMode === 'kanban' || 'list'` conditional. Added eager `import FloatingActionMenu` (after the lazy block).
+- **Greeting duplicate diagnosis** (fix deferred to Iter 244): root cause confirmed — greeting renders **twice on mobile when `viewMode === 'today'`**.
+  - `Dashboard.tsx:1043-1061` "Welcome Message" block (`lg:hidden`) renders `getGreeting() + firstName` + `formatCurrentDate()`.
+  - `TodayScreen.tsx:153-160` renders its own `{greeting}` prop + `weekday, month day, year` date format.
+  - On mobile, the active view is `today` → both blocks paint; that's the observed top + middle duplicate. The desktop sticky-header greeting (line 822, `hidden lg:block`) is unrelated.
+  - Recommended fix for 244: drop TodayScreen's internal greeting block (Dashboard owns the top greeting), or pass `showHeading={false}` prop when rendered inside Dashboard.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (6.68s). Dashboard chunk 289.62 → **291.22 KB** (+1.6 KB for component import).
+- Local commit: `99e98db feat: single expanding FAB replaces overlapping action pills` (2 files, +165/-43). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github".**
+
 ## Iteration 242 — Meta Tag Copy: Industry Equality + Length Limits (Feb 2026) — ✅ SHIPPED
 - **Industry-equality fixes** (Fine Art was excluded in 4 spots — recurring bug pattern):
   - `<title>`: "Artists" → "fine artists"
