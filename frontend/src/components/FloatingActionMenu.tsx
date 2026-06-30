@@ -44,7 +44,7 @@ export default function FloatingActionMenu({ onShareForm, onNewLead, newLeadLabe
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'auto' : 'none',
           transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 40,
+          zIndex: 20,
         }}
         data-testid="fab-backdrop"
       />
@@ -59,7 +59,7 @@ export default function FloatingActionMenu({ onShareForm, onNewLead, newLeadLabe
           flexDirection: 'column',
           gap: 12,
           alignItems: 'flex-end',
-          zIndex: 50,
+          zIndex: 25,
           pointerEvents: isOpen ? 'auto' : 'none',
         }}
       >
@@ -144,7 +144,7 @@ export default function FloatingActionMenu({ onShareForm, onNewLead, newLeadLabe
           justifyContent: 'center',
           boxShadow: '0 4px 12px rgba(108, 46, 219, 0.4)',
           cursor: 'pointer',
-          zIndex: 60,
+          zIndex: 30,
           transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
           transition: 'transform 200ms cubic-bezier(0.4, 0, 0.2, 1)',
         }}

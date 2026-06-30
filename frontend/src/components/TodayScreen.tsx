@@ -150,15 +150,6 @@ export default function TodayScreen({
 
   return (
     <div className="space-y-6" data-testid="today-screen">
-      {greeting && (
-        <div>
-          <h1 className="text-2xl font-extrabold text-text-primary">{greeting}</h1>
-          <p className="text-sm text-text-secondary mt-0.5">
-            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-          </p>
-        </div>
-      )}
-
       {hasAttention && (
         <section data-testid="attention-section">
           <div className="flex items-center justify-between mb-3">

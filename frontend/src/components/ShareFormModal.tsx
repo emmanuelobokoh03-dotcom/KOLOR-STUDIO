@@ -130,7 +130,7 @@ Looking forward to working with you!`
                 <ShareNetwork className="w-5 h-5" aria-hidden="true" />
               </div>
               <div>
-                <h2 id="share-form-title" className="text-xl font-bold">Share Your Inquiry Form</h2>
+                <h2 id="share-form-title" className="text-xl font-bold text-white">Share Your Inquiry Form</h2>
                 <p className="text-purple-600 text-sm">Get potential clients to submit project requests</p>
               </div>
             </div>
