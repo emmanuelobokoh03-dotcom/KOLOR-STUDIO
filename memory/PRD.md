@@ -868,6 +868,18 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 244 — Iter 243 Bug Fixes (Greeting Dup + FAB Z-Index + Modal Title) (Feb 2026) — ✅ SHIPPED
+- **Bug 1 (greeting duplicate)**: `TodayScreen.tsx` removed its own `{greeting && (...)}` block (was at lines 153-160) that rendered `<h1>{greeting}</h1>` + `weekday/month/day/year` date. Dashboard.tsx's mobile welcome block (line 1043-1061) is now the single source of greeting on the Today screen. The `greeting?: string` prop is kept in `TodayScreenProps` and still destructured as a no-op (Dashboard still passes it via existing prop wiring — additive-safe).
+- **Bug 2 (FAB z-index)**: `FloatingActionMenu.tsx` shipped at `zIndex: 60` (trigger) / `50` (pills) / `40` (backdrop). Modals across the app use Tailwind `z-50`, so the FAB rendered ON TOP — visible bug in Share Inquiry Form (FAB covered the QR Download button). Lowered to `30` / `25` / `20`. Internal stack order preserved; modals (`z-50`) now correctly occlude the FAB and its backdrop.
+- **Bug 3 (Share Inquiry title contrast)**: `ShareFormModal.tsx` line 133 `<h2>` had no explicit color class on a `bg-gradient-to-br from-[#1A0A3C] to-[#2D1470]` header. Added `text-white`. Subtitle (`text-purple-600`) and icon styling left unchanged.
+- **Bug 4 (help bubble overlap)** — investigation only, fix deferred to Iter 245:
+  - Component: `frontend/src/components/HelpPanel.tsx` → `HelpButton` (line 247)
+  - Mobile anchor: `fixed bottom-[82px] left-4 z-40 w-11 h-11` (purple `?` icon)
+  - At `z-40` it's safely below the standard `z-50` modal stack but at `bottom-[82px]` it can overlap content on long mobile Today screens (especially Calendar & Booking card)
+  - Fix candidates: raise to `bottom-[96px]`, OR add `pb-28` to TodayScreen container, OR move to less-dense corner.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (7.18s). Dashboard bundle unchanged.
+- Local commit: `bb4496a fix: 3 visible bugs from iter 243 deploy` (3 files, +4/-13). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github".**
+
 ## Iteration 243 — Expanding FAB + Greeting Duplicate Diagnosis (Feb 2026) — ✅ SHIPPED
 - **New `frontend/src/components/FloatingActionMenu.tsx`**: single 56px circular `+` FAB (purple `#6C2EDB`, white icon, `0 4px 12px rgba(108,46,219,0.4)` shadow), anchored `right: 20px`, `bottom: calc(env(safe-area-inset-bottom) + 80px)`, `z-index: 60`. Tap toggles `isOpen` → backdrop (`rgba(0,0,0,0.3)`, 200ms fade) appears + 2 action pills stack above with stagger (Share form 0ms, New Lead 40ms, both 200ms cubic-bezier(0.4,0,0.2,1) translateY+scale). `+` rotates to `×` (45°) over 200ms. Backdrop tap or Esc closes. `handleAction(fn)` wraps each handler to fire the action 50ms after close starts. `aria-expanded`, descriptive `aria-label`, `tabIndex` gated on `isOpen`, `data-testid="fab-trigger"` + per-action testids.
 - **`Dashboard.tsx` swap**: removed the inline always-visible two-pill FAB JSX (1729–1771, 43 lines). Now renders `<FloatingActionMenu onShareForm={() => setShowShareModal(true)} onNewLead={() => setShowAddModal(true)} newLeadLabel={lang.newLead.replace('+ ', '')} />` wrapped in `lg:hidden` and the existing `viewMode === 'kanban' || 'list'` conditional. Added eager `import FloatingActionMenu` (after the lazy block).
