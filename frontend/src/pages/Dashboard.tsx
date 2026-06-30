@@ -67,6 +67,7 @@ const EmailVerificationBanner = lazy(() => import('../components/EmailVerificati
 const DemoProjectBanner = lazy(() => import('../components/DemoProjectBanner'))
 const LeadsListView = lazy(() => import('../components/LeadsListView'))
 const TodayScreen = lazy(() => import('../components/TodayScreen'))
+import FloatingActionMenu from '../components/FloatingActionMenu'
 const CommunityDiscover = lazy(() => import('../components/CommunityDiscover'))
 const DMView = lazy(() => import('../components/DMView'))
 const SequencesDashboard = lazy(() => import('./SequencesDashboard'))
@@ -1723,50 +1724,15 @@ const Dashboard = () => {
         onOpenSettings={() => setShowSettings(true)}
       />
 
-      {/* Mobile FAB — Add Lead (primary) + Share Form (secondary).
-           Only on kanban/list views. Fixed above bottom nav.
-           pointer-events-none on wrapper so only the buttons intercept taps. */}
+      {/* Mobile FAB — collapses to single + that expands to reveal
+           Share form + New Lead actions. Only on kanban/list views. */}
       {(viewMode === 'kanban' || viewMode === 'list') && (
-        <div
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+88px)] right-4 z-30 flex flex-col items-end gap-2 lg:hidden pointer-events-none"
-          data-testid="mobile-fab-group"
-        >
-          {/* Secondary: Share form — pill style */}
-          <button
-            onClick={() => setShowShareModal(true)}
-            className="pointer-events-auto flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-200 active:scale-95"
-            style={{
-              background: 'rgba(255,255,255,0.92)',
-              border: '1px solid rgba(108,46,219,0.25)',
-              color: '#6C2EDB',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              minHeight: '40px',
-              boxShadow: '0 2px 12px rgba(108,46,219,0.15)',
-            }}
-            aria-label="Share inquiry form"
-            data-testid="mobile-fab-share"
-          >
-            <LinkIcon className="w-3.5 h-3.5" />
-            <span>Share form</span>
-          </button>
-
-          {/* Primary: Add lead — solid brand pill */}
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="pointer-events-auto flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold transition-all duration-200 active:scale-95"
-            style={{
-              background: '#6C2EDB',
-              color: '#fff',
-              minHeight: '48px',
-              boxShadow: '0 4px 20px rgba(108,46,219,0.40)',
-            }}
-            aria-label="Add lead"
-            data-testid="mobile-fab-add-lead"
-          >
-            <Plus className="w-4 h-4" />
-            <span>{lang.newLead.replace('+ ', '')}</span>
-          </button>
+        <div className="lg:hidden">
+          <FloatingActionMenu
+            onShareForm={() => setShowShareModal(true)}
+            onNewLead={() => setShowAddModal(true)}
+            newLeadLabel={lang.newLead.replace('+ ', '')}
+          />
         </div>
       )}
 
