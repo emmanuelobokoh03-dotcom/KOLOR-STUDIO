@@ -189,7 +189,7 @@ export default function AddLeadModal({ onClose, onLeadCreated, user }: AddLeadMo
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 md:p-4" onClick={onClose} role="presentation">
       <div 
         ref={modalRef}
-        className="w-full md:rounded-2xl md:shadow-2xl md:max-w-2xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl flex flex-col bg-[var(--surface-base,#FDFCFF)]"
+        className="w-full md:rounded-2xl md:shadow-2xl md:max-w-2xl h-[95dvh] md:h-auto md:max-h-[90vh] overflow-hidden border-t md:border border-light-200 animate-slide-up-full md:animate-fade-in rounded-t-2xl md:rounded-2xl flex flex-col bg-[var(--surface-base,#FDFCFF)]"
         onClick={(e) => e.stopPropagation()}
         data-testid="add-lead-modal"
         role="dialog"
@@ -197,7 +197,7 @@ export default function AddLeadModal({ onClose, onLeadCreated, user }: AddLeadMo
         aria-labelledby="add-lead-title"
       >
         {/* Header */}
-        <div className="bg-gradient-brand text-white p-4 md:p-6">
+        <div className="bg-gradient-brand text-white p-4 md:p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div>
               <h2 id="add-lead-title" className="text-xl md:text-2xl font-bold">Add New Lead</h2>
