@@ -868,6 +868,18 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 245 — Help Bubble Reposition + InlineHint Wrap + Modal Header/Industry-Equality Investigations (Feb 2026) — ✅ SHIPPED
+- **Bug 1 (help bubble overlap on Today screen)**: `HelpPanel.tsx:247` mobile anchor `bottom-[82px]` → `bottom-[96px]` (14px more clearance above the tab bar). Also added `pb-28` to `TodayScreen.tsx` root container so long lists always clear both the FAB (bottom-right, z-30) and the help bubble (bottom-left, z-40) without needing more z-index tuning.
+- **Bug 2 (Project Type hint truncation)**: `InlineHint.tsx:29` text span was `flex-shrink-0 text-sm leading-relaxed`. Combined with `AddLeadModal`'s outer `overflow-hidden`, the rigid width caused the text to overflow the rounded hint container and get clipped as `"This h…"` mid-word. Changed to `flex-1 min-w-0` — span now fills remaining space next to the dismiss X and wraps naturally. Fix applies to every `InlineHint` site app-wide.
+- **Bug 3 (New Commission modal header)** — investigated, **no fix needed**: `AddLeadModal.tsx:199-210` header block is present, intact, and outside the scroll region. `bg-gradient-brand` is defined in `tailwind.config.js:219`. The reported "missing header" was likely a screenshot artifact or scroll state — no code regression.
+- **Bug 4 (Project Type label industry equality)** — investigated, **fix deferred** (needs product decision):
+  - `PROJECT_TYPE_LABELS` lives in `services/api.ts:456-461` as a static `Record<ProjectType, string>`. All industries see the same labels: `"Service"`, `"Commission"`, `"Project"`, `"Product Sale"`. `getIndustryLanguage()` is not wired for these.
+  - Consequences: photographers see "Commission" (Fine Art terminology), fine artists see "Service" (photographer terminology), designers see labels that fit neither.
+  - Duplicate `PROJECT_TYPE_LABELS` exists in `pages/SubmitInquiry.tsx:69` — future dedupe candidate.
+  - Recommendation: pick per-industry labels or move to canonical action-based names ("New booking", "Custom work", "Ongoing project", "Sell a piece"). Emmanuel decides.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (6.83s). Dashboard bundle unchanged.
+- Local commit: `1f8d267 fix: help bubble reposition + InlineHint text wrap + investigations` (3 files, +3/-3). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github".**
+
 ## Iteration 244 — Iter 243 Bug Fixes (Greeting Dup + FAB Z-Index + Modal Title) (Feb 2026) — ✅ SHIPPED
 - **Bug 1 (greeting duplicate)**: `TodayScreen.tsx` removed its own `{greeting && (...)}` block (was at lines 153-160) that rendered `<h1>{greeting}</h1>` + `weekday/month/day/year` date. Dashboard.tsx's mobile welcome block (line 1043-1061) is now the single source of greeting on the Today screen. The `greeting?: string` prop is kept in `TodayScreenProps` and still destructured as a no-op (Dashboard still passes it via existing prop wiring — additive-safe).
 - **Bug 2 (FAB z-index)**: `FloatingActionMenu.tsx` shipped at `zIndex: 60` (trigger) / `50` (pills) / `40` (backdrop). Modals across the app use Tailwind `z-50`, so the FAB rendered ON TOP — visible bug in Share Inquiry Form (FAB covered the QR Download button). Lowered to `30` / `25` / `20`. Internal stack order preserved; modals (`z-50`) now correctly occlude the FAB and its backdrop.
