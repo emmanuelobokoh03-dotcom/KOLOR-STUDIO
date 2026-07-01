@@ -149,7 +149,7 @@ export default function TodayScreen({
   const hasInProgress = data && data.inProgress.length > 0
 
   return (
-    <div className="space-y-6" data-testid="today-screen">
+    <div className="space-y-6 pb-28" data-testid="today-screen">
       {hasAttention && (
         <section data-testid="attention-section">
           <div className="flex items-center justify-between mb-3">

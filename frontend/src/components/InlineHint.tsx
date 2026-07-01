@@ -26,7 +26,7 @@ export function InlineHint({ storageKey, children, dismissible = true, variant =
   return (
     <div className={`rounded-xl border p-3 mb-4 ${styles}`} data-testid={`hint-${storageKey}`}>
       <div className="flex items-start gap-2">
-        <span className="flex-shrink-0 text-sm leading-relaxed">{children}</span>
+        <span className="flex-1 min-w-0 text-sm leading-relaxed">{children}</span>
         {dismissible && (
           <button
             onClick={handleDismiss}
