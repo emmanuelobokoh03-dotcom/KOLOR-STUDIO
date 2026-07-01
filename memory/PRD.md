@@ -868,6 +868,18 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 246 — AddLeadModal Header Off-Screen on iOS Safari (Correct Diagnosis) (Feb 2026) — ✅ SHIPPED
+- **Modal identity trace**: FAB `onNewLead` → `setShowAddModal(true)` → renders `AddLeadModal.tsx`. Iter 245 was correct about the file — its **"screenshot artifact" conclusion was wrong**.
+- **Actual root cause**:
+  - `AddLeadModal.tsx:189` outer overlay uses `flex items-end` on mobile (anchors modal to viewport bottom).
+  - `AddLeadModal.tsx:192` modal panel uses `h-[95vh]` (fixed height = 95% of static viewport height).
+  - On iOS Safari + Android Chrome, `100vh` includes the URL/tab bar area. Effective visible height ≈ 87vh. With `items-end`, the 95vh-tall modal is anchored to viewport bottom → its TOP extends ~8vh **above the visible viewport**.
+  - The header (bg-gradient-brand + title + close X, correctly rendered in code) is clipped off-screen. User sees only the top edge of the gradient — the "thin purple accent bar" from the screenshot.
+- **Fix**: `h-[95vh]` → `h-[95dvh]` (dynamic viewport height, resizes with browser chrome so modal always fits). Added `flex-shrink-0` to the header block as defence-in-depth against future flex-layout regressions.
+- **Regression sweep**: verified `AddLeadModal` was the only modal with `items-end + h-[Xvh]` combo. Every other modal (EmailComposer, EmailComposerModal, FeedbackModal, QuoteBuilder, ShareForm, Sequences) uses `max-h-[90vh]` (content-sized) or `h-full` with `items-stretch` (SettingsModal) — those are naturally safe.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (6.96s).
+- Local commit: `f1a6a51 fix: AddLeadModal header off-screen on iOS Safari (h-95vh → h-95dvh)` (1 file, +2/-2). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github".**
+
 ## Iteration 245 — Help Bubble Reposition + InlineHint Wrap + Modal Header/Industry-Equality Investigations (Feb 2026) — ✅ SHIPPED
 - **Bug 1 (help bubble overlap on Today screen)**: `HelpPanel.tsx:247` mobile anchor `bottom-[82px]` → `bottom-[96px]` (14px more clearance above the tab bar). Also added `pb-28` to `TodayScreen.tsx` root container so long lists always clear both the FAB (bottom-right, z-30) and the help bubble (bottom-left, z-40) without needing more z-index tuning.
 - **Bug 2 (Project Type hint truncation)**: `InlineHint.tsx:29` text span was `flex-shrink-0 text-sm leading-relaxed`. Combined with `AddLeadModal`'s outer `overflow-hidden`, the rigid width caused the text to overflow the rounded hint container and get clipped as `"This h…"` mid-word. Changed to `flex-1 min-w-0` — span now fills remaining space next to the dismiss X and wraps naturally. Fix applies to every `InlineHint` site app-wide.
