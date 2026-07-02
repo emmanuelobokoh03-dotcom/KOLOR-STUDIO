@@ -868,6 +868,34 @@ Hero dashboard tab switcher:
 - Build: backend tsc clean. Frontend tsc + build clean (7.38s). LeadDetailModal bundle -4.5 KB. Commit `e2a09fc` (+105 / -147 net code reduction).
 
 
+## Iteration 247 — Gauntlet Cleanup Pass (Feb 2026) — ✅ SHIPPED
+- **Domain integrity (Gauntlet Polish 6-9)**: 14 `kolorstudio.com` → `kolorstudio.app` replacements across 5 files:
+  - `DEPLOYMENT_GUIDE.md` (support@)
+  - `GETTING_STARTED.md` (hello@)
+  - `backend/src/routes/portal.ts` (contact@ fallback)
+  - `frontend/src/components/FeedbackModal.tsx` (hello@ mailto)
+  - `frontend/src/pages/TermsOfService.tsx` (10 hits across billing@, legal@ ×2, hello@, support@ — both `mailto:` href and display text)
+  - Emmanuel does not own `.com` → every mail was undeliverable + potential misroute risk to whoever DOES own it.
+- **Accessibility Major 1 — `<select>` without accessible name**: `Dashboard.tsx` desktop + mobile filter selects (4 total) gained `aria-label="Filter by project type"` / `"Filter by industry"`. Other selects in the codebase (auth, forms, settings) already have visible `<label>` wrappers.
+- **Accessibility Major 2 — icon-only buttons without discernible text**: 7 close/dismiss buttons on public + common surfaces got `aria-label`:
+  - `CookieConsent` — "Dismiss cookie banner"
+  - `AnnouncementBanner` — "Dismiss announcement"
+  - `EmailVerificationBanner` — "Dismiss email verification banner"
+  - `QuoteBuilderModal` — "Close quote preview"
+  - `HelpPanel` — "Close help panel"
+  - `OnboardingChecklist` — "Dismiss onboarding checklist"
+  - `InlineHint` — "Dismiss hint"
+  - Heuristic scan surfaced ~55 more icon-only buttons repo-wide (kebab menus, list-row action icons, etc.). Deferred as a lower-priority batch sweep.
+- **Security headers (Gauntlet Polish 10 + free wins)**: `frontend/vercel.json` gained a `headers` block on `/(.*)`:
+  - `X-Frame-Options: DENY` (clickjacking protection — assumes no iframe embed use case; can loosen to `SAMEORIGIN` later)
+  - `X-Content-Type-Options: nosniff` (MIME sniffing protection)
+  - `Referrer-Policy: strict-origin-when-cross-origin` (privacy hardening)
+  - `Permissions-Policy: camera=(), microphone=(), geolocation=()` (least-privilege default)
+  - CSP intentionally deferred — needs careful design for Stripe / Resend / Google Fonts / Supabase Storage compatibility.
+- **Deferred (out of scope)**: Gauntlet Minor 4 (141 color contrast fails) needs full design-token audit; Gauntlet Minor 5 (CSP) needs its own iteration; Gauntlet Minor 3 (link distinguishability) pairs with contrast pass.
+- Build gates: frontend `tsc --noEmit` 0 errors · `npm run build` ✅ (7.16s).
+- Local commit: `82f3a25 chore: Gauntlet cleanup — domain + accessibility + security headers` (14 files, +44/-12). ⚠️ **`git push` failed locally — no GitHub creds. Use "Save to Github".**
+
 ## Iteration 246 — AddLeadModal Header Off-Screen on iOS Safari (Correct Diagnosis) (Feb 2026) — ✅ SHIPPED
 - **Modal identity trace**: FAB `onNewLead` → `setShowAddModal(true)` → renders `AddLeadModal.tsx`. Iter 245 was correct about the file — its **"screenshot artifact" conclusion was wrong**.
 - **Actual root cause**:
