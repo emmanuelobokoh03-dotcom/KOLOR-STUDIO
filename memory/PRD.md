@@ -1508,6 +1508,15 @@ Build gates: `npx tsc --noEmit` (backend + frontend, with `NODE_OPTIONS=--max-ol
 - Build: `npx tsc --noEmit` clean on backend + frontend. `npm run build` clean in 7.99s. Commit `eb371d1` (local, pending push via "Save to GitHub").
 
 
+## Iteration 248 — Architectural Safety Pass (Complete — Feb 2026)
+Three structural insurances against recurring bug classes (z-index conflicts, iOS Safari `vh` clipping, Fine Art copy exclusions):
+
+1. **Z-index registry** — `frontend/src/lib/z.ts` new single source of truth (BASE, NAV, FAB_BACKDROP/PILLS, FAB, HELP, MODAL_BACKDROP, MODAL, TOAST, TOOLTIP). Refactored `FloatingActionMenu.tsx`, `ConfirmProvider.tsx` (was inline `zIndex: 300`), and `CommunityFeed.tsx` intro modal (was `zIndex: 100`) to use `Z` constants. HelpPanel already uses Tailwind `z-*` classes aligned with registry.
+2. **`vh` → `dvh` sweep** — 15 replacements across 13 TSX files (modals + drawers). Prevents iOS Safari URL-bar-inclusive `vh` clipping (root cause of iter 246 AddLeadModal off-screen header).
+3. **Industry-equality lint** — `scripts/check-industry-equality.js` new grep-based Node script in SOFT mode. Two rules: `triad_incomplete` (any two of {photograph, design, fine art} within 120 chars must include the third) and `artists_without_fine` (bare "artists" not preceded by "fine", excluding compound nouns). Wired as `npm run lint:industry` in `frontend/package.json`. First run reported 269 findings across 32 files (262 triad_incomplete + 7 artists_without_fine). Most triad hits are technical enum maps that need filter tuning; caught real copy bug in `Footer.tsx` ("visual artists" — missing "fine").
+- Gates: `npx tsc --noEmit` clean, `npm run build` clean (7.38s). Commit `f713e2f` (local, pending push via "Save to GitHub").
+- Promotion of `lint:industry` to `prebuild` deferred to iter 249 pending review.
+
 
 ## Test Credentials
 - Email: bookingtest@test.com
