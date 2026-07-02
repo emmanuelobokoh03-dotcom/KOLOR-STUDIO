@@ -128,6 +128,7 @@ export default function HelpPanel({ open, onClose, startTour, onAction }: HelpPa
               </div>
               <button
                 onClick={onClose}
+                aria-label="Close help panel"
                 className="w-8 h-8 rounded-lg hover:bg-light-100 flex items-center justify-center transition-colors"
                 data-testid="help-panel-close"
               >

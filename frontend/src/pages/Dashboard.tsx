@@ -1448,6 +1448,7 @@ const Dashboard = () => {
               <select
                 value={projectTypeFilter}
                 onChange={(e) => setProjectTypeFilter(e.target.value)}
+                aria-label="Filter by project type"
                 className="hidden md:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                 data-testid="filter-project-type"
               >
@@ -1461,6 +1462,7 @@ const Dashboard = () => {
               <select
                 value={industryFilter}
                 onChange={(e) => setIndustryFilter(e.target.value)}
+                aria-label="Filter by industry"
                 className="hidden lg:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                 data-testid="filter-industry"
                 title="Filter leads by industry"
@@ -1528,6 +1530,7 @@ const Dashboard = () => {
                 <select
                   value={projectTypeFilter}
                   onChange={(e) => setProjectTypeFilter(e.target.value)}
+                  aria-label="Filter by project type"
                   className="w-full px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
                   data-testid="mobile-filter-project-type"
                 >
@@ -1539,6 +1542,7 @@ const Dashboard = () => {
                 <select
                   value={industryFilter}
                   onChange={(e) => setIndustryFilter(e.target.value)}
+                  aria-label="Filter by industry"
                   className="w-full px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
                   data-testid="mobile-filter-industry"
                 >

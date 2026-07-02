@@ -58,7 +58,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
       )
       
       // Open mailto link
-      window.open(`mailto:hello@kolorstudio.com?subject=${subject}&body=${body}`, '_blank')
+      window.open(`mailto:hello@kolorstudio.app?subject=${subject}&body=${body}`, '_blank')
       
       setSending(false)
       setSuccess(true)

@@ -76,6 +76,7 @@ export default function CookieConsent() {
           {/* Close button (mobile) */}
           <button
             onClick={handleEssentialOnly}
+            aria-label="Dismiss cookie banner"
             className="absolute top-3 right-3 sm:hidden p-1 text-text-tertiary hover:text-text-primary transition"
           >
             <X className="w-5 h-5" />

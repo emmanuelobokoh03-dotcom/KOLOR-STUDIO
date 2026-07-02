@@ -130,7 +130,7 @@ export default function OnboardingChecklist({ onOpenSettings }: { onOpenSettings
             </p>
           </div>
         </div>
-        <button onClick={dismiss} className="text-text-tertiary hover:text-text-primary transition p-1" data-testid="dismiss-onboarding">
+        <button onClick={dismiss} aria-label="Dismiss onboarding checklist" className="text-text-tertiary hover:text-text-primary transition p-1" data-testid="dismiss-onboarding">
           <X className="w-4 h-4" />
         </button>
       </div>

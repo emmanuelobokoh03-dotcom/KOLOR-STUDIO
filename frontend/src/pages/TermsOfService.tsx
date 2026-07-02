@@ -211,7 +211,7 @@ export default function TermsOfService() {
               <ul className="space-y-2 text-text-secondary text-sm">
                 <li>• 30-day money-back guarantee</li>
                 <li>• Request refund within 30 days of first payment</li>
-                <li>• Email: <a href="mailto:billing@kolorstudio.com" className="text-purple-600 hover:underline">billing@kolorstudio.com</a></li>
+                <li>• Email: <a href="mailto:billing@kolorstudio.app" className="text-purple-600 hover:underline">billing@kolorstudio.app</a></li>
               </ul>
             </div>
 
@@ -438,7 +438,7 @@ export default function TermsOfService() {
             <div className="bg-surface-base rounded-xl p-5 border border-light-200">
               <h3 className="font-semibold text-white mb-2">Informal Resolution</h3>
               <p className="text-text-secondary text-sm">
-                Contact us first: <a href="mailto:legal@kolorstudio.com" className="text-purple-600 hover:underline">legal@kolorstudio.com</a>. We'll try to resolve within 30 days.
+                Contact us first: <a href="mailto:legal@kolorstudio.app" className="text-purple-600 hover:underline">legal@kolorstudio.app</a>. We'll try to resolve within 30 days.
               </p>
             </div>
 
@@ -497,13 +497,13 @@ export default function TermsOfService() {
             <p className="text-text-secondary mb-4">Questions? Contact us:</p>
             <div className="space-y-2">
               <p className="text-text-secondary">
-                Email: <a href="mailto:legal@kolorstudio.com" className="text-purple-600 hover:underline">legal@kolorstudio.com</a>
+                Email: <a href="mailto:legal@kolorstudio.app" className="text-purple-600 hover:underline">legal@kolorstudio.app</a>
               </p>
               <p className="text-text-secondary">
-                General: <a href="mailto:hello@kolorstudio.com" className="text-purple-600 hover:underline">hello@kolorstudio.com</a>
+                General: <a href="mailto:hello@kolorstudio.app" className="text-purple-600 hover:underline">hello@kolorstudio.app</a>
               </p>
               <p className="text-text-secondary">
-                Support: <a href="mailto:support@kolorstudio.com" className="text-purple-600 hover:underline">support@kolorstudio.com</a>
+                Support: <a href="mailto:support@kolorstudio.app" className="text-purple-600 hover:underline">support@kolorstudio.app</a>
               </p>
             </div>
           </div>

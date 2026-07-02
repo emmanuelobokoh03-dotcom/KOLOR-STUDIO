@@ -30,6 +30,7 @@ export function InlineHint({ storageKey, children, dismissible = true, variant =
         {dismissible && (
           <button
             onClick={handleDismiss}
+            aria-label="Dismiss hint"
             className="flex-shrink-0 mt-0.5 p-0.5 rounded hover:bg-white/10 transition-colors"
             data-testid={`hint-dismiss-${storageKey}`}
           >

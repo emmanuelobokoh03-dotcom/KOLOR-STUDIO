@@ -57,6 +57,7 @@ export default function EmailVerificationBanner({ user }: EmailVerificationBanne
             </button>
             <button
               onClick={handleDismiss}
+              aria-label="Dismiss email verification banner"
               className="text-amber-500 hover:text-amber-700 transition-colors p-1"
               data-testid="dismiss-verification-btn"
             >

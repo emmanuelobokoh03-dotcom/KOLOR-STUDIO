@@ -299,7 +299,7 @@ After custom domain setup:
 ## Support
 
 For deployment issues:
-- Email: support@kolorstudio.com
+- Email: support@kolorstudio.app
 - Check Railway status: https://status.railway.app
 - Check Vercel status: https://www.vercel-status.com
 - Check Supabase status: https://status.supabase.com

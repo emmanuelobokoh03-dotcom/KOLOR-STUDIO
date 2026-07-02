@@ -258,7 +258,7 @@ router.get('/:token', async (req: Request, res: Response): Promise<void> => {
       contracts: (lead as any).contracts || [],
       quotes: (lead as any).quotes || [],
       contact: {
-        email: assignedTo?.email || process.env.OWNER_NOTIFICATION_EMAIL || 'contact@kolorstudio.com',
+        email: assignedTo?.email || process.env.OWNER_NOTIFICATION_EMAIL || 'contact@kolorstudio.app',
         name: assignedTo 
           ? `${assignedTo.firstName} ${assignedTo.lastName}`
           : 'KOLOR STUDIO Team',

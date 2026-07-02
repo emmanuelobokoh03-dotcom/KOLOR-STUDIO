@@ -55,7 +55,7 @@ JWT_EXPIRES_IN=7d
 
 # Get this from SendGrid (free): https://sendgrid.com
 SENDGRID_API_KEY=your-sendgrid-api-key
-SENDGRID_FROM_EMAIL=hello@kolorstudio.com
+SENDGRID_FROM_EMAIL=hello@kolorstudio.app
 SENDGRID_FROM_NAME="KOLOR STUDIO"
 
 FRONTEND_URL=http://localhost:5173

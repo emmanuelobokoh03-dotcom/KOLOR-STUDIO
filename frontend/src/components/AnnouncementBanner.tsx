@@ -81,6 +81,7 @@ export default function AnnouncementBanner() {
       {announcement.dismissible && (
         <button
           onClick={handleDismiss}
+          aria-label="Dismiss announcement"
           className="p-1 hover:bg-white/20 rounded transition ml-2"
           data-testid="dismiss-announcement"
         >

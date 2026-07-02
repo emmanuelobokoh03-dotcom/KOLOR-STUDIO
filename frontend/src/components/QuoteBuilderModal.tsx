@@ -136,7 +136,7 @@ function QuotePreview({ lead, lineItems, subtotal, tax, taxAmount, total, paymen
               <h2 className="text-2xl font-bold text-gray-900">{lead.projectTitle}</h2>
               <p className="text-gray-600 mt-1">For {lead.clientName}</p>
             </div>
-            <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-lg"><X className="w-5 h-5 text-gray-500" /></button>
+            <button onClick={onBack} aria-label="Close quote preview" className="p-2 hover:bg-gray-100 rounded-lg"><X className="w-5 h-5 text-gray-500" /></button>
           </div>
           <table className="w-full mb-6">
             <thead><tr className="border-b"><th className="text-left py-2 text-sm text-gray-500">Description</th><th className="text-right py-2 text-sm text-gray-500">Qty</th><th className="text-right py-2 text-sm text-gray-500">Price</th><th className="text-right py-2 text-sm text-gray-500">Total</th></tr></thead>
