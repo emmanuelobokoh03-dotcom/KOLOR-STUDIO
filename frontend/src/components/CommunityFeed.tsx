@@ -3,6 +3,7 @@ import KolorSpinner from './KolorSpinner'
 import PostCard from './PostCard'
 import { ImageSquare } from '@phosphor-icons/react/dist/csr/ImageSquare'
 import { X } from '@phosphor-icons/react/dist/csr/X'
+import { Z } from '../lib/z'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
@@ -191,7 +192,7 @@ export default function CommunityFeed({ userIndustry, userId, onOpenSettings, on
         <div
           data-testid="community-intro-modal"
           style={{
-            position: 'fixed', inset: 0, zIndex: 100,
+            position: 'fixed', inset: 0, zIndex: Z.MODAL,
             background: 'rgba(0,0,0,0.5)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: '20px',

@@ -435,7 +435,7 @@ export default function SchedulingSettings() {
       {/* Meeting Type Form Modal */}
       {showMeetingForm && editingType && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4" onClick={() => { setShowMeetingForm(false); setEditingType(null) }}>
-          <div className="bg-surface-base rounded-xl shadow-xl w-full max-w-md max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()} data-testid="meeting-type-form">
+          <div className="bg-surface-base rounded-xl shadow-xl w-full max-w-md max-h-[85dvh] overflow-y-auto" onClick={e => e.stopPropagation()} data-testid="meeting-type-form">
             <div className="p-5 border-b border-light-200">
               <h3 className="text-lg font-bold text-text-primary">
                 {editingType.id ? 'Edit Meeting Type' : 'New Meeting Type'}

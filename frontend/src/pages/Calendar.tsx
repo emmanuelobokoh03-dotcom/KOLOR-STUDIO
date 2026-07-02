@@ -373,7 +373,7 @@ export default function Calendar() {
       {showMobileDaySheet && !selectedEvent && (
         <div className="lg:hidden fixed inset-0 z-40 flex flex-col justify-end" data-testid="calendar-day-mobile-panel">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowMobileDaySheet(false)} />
-          <div className="relative bg-light-50 rounded-t-2xl border-t border-light-200 max-h-[75vh] overflow-y-auto animate-slide-up">
+          <div className="relative bg-light-50 rounded-t-2xl border-t border-light-200 max-h-[75dvh] overflow-y-auto animate-slide-up">
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 bg-light-300 rounded-full" />
             </div>

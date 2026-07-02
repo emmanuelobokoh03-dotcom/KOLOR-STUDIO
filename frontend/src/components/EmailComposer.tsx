@@ -87,7 +87,7 @@ export default function EmailComposer({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[70] p-4" data-testid="email-composer-modal">
       <div
-        className="bg-light-50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-light-200 flex flex-col shadow-2xl"
+        className="bg-light-50 rounded-2xl max-w-2xl w-full max-h-[90dvh] overflow-hidden border border-light-200 flex flex-col shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

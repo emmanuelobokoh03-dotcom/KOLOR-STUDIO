@@ -144,7 +144,7 @@ export default function EmailComposerModal({ lead, onClose, onSent }: EmailCompo
       role="presentation"
     >
       <div 
-        className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
+        className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90dvh] overflow-hidden border border-light-200 flex flex-col"
         onClick={(e) => e.stopPropagation()}
         data-testid="email-composer-modal"
         role="dialog"

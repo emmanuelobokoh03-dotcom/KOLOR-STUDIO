@@ -236,7 +236,7 @@ function SequenceDetailModal({ seq, onClose }: { seq: SequenceData; onClose: () 
   return (
     <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4" data-testid="sequence-detail-modal">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-3xl bg-light-50 rounded-2xl border border-light-200 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-3xl bg-light-50 rounded-2xl border border-light-200 shadow-2xl max-h-[90dvh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-light-50 border-b border-light-200 px-6 py-5 flex items-center justify-between z-10">
           <div>
@@ -334,7 +334,7 @@ function SequenceDetailModal({ seq, onClose }: { seq: SequenceData; onClose: () 
       {previewHtml && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" data-testid="email-preview-overlay">
           <div className="absolute inset-0 bg-black/80" onClick={() => setPreviewHtml(null)} />
-          <div className="relative w-full max-w-2xl bg-surface-base rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full max-w-2xl bg-surface-base rounded-xl shadow-2xl max-h-[90dvh] overflow-y-auto">
             <div className="sticky top-0 bg-surface-base border-b border-gray-200 px-5 py-3 flex items-center justify-between z-10">
               <h3 className="font-semibold text-gray-900 text-sm">{previewHtml.subject}</h3>
               <button onClick={() => setPreviewHtml(null)} className="p-1.5 hover:bg-gray-100 rounded-lg" data-testid="close-email-preview">
@@ -870,7 +870,7 @@ function SequenceBuilder({ sequence, onClose, onSaved, onCreated }: {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" data-testid="sequence-builder-modal">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-2xl bg-light-50 rounded-2xl border border-light-200 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-light-50 rounded-2xl border border-light-200 shadow-2xl max-h-[90dvh] overflow-y-auto">
 
         <div className="sticky top-0 bg-light-50 border-b border-light-200 px-6 py-4 flex items-center justify-between z-10">
           <div>

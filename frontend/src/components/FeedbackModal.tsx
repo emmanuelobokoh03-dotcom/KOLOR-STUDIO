@@ -96,7 +96,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose} role="presentation">
       <div 
-        className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-light-200 flex flex-col"
+        className="bg-surface-base rounded-2xl shadow-2xl w-full max-w-lg max-h-[90dvh] overflow-hidden border border-light-200 flex flex-col"
         onClick={(e) => e.stopPropagation()}
         data-testid="feedback-modal"
         role="dialog"

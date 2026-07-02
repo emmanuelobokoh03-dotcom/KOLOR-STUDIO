@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
 import { Link as LinkIcon } from '@phosphor-icons/react/dist/csr/Link'
+import { Z } from '../lib/z'
 
 interface FloatingActionMenuProps {
   onShareForm: () => void
@@ -44,7 +45,7 @@ export default function FloatingActionMenu({ onShareForm, onNewLead, newLeadLabe
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'auto' : 'none',
           transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 20,
+          zIndex: Z.FAB_BACKDROP,
         }}
         data-testid="fab-backdrop"
       />
@@ -59,7 +60,7 @@ export default function FloatingActionMenu({ onShareForm, onNewLead, newLeadLabe
           flexDirection: 'column',
           gap: 12,
           alignItems: 'flex-end',
-          zIndex: 25,
+          zIndex: Z.FAB_PILLS,
           pointerEvents: isOpen ? 'auto' : 'none',
         }}
       >
@@ -144,7 +145,7 @@ export default function FloatingActionMenu({ onShareForm, onNewLead, newLeadLabe
           justifyContent: 'center',
           boxShadow: '0 4px 12px rgba(108, 46, 219, 0.4)',
           cursor: 'pointer',
-          zIndex: 30,
+          zIndex: Z.FAB,
           transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
           transition: 'transform 200ms cubic-bezier(0.4, 0, 0.2, 1)',
         }}

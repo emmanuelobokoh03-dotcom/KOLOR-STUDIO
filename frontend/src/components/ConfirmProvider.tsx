@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
 import { Warning } from '@phosphor-icons/react/dist/csr/Warning'
+import { Z } from '../lib/z'
 
 interface ConfirmOptions {
   title: string
@@ -42,7 +43,7 @@ export default function ConfirmProvider({ children }: { children: ReactNode }) {
       {state && (
         <div
           style={{
-            position: 'fixed', inset: 0, zIndex: 300,
+            position: 'fixed', inset: 0, zIndex: Z.MODAL,
             background: 'rgba(0,0,0,0.5)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: 20,

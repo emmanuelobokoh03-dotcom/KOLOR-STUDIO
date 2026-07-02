@@ -378,7 +378,7 @@ export default function PortfolioSettings({ onClose }: PortfolioSettingsProps) {
             </div>
 
             {/* Modal Body */}
-            <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+            <div className="p-4 space-y-4 max-h-[60dvh] overflow-y-auto">
               {/* Error */}
               {modalError && (
                 <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
