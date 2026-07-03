@@ -1538,6 +1538,21 @@ Third-stem verification window widened from ~180 to ~520 chars total (200 before
 - Next iter (251): add `Record<...>`-line skip OR substring-in-identifier filter to clear the last 11, then flip `SOFT_MODE = false` + wire `prebuild`.
 
 
+## Iteration 251 — Strict Promotion Complete + Build Repair (Complete — Feb 2026)
+Final iteration of the industry-equality lint bug-class fix. User commit `20ec6dd` flipped SOFT_MODE→false and wired `prebuild` but shipped without the prerequisite filters, breaking `npm run build` with 11 STRICT-mode findings. This iteration adds the missing pieces:
+
+1. **`looksLikeEnumMapValue()` guard** — skips lines starting with `ALL_CAPS:` pattern (i.e. enum-map values like `PHOTOGRAPHY_SHOOT: 'Photography shoot'`). Kills all 10 remaining `Record<Enum, string>` hits.
+2. **Rule 1 dual-line check** — also runs `isTechnicalLine` / `hasAllowComment` / `looksLikeEnumMapValue` against the *second* stem's line (`lineB`) since enum values often span two lines.
+3. **Rule 2 enum-map guard** — same guard for consistency.
+4. **`IndustryOnboarding.tsx` file-level ignore** — canonical file defining the three industries; each entry has its own description block that (correctly) doesn't mention the other two.
+
+- Finding count drop: **11 → 0**.
+- Gates: `node scripts/check-industry-equality.js` → 0 with "✓ No findings (STRICT)". `tsc --noEmit` → 0. `npm run build` → 0 (7.14s), prebuild passes.
+- Safety net verified: manually simulated a Footer regression (dropped "fine artists") → lint exit 1, would block build. Reverted.
+- Commit `72a8429` (local, pending push via "Save to GitHub").
+- **Bug class structurally solved** across iters 248-251 (269 → 50 → 11 → 0). Vercel builds now fail on future Fine Art copy regressions.
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
