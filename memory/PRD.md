@@ -1518,6 +1518,17 @@ Three structural insurances against recurring bug classes (z-index conflicts, iO
 - Promotion of `lint:industry` to `prebuild` deferred to iter 249 pending review.
 
 
+## Iteration 249 — Footer Fix + Industry-Equality Lint Tuning (Complete — Feb 2026)
+Real bug from iter 248 lint first-run fixed + filter tuning to prep for strict promotion:
+
+1. **Footer.tsx copy fix** — "Built for photographers, videographers, designers, illustrators, and visual artists" → "Built for photographers, designers, and fine artists". Canonical three-industry framing restored; incidental extras removed.
+2. **Lint tuning** — Added `hasLowercase()` helper (match must contain a-z, filters out enum-token noise like `PHOTOGRAPHY`/`FINE_ART`), `hasAllowComment()` supporting both `// industry-equality: allow` and JSX `{/* industry-equality: allow */}` forms, and file-level `// industry-equality: ignore-file` directive.
+3. **Ambiguities resolved** — Annotated LandingPageV2.tsx line 496 ("working artists" = inclusive positioning), AddLeadModal.tsx line 446 ("Artist's proof" edition term), auth.ts line 416 ("Artist certificate" FINE_ART sample). File-level ignore-file on `backend/src/data/contractTemplates.ts` (legal defined-term).
+- Finding count drop: **269 → 50** (all 7 `artists_without_fine` resolved; 50 remaining `triad_incomplete` are all enum-map noise where the third stem sits just past the 120-char window).
+- Gates: frontend + backend `tsc --noEmit` clean, `npm run build` clean (7.12s). Testing agent verified all 5 checks (report at `/app/test_reports/iteration_154.json`). Commit `9e7c18d` (local, pending push via "Save to GitHub").
+- Promotion to strict + `prebuild` deferred to iter 250 pending window/label-map filter refinement.
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
