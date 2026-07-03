@@ -24,7 +24,7 @@ export default function Footer() {
               The CRM that doesn't feel like a CRM
             </p>
             <p className="text-text-tertiary text-xs mb-4">
-              Built for photographers, videographers, designers, illustrators, and visual artists
+              Built for photographers, designers, and fine artists
             </p>
             <p className="text-gray-600 text-xs">
               © {currentYear} KOLOR STUDIO

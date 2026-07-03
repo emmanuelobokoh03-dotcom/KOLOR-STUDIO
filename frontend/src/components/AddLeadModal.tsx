@@ -443,7 +443,7 @@ export default function AddLeadModal({ onClose, onLeadCreated, user }: AddLeadMo
                 </div>
                 <div>
                   <label className={labelClass}>Edition</label>
-                  <input type="text" name="edition" onChange={handleChange} className={inputClass} placeholder="e.g. 1/10, Artist's proof, Unique" />
+                  <input type="text" name="edition" onChange={handleChange} className={inputClass} placeholder="e.g. 1/10, Artist's proof, Unique" />{/* industry-equality: allow — "Artist's proof" is a Fine Art edition term */}
                 </div>
               </div>
             )}

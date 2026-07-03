@@ -413,7 +413,7 @@ router.post('/sample-quote', authMiddleware, async (req: AuthRequest, res: Respo
 function getSampleLineItems(industry: string | null) {
   if (industry === 'FINE_ART') return [
     { description: 'Original oil on canvas commission (60×80cm)', quantity: 1, unitPrice: 1800 },
-    { description: 'Artist certificate of authenticity', quantity: 1, unitPrice: 75 },
+    { description: 'Artist certificate of authenticity', quantity: 1, unitPrice: 75 }, // industry-equality: allow — line item within FINE_ART branch, "Artist" is the defined term
     { description: 'Secure packaged delivery', quantity: 1, unitPrice: 120 },
   ];
   if (industry === 'DESIGN' || industry === 'GRAPHIC_DESIGN') return [

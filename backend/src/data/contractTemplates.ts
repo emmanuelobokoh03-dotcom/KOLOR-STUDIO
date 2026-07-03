@@ -1,3 +1,5 @@
+// industry-equality: ignore-file — legal template with defined-term
+// "Artist" as a contracting party. Not marketing copy.
 // Iter 153 — Shared contract template definitions: single source of truth for
 // both contracts.ts (manual creation) and quotes.ts (auto-generation on quote
 // acceptance). Previously duplicated in both route files; consolidated here.

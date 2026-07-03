@@ -50,6 +50,16 @@ const isTechnicalLine = (line) =>
   line.includes('check-industry-equality') ||
   /PROJECT_TYPE_LABELS/.test(line)
 
+// A prose match must contain at least one lowercase letter. This kills
+// enum-token noise like PHOTOGRAPHY / FINE_ART / DESIGN_SYSTEM.
+const hasLowercase = (s) => /[a-z]/.test(s)
+
+// Magic comment on the same line → skip finding.
+// Supports both //-style and {/* */} JSX form.
+const hasAllowComment = (line) =>
+  /\/\/\s*industry-equality:\s*allow\b/.test(line) ||
+  /\{\s*\/\*\s*industry-equality:\s*allow\b/.test(line)
+
 const lineAt = (text, index) => {
   const start = text.lastIndexOf('\n', index) + 1
   const end = text.indexOf('\n', index)
@@ -96,9 +106,14 @@ const rules = [
           const winText  = text.slice(winStart, winEnd)
           if (third.re.test(winText)) continue  // triad complete → OK
 
-          // Report once per line, skip technical lines
+          // Report once per line, skip technical / annotated lines
           const line = lineAt(text, a.index)
           if (isTechnicalLine(line)) continue
+          if (hasAllowComment(line)) continue
+          // Skip if either stem occurrence is an enum token (all-caps)
+          const aText = text.slice(a.index, a.end)
+          const bText = text.slice(b.index, b.end)
+          if (!hasLowercase(aText) || !hasLowercase(bText)) continue
           const key = `${a.index}-${b.index}`
           if (reported.has(key)) continue
           reported.add(key)
@@ -130,6 +145,8 @@ const rules = [
         if (compoundTail.test(after)) continue
         const line = lineAt(text, m.index)
         if (isTechnicalLine(line)) continue
+        if (hasAllowComment(line)) continue
+        if (!hasLowercase(m[0])) continue  // enum-like uppercase token
         if (/\bARTIST(_|\b)/.test(line)) continue  // enum-like uppercase token
         findings.push({ index: m.index, snippet: line.slice(0, 200) })
       }
@@ -163,6 +180,8 @@ for (const root of ROOTS) {
 
   for (const file of walk(root)) {
     const text = fs.readFileSync(file, 'utf8')
+    // File-level opt-out: `// industry-equality: ignore-file` anywhere in the file
+    if (/\/\/\s*industry-equality:\s*ignore-file\b/.test(text)) continue
     for (const rule of rules) {
       const findings = rule.scan(text)
       if (findings.length > 0) {

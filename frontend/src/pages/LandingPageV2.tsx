@@ -493,7 +493,7 @@ export default function LandingPageV2() {
               <p className="lp-in-pain">
                 Your commission gets a contract the moment it&apos;s agreed.
                 Your collector gets a portal. Your deposit is protected before
-                a single brushstroke. Built for working artists &mdash; not for institutions.
+                a single brushstroke. Built for working artists &mdash; not for institutions.{/* industry-equality: allow — "working artists" is inclusive positioning (solo creators vs institutions), not a Fine Art exclusion */}
               </p>
               <ul className="lp-il">
                 <li>Commission agreements</li>
