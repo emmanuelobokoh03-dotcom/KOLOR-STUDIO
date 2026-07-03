@@ -54,3 +54,8 @@ Thumbs.db
 *.tmp
 *.temp
 .cache/
+
+# Iter 253 — additions
+backend/tests/__pycache__/
+__pycache__/
+*.pyc

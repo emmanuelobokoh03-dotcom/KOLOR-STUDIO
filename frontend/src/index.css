@@ -1031,3 +1031,13 @@ select:focus {
     opacity: 0.6;
   }
 }
+
+/* Iter 253 — Gauntlet Minor 3: link distinguishability
+   Inline links in body text must be distinguishable without relying on
+   color alone. :where() gives 0 specificity so component-level overrides
+   (buttons, nav items, styled CTAs) still take precedence. */
+:where(p, li, .prose, [data-textblock]) a:not(.no-underline) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
