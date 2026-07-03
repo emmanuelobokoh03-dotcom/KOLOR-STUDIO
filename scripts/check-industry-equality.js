@@ -28,7 +28,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const SOFT_MODE = true  // exit 0 even on findings
+const SOFT_MODE = false // exit non-zero on findings (strict, since iter 251)
 // Repo root is the parent of the scripts/ dir this file lives in.
 // Anchoring to __dirname makes the lint work regardless of cwd
 // (e.g. `npm run lint:industry` from frontend/).
