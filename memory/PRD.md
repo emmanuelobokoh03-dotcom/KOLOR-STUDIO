@@ -1529,6 +1529,15 @@ Real bug from iter 248 lint first-run fixed + filter tuning to prep for strict p
 - Promotion to strict + `prebuild` deferred to iter 250 pending window/label-map filter refinement.
 
 
+## Iteration 250 — Widened Third-Stem Window (Complete — Feb 2026)
+Third-stem verification window widened from ~180 to ~520 chars total (200 before pair + 120 pair + 200 after pair) via new `THIRD_STEM_WINDOW` constant in `scripts/check-industry-equality.js`. Real prose bugs still caught (paragraph-scale omissions well below the new threshold); enum-map arrays with items on adjacent lines now correctly triad-complete.
+
+- Finding count drop: **50 → 11**.
+- Strict promotion **deferred** (11 ≥ 10 threshold). Remaining 11 are all `Record<X, string>` label maps (`CONTRACT_TYPE_LABELS`, `SERVICE_TYPE_LABELS`, `INDUSTRY_TEMPLATE_MAP`) where `photograph`/`design` appear as substrings of type identifiers (`PHOTOGRAPHY_SHOOT`, `WEB_DESIGN`) rather than industry copy.
+- Gates: `tsc --noEmit` clean, `npm run build` clean (7.29s). Script-only change; no runtime behaviour impact. Commit `ffc24ed` (local, pending push via "Save to GitHub").
+- Next iter (251): add `Record<...>`-line skip OR substring-in-identifier filter to clear the last 11, then flip `SOFT_MODE = false` + wire `prebuild`.
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
