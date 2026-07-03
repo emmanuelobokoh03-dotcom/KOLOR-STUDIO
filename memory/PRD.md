@@ -1553,6 +1553,18 @@ Final iteration of the industry-equality lint bug-class fix. User commit `20ec6d
 - **Bug class structurally solved** across iters 248-251 (269 → 50 → 11 → 0). Vercel builds now fail on future Fine Art copy regressions.
 
 
+## Iteration 252 — Vercel Prebuild Path Fix (Complete — Feb 2026)
+Iter 251's prebuild hook worked locally but failed on Vercel: Root Directory is set to `frontend`, so `../scripts/...` was unreachable → `Cannot find module` → "No Output Directory named dist" error. Hotfix `520e6cc` removed the prebuild hook to unblock. This iter properly relocates the scripts inside `frontend/` so Vercel can reach them.
+
+- Moved `scripts/check-industry-equality.js` → `frontend/scripts/check-industry-equality.cjs`. Renamed `.js`→`.cjs` because `frontend/package.json` has `"type": "module"` while the script uses CommonJS `require()`. `REPO_ROOT` now derived via `path.resolve(__dirname, '..', '..')` to reach repo root from the new deeper location.
+- Moved `scripts/validate-og.mjs` → `frontend/scripts/validate-og.mjs`. `OG_PATH` updated from `'../frontend/public/og-card.png'` → `'../public/og-card.png'`.
+- Restored `frontend/package.json` prebuild hook: `"prebuild": "npm run lint:industry && npm run validate:og"`. Both use local `scripts/` paths (no `../`).
+- `brand:rebuild` now uses `"npm run validate:og"` instead of the old `../scripts/validate-og.mjs`. Python asset generator stays at repo-root `/scripts/` (dev-only, unaffected by Vercel).
+- Deleted old copies at `/scripts/check-industry-equality.js` and `/scripts/validate-og.mjs`.
+- Verified: scripts run cleanly from repo root, from `frontend/`, and from arbitrary cwd (all exit 0). `npm run lint:industry` + `npm run validate:og` + `npm run prebuild` + `npm run build` + `npx tsc --noEmit` — all exit 0.
+- Commit `1a3b9c4` (local, pending push via "Save to GitHub"). Push unblocks Vercel deploys with strict-mode lint + og gate enforced.
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
