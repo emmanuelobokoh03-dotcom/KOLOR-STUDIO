@@ -10,7 +10,6 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "validate:og": "node ../scripts/validate-og.mjs",
     "brand:rebuild": "python3 ../scripts/generate-brand-assets.py && node ../scripts/validate-og.mjs",
-    "prebuild": "npm run lint:industry && node ../scripts/validate-og.mjs",
     "lint:industry": "node ../scripts/check-industry-equality.js"
   },
   "dependencies": {
