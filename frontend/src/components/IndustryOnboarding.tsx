@@ -1,3 +1,6 @@
+// industry-equality: ignore-file — canonical file defining the
+// three industries. Each entry has its own description block;
+// they do not (and should not) mention each other.
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IndustryType, authApi } from '../services/api'

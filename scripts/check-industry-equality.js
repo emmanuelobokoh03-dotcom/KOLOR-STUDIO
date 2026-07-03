@@ -62,6 +62,13 @@ const hasAllowComment = (line) =>
   /\/\/\s*industry-equality:\s*allow\b/.test(line) ||
   /\{\s*\/\*\s*industry-equality:\s*allow\b/.test(line)
 
+// A line starting with an ALL_CAPS identifier followed by `:` is almost
+// always an enum-map value like `PHOTOGRAPHY_SHOOT: 'Photography shoot'`.
+// Skip: the industry keyword is in the display value by construction and
+// carries no marketing meaning.
+const looksLikeEnumMapValue = (line) =>
+  /^\s*[A-Z][A-Z0-9_]{2,}\s*:/.test(line)
+
 const lineAt = (text, index) => {
   const start = text.lastIndexOf('\n', index) + 1
   const end = text.indexOf('\n', index)
@@ -108,10 +115,12 @@ const rules = [
           const winText  = text.slice(winStart, winEnd)
           if (third.re.test(winText)) continue  // triad complete → OK
 
-          // Report once per line, skip technical / annotated lines
+          // Report once per line, skip technical / annotated / enum-map lines
           const line = lineAt(text, a.index)
-          if (isTechnicalLine(line)) continue
-          if (hasAllowComment(line)) continue
+          const lineB = lineAt(text, b.index)
+          if (isTechnicalLine(line) || isTechnicalLine(lineB)) continue
+          if (hasAllowComment(line) || hasAllowComment(lineB)) continue
+          if (looksLikeEnumMapValue(line) || looksLikeEnumMapValue(lineB)) continue
           // Skip if either stem occurrence is an enum token (all-caps)
           const aText = text.slice(a.index, a.end)
           const bText = text.slice(b.index, b.end)
@@ -148,6 +157,7 @@ const rules = [
         const line = lineAt(text, m.index)
         if (isTechnicalLine(line)) continue
         if (hasAllowComment(line)) continue
+        if (looksLikeEnumMapValue(line)) continue
         if (!hasLowercase(m[0])) continue  // enum-like uppercase token
         if (/\bARTIST(_|\b)/.test(line)) continue  // enum-like uppercase token
         findings.push({ index: m.index, snippet: line.slice(0, 200) })
