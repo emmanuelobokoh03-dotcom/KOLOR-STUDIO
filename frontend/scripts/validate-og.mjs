@@ -10,7 +10,7 @@ import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const OG_PATH = join(__dirname, '../frontend/public/og-card.png')
+const OG_PATH = join(__dirname, '../public/og-card.png')
 
 // Background color to detect (failure condition)
 const BG = { r: 8, g: 6, b: 18 }

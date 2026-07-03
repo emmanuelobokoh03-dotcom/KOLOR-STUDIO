@@ -8,9 +8,10 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "validate:og": "node ../scripts/validate-og.mjs",
-    "brand:rebuild": "python3 ../scripts/generate-brand-assets.py && node ../scripts/validate-og.mjs",
-    "lint:industry": "node ../scripts/check-industry-equality.js"
+    "validate:og": "node scripts/validate-og.mjs",
+    "brand:rebuild": "python3 ../scripts/generate-brand-assets.py && npm run validate:og",
+    "lint:industry": "node scripts/check-industry-equality.cjs",
+    "prebuild": "npm run lint:industry && npm run validate:og"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

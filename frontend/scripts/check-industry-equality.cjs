@@ -32,7 +32,7 @@ const SOFT_MODE = false // exit non-zero on findings (strict, since iter 251)
 // Repo root is the parent of the scripts/ dir this file lives in.
 // Anchoring to __dirname makes the lint work regardless of cwd
 // (e.g. `npm run lint:industry` from frontend/).
-const REPO_ROOT = path.resolve(__dirname, '..')
+const REPO_ROOT = path.resolve(__dirname, '..', '..')
 const ROOTS = ['frontend/src', 'backend/src'].map(r => path.join(REPO_ROOT, r))
 const EXTENSIONS = ['.ts', '.tsx', '.md']
 const IGNORE_DIRS = new Set(['node_modules', 'dist', 'build', '.next', '.git'])
