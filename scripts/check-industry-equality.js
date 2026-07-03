@@ -43,7 +43,9 @@ const IGNORE_FILES = new Set([
 ])
 
 // Shared helpers
-const WINDOW = 120  // char window for triad proximity check
+const WINDOW = 120           // char window for pair detection
+const THIRD_STEM_WINDOW = 200 // extra chars around pair when searching for third stem
+                             // (accommodates enum-map arrays with items on adjacent lines)
 
 const isTechnicalLine = (line) =>
   /^(import|export|type|interface|const\s+\w+\s*[:=]\s*['"`]?[A-Z_]+)/.test(line) ||
@@ -101,8 +103,8 @@ const rules = [
           if (b.index - a.end > WINDOW) break  // sorted → nothing further in range
           if (a.stem === b.stem) continue
           const third = stemDefs.find(s => s.name !== a.stem && s.name !== b.stem)
-          const winStart = Math.max(0, a.index - 30)
-          const winEnd   = Math.min(text.length, b.end + 30)
+          const winStart = Math.max(0, a.index - THIRD_STEM_WINDOW)
+          const winEnd   = Math.min(text.length, b.end + THIRD_STEM_WINDOW)
           const winText  = text.slice(winStart, winEnd)
           if (third.re.test(winText)) continue  // triad complete → OK
 
