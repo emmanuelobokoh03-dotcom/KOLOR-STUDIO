@@ -1565,6 +1565,19 @@ Iter 251's prebuild hook worked locally but failed on Vercel: Root Directory is 
 - Commit `1a3b9c4` (local, pending push via "Save to GitHub"). Push unblocks Vercel deploys with strict-mode lint + og gate enforced.
 
 
+## Iteration 253 — Gauntlet Minor 3 + Dead-Code Safe Cleanup (Complete — Feb 2026)
+Two goals: fix link distinguishability (axe `link-in-text-block` rule) + comprehensive dead-code audit with zero-risk deletions.
+
+- **Gauntlet Minor 3** — added 0-specificity `:where(p, li, .prose, [data-textblock]) a:not(.no-underline)` rule to `frontend/src/index.css` with `text-decoration: underline`, `text-underline-offset: 2px`, `text-decoration-thickness: 1px`. Fixes 4 elements across 3 pages. Component-level overrides preserved.
+- **Dead-code deletions** (11 files):
+  - 1 swap file (`.QuoteBuilderModal.tsx.swp` — vim leftover)
+  - 10 unimported components (grep + git-grep verified 0 code refs): `CalendarViewNew`, `CalendarConnectionWidget`, `DeliverablesTab`, `ActivityFeed`, `CountdownTimer`, `QuickActions`, `illustrations/QuoteMock`, `illustrations/PortalMock`, `illustrations/DashboardMock`, and `HelpMenu` (self-declared DEPRECATED since iter 144)
+  - Empty `illustrations/` directory removed
+- **`.gitignore`** extended with `backend/tests/__pycache__/`, `__pycache__/`, `*.pyc`. 37 previously-tracked `.pyc` files untracked via `git rm --cached`.
+- **Deferred to iter 254**: 3 ambiguous dead-code candidates with comment-only refs (`Footer.tsx`, `AHAModal.tsx`, `CalendarView.tsx` — likely dead but merit human sanity check), 3 TODO markers (Settings.tsx ×2, email.ts). `PROJECT_TYPE_LABELS` verified as already single-source-of-truth in `services/api.ts:456` — iter 245 concern resolved.
+- Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (6.71s, prebuild passes), BE `tsc --noEmit` clean. Commit `2e67819` (local, pending push via "Save to GitHub").
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
