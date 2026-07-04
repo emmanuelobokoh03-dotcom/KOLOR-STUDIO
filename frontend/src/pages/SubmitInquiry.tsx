@@ -5,7 +5,7 @@ import { WarningCircle } from '@phosphor-icons/react/dist/csr/WarningCircle'
 import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
 import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
 import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
-import { ServiceType, leadsApi } from '../services/api'
+import { ServiceType, leadsApi, PROJECT_TYPE_LABELS, ProjectType } from '../services/api'
 import { getIndustryLanguage, IndustryType } from '../utils/industryLanguage'
 
 interface CreatorInfo {
@@ -65,13 +65,6 @@ const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
   OTHER: 'Other',
 }
 
-type ProjectType = 'SERVICE' | 'COMMISSION' | 'PROJECT' | 'PRODUCT_SALE'
-const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
-  SERVICE: 'Service',
-  COMMISSION: 'Commission',
-  PROJECT: 'Project',
-  PRODUCT_SALE: 'Product Sale',
-}
 const PROJECT_TYPES: ProjectType[] = ['SERVICE', 'COMMISSION', 'PROJECT', 'PRODUCT_SALE']
 
 const BUDGET_OPTIONS = [

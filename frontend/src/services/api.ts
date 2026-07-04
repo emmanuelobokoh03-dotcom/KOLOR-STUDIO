@@ -454,10 +454,20 @@ export type DeliverableType = 'DIGITAL_FILES' | 'PHYSICAL_ART' | 'PRINTS' | 'SER
 export type DeliverableStatus = 'PENDING' | 'IN_PROGRESS' | 'READY' | 'DELIVERED' | 'SHIPPED';
 
 export const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
-  SERVICE: 'Service',
-  COMMISSION: 'Commission',
-  PROJECT: 'Project',
-  PRODUCT_SALE: 'Product Sale',
+  SERVICE: 'Book',
+  COMMISSION: 'Create',
+  PROJECT: 'Manage',
+  PRODUCT_SALE: 'Sell',
+};
+
+// Descriptive subtitles paired with PROJECT_TYPE_LABELS. Not rendered by
+// current UI but available for future disclosure surfaces (tooltips,
+// AddLead tiles, etc.).
+export const PROJECT_TYPE_DESCRIPTIONS: Record<ProjectType, string> = {
+  SERVICE: 'Session, shoot, or scheduled meeting',
+  COMMISSION: 'Custom artwork, design, or commissioned piece',
+  PROJECT: 'Multi-phase project or retainer',
+  PRODUCT_SALE: 'Print, product, or edition',
 };
 
 export const INDUSTRY_TYPE_LABELS: Record<IndustryType, string> = {
