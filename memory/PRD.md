@@ -1578,6 +1578,25 @@ Two goals: fix link distinguishability (axe `link-in-text-block` rule) + compreh
 - Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (6.71s, prebuild passes), BE `tsc --noEmit` clean. Commit `2e67819` (local, pending push via "Save to GitHub").
 
 
+## Iteration 254 — Path B Action Verbs + Iter 253 Completions + TODO Triage (Complete — Feb 2026)
+Three deliverables:
+
+1. **Project Type labels (Path B)** in `frontend/src/services/api.ts`:
+   - `SERVICE` → "Book", `COMMISSION` → "Create", `PROJECT` → "Manage", `PRODUCT_SALE` → "Sell"
+   - Enum keys unchanged; icons unchanged. Backend/DB references still work via the label map.
+   - Added `PROJECT_TYPE_DESCRIPTIONS` sibling map (richer subtitles for future disclosure surfaces).
+   - Deduped local `PROJECT_TYPE_LABELS` in `SubmitInquiry.tsx:69` — now imports canonical from `services/api.ts`. (iter 245 concern which iter 253 mistakenly reported as resolved.)
+
+2. **Iter 253 deferred dead-code items — all deleted** after strict `git grep <ComponentName` verification (all 0 JSX-usage hits): `Footer.tsx`, `AHAModal.tsx`, `CalendarView.tsx`. Stale `showAHAModal` state var in `Dashboard.tsx` renders `<OnboardingFlow>` — name is stale but behavior correct; cosmetic rename deferred.
+
+3. **TODO triage** (report only, implementation deferred):
+   - `Settings.tsx:438` change-email flow — UI stub, NO backend endpoint. **FULL feature build**, 2-3 iterations (change-email-request + change-email-verify endpoints + email template + UI modal).
+   - `Settings.tsx:750` account deletion — button disabled, "coming soon" text, NO backend endpoint. **Medium build**, 1-2 iterations (`DELETE /api/auth/account` with password re-auth + Prisma cascading delete + confirm dialog). Verify GDPR separately.
+   - `email.ts:3497` `sendHealthCheckFailureAlert` — scaffolded, 0 callers. **Recommended: option A (external uptime service)**. UptimeRobot free tier → tiny webhook endpoint → calls the function. Option B (Railway cron on same host) is a bad idea — down app means down cron. Estimate: 0.5 iteration.
+
+- Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (6.84s, prebuild passes), BE `tsc --noEmit` clean. Commit `d5c8ceb` (local, pending push via "Save to GitHub", 5 files changed: +15 / -1047).
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
