@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import crypto from 'crypto';
 import { paymentService } from '../services/paymentService';
+import { sendHealthCheckFailureAlert } from '../services/email';
 import prisma from '../lib/prisma';
 
 const router = Router();
@@ -107,6 +108,65 @@ router.post('/paystack', async (req: Request, res: Response): Promise<void> => {
   } catch (err: any) {
     console.error('[Paystack Webhook] Processing error:', err.message);
   }
+});
+
+// ---------------------------------------------------------------
+// UPTIME WEBHOOK SETUP (external prerequisites):
+//
+// 1. Railway env var: UPTIMEROBOT_WEBHOOK_SECRET=<random 32+ char string>
+// 2. UptimeRobot → Alert Contact → Web-Hook type → configure:
+//    URL:            https://api.kolorstudio.app/api/webhooks/uptime
+//    POST value:     JSON (raw)
+//    Custom Header:  X-Webhook-Secret: <same value as env var>
+//    POST body:      {"alertType":"*alertType*","monitorFriendlyName":"*monitorFriendlyName*","monitorURL":"*monitorURL*","alertDetails":"*alertDetails*","alertDuration":"*alertDuration*"}
+// 3. UptimeRobot → Monitors → assign this Alert Contact to any monitors.
+// ---------------------------------------------------------------
+
+// UptimeRobot webhook — POST /api/webhooks/uptime
+// Configured externally to POST here on downtime with X-Webhook-Secret header.
+router.post('/uptime', async (req: Request, res: Response): Promise<void> => {
+  const providedSecret = req.headers['x-webhook-secret'];
+  const expectedSecret = process.env.UPTIMEROBOT_WEBHOOK_SECRET;
+
+  if (!expectedSecret) {
+    console.error('[UPTIME] UPTIMEROBOT_WEBHOOK_SECRET not configured');
+    res.status(500).json({ error: 'Server not configured for uptime webhooks' });
+    return;
+  }
+
+  if (providedSecret !== expectedSecret) {
+    console.warn('[UPTIME] Invalid webhook secret from', req.ip);
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+
+  const {
+    alertType,
+    monitorFriendlyName,
+    monitorURL,
+    alertDetails,
+  } = req.body || {};
+
+  // UptimeRobot alertType: "1" = down (as string in webhook body)
+  const isDowntime = String(alertType) === '1';
+
+  if (isDowntime) {
+    try {
+      await sendHealthCheckFailureAlert({
+        endpoint: monitorURL || monitorFriendlyName || 'unknown',
+        errorMessage: alertDetails || 'no details provided',
+        failureTime: new Date(),
+      });
+      console.log('[UPTIME] Downtime alert dispatched for', monitorFriendlyName || monitorURL);
+    } catch (err) {
+      // Email failure must never block webhook response — UptimeRobot retries loudly
+      console.error('[UPTIME] Failed to send alert email:', err);
+    }
+  } else {
+    console.log('[UPTIME] Non-downtime event ignored: alertType =', alertType);
+  }
+
+  res.json({ received: true });
 });
 
 export default router;

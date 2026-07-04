@@ -208,7 +208,7 @@ const Dashboard = () => {
     return buckets.filter(b => b.matches.some(m => present.has(m)))
   }, [leads])
   const [isFirstLogin, setIsFirstLogin] = useState(false)
-  const [showAHAModal, setShowAHAModal] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [showHelpPanel, setShowHelpPanel] = useState(false)
@@ -375,9 +375,9 @@ const Dashboard = () => {
           // Keep legacy flag in sync so older code paths that read it keep working
           localStorage.setItem('kolor_has_logged_in', 'true')
           sessionStorage.removeItem('kolor_first_login_session')
-          // Only show AHA modal once ever per device (flag is set in AHAModal on send/dismiss)
+          // Only show onboarding once ever per device (flag is set in OnboardingFlow on send/dismiss)
           if (!ahaCompleted) {
-            setTimeout(() => setShowAHAModal(true), 800)
+            setTimeout(() => setShowOnboarding(true), 800)
           }
         }
       }
@@ -444,11 +444,11 @@ const Dashboard = () => {
 
   // Auto-start onboarding tour for new users — only when wizard is NOT showing
   useEffect(() => {
-    if (!loading && user && !tourComplete && !showWizard && !showAHAModal) {
+    if (!loading && user && !tourComplete && !showWizard && !showOnboarding) {
       const timer = setTimeout(() => startTour(), 1500)
       return () => clearTimeout(timer)
     }
-  }, [loading, user, tourComplete, startTour, showWizard, showAHAModal])
+  }, [loading, user, tourComplete, startTour, showWizard, showOnboarding])
 
   // Iter 162 — ? keyboard shortcut to toggle HelpPanel
   // Documented in HelpPanel Pro Tips — now implemented
@@ -662,7 +662,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-surface-base flex overflow-x-hidden" onClick={(e) => { if (showBellDropdown && !(e.target as Element).closest('[data-testid="bell-wrapper"]')) setShowBellDropdown(false) }}>
 
       {/* Onboarding Wizard for new users */}
-      {showWizard && !showAHAModal && (
+      {showWizard && !showOnboarding && (
         <OnboardingWizard onComplete={() => setShowWizard(false)} />
       )}
 
@@ -1822,12 +1822,12 @@ const Dashboard = () => {
         show={showCelebration}
         onClose={() => setShowCelebration(false)}
       />
-      {showAHAModal && user && (
+      {showOnboarding && user && (
         <OnboardingFlow
           userFirstName={user.firstName}
           userEmail={user.email}
           userIndustry={(user as any).industry || user.primaryIndustry}
-          onComplete={() => setShowAHAModal(false)}
+          onComplete={() => setShowOnboarding(false)}
         />
       )}
     </div>

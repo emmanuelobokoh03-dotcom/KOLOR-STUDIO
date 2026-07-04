@@ -9,6 +9,7 @@ import {
   DeliverableType,
   SERVICE_TYPE_LABELS,
   PROJECT_TYPE_LABELS,
+  PROJECT_TYPE_DESCRIPTIONS,
   INDUSTRY_TYPE_LABELS,
   DELIVERABLE_TYPE_LABELS,
   CreateLeadData,
@@ -56,11 +57,11 @@ const LEAD_SOURCES: LeadSource[] = [
   'GOOGLE', 'LINKEDIN', 'TIKTOK', 'EMAIL', 'OTHER'
 ];
 
-const PROJECT_TYPE_CONFIG: { type: ProjectType; icon: React.ElementType; desc: string; color: string }[] = [
-  { type: 'SERVICE', icon: Camera, desc: 'Session, shoot or event', color: 'violet' },
-  { type: 'COMMISSION', icon: Palette, desc: 'Custom artwork or piece', color: 'amber' },
-  { type: 'PROJECT', icon: Briefcase, desc: 'Multi-phase or ongoing', color: 'blue' },
-  { type: 'PRODUCT_SALE', icon: ShoppingBag, desc: 'Print, product or edition', color: 'emerald' },
+const PROJECT_TYPE_CONFIG: { type: ProjectType; icon: React.ElementType; color: string }[] = [
+  { type: 'SERVICE', icon: Camera, color: 'violet' },
+  { type: 'COMMISSION', icon: Palette, color: 'amber' },
+  { type: 'PROJECT', icon: Briefcase, color: 'blue' },
+  { type: 'PRODUCT_SALE', icon: ShoppingBag, color: 'emerald' },
 ];
 
 const INDUSTRY_ICONS: Record<IndustryType, React.ElementType> = {
@@ -283,7 +284,7 @@ export default function AddLeadModal({ onClose, onLeadCreated, user }: AddLeadMo
                 <span className="text-xs"><strong>First project?</strong> Choose the type that matches your workflow. This helps us show you the right tools.</span>
               </InlineHint>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3" data-testid="project-type-selector">
-                {PROJECT_TYPE_CONFIG.map(({ type, icon: Icon, desc, color }) => {
+                {PROJECT_TYPE_CONFIG.map(({ type, icon: Icon, color }) => {
                   const selected = formData.projectType === type;
                   return (
                     <button
@@ -301,7 +302,7 @@ export default function AddLeadModal({ onClose, onLeadCreated, user }: AddLeadMo
                       <div className={`text-sm font-medium ${selected ? 'text-text-primary' : 'text-text-secondary'}`}>
                         {PROJECT_TYPE_LABELS[type]}
                       </div>
-                      <div className="text-xs text-gray-600 mt-0.5">{desc}</div>
+                      <div className="text-xs text-gray-600 mt-0.5">{PROJECT_TYPE_DESCRIPTIONS[type]}</div>
                     </button>
                   );
                 })}
