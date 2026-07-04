@@ -1597,6 +1597,19 @@ Three deliverables:
 - Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (6.84s, prebuild passes), BE `tsc --noEmit` clean. Commit `d5c8ceb` (local, pending push via "Save to GitHub", 5 files changed: +15 / -1047).
 
 
+## Iteration 255 — Uptime Webhook + Subtitles + AHA Rename (Complete — Feb 2026)
+Three small items in one iteration:
+
+1. **Uptime webhook** — `POST /api/webhooks/uptime` in `backend/src/routes/webhooks.ts`. Validates `X-Webhook-Secret` header against `UPTIMEROBOT_WEBHOOK_SECRET` env var (500 if unset, 401 on mismatch). On `alertType === "1"` (downtime), calls existing `sendHealthCheckFailureAlert({ endpoint, errorMessage, failureTime })` with monitor context from UptimeRobot's payload. Non-downtime events acknowledged + no-op. Email failure never blocks the 200 response. Setup notes inline in the file document Railway env + UptimeRobot Alert Contact config.
+
+2. **AddLeadModal subtitles** — wired `PROJECT_TYPE_DESCRIPTIONS` (iter 254) as canonical source. Removed the local `desc` field from `PROJECT_TYPE_CONFIG` (was near-duplicate). Tile now shows: `Book · Session, shoot, or scheduled meeting` / `Create · Custom artwork, design, or commissioned piece` / `Manage · Multi-phase project or retainer` / `Sell · Print, product, or edition`.
+
+3. **`showAHAModal` → `showOnboarding` rename** in `Dashboard.tsx` (8 occurrences). Component behind gate is `<OnboardingFlow>` — old name lied since `AHAModal.tsx` was deleted in iter 254. Cosmetic-only. `localStorage` key `kolor_aha_completed` preserved as-is (changing it would re-trigger onboarding for existing users).
+
+- Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (7.19s, prebuild passes), BE `tsc --noEmit` clean. Commit `5b81849` (local, pending push via "Save to GitHub").
+- **Post-push manual steps required**: (a) add `UPTIMEROBOT_WEBHOOK_SECRET` (32+ chars) to Railway env → Railway auto-redeploys, (b) add matching `X-Webhook-Secret` header to UptimeRobot Alert Contact, (c) trigger UptimeRobot test alert to verify.
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
