@@ -164,7 +164,7 @@ const Dashboard = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
-  const [settingsInitialTab, setSettingsInitialTab] = useState<'currency' | 'brand' | 'testimonials' | 'email' | 'scheduling' | 'account' | undefined>(undefined)
+  const [settingsInitialTab, setSettingsInitialTab] = useState<'currency' | 'brand' | 'email' | 'scheduling' | 'account' | 'community' | undefined>(undefined)
   const [showFeedback, setShowFeedback] = useState(false)
   // Iter 146 — Task 1d: collapse industry widgets by default
   const [showIndustryWidgets, setShowIndustryWidgets] = useState(false)

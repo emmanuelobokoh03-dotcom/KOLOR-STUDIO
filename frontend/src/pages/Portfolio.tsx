@@ -21,6 +21,7 @@ import {
 } from '../services/api'
 import { CelebrationModal, checkCelebration, Achievement } from '../components/CelebrationModal'
 import SharePortfolio from '../components/SharePortfolio'
+import TestimonialsManagement from '../components/TestimonialsManagement'
 import KolorSpinner from '../components/KolorSpinner'
 import { useConfirm } from '../components/ConfirmProvider'
 
@@ -284,6 +285,16 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Testimonials — moved from Settings iter 257. Same conceptual bucket
+          as portfolio: your public credibility surface. */}
+      <section className="mt-8" data-testid="portfolio-testimonials-section">
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-text-primary mb-1">Testimonials</h2>
+          <p className="text-sm text-text-secondary">Client feedback that appears alongside your portfolio.</p>
+        </div>
+        <TestimonialsManagement />
+      </section>
 
       {/* Share Portfolio Widget */}
       <SharePortfolio />

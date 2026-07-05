@@ -658,21 +658,6 @@ export default function Settings() {
                       </p>
                       <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Contact support to use your own domain.</p>
                     </div>
-
-                    {/* Coming soon */}
-                    {['Zapier'].map(name => (
-                      <div key={name} className="p-4 rounded-lg border opacity-50" style={{ borderColor: 'var(--border)' }}>
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                            <Plugs className="w-5 h-5 text-gray-400" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-text-primary">{name}</p>
-                            <p className="text-xs text-[var(--text-secondary)]">Coming soon</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
                   </div>
                 </div>
               )}
