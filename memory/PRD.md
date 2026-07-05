@@ -1626,6 +1626,19 @@ Discovery on entry: iter 254's TODO triage was incomplete. Backend `DELETE /api/
 - Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (7.00s, prebuild passes), BE `tsc --noEmit` clean. Commit `9f52852` (local, pending push via "Save to GitHub", 1 file changed: +3 / -18).
 
 
+## Iteration 257 — Move-Outs Pass (Testimonials + Community + Zapier) (Complete — Feb 2026)
+Preparatory move-outs before iter 258's 5-tab restructure. Three surgical moves; no tab structure changes.
+
+1. **Testimonials → Portfolio** — `<TestimonialsManagement />` moved from `SettingsModal` testimonials tab to `pages/Portfolio.tsx` as a new section above `<SharePortfolio />`. Fits the mental model (public credibility surface, not settings). `testimonials` tab removed from `SettingsTab` union + tab bar + render branch. Unused `ChatText` icon import cleaned. Dashboard's `settingsInitialTab` union aligned (removed `testimonials`, added `community` which was missing).
+2. **`CommunityProfileSettings` extraction** — 117-line inline function moved from `SettingsModal.tsx:24-141` to own file `components/CommunityProfileSettings.tsx` as default export. `SettingsModal` imports it (no behaviour change). Prep for iter 258 to remove the tab entry entirely. No new Dashboard trigger needed — `CommunityFeed` already surfaces access via `onOpenSettings('community')` prop.
+3. **Zapier placeholder deleted** from `pages/Settings.tsx` integrations tab. Unshipped-feature stubs erode trust. Google Calendar + email delivery info preserved.
+
+data-testid inventory: 7 community testids relocated (SettingsModal → CommunityProfileSettings), 1 new `portfolio-testimonials-section` added; only `testimonials-tab` intentionally removed.
+
+- Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (7.05s, prebuild passes). Commit `6d6fe0c` (local, pending push via "Save to GitHub", 5 files changed: +136 / -154).
+
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
