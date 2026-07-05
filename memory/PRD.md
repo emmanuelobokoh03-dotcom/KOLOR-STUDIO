@@ -1610,6 +1610,22 @@ Three small items in one iteration:
 - **Post-push manual steps required**: (a) add `UPTIMEROBOT_WEBHOOK_SECRET` (32+ chars) to Railway env → Railway auto-redeploys, (b) add matching `X-Webhook-Secret` header to UptimeRobot Alert Contact, (c) trigger UptimeRobot test alert to verify.
 
 
+## Iteration 256 — Danger Zone Wiring + Settings Audit (Complete — Feb 2026)
+Discovery on entry: iter 254's TODO triage was incomplete. Backend `DELETE /api/user/account` **already exists** in `backend/src/routes/user.ts:10` (mounted at `server.ts:279`) with production-quality password re-auth + audit log + Prisma cascade. `AccountDangerZone.tsx` is a complete UI already wired at `SettingsModal.tsx:388`. Only the `pages/Settings.tsx:750` disabled stub was outstanding.
+
+- **Wired `pages/Settings.tsx` Danger Zone** to `<AccountDangerZone />` — imported the component and replaced the disabled "Delete Account" button + "coming soon" text with the working component. TODO removed. Same visual placement, now functional.
+
+**Settings audit (report only, iter 257 restructure prep):**
+- 7 files, 3358 lines total (Settings.tsx 1042, SettingsModal 623, SchedulingSettings 626, PortfolioSettings 548, BrandSettings 310, AccountDangerZone 118, EmailSignatureSettings 91).
+- Tabs are largely non-overlapping: **page** has brand/profile/notifications/integrations/account/pipeline; **modal** has currency/brand/testimonials/scheduling/email/account/community. Only `brand` and `account` overlap (brand duplicates render logic; account shares `<AccountDangerZone/>`).
+- 25 useState hooks in Settings.tsx + 23 in SettingsModal — high state complexity, prime candidate for tab-scoped hooks in iter 257.
+- SettingsModal has two `handleSave` declarations (lines 53, 214) — likely scoped to different tabs.
+- Notification prefs on schema: `weeklyReportEnabled`, `staleLeadEmailEnabled`, `quoteNudgeEmailEnabled`, `communityEmailsEnabled`.
+- Iter 257 5-tab plan validated: **Account / Brand & Studio / Money / Scheduling / Notifications**. Community inline; Testimonials out of Settings.
+
+- Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (7.00s, prebuild passes), BE `tsc --noEmit` clean. Commit `9f52852` (local, pending push via "Save to GitHub", 1 file changed: +3 / -18).
+
+
 ## Test Credentials
 - Email: bookingtest@test.com
 - Password: password123
