@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://hardened-crm-2.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://settings-restructure-1.preview.emergentagent.com')
 TEST_EMAIL = "emmanuelobokoh03@gmail.com"
 TEST_PASSWORD = "successful26#"
 LEAD_ID_COKESPICE = "6bc704c4-8030-42e2-be8a-8f7ed4035709"

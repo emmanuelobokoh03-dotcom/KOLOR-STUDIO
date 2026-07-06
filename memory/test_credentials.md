@@ -5,5 +5,5 @@
 - **Password:** password123
 
 ## App URL
-- **Frontend:** https://hardened-crm-2.preview.emergentagent.com
-- **Login:** https://hardened-crm-2.preview.emergentagent.com/login
+- **Frontend:** https://settings-restructure-1.preview.emergentagent.com
+- **Login:** https://settings-restructure-1.preview.emergentagent.com/login

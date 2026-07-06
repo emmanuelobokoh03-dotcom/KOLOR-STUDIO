@@ -6,7 +6,7 @@ import pytest
 import requests
 
 # Base URL from environment - using the public preview URL
-BASE_URL = "https://hardened-crm-2.preview.emergentagent.com"
+BASE_URL = "https://settings-restructure-1.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "bookingtest@test.com"

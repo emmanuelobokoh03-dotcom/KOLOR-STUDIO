@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = "https://hardened-crm-2.preview.emergentagent.com"
+BASE_URL = "https://settings-restructure-1.preview.emergentagent.com"
 
 class TestQuotesAPI:
     """Tests for the Quotes API endpoints"""

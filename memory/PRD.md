@@ -531,7 +531,7 @@ A full-stack CRM for creative professionals (Photography, Design, Fine Art) with
 
 ### Iteration 170 — Three Final Fixes (Complete, Feb 2026)
 - **Dashboard**: removed the entire `add-lead-topbar` header `<button>` block. Add-lead entry points remain via empty state, kanban "+" column buttons, sidebar, keyboard shortcut.
-- **EmailComposerModal**: replaced hardcoded `https://hardened-crm-2.preview.emergentagent.com/portal/${lead.portalToken}` with `https://kolorstudio.app/portal/${lead.portalToken}` (Portal Link snippet button at L262). EmailComposer.tsx had no hardcoded URLs.
+- **EmailComposerModal**: replaced hardcoded `https://settings-restructure-1.preview.emergentagent.com/portal/${lead.portalToken}` with `https://kolorstudio.app/portal/${lead.portalToken}` (Portal Link snippet button at L262). EmailComposer.tsx had no hardcoded URLs.
 - **KolorSpinner**: rewritten as **pure CSS** — four absolutely-positioned `<div>` quadrants with rounded corners, 100 ms stagger entry animation (`ks170-entry`) + group rotate (`ks170-rot`). Zero vector paths. `prefers-reduced-motion` falls back to opacity pulse.
 - EmailComposer preview sizing was already correct (`max-h-[90vh]` + inner scroller); no change needed.
 - Build gate: `tsc --noEmit` ✓, `npm run build` ✓ (10.58 s). Commit `b81caf4`.

@@ -5,7 +5,7 @@ Tests for the new dashboard Calendar Connection Widget feature
 import pytest
 import requests
 
-BASE_URL = "https://hardened-crm-2.preview.emergentagent.com"
+BASE_URL = "https://settings-restructure-1.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "bookingtest@test.com"
