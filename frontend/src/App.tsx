@@ -1,10 +1,15 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import LoadingScreen from './components/LoadingScreen'
 const LandingPageV2 = lazy(() => import('./pages/LandingPageV2'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Settings = lazy(() => import('./pages/Settings'))
+const AccountTab = lazy(() => import('./components/settings/AccountTab'))
+const BrandStudioTab = lazy(() => import('./components/settings/BrandStudioTab'))
+const MoneyTab = lazy(() => import('./components/settings/MoneyTab'))
+const SchedulingTab = lazy(() => import('./components/settings/SchedulingTab'))
+const NotificationsTab = lazy(() => import('./components/settings/NotificationsTab'))
 const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
 const SubmitInquiry = lazy(() => import('./pages/SubmitInquiry'))
@@ -75,7 +80,14 @@ function App() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/calendar" element={<CalendarPage />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/settings" element={<Settings />}>
+              <Route index element={<Navigate to="account" replace />} />
+              <Route path="account" element={<AccountTab />} />
+              <Route path="brand" element={<BrandStudioTab />} />
+              <Route path="money" element={<MoneyTab />} />
+              <Route path="scheduling" element={<SchedulingTab />} />
+              <Route path="notifications" element={<NotificationsTab />} />
+            </Route>
         <Route path="/inquiry" element={<SubmitInquiry />} />
         <Route path="/portal/:token" element={<ClientPortal />} />
         <Route path="/quote/:quoteToken" element={<PublicQuote />} />
