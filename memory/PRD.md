@@ -1637,6 +1637,38 @@ data-testid inventory: 7 community testids relocated (SettingsModal → Communit
 
 - Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (7.05s, prebuild passes). Commit `6d6fe0c` (local, pending push via "Save to GitHub", 5 files changed: +136 / -154).
 
+## Iteration 258b — 5-Tab Settings Restructure (Complete — Feb 2026)
+Reality-first rewrite after iter 258's original spec was correctly refused for using fabricated field names. Shipped via Emmanuel's local runs (commits `9e1e279`, `b43538b`, `0b85c09`, `c59531e`).
+
+- **New shared hook** `frontend/src/hooks/useUserSettings.ts` — destructures `{ settings, availableCurrencies }` from `settingsApi.get()` and centralizes `save/saving/saved/error` state.
+- **Five tab components** in `frontend/src/components/settings/`: `AccountTab`, `BrandStudioTab`, `MoneyTab`, `SchedulingTab`, `NotificationsTab`. `MoneyTab` binds real `UserSettings` fields only (`currency`, `currencySymbol`, `currencyPosition`, `numberFormat`, `defaultTaxRate`).
+- **Shells thinned**: `pages/Settings.tsx` (~65 lines, `NavLink` + `Outlet`, deep-linkable), `components/SettingsModal.tsx` (~100 lines, tab list + render switch, preserves `initialTab` and hidden `community` case).
+- **Routing**: nested `/settings/{account,brand,money,scheduling,notifications}` with `/settings → /settings/account` redirect via `<Navigate>`.
+- **Placeholder shipped**: `AccountTab` rendered a "Contact info editing will be available in a future update" section because `UserContactInfo` did not exist yet.
+
+## Iteration 259 — UserContactInfo Component (Complete — Feb 2026)
+Removes iter 258b's `AccountTab` placeholder by building the real component from scratch. Commit `69945a1` (local, pending push via "Save to GitHub").
+
+- **New component** `frontend/src/components/UserContactInfo.tsx` (152 lines):
+  - Editable fields (all live on Prisma `User` + `UserSettings` interface, saved via `PATCH /api/settings` `profileFields` allowlist): `firstName`, `lastName`, `studioName`, `phone`, `website`.
+  - Display-only field: `email` (change-email flow deferred).
+  - Consumes shared `useUserSettings` hook — matches `MoneyTab` pattern.
+  - Dirty tracking gates the Save button so no-op saves are prevented.
+  - 10 `data-testid`s: `user-contact-{first-name,last-name,studio-name,phone,website,email}-input`, `-save-button`, `-saved`, `-error`, plus root `user-contact-info`.
+- **`AccountTab.tsx`**: placeholder section removed, `<UserContactInfo />` renders above `<AccountDangerZone />`.
+- **No schema changes, no new API endpoints** — the existing `PATCH /api/settings` handler already accepts these fields (verified at `backend/src/routes/settings.ts:112`).
+- Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (6.59s), all 7 receipt checks PASS.
+
+## Backlog (deferred iterations)
+- **P1**: Move `PortfolioSettings.tsx` (548 lines) into `pages/Portfolio.tsx` (orphaned by settings restructure).
+- **P1**: Change-email flow with verification (currently email field is read-only).
+- **P2**: Google Calendar UI port to `SchedulingTab` (component + API client don't exist; JSX currently inline in `pages/Settings.tsx` pre-iter258b history).
+- **P2**: Password change UI (backend `POST /api/auth/change-password` already exists).
+- **P2**: Notification schema fields — `weeklyReportEnabled`, `staleLeadEmailEnabled`, `quoteNudgeEmailEnabled` exist on Prisma `User` but not on frontend `UserSettings` interface; wire `NotificationsTab` to real toggles.
+- **P2**: Currency propagation via `useUserSettings` save callback.
+- **P2**: Gauntlet Minor 4 — 141 color contrast fails (design-token audit).
+- **P2**: Gauntlet Minor 5 — CSP header (needs care with Stripe / Resend / Google Fonts).
+
 
 
 ## Test Credentials
