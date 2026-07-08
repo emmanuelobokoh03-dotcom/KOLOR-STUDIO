@@ -1,14 +1,16 @@
+import UserContactInfo from '../UserContactInfo'
 import AccountDangerZone from '../AccountDangerZone'
 
+/**
+ * Account tab (iter 259).
+ *
+ * Real UserContactInfo restores name/studio/phone/website editing that
+ * the iter 258b placeholder had deferred. AccountDangerZone unchanged.
+ */
 export default function AccountTab() {
   return (
     <div className="space-y-8" data-testid="account-tab">
-      <section data-testid="account-contact-info-section">
-        <h3 className="text-lg font-semibold text-text-primary mb-2">Contact info</h3>
-        <p className="text-sm text-text-secondary">
-          Contact info editing will be available in a future update.
-        </p>
-      </section>
+      <UserContactInfo />
       <AccountDangerZone />
     </div>
   )
