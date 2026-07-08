@@ -17,19 +17,17 @@ const VISIBLE_TABS: { id: SettingsTab; label: string }[] = [
 ]
 
 interface SettingsModalProps {
-  open: boolean
   onClose: () => void
   initialTab?: SettingsTab
+  onRestartTutorial?: () => void
 }
 
-export default function SettingsModal({ open, onClose, initialTab }: SettingsModalProps) {
+export default function SettingsModal({ onClose, initialTab, onRestartTutorial }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab ?? 'account')
 
   useEffect(() => {
-    if (initialTab && open) setActiveTab(initialTab)
-  }, [initialTab, open])
-
-  if (!open) return null
+    if (initialTab) setActiveTab(initialTab)
+  }, [initialTab])
 
   return (
     <div
@@ -43,6 +41,15 @@ export default function SettingsModal({ open, onClose, initialTab }: SettingsMod
       >
         <header className="flex items-center justify-between px-6 py-4 border-b border-border">
           <h2 className="text-xl font-semibold text-text-primary">Settings</h2>
+          {onRestartTutorial && (
+            <button
+              onClick={onRestartTutorial}
+              className="text-xs text-text-secondary hover:text-text-primary mr-3 underline"
+              data-testid="settings-modal-restart-tutorial"
+            >
+              Restart tutorial
+            </button>
+          )}
           <button
             onClick={onClose}
             className="text-text-secondary hover:text-text-primary"

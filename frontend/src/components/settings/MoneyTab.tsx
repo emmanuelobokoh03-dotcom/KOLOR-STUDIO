@@ -10,8 +10,8 @@ export default function MoneyTab() {
   const onCurrencyChange = (code: string) => {
     const c = availableCurrencies.find((c) => c.code === code)
     save({
-      currencyCode: code,
-      currencyName: c?.name ?? settings.currencyName,
+      currency: code,
+      currencySymbol: c?.symbol ?? settings.currencySymbol,
     })
   }
 
@@ -23,7 +23,7 @@ export default function MoneyTab() {
           <div>
             <label className="block text-sm font-medium text-text-primary mb-1">Currency</label>
             <select
-              value={settings.currencyCode}
+              value={settings.currency}
               onChange={(e) => onCurrencyChange(e.target.value)}
               disabled={saving}
               className="w-full px-3 py-2 border border-border rounded-md bg-surface-elevated text-text-primary"
@@ -78,18 +78,6 @@ export default function MoneyTab() {
               disabled={saving}
               className="w-full px-3 py-2 border border-border rounded-md bg-surface-elevated text-text-primary"
               data-testid="money-tax-rate-input"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-text-primary mb-1">Label</label>
-            <input
-              type="text"
-              value={settings.defaultTaxLabel ?? ''}
-              onChange={(e) => save({ defaultTaxLabel: e.target.value })}
-              disabled={saving}
-              placeholder="VAT / GST / Sales Tax"
-              className="w-full px-3 py-2 border border-border rounded-md bg-surface-elevated text-text-primary"
-              data-testid="money-tax-label-input"
             />
           </div>
         </div>

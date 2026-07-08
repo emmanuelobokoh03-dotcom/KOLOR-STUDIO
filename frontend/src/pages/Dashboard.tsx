@@ -164,7 +164,7 @@ const Dashboard = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
-  const [settingsInitialTab, setSettingsInitialTab] = useState<'currency' | 'brand' | 'email' | 'scheduling' | 'account' | 'community' | undefined>(undefined)
+  const [settingsInitialTab, setSettingsInitialTab] = useState<'account' | 'brand' | 'money' | 'scheduling' | 'notifications' | 'community' | undefined>(undefined)
   const [showFeedback, setShowFeedback] = useState(false)
   // Iter 146 — Task 1d: collapse industry widgets by default
   const [showIndustryWidgets, setShowIndustryWidgets] = useState(false)
@@ -1099,7 +1099,7 @@ const Dashboard = () => {
               handleViewChange('portfolio')
             }
             else if (action === 'open-settings') setShowSettings(true)
-            else if (action === 'open-brand-settings') { setSettingsInitialTab('email'); setShowSettings(true) }
+            else if (action === 'open-brand-settings') { setSettingsInitialTab('brand'); setShowSettings(true) }
           }}
         />
         )}
@@ -1775,18 +1775,6 @@ const Dashboard = () => {
           <SettingsModal
             onClose={() => { setShowSettings(false); setSettingsInitialTab(undefined); }}
             initialTab={settingsInitialTab}
-            onSettingsUpdate={(newSettings) => {
-              if (user) {
-                setUser({
-                  ...user,
-                  currency: newSettings.currency,
-                  currencySymbol: newSettings.currencySymbol,
-                  currencyPosition: newSettings.currencyPosition as 'BEFORE' | 'AFTER',
-                  numberFormat: newSettings.numberFormat,
-                  defaultTaxRate: newSettings.defaultTaxRate,
-                });
-              }
-            }}
             onRestartTutorial={resetWizard}
           />
         </Suspense>
