@@ -1,15 +1,15 @@
 import { useState, useEffect, useCallback } from 'react'
-import { settingsApi, UserSettings } from '../services/api'
+import { settingsApi, UserSettings, CurrencyOption } from '../services/api'
 
-interface Currency {
-  code: string
-  name: string
-  symbol: string
-}
-
+/**
+ * Shared settings hook.
+ *
+ * request<T>() in services/api.ts returns { data: T, error?, message? }.
+ * We unwrap `res.data` before consuming.
+ */
 export function useUserSettings() {
   const [settings, setSettings] = useState<UserSettings | null>(null)
-  const [availableCurrencies, setAvailableCurrencies] = useState<Currency[]>([])
+  const [availableCurrencies, setAvailableCurrencies] = useState<CurrencyOption[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [saving, setSaving] = useState<boolean>(false)
   const [saved, setSaved] = useState<boolean>(false)
@@ -21,12 +21,16 @@ export function useUserSettings() {
       .get()
       .then((res: any) => {
         if (cancelled) return
-        // Handle both response shapes: { settings, availableCurrencies } or raw UserSettings
-        if (res && typeof res === 'object' && 'settings' in res) {
-          setSettings(res.settings)
-          setAvailableCurrencies(res.availableCurrencies || [])
+        const payload = res?.data
+        if (!payload) {
+          setError(res?.error || 'Failed to load settings')
+          return
+        }
+        if ('settings' in payload) {
+          setSettings(payload.settings)
+          setAvailableCurrencies(payload.availableCurrencies || [])
         } else {
-          setSettings(res)
+          setSettings(payload)
         }
       })
       .catch((err) => {
@@ -46,7 +50,11 @@ export function useUserSettings() {
     setError(null)
     try {
       const res: any = await settingsApi.update(updates)
-      const nextSettings = res && typeof res === 'object' && 'settings' in res ? res.settings : res
+      const payload = res?.data
+      if (!payload) {
+        throw new Error(res?.error || 'Save failed')
+      }
+      const nextSettings = 'settings' in payload ? payload.settings : payload
       setSettings(nextSettings)
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
@@ -62,4 +70,3 @@ export function useUserSettings() {
 
   return { settings, availableCurrencies, loading, saving, saved, error, save }
 }
-// iter 258b verified
