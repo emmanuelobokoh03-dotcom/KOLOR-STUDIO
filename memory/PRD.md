@@ -1659,8 +1659,21 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - **No schema changes, no new API endpoints** — the existing `PATCH /api/settings` handler already accepts these fields (verified at `backend/src/routes/settings.ts:112`).
 - Gates: FE `tsc --noEmit` clean, FE `npm run build` clean (6.59s), all 7 receipt checks PASS.
 
+## Iteration 260 (June 2026) — SettingsContext + heading polish + Recharts fix ✅ TESTED
+- **`contexts/SettingsContext.tsx`** (new, 126 lines): `SettingsProvider` + `useSettings()` hook, same interface as old `useUserSettings` (drop-in). Unwrap logic (`res.data`) preserved from iter 259 hotfix.
+- **Provider wiring**: `SettingsModal.tsx` and `pages/Settings.tsx` both wrap children in `<SettingsProvider>`.
+- **Consumers migrated**: `MoneyTab`, `NotificationsTab`, `UserContactInfo` now call `useSettings()`. `hooks/useUserSettings.ts` DELETED.
+- **Perf**: modal open now fires 1 GET `/api/settings` (was 3). Verified: 0 extra GETs on tab switch (2 in dev = StrictMode artifact only).
+- **`AccountDangerZone.tsx`**: redundant `<h3>Account</h3>` renamed to `Delete account`, subtitle → "Permanently remove your account and all associated data."
+- **Recharts fix**: `minWidth={0} debounce={100}` added to the 2 real `ResponsiveContainer` usages (`RevenueDashboard.tsx:138`, `AnalyticsDashboard.tsx:277`). Spec's "8 sparklines in Dashboard.tsx" was hallucinated — verified via grep before patching. 0 width(-1)/height(-1)/NaN console warnings post-fix.
+- Gates: `tsc --noEmit` clean, `npm run build` clean, testing_agent 100% pass (`/app/test_reports/iteration_260.json`).
+- Commit `4c6dd87` local only — **push blocked (no GitHub creds in pod); user must use "Save to GitHub"**.
+
 ## Backlog (deferred iterations)
 - **P1**: Move `PortfolioSettings.tsx` (548 lines) into `pages/Portfolio.tsx` (orphaned by settings restructure).
+- **P2**: MoneyTab fires PATCH on every keystroke for numeric inputs (pre-existing) — debounce saves.
+- **P2**: Type `settingsApi.get()` response properly to remove `any` casts in SettingsContext.
+- **P2**: Pipeline stage renaming inline to KanbanBoard; CommunityProfileSettings inline from CommunityFeed (deferred from iter 260 commit note).
 - **P1**: Change-email flow with verification (currently email field is read-only).
 - **P2**: Google Calendar UI port to `SchedulingTab` (component + API client don't exist; JSX currently inline in `pages/Settings.tsx` pre-iter258b history).
 - **P2**: Password change UI (backend `POST /api/auth/change-password` already exists).
