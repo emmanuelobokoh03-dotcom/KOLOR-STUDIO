@@ -5,6 +5,7 @@ import MoneyTab from './settings/MoneyTab'
 import SchedulingTab from './settings/SchedulingTab'
 import NotificationsTab from './settings/NotificationsTab'
 import CommunityProfileSettings from './CommunityProfileSettings'
+import { SettingsProvider } from '../contexts/SettingsContext'
 
 export type SettingsTab = 'account' | 'brand' | 'money' | 'scheduling' | 'notifications' | 'community'
 
@@ -30,6 +31,7 @@ export default function SettingsModal({ onClose, initialTab, onRestartTutorial }
   }, [initialTab])
 
   return (
+    <SettingsProvider>
     <div
       className="fixed inset-0 z-modal flex items-center justify-center bg-black/50"
       data-testid="settings-modal"
@@ -90,5 +92,6 @@ export default function SettingsModal({ onClose, initialTab, onRestartTutorial }
         </main>
       </div>
     </div>
+    </SettingsProvider>
   )
 }

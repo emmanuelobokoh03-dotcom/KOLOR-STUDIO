@@ -135,7 +135,7 @@ export default function RevenueDashboard() {
         <div className="bg-surface-base rounded-xl p-3 border border-light-200">
           <p className="text-[10px] font-medium text-text-secondary uppercase tracking-wider mb-3">Monthly Revenue (12 months)</p>
           <div className="h-[120px]" data-testid="revenue-chart">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} debounce={100}>
               <BarChart data={stats.monthlyTrend} barSize={16}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
                 <XAxis

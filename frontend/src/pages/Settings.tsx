@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
+import { SettingsProvider } from '../contexts/SettingsContext'
 
 const TABS = [
   { path: 'account', label: 'Account' },
@@ -11,6 +12,7 @@ const TABS = [
 
 export default function Settings() {
   return (
+    <SettingsProvider>
     <div className="min-h-screen bg-surface-base">
       <div className="max-w-6xl mx-auto px-4 py-8">
         <header className="mb-8">
@@ -50,5 +52,6 @@ export default function Settings() {
         </div>
       </div>
     </div>
+    </SettingsProvider>
   )
 }

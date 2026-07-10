@@ -274,7 +274,7 @@ export default function AnalyticsDashboard({ user, onFilterByStatus }: Analytics
         <h3 className="text-lg font-semibold text-text-primary mb-4">Revenue Trend</h3>
         {monthlyTrend.length > 0 ? (
           <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} debounce={100}>
               <BarChart data={monthlyTrend} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
                 <XAxis 

@@ -1,7 +1,7 @@
-import { useUserSettings } from '../../hooks/useUserSettings'
+import { useSettings } from '../../contexts/SettingsContext'
 
 export default function NotificationsTab() {
-  const { settings } = useUserSettings()
+  const { settings } = useSettings()
 
   if (!settings) {
     return <div className="text-sm text-text-secondary">Loading notification preferences…</div>

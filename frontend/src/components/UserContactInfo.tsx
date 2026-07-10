@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react'
-import { useUserSettings } from '../hooks/useUserSettings'
+import { useSettings } from '../contexts/SettingsContext'
 
 /**
  * User contact info editor (iter 259).
  *
  * Edits User-model fields via settingsApi.update() through the shared
- * useUserSettings hook (same path MoneyTab uses).
+ * shared SettingsContext (same provider MoneyTab uses).
  *
  * Real Prisma fields: firstName, lastName, studioName?, phone?, website?
  * Email is display-only — changing it requires a separate verification
  * flow (deferred to a later iteration).
  */
 export default function UserContactInfo() {
-  const { settings, saving, saved, error, save } = useUserSettings()
+  const { settings, saving, saved, error, save } = useSettings()
 
   const [firstName, setFirstName] = useState<string>('')
   const [lastName, setLastName] = useState<string>('')

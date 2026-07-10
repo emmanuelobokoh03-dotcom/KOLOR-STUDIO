@@ -42,8 +42,8 @@ export default function AccountDangerZone() {
   return (
     <div className="space-y-6" data-testid="account-settings">
       <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-1">Account</h3>
-        <p className="text-sm text-text-secondary">Manage your account and data</p>
+        <h3 className="text-lg font-semibold text-text-primary mb-1">Delete account</h3>
+        <p className="text-sm text-text-secondary">Permanently remove your account and all associated data.</p>
       </div>
 
       {/* Danger Zone */}

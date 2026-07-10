@@ -1,7 +1,7 @@
-import { useUserSettings } from '../../hooks/useUserSettings'
+import { useSettings } from '../../contexts/SettingsContext'
 
 export default function MoneyTab() {
-  const { settings, availableCurrencies, saving, saved, save } = useUserSettings()
+  const { settings, availableCurrencies, saving, saved, save } = useSettings()
 
   if (!settings) {
     return <div className="text-sm text-text-secondary">Loading money settings…</div>
