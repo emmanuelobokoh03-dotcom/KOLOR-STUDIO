@@ -1676,6 +1676,15 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - Verified by testing_agent 100% (`/app/test_reports/iteration_261.json`): 0 overlaps (bbox test), 0 portfolio artifacts in modal, Portfolio page regression clean, all settings tabs OK.
 - Commit `850de46` local — push via "Save to GitHub".
 
+## Iteration 263 (June 2026) — Email Cleanup Round 1 ✅ TESTED (5/5 backend)
+- Deleted 2 true orphans: `sendContractReminderToClient` + `sendDiscoveryCallInviteToClient` (76 lines).
+- **KEPT `sendAutoResponseEmail`** — spec called it a dead wrapper; verification showed it's a live 40-line industry-personalized auto-response used by `leads.ts sendAutoResponse()`. Deleting would have broken a feature.
+- Wired `sendCalendarDisconnectedAlert` via `handleCalendarAuthFailure()` in `routes/calendar.ts` (spec's `googleAuth.ts` doesn't exist): permanent Google auth failure → delete CalendarConnection row (once-only debounce) → fire-and-forget alert → `[CALENDAR-DISCONNECT]` logging. Hardened per test review: checks `error.response.data.error === 'invalid_grant'` + normalized status codes.
+- Fixed stale "#29 scaffold/TODO" comment (real line 3497, not 3116) — already wired at webhooks.ts (UptimeRobot).
+- **P1 FINDING (deferred to iter 264): TRIPLE-SEND** — `POST /api/leads/submit` fires 3 client emails per inquiry: `sendClientConfirmation` (583) + `sendInquiryAcknowledgementEmail` (604) + `sendAutoResponse` (617). Which to keep = product decision.
+- Testing: `/app/test_reports/iteration_263.json` 100% (5/5). Commit `d551b17` local — push via "Save to GitHub".
+- Deferred: `sendBetaFullAlert` (needs capacity tracking), `sendNewDeviceLoginEmail` (needs device fingerprinting). Pre-existing notes from test review: hardcoded fallback owner email in leads.ts:461 region; GET /api/calendar/events slow (~1.4s, 5 parallel Prisma queries).
+
 ## Backlog (deferred iterations)
 - **P2 (new, found by testing agent)**: Portfolio page is NOT a Router route — only reachable via `?view=portfolio` dashboard view state; direct `/portfolio` URL 404s. Add a proper Route for deep-linking.
 - ~~P1: Move `PortfolioSettings.tsx`~~ — RESOLVED iter 261 (deleted as duplicate instead of moved).
