@@ -1669,8 +1669,16 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - Gates: `tsc --noEmit` clean, `npm run build` clean, testing_agent 100% pass (`/app/test_reports/iteration_260.json`).
 - Commit `4c6dd87` local only — **push blocked (no GitHub creds in pod); user must use "Save to GitHub"**.
 
+## Iteration 261 (June 2026) — Delete duplicate PortfolioSettings ✅ TESTED
+- **Bug**: Brand & Studio settings tab had overlapping sections (Email Signature + Portfolio, floating instructions card).
+- **Root cause**: `BrandStudioTab` rendered `PortfolioSettings` (548 lines) — a near-duplicate of `pages/Portfolio.tsx` (same Add Work button, grid, upload modal) — crammed into the modal.
+- **Fix (user chose delete over move)**: `components/PortfolioSettings.tsx` DELETED; `BrandStudioTab` now renders only `<BrandSettings />` + `<EmailSignatureSettings />`. Spec drift caught: PortfolioSettings props were `{ onClose? }` only (not `userSettings/onSave/isSaving` as spec assumed); moving it would ship duplicate `add-portfolio-btn` testids/grids.
+- Verified by testing_agent 100% (`/app/test_reports/iteration_261.json`): 0 overlaps (bbox test), 0 portfolio artifacts in modal, Portfolio page regression clean, all settings tabs OK.
+- Commit `850de46` local — push via "Save to GitHub".
+
 ## Backlog (deferred iterations)
-- **P1**: Move `PortfolioSettings.tsx` (548 lines) into `pages/Portfolio.tsx` (orphaned by settings restructure).
+- **P2 (new, found by testing agent)**: Portfolio page is NOT a Router route — only reachable via `?view=portfolio` dashboard view state; direct `/portfolio` URL 404s. Add a proper Route for deep-linking.
+- ~~P1: Move `PortfolioSettings.tsx`~~ — RESOLVED iter 261 (deleted as duplicate instead of moved).
 - **P2**: MoneyTab fires PATCH on every keystroke for numeric inputs (pre-existing) — debounce saves.
 - **P2**: Type `settingsApi.get()` response properly to remove `any` casts in SettingsContext.
 - **P2**: Pipeline stage renaming inline to KanbanBoard; CommunityProfileSettings inline from CommunityFeed (deferred from iter 260 commit note).
