@@ -2,8 +2,31 @@ import { Router, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import prisma from '../lib/prisma';
 import * as gcal from '../services/googleCalendarService';
+import { sendCalendarDisconnectedAlert } from '../services/email';
 
 const router = Router();
+
+// Permanent Google auth failure: delete the connection row (natural once-only
+// debounce — next request short-circuits at "no connection") then alert the user.
+async function handleCalendarAuthFailure(userId: string, reason: string): Promise<void> {
+  try {
+    const connection = await prisma.calendarConnection.findFirst({
+      where: { userId },
+      include: { user: { select: { email: true, firstName: true } } },
+    });
+    if (!connection) return;
+    await prisma.calendarConnection.delete({ where: { id: connection.id } });
+    if (connection.user) {
+      sendCalendarDisconnectedAlert({
+        email: connection.user.email,
+        firstName: connection.user.firstName || '',
+      }).catch(err => console.error('[CALENDAR-DISCONNECT] Alert failed:', err));
+    }
+    console.log(`[CALENDAR-DISCONNECT] user=${userId} reason=${reason}`);
+  } catch (err) {
+    console.error('[CALENDAR-DISCONNECT] Cleanup failed:', err);
+  }
+}
 
 /**
  * GET /api/calendar/events
@@ -299,8 +322,14 @@ router.get('/google-events', authMiddleware, async (req: AuthRequest, res: Respo
           },
         });
         oauth2Client.setCredentials(credentials);
-      } catch (refreshError) {
+      } catch (refreshError: any) {
         console.error('[Calendar] Google token refresh failed:', refreshError);
+        const isInvalidGrant =
+          refreshError?.response?.data?.error === 'invalid_grant' ||
+          String(refreshError?.message || refreshError).includes('invalid_grant');
+        if (isInvalidGrant) {
+          await handleCalendarAuthFailure(userId, 'invalid_grant');
+        }
         res.json({ connected: false, events: [], error: 'reconnect' });
         return;
       }
@@ -340,7 +369,17 @@ router.get('/google-events', authMiddleware, async (req: AuthRequest, res: Respo
   } catch (error: any) {
     console.error('[Calendar] Google events error:', error?.message || error);
     // If it's an auth error, suggest reconnecting
-    if (error?.code === 401 || error?.code === 403 || error?.message?.includes('invalid_grant')) {
+    const authCode = error?.code ?? error?.response?.status;
+    const isAuthError = authCode === 401 || authCode === 403 ||
+      error?.response?.data?.error === 'invalid_grant' ||
+      error?.message?.includes('invalid_grant');
+    if (isAuthError) {
+      await handleCalendarAuthFailure(
+        req.userId as string,
+        error?.message?.includes('invalid_grant') || error?.response?.data?.error === 'invalid_grant'
+          ? 'invalid_grant'
+          : `http_${authCode}`
+      );
       res.json({ connected: false, events: [], error: 'reconnect' });
     } else {
       res.json({ connected: true, events: [], error: 'fetch_failed' });

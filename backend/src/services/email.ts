@@ -3350,82 +3350,6 @@ lead: { clientName: string; clientEmail: string; portalToken?: string | null; })
   }
 }
 
-// ── #23 — Contract Reminder to Client ──
-export async function sendContractReminderToClient(user: {
-  email: string; businessName?: string | null; industry?: string | null;
-}, lead: { clientName: string; clientEmail: string; portalToken?: string | null; }): Promise<boolean> {
-  if (!resend) return false;
-  try {
-    const lang = getIndustryLanguage(user.industry);
-    const businessName = user.businessName || 'Your photographer';
-    const clientFirst = lead.clientName.split(' ')[0];
-    const portalUrl = lead.portalToken ? `${FRONTEND_URL}/portal/${lead.portalToken}` : FRONTEND_URL;
-
-    const html = buildEmailTemplate({
-      headline: `Hi ${clientFirst}, just a quick reminder`,
-      body: `
-        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
-          ${businessName} is holding your ${lang.booking.toLowerCase()} date. Signing your ${lang.contract.toLowerCase()} confirms it.
-        </p>`,
-      ctaText: 'Sign now \u2192',
-      ctaUrl: portalUrl,
-      studioName: businessName,
-      emailType: 'client',
-    });
-
-    const { error } = await resend.emails.send({
-      from: `${businessName} via KOLOR <${SENDER_EMAIL}>`,
-      to: [lead.clientEmail],
-      replyTo: user.email,
-      subject: `Reminder: your ${lang.contract.toLowerCase()} is ready to sign`,
-      html,
-    });
-    if (error) { console.error('[EMAIL] Contract reminder to client failed:', error); return false; }
-    return true;
-  } catch (error) {
-    console.error('[EMAIL] Contract reminder to client error:', error);
-    return false;
-  }
-}
-
-// ── #24 — Discovery Call Invite to Client ──
-export async function sendDiscoveryCallInviteToClient(user: {
-  email: string; firstName: string; businessName?: string | null; industry?: string | null;
-}, lead: { clientName: string; clientEmail: string; portalToken?: string | null; projectType?: string; }): Promise<boolean> {
-  if (!resend) return false;
-  try {
-    const lang = getIndustryLanguage(user.industry);
-    const businessName = user.businessName || user.firstName;
-    const clientFirst = lead.clientName.split(' ')[0];
-    const portalUrl = lead.portalToken ? `${FRONTEND_URL}/portal/${lead.portalToken}` : FRONTEND_URL;
-
-    const html = buildEmailTemplate({
-      headline: `Hi ${clientFirst},`,
-      body: `
-        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
-          ${user.firstName} at ${businessName} would love to schedule a ${lang.discoveryCall.toLowerCase()} to discuss your ${lead.projectType || 'project'}. It's a quick call to make sure they're the right fit.
-        </p>`,
-      ctaText: 'Schedule your call \u2192',
-      ctaUrl: portalUrl,
-      studioName: businessName,
-      emailType: 'client',
-    });
-
-    const { error } = await resend.emails.send({
-      from: `${businessName} via KOLOR <${SENDER_EMAIL}>`,
-      to: [lead.clientEmail],
-      replyTo: user.email,
-      subject: `${businessName} would love to schedule a call with you`,
-      html,
-    });
-    if (error) { console.error('[EMAIL] Discovery call invite failed:', error); return false; }
-    return true;
-  } catch (error) {
-    console.error('[EMAIL] Discovery call invite error:', error);
-    return false;
-  }
-}
-
 // ── #27 — New User Signup Alert (admin) ──
 export async function sendNewUserSignupAlert(newUser: {
   firstName: string; lastName?: string; email: string; industry?: string | null;
@@ -3493,8 +3417,8 @@ export async function sendBetaFullAlert(user21: {
   }
 }
 
-// ── #29 — Health Check Failure Alert (admin, scaffold) ──
-// TODO: Wire to uptime monitoring webhook or cron
+// ── #29 — Health Check Failure Alert (admin) ──
+// Wired: fired from routes/webhooks.ts (UptimeRobot webhook) on downtime.
 export async function sendHealthCheckFailureAlert(info: {
   endpoint: string; errorMessage: string; failureTime?: Date;
 }): Promise<boolean> {
