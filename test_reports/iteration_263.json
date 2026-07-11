@@ -1,0 +1,38 @@
+{
+  "summary": "Iter 263 backend-only regression testing for KOLOR Studio email cleanup. 5/5 pytest tests passed: login baseline, GET /api/calendar/events (200), GET /api/calendar/google-events with no connection (200 {connected:false, events:[]} — verifies handleCalendarAuthFailure wiring did not break the happy-path), POST /api/leads/submit (201, public, sendAutoResponse + sendClientConfirmation + sendInquiryAcknowledgementEmail non-blocking), POST /api/leads (201, auth, sendAutoResponse call site). Backend booted cleanly — no import errors from the 2 deleted email functions (sendContractReminderToClient, sendDiscoveryCallInviteToClient). Grep confirmed zero remaining references to deleted functions. sendCalendarDisconnectedAlert (email.ts:3287) and sendAutoResponseEmail (email.ts:1537) both present.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/leads/submit + /api/leads", "issue": "Non-blocking Resend 403 'validation_error' in backend.err.log — RESEND_API_KEY is set but domain not verified, so Resend restricts to owner email (emmanuelobokoh03@gmail.com). Routes still 201 correctly because email sends are fire-and-forget with .catch() handlers. NOT a regression from iter 263 — pre-existing env constraint."},
+      {"endpoint": "GET /api/calendar/events", "issue": "Slow response ~1361ms flagged by [Perf] middleware. Uses 5 parallel Prisma queries — pre-existing, not touched by iter 263."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_iter263_email_cleanup.py",
+    "/app/test_reports/pytest/iter263_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "handleCalendarAuthFailure (calendar.ts:11-29) — clean implementation: deletes CalendarConnection first (natural once-only debounce via short-circuit at connection lookup), then fire-and-forget email with error catch. Good pattern.",
+    "google-events route (calendar.ts:325-378): invalid_grant detection uses String(refreshError?.message).includes('invalid_grant') which is fragile against SDK message changes; googleapis typically throws with err.response.data.error === 'invalid_grant'. Consider also checking that structured field. Minor — non-blocking.",
+    "google-events error handler catches error?.code === 401 || 403 — but googleapis errors may have .code as string or number, or the status may live at error.response.status. Consider normalizing: const code = error?.code ?? error?.response?.status. Minor — non-blocking.",
+    "leads.ts POST /submit at line 461: still hardcodes fallback owner email 'emmanuelobokoh03@gmail.com' — should be env-driven (DEFAULT_OWNER_EMAIL). Pre-existing, out of iter 263 scope."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter263_email_cleanup.py"],
+  "success_rate": {"backend": "100% (5/5 tests passed)", "frontend": "N/A (skipped per request)"},
+  "test_credentials": "bookingtest@test.com / password123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Created transient TEST_-prefixed leads via /api/leads/submit (public inquiry, cannot delete without auth as different user; will remain in DB) and /api/leads (auth, cleaned up via DELETE in fixture).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Login endpoint (POST /api/auth/login) returns {message, user} and sets an HttpOnly JWT cookie — there is no token in the JSON body. Use requests.Session() to preserve the cookie for subsequent auth-required calls. Test file at /app/backend/tests/test_iter263_email_cleanup.py demonstrates the pattern. RESEND_API_KEY is set in this env but Resend is in test/unverified-domain mode — expect 403 validation_error in logs for any /api/leads/submit or /api/leads POST; this is expected and does NOT affect route status codes (routes still return 201).",
+  "iter_263_verification": {
+    "1_backend_boots_no_import_errors": {"expected": "No import errors for deleted functions on startup", "observed": "Backend RUNNING pid 47 uptime 40+ min; grep for sendContractReminderToClient|sendDiscoveryCallInviteToClient across src/ = 0 hits", "verdict": "PASS"},
+    "2_google_events_no_connection_200": {"expected": "GET /api/calendar/google-events returns 200 {connected:false, events:[]}", "observed": "200 with {connected:false, events:[]} — 440ms", "verdict": "PASS"},
+    "3_calendar_events_200": {"expected": "GET /api/calendar/events returns 200 with events array", "observed": "200 with {events:[...]} — 1361ms (slow but functional)", "verdict": "PASS"},
+    "4_leads_submit_201": {"expected": "POST /api/leads/submit returns 201 with leadId even when Resend fails", "observed": "201 with {message, leadId} — Resend 403s logged but non-blocking", "verdict": "PASS"},
+    "5_leads_auth_create_201": {"expected": "POST /api/leads returns 201 for authed user", "observed": "201 with {message, lead:{id, ...}}", "verdict": "PASS"},
+    "6_login_baseline": {"expected": "Login with bookingtest@test.com succeeds", "observed": "200 with {message:'Login successful', user:{email:bookingtest@test.com, ...}}", "verdict": "PASS"},
+    "7_sendCalendarDisconnectedAlert_wired": {"expected": "handleCalendarAuthFailure calls sendCalendarDisconnectedAlert in refresh catch + API-error catch", "observed": "calendar.ts:11-29 helper calls sendCalendarDisconnectedAlert; wired at line 328 (refresh invalid_grant) and line 370 (API 401/403/invalid_grant). Fire-and-forget with .catch() error logging. Code-review verified (cannot e2e without real revoked token).", "verdict": "PASS (code review)"}
+  }
+}
