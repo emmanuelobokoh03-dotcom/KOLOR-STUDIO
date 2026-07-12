@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { google } from 'googleapis';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail, sendBetaWelcomeEmail, sendNewUserSignupAlert, sendPasswordChangedEmail, sendAccountLockoutEmail } from '../services/email';
+import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail, sendBetaWelcomeEmail, sendNewUserSignupAlert, sendPasswordChangedEmail, sendAccountLockoutEmail, sendEmailChangeVerification, sendEmailChangeAlert, sendEmailChangeConfirmation } from '../services/email';
 import { seedTemplatesForUser } from '../seeds/systemTemplates';
 import { createDemoProject } from '../scripts/createDemoProject';
 import { seedDefaultSequences } from '../scripts/seedSequences';
@@ -859,6 +859,200 @@ router.post('/change-password', authMiddleware, async (req: AuthRequest, res: Re
   } catch (error) {
     console.error('Change password error:', error);
     res.status(500).json({ error: 'Server Error', message: 'Failed to change password' });
+  }
+});
+
+// =====================
+// Email Change Flow (iter 268)
+// =====================
+
+// POST /api/auth/request-email-change - Request an email change (auth + password re-auth)
+router.post('/request-email-change', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const { newEmail, currentPassword } = req.body;
+
+    if (!newEmail || !currentPassword) {
+      res.status(400).json({ error: 'Bad Request', message: 'New email and current password are required' });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmail)) {
+      res.status(400).json({ error: 'Bad Request', message: 'Invalid email format' });
+      return;
+    }
+
+    const normalizedEmail = newEmail.toLowerCase().trim();
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) { res.status(404).json({ error: 'User not found' }); return; }
+
+    if (user.email.toLowerCase() === normalizedEmail) {
+      res.status(400).json({ error: 'Bad Request', message: 'New email is the same as your current email' });
+      return;
+    }
+
+    // Re-auth: verify current password (mirrors /change-password)
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+      res.status(401).json({ error: 'Unauthorized', message: 'Current password is incorrect' });
+      return;
+    }
+
+    // Rate limit: 3/hour, DB-persisted on User (mirrors forgot-password iter 153 idiom)
+    const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+    const MAX_ATTEMPTS = 3;
+    const now = new Date();
+    let attempts: number;
+    let windowStart: Date;
+
+    if (user.emailChangeWindowStart && (now.getTime() - user.emailChangeWindowStart.getTime()) < RATE_LIMIT_WINDOW_MS) {
+      if (user.emailChangeAttempts >= MAX_ATTEMPTS) {
+        const minutesLeft = Math.ceil((RATE_LIMIT_WINDOW_MS - (now.getTime() - user.emailChangeWindowStart.getTime())) / 60000);
+        res.status(429).json({ error: 'Too Many Requests', message: `Too many email change requests. Try again in ${minutesLeft} minutes.` });
+        return;
+      }
+      attempts = user.emailChangeAttempts + 1;
+      windowStart = user.emailChangeWindowStart;
+    } else {
+      attempts = 1;
+      windowStart = now;
+    }
+
+    // Uniqueness (409 enumeration accepted: requires auth + password + rate limit budget)
+    const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+    if (existing) {
+      res.status(409).json({ error: 'Conflict', message: 'This email is already in use' });
+      return;
+    }
+
+    // Token: raw in email only, sha256 in DB (mirrors forgot-password)
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+    const expiry = new Date(now.getTime() + 15 * 60 * 1000);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        pendingEmail: normalizedEmail,
+        emailChangeToken: hashedToken,
+        emailChangeTokenExpiry: expiry,
+        emailChangeAttempts: attempts,
+        emailChangeWindowStart: windowStart,
+      },
+    });
+
+    console.log(`[EMAIL-CHANGE] Requested user=${userId} old=${user.email} new=${normalizedEmail}`);
+
+    const firstName = user.firstName || 'there';
+    try {
+      await sendEmailChangeVerification(normalizedEmail, firstName, rawToken);
+      await sendEmailChangeAlert(user.email, firstName, normalizedEmail, rawToken);
+    } catch (emailErr) {
+      console.error('[EMAIL-CHANGE] Email dispatch failed (non-blocking):', emailErr);
+    }
+
+    res.json({ success: true, pendingEmail: normalizedEmail });
+  } catch (error) {
+    console.error('[AUTH] request-email-change error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to request email change' });
+  }
+});
+
+// GET /api/auth/verify-email-change/:token - Finalize email change (public, token IS the auth)
+router.get('/verify-email-change/:token', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const rawToken = String(req.params.token || '');
+    if (!rawToken) { res.status(400).json({ error: 'Bad Request', message: 'Missing token' }); return; }
+
+    const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+    const user = await prisma.user.findUnique({ where: { emailChangeToken: hashedToken } });
+    if (!user) {
+      res.status(400).json({ error: 'Invalid Token', message: 'Verification link is invalid or has expired' });
+      return;
+    }
+
+    if (!user.emailChangeTokenExpiry || user.emailChangeTokenExpiry < new Date()) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { pendingEmail: null, emailChangeToken: null, emailChangeTokenExpiry: null },
+      });
+      console.log(`[EMAIL-CHANGE] Revoked user=${user.id} reason=expired`);
+      res.status(400).json({ error: 'Invalid Token', message: 'Verification link expired. Please request a new change.' });
+      return;
+    }
+
+    if (!user.pendingEmail) {
+      res.status(400).json({ error: 'Bad Request', message: 'No pending email change' });
+      return;
+    }
+
+    // Race guard: pendingEmail may have been registered by someone else mid-flow
+    const taken = await prisma.user.findUnique({ where: { email: user.pendingEmail } });
+    if (taken && taken.id !== user.id) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { pendingEmail: null, emailChangeToken: null, emailChangeTokenExpiry: null },
+      });
+      res.status(409).json({ error: 'Conflict', message: 'This email is no longer available. Please request a new change.' });
+      return;
+    }
+
+    const oldEmail = user.email;
+    const newEmail = user.pendingEmail;
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        email: newEmail,
+        pendingEmail: null,
+        emailChangeToken: null,
+        emailChangeTokenExpiry: null,
+        emailChangeAttempts: 0,
+        emailChangeWindowStart: null,
+        // Invalidate ALL existing sessions (mirrors change-password idiom)
+        tokenVersion: { increment: 1 },
+      },
+    });
+
+    console.log(`[EMAIL-CHANGE] Verified user=${user.id} old=${oldEmail} new=${newEmail}`);
+
+    const firstName = user.firstName || 'there';
+    sendEmailChangeConfirmation(oldEmail, firstName, oldEmail, newEmail).catch(e => console.error('[EMAIL-CHANGE] Confirmation (old) failed:', e));
+    sendEmailChangeConfirmation(newEmail, firstName, oldEmail, newEmail).catch(e => console.error('[EMAIL-CHANGE] Confirmation (new) failed:', e));
+
+    res.json({ success: true, oldEmail, newEmail });
+  } catch (error) {
+    console.error('[AUTH] verify-email-change error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to verify email change' });
+  }
+});
+
+// POST /api/auth/revoke-email-change - Cancel pending change (public, via "This wasn't me" link)
+router.post('/revoke-email-change', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { token } = req.body;
+    if (!token) { res.status(400).json({ error: 'Bad Request', message: 'Missing token' }); return; }
+
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await prisma.user.findUnique({ where: { emailChangeToken: hashedToken } });
+    if (!user) {
+      res.status(400).json({ error: 'Invalid Token', message: 'Link is invalid or the change was already completed' });
+      return;
+    }
+
+    const pendingEmail = user.pendingEmail;
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { pendingEmail: null, emailChangeToken: null, emailChangeTokenExpiry: null },
+    });
+
+    console.log(`[EMAIL-CHANGE] Revoked user=${user.id} reason=user-request pendingEmail=${pendingEmail}`);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('[AUTH] revoke-email-change error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to revoke email change' });
   }
 });
 

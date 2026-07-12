@@ -3685,3 +3685,145 @@ export async function sendCommunityFollowNotification(
     return false
   }
 }
+
+// =====================
+// Email Change Flow (iter 268)
+// =====================
+
+// Sent to the NEW address: verification link, 15-min expiry.
+export async function sendEmailChangeVerification(
+  newEmail: string,
+  firstName: string,
+  rawToken: string
+): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const verifyUrl = `${FRONTEND_URL}/verify-email-change/${rawToken}`;
+    const html = buildEmailTemplate({
+      headline: 'Verify your new email address',
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Hi ${firstName},
+        </p>
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Someone requested to change the email on a KOLOR Studio account to this address. If that was you, verify within 15 minutes to complete the change.
+        </p>
+        ${warningBox('This link expires in 15 minutes.')}
+        <p style="font-size:14px;color:#6B7280;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+          If you didn't request this, you can safely ignore this email \u2014 the change won't happen without verification.
+        </p>`,
+      ctaText: 'Verify email',
+      ctaUrl: verifyUrl,
+      emailType: 'auth',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: newEmail,
+      subject: 'Verify your new email \u2014 expires in 15 minutes',
+      html,
+    });
+    if (error) {
+      console.error('[EMAIL] sendEmailChangeVerification error:', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[EMAIL] sendEmailChangeVerification exception:', err);
+    return false;
+  }
+}
+
+// Sent to the OLD address: security alert with "This wasn't me" revoke link.
+export async function sendEmailChangeAlert(
+  oldEmail: string,
+  firstName: string,
+  newEmail: string,
+  rawToken: string
+): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const revokeUrl = `${FRONTEND_URL}/revoke-email-change/${rawToken}`;
+    const html = buildEmailTemplate({
+      headline: 'Security alert: email change requested',
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Hi ${firstName},
+        </p>
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          The email on your KOLOR Studio account is being changed to <strong>${newEmail}</strong>.
+        </p>
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          If this was you, no action is needed \u2014 verify at your new address to complete the change.
+        </p>
+        ${warningBox("<strong>If this wasn't you</strong>, click the button below to cancel the change and secure your account.")}`,
+      ctaText: "This wasn't me \u2014 cancel change",
+      ctaUrl: revokeUrl,
+      emailType: 'auth',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: oldEmail,
+      subject: 'Security alert: email change requested',
+      html,
+    });
+    if (error) {
+      console.error('[EMAIL] sendEmailChangeAlert error:', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[EMAIL] sendEmailChangeAlert exception:', err);
+    return false;
+  }
+}
+
+// Sent to BOTH old and new addresses after verification completes.
+export async function sendEmailChangeConfirmation(
+  toEmail: string,
+  firstName: string,
+  oldEmail: string,
+  newEmail: string
+): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const timestamp = new Date().toLocaleString('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      timeZone: 'UTC',
+    });
+    const html = buildEmailTemplate({
+      headline: 'Your email has been changed',
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Hi ${firstName},
+        </p>
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Your KOLOR Studio account email was changed from <strong>${oldEmail}</strong> to <strong>${newEmail}</strong> on ${timestamp} UTC.
+        </p>
+        <p style="font-size:14px;color:#6B7280;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          All existing sessions have been logged out. You'll need to sign in with your new email address.
+        </p>
+        ${errorBox('<strong>If this wasn\'t you</strong>, contact support immediately.')}`,
+      ctaText: 'Sign in',
+      ctaUrl: `${FRONTEND_URL}/login`,
+      emailType: 'auth',
+    });
+
+    const { error } = await resend.emails.send({
+      from: `KOLOR Studio <${SENDER_EMAIL}>`,
+      to: toEmail,
+      subject: 'Your email has been changed',
+      html,
+    });
+    if (error) {
+      console.error('[EMAIL] sendEmailChangeConfirmation error:', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[EMAIL] sendEmailChangeConfirmation exception:', err);
+    return false;
+  }
+}

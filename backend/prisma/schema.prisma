@@ -525,6 +525,13 @@ model User {
   // (replaces in-memory Map that reset on Railway cold starts)
   passwordResetAttempts    Int       @default(0)
   passwordResetWindowStart DateTime?
+  // Iter 268 — Email change flow (mirrors forgot-password idioms:
+  // sha256-hashed token, 15-min expiry, DB-persisted rate limit on User)
+  pendingEmail             String?
+  emailChangeToken         String?   @unique
+  emailChangeTokenExpiry   DateTime?
+  emailChangeAttempts      Int       @default(0)
+  emailChangeWindowStart   DateTime?
   currency             String               @default("USD")
   currencyPosition     String               @default("BEFORE")
   currencySymbol       String               @default("$")
