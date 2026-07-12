@@ -3366,17 +3366,28 @@ export async function sendPaymentNudge(
       ? Math.floor((Date.now() - new Date(contract.clientAgreedAt).getTime()) / 3600000)
       : 48;
 
+    const html = buildEmailTemplate({
+      headline: `Payment pending from ${contract.clientName}`,
+      body: `
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Hi ${user.firstName},
+        </p>
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          <strong>${contract.clientName}</strong> signed their contract ${hoursElapsed} hours ago but hasn't completed their deposit yet.
+        </p>
+        <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
+          Open KOLOR to send them a payment link or follow up directly.
+        </p>`,
+      ctaText: 'Open KOLOR',
+      ctaUrl: `${FRONTEND_URL}/dashboard`,
+      emailType: 'workflow',
+    });
+
     const { error } = await resend.emails.send({
       from: `KOLOR Studio <${SENDER_EMAIL}>`,
       to: user.email,
       subject: `Payment pending — ${contract.clientName} signed ${hoursElapsed}h ago`,
-      html: `
-        <p>Hi ${user.firstName},</p>
-        <p><strong>${contract.clientName}</strong> signed their contract ${hoursElapsed} hours ago but hasn't completed their deposit yet.</p>
-        <p>Log in to KOLOR to send them a payment link or follow up directly.</p>
-        <p><a href="${FRONTEND_URL}/dashboard">Open KOLOR &rarr;</a></p>
-        <p style="color:#999;font-size:12px;">This is an automated reminder from KOLOR Studio.</p>
-      `,
+      html,
     });
 
     if (error) {

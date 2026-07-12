@@ -33,7 +33,7 @@ export default function SettingsModal({ onClose, initialTab, onRestartTutorial }
   return (
     <SettingsProvider>
     <div
-      className="fixed inset-0 z-modal flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-modal flex items-center justify-center bg-black/50 p-2 sm:p-4"
       data-testid="settings-modal"
       onClick={onClose}
     >
@@ -63,17 +63,17 @@ export default function SettingsModal({ onClose, initialTab, onRestartTutorial }
         </header>
 
         <nav
-          className="flex gap-1 px-4 pt-3 border-b border-border overflow-x-auto"
+          className="flex gap-1 px-4 pt-3 border-b border-border overflow-x-auto scroll-smooth"
           data-testid="settings-modal-tabs"
         >
           {VISIBLE_TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              className={`px-3 py-2 text-sm rounded-t-md whitespace-nowrap ${
+              className={`flex-shrink-0 px-3 py-2 text-sm rounded-t-md whitespace-nowrap transition-colors ${
                 activeTab === t.id
-                  ? 'bg-brand-primary/10 text-brand-primary font-medium border-b-2 border-brand-primary -mb-px'
-                  : 'text-text-secondary hover:text-text-primary'
+                  ? 'bg-brand-primary/10 text-brand-primary font-medium border-b-2 border-brand-primary'
+                  : 'text-text-secondary hover:text-text-primary border-b-2 border-transparent'
               }`}
               data-testid={`${t.id}-tab-btn`}
             >

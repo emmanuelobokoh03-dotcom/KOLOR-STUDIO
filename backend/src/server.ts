@@ -17,6 +17,31 @@ const REQUIRED_SECRETS = ['JWT_SECRET', 'DATABASE_URL', 'FRONTEND_URL'];
   console.log('[STARTUP] ✅ All required secrets present');
 })();
 
+// =====================
+// PRODUCTION SANDBOX GUARD — refuse to start prod with sandbox email sender
+// =====================
+(function validateEmailSender() {
+  const senderEmail = process.env.SENDER_EMAIL || '';
+  const isSandbox = senderEmail.includes('resend.dev');
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  if (isProduction && isSandbox) {
+    console.error('[STARTUP] ❌ PRODUCTION SANDBOX MISCONFIGURATION');
+    console.error(`[STARTUP]    SENDER_EMAIL is "${senderEmail}" (a Resend sandbox address)`);
+    console.error('[STARTUP]    In production, this means NO client emails will deliver.');
+    console.error('[STARTUP]    Verify a domain at resend.com/domains and set SENDER_EMAIL');
+    console.error('[STARTUP]    to a verified address like noreply@yourdomain.com');
+    process.exit(1);
+  }
+
+  if (isSandbox) {
+    console.warn('[STARTUP] ⚠️  Development mode using Resend sandbox sender (' + senderEmail + ')');
+    console.warn('[STARTUP]    Emails will ONLY reach the account owner email in this mode.');
+  } else {
+    console.log('[STARTUP] ✅ Email sender configured: ' + senderEmail);
+  }
+})();
+
 import * as Sentry from '@sentry/node';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
