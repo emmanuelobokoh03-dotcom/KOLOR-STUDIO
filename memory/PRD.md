@@ -1706,6 +1706,14 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - Commit `8b1a8a9` local — push via "Save to GitHub".
 - 🔎 NEW pre-existing finding (now reachable via /community deep-link): **CommunityFeed.tsx throws React "Invalid hook call"** on mount — likely duplicate React copy via @phosphor-icons import; needs its own iteration.
 
+## Iteration 268 (June 2026) — Change-email flow BACKEND ✅ TESTED (14/14)
+- Schema: 5 additive User fields (`pendingEmail`, `emailChangeToken` @unique sha256, `emailChangeTokenExpiry`, `emailChangeAttempts`, `emailChangeWindowStart`). Migration `20260620000000_add_email_change_fields_to_user` applied to Supabase DB via shadow-free path (`migrate dev` fails with P3006 on this repo — hand-written SQL + `migrate deploy`). Also resolved phantom-pending `20260225_add_quote_payment_schedule` (columns already in DB; marked applied) — **Railway `migrate deploy` now runs clean**.
+- Endpoints: `POST /request-email-change` (auth + bcrypt re-auth + 3/hr rate limit + 409 uniqueness), `GET /verify-email-change/:token` (finalize + race guard + tokenVersion increment = all sessions invalidated), `POST /revoke-email-change` ("This wasn't me").
+- Templates: sendEmailChangeVerification (new addr, 15-min), sendEmailChangeAlert (old addr, revoke CTA), sendEmailChangeConfirmation (both) — all buildEmailTemplate, emailType 'auth'.
+- Full E2E tested incl. token injection, session invalidation (old cookie 401s), login swap, expiry auto-clean, rate limit 429, revoke, regressions. Report: `/app/test_reports/iteration_267.json` (14/14). Test helper: `backend/scripts/iter268_prisma_helper.js`.
+- Commit `local` — push via "Save to GitHub". bookingtest@test.com/password123 preserved.
+- NEXT: **Iter 269 frontend** — UserContactInfo interactive email field, EmailChangeModal, VerifyEmailChange + RevokeEmailChange pages, 2 App.tsx routes.
+
 ## Backlog (deferred iterations)
 - **P2 (new, found by testing agent)**: Portfolio page is NOT a Router route — only reachable via `?view=portfolio` dashboard view state; direct `/portfolio` URL 404s. Add a proper Route for deep-linking.
 - ~~P1: Move `PortfolioSettings.tsx`~~ — RESOLVED iter 261 (deleted as duplicate instead of moved).
