@@ -1685,6 +1685,14 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - Testing: `/app/test_reports/iteration_263.json` 100% (5/5). Commit `d551b17` local — push via "Save to GitHub".
 - Deferred: `sendBetaFullAlert` (needs capacity tracking), `sendNewDeviceLoginEmail` (needs device fingerprinting). Pre-existing notes from test review: hardcoded fallback owner email in leads.ts:461 region; GET /api/calendar/events slow (~1.4s, 5 parallel Prisma queries).
 
+## Iteration 264 (June 2026) — Triple-send fix ✅ TESTED (9/9 backend)
+- `POST /api/leads/submit` now sends the client **ONE** email (was 3): enriched `sendInquiryAcknowledgementEmail` with inquiry summary card (Service/Budget/Timeline via now-exported `SERVICE_TYPE_LABELS`) + portfolio link (uses `assignedToId`).
+- `sendClientConfirmation` deleted entirely (128 lines, only caller was /submit). `sendAutoResponse` removed from /submit only — KEPT at leads.ts:446 (authenticated POST /, verified still fires).
+- Runtime-verified via log-line counting per request window (`/app/test_reports/iteration_264.json`, 9/9).
+- ⚠️ OPS NOTE: backend runs `ts-node --transpile-only` with NO hot reload — always `sudo supervisorctl restart backend` after src changes before testing.
+- Commit `102297c` local — push via "Save to GitHub".
+- Minor notes from test review: inconsistent auto-response log prefixes; stale `backend/dist/` contains deleted function (runtime unaffected); pre-existing hardcoded fallback owner email.
+
 ## Backlog (deferred iterations)
 - **P2 (new, found by testing agent)**: Portfolio page is NOT a Router route — only reachable via `?view=portfolio` dashboard view state; direct `/portfolio` URL 404s. Add a proper Route for deep-linking.
 - ~~P1: Move `PortfolioSettings.tsx`~~ — RESOLVED iter 261 (deleted as duplicate instead of moved).
