@@ -1,0 +1,39 @@
+{
+  "summary": "Iteration 268 email-change flow: 14/14 backend tests passed. Verified request/verify/revoke endpoints, token hashing (sha256), 15-min expiry, 3/hour rate limit, session invalidation via tokenVersion increment, expired-token auto-cleanup, and login post-swap. Regression on canonical login + /api/settings + /api/auth/change-password intact. All disposable test users cleaned up; bookingtest@test.com/password123 preserved and login-verified.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter268_email_change.py",
+    "/app/kolor-studio-v2/backend/scripts/iter268_prisma_helper.js",
+    "/app/test_reports/pytest/iter268_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "auth.ts request-email-change increments emailChangeAttempts BEFORE the uniqueness (409) check, so a 409 still consumes a rate-limit slot. Non-critical but worth noting: a user typing an already-used email 3 times gets locked out for 1 hour. Consider moving the attempts++/persist step to AFTER the 409 uniqueness check, or only counting attempts that make it to token generation.",
+    "verify-email-change race guard returns 409 without clearing rate-limit fields (emailChangeAttempts/emailChangeWindowStart) even though pendingEmail/token/expiry are cleared. Minor inconsistency vs the success path which resets both to 0/null.",
+    "revoke-email-change is public and only requires the raw token — this is fine since the token is a 32-byte random secret sent only to the affected addresses. Response body is minimal ({success:true}) which is appropriate.",
+    "sendEmailChangeConfirmation on verify is fire-and-forget (.catch inline) which is correct — matches change-password idiom. sendEmailChangeVerification/Alert on request use try/await which briefly blocks the response by up to Resend timeout; consider making them fire-and-forget too for consistency and faster responses, but non-blocking as currently coded (won't fail the request)."
+  ],
+  "updated_files": [],
+  "new_files": [
+    "/app/backend/tests/test_iter268_email_change.py",
+    "/app/kolor-studio-v2/backend/scripts/iter268_prisma_helper.js"
+  ],
+  "success_rate": {"backend": "100% (14/14)", "frontend": "N/A - skipped per request"},
+  "test_credentials": {
+    "canonical": "bookingtest@test.com / password123 — RESTORED and login-verified (200) at end of run. tokenVersion=0, emailVerified=false (unchanged), all emailChange* fields null.",
+    "disposable_users_created": "~7 users with iter268_<hex>@example.com — all deleted via prisma cleanup (final deleteMany returned count=0 on second call, confirming clean state)"
+  },
+  "seed_data_creation": "None permanent. All test users signed up on-the-fly with prefix 'iter268_' and deleted in session teardown.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Prisma helper script at /app/kolor-studio-v2/backend/scripts/iter268_prisma_helper.js supports: get/inject/inject-expired/verify-user/restore-email/reset-fields/cleanup. Backend runs on ts-node (no hot-reload); if you edit routes/auth.ts you must restart backend. Login does NOT require emailVerified. Resend emails 403 (unverified domain) in preview — audit logs in backend logs are '[EMAIL-CHANGE] Requested|Verified|Revoked user=<id>'. To test token flow without email delivery, POST /request-email-change first (validates auth/rate limit/uniqueness), then INJECT known raw token via prisma helper 'inject <email> <rawToken> <pendingEmail>'.",
+  "rca_of_any_issue": "No bugs found. All 8 feature specs from the review request executed and passed:\n1. request-email-change (a-f): all 6 validation branches verified\n2. Rate limit 4th → 429 with 'minutes' in message\n3. verify-email-change garbage → 400; happy path via injected token → 200 with oldEmail/newEmail; all 5 change fields cleared; tokenVersion +1\n4. Session invalidation: pre-verify /api/settings 200, post-verify 401 (same cookie)\n5. Login new email 200, login old email 401\n6. Revoke happy path 200 + fields cleared + email unchanged; double-revoke → 400\n7. Expired-token GET verify → 400 'expired' + pending fields auto-cleared\n8. Regression: canonical login+settings 200; change-password endpoint responds 401 to wrong currentPassword (not 500)"
+}
