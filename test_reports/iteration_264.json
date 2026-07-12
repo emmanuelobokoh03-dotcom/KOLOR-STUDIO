@@ -1,0 +1,45 @@
+{
+  "summary": "Iter 264 backend-only verification: consolidation of client-facing emails on public POST /api/leads/submit to exactly ONE (sendInquiryAcknowledgementEmail with enriched summary card). 9/9 pytest tests passed after backend restart. Code-level: 0 refs to sendClientConfirmation in backend/src (grep -rn); /submit block (leads.ts:461-615) contains only sendNewLeadNotification + sendInquiryAcknowledgementEmail; enrichment params (serviceLabel, budget, timeline, portfolioUrl, SERVICE_TYPE_LABELS) present; email.ts template has summaryCardHtml, portfolioLinkHtml, 'Your Inquiry' markup; SERVICE_TYPE_LABELS exported. Runtime: POST /api/leads/submit → 201 with exactly ONE '[EMAIL] Inquiry acknowledgement (sent to|failed)' log line and ZERO occurrences of 'Failed to send client confirmation' / 'Client confirmation' / '[AutoResponse]' / 'Error sending auto-response' / 'Auto-response sent' in the request's log window. Regression: authenticated POST /api/leads still 201 and still triggers 'Error sending auto-response' log (call site at leads.ts:446 preserved). Baselines: login (200), GET /api/leads (200), backend boots clean.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/leads/submit + /api/leads", "issue": "Non-blocking Resend 403 'validation_error' in backend.err.log — RESEND_API_KEY set but domain unverified. Endpoints still return 201 because email sends are fire-and-forget with .catch handlers. Pre-existing env constraint, not a regression."},
+      {"endpoint": "leads.ts", "issue": "In authenticated POST /api/leads, the fallback error log for sendAutoResponse writes 'Error sending auto-response:' (from email.ts:1475) rather than the routes.ts wrapper's '[AutoResponse] Error:'. Not a bug, but the two log prefixes are inconsistent — makes greppability slightly harder. Cosmetic."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_iter264_single_client_email.py",
+    "/app/test_reports/pytest/iter264_results.xml"
+  ],
+  "action_items": [
+    "IMPORTANT deployment note for main agent: the running ts-node backend (started with `npx ts-node --transpile-only src/server.ts`, NO nodemon) does NOT auto-reload on source changes. When leads.ts was modified at 09:28 but backend had started at 09:25, the pre-fix code kept executing and produced 3 client emails per /submit. I ran `sudo supervisorctl restart backend` and the fix immediately took effect. Any future source edits require an explicit backend restart to be verifiable — consider switching the supervisor command to `nodemon src/server.ts` for dev.",
+    "Optional cleanup: /app/kolor-studio-v2/backend/dist/ still contains stale compiled JS with the deleted sendClientConfirmation function (dist/services/email.js:320). Runtime is not affected (backend runs from src/ via ts-node), but the stale dist should be regenerated or gitignored to avoid confusion."
+  ],
+  "critical_code_review_comments": [
+    "leads.ts:461-615 /submit block is now clean and matches the PRD: sendNewLeadNotification (owner) + sendInquiryAcknowledgementEmail (client with enriched summary). Enrichment nicely reads assignedTo user's studio/industry via prisma.user.findUnique — good pattern. Consider caching that lookup if /submit volume grows (currently one extra DB round trip per submit).",
+    "email.ts sendInquiryAcknowledgementEmail: summaryCardHtml is only rendered when summaryRows.length > 0, and portfolioLinkHtml is conditional on params.portfolioUrl — correct conditional rendering, no empty cards.",
+    "SERVICE_TYPE_LABELS export from email.ts is clean; leads.ts imports it via named import. Good re-use.",
+    "Log signature inconsistency: authenticated POST /api/leads uses BOTH '[AutoResponse] Error:' (leads.ts:65 wrapper) AND 'Error sending auto-response:' (email.ts:1475 inner) depending on which layer catches the error. Consider consolidating.",
+    "Pre-existing (not iter 264 scope): fallback owner email 'emmanuelobokoh03@gmail.com' still hardcoded in /submit lookup path around leads.ts assignedToId resolution — should be env-driven."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter264_single_client_email.py"],
+  "success_rate": {"backend": "100% (9/9 tests passed)", "frontend": "N/A (skipped per request)"},
+  "test_credentials": "bookingtest@test.com / password123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Transient TEST_-prefixed leads via POST /api/leads/submit (2 leads created during runs — cannot delete without matching auth ownership; will remain). Authenticated POST /api/leads leads are cleaned up in test teardown.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend is ts-node with --transpile-only (no auto-reload). ALWAYS `sudo supervisorctl restart backend` after any src/ change before testing. Login (POST /api/auth/login) sets HttpOnly JWT cookie — no token in JSON body — use requests.Session(). RESEND_API_KEY set but domain unverified → Resend 403 validation_error in logs is EXPECTED and non-blocking; test by counting ATTEMPTS (log lines) not delivery success. Log signatures for /submit path: exactly '[EMAIL] Inquiry acknowledgement sent to <email>' OR '[EMAIL] Inquiry acknowledgement failed:'. Removed paths: 'Failed to send client confirmation', 'Error sending auto-response', '[AutoResponse]' — none should appear for /submit. For authed POST /api/leads, expect 'Error sending auto-response:' (kept by design).",
+  "iter_264_verification": {
+    "1_zero_sendClientConfirmation_refs_in_src": {"expected": "grep -rn sendClientConfirmation backend/src → 0 hits", "observed": "0 hits (dist/ still has stale compiled JS but runtime uses src/)", "verdict": "PASS"},
+    "2_submit_block_only_expected_email_funcs": {"expected": "Only sendNewLeadNotification + sendInquiryAcknowledgementEmail in /submit block", "observed": "Confirmed; sendClientConfirmation and sendAutoResponse absent from block", "verdict": "PASS"},
+    "3_enrichment_params_passed": {"expected": "serviceLabel/budget/timeline/portfolioUrl + SERVICE_TYPE_LABELS import in /submit ack call", "observed": "All 5 tokens present at leads.ts:590-601", "verdict": "PASS"},
+    "4_email_template_has_summary_card": {"expected": "email.ts contains summaryCardHtml, portfolioLinkHtml, 'Your Inquiry' markup, exported SERVICE_TYPE_LABELS", "observed": "Lines 36 (export), 184 (summaryCardHtml), 189 ('Your Inquiry'), 206 (portfolioLinkHtml)", "verdict": "PASS"},
+    "5_authed_route_still_has_sendAutoResponse": {"expected": "sendAutoResponse(lead) call KEPT in authed POST / block", "observed": "leads.ts:446 has sendAutoResponse(lead).catch(...)", "verdict": "PASS"},
+    "6_submit_runtime_single_client_email": {"expected": "One request → one '[EMAIL] Inquiry acknowledgement' log; zero deleted-path log lines", "observed": "After backend restart: exactly 1 '[EMAIL] Inquiry acknowledgement failed' per /submit; zero 'Failed to send client confirmation', 'Client confirmation', '[AutoResponse]', 'Auto-response sent' in the request's log window", "verdict": "PASS"},
+    "7_authed_lead_still_triggers_autoresponse": {"expected": "Authed POST /api/leads still logs auto-response attempt", "observed": "'Error sending auto-response:' appears in log window after each authed POST /", "verdict": "PASS"},
+    "8_baseline_login_and_get_leads": {"expected": "Login 200, GET /api/leads 200", "observed": "Both PASS", "verdict": "PASS"},
+    "9_backend_boots_clean_after_restart": {"expected": "Backend RUNNING after supervisorctl restart", "observed": "pid 822, no import/runtime errors; /api/health 200", "verdict": "PASS"}
+  },
+  "rca_of_issue": "Initial test run showed 3 client emails per /submit (Failed to send client confirmation + Inquiry acknowledgement failed + Error sending auto-response × 2). Grep of backend/src returned 0 hits for sendClientConfirmation — proving source WAS clean. Comparing mtimes: leads.ts modified 09:28:06, backend process uptime 5m45s ⇒ started ~09:25. Backend runs `npx ts-node --transpile-only src/server.ts` with NO nodemon — no hot reload. Pre-fix code was cached in-memory. Fix: `sudo supervisorctl restart backend`, then re-ran tests — all 9 passed, /submit now logs exactly one '[EMAIL] Inquiry acknowledgement' line and zero deleted-path lines. Bug fix code is correct; the runtime just needed a restart to load it."
+}
