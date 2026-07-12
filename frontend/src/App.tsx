@@ -91,6 +91,10 @@ function App() {
         <Route path="/inquiry" element={<SubmitInquiry />} />
         <Route path="/portal/:token" element={<ClientPortal />} />
         <Route path="/quote/:quoteToken" element={<PublicQuote />} />
+        <Route path="/portfolio" element={<Navigate to="/dashboard?view=portfolio" replace />} />
+        <Route path="/kanban" element={<Navigate to="/dashboard?view=kanban" replace />} />
+        <Route path="/list" element={<Navigate to="/dashboard?view=list" replace />} />
+        <Route path="/community" element={<Navigate to="/dashboard?view=community" replace />} />
         <Route path="/portfolio/:userId" element={<PublicPortfolio />} />
         <Route path="/testimonial/:token" element={<SubmitTestimonial />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
