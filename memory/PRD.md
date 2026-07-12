@@ -1700,6 +1700,12 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - Report: `/app/test_reports/iteration_265.json` (100%). Commit `509ef1a` local — push via "Save to GitHub".
 - Testing-agent tip recorded: `[data-testid=settings-modal]` is the full-viewport backdrop; measure the card via `firstElementChild`.
 
+## Iteration 266 (June 2026) — Deep-link redirect routes ✅ TESTED (9/9)
+- Added 4 App.tsx redirects: `/portfolio` `/kanban` `/list` `/community` → `/dashboard?view=X` (Navigate replace), inserted before `/portfolio/:userId`. Component name drift caught: `PublicPortfolio` (spec said `PortfolioPublic`); `community` verified in Dashboard `VALID_VIEWS` (stale comment excluded it).
+- Verified e2e: all 4 redirect + render correct views; public share route regression clean (invalid id shows PublicPortfolio error state, no redirect); unauth visit no crash; landing/login/dashboard regressions clean. Report: `/app/test_reports/iteration_266.json`.
+- Commit `8b1a8a9` local — push via "Save to GitHub".
+- 🔎 NEW pre-existing finding (now reachable via /community deep-link): **CommunityFeed.tsx throws React "Invalid hook call"** on mount — likely duplicate React copy via @phosphor-icons import; needs its own iteration.
+
 ## Backlog (deferred iterations)
 - **P2 (new, found by testing agent)**: Portfolio page is NOT a Router route — only reachable via `?view=portfolio` dashboard view state; direct `/portfolio` URL 404s. Add a proper Route for deep-linking.
 - ~~P1: Move `PortfolioSettings.tsx`~~ — RESOLVED iter 261 (deleted as duplicate instead of moved).
