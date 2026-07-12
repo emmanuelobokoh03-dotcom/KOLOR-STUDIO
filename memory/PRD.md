@@ -1693,6 +1693,13 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - Commit `102297c` local — push via "Save to GitHub".
 - Minor notes from test review: inconsistent auto-response log prefixes; stale `backend/dist/` contains deleted function (runtime unaffected); pre-existing hardcoded fallback owner email.
 
+## Iteration 265 (June 2026) — Sandbox guard + payment nudge migration + mobile tab fix ✅ TESTED (8/8)
+- **Production sandbox guard** (`server.ts` `validateEmailSender` IIFE): NODE_ENV=production + resend.dev sender → `process.exit(1)` with loud error. Runtime-verified in isolated process (exits 1); dev mode warns + continues.
+- **`sendPaymentNudge` migrated to `buildEmailTemplate`** — last raw-HTML email gone; design-system consolidation from iter 262 audit complete (except getEmailTemplate legacy wrapper retirement).
+- **Mobile tab strip fix** (`SettingsModal.tsx`): `flex-shrink-0` on tab buttons, `-mb-px` removed, inactive tabs `border-b-2 border-transparent` (border parity = 0px vertical shift), outer `p-2 sm:p-4`, nav `scroll-smooth`. Pixel-verified by testing agent at 375px: 0.00px layout variance across all tab switches, 8px edge gaps, no compression, horizontal scroll working. Desktop regression clean.
+- Report: `/app/test_reports/iteration_265.json` (100%). Commit `509ef1a` local — push via "Save to GitHub".
+- Testing-agent tip recorded: `[data-testid=settings-modal]` is the full-viewport backdrop; measure the card via `firstElementChild`.
+
 ## Backlog (deferred iterations)
 - **P2 (new, found by testing agent)**: Portfolio page is NOT a Router route — only reachable via `?view=portfolio` dashboard view state; direct `/portfolio` URL 404s. Add a proper Route for deep-linking.
 - ~~P1: Move `PortfolioSettings.tsx`~~ — RESOLVED iter 261 (deleted as duplicate instead of moved).
