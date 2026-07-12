@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { sendNewLeadNotification, sendClientConfirmation, sendStatusChangeNotification, sendPortalLinkEmail, sendAutoResponseEmail, sendDeliveryNotificationEmail, sendTestimonialRequestEmail, sendInquiryAcknowledgementEmail } from '../services/email';
+import { SERVICE_TYPE_LABELS, sendNewLeadNotification, sendStatusChangeNotification, sendPortalLinkEmail, sendAutoResponseEmail, sendDeliveryNotificationEmail, sendTestimonialRequestEmail, sendInquiryAcknowledgementEmail } from '../services/email';
 import { logActivity } from './activities';
 import { uploadFile, ensureBucketExists } from '../services/storage';
 import { paymentService } from '../services/paymentService';
@@ -580,20 +580,6 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       })
       .catch(err => console.error('Owner notification error:', err));
 
-    sendClientConfirmation(leadData)
-      .then(success => {
-        if (success) {
-          logActivity(
-            lead.id,
-            null,
-            'EMAIL_SENT',
-            `Confirmation email sent to ${clientEmail}`,
-            { emailType: 'client_confirmation', clientEmail }
-          ).catch(() => {});
-        }
-      })
-      .catch(err => console.error('Client confirmation error:', err));
-
     // Industry-adaptive inquiry acknowledgement (from studio, not KOLOR)
     if (assignedToId) {
       prisma.user.findUnique({
@@ -608,13 +594,15 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
             studioName: assignedUser.studioName || assignedUser.firstName,
             industry: assignedUser.industry,
             portalToken: lead.portalToken,
+            // iter 264: enrichment for consolidated single-email inquiry response
+            serviceLabel: SERVICE_TYPE_LABELS[serviceType] || serviceType,
+            budget: budget ?? null,
+            timeline: timeline ?? null,
+            portfolioUrl: `${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/portfolio/${assignedToId}`,
           }).catch(err => console.error('[LEADS] Inquiry acknowledgement email failed (non-blocking):', err));
         }
       }).catch(err => console.error('[LEADS] Failed to fetch assigned user for acknowledgement:', err));
     }
-
-    // Auto-response with portfolio link (non-blocking)
-    sendAutoResponse(lead).catch(err => console.error('Auto-response error:', err));
 
     res.status(201).json({ 
       message: 'Thank you! Your inquiry has been submitted successfully.',

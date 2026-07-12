@@ -33,7 +33,7 @@ interface LeadData {
   portalToken?: string;  // For client portal link
 }
 
-const SERVICE_TYPE_LABELS: Record<string, string> = {
+export const SERVICE_TYPE_LABELS: Record<string, string> = {
   PHOTOGRAPHY: 'Photography',
   VIDEOGRAPHY: 'Videography',
   GRAPHIC_DESIGN: 'Graphic Design',
@@ -149,134 +149,6 @@ export async function sendNewLeadNotification(lead: LeadData): Promise<boolean> 
   }
 }
 
-// Send confirmation email to client
-export async function sendClientConfirmation(lead: LeadData): Promise<boolean> {
-  if (!resend) {
-
-    return false;
-  }
-
-  const serviceLabel = SERVICE_TYPE_LABELS[lead.serviceType] || lead.serviceType;
-  const baseUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
-  const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null;
-
-  const content = `
-    <h1 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">
-      Thank You, ${lead.clientName.split(' ')[0]}!
-    </h1>
-    
-    <p style="margin: 0 0 20px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
-      We've received your project inquiry and we're excited to learn more about your vision! Your request has been added to our queue and we'll review it personally.
-    </p>
-    
-    <p style="margin: 0 0 24px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
-      <strong style="color: #1A1A2E;">What happens next?</strong> We'll review your project details and get back to you within <strong style="color: #6C2EDB;">24-48 hours</strong> with next steps and any questions we might have.
-    </p>
-    
-    ${portalUrl ? `
-    <!-- Portal Access Card -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #6C2EDB 0%, #a855f7 100%); border-radius: 12px; margin-bottom: 24px;">
-      <tr>
-        <td style="padding: 24px; text-align: center;">
-          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #ffffff;">
-            Track Your Project Status
-          </h3>
-          <p style="margin: 0 0 16px 0; font-size: 14px; color: rgba(255,255,255,0.9);">
-            Bookmark this link to check your project progress anytime
-          </p>
-          <a href="${portalUrl}" style="display: inline-block; background-color: #ffffff; color: #6C2EDB; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 24px; border-radius: 8px;">
-            View My Project Portal
-          </a>
-        </td>
-      </tr>
-    </table>
-    ` : ''}
-    
-    <!-- Summary Card -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F9FAFB; border-radius: 12px; margin-bottom: 24px;">
-      <tr>
-        <td style="padding: 24px;">
-          <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: 600; color: #6C2EDB; text-transform: uppercase; letter-spacing: 0.5px;">
-            Your Inquiry Summary
-          </h3>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr>
-              <td style="padding: 8px 0;">
-                <span style="color: #6B7280; font-size: 14px;">Service:</span>
-                <span style="color: #1A1A2E; font-size: 14px; font-weight: 600; padding-left: 8px;">
-                  ${serviceLabel}
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0;">
-                <span style="color: #6B7280; font-size: 14px;">Project:</span>
-                <span style="color: #1A1A2E; font-size: 14px; font-weight: 600; padding-left: 8px;">
-                  ${lead.projectTitle}
-                </span>
-              </td>
-            </tr>
-            ${lead.budget ? `
-            <tr>
-              <td style="padding: 8px 0;">
-                <span style="color: #6B7280; font-size: 14px;">Budget:</span>
-                <span style="color: #059669; font-size: 14px; font-weight: 600; padding-left: 8px;">
-                  ${lead.budget}
-                </span>
-              </td>
-            </tr>
-            ` : ''}
-            ${lead.timeline ? `
-            <tr>
-              <td style="padding: 8px 0;">
-                <span style="color: #6B7280; font-size: 14px;">Timeline:</span>
-                <span style="color: #1A1A2E; font-size: 14px; font-weight: 600; padding-left: 8px;">
-                  ${lead.timeline}
-                </span>
-              </td>
-            </tr>
-            ` : ''}
-          </table>
-        </td>
-      </tr>
-    </table>
-    
-    <p style="margin: 0 0 8px 0; font-size: 16px; color: #6B7280; line-height: 1.7;">
-      In the meantime, feel free to reply to this email if you have any additional details or questions to share.
-    </p>
-    
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #1A1A2E; line-height: 1.7;">
-      We're looking forward to bringing your creative vision to life!
-    </p>
-    
-    <p style="margin: 24px 0 0 0; font-size: 16px; color: #6B7280;">
-      Warm regards,<br>
-      <strong style="color: #6C2EDB;">The KOLOR STUDIO Team</strong>
-    </p>
-  `;
-
-  try {
-    const { error } = await resend.emails.send({
-      from: `KOLOR STUDIO <${SENDER_EMAIL}>`,
-      to: [lead.clientEmail],
-      replyTo: OWNER_EMAIL || SENDER_EMAIL,
-      subject: `Thanks for reaching out! We received your ${serviceLabel} inquiry`,
-      html: getEmailTemplate(content, 'Inquiry Confirmation'),
-    });
-
-    if (error) {
-      console.error('Failed to send client confirmation:', error);
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Failed to send client confirmation:', error);
-    return false;
-  }
-}
-
-// Industry-adaptive inquiry acknowledgement email (sent to client from creator's studio)
 export async function sendInquiryAcknowledgementEmail(params: {
   clientName: string;
   clientEmail: string;
@@ -284,6 +156,11 @@ export async function sendInquiryAcknowledgementEmail(params: {
   studioName: string;
   industry: string | null;
   portalToken?: string | null;
+  // iter 264: enriched to consolidate the previous 3-email inquiry response
+  serviceLabel?: string;
+  budget?: string | null;
+  timeline?: string | null;
+  portfolioUrl?: string | null;
 }): Promise<boolean> {
   if (!resend) return false;
 
@@ -298,15 +175,50 @@ export async function sendInquiryAcknowledgementEmail(params: {
   const baseUrl = process.env.FRONTEND_URL || '';
   const portalUrl = params.portalToken ? `${baseUrl}/portal/${params.portalToken}` : null;
 
+  // iter 264: inquiry summary card (only if we have any structured data)
+  const summaryRows: Array<{ label: string; value: string }> = [];
+  if (params.serviceLabel) summaryRows.push({ label: 'Service', value: params.serviceLabel });
+  if (params.budget) summaryRows.push({ label: 'Budget', value: params.budget });
+  if (params.timeline) summaryRows.push({ label: 'Timeline', value: params.timeline });
+
+  const summaryCardHtml = summaryRows.length > 0 ? `
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F9FAFB;border-radius:12px;margin:8px 0 16px;">
+        <tr>
+          <td style="padding:20px;">
+            <h3 style="margin:0 0 12px 0;font-size:12px;font-weight:600;color:#6C2EDB;text-transform:uppercase;letter-spacing:0.5px;font-family:Arial,Helvetica,sans-serif;">
+              Your Inquiry
+            </h3>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              ${summaryRows.map(row => `
+                <tr>
+                  <td style="padding:6px 0;font-family:Arial,Helvetica,sans-serif;">
+                    <span style="color:#6B7280;font-size:14px;">${row.label}:</span>
+                    <span style="color:#1A1A2E;font-size:14px;font-weight:600;padding-left:8px;">${row.value}</span>
+                  </td>
+                </tr>
+              `).join('')}
+            </table>
+          </td>
+        </tr>
+      </table>` : '';
+
+  // iter 264: portfolio link (only if URL provided)
+  const portfolioLinkHtml = params.portfolioUrl ? `
+      <p style="font-size:14px;color:#6B7280;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
+        In the meantime, explore <a href="${params.portfolioUrl}" style="color:#6C2EDB;text-decoration:underline;">${params.studioName}'s portfolio</a>.
+      </p>` : '';
+
   const html = buildEmailTemplate({
     headline: `Thank you, ${clientFirst}`,
     body: `
       <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
         ${params.studioName} received your ${iLang.inquiry} for <strong>"${params.projectTitle}"</strong>. Someone will be in touch within 24\u201348 hours.
       </p>
+      ${summaryCardHtml}
       <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;">
         We're looking forward to ${iLang.next}!
       </p>
+      ${portfolioLinkHtml}
       ${portalUrl ? `
       <p style="font-size:14px;color:#6B7280;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">
         Track your project status at your <a href="${portalUrl}" style="color:#6C2EDB;text-decoration:underline;">client portal</a>.
