@@ -1714,6 +1714,15 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - Commit `local` — push via "Save to GitHub". bookingtest@test.com/password123 preserved.
 - NEXT: **Iter 269 frontend** — UserContactInfo interactive email field, EmailChangeModal, VerifyEmailChange + RevokeEmailChange pages, 2 App.tsx routes.
 
+## Iteration 269 (June 2026) — Change-email flow FRONTEND ✅ TESTED (13/13 UI flows)
+- New: `EmailChangeModal.tsx` (form + success states, inline 401/409/429 errors), `pages/VerifyEmailChange.tsx`, `pages/RevokeEmailChange.tsx`, 2 lazy routes in App.tsx, 3 `authApi` methods, `UserSettings.pendingEmail` type.
+- `UserContactInfo`: SURGICAL edit preserving iter 260 `useSettings()` (spec's rewrite would have reverted it). Email field readOnly + Change button + persistent pending-change note.
+- 1-line backend addition: `pendingEmail` in `SETTINGS_SELECT` (read-only; profileFields allowlist unchanged) so pending state survives reload.
+- **Bug found by test agent + FIXED**: React.StrictMode double-invoked the mutating verify-on-mount effect in dev → false "Link expired" after successful swap. Fixed with `useRef hasRun` guards in BOTH pages; re-verified via token injection (success state renders). Prod build was never affected.
+- Report: `/app/test_reports/iteration_268.json` (13/13). bookingtest@test.com/password123 restored + login-verified; all iter269_ disposable users deleted.
+- Commit `6878554` local — push via "Save to GitHub".
+- Deferred iter 269a: resend w/ 60s cooldown, cancel-pending button, dirty-form confirm-close on backdrop click.
+
 ## Backlog (deferred iterations)
 - **P2 (new, found by testing agent)**: Portfolio page is NOT a Router route — only reachable via `?view=portfolio` dashboard view state; direct `/portfolio` URL 404s. Add a proper Route for deep-linking.
 - ~~P1: Move `PortfolioSettings.tsx`~~ — RESOLVED iter 261 (deleted as duplicate instead of moved).
