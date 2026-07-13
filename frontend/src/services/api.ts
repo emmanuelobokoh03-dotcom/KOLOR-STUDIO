@@ -114,6 +114,25 @@ export const authApi = {
       studioName?: string;
     }>('/api/auth/sample-quote', { method: 'POST' });
   },
+
+  // Email change flow (iter 269)
+  requestEmailChange: async (data: { newEmail: string; currentPassword: string }) => {
+    return request<{ success: boolean; pendingEmail: string; message?: string }>(
+      '/api/auth/request-email-change',
+      { method: 'POST', body: JSON.stringify(data) }
+    );
+  },
+  verifyEmailChange: async (token: string) => {
+    return request<{ success: boolean; oldEmail: string; newEmail: string; message?: string }>(
+      `/api/auth/verify-email-change/${encodeURIComponent(token)}`
+    );
+  },
+  revokeEmailChange: async (token: string) => {
+    return request<{ success: boolean }>('/api/auth/revoke-email-change', {
+      method: 'POST',
+      body: JSON.stringify({ token }),
+    });
+  },
   sendVerification: async () => {
     return request<{ message: string }>('/api/auth/send-verification', {
       method: 'POST',
@@ -1031,6 +1050,7 @@ export interface CurrencyOption {
 export interface UserSettings {
   id: string;
   email: string;
+  pendingEmail?: string | null;
   firstName: string;
   lastName: string;
   studioName?: string;

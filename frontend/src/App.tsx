@@ -16,6 +16,8 @@ const SubmitInquiry = lazy(() => import('./pages/SubmitInquiry'))
 const ClientPortal = lazy(() => import('./pages/ClientPortal'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const ResetPassword = lazy(() => import('./pages/ResetPassword'))
+const VerifyEmailChange = lazy(() => import('./pages/VerifyEmailChange'))
+const RevokeEmailChange = lazy(() => import('./pages/RevokeEmailChange'))
 const PublicQuote = lazy(() => import('./pages/PublicQuote'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./pages/TermsOfService'))
@@ -78,6 +80,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/verify-email-change/:token" element={<VerifyEmailChange />} />
+        <Route path="/revoke-email-change/:token" element={<RevokeEmailChange />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/settings" element={<Settings />}>

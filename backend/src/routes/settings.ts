@@ -52,6 +52,7 @@ const AVAILABLE_CURRENCIES = [
 const SETTINGS_SELECT = {
   id: true,
   email: true,
+  pendingEmail: true,
   firstName: true,
   lastName: true,
   studioName: true,

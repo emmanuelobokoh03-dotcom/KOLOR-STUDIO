@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSettings } from '../contexts/SettingsContext'
+import EmailChangeModal from './EmailChangeModal'
 
 /**
  * User contact info editor (iter 259).
@@ -19,6 +20,8 @@ export default function UserContactInfo() {
   const [studioName, setStudioName] = useState<string>('')
   const [phone, setPhone] = useState<string>('')
   const [website, setWebsite] = useState<string>('')
+  const [showEmailModal, setShowEmailModal] = useState(false)
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null)
 
   // Seed local state once settings load. Subsequent saves come back via
   // the hook and re-seed automatically.
@@ -29,6 +32,7 @@ export default function UserContactInfo() {
     setStudioName(settings.studioName ?? '')
     setPhone(settings.phone ?? '')
     setWebsite(settings.website ?? '')
+    setPendingEmail(settings.pendingEmail ?? null)
   }, [settings])
 
   if (!settings) {
@@ -122,16 +126,33 @@ export default function UserContactInfo() {
         </div>
         <div className="sm:col-span-2">
           <label className="block text-sm font-medium text-text-primary mb-1">Email</label>
-          <input
-            type="email"
-            value={settings.email}
-            disabled
-            className="w-full px-3 py-2 border border-border rounded-md bg-surface-muted text-text-secondary cursor-not-allowed"
-            data-testid="user-contact-email-input"
-          />
-          <p className="text-xs text-text-secondary mt-1">
-            Changing email requires verification (coming soon).
-          </p>
+          <div className="flex gap-2 items-center">
+            <input
+              type="email"
+              value={settings.email}
+              readOnly
+              className="flex-1 px-3 py-2 border border-border rounded-md bg-surface-muted text-text-secondary cursor-not-allowed"
+              data-testid="user-contact-email-input"
+            />
+            <button
+              type="button"
+              onClick={() => setShowEmailModal(true)}
+              className="px-4 py-2 border border-border rounded-md text-text-primary hover:bg-surface-muted whitespace-nowrap"
+              data-testid="user-contact-change-email-button"
+            >
+              Change
+            </button>
+          </div>
+          {pendingEmail ? (
+            <p className="text-xs text-brand-primary mt-1" data-testid="user-contact-pending-email">
+              Pending change: <strong>{pendingEmail}</strong>. Check your new inbox for the
+              verification link (expires in 15 minutes).
+            </p>
+          ) : (
+            <p className="text-xs text-text-secondary mt-1">
+              Changing your email requires verification at the new address.
+            </p>
+          )}
         </div>
       </div>
 
@@ -147,6 +168,14 @@ export default function UserContactInfo() {
         {saved && <span className="text-sm text-brand-primary" data-testid="user-contact-saved">Saved ✓</span>}
         {error && <span className="text-sm text-red-500" data-testid="user-contact-error">{error}</span>}
       </div>
+
+      {showEmailModal && (
+        <EmailChangeModal
+          currentEmail={settings.email}
+          onClose={() => setShowEmailModal(false)}
+          onSuccess={(p) => setPendingEmail(p)}
+        />
+      )}
     </section>
   )
 }
