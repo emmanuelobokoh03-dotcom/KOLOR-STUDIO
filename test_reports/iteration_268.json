@@ -1,0 +1,40 @@
+{
+  "summary": "Iter 269 email-change FRONTEND: 10/10 UI flows passed on bookingtest@test.com. EmailChangeModal (open/same-email/wrong-pw/409-taken/happy) all work; pendingEmail note visible + persists after reload; Money tab loads; Account save regression intact. VerifyEmailChange garbage-token → error state OK. Revoke happy + double-use → correct success/error states. VerifyEmailChange happy path: backend DID swap the email (old-email 401, new-email 200) but the frontend UI showed 'Link expired' due to React.StrictMode double-invocation of the mutating useEffect in dev build — dev-only UI issue, prod build unaffected.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "VerifyEmailChange.tsx",
+        "issue": "useEffect fires a mutating (non-idempotent) GET /api/auth/verify-email-change on mount. React.StrictMode double-invokes effects in dev, so first call swaps the email (success in DB) and clears the token, then second call hits the now-cleared token and returns 400. UI ends up in 'Link expired or invalid' state even though the email change succeeded server-side. Confirmed by curl: old-email login → 401, new-email login → 200 after visiting the verify URL. Not a regression from iter 269 code alone (any GET-mutating verify endpoint pattern is affected), but user-visible in this dev preview environment. Production Vite build (no StrictMode double-invoke) will not exhibit it.",
+        "selector": "[data-testid=verify-email-success]",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/kolor-studio-v2/backend/scripts/iter268_prisma_helper.js"
+  ],
+  "action_items": [
+    "Consider making VerifyEmailChange resilient to StrictMode double-invocation. Options: (a) use a useRef 'hasRun' guard, (b) convert the endpoint to POST semantically so React understands not to duplicate (still double-invokes but at least it's obvious), or (c) render a 'Click to confirm' button that the user clicks to trigger the mutation instead of firing it on mount. Current behaviour is safe in production but misleading in dev.",
+    "Minor: EmailChangeModal outer div `onClick={onClose}` combined with the inner `stopPropagation` works, but a stray click on the backdrop can close the modal and lose typed content — consider requiring explicit Cancel or adding a confirm-close if the form is dirty (nice-to-have, not blocking)."
+  ],
+  "critical_code_review_comments": [
+    "VerifyEmailChange.tsx does a mutating server call inside a mount-effect with no idempotency guard. Under React.StrictMode this causes a false 'expired' UI even after a successful email swap. Suggest a useRef guard or a user-initiated confirm click.",
+    "RevokeEmailChange.tsx has the same useEffect-on-mount pattern but happened to render success in dev because the backend accepts the first call and the second lands after state was already set; still worth adding an idempotency guard for consistency.",
+    "EmailChangeModal.tsx surface of `err.message` from `authApi.requestEmailChange` returns `res.error/res.message` from `request()` — the modal correctly falls back to `res?.message || res?.error`. Wording verified: 'Current password is incorrect' (401), 'This email is already in use' (409), 'New email must be different from your current email.' (client-side)."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (verified via prior iter 268 run)", "frontend": "10/10 modal flows + verify-garbage + revoke-happy + revoke-double = 13/13 UI flows. Verify-happy: backend swap OK, frontend UI shows error under dev StrictMode (see ui_bugs)." },
+  "test_credentials": {
+    "canonical": "bookingtest@test.com / password123 — RESTORED (reset-fields cleared pendingEmail=null, all emailChange* fields null, tokenVersion=0). Login-verified 200 at end.",
+    "disposable_users_created": "iter269_taken_7abbc8a2, iter269_verify_d2195e8e (renamed by verify flow to iter269_verified_new), iter269_revoke_396de36b — ALL deleted via prisma cleanup iter269_ (count=3).",
+    "pending_email_target": "iter269_pending_e5f52609@example.com was the pending target on bookingtest; cleared via reset-fields (never a real user account)."
+  },
+  "seed_data_creation": "None permanent. All test users signed up on-the-fly with prefix 'iter269_' and cleaned up via prisma helper cleanup command. bookingtest@test.com preserved with clean pending state.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "React.StrictMode double-fires useEffect in dev, breaking any mutating-on-mount endpoint. VerifyEmailChange visibly affected. This preview URL serves Vite dev build (/@vite/client visible in HTML). Prisma helper at /app/kolor-studio-v2/backend/scripts/iter268_prisma_helper.js supports: get/inject/inject-expired/verify-user/restore-email/reset-fields/cleanup. To bypass the tour overlay blocking sidebar clicks, use page.evaluate(\"document.querySelector('[data-testid=sidebar-user-block]').click()\") AND click 'Awesome!' celebration button + press Escape + click Accept All cookie banner. Modal-in-modal (EmailChangeModal inside SettingsModal) works — both use z-modal but the later-rendered EmailChangeModal wins the stacking context.",
+  "rca_of_verify_stricmode_issue": "Root cause: React.StrictMode intentionally double-invokes useEffect in DEVELOPMENT to surface impure effects. VerifyEmailChange.tsx line 20-49 has `useEffect(() => { authApi.verifyEmailChange(token).then(...) }, [token, navigate])`. First invocation: POSTs the raw token, backend hashes+matches, swaps email, clears token, bumps tokenVersion, returns 200. Cleanup runs (sets cancelled=true), state NOT updated. Second invocation runs immediately: POSTs the same raw token, backend hashes it and finds NO user with that token hash (already cleared), returns 400. Response arrives (cancelled is false for THIS instance's closure), setStatus('error') is called → UI shows 'Link expired'. Mitigation: add a `const hasRun = useRef(false); if (hasRun.current) return; hasRun.current = true;` guard at the top of useEffect, OR only fire on user click. Production build has no double-invoke so users are not affected in prod. Reproduction: `node scripts/iter268_prisma_helper.js inject <email> <rawToken> <pending>` then visit /verify-email-change/<rawToken> in this dev preview → UI shows error, but curl login of new email → 200."
+}
