@@ -1723,6 +1723,13 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - Commit `6878554` local — push via "Save to GitHub".
 - Deferred iter 269a: resend w/ 60s cooldown, cancel-pending button, dirty-form confirm-close on backdrop click.
 
+## Iteration 270 (June 2026) — Worker /health endpoint ✅ SMOKE-TESTED (runtime)
+- `worker.ts` rewritten (112→268 lines): express server on `process.env.PORT` (fallback 5001), `GET /health` (200 healthy / 503 degraded) + `GET /` liveness. All 5 processors' logic preserved verbatim.
+- Per-processor tickState (lastTickAt/lastResult/lastError/errorCount); healthy = ticked within 2× interval; 5-min startup grace; `recordTickSuccess`/`recordTickError` wired into every .then/.catch (11 each).
+- Runtime-verified locally on port 5099: 200 + `awaiting-first-tick` during grace, `sequences` first tick at 10s → `healthy` with real ISO timestamp, `/` returns liveness JSON.
+- Commit local — push via "Save to GitHub". POST-DEPLOY (Emmanuel): Railway → miraculous-endurance → generate public domain → UptimeRobot HTTP monitor on `/health`, 5-min interval, alert on 503/timeout.
+- Deferred iter 271+: DB tick history, retry/backoff, stall alert via sendHealthCheckFailureAlert, metrics endpoint.
+
 ## Backlog (deferred iterations)
 - **P2 (new, found by testing agent)**: Portfolio page is NOT a Router route — only reachable via `?view=portfolio` dashboard view state; direct `/portfolio` URL 404s. Add a proper Route for deep-linking.
 - ~~P1: Move `PortfolioSettings.tsx`~~ — RESOLVED iter 261 (deleted as duplicate instead of moved).
