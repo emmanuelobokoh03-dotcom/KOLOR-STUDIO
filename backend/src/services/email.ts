@@ -2231,8 +2231,8 @@ export async function sendClientOnboardingEmail(
   };
   const iLang = industryLang[params.industry || ''] ?? industryLang['PHOTOGRAPHY'];
 
-  // iter 271: humanize the raw serviceType enum for user-facing copy
-  // (e.g., WEDDING_PHOTOGRAPHY → "Wedding Photography", FINE_ART → "Fine Art")
+  // iter 271: humanize the raw serviceType enum via SERVICE_TYPE_LABELS map
+  // for user-facing copy (falls back to raw enum for unmapped values)
   const projectLabel = SERVICE_TYPE_LABELS[projectType] || projectType;
 
   if (!resend) {
@@ -2435,8 +2435,8 @@ export async function sendQuoteFollowUpEmail(
   const { to, clientName, creativeName, projectType, quoteAmount, currencySymbol, portalUrl, expirationDays, leadId } = params;
   const formattedAmount = `${currencySymbol}${quoteAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-  // iter 271: humanize the raw serviceType enum for user-facing copy
-  // (e.g., WEDDING_PHOTOGRAPHY → "Wedding Photography", FINE_ART → "Fine Art")
+  // iter 271: humanize the raw serviceType enum via SERVICE_TYPE_LABELS map
+  // for user-facing copy (falls back to raw enum for unmapped values)
   const projectLabel = SERVICE_TYPE_LABELS[projectType] || projectType;
 
   if (!resend) {
