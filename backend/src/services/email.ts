@@ -2231,6 +2231,10 @@ export async function sendClientOnboardingEmail(
   };
   const iLang = industryLang[params.industry || ''] ?? industryLang['PHOTOGRAPHY'];
 
+  // iter 271: humanize the raw serviceType enum for user-facing copy
+  // (e.g., WEDDING_PHOTOGRAPHY → "Wedding Photography", FINE_ART → "Fine Art")
+  const projectLabel = SERVICE_TYPE_LABELS[projectType] || projectType;
+
   if (!resend) {
 
     return false;
@@ -2256,14 +2260,14 @@ export async function sendClientOnboardingEmail(
 
   const templates: Record<number, { subject: string; content: string }> = {
     1: {
-      subject: `Welcome! Let's Get Started on Your ${projectType}`,
+      subject: `Welcome! Let's Get Started on Your ${projectLabel}`,
       content: `
         <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1A1A2E;">
           Welcome to Your Project!
         </h1>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
-          I'm excited to work with you on your <strong>${projectType}</strong>.
+          I'm excited to work with you on your <strong>${projectLabel}</strong>.
           Here's what to expect over the coming days:
         </p>
         <div style="background: #f9fafb; border-left: 4px solid #6C2EDB; padding: 20px; margin: 24px 0; border-radius: 8px;">
@@ -2335,14 +2339,14 @@ export async function sendClientOnboardingEmail(
       `,
     },
     3: {
-      subject: `Your ${projectType} is Progressing!`,
+      subject: `Your ${projectLabel} is Progressing!`,
       content: `
         <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700; color: #1A1A2E;">
           Your Project is Underway!
         </h1>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
-          Great news! Work on your <strong>${projectType}</strong> is progressing well.
+          Great news! Work on your <strong>${projectLabel}</strong> is progressing well.
         </p>
         <div style="background: #ecfdf5; border: 2px solid #10b981; padding: 24px; margin: 24px 0; border-radius: 12px; text-align: center;">
           ${daysUntilDeadline
@@ -2431,6 +2435,10 @@ export async function sendQuoteFollowUpEmail(
   const { to, clientName, creativeName, projectType, quoteAmount, currencySymbol, portalUrl, expirationDays, leadId } = params;
   const formattedAmount = `${currencySymbol}${quoteAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
+  // iter 271: humanize the raw serviceType enum for user-facing copy
+  // (e.g., WEDDING_PHOTOGRAPHY → "Wedding Photography", FINE_ART → "Fine Art")
+  const projectLabel = SERVICE_TYPE_LABELS[projectType] || projectType;
+
   if (!resend) {
 
     return false;
@@ -2456,16 +2464,16 @@ export async function sendQuoteFollowUpEmail(
 
   const templates: Record<number, { subject: string; content: string }> = {
     1: {
-      subject: `Following up on your ${projectType} quote`,
+      subject: `Following up on your ${projectLabel} quote`,
       content: `
         <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">Just Following Up</h1>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
-          I wanted to follow up on the quote I sent you for your <strong>${projectType}</strong>.
+          I wanted to follow up on the quote I sent you for your <strong>${projectLabel}</strong>.
         </p>
         <div style="background: #F3EEFF; border-left: 4px solid #6C2EDB; padding: 20px; margin: 24px 0; border-radius: 8px;">
           <p style="margin: 0; color: #1e40af; font-size: 20px; font-weight: 700;">${formattedAmount}</p>
-          <p style="margin: 4px 0 0 0; color: #475569; font-size: 14px;">Investment for ${projectType}</p>
+          <p style="margin: 4px 0 0 0; color: #475569; font-size: 14px;">Investment for ${projectLabel}</p>
         </div>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           I'm excited about the possibility of working together! If you have any questions or need clarification, I'm here to help.
@@ -2481,12 +2489,12 @@ export async function sendQuoteFollowUpEmail(
       `,
     },
     2: {
-      subject: `Any questions about your ${projectType}?`,
+      subject: `Any questions about your ${projectLabel}?`,
       content: `
         <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">Any Questions?</h1>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
-          I haven't heard back about your <strong>${projectType}</strong> quote yet, and I wanted to check in.
+          I haven't heard back about your <strong>${projectLabel}</strong> quote yet, and I wanted to check in.
         </p>
         <div style="background: #faf5ff; border-left: 4px solid #8b5cf6; padding: 20px; margin: 24px 0; border-radius: 8px;">
           <h3 style="margin: 0 0 12px 0; color: #6b21a8; font-size: 15px;">Common Questions:</h3>
@@ -2511,16 +2519,16 @@ export async function sendQuoteFollowUpEmail(
       `,
     },
     3: {
-      subject: `Your ${projectType} quote expires soon`,
+      subject: `Your ${projectLabel} quote expires soon`,
       content: `
         <h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1A1A2E;">Final Follow-Up</h1>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">Hi ${clientName},</p>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
-          This is my final follow-up regarding your <strong>${projectType}</strong> quote.
+          This is my final follow-up regarding your <strong>${projectLabel}</strong> quote.
         </p>
         <div style="background: #fffbeb; border: 2px solid #f59e0b; padding: 24px; margin: 24px 0; border-radius: 12px; text-align: center;">
           <p style="margin: 0; color: #92400e; font-size: 18px; font-weight: 600;">Quote expires in ${expirationDays || 7} days</p>
-          <p style="margin: 8px 0 0 0; color: #78350f; font-size: 14px;">${formattedAmount} for ${projectType}</p>
+          <p style="margin: 8px 0 0 0; color: #78350f; font-size: 14px;">${formattedAmount} for ${projectLabel}</p>
         </div>
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           I'd love to work with you, but I understand if the timing isn't right. If you're interested, let me know soon so I can reserve your spot!
