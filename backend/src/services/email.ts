@@ -3214,7 +3214,7 @@ export async function sendCalendarDisconnectedAlert(user: {
       body: `
         ${warningBox('Calendar sync is paused. New bookings won\'t appear in your calendar until you reconnect.')}`,
       ctaText: 'Reconnect Google Calendar \u2192',
-      ctaUrl: `${FRONTEND_URL}/settings?tab=integrations`,
+      ctaUrl: `${FRONTEND_URL}/settings/calendar-reconnect`,
       emailType: 'workflow',
     });
 

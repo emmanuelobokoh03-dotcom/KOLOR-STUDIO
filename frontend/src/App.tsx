@@ -27,6 +27,7 @@ const VerifyEmail = lazy(() => import('./pages/VerifyEmail'))
 const PublicBookingPage = lazy(() => import('./pages/PublicBookingPage'))
 const IndustryOnboarding = lazy(() => import('./components/IndustryOnboarding'))
 const CalendarPage = lazy(() => import('./pages/Calendar'))
+const CalendarReconnect = lazy(() => import('./pages/CalendarReconnect'))
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
 import NotFound from './pages/NotFound'
@@ -81,6 +82,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/verify-email-change/:token" element={<VerifyEmailChange />} />
+        <Route path="/settings/calendar-reconnect" element={<CalendarReconnect />} />
         <Route path="/revoke-email-change/:token" element={<RevokeEmailChange />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/calendar" element={<CalendarPage />} />
