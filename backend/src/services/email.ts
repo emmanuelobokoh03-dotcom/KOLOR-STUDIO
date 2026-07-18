@@ -3148,7 +3148,7 @@ export async function sendWeeklyPipelineReport(user: {
         <p style="font-size:15px;color:#1A1A2E;line-height:1.65;margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;">Have a great week.</p>`,
       ctaText: 'Open KOLOR Studio \u2192',
       ctaUrl: `${FRONTEND_URL}/dashboard`,
-      unsubscribeUrl: `${FRONTEND_URL}/settings?tab=notifications`,
+      unsubscribeUrl: `${FRONTEND_URL}/settings/notifications`,
       emailType: 'workflow',
     });
 
