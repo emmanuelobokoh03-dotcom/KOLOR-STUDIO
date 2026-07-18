@@ -630,7 +630,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdate, onCelebrate, 
     if (['STATUS_CHANGED', 'CONTRACT_SIGNED'].includes(type)) return '#6C2EDB'
     if (['CALL_MADE', 'CALL_RECEIVED', 'MEETING_SCHEDULED', 'DISCOVERY_CALL_SCHEDULED'].includes(type)) return '#3B82F6'
     if (['MEETING_COMPLETED', 'DISCOVERY_CALL_COMPLETED', 'PAYMENT_RECEIVED'].includes(type)) return '#059669'
-    if (['QUOTE_SENT', 'EMAIL_SENT', 'FILE_UPLOADED'].includes(type)) return '#D97706'
+    if (['QUOTE_SENT', 'EMAIL_SENT', 'MESSAGE_SENT', 'FILE_UPLOADED'].includes(type)) return '#D97706'
     if (['NOTE_ADDED'].includes(type)) return '#9CA3AF'
     return '#9CA3AF'
   }

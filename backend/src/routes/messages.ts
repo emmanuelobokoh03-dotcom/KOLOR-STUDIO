@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 import prisma from '../lib/prisma';
+import { logActivity } from './activities';
 const router = Router();
 
 // GET /api/leads/:leadId/messages - Get all messages for a lead (authenticated)
@@ -83,6 +84,17 @@ router.post('/:leadId/messages', authMiddleware, async (req: AuthRequest, res: R
         senderId: userId,
       },
     });
+
+    // iter 272: log to timeline so lead history reflects studio-to-client messages
+    const preview = content.trim().slice(0, 100);
+    const previewText = content.trim().length > 100 ? preview + '\u2026' : preview;
+    await logActivity(
+      leadId,
+      userId,
+      'MESSAGE_SENT',
+      `Sent message: "${previewText}"`,
+      { messageId: message.id, emailNotificationSent: !!(lead.clientEmail) }
+    ).catch((err: unknown) => console.error('[MESSAGE] Timeline log failed:', err));
 
     res.json({
       message: {
