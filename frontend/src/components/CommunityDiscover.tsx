@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import KolorSpinner from './KolorSpinner'
+import { toast } from 'sonner'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
@@ -40,6 +41,9 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
   const [cursor, setCursor] = useState<string | null>(null)
   const [hasMore, setHasMore] = useState(true)
   const [following, setFollowing] = useState<Set<string>>(new Set())
+  // iter 274: track per-profile in-flight state so buttons show pending + prevent multi-tap
+  const [followingInFlight, setFollowingInFlight] = useState<Set<string>>(new Set())
+  const [dmInFlight, setDmInFlight] = useState<Set<string>>(new Set())
 
   const fetchProfiles = async (ind: string, cur?: string | null) => {
     setLoading(true)
@@ -73,10 +77,14 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
   }, [industry, cityFilter])
 
   const handleFollow = async (profileId: string) => {
+    // iter 274: guard against multi-tap while request is in-flight
+    if (followingInFlight.has(profileId)) return
+    setFollowingInFlight(prev => new Set(prev).add(profileId))
     try {
       const res = await fetch(`${API}/api/community/follows/${profileId}`, {
         method: 'POST', credentials: 'include'
       })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       setFollowing(prev => {
         const next = new Set(prev)
@@ -84,16 +92,38 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
         else next.delete(profileId)
         return next
       })
-    } catch { /* silent */ }
+    } catch (err) {
+      console.error('[Follow] Failed:', err)
+      toast.error('Could not update follow status. Please try again.')
+    } finally {
+      setFollowingInFlight(prev => {
+        const next = new Set(prev)
+        next.delete(profileId)
+        return next
+      })
+    }
   }
 
   const handleMessage = async (profileId: string) => {
+    // iter 274: guard against multi-tap while request is in-flight
+    if (dmInFlight.has(profileId)) return
+    setDmInFlight(prev => new Set(prev).add(profileId))
     try {
-      await fetch(`${API}/api/community/dms/${profileId}`, {
+      const res = await fetch(`${API}/api/community/dms/${profileId}`, {
         method: 'POST', credentials: 'include'
       })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       onStartDM?.(profileId)
-    } catch { /* silent */ }
+    } catch (err) {
+      console.error('[DM] Failed:', err)
+      toast.error('Could not start message. Please try again.')
+    } finally {
+      setDmInFlight(prev => {
+        const next = new Set(prev)
+        next.delete(profileId)
+        return next
+      })
+    }
   }
 
   return (
@@ -194,6 +224,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
                     <div className="flex gap-1.5">
                       <button
                         onClick={() => handleFollow(profile.id)}
+                        disabled={followingInFlight.has(profile.id)}
                         data-testid={`discover-follow-${profile.id}`}
                         className="text-[11px] font-semibold px-3 py-1.5 rounded-lg"
                         style={{
@@ -207,11 +238,12 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
                         onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
                         onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.9)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.7' }}
                         onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}>
-                        {isFollowing ? 'Following' : 'Follow'}
+                        {followingInFlight.has(profile.id) ? '\u2026' : (isFollowing ? 'Following' : 'Follow')}
                       </button>
                       {onStartDM && (
                         <button
                           onClick={() => handleMessage(profile.id)}
+                          disabled={dmInFlight.has(profile.id)}
                           data-testid={`discover-message-${profile.id}`}
                           className="text-[11px] font-medium px-3 py-1.5 rounded-lg"
                           style={{
@@ -225,7 +257,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
                           onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
                           onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.9)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.7' }}
                           onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.transform = ''; (e.currentTarget as HTMLButtonElement).style.opacity = '' }}>
-                          DM
+                          {dmInFlight.has(profile.id) ? '\u2026' : 'DM'}
                         </button>
                       )}
                     </div>
