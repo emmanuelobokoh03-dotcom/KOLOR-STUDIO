@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useModalA11y } from '../hooks/useModalA11y'
 import KolorSpinner from './KolorSpinner'
 import { getQuoteStatusPillStyle } from '../utils/statusColors'
@@ -212,6 +212,22 @@ export default function QuoteBuilderModal({
       ? new Date(existingQuote.finalPaymentDueDate).toISOString().split('T')[0]
       : ''
   );
+  // iter 275: refs for showPicker() explicit trigger on 4 date inputs
+  const shootDateRef = useRef<HTMLInputElement>(null)
+  const validUntilRef = useRef<HTMLInputElement>(null)
+  const depositDueDateRef = useRef<HTMLInputElement>(null)
+  const finalPaymentDueDateRef = useRef<HTMLInputElement>(null)
+
+  // iter 275: shared date picker opener with fallback for older browsers
+  const openPicker = (input: HTMLInputElement | null) => {
+    if (!input) return
+    if (typeof input.showPicker === 'function') {
+      try { input.showPicker() } catch { input.click() }
+    } else {
+      input.click()
+    }
+  }
+
   const [depositPercent, setDepositPercent] = useState<number>(
     existingQuote?.depositPercent ?? 50
   );
@@ -482,7 +498,7 @@ export default function QuoteBuilderModal({
                 {/* Key date — formatted display with hidden date input to avoid locale-based formatting */}
                 <div className="px-3.5 py-2.5 relative" style={{ borderRight: '0.5px solid var(--border)', zIndex: 1 }}>
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{lang.keyDate}</p>
-                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative" style={{ zIndex: 2 }}>
+                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative" style={{ zIndex: 2 }} onClick={() => openPicker(shootDateRef.current)}>
                     <span className="text-xs font-semibold text-text-primary">
                       {shootDate
                         ? new Date(shootDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -493,10 +509,13 @@ export default function QuoteBuilderModal({
                       <path d="M5 1v3M11 1v3M2 7h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
                     </svg>
                     <input
+                      ref={shootDateRef}
                       type="date"
                       value={shootDate}
                       onChange={e => setShootDate(e.target.value)}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      className="absolute inset-0 opacity-0 pointer-events-none"
+                      tabIndex={-1}
+                      aria-hidden="true"
                       title={lang.keyDate}
                       data-testid="quote-key-date-input"
                       aria-label={lang.keyDate}
@@ -505,7 +524,7 @@ export default function QuoteBuilderModal({
                 </div>
                 <div className="px-3.5 py-2.5 relative">
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Valid until</p>
-                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group">
+                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group" onClick={() => openPicker(validUntilRef.current)}>
                     <span className="text-xs font-semibold text-text-primary">
                       {validUntil
                         ? new Date(validUntil + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -516,11 +535,14 @@ export default function QuoteBuilderModal({
                       <path d="M5 1v3M11 1v3M2 7h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
                     </svg>
                     <input
+                      ref={validUntilRef}
                       type="date"
                       value={validUntil}
                       onChange={e => setValidUntil(e.target.value)}
                       min={new Date().toISOString().split('T')[0]}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      className="absolute inset-0 opacity-0 pointer-events-none"
+                      tabIndex={-1}
+                      aria-hidden="true"
                       data-testid="valid-until-input"
                       title="Quote expiry date"
                       aria-label="Valid until date"
@@ -762,7 +784,7 @@ export default function QuoteBuilderModal({
                   </div>
                   <div className="px-3.5 py-2.5 col-span-2">
                     <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Deposit Due</p>
-                    <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative">
+                    <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative" onClick={() => openPicker(depositDueDateRef.current)}>
                       <span className="text-xs font-semibold text-text-primary">
                         {depositDueDate
                           ? new Date(depositDueDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -773,11 +795,14 @@ export default function QuoteBuilderModal({
                         <path d="M5 1v3M11 1v3M2 7h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
                       </svg>
                       <input
+                        ref={depositDueDateRef}
                         type="date"
                         value={depositDueDate}
                         onChange={e => setDepositDueDate(e.target.value)}
                         min={new Date().toISOString().split('T')[0]}
-                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        className="absolute inset-0 opacity-0 pointer-events-none"
+                        tabIndex={-1}
+                        aria-hidden="true"
                         data-testid="deposit-due-date-input"
                         aria-label="Deposit due date"
                       />
@@ -786,7 +811,7 @@ export default function QuoteBuilderModal({
                 </div>
                 <div className="px-3.5 py-2.5">
                   <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">Final Payment Due</p>
-                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative">
+                  <label className="flex items-center gap-1 mt-0.5 cursor-pointer group relative" onClick={() => openPicker(finalPaymentDueDateRef.current)}>
                     <span className="text-xs font-semibold text-text-primary">
                       {finalPaymentDueDate
                         ? new Date(finalPaymentDueDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -797,11 +822,14 @@ export default function QuoteBuilderModal({
                       <path d="M5 1v3M11 1v3M2 7h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
                     </svg>
                     <input
+                      ref={finalPaymentDueDateRef}
                       type="date"
                       value={finalPaymentDueDate}
                       onChange={e => setFinalPaymentDueDate(e.target.value)}
                       min={depositDueDate || new Date().toISOString().split('T')[0]}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      className="absolute inset-0 opacity-0 pointer-events-none"
+                      tabIndex={-1}
+                      aria-hidden="true"
                       data-testid="final-payment-date-input"
                       aria-label="Final payment due date"
                     />
