@@ -500,11 +500,11 @@ export default function ClientPortal() {
                 <span style={{ color: '#fff', fontSize: 12, fontWeight: 700 }}>{studioName.charAt(0).toUpperCase()}</span>
               )}
             </div>
-            <span className="text-base font-extrabold tracking-[0.14em] text-white uppercase">{studioName}</span>
+            <span className="text-sm font-semibold tracking-[0.14em] text-white/70 uppercase">{studioName}</span>
           </div>
 
-          <p className="text-[10px] font-semibold text-white/40 uppercase tracking-[0.2em] mb-2 relative z-20">Project Portal</p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-snug relative z-20 break-words">{data.project.title}</h1>
+          <p className="text-[11px] font-semibold text-white/60 uppercase tracking-[0.2em] mb-2 relative z-20">{data.client?.name ? `For ${data.client.name}` : "Project Portal"}</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-snug relative z-20 break-words">{data.project.title}</h1>
 
           <div className="flex items-center gap-2.5 mt-5">
             <span className={`w-2 h-2 rounded-full ${
@@ -859,14 +859,8 @@ export default function ClientPortal() {
                       title="Contract content"
                       srcDoc={sanitiseContractHtml(contract.content)}
                       sandbox="allow-same-origin"
-                      style={{ width: '100%', border: 'none', minHeight: '300px' }}
+                      style={{ width: '100%', height: '600px', border: 'none' }}
                       className="rounded"
-                      onLoad={(e) => {
-                        const iframe = e.currentTarget
-                        if (iframe.contentDocument?.body) {
-                          iframe.style.height = iframe.contentDocument.body.scrollHeight + 'px'
-                        }
-                      }}
                     />
                   </div>
 
