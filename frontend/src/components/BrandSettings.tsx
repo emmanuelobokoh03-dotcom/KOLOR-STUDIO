@@ -11,7 +11,6 @@ import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import BrandPreview from './BrandPreview'
-import EmailSignatureGenerator from './EmailSignatureGenerator'
 import KolorSpinner from './KolorSpinner'
 
 const FONT_OPTIONS = [
@@ -299,11 +298,8 @@ export default function BrandSettings() {
       </div>
 
       {/* Right Column: Live Preview */}
-      <div className="lg:w-[320px] flex-shrink-0 space-y-5">
+      <div className="lg:w-[320px] flex-shrink-0 space-y-5 lg:sticky lg:top-6 lg:self-start">
         <BrandPreview primary={primary} accent={accent} font={font} logoUrl={logoUrl} />
-        <div className="border-t border-light-200 pt-5">
-          <EmailSignatureGenerator />
-        </div>
       </div>
     </div>
   )

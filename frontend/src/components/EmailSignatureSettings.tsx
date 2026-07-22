@@ -67,7 +67,7 @@ export default function EmailSignatureSettings() {
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 justify-end">
         <button
           onClick={() => setShowPreview(p => !p)}
           className="px-4 py-2.5 border border-light-200 rounded-lg text-sm font-medium text-text-primary hover:bg-light-50 transition-colors flex items-center gap-2"
@@ -79,7 +79,7 @@ export default function EmailSignatureSettings() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex-1 px-4 py-2.5 bg-purple-500 text-white rounded-lg text-sm font-semibold hover:bg-purple-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="px-5 py-2 bg-purple-500 text-white rounded-xl text-sm font-semibold hover:bg-purple-600 transition-colors disabled:opacity-50 flex items-center gap-2"
           data-testid="signature-save-btn"
         >
           {saving ? <KolorSpinner size={16} /> : saved ? <FloppyDisk className="w-4 h-4" /> : <EnvelopeSimple className="w-4 h-4" />}

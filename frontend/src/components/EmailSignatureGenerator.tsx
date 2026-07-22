@@ -56,8 +56,8 @@ export default function EmailSignatureGenerator() {
           <Envelope className="w-4.5 h-4.5 text-brand-primary" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-text-primary">Email Signature</h3>
-          <p className="text-xs text-text-tertiary">Professional signature with your portfolio link</p>
+          <h3 className="text-lg font-semibold text-text-primary mb-1">External Email Signature</h3>
+          <p className="text-sm text-text-secondary">Copy and paste this into Gmail, Outlook, or your personal email client.</p>
         </div>
       </div>
 
