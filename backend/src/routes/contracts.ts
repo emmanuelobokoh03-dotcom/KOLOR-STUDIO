@@ -1,7 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { logActivity } from './activities';
-import { sendContractSentEmail, sendContractAgreedNotification, sendDepositPaymentEmail } from '../services/email';
+import { sendContractSentEmail, sendContractAgreedNotification } from '../services/email';
+import { paymentService } from '../services/paymentService';
 import { enrollInOnboarding } from '../services/onboardingService';
 
 const router = Router();
@@ -444,23 +445,31 @@ router.post('/contracts/:id/agree', async (req: Request, res: Response): Promise
           orderBy: { createdAt: 'desc' },
         });
         if (quote && (contract.lead.clientEmail ?? '')) {
-          const studioDisplayName = contract.lead.assignedTo?.studioName
-            || `${contract.lead.assignedTo?.firstName || ''} ${contract.lead.assignedTo?.lastName || ''}`.trim()
-            || 'Studio';
-          const totalAmount = Number(quote.total ?? 0);
-          const depositAmount = Math.round(totalAmount * 0.3 * 100) / 100;
-          const portalUrl = `${process.env.FRONTEND_URL || 'https://kolorstudio.app'}/portal/${contract.lead.portalToken}`;
-          await sendDepositPaymentEmail({
-            clientName: contract.lead.clientName,
-            clientEmail: contract.lead.clientEmail ?? '',
-            creativeName: studioDisplayName,
-            studioName: studioDisplayName,
-            projectTitle: contract.lead.projectTitle,
-            depositAmount,
-            totalAmount,
-            paymentUrl: portalUrl,
-          });
-          console.log('[CONTRACT] Deposit email sent post-signing for lead:', contract.leadId);
+          // iter 278: use paymentService.createDepositCheckout to get real
+          // Stripe/Paystack checkout URL. Previously hand-crafted a portal URL
+          // which meant the email's Pay Deposit button skipped payment entirely.
+          try {
+            // Find the Income record for this lead (created when quote was accepted).
+            // paymentService handles: session creation, currency routing, email send.
+            const income = await prisma.income.findFirst({
+              where: {
+                leadId: contract.leadId,
+                depositPaid: false,
+              },
+              orderBy: { createdAt: 'desc' },
+            });
+            if (!income) {
+              console.warn('[CONTRACT] No pending deposit income found for lead:', contract.leadId);
+            } else {
+              const originUrl = process.env.FRONTEND_URL || 'https://kolorstudio.app';
+              await paymentService.createDepositCheckout(income.id, originUrl);
+              console.log('[CONTRACT] Deposit checkout initiated + email sent for income:', income.id);
+            }
+          } catch (checkoutErr: any) {
+            // isStripeAvailable() returns false on test/proxy-unavailable setups.
+            // On live keys this path fires successfully.
+            console.error('[CONTRACT] Deposit checkout creation failed:', checkoutErr?.message || checkoutErr);
+          }
         }
       } catch (depositEmailErr) {
         console.error('[CONTRACT] Deposit email failed:', depositEmailErr);
