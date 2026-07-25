@@ -87,6 +87,8 @@ const SERVICE_TYPE_LABELS: Record<string, string> = {
   GRAPHIC_DESIGN: 'Graphic Design',
   WEB_DESIGN: 'Web Design',
   BRANDING: 'Branding',
+  ILLUSTRATION: 'Illustration',
+  FINE_ART: 'Fine Art',
   CONTENT_CREATION: 'Content Creation',
   CONSULTING: 'Consulting',
   OTHER: 'Other',

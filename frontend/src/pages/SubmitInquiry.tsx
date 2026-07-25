@@ -185,8 +185,8 @@ const SubmitInquiry = () => {
 
     // Auto-generate project title if not provided
     const projectTitle = formData.projectTitle
-      || (industry === 'PHOTOGRAPHY' ? `${SERVICE_TYPE_LABELS[formData.serviceType]} Inquiry` : '')
-      || (industry === 'DESIGN' ? `${SERVICE_TYPE_LABELS[formData.serviceType]} Project` : '')
+      || (industry === 'PHOTOGRAPHY' ? `${formData.serviceLabel || SERVICE_TYPE_LABELS[formData.serviceType]} Inquiry` : '')
+      || (industry === 'DESIGN' ? `${formData.serviceLabel || SERVICE_TYPE_LABELS[formData.serviceType]} Project` : '')
       || (industry === 'FINE_ART' ? `${formData.serviceLabel || 'Fine Art'} Commission` : '')
       || 'New Inquiry'
 
@@ -438,7 +438,12 @@ const SubmitInquiry = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
                   <div>
                     <label style={labelStyle}>Type of shoot</label>
-                    <select name="serviceType" value={formData.serviceType} onChange={handleChange}
+                    <select name="serviceType" value={formData.serviceType}
+                      onChange={(e) => {
+                        const idx = e.target.selectedIndex
+                        const label = PHOTO_SERVICE_TYPES[idx]?.label || ''
+                        setFormData({ ...formData, serviceType: e.target.value as ServiceType, serviceLabel: label })
+                      }}
                       onFocus={() => setFocusedField('serviceType')} onBlur={() => setFocusedField(null)}
                       style={inputStyle('serviceType')} data-testid="inquiry-service-type">
                       {PHOTO_SERVICE_TYPES.map(t => <option key={t.value + t.label} value={t.value}>{t.label}</option>)}
@@ -480,7 +485,12 @@ const SubmitInquiry = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
                   <div>
                     <label style={labelStyle}>Type of project</label>
-                    <select name="serviceType" value={formData.serviceType} onChange={handleChange}
+                    <select name="serviceType" value={formData.serviceType}
+                      onChange={(e) => {
+                        const idx = e.target.selectedIndex
+                        const label = DESIGN_SERVICE_TYPES[idx]?.label || ''
+                        setFormData({ ...formData, serviceType: e.target.value as ServiceType, serviceLabel: label })
+                      }}
                       onFocus={() => setFocusedField('serviceType')} onBlur={() => setFocusedField(null)}
                       style={inputStyle('serviceType')} data-testid="inquiry-service-type">
                       {DESIGN_SERVICE_TYPES.map((t, i) => <option key={`${t.value}-${i}`} value={t.value}>{t.label}</option>)}
