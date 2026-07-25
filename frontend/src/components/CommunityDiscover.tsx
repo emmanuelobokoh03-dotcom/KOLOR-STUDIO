@@ -57,7 +57,11 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
       else setProfiles(data.profiles || [])
       setCursor(data.nextCursor)
       setHasMore(!!data.nextCursor)
-    } catch { /* silent */ }
+    } catch (err) {
+      // iter 274b: no longer silent — surface to user via toast
+      console.error('[Community] Failed to load profiles:', err)
+      toast.error('Could not load community feed. Please try again.')
+    }
     setLoading(false)
   }
 
