@@ -7,6 +7,26 @@ export default {
   theme: {
     extend: {
       colors: {
+        'kolor-canvas': '#F7F4EE',
+        'kolor-canvas-dark': '#1A1613',
+        'kolor-canvas-shade-1': '#F1EDE5',
+        'kolor-ink': '#1A1613',
+        'kolor-ink-muted': '#5F5751',
+        'kolor-ink-subtle': '#928B84',
+        'kolor-ink-whisper': '#C4BFB8',
+        'kolor-ivory': '#F7F4EE',
+        'kolor-ivory-muted': '#C4BFB8',
+        'kolor-ivory-subtle': '#928B84',
+        'kolor-terra': '#B84A2C',
+        'kolor-terra-hover': '#A0402A',
+        'kolor-slate': '#3B4A3F',
+        'kolor-success': '#4C6B4E',
+        'kolor-danger': '#8B2E2C',
+        'kolor-warning': '#7A5C2E',
+        'kolor-violet-ghost': '#6C2EDB',
+        'kolor-hairline': '#E5E0D8',
+        'kolor-hairline-strong': '#D0CBBF',
+        'kolor-hairline-dark': '#2A2622',
         // ── Brand Colors (Deeper Purple — #6C2EDB primary) ──────
         brand: {
           50: '#F8F5FF',
@@ -174,6 +194,9 @@ export default {
 
       // ── Typography ────────────────────────────────────
       fontFamily: {
+        'kolor-sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'sans-serif'],
+        'kolor-serif': ['Fraunces', 'Georgia', 'serif'],
+        'kolor-mono': ['JetBrains Mono', 'SF Mono', 'Menlo', 'monospace'],
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         display: ['"Fraunces"', 'Georgia', 'serif'],
         heading: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
@@ -204,7 +227,18 @@ export default {
       },
 
       // ── Spacing ───────────────────────────────────────
+      maxWidth: {
+        'kolor-container': '1240px',
+      },
       spacing: {
+        'kolor-1': '8px',
+        'kolor-2': '16px',
+        'kolor-3': '24px',
+        'kolor-4': '32px',
+        'kolor-6': '48px',
+        'kolor-8': '64px',
+        'kolor-12': '96px',
+        'kolor-16': '128px',
         'xs': '4px',
         'sm': '8px',
         'md': '16px',
@@ -247,12 +281,16 @@ export default {
 
       // ── Transitions ───────────────────────────────────
       transitionDuration: {
+        'kolor-fast': '80ms',
+        'kolor-mid': '200ms',
+        'kolor-slow': '400ms',
         'instant': '80ms',
         'fast': '150ms',
         'base': '250ms',
         'slow': '400ms',
       },
       transitionTimingFunction: {
+        'kolor': 'cubic-bezier(0.2, 0, 0, 1)',
         'standard': 'cubic-bezier(0.4, 0, 0.2, 1)',
         'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
       },

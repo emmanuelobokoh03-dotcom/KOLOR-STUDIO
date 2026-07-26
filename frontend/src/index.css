@@ -1041,3 +1041,191 @@ select:focus {
   text-underline-offset: 2px;
   text-decoration-thickness: 1px;
 }
+
+
+/* =========================================
+   KOLOR DESIGN FRAMEWORK v1.0 — TOKENS
+   Added iter 279a. Consumed by landing page (iter 279b+).
+   Existing tokens above remain authoritative for Dashboard, portal, emails.
+   ========================================= */
+
+:root {
+  /* Canvas */
+  --kolor-canvas: #F7F4EE;
+  --kolor-canvas-dark: #1A1613;
+  --kolor-canvas-shade-1: #F1EDE5;
+
+  /* Ink (on canvas) */
+  --kolor-ink: #1A1613;
+  --kolor-ink-muted: #5F5751;
+  --kolor-ink-subtle: #928B84;
+  --kolor-ink-whisper: #C4BFB8;
+
+  /* Ivory (on dark surfaces) */
+  --kolor-ivory: #F7F4EE;
+  --kolor-ivory-muted: #C4BFB8;
+  --kolor-ivory-subtle: #928B84;
+
+  /* Signature */
+  --kolor-terra: #B84A2C;
+  --kolor-terra-hover: #A0402A;
+  --kolor-terra-tint: rgba(184, 74, 44, 0.12);
+
+  /* Second accent */
+  --kolor-slate: #3B4A3F;
+  --kolor-slate-tint: rgba(59, 74, 63, 0.12);
+
+  /* Semantic */
+  --kolor-success: #4C6B4E;
+  --kolor-success-tint: rgba(76, 107, 78, 0.12);
+  --kolor-danger: #8B2E2C;
+  --kolor-danger-tint: rgba(139, 46, 44, 0.12);
+  --kolor-warning: #7A5C2E;
+  --kolor-warning-tint: rgba(122, 92, 46, 0.12);
+
+  /* Wordmark only */
+  --kolor-violet-ghost: #6C2EDB;
+
+  /* Hairlines */
+  --kolor-hairline: #E5E0D8;
+  --kolor-hairline-strong: #D0CBBF;
+  --kolor-hairline-dark: #2A2622;
+
+  /* Type stack — free substitutes for Sohne */
+  --kolor-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --kolor-font-serif: 'Fraunces', Georgia, serif;
+  --kolor-font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  /* Spacing (8px baseline) */
+  --kolor-s-1: 8px;
+  --kolor-s-2: 16px;
+  --kolor-s-3: 24px;
+  --kolor-s-4: 32px;
+  --kolor-s-6: 48px;
+  --kolor-s-8: 64px;
+  --kolor-s-12: 96px;
+  --kolor-s-16: 128px;
+
+  /* Motion */
+  --kolor-tempo-fast: 80ms;
+  --kolor-tempo-mid: 200ms;
+  --kolor-tempo-slow: 400ms;
+  --kolor-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Typography classes — for iter 279b+ consumption */
+.kolor-type-display {
+  font-family: var(--kolor-font-serif);
+  font-weight: 400;
+  font-size: 96px;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 144;
+}
+
+.kolor-type-headline {
+  font-family: var(--kolor-font-serif);
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 144;
+}
+
+.kolor-type-title {
+  font-family: var(--kolor-font-sans);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.kolor-type-subtitle {
+  font-family: var(--kolor-font-sans);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+}
+
+.kolor-type-body {
+  font-family: var(--kolor-font-sans);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.kolor-type-body-sm {
+  font-family: var(--kolor-font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.kolor-type-caption {
+  font-family: var(--kolor-font-sans);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+}
+
+.kolor-type-meta {
+  font-family: var(--kolor-font-mono);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+}
+
+.kolor-type-micro {
+  font-family: var(--kolor-font-mono);
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kolor-type-empty {
+  font-family: var(--kolor-font-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--kolor-ink-muted);
+}
+
+/* Money — Fraunces at ceremonial size, tabular */
+.kolor-type-money-hero {
+  font-family: var(--kolor-font-serif);
+  font-weight: 400;
+  font-size: 88px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+.kolor-type-money-body {
+  font-family: var(--kolor-font-sans);
+  font-weight: 500;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mobile scale reductions */
+@media (max-width: 768px) {
+  .kolor-type-display { font-size: 56px; }
+  .kolor-type-headline { font-size: 40px; }
+  .kolor-type-money-hero { font-size: 56px; }
+}
+
+/* KOLOR hairline reveal animation — signature gesture */
+@keyframes kolor-hairline-reveal {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
