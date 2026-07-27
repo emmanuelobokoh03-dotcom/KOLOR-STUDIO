@@ -3,9 +3,9 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 // Timeline events — real commission in Naira (James Okafor, Lagos)
 const TL_EVENTS = [
   { dot: 'done', label: 'Inquiry received', sub: 'Apr 3, 2026', connector: true },
-  { dot: 'done', label: 'Offer sent \u2014 \u20a6850,000', sub: 'Accepted Apr 5', connector: true },
+  { dot: 'done', label: 'Offer sent \u00b7 \u20a6850,000', sub: 'Accepted Apr 5', connector: true },
   { dot: 'done', label: 'Commission agreement signed', sub: 'Apr 6, 2026', connector: true },
-  { dot: 'done', label: 'Deposit received \u2014 \u20a6425,000', sub: '50% \u00b7 Apr 7, 2026', connector: true },
+  { dot: 'done', label: 'Deposit received \u00b7 \u20a6425,000', sub: '50% \u00b7 Apr 7, 2026', connector: true },
   { dot: 'warn', label: 'Delivery date approaching', sub: 'Jun 30, 2026 \u00b7 25 days', chip: 'Final payment on delivery', connector: true, warn: true },
   { dot: 'pending', label: 'Final payment \u00b7 \u20a6425,000', sub: 'On delivery', connector: false, muted: true },
 ]
@@ -54,7 +54,7 @@ export default function LandingPageV2() {
   }, [])
 
   useEffect(() => {
-    document.title = 'KOLOR Studio \u2014 Studio management for independent creatives'
+    document.title = 'KOLOR Studio \u00b7 Studio management for independent creatives'
     // Fetch waitlist count for social proof counter
     {
       const apiUrl = (import.meta as any).env?.VITE_API_URL || ''
@@ -417,8 +417,8 @@ export default function LandingPageV2() {
           </div>
           <aside className={`lp-aside${heroReady ? ' ready' : ''}`}>
             <p className="lp-desc">
-              For creatives who aren't based in America &mdash;
-              and tired of tools that act like they should be.
+              For creatives who aren't based in America and
+              tired of tools that act like they should be.
               <strong> Quotes, contracts, and portals</strong> in one place,
               in your currency.
             </p>
@@ -448,22 +448,22 @@ export default function LandingPageV2() {
               Most studio tools were built in America, for Americans. They assume
               your clients pay in dollars, your contracts follow US law, and your
               practice looks like everyone else&apos;s. So you&apos;ve been making
-              do &mdash; with DMs, spreadsheets, and goodwill.
+              do: DMs, spreadsheets, and goodwill.
             </p>
           </div>
           <div className="lp-lg" role="list">
             <div className={`lp-lc fl${lossVisible ? ' vis' : ''}`} role="listitem">
-              <div className="lp-ln">01 &mdash; Photography</div>
+              <div className="lp-ln">01 · Photography</div>
               <p className="lp-lq">&ldquo;She agreed to the shoot over WhatsApp. Then disputed the price. I had nothing in writing.&rdquo;</p>
               <div className="lp-la">Lagos, Nigeria</div>
             </div>
             <div className={`lp-lc fc${lossVisible ? ' vis' : ''}`} role="listitem">
-              <div className="lp-ln">02 &mdash; Design</div>
+              <div className="lp-ln">02 · Design</div>
               <p className="lp-lq">&ldquo;Three rounds of revisions, no scope agreement. I did the work. He paid half.&rdquo;</p>
               <div className="lp-la">London, United Kingdom</div>
             </div>
             <div className={`lp-lc fr${lossVisible ? ' vis' : ''}`} role="listitem">
-              <div className="lp-ln">03 &mdash; Fine Art</div>
+              <div className="lp-ln">03 · Fine Art</div>
               <p className="lp-lq">&ldquo;The commission was &euro;4,000. They disappeared after the first email. No contract. No deposit.&rdquo;</p>
               <div className="lp-la">Berlin, Germany</div>
             </div>
@@ -478,12 +478,12 @@ export default function LandingPageV2() {
               <div className="lp-lbl" aria-hidden="true">Built equally for three industries</div>
               <h2 className="lp-sh2" id="lp-ind-h" style={{ fontSize: 'clamp(30px,3.8vw,52px)' }}>
                 Photography. Design.<br />Fine Art.<br />
-                Built for all three &mdash;<br />not bolted on.
+                Built for all three.<br />Not bolted on.
               </h2>
             </div>
             <p className="lp-in-note">
               Every tool uses the right language for your practice.
-              Commissions, shoots, projects &mdash; KOLOR adapts to you.
+              Commissions, shoots, projects. KOLOR adapts to you.
             </p>
           </div>
           <div className="lp-panels">
@@ -493,7 +493,7 @@ export default function LandingPageV2() {
               <p className="lp-in-pain">
                 Your commission gets a contract the moment it&apos;s agreed.
                 Your collector gets a portal. Your deposit is protected before
-                a single brushstroke. Built for working artists &mdash; not for institutions.{/* industry-equality: allow — "working artists" is inclusive positioning (solo creators vs institutions), not a Fine Art exclusion */}
+                a single brushstroke. Built for working artists, not for institutions.{/* industry-equality: allow — "working artists" is inclusive positioning (solo creators vs institutions), not a Fine Art exclusion */}
               </p>
               <ul className="lp-il">
                 <li>Commission agreements</li>
@@ -520,8 +520,7 @@ export default function LandingPageV2() {
               <div className="lp-tag">Design</div>
               <div className="lp-in-name">Design</div>
               <p className="lp-in-pain">
-                Scope agreements and milestone payments &mdash;
-                without the spreadsheet, without the scope creep.
+                Scope agreements and milestone payments. Without the spreadsheet. Without the scope creep.
               </p>
               <ul className="lp-il">
                 <li>Scope agreements</li>
@@ -557,7 +556,7 @@ export default function LandingPageV2() {
                   &ldquo;Before this, I was managing clients through DMs, sending
                   invoices manually, jumping between tools just to stay on top of
                   one project. Now everything happens in one place. I can follow
-                  up with clients seamlessly &mdash; almost with one tap.&rdquo;
+                  up with clients seamlessly, almost with one tap.&rdquo;
                 </blockquote>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -591,8 +590,8 @@ export default function LandingPageV2() {
               {[
                 ['01', 'Client enquires', 'Via your public form or added manually'],
                 ['02', 'Send a quote', 'Line items, deposit %, payment schedule'],
-                ['03', 'Sign the agreement', 'Auto-generated from your quote \u2014 signed online'],
-                ['04', 'Collect the deposit', 'Stripe or Paystack \u2014 any currency'],
+                ['03', 'Sign the agreement', 'Auto-generated from your quote \u00b7 signed online'],
+                ['04', 'Collect the deposit', 'Stripe or Paystack \u00b7 any currency'],
                 ['05', 'Deliver and get paid', 'Client portal \u00b7 files \u00b7 final payment'],
               ].map(([n, l, d]) => (
                 <div key={n} className="lp-fs">
@@ -744,7 +743,7 @@ export default function LandingPageV2() {
                 <p className="lp-plb">
                   We&apos;re not building a subscription trap. Pay once. Use it
                   forever. When we open to the public, the price goes up and the
-                  model changes. Ten founding studios get in before that happens.
+                  model changes. Ten founding studios lock the founding rate before that.
                 </p>
                 <div className="lp-pills">
                   {['\ud83c\uddec\ud83c\udde7 United Kingdom', '\ud83c\uddf3\ud83c\uddec Nigeria', '\ud83c\uddff\ud83c\udde6 South Africa',
@@ -756,7 +755,7 @@ export default function LandingPageV2() {
             </div>
             <div className="lp-pr" ref={priceRef}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '28px', flexWrap: 'wrap' }}>
-                <div className="lp-fb" style={{ margin: 0 }}>Founding member &mdash; first 10 studios</div>
+                <div className="lp-fb" style={{ margin: 0 }}>Founding member · first 10 studios</div>
                 {waitlistCount !== null && waitlistCount > 0 && (
                   <div style={{
                     fontFamily: "'DM Mono', monospace",
@@ -776,7 +775,7 @@ export default function LandingPageV2() {
                   'Unlimited clients and projects',
                   'Quotes, contracts, payments',
                   'Client portal with messaging and file delivery',
-                  'Stripe and Paystack \u2014 any currency',
+                  'Stripe and Paystack \u00b7 any currency',
                   'Weekly pipeline digest',
                   'All future core features included',
                   'Priority support during beta',
@@ -795,7 +794,7 @@ export default function LandingPageV2() {
                   style={{ marginTop: '20px', borderTop: '.5px solid var(--bg-ghost)', paddingTop: '20px' }}
                 >
                   <p style={{ fontFamily: "'DM Mono', monospace", fontSize: '10px', letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--cream-muted)', marginBottom: '10px' }}>
-                    Not ready yet? Get notified when we launch publicly.
+                    Notified when we open publicly.
                   </p>
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <input
@@ -831,7 +830,7 @@ export default function LandingPageV2() {
                 </form>
               ) : (
                 <div style={{ marginTop: '20px', borderTop: '.5px solid var(--bg-ghost)', paddingTop: '20px', fontFamily: "'DM Mono', monospace", fontSize: '11px', letterSpacing: '.08em', color: 'var(--brand-light)' }} data-testid="waitlist-success">
-                  You&apos;re on the list. We&apos;ll let you know when we launch publicly.
+                  You&apos;re on the list. Expect a note when we open publicly.
                 </div>
               )}
             </div>

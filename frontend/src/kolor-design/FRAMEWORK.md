@@ -483,7 +483,7 @@ Precise, formal but readable. Never bureaucratic.
 **Use sparingly:**
 - ONE exclamation point per email — reserved for the moment of celebration ("Signed." → "Quote accepted!"). Never in error states.
 - "You" and "your" — okay but don't overuse.
-- The em dash — for editorial pauses.
+- The em dash: retired. Use colon for revelation, period for pause, comma for clause boundary, new sentence for maximum weight. Em dashes have become the AI writing signature since 2024; editorial voices in 2026 avoid them for the same reason writers avoid clichés.
 
 **The KOLOR voice model:**
 - MacGuffin Magazine editorial style (understated, curated, wry)
@@ -701,6 +701,7 @@ At every design decision, if you feel yourself reaching for one of these, stop a
 - Any font weight between 400 and 500 (the middle is where AI lives)
 - Neutral gray text like #6B7280 (Tailwind's gray-500 — the AI signature)
 - Sans-serif for numerals when Fraunces would serve better
+- Em dashes for pause punctuation (AI signature since 2024; use colons, periods, commas, or line breaks instead)
 
 **Flag emoji exception:** Flag emoji (🇬🇧 🇳🇬 🇿🇦 🇩🇪 🇧🇷) are permitted where they function as compact country identification in editorial listings — currency-country tables, geographical taxonomies, international-first positioning lists. They must NEVER be decorative, reactive (in success messages), or used to soften copy tone. In practice, this applies to at most one section per surface. Everywhere else, "no emoji" holds.
 
