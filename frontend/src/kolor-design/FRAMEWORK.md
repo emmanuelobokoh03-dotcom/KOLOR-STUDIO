@@ -542,6 +542,16 @@ Not readable at a glance? That's the point — it's *taxonomy*, meant to be seen
 
 The subtle bottom-border animation on active elements. A single 400ms hairline that says "this is where you are." Used consistently across cards, nav items, form fields, and timeline nodes. Never elsewhere.
 
+### Move 6: The word-blur reveal on hero type
+
+Ceremonial-scale headlines animate letter-by-letter: each word begins with outlined type at wide `letter-spacing: 0.5em`, then settles to solid fill at negative tracking (`-.035em`) over ~1000ms with a custom ease-settle curve. Words stagger with 40-60ms delay between them, creating a rhythm that reads as the headline "coming into focus."
+
+Used exclusively on hero-scale Fraunces display type (landing page hero, portal project title). Never on subheadings, body copy, or CTAs. The gesture must feel like the headline is being drawn, not decorated.
+
+Implementation reference: `.lp-word.ol` -> `.lp-word.ol.ready` in LandingPageV2.tsx, triggered by IntersectionObserver on `[data-hero-ready]`. Uses `var(--ease-settle)` (custom curve, `cubic-bezier(0.16, 1, 0.3, 1)` or similar decisive settle).
+
+This is a designer's motion moment — the kind of gesture that says "someone made this deliberately." AI does not do word-by-word letter-spacing collapse. It's the KOLOR editorial signature at scale.
+
 ---
 
 ## PART 10 — WHAT SURVIVES FROM CURRENT KOLOR
@@ -691,6 +701,8 @@ At every design decision, if you feel yourself reaching for one of these, stop a
 - Any font weight between 400 and 500 (the middle is where AI lives)
 - Neutral gray text like #6B7280 (Tailwind's gray-500 — the AI signature)
 - Sans-serif for numerals when Fraunces would serve better
+
+**Flag emoji exception:** Flag emoji (🇬🇧 🇳🇬 🇿🇦 🇩🇪 🇧🇷) are permitted where they function as compact country identification in editorial listings — currency-country tables, geographical taxonomies, international-first positioning lists. They must NEVER be decorative, reactive (in success messages), or used to soften copy tone. In practice, this applies to at most one section per surface. Everywhere else, "no emoji" holds.
 
 If a choice feels safe, it's probably wrong.
 

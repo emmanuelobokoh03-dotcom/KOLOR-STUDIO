@@ -157,16 +157,16 @@ export default function LandingPageV2() {
 
   const CSS = `
     :root {
-      --ink: #0E0C14;
+      --ink: #1A1613;
       --ink-mid: #181424;
       --ink-light: #231E36;
-      --cream: #F5F0E8;
+      --cream: #F7F4EE;
       --cream-dim: rgba(245,240,232,.52);
       --cream-muted: rgba(245,240,232,.26);
       --cream-ghost: rgba(245,240,232,.07);
       --brand: #6C2EDB;
       --brand-light: #9B6AEF;
-      --amber: #E8891A;
+      --amber: #B84A2C;
       --amber-dim: rgba(232,137,26,.14);
       --red: #A32D2D;
       --green: #3B6D11;
@@ -417,10 +417,10 @@ export default function LandingPageV2() {
           </div>
           <aside className={`lp-aside${heroReady ? ' ready' : ''}`}>
             <p className="lp-desc">
-              Built for creatives who aren't based in America &mdash;
+              For creatives who aren't based in America &mdash;
               and tired of tools that act like they should be.
-              <strong> Quotes, contracts, and client portals</strong> in one place,
-              in your currency, on your terms.
+              <strong> Quotes, contracts, and portals</strong> in one place,
+              in your currency.
             </p>
             <a
               href="#pricing" className="lp-btn"
