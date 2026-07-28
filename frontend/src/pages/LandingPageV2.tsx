@@ -506,8 +506,8 @@ export default function LandingPageV2() {
               <div className="lp-tag">Photography</div>
               <div className="lp-in-name">Photography</div>
               <p className="lp-in-pain">
-                From first enquiry to final gallery. Shoot date contracts
-                and instant client portals that close the loop.
+                Your enquiry gets a contract. Your shoot date gets a schedule.
+                Your gallery gets a portal, on time, every time.
               </p>
               <ul className="lp-il">
                 <li>Shoot date contracts</li>
@@ -520,7 +520,8 @@ export default function LandingPageV2() {
               <div className="lp-tag">Design</div>
               <div className="lp-in-name">Design</div>
               <p className="lp-in-pain">
-                Scope agreements and milestone payments. Without the spreadsheet. Without the scope creep.
+                Your scope gets signed. Your milestones get paid.
+                Your revisions have a limit.
               </p>
               <ul className="lp-il">
                 <li>Scope agreements</li>
@@ -588,11 +589,11 @@ export default function LandingPageV2() {
             </h2>
             <div className="lp-flow">
               {[
-                ['01', 'Client enquires', 'Via your public form or added manually'],
-                ['02', 'Send a quote', 'Line items, deposit %, payment schedule'],
+                ['01', 'Client enquires', 'Public form \u00b7 manual entry'],
+                ['02', 'Send a quote', 'Line items \u00b7 deposit % \u00b7 schedule'],
                 ['03', 'Sign the agreement', 'Auto-generated from your quote \u00b7 signed online'],
                 ['04', 'Collect the deposit', 'Stripe or Paystack \u00b7 any currency'],
-                ['05', 'Deliver and get paid', 'Client portal \u00b7 files \u00b7 final payment'],
+                ['05', 'Deliver and get paid', 'Portal \u00b7 files \u00b7 final payment'],
               ].map(([n, l, d]) => (
                 <div key={n} className="lp-fs">
                   <span className="lp-fn">{n}</span>
