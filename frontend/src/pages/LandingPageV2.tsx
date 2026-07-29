@@ -30,6 +30,7 @@ export default function LandingPageV2() {
   const [notifyEmail, setNotifyEmail] = useState('')
   const [notifySubmitted, setNotifySubmitted] = useState(false)
   const [notifyLoading, setNotifyLoading] = useState(false)
+  const [emailFocused, setEmailFocused] = useState(false)
 
   const priceRef = useRef<HTMLDivElement>(null)
   const tlRef = useRef<HTMLDivElement>(null)
@@ -802,13 +803,18 @@ export default function LandingPageV2() {
                       type="email"
                       value={notifyEmail}
                       onChange={e => setNotifyEmail(e.target.value)}
+                      onFocus={() => setEmailFocused(true)}
+                      onBlur={() => setEmailFocused(false)}
                       placeholder="your@email.com"
                       required
                       style={{
-                        flex: 1, background: 'var(--ink)', border: '.5px solid var(--bg-mid)',
-                        borderRadius: '3px', padding: '10px 14px',
+                        flex: 1, background: 'transparent',
+                        border: 'none',
+                        borderBottom: `.5px solid ${emailFocused ? 'var(--cream)' : 'var(--bg-mid)'}`,
+                        borderRadius: 0, padding: '10px 2px',
                         fontFamily: "'DM Mono', monospace", fontSize: '11px',
                         color: 'var(--cream)', outline: 'none', letterSpacing: '.04em',
+                        transition: 'border-color .2s',
                       }}
                       data-testid="waitlist-email-input"
                     />

@@ -411,17 +411,21 @@ No spinning circles anywhere in the daily UI. Spinners are the AI default. Text-
 
 ## PART 7 — MOTION PRINCIPLES
 
-### 7.1 The three tempos
+### 7.1 The four tempos
 
-All motion in KOLOR runs on three tempos. Nothing else:
+All motion in KOLOR runs on four tempos. Nothing else:
 
-- **80ms** — instantaneous feedback (button press, tab change, tooltip appear)
-- **200ms** — transitions with meaning (modal open, drawer slide, state change)
-- **400ms** — ceremonial (page transition, hero appearance, empty→filled state)
+- **80ms** — instantaneous feedback (button press, tab change, tooltip appear, form-field focus color shift)
+- **200ms** — transitions with meaning (modal open, drawer slide, state change, deposit pending → paid)
+- **400ms** — ceremonial (page transition, hero appearance, empty→filled state, the hairline reveal)
+- **1000ms** — editorial (hero word-by-word reveal, letter-spacing collapse on Fraunces display type). Used sparingly, and only on Move 6-class gestures.
 
-### 7.2 The easing curve
+### 7.2 The easing family
 
-**One easing curve:** `cubic-bezier(0.2, 0, 0, 1)` — a decisive ease-out. Fast at the start, quiet at the end. Feels like an object being placed down carefully.
+**Two decisive ease-outs. No third curve.** Both are fast at the start and quiet at the end — like an object being placed down carefully.
+
+- **Standard ease-out:** `cubic-bezier(0.2, 0, 0, 1)` — the default for interface motion. State changes, hovers, reveals, hairlines. If a motion has to make a decision, it uses this curve.
+- **Editorial settle:** `cubic-bezier(0.16, 1, 0.3, 1)` — reserved for ceremonial and editorial gestures (hero word-blur reveal in Move 6, portal project title). Softer at the tail, so display type appears to *settle* rather than *land*.
 
 **No bounce. No spring. No elastic.** These are the AI default. KOLOR's motion is calm and decisive.
 
