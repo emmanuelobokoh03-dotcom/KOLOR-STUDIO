@@ -1730,6 +1730,21 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - Commit local — push via "Save to GitHub". POST-DEPLOY (Emmanuel): Railway → miraculous-endurance → generate public domain → UptimeRobot HTTP monitor on `/health`, 5-min interval, alert on 503/timeout.
 - Deferred iter 271+: DB tick history, retry/backoff, stall alert via sendHealthCheckFailureAlert, metrics endpoint.
 
+## Iterations 271–279e (Feb 2026) — Bug batch + KOLOR Design Framework
+- **271–278a**: `serviceType` humanization, message activity logging, Calendar reconnect polish, Community follow/DM feedback, quote date picker, portal contract iframe reflow, Settings modal z-index, contract-sign → payment checkout, fine-art/illustration labels.
+- **279a**: KOLOR design tokens + Tailwind extensions + Fraunces/Inter/JetBrains Mono loading.
+- **279-docs / 279b–d**: Framework v1.0 committed at `frontend/src/kolor-design/FRAMEWORK.md`; hero warm ink/cream/terra calibration; em-dash retirement; industry-panel + features-flow prose unified to Fine Art rhythm.
+- **279e (this pass)**: Waitlist email input converted to transparent bottom-hairline-only field (var(--bg-mid) → var(--cream) on focus via `emailFocused` state; onFocus/onBlur handlers). FRAMEWORK Part 7 evolved from three tempos + one easing curve → four tempos (80/200/400/1000ms) + easing family (standard ease-out `0.2,0,0,1` + editorial settle `0.16,1,0.3,1`). Files touched: `frontend/src/pages/LandingPageV2.tsx`, `frontend/src/kolor-design/FRAMEWORK.md`. TSC + build clean. Local commit `a0c7a0b`. Push blocked → user must use Save to GitHub.
+
+## Backlog after 279e
+- **P1**: Publish local commits via Save to GitHub (origin lagging since 279a).
+- **P1**: Iter 280 — Client portal calibration to KOLOR framework.
+- **P1**: Iters 281–283 — Dashboard redesign (Today / Clients / Money).
+- **P1**: Iters 284–285 — Quote builder + contract editor redesign.
+- **P1**: Iter 286 — Email template revision.
+- **P2**: Community redesign (iter 287+); consolidate `SERVICE_TYPE_LABELS`; extract `DatePickerButton`; Prisma granular service types (`SCULPTURE`/`PAINTING`/`COMMISSION`); post-OAuth Calendar reconnect polish; worker health persistence + retry/backoff + alert emails.
+
+
 ## Backlog (deferred iterations)
 - **P2 (new, found by testing agent)**: Portfolio page is NOT a Router route — only reachable via `?view=portfolio` dashboard view state; direct `/portfolio` URL 404s. Add a proper Route for deep-linking.
 - ~~P1: Move `PortfolioSettings.tsx`~~ — RESOLVED iter 261 (deleted as duplicate instead of moved).
