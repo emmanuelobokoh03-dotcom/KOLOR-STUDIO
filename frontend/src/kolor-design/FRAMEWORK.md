@@ -603,59 +603,115 @@ KOLOR aims to be **warmer than Linear, more disciplined than Cargo, more commerc
 
 ---
 
-## PART 12 — IMPLEMENTATION ROADMAP
+## PART 12 — IMPLEMENTATION ROADMAP v2
 
-### Phase A: Foundation (before any redesign iterations begin)
+*Ratified iter 279-roadmap. Supersedes original Part 12 from framework v1.0.*
 
-1. **License Söhne** ($$$) or commit to Neue Haas Grotesk / Inter Display as substitutes.
-2. **Define CSS variables** for the new color system, typography scale, spacing scale.
-3. **Update `tailwind.config.js`** with the new tokens.
-4. **Document components in Storybook or equivalent** so the framework is testable.
+### 12.1 Scope philosophy
 
-### Phase B: Landing page (iter 279)
+**Chosen path: TIERED MIGRATION.** Not every surface will be framework-native immediately. High-impact surfaces (Phases 1-7) ship in disciplined sequence; long-tail surfaces (Phase 8: Files, Reviews, Analytics detail views) ship opportunistically or defer indefinitely without becoming visible product debt.
 
-**Why start here:** highest visibility, lowest risk (no data model changes), sets the aesthetic contract for everything that follows. First impression for new founding members.
+Rationale: Full 30-40-iteration migration is ideal but the return-on-investment curve flattens sharply after top-visited surfaces. Analytics detail views and File uploads matter less to first impression than portal, dashboard, quote, and emails. Tiered migration ships the top 90% of user experience framework-native while allowing lower-visibility surfaces to remain old-visual until deliberate revisit.
 
-Deliverables:
-- Ivory canvas, Ink type
-- Fraunces 96px hero
-- Söhne Mono metadata
-- Terra CTA
-- Editorial break at the fold
-- Anti-AI empty states in the "features" section
+### 12.2 Sequencing philosophy
 
-### Phase C: Client portal (iter 280)
+**Chosen path: CLIENT-FACING FIRST.** Every surface a client might see ships before internal-only surfaces. Auth series ships late — the framework is more mature by then and auth is stable code with high per-view impact.
 
-**Why second:** where the client experiences KOLOR. Every studio-owner will feel like the platform is worth the money the moment their client's portal reads as considered.
+Rationale: External surfaces build brand impression fastest. Every new lead touches inquiry form; every client touches portal. Studio-owner daily surfaces (Dashboard, Calendar, Settings) can remain functional-but-less-polished during the client-facing polish push. Once client-facing is bulletproof, studio-owner benefit from the mature framework.
 
-Deliverables:
-- Deep Ink header with Ivory type (portrait-magazine cover feel)
-- Fraunces project title bleeding past container
-- Söhne Mono metadata line
-- Editorial dates throughout
-- Timeline with hairline reveal on active step
-- Empty states in Fraunces italic
+### 12.3 The complete roadmap
 
-### Phase D: Dashboard (iter 281-283)
+**PHASE 1 — Landing (COMPLETE)**
+Foundation for the framework. Establishes visual language and voice.
+- ✅ iter 279a: Design foundation tokens (invisible infrastructure)
+- ✅ iter 279-docs: Framework committed to repo
+- ✅ iter 279b: First visible calibration (warm hex + hero copy)
+- ✅ iter 279c: Em dash retirement + pricing copy sharpening
+- ✅ iter 279d: Industry panel unification to Fine Art rhythm
+- ✅ iter 279e: Waitlist bottom-border + motion vocabulary evolution
 
-**Why third:** where the studio owner lives daily. Redesign in three sub-iterations:
-- 281: Navigation + sidebar + top bar
-- 282: Today view + Clients view
-- 283: Money view + Portfolio view + Community view
+**PHASE 2 — Core client-facing (~4 iterations)**
+Every surface a client (or lead) touches before conversion.
+- iter 280: Client portal (ClientPortal.tsx — 2,000+ lines; likely sub-iterations 280a/b)
+- iter 281: Public inquiry form (SubmitInquiry.tsx — 1,193 lines)
+- iter 282: Public artist profiles (PublicProfileNew.tsx — 1,143 lines)
+- iter 283: Public booking form embed (`/book/:userId`)
 
-### Phase E: Quote builder + Contract editor (iter 284-285)
+**PHASE 3 — Studio Dashboard + daily views (~4 iterations)**
+Where studio owners live. Dashboard is 3,283 lines with multiple views.
+- iter 284: Dashboard shell (nav, sidebar, top bar)
+- iter 285: Today view
+- iter 286: Clients view
+- iter 287: Money view
 
-The ceremonial forms. Where the studio owner does their most focused work.
+**PHASE 4 — Working documents + emails (~3 iterations)**
+The moments money changes hands. Editorial voice matters most here.
+- iter 288: Quote builder
+- iter 289: Contract editor
+- iter 290: Email templates (all system emails to editorial voice)
 
-### Phase F: Emails (iter 286)
+**PHASE 5 — Studio owner daily surfaces (~5 iterations)**
+Weekly touch surfaces. Calendar, Portfolio, Settings deep tabs.
+- iter 291: Calendar (774 lines)
+- iter 292: Portfolio (Portfolio.tsx main + PortfolioProject.tsx detail)
+- iter 293: Settings shell + Brand tab
+- iter 294: Settings — Booking + integrations tabs
+- iter 295: Settings — remaining tabs (danger zone, notifications, etc.)
 
-Every email retemplated in the new system. Ivory canvas, editorial dates, Fraunces amounts, Söhne Mono metadata.
+**PHASE 6 — Communication + community (~4 iterations)**
+The original ask that motivated the framework.
+- iter 296: DM Inbox + Thread (497 + 623 lines)
+- iter 297: Community feed (863 lines)
+- iter 298: Community profile (932 lines)
+- iter 299: Community discover (touched iter 274; framework calibration)
 
-### Phase G: Community redesign (iter 287+)
+**PHASE 7 — Auth series (~4 sub-iterations)**
+Framework is mature by now. Auth ships once per user visit.
+- iter 300a: AuthLayout + Login (Login.tsx — 188 lines)
+- iter 300b: Signup + OAuth callback (Signup — 334 lines + AuthCallback — 54)
+- iter 300c: Password reset flow (ForgotPassword + ResetPassword + emails)
+- iter 300d: WelcomeSetup + email verification (WelcomeSetup — 556 lines)
 
-The original ask that started this framework. Now built on the foundation.
+**PHASE 8 — Long tail (opportunistic, deferrable)**
+Low-visibility surfaces. Ship if resources allow; otherwise defer indefinitely.
+- iter 301: Files (Files.tsx — 632 lines)
+- iter 302: Reviews (studio + public — 513 + secondary lines)
+- iter 303: Analytics (AnalyticsRedesignedV2.tsx — 2,020 lines + alternates)
+- iter 304+: Any surface discovered mid-execution
 
----
+**Estimated total: 24-30 iterations for Phases 1-7 across ~10-15 hours of focused work. Phase 8 optional.**
+
+### 12.4 Governance
+
+**This roadmap is versioned in FRAMEWORK.md.**
+- Sequencing changes require a documented roadmap revision (iter 279-roadmap-vN)
+- Phase promotion (e.g., Phase 8 surface elevated to Phase 5) requires explicit revision
+- New surfaces discovered mid-execution get logged in Phase 8 by default
+- Beta expansion trigger: if Emmanuel opens founding member slots at scale (>50 signups/week), promote iter 300 (Auth) to iter 281 (immediately after Portal)
+
+### 12.5 Per-iteration discipline
+
+Every framework calibration iteration follows this template:
+1. Read-only diagnostic pre-audit (find current state before changing anything)
+2. Ratify scope + preserve list (what stays verbatim)
+3. Ratify voice/copy changes (before code changes)
+4. Apply visual calibration (hex tokens, spacing, typography)
+5. Apply copy sharpening if in scope
+6. Update FRAMEWORK.md if the iteration reveals framework evolution
+7. Ship with grep-tolerant receipt (semantic checks, not literal-string checks)
+
+### 12.6 Framework evolution during migration
+
+Iter 279 series proved that early framework spec is hypothesis, not final. Real code reveals framework gaps. Every iteration is expected to potentially update FRAMEWORK.md.
+
+Documented evolutions from iter 279 series:
+- Move 6 added (word-blur reveal) — iter 279b
+- Appendix B flag emoji exception — iter 279b
+- Part 8.2 em dash retirement — iter 279c
+- Part 7 four-tempo vocabulary — iter 279e
+- Part 12 tiered roadmap v2 — iter 279-roadmap
+
+Expect similar evolutions in every subsequent series. This is healthy.
 
 ## PART 13 — WHAT THIS COSTS
 
