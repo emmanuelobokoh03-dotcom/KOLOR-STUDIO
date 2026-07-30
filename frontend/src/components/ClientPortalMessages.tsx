@@ -53,8 +53,16 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
     return () => clearInterval(interval)
   }, [token])
 
+  // Track message count for scroll gating (iter 280-hotfix)
+  const prevMessageCountRef = useRef(0)
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    // Only scroll if a NEW message arrived (count increased), not on identical
+    // refetch data from the 30s poll. block: 'nearest' prevents page-level scroll.
+    if (messages.length > prevMessageCountRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+    prevMessageCountRef.current = messages.length
   }, [messages])
 
   const sendMessage = async (e: React.FormEvent) => {

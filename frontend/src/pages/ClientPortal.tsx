@@ -504,15 +504,21 @@ export default function ClientPortal() {
           </div>
 
           <p className="text-[10px] font-medium text-white/60 uppercase tracking-[0.24em] mb-3 relative z-20" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace" }}>{data.client?.name ? `For ${data.client.name}` : "Project Portal"}</p>
-          <h1 className="relative z-20 break-words" style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 500, fontStyle: 'italic', fontSize: 'clamp(48px, 6.5vw, 84px)', lineHeight: 0.98, letterSpacing: '-0.025em', fontOpticalSizing: 'auto', fontVariationSettings: '"opsz" 144' }}>{data.project.title}</h1>
+          <h1 className="relative z-20 break-words" style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 600, fontStyle: 'italic', fontSize: 'clamp(48px, 6.5vw, 84px)', lineHeight: 0.98, letterSpacing: '-0.025em', color: '#F7F4EE', fontOpticalSizing: 'auto', fontVariationSettings: '"opsz" 144' }}>{data.project.title}</h1>
 
           <div className="flex items-center gap-2.5 mt-5">
-            <span className={`w-2 h-2 rounded-full ${
-              data.status.isBooked ? 'bg-emerald-400' :
-              data.status.isLost ? 'bg-red-400' :
-              'bg-amber-400 animate-pulse'
-            }`} />
-            <span className="text-xs font-semibold text-white/70">{data.status.label}</span>
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{
+                background: data.status.isBooked
+                  ? '#4C6B4E'
+                  : data.status.isLost
+                    ? '#8B2E2C'
+                    : '#B84A2C',
+              }}
+              aria-hidden="true"
+            />
+            <span className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '10px', fontWeight: 500, letterSpacing: '0.24em', color: 'rgba(247, 244, 238, 0.75)' }}>{data.status.label}</span>
           </div>
         </div>
       </header>
