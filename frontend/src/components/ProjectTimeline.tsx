@@ -52,11 +52,36 @@ const STATUS_STYLES = {
   upcoming:  { dot: 'bg-light-200 border-light-300',           icon: 'text-text-secondary', card: 'bg-light-50 border-light-200',          text: 'text-text-secondary' },
 };
 
+// iter 280b: framework-calibrated portal timeline states
+// completed = Slate (quiet completion, not bright success)
+// today     = Terra (the active pleasure moment)
+// overdue   = Danger (editorial red)
+// upcoming  = Ink whisper (very muted)
 const PORTAL_STATUS_STYLES = {
-  completed: { dot: 'bg-green-100 border-green-500', icon: 'text-green-600', card: 'bg-green-50 border-green-200', text: 'text-green-600' },
-  overdue:   { dot: 'bg-red-100 border-red-500',     icon: 'text-red-600',   card: 'bg-red-50 border-red-200',     text: 'text-red-600' },
-  today:     { dot: 'bg-amber-100 border-amber-500',  icon: 'text-amber-600', card: 'bg-amber-50 border-amber-200', text: 'text-amber-600' },
-  upcoming:  { dot: 'bg-gray-100 border-gray-300',    icon: 'text-text-secondary',  card: 'bg-gray-50 border-gray-200',   text: 'text-text-tertiary' },
+  completed: {
+    dot: 'bg-[color:var(--kolor-slate-tint)] border-[color:var(--kolor-slate)]',
+    icon: 'text-[color:var(--kolor-slate)]',
+    card: 'bg-transparent border-[color:var(--kolor-hairline)]',
+    text: 'text-[color:var(--kolor-ink-muted)]',
+  },
+  overdue: {
+    dot: 'bg-[color:var(--kolor-danger-tint)] border-[color:var(--kolor-danger)]',
+    icon: 'text-[color:var(--kolor-danger)]',
+    card: 'bg-transparent border-[color:var(--kolor-danger)]/40',
+    text: 'text-[color:var(--kolor-danger)]',
+  },
+  today: {
+    dot: 'bg-[color:var(--kolor-terra-tint)] border-[color:var(--kolor-terra)]',
+    icon: 'text-[color:var(--kolor-terra)]',
+    card: 'bg-transparent border-[color:var(--kolor-terra)]/40',
+    text: 'text-[color:var(--kolor-terra)]',
+  },
+  upcoming: {
+    dot: 'bg-transparent border-[color:var(--kolor-ink-whisper)]',
+    icon: 'text-[color:var(--kolor-ink-whisper)]',
+    card: 'bg-transparent border-[color:var(--kolor-hairline)]',
+    text: 'text-[color:var(--kolor-ink-subtle)]',
+  },
 };
 
 // ── Component ──────────────────────────────────────────
@@ -139,10 +164,33 @@ export default function ProjectTimeline({ leadId, token, editable = false }: Pro
 
   if (allItems.length === 0 && !editable) {
     return (
-      <div className={`text-center py-10 ${emptyTextCls}`} data-testid="timeline-empty">
-        <CalendarBlank weight="duotone" className="w-10 h-10 mx-auto mb-2 opacity-40" />
-        <p className="font-medium">No timeline set yet</p>
-        <p className="text-sm mt-1 opacity-70">Your creative will set key dates and milestones soon</p>
+      <div className="text-center py-14" data-testid="timeline-empty">
+        <p
+          style={{
+            fontFamily: "'Fraunces', Georgia, serif",
+            fontWeight: 400,
+            fontStyle: 'italic',
+            fontSize: 'clamp(24px, 3vw, 32px)',
+            lineHeight: 1.2,
+            letterSpacing: '-0.01em',
+            color: 'var(--kolor-ink-muted)',
+          }}
+        >
+          Nothing here yet.
+        </p>
+        <p
+          style={{
+            fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+            fontSize: '11px',
+            fontWeight: 400,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'var(--kolor-ink-subtle)',
+            marginTop: '20px',
+          }}
+        >
+          Your studio will set key dates soon.
+        </p>
       </div>
     );
   }

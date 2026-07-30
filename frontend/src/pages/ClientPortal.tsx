@@ -625,14 +625,14 @@ export default function ClientPortal() {
 
         {/* Progress Steps */}
         {!data.status.isLost && (
-          <div className="bg-surface-base rounded-xl border border-gray-200 p-5" data-testid="portal-progress">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-5">Project Progress</h3>
+          <div className="border border-[color:var(--kolor-hairline)] rounded-xl p-6" style={{ background: 'var(--kolor-canvas)' }} data-testid="portal-progress">
+            <h3 className="mb-6 uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '10px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)' }}>Project Progress</h3>
 
             {/* Desktop */}
             <div className="hidden md:block">
               <div className="flex items-center justify-between relative">
-                <div className="absolute top-4 left-0 right-0 h-0.5 bg-gray-100 rounded-full">
-                  <div className="h-full bg-[#6C2EDB] rounded-full transition-all duration-500" style={{ width: `${(currentStepIndex / (STATUS_STEPS.length - 1)) * 100}%` }} />
+                <div className="absolute top-4 left-0 right-0 h-px rounded-full" style={{ background: 'var(--kolor-hairline)' }}>
+                  <div className="h-full rounded-full transition-all duration-500" style={{ width: `${(currentStepIndex / (STATUS_STEPS.length - 1)) * 100}%`, background: 'var(--kolor-terra)' }} />
                 </div>
                 {STATUS_STEPS.map((step, index) => {
                   const Icon = step.icon;
@@ -640,12 +640,24 @@ export default function ClientPortal() {
                   const isCurrent = index === currentStepIndex;
                   return (
                     <div key={step.key} className="flex flex-col items-center relative z-10">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                        isCompleted ? 'bg-[#6C2EDB] text-white' : 'bg-gray-50 text-gray-400 border border-gray-200'
-                      } ${isCurrent ? 'ring-2 ring-[#6C2EDB]/20' : ''}`}>
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
+                        style={{
+                          background: isCurrent
+                            ? 'var(--kolor-terra)'
+                            : isCompleted
+                              ? 'var(--kolor-slate)'
+                              : 'transparent',
+                          color: (isCurrent || isCompleted) ? 'var(--kolor-ivory)' : 'var(--kolor-ink-whisper)',
+                          border: (isCurrent || isCompleted)
+                            ? 'none'
+                            : '1px solid var(--kolor-hairline)',
+                          boxShadow: isCurrent ? '0 0 0 3px var(--kolor-terra-tint)' : 'none',
+                        }}
+                      >
                         <Icon weight={isCompleted ? 'fill' : 'regular'} className="w-3.5 h-3.5" />
                       </div>
-                      <span className={`mt-2 text-[10px] font-semibold ${isCompleted ? 'text-[#6C2EDB]' : 'text-gray-400'}`}>{step.label}</span>
+                      <span className="mt-3 uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.18em', color: isCurrent ? 'var(--kolor-terra)' : isCompleted ? 'var(--kolor-ink-muted)' : 'var(--kolor-ink-whisper)' }}>{step.label}</span>
                     </div>
                   );
                 })}
@@ -659,15 +671,24 @@ export default function ClientPortal() {
                 const isCompleted = index <= currentStepIndex;
                 const isCurrent = index === currentStepIndex;
                 return (
-                  <div key={step.key} className={`flex items-center gap-3 p-2.5 rounded-lg transition-all ${isCurrent ? 'bg-[#6C2EDB]/5 border border-[#6C2EDB]/15' : ''}`}>
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      isCompleted ? 'bg-[#6C2EDB] text-white' : 'bg-gray-100 text-gray-400'
-                    }`}>
+                  <div key={step.key} className={`flex items-center gap-3 p-2.5 rounded-lg transition-all ${isCurrent ? 'bg-[color:var(--kolor-terra-tint)] border border-[color:var(--kolor-terra)]/30' : ''}`}>
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{
+                        background: isCurrent
+                          ? 'var(--kolor-terra)'
+                          : isCompleted
+                            ? 'var(--kolor-slate)'
+                            : 'transparent',
+                        color: (isCurrent || isCompleted) ? 'var(--kolor-ivory)' : 'var(--kolor-ink-whisper)',
+                        border: (isCurrent || isCompleted) ? 'none' : '1px solid var(--kolor-hairline)',
+                      }}
+                    >
                       <Icon weight={isCompleted ? 'fill' : 'regular'} className="w-3.5 h-3.5" />
                     </div>
-                    <span className={`text-xs font-medium ${isCompleted ? 'text-gray-900' : 'text-gray-400'}`}>{step.label}</span>
-                    {isCurrent && <span className="ml-auto text-[10px] text-[#6C2EDB] font-semibold">Current</span>}
-                    {isCompleted && index < currentStepIndex && <CheckCircle weight="fill" className="ml-auto w-3.5 h-3.5 text-emerald-500" />}
+                    <span className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '10px', fontWeight: 500, letterSpacing: '0.18em', color: isCurrent ? 'var(--kolor-terra)' : isCompleted ? 'var(--kolor-ink-muted)' : 'var(--kolor-ink-whisper)' }}>{step.label}</span>
+                    {isCurrent && <span className="ml-auto uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.22em', color: 'var(--kolor-terra)' }}>Current</span>}
+                    {isCompleted && index < currentStepIndex && <CheckCircle weight="fill" className="ml-auto w-3.5 h-3.5" style={{ color: 'var(--kolor-slate)' }} />}
                   </div>
                 );
               })}
@@ -676,67 +697,67 @@ export default function ClientPortal() {
         )}
 
         {/* Project Details */}
-        <div className="bg-surface-base rounded-xl border border-gray-200 p-5" data-testid="portal-project-details">
-          <h3 className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-4">Project Details</h3>
+        <div className="border border-[color:var(--kolor-hairline)] rounded-xl p-6" style={{ background: 'var(--kolor-canvas)' }} data-testid="portal-project-details">
+          <h3 className="mb-6 uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '10px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)' }}>Project Details</h3>
           <div className="space-y-3">
-            <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-lg">
-              <div className="w-8 h-8 bg-[#6C2EDB]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Sparkle weight="fill" className="w-4 h-4 text-[#6C2EDB]" />
+            <div className="flex items-start gap-4 py-4 border-b border-[color:var(--kolor-hairline)]">
+              <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                <Sparkle weight="fill" className="w-4 h-4 text-[color:var(--kolor-ink-muted)]" />
               </div>
               <div>
-                <p className="text-[10px] text-gray-400 font-semibold uppercase">Service Type</p>
-                <p className="text-sm font-semibold text-gray-900">{data.project.serviceType?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (ch: string) => ch.toUpperCase()) || ''}</p>
+                <p className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)', marginBottom: '6px' }}>Service Type</p>
+                <p className="text-sm" style={{ color: 'var(--kolor-ink)', fontWeight: 400 }}>{data.project.serviceType?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (ch: string) => ch.toUpperCase()) || ''}</p>
               </div>
             </div>
 
             {data.project.description && (
-              <div className="p-3.5 bg-gray-50 rounded-lg">
-                <p className="text-[10px] text-gray-400 font-semibold uppercase mb-1">Description</p>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{data.project.description}</p>
+              <div className="py-4 border-b border-[color:var(--kolor-hairline)]">
+                <p className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)', marginBottom: '8px' }}>Description</p>
+                <p className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: 'var(--kolor-ink)' }}>{data.project.description}</p>
               </div>
             )}
 
             <div className="grid sm:grid-cols-2 gap-3">
               {data.project.budget && (
-                <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <CurrencyDollar className="w-4 h-4 text-emerald-600" />
+                <div className="flex items-start gap-4 py-4 border-b border-[color:var(--kolor-hairline)]">
+                  <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                    <CurrencyDollar className="w-4 h-4 text-[color:var(--kolor-ink-muted)]" />
                   </div>
                   <div>
-                    <p className="text-[10px] text-gray-400 font-semibold uppercase">Budget Range</p>
-                    <p className="text-sm font-semibold text-gray-900">{data.project.budget}</p>
+                    <p className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)', marginBottom: '6px' }}>Budget Range</p>
+                    <p className="text-sm" style={{ color: 'var(--kolor-ink)', fontWeight: 400 }}>{data.project.budget}</p>
                   </div>
                 </div>
               )}
               {data.project.timeline && (
-                <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-4 h-4 text-blue-600" />
+                <div className="flex items-start gap-4 py-4 border-b border-[color:var(--kolor-hairline)]">
+                  <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-4 h-4 text-[color:var(--kolor-ink-muted)]" />
                   </div>
                   <div>
-                    <p className="text-[10px] text-gray-400 font-semibold uppercase">Timeline</p>
-                    <p className="text-sm font-semibold text-gray-900">{data.project.timeline}</p>
+                    <p className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)', marginBottom: '6px' }}>Timeline</p>
+                    <p className="text-sm" style={{ color: 'var(--kolor-ink)', fontWeight: 400 }}>{data.project.timeline}</p>
                   </div>
                 </div>
               )}
               {data.project.eventDate && (
-                <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <CalendarBlank className="w-4 h-4 text-amber-600" />
+                <div className="flex items-start gap-4 py-4 border-b border-[color:var(--kolor-hairline)]">
+                  <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                    <CalendarBlank className="w-4 h-4 text-[color:var(--kolor-ink-muted)]" />
                   </div>
                   <div>
-                    <p className="text-[10px] text-gray-400 font-semibold uppercase">Event Date</p>
-                    <p className="text-sm font-semibold text-gray-900">{formatDate(data.project.eventDate)}</p>
+                    <p className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)', marginBottom: '6px' }}>Event Date</p>
+                    <p className="text-sm" style={{ color: 'var(--kolor-ink)', fontWeight: 400 }}>{formatDate(data.project.eventDate)}</p>
                   </div>
                 </div>
               )}
-              <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-lg">
-                <div className="w-8 h-8 bg-[#6C2EDB]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <CalendarBlank className="w-4 h-4 text-[#6C2EDB]" />
+              <div className="flex items-start gap-4 py-4 border-b border-[color:var(--kolor-hairline)]">
+                <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <CalendarBlank className="w-4 h-4 text-[color:var(--kolor-ink-muted)]" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-400 font-semibold uppercase">Submitted On</p>
-                  <p className="text-sm font-semibold text-gray-900">{formatDate(data.project.submittedAt)}</p>
+                  <p className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)', marginBottom: '6px' }}>Submitted On</p>
+                  <p className="text-sm" style={{ color: 'var(--kolor-ink)', fontWeight: 400 }}>{formatDate(data.project.submittedAt)}</p>
                 </div>
               </div>
             </div>
@@ -1035,7 +1056,7 @@ export default function ClientPortal() {
                   data-testid={`shared-file-${file.id}`}
                 >
                   <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                    <div className="w-8 h-8 bg-[#6C2EDB]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
                       <FileText className="w-3.5 h-3.5 text-[#6C2EDB]" />
                     </div>
                     <div className="flex-1 min-w-0">
