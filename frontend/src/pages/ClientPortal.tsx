@@ -264,7 +264,7 @@ export default function ClientPortal() {
   useEffect(() => {
     if (data) {
       const name = data.contact?.studioName || data.contact?.name || 'KOLOR STUDIO'
-      document.title = name + ' — ' + data.project.title
+      document.title = name + ' · ' + data.project.title
     }
   }, [data])
 
@@ -489,8 +489,8 @@ export default function ClientPortal() {
       )}
 
       {/* ── Header ── */}
-      <header className="relative text-white" style={{ background: '#1a1625' }} data-testid="portal-header">
-        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${brandColor}30 0%, transparent 70%)` }} />
+      <header className="relative text-white" style={{ background: 'var(--kolor-canvas-dark)' }} data-testid="portal-header">
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 800px 400px at 15% 20%, rgba(184, 74, 44, 0.12) 0%, transparent 60%)', pointerEvents: 'none' }} aria-hidden="true" />
         <div className="relative max-w-3xl mx-auto px-6 pt-10 pb-8">
           <div className="flex items-center gap-2.5 mb-5">
             <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0" style={{ background: brandLogo ? 'rgba(255,255,255,0.12)' : '#6C2EDB' }}>
@@ -500,11 +500,11 @@ export default function ClientPortal() {
                 <span style={{ color: '#fff', fontSize: 12, fontWeight: 700 }}>{studioName.charAt(0).toUpperCase()}</span>
               )}
             </div>
-            <span className="text-sm font-semibold tracking-[0.14em] text-white/70 uppercase">{studioName}</span>
+            <span className="text-[11px] font-medium tracking-[0.22em] text-white/60 uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace" }}>{studioName}</span>
           </div>
 
-          <p className="text-[11px] font-semibold text-white/60 uppercase tracking-[0.2em] mb-2 relative z-20">{data.client?.name ? `For ${data.client.name}` : "Project Portal"}</p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-snug relative z-20 break-words">{data.project.title}</h1>
+          <p className="text-[10px] font-medium text-white/60 uppercase tracking-[0.24em] mb-3 relative z-20" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace" }}>{data.client?.name ? `For ${data.client.name}` : "Project Portal"}</p>
+          <h1 className="relative z-20 break-words" style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 500, fontStyle: 'italic', fontSize: 'clamp(48px, 6.5vw, 84px)', lineHeight: 0.98, letterSpacing: '-0.025em', fontOpticalSizing: 'auto', fontVariationSettings: '"opsz" 144' }}>{data.project.title}</h1>
 
           <div className="flex items-center gap-2.5 mt-5">
             <span className={`w-2 h-2 rounded-full ${
@@ -516,6 +516,73 @@ export default function ClientPortal() {
           </div>
         </div>
       </header>
+
+      {/* -- Money moment (framework Move 1: Fraunces + mono on money) -- */}
+      {(() => {
+        const acceptedQuotes = data.quotes?.filter(q => q.status === 'ACCEPTED') || [];
+        if (acceptedQuotes.length === 0) return null;
+        const totalAmount = acceptedQuotes.reduce((sum, q) => sum + (q.total || 0), 0);
+        const referenceQuote = acceptedQuotes[0];
+        const acceptedDate = referenceQuote.acceptedAt
+          ? new Date(referenceQuote.acceptedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : null;
+        return (
+          <section
+            className="relative"
+            style={{ background: 'var(--kolor-canvas)' }}
+            data-testid="portal-money-moment"
+          >
+            <div className="max-w-3xl mx-auto px-6 pt-12 pb-10">
+              <p
+                className="uppercase"
+                style={{
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  letterSpacing: '0.24em',
+                  color: 'var(--kolor-ink-muted)',
+                  marginBottom: '20px',
+                }}
+              >
+                Investment
+              </p>
+              <div
+                style={{
+                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontWeight: 400,
+                  fontSize: 'clamp(56px, 8vw, 88px)',
+                  lineHeight: 1,
+                  letterSpacing: '-0.02em',
+                  fontVariantNumeric: 'tabular-nums',
+                  color: 'var(--kolor-ink)',
+                  marginBottom: '16px',
+                }}
+                data-testid="portal-money-total"
+              >
+                {formatCurrency(totalAmount, referenceQuote)}
+              </div>
+              <p
+                className="uppercase"
+                style={{
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: '11px',
+                  fontWeight: 400,
+                  letterSpacing: '0.18em',
+                  color: 'var(--kolor-ink-subtle)',
+                }}
+              >
+                {acceptedQuotes.length === 1 && acceptedDate ? (
+                  <>Accepted {acceptedDate}</>
+                ) : acceptedQuotes.length > 1 ? (
+                  <>{acceptedQuotes.length} quotes accepted</>
+                ) : (
+                  <>Accepted</>
+                )}
+              </p>
+            </div>
+          </section>
+        );
+      })()}
 
       <main className="max-w-3xl mx-auto px-5 py-8 space-y-6">
         {/* Payment Success Banner */}
@@ -546,7 +613,7 @@ export default function ClientPortal() {
               </div>
               <div>
                 <h2 className={`text-sm font-bold ${data.status.isBooked ? '' : 'text-gray-900'}`}>
-                  {data.status.isBooked ? 'Project Confirmed!' : data.status.label}
+                  {data.status.isBooked ? 'Project Confirmed.' : data.status.label}
                 </h2>
                 <p className={`text-xs mt-0.5 ${data.status.isBooked ? 'text-emerald-100' : 'text-gray-500'}`}>
                   {data.status.description}
@@ -618,7 +685,7 @@ export default function ClientPortal() {
               </div>
               <div>
                 <p className="text-[10px] text-gray-400 font-semibold uppercase">Service Type</p>
-                <p className="text-sm font-semibold text-gray-900">{data.project.serviceType?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (ch: string) => ch.toUpperCase()) || '—'}</p>
+                <p className="text-sm font-semibold text-gray-900">{data.project.serviceType?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (ch: string) => ch.toUpperCase()) || ''}</p>
               </div>
             </div>
 
