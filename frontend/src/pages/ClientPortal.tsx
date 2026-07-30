@@ -221,11 +221,11 @@ function QuoteAcceptedConfirmation({ quote, studioName, formatCurrency }: {
         </div>
         <div className="flex-1">
           <h3 className="text-base font-bold text-emerald-900">Quote Accepted</h3>
-          <p className="text-sm text-emerald-700/80">
+          <p className="text-sm" style={{ color: 'var(--kolor-ink-muted)', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '12px', letterSpacing: '0.05em' }}>
             {formatCurrency(quote.total, quote)} &middot; Quote #{quote.quoteNumber}
           </p>
         </div>
-        <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold flex-shrink-0">
+        <span className="px-3 py-1 rounded-full flex-shrink-0 uppercase" style={{ background: 'var(--kolor-slate-tint)', color: 'var(--kolor-slate)', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.18em' }}>
           Confirmed
         </span>
       </div>
@@ -813,7 +813,7 @@ export default function ClientPortal() {
                       </p>
                     </div>
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold flex-shrink-0 ${
-                      isDeclined ? 'bg-red-100 text-red-600' : isExpired ? 'bg-gray-100 text-gray-500' : 'bg-amber-50 text-amber-700 border border-amber-200'
+                      isDeclined ? 'bg-[color:var(--kolor-danger)]/10 text-[color:var(--kolor-danger)]' : isExpired ? 'bg-[color:var(--kolor-ink-subtle)]/10 text-[color:var(--kolor-ink-subtle)]' : 'bg-[color:var(--kolor-terra-tint)] text-[color:var(--kolor-terra)]'
                     }`}>
                       {isDeclined ? 'Declined' : isExpired ? 'Expired' : 'Pending Review'}
                     </span>
@@ -909,39 +909,40 @@ export default function ClientPortal() {
               return (
                 <div
                   key={contract.id}
-                  className={`bg-surface-base rounded-xl border overflow-hidden transition-all ${
-                    isAgreed ? 'border-emerald-200' : 'border-[#6C2EDB]/20'
+                  className={`rounded-xl border overflow-hidden transition-all ${
+                    isAgreed ? 'border-[color:var(--kolor-slate)]/40' : 'border-[color:var(--kolor-terra)]/30'
                   }`}
+                  style={{ background: 'var(--kolor-canvas)' }}
                   data-testid={`portal-contract-${contract.id}`}
                 >
                   {/* Header */}
                   <div className={`px-5 py-4 flex items-center gap-3 ${
-                    isAgreed ? 'bg-emerald-50' : 'bg-[#6C2EDB]/3'
+                    isAgreed ? 'bg-[color:var(--kolor-slate-tint)]' : 'bg-[color:var(--kolor-terra-tint)]'
                   }`}>
                     <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                      isAgreed ? 'bg-emerald-100' : 'bg-[#6C2EDB]/10'
+                      'bg-transparent'
                     }`}>
                       {isAgreed ? (
-                        <ShieldCheck weight="fill" className="w-4 h-4 text-emerald-600" />
+                        <ShieldCheck weight="fill" className="w-4 h-4" style={{ color: 'var(--kolor-slate)' }} />
                       ) : (
-                        <Scroll className="w-4 h-4 text-[#6C2EDB]" />
+                        <Scroll className="w-4 h-4" style={{ color: 'var(--kolor-terra)' }} />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-bold text-gray-900">{contract.title}</h3>
-                      <p className="text-xs text-gray-500">
-                        {isAgreed ? 'Agreement signed' : 'Please review and sign below'}
+                      <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: '20px', lineHeight: 1.2, color: 'var(--kolor-ink)' }}>{contract.title}</h3>
+                      <p className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '10px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)', marginTop: '4px' }}>
+                        {isAgreed ? 'Agreement signed' : 'Please review and sign'}
                       </p>
                     </div>
                     {isAgreed && (
-                      <span className="flex items-center gap-1 px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold flex-shrink-0">
+                      <span className="flex items-center gap-1.5 px-3 py-1 rounded-full flex-shrink-0 uppercase" style={{ background: 'var(--kolor-slate-tint)', color: 'var(--kolor-slate)', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '9px', fontWeight: 500, letterSpacing: '0.18em' }}>
                         <CheckCircle weight="fill" className="w-3 h-3" /> Signed
                       </span>
                     )}
                   </div>
 
                   {/* Content */}
-                  <div className="px-5 py-5 border-t border-gray-100">
+                  <div className="px-6 py-6 border-t border-[color:var(--kolor-hairline)]">
                     {/* AUDIT FIX [C2]: Sandboxed iframe for contract HTML — browser-level XSS isolation */}
                     <iframe
                       title="Contract content"
@@ -953,7 +954,7 @@ export default function ClientPortal() {
                   </div>
 
                   {/* Sign / Signed */}
-                  <div className="px-5 py-4 border-t border-gray-100 bg-gray-50/50">
+                  <div className="px-6 py-5 border-t border-[color:var(--kolor-hairline)]" style={{ background: 'var(--kolor-canvas)' }}>
                     {isAgreed ? (
                       <div className="flex items-center gap-3 p-3.5 rounded-lg bg-emerald-50 border border-emerald-200" data-testid={`contract-agreed-${contract.id}`}>
                         <div className="w-9 h-9 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
@@ -1043,9 +1044,9 @@ export default function ClientPortal() {
 
         {/* Shared Files */}
         {data.files && data.files.length > 0 && (
-          <div className="bg-surface-base rounded-xl border border-gray-200 p-5" data-testid="shared-files-section">
-            <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Paperclip className="w-4 h-4 text-[#6C2EDB]" />
+          <div className="border border-[color:var(--kolor-hairline)] rounded-xl p-6" style={{ background: 'var(--kolor-canvas)' }} data-testid="shared-files-section">
+            <h3 className="mb-6 flex items-center gap-3 uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '10px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink-subtle)' }}>
+              <Paperclip className="w-4 h-4" style={{ color: 'var(--kolor-ink-muted)' }} />
               Project Files
             </h3>
             <div className="space-y-2">

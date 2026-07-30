@@ -80,16 +80,16 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
   }
 
   return (
-    <div className="bg-surface-base rounded-2xl shadow-lg border border-gray-100 overflow-hidden" data-testid="portal-messages">
+    <div className="border border-[color:var(--kolor-hairline)] rounded-xl overflow-hidden" style={{ background: 'var(--kolor-canvas)' }} data-testid="portal-messages">
       {/* Header */}
-      <div className="px-5 md:px-6 py-4 border-b border-gray-100 bg-gray-50">
+      <div className="px-6 md:px-7 py-5 border-b border-[color:var(--kolor-hairline)]" style={{ background: 'var(--kolor-canvas)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-brand-primary/10 flex items-center justify-center">
-            <ChatCircle className="w-5 h-5 text-brand-primary" />
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'var(--kolor-terra-tint)' }}>
+            <ChatCircle className="w-5 h-5" style={{ color: 'var(--kolor-terra)' }} />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-gray-900">Messages</h3>
-            <p className="text-xs text-text-tertiary">Ask questions or share updates with {studioName}</p>
+            <h3 className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '11px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-ink)' }}>Messages</h3>
+            <p className="text-xs mt-1" style={{ color: 'var(--kolor-ink-muted)' }}>Ask questions or share updates with {studioName}</p>
           </div>
         </div>
       </div>
@@ -101,10 +101,33 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
             <KolorSpinner size={24} />
           </div>
         ) : messages.length === 0 ? (
-          <div className="text-center py-8">
-            <ChatCircle weight="duotone" className="w-10 h-10 mx-auto mb-3 text-text-secondary" />
-            <p className="text-text-tertiary text-sm mb-1">No messages yet</p>
-            <p className="text-text-secondary text-xs">Send a message to start the conversation!</p>
+          <div className="text-center py-14">
+            <p
+              style={{
+                fontFamily: "'Fraunces', Georgia, serif",
+                fontWeight: 400,
+                fontStyle: 'italic',
+                fontSize: 'clamp(20px, 2.4vw, 26px)',
+                lineHeight: 1.2,
+                letterSpacing: '-0.01em',
+                color: 'var(--kolor-ink-muted)',
+              }}
+            >
+              Nothing yet.
+            </p>
+            <p
+              style={{
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: '10px',
+                fontWeight: 400,
+                letterSpacing: '0.24em',
+                textTransform: 'uppercase',
+                color: 'var(--kolor-ink-subtle)',
+                marginTop: '16px',
+              }}
+            >
+              Start the conversation.
+            </p>
           </div>
         ) : (
           <>
@@ -114,15 +137,25 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
                 className={`flex ${msg.from === 'CLIENT' ? 'justify-end' : 'justify-start'}`}
                 data-testid={`message-${msg.id}`}
               >
-                <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 ${
-                  msg.from === 'CLIENT'
-                    ? 'bg-brand-primary text-white rounded-br-md'
-                    : 'bg-gray-100 text-gray-900 rounded-bl-md'
-                }`}>
-                  <p className="text-sm leading-relaxed">{msg.content}</p>
-                  <p className={`text-[10px] mt-1 ${
-                    msg.from === 'CLIENT' ? 'text-white/60' : 'text-text-secondary'
-                  }`}>
+                <div
+                  className={`max-w-[85%] rounded-xl px-4 py-3 ${
+                    msg.from === 'CLIENT'
+                      ? 'bg-[color:var(--kolor-terra-tint)]'
+                      : 'bg-[color:var(--kolor-slate-tint)]'
+                  }`}
+                  style={{ color: 'var(--kolor-ink)' }}
+                >
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--kolor-ink)' }}>{msg.content}</p>
+                  <p
+                    className="mt-2 uppercase"
+                    style={{
+                      fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                      fontSize: '9px',
+                      fontWeight: 400,
+                      letterSpacing: '0.18em',
+                      color: 'var(--kolor-ink-subtle)',
+                    }}
+                  >
                     {msg.from === 'CLIENT' ? 'You' : studioName} &middot; {timeAgo(msg.createdAt)}
                   </p>
                 </div>
@@ -134,21 +167,21 @@ export default function ClientPortalMessages({ token, studioName }: ClientPortal
       </div>
 
       {/* Input */}
-      <form onSubmit={sendMessage} className="p-3 md:p-4 border-t border-gray-100 bg-gray-50">
+      <form onSubmit={sendMessage} className="px-6 md:px-7 py-5 border-t border-[color:var(--kolor-hairline)]" style={{ background: 'var(--kolor-canvas)' }}>
         <div className="flex gap-2">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 px-4 py-2.5 bg-surface-base border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-primary text-sm"
+            className="flex-1 px-0 py-3 text-[15px] bg-transparent border-0 border-b transition-colors focus:outline-none" style={{ borderBottomColor: 'var(--kolor-hairline)', color: 'var(--kolor-ink)', fontFamily: 'Inter, system-ui, sans-serif' }} onFocus={(e) => (e.currentTarget.style.borderBottomColor = 'var(--kolor-terra)')} onBlur={(e) => (e.currentTarget.style.borderBottomColor = 'var(--kolor-hairline)')}
             disabled={sending}
             data-testid="portal-message-input"
           />
           <button
             type="submit"
             disabled={sending || !newMessage.trim()}
-            className="px-4 py-2.5 bg-brand-primary text-white rounded-xl font-medium text-sm hover:opacity-90 transition disabled:opacity-50 flex items-center gap-2"
+            className="uppercase flex items-center gap-2 py-3 disabled:opacity-40 transition-colors" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '11px', fontWeight: 500, letterSpacing: '0.24em', color: 'var(--kolor-terra)' }}
             data-testid="portal-send-message-btn"
           >
             <PaperPlaneTilt weight="bold" className="w-4 h-4" />
