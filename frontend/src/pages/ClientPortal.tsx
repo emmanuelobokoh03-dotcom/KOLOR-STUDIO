@@ -33,7 +33,6 @@ import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
 import { Paperclip } from '@phosphor-icons/react/dist/csr/Paperclip'
 import { Star } from '@phosphor-icons/react/dist/csr/Star'
 import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
-import { Confetti } from '@phosphor-icons/react/dist/csr/Confetti'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { trackPortalViewed } from '../utils/analytics';
 import { useConfirm } from '../components/ConfirmProvider'
@@ -144,60 +143,101 @@ function CelebrationOverlay({ clientName, studioName, onDismiss }: {
   studioName: string;
   onDismiss: () => void;
 }) {
+  // iter 280d: framework-calibrated celebration moment
+  // Editorial voice: quiet-confident, not bright-jubilant
   return (
     <div
       className="fixed inset-0 z-[999] flex flex-col items-center justify-center px-6"
-      style={{ background: 'linear-gradient(135deg, #065F46 0%, #047857 30%, #059669 60%, #10B981 100%)' }}
+      style={{
+        background: 'var(--kolor-canvas-dark)',
+        animation: 'kolor-fade-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both',
+      }}
       data-testid="celebration-overlay"
     >
-      {/* Confetti-style decorative dots */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 30 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full opacity-20"
-            style={{
-              width: `${8 + Math.random() * 20}px`,
-              height: `${8 + Math.random() * 20}px`,
-              background: i % 3 === 0 ? '#fbbf24' : i % 3 === 1 ? '#ffffff' : '#6ee7b7',
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 2}s`,
-            }}
-          />
-        ))}
-      </div>
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse 900px 500px at 50% 30%, rgba(184, 74, 44, 0.10) 0%, transparent 65%)',
+          pointerEvents: 'none',
+        }}
+        aria-hidden="true"
+      />
 
-      <div className="relative text-center max-w-md">
-        <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-8">
-          <Confetti weight="fill" className="w-10 h-10 text-white" />
-        </div>
-
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight">
-          You're All Set!
-        </h1>
-        <p className="text-lg text-emerald-100 mb-3">
-          Thank you, {clientName}!
+      <div className="relative text-center max-w-lg">
+        <p
+          className="uppercase"
+          style={{
+            fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+            fontSize: '11px',
+            fontWeight: 500,
+            letterSpacing: '0.28em',
+            color: 'rgba(247, 244, 238, 0.6)',
+            marginBottom: '32px',
+          }}
+        >
+          Agreement
         </p>
-        <p className="text-emerald-200/80 text-sm leading-relaxed mb-10">
-          Your agreement has been signed successfully. {studioName} has been notified and will be in touch shortly with next steps.
+
+        <h1
+          style={{
+            fontFamily: "'Fraunces', Georgia, serif",
+            fontWeight: 400,
+            fontStyle: 'italic',
+            fontSize: 'clamp(64px, 8vw, 96px)',
+            lineHeight: 0.98,
+            letterSpacing: '-0.025em',
+            color: '#F7F4EE',
+            marginBottom: '32px',
+          }}
+        >
+          Signed.
+        </h1>
+
+        <p
+          style={{
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '15px',
+            fontWeight: 400,
+            lineHeight: 1.6,
+            color: 'rgba(247, 244, 238, 0.75)',
+            marginBottom: '48px',
+            maxWidth: '440px',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
+        >
+          Thank you, {clientName}. Your agreement is on record. {studioName} has been notified and will be in touch shortly.
         </p>
 
         <button
           onClick={onDismiss}
-          className="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-emerald-800 rounded-xl font-semibold text-sm shadow-xl hover:shadow-2xl transition-all duration-200"
+          className="uppercase inline-flex items-center gap-3 py-3 px-6 transition-colors"
+          style={{
+            fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+            fontSize: '11px',
+            fontWeight: 500,
+            letterSpacing: '0.28em',
+            color: '#F7F4EE',
+            border: '1px solid rgba(247, 244, 238, 0.35)',
+            background: 'transparent',
+            borderRadius: '2px',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'rgba(247, 244, 238, 0.7)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'rgba(247, 244, 238, 0.35)';
+          }}
           data-testid="celebration-continue-btn"
         >
-          Continue to Portal
-          <ArrowRight weight="bold" className="w-4 h-4" />
+          Continue
         </button>
       </div>
 
       <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(10deg); }
+        @keyframes kolor-fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
       `}</style>
     </div>
@@ -212,15 +252,15 @@ function QuoteAcceptedConfirmation({ quote, studioName, formatCurrency }: {
 }) {
   return (
     <div
-      className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl border border-emerald-200 overflow-hidden"
+      className="rounded-xl overflow-hidden border border-[color:var(--kolor-hairline)]" style={{ background: 'var(--kolor-canvas)' }}
       data-testid={`quote-accepted-${quote.id}`}
     >
       <div className="px-6 py-5 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-          <CheckCircle weight="fill" className="w-7 h-7 text-emerald-600" />
+        <div className="flex items-center justify-center flex-shrink-0">
+          <CheckCircle weight="fill" className="w-6 h-6" style={{ color: 'var(--kolor-slate)' }} />
         </div>
         <div className="flex-1">
-          <h3 className="text-base font-bold text-emerald-900">Quote Accepted</h3>
+          <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: '22px', lineHeight: 1.2, color: 'var(--kolor-ink)' }}>Quote accepted.</h3>
           <p className="text-sm" style={{ color: 'var(--kolor-ink-muted)', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '12px', letterSpacing: '0.05em' }}>
             {formatCurrency(quote.total, quote)} &middot; Quote #{quote.quoteNumber}
           </p>
@@ -229,13 +269,13 @@ function QuoteAcceptedConfirmation({ quote, studioName, formatCurrency }: {
           Confirmed
         </span>
       </div>
-      <div className="px-6 py-4 border-t border-emerald-200/60 bg-emerald-50/50">
+      <div className="px-6 py-4 border-t border-[color:var(--kolor-hairline)]" style={{ background: 'var(--kolor-slate-tint)' }}>
         <div className="flex items-start gap-3">
-          <Check weight="bold" className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-emerald-800/90">
+          <Check weight="bold" className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'var(--kolor-slate)' }} />
+          <p className="text-sm" style={{ color: 'var(--kolor-ink)', lineHeight: 1.6 }}>
             {studioName} has been notified and your contract is being prepared. You'll receive it shortly.
             {quote.acceptedAt && (
-              <span className="block text-xs text-emerald-600/70 mt-1">
+              <span className="block mt-2 uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '10px', fontWeight: 400, letterSpacing: '0.18em', color: 'var(--kolor-ink-subtle)' }}>
                 Accepted on {new Date(quote.acceptedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </span>
             )}
@@ -593,35 +633,89 @@ export default function ClientPortal() {
       <main className="max-w-3xl mx-auto px-5 py-8 space-y-6">
         {/* Payment Success Banner */}
         {paymentSuccess && (
-          <div className="rounded-xl p-5 bg-emerald-600 text-white flex items-center gap-4" data-testid="payment-success-banner">
-            <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
-              <CheckCircle weight="fill" className="w-5 h-5" />
+          <div
+            className="rounded-xl p-6 border flex items-center gap-4"
+            style={{
+              background: 'var(--kolor-slate-tint)',
+              borderColor: 'var(--kolor-slate)',
+              borderStyle: 'solid',
+              borderWidth: '1px',
+            }}
+            data-testid="payment-success-banner"
+          >
+            <div className="flex items-center justify-center flex-shrink-0" style={{ width: '32px', height: '32px' }}>
+              <CheckCircle weight="fill" className="w-6 h-6" style={{ color: 'var(--kolor-slate)' }} />
             </div>
             <div>
-              <h3 className="font-bold text-sm">Payment Successful!</h3>
-              <p className="text-xs text-emerald-100 mt-0.5">Thank you! Your payment has been received.</p>
+              <h3
+                style={{
+                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontWeight: 400,
+                  fontStyle: 'italic',
+                  fontSize: '18px',
+                  lineHeight: 1.2,
+                  color: 'var(--kolor-ink)',
+                }}
+              >
+                Payment received.
+              </h3>
+              <p
+                className="uppercase"
+                style={{
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  letterSpacing: '0.24em',
+                  color: 'var(--kolor-ink-subtle)',
+                  marginTop: '6px',
+                }}
+              >
+                Thank you.
+              </p>
             </div>
           </div>
         )}
 
         {/* Status Card */}
         {!data.status.isLost && (
-          <div className={`rounded-xl p-5 ${
-            data.status.isBooked
-              ? 'bg-emerald-600 text-white'
-              : 'bg-surface-base border border-gray-200'
-          }`} data-testid="portal-status-card">
+          <div
+            className="rounded-xl p-6 border"
+            style={{
+              background: data.status.isBooked ? 'var(--kolor-slate-tint)' : 'var(--kolor-canvas)',
+              borderColor: data.status.isBooked ? 'var(--kolor-slate)' : 'var(--kolor-hairline)',
+              borderStyle: 'solid',
+              borderWidth: '1px',
+            }}
+            data-testid="portal-status-card"
+          >
             <div className="flex items-start gap-3.5">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                data.status.isBooked ? 'bg-white/20' : 'bg-[#6C2EDB]/8'
-              }`}>
-                {data.status.isBooked ? <CheckCircle weight="fill" className="w-5 h-5" /> : <Clock className="w-5 h-5 text-[#6C2EDB]" />}
+              <div className="flex items-center justify-center flex-shrink-0" style={{ width: '32px', height: '32px' }}>
+                {data.status.isBooked ? <CheckCircle weight="fill" className="w-5 h-5" style={{ color: 'var(--kolor-slate)' }} /> : <Clock className="w-5 h-5" style={{ color: 'var(--kolor-terra)' }} />}
               </div>
               <div>
-                <h2 className={`text-sm font-bold ${data.status.isBooked ? '' : 'text-gray-900'}`}>
+                <h2
+                  style={{
+                    fontFamily: "'Fraunces', Georgia, serif",
+                    fontWeight: 400,
+                    fontStyle: 'italic',
+                    fontSize: '20px',
+                    lineHeight: 1.2,
+                    color: 'var(--kolor-ink)',
+                  }}
+                >
                   {data.status.isBooked ? 'Project Confirmed.' : data.status.label}
                 </h2>
-                <p className={`text-xs mt-0.5 ${data.status.isBooked ? 'text-emerald-100' : 'text-gray-500'}`}>
+                <p
+                  className="uppercase"
+                  style={{
+                    fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                    fontSize: '10px',
+                    fontWeight: 500,
+                    letterSpacing: '0.24em',
+                    color: 'var(--kolor-ink-subtle)',
+                    marginTop: '8px',
+                  }}
+                >
                   {data.status.description}
                 </p>
               </div>
@@ -962,13 +1056,13 @@ export default function ClientPortal() {
                   {/* Sign / Signed */}
                   <div className="px-6 py-5 border-t border-[color:var(--kolor-hairline)]" style={{ background: 'var(--kolor-canvas)' }}>
                     {isAgreed ? (
-                      <div className="flex items-center gap-3 p-3.5 rounded-lg bg-emerald-50 border border-emerald-200" data-testid={`contract-agreed-${contract.id}`}>
-                        <div className="w-9 h-9 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <CheckCircle weight="fill" className="w-4 h-4 text-white" />
+                      <div className="flex items-center gap-4 p-4 rounded-lg border" style={{ background: 'var(--kolor-slate-tint)', borderColor: 'var(--kolor-slate)', borderStyle: 'solid', borderWidth: '1px' }} data-testid={`contract-agreed-${contract.id}`}>
+                        <div className="flex items-center justify-center flex-shrink-0" style={{ width: '32px', height: '32px' }}>
+                          <CheckCircle weight="fill" className="w-5 h-5" style={{ color: 'var(--kolor-slate)' }} />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-emerald-800">Agreement Signed</p>
-                          <p className="text-xs text-emerald-600">
+                          <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: '18px', lineHeight: 1.2, color: 'var(--kolor-ink)' }}>Agreement signed.</p>
+                          <p className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '10px', fontWeight: 500, letterSpacing: '0.22em', color: 'var(--kolor-ink-subtle)', marginTop: '6px' }}>
                             {contract.clientAgreedAt
                               ? `Signed on ${new Date(contract.clientAgreedAt).toLocaleDateString('en-US', {
                                   weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit',
