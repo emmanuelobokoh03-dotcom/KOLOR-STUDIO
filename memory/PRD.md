@@ -1736,13 +1736,21 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - **279-docs / 279b–d**: Framework v1.0 committed at `frontend/src/kolor-design/FRAMEWORK.md`; hero warm ink/cream/terra calibration; em-dash retirement; industry-panel + features-flow prose unified to Fine Art rhythm.
 - **279e (this pass)**: Waitlist email input converted to transparent bottom-hairline-only field (var(--bg-mid) → var(--cream) on focus via `emailFocused` state; onFocus/onBlur handlers). FRAMEWORK Part 7 evolved from three tempos + one easing curve → four tempos (80/200/400/1000ms) + easing family (standard ease-out `0.2,0,0,1` + editorial settle `0.16,1,0.3,1`). Files touched: `frontend/src/pages/LandingPageV2.tsx`, `frontend/src/kolor-design/FRAMEWORK.md`. TSC + build clean. Local commit `a0c7a0b`. Push blocked → user must use Save to GitHub.
 
-## Backlog after 279e
+## Iterations 280–281 (Feb 2026) — Client portal + Public inquiry framework calibration
+- **280a–d + hotfix**: Client portal Phase 2 — ceremonial cover (Deep Ink header, money moment, Fraunces title), operational calibration (timeline palette, progress stepper Terra/Slate, hairline dividers), closing regions (messages ghost styling, contract preview, quotes, files), celebration moments (retired Confetti/emerald, used Fraunces/Slate for Signed / Payment received / Quote accepted), plus hotfix for title readability + auto-scroll bug + status indicator polish.
+- **280-refactor**: Framework primitives extracted at `frontend/src/kolor-design/status.ts` (PORTAL_STATUS_STYLES map) and `frontend/src/kolor-design/components/FrameworkNotice.tsx` (reusable notice card). Local commit `18b15c2`.
+- **281 (this pass)**: Public inquiry form (`frontend/src/pages/SubmitInquiry.tsx`) migrated from SaaS-purple to editorial magazine spread. Six calibration regions: page canvas ivory, left aside canvas + hairline (Fraunces italic studio name, mono UPPERCASE subtitle, Ink initials avatar, Terra active timeline dot, ghost mono call link), right main editorial eyebrow + Fraunces italic headline, form fields bottom-border-only with Terra focus, mono UPPERCASE labels, ghost mono Terra submit button. Seventh region: success state uses `<FrameworkNotice />` (first real use of iter 280-refactor primitive) with industry-specific headings retired exclamations (`Inquiry received. / Brief received. / Commission received. / Thank you.`). Preserved: handleSubmit, formData, industry branching (PHOTOGRAPHY/DESIGN/FINE_ART), focusedField, creatorInfo API fetching (brandPrimaryColor still fetched, not applied per Q1=B), KOLOR wordmark Violet Ghost gradient, meeting types booking link, two-panel layout. All 26 receipt checks PASS. TSC + build clean. Local commit `6fe7f0f`. Push blocked → user must use Save to GitHub.
+
+## Backlog after 281
 - **P1**: Publish local commits via Save to GitHub (origin lagging since 279a).
-- **P1**: Iter 280 — Client portal calibration to KOLOR framework.
-- **P1**: Iters 281–283 — Dashboard redesign (Today / Clients / Money).
-- **P1**: Iters 284–285 — Quote builder + contract editor redesign.
-- **P1**: Iter 286 — Email template revision.
-- **P2**: Community redesign (iter 287+); consolidate `SERVICE_TYPE_LABELS`; extract `DatePickerButton`; Prisma granular service types (`SCULPTURE`/`PAINTING`/`COMMISSION`); post-OAuth Calendar reconnect polish; worker health persistence + retry/backoff + alert emails.
+- **P1**: Iter 282 — Public artist profiles (`PublicProfileNew.tsx`, ~1,143 lines).
+- **P1**: Iter 283 — Public booking form embed (closes Phase 2).
+- **P1**: Phase 3 (iters 284–287) — Studio Dashboard, Today, Clients, Money views.
+- **P1**: Phase 4 (iters 288–290) — Quote builder, contract editor, email templates.
+- **P1**: Phase 5 (iters 291–295) — Calendar, Portfolio, Settings tabs.
+- **P1**: Phase 6 (iters 296–299) — DM Inbox, Community feed, profile, discover.
+- **P1**: Phase 7 (iter 300) — Auth series.
+- **P2**: Consolidate `SERVICE_TYPE_LABELS`; extract `DatePickerButton`; Prisma granular service types; post-OAuth Calendar reconnect polish; worker health persistence + retry/backoff + alert emails.
 
 
 ## Backlog (deferred iterations)
