@@ -9,6 +9,7 @@ import { Trash } from '@phosphor-icons/react/dist/csr/Trash'
 import { DotsSixVertical } from '@phosphor-icons/react/dist/csr/DotsSixVertical'
 import { Flag } from '@phosphor-icons/react/dist/csr/Flag'
 import { format, isPast, isFuture, isToday } from 'date-fns';
+import { PORTAL_STATUS_STYLES } from '../kolor-design/status';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -52,37 +53,7 @@ const STATUS_STYLES = {
   upcoming:  { dot: 'bg-light-200 border-light-300',           icon: 'text-text-secondary', card: 'bg-light-50 border-light-200',          text: 'text-text-secondary' },
 };
 
-// iter 280b: framework-calibrated portal timeline states
-// completed = Slate (quiet completion, not bright success)
-// today     = Terra (the active pleasure moment)
-// overdue   = Danger (editorial red)
-// upcoming  = Ink whisper (very muted)
-const PORTAL_STATUS_STYLES = {
-  completed: {
-    dot: 'bg-[color:var(--kolor-slate-tint)] border-[color:var(--kolor-slate)]',
-    icon: 'text-[color:var(--kolor-slate)]',
-    card: 'bg-transparent border-[color:var(--kolor-hairline)]',
-    text: 'text-[color:var(--kolor-ink-muted)]',
-  },
-  overdue: {
-    dot: 'bg-[color:var(--kolor-danger-tint)] border-[color:var(--kolor-danger)]',
-    icon: 'text-[color:var(--kolor-danger)]',
-    card: 'bg-transparent border-[color:var(--kolor-danger)]/40',
-    text: 'text-[color:var(--kolor-danger)]',
-  },
-  today: {
-    dot: 'bg-[color:var(--kolor-terra-tint)] border-[color:var(--kolor-terra)]',
-    icon: 'text-[color:var(--kolor-terra)]',
-    card: 'bg-transparent border-[color:var(--kolor-terra)]/40',
-    text: 'text-[color:var(--kolor-terra)]',
-  },
-  upcoming: {
-    dot: 'bg-transparent border-[color:var(--kolor-ink-whisper)]',
-    icon: 'text-[color:var(--kolor-ink-whisper)]',
-    card: 'bg-transparent border-[color:var(--kolor-hairline)]',
-    text: 'text-[color:var(--kolor-ink-subtle)]',
-  },
-};
+// iter 280-refactor: PORTAL_STATUS_STYLES extracted to framework primitive
 
 // ── Component ──────────────────────────────────────────
 export default function ProjectTimeline({ leadId, token, editable = false }: ProjectTimelineProps) {

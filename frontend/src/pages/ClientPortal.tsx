@@ -36,6 +36,7 @@ import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
 import { trackPortalViewed } from '../utils/analytics';
 import { useConfirm } from '../components/ConfirmProvider'
+import { FrameworkNotice } from '../kolor-design/components/FrameworkNotice';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -633,47 +634,12 @@ export default function ClientPortal() {
       <main className="max-w-3xl mx-auto px-5 py-8 space-y-6">
         {/* Payment Success Banner */}
         {paymentSuccess && (
-          <div
-            className="rounded-xl p-6 border flex items-center gap-4"
-            style={{
-              background: 'var(--kolor-slate-tint)',
-              borderColor: 'var(--kolor-slate)',
-              borderStyle: 'solid',
-              borderWidth: '1px',
-            }}
+          <FrameworkNotice
+            title="Payment received."
+            metadata="Thank you."
+            icon={<CheckCircle weight="fill" className="w-6 h-6" style={{ color: 'var(--kolor-slate)' }} />}
             data-testid="payment-success-banner"
-          >
-            <div className="flex items-center justify-center flex-shrink-0" style={{ width: '32px', height: '32px' }}>
-              <CheckCircle weight="fill" className="w-6 h-6" style={{ color: 'var(--kolor-slate)' }} />
-            </div>
-            <div>
-              <h3
-                style={{
-                  fontFamily: "'Fraunces', Georgia, serif",
-                  fontWeight: 400,
-                  fontStyle: 'italic',
-                  fontSize: '18px',
-                  lineHeight: 1.2,
-                  color: 'var(--kolor-ink)',
-                }}
-              >
-                Payment received.
-              </h3>
-              <p
-                className="uppercase"
-                style={{
-                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
-                  fontSize: '10px',
-                  fontWeight: 500,
-                  letterSpacing: '0.24em',
-                  color: 'var(--kolor-ink-subtle)',
-                  marginTop: '6px',
-                }}
-              >
-                Thank you.
-              </p>
-            </div>
-          </div>
+          />
         )}
 
         {/* Status Card */}
@@ -1056,21 +1022,18 @@ export default function ClientPortal() {
                   {/* Sign / Signed */}
                   <div className="px-6 py-5 border-t border-[color:var(--kolor-hairline)]" style={{ background: 'var(--kolor-canvas)' }}>
                     {isAgreed ? (
-                      <div className="flex items-center gap-4 p-4 rounded-lg border" style={{ background: 'var(--kolor-slate-tint)', borderColor: 'var(--kolor-slate)', borderStyle: 'solid', borderWidth: '1px' }} data-testid={`contract-agreed-${contract.id}`}>
-                        <div className="flex items-center justify-center flex-shrink-0" style={{ width: '32px', height: '32px' }}>
-                          <CheckCircle weight="fill" className="w-5 h-5" style={{ color: 'var(--kolor-slate)' }} />
-                        </div>
-                        <div>
-                          <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: '18px', lineHeight: 1.2, color: 'var(--kolor-ink)' }}>Agreement signed.</p>
-                          <p className="uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: '10px', fontWeight: 500, letterSpacing: '0.22em', color: 'var(--kolor-ink-subtle)', marginTop: '6px' }}>
-                            {contract.clientAgreedAt
-                              ? `Signed on ${new Date(contract.clientAgreedAt).toLocaleDateString('en-US', {
-                                  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit',
-                                })}`
-                              : 'Thank you for signing this agreement'}
-                          </p>
-                        </div>
-                      </div>
+                      <FrameworkNotice
+                        title="Agreement signed."
+                        metadata={
+                          contract.clientAgreedAt
+                            ? `Signed on ${new Date(contract.clientAgreedAt).toLocaleDateString('en-US', {
+                                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit',
+                              })}`
+                            : 'Thank you for signing this agreement'
+                        }
+                        icon={<CheckCircle weight="fill" className="w-5 h-5" style={{ color: 'var(--kolor-slate)' }} />}
+                        data-testid={`contract-agreed-${contract.id}`}
+                      />
                     ) : (
                       <div className="space-y-3">
                         {signError && (
