@@ -7,6 +7,7 @@ import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
 import { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
 import { ServiceType, leadsApi, PROJECT_TYPE_LABELS, ProjectType } from '../services/api'
 import { getIndustryLanguage, IndustryType } from '../utils/industryLanguage'
+import { FrameworkNotice } from '../kolor-design/components/FrameworkNotice'
 
 interface CreatorInfo {
   studioName?: string
@@ -137,23 +138,38 @@ const SubmitInquiry = () => {
     setError('')
   }
 
+  // iter 281: Framework Move 2 (bottom-border-only), Terra focus, no brandPrimary
   const inputStyle = (field: string) => ({
-    width: '100%', height: 46, borderRadius: 10, fontSize: 13, padding: '0 14px',
-    background: '#FDFCFF', color: '#1A1A2E', outline: 'none',
-    border: `0.5px solid ${focusedField === field ? brandPrimary : '#EDE8F5'}`,
-    boxShadow: focusedField === field ? `0 0 0 3px ${brandPrimary}18` : 'none',
-    transition: 'border-color 200ms, box-shadow 200ms',
+    width: '100%',
+    height: 48,
+    padding: '12px 0',
+    background: 'transparent',
+    color: 'var(--kolor-ink, #1A1613)',
+    outline: 'none',
+    border: 'none',
+    borderBottom: `1px solid ${focusedField === field ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-hairline, #E5E0D8)'}`,
+    fontSize: 15,
+    fontFamily: 'Inter, system-ui, sans-serif',
+    transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
   })
 
   const textareaStyle = (field: string) => ({
-    width: '100%', borderRadius: 10, fontSize: 13, padding: '12px 14px',
-    background: '#FDFCFF', color: '#1A1A2E', outline: 'none', resize: 'none' as const,
-    border: `0.5px solid ${focusedField === field ? brandPrimary : '#EDE8F5'}`,
-    boxShadow: focusedField === field ? `0 0 0 3px ${brandPrimary}18` : 'none',
-    transition: 'border-color 200ms, box-shadow 200ms',
+    width: '100%',
+    minHeight: 140,
+    padding: '12px 0',
+    background: 'transparent',
+    color: 'var(--kolor-ink, #1A1613)',
+    outline: 'none',
+    resize: 'none' as const,
+    border: 'none',
+    borderBottom: `1px solid ${focusedField === field ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-hairline, #E5E0D8)'}`,
+    fontSize: 15,
+    fontFamily: 'Inter, system-ui, sans-serif',
+    lineHeight: 1.6,
+    transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
   })
 
-  const labelStyle = { display: 'block', fontSize: 12, fontWeight: 600 as const, color: '#6B7280', marginBottom: 6 }
+  const labelStyle = { display: 'block', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500 as const, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', marginBottom: 10 }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -217,10 +233,10 @@ const SubmitInquiry = () => {
 
   // ─── Success state ───
   if (success) {
-    const successHeading = industry === 'PHOTOGRAPHY' ? 'Inquiry sent!'
-      : industry === 'DESIGN' ? 'Brief received!'
-      : industry === 'FINE_ART' ? 'Commission inquiry sent!'
-      : 'Thank you!'
+    const successHeading = industry === 'PHOTOGRAPHY' ? 'Inquiry received.'
+      : industry === 'DESIGN' ? 'Brief received.'
+      : industry === 'FINE_ART' ? 'Commission received.'
+      : 'Thank you.'
 
     const projectWord = industry === 'PHOTOGRAPHY' ? 'shoot'
       : industry === 'DESIGN' ? 'project'
@@ -232,48 +248,59 @@ const SubmitInquiry = () => {
       : 'Book a discovery call'
 
     return (
-      <div style={{ minHeight: '100vh', background: '#F9F7FE', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }} data-testid="inquiry-success">
-        <div style={{ maxWidth: 480, width: '100%', textAlign: 'center' }}>
-          <div style={{ width: 64, height: 64, background: '#ECFDF5', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', border: '1px solid #BBF7D0' }}>
-            <CheckCircle weight="duotone" className="w-8 h-8" style={{ color: '#16A34A' }} />
-          </div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#1A1A2E', marginBottom: 12 }} data-testid="inquiry-success-heading">{successHeading}</h1>
-          <p style={{ fontSize: 15, color: '#6B7280', lineHeight: 1.65, marginBottom: 24 }}>
-            We've let {studioDisplayName || 'the studio'} know about your {projectWord}.
-            <br />Expect a reply within 24 hours.
-          </p>
-
+      <div style={{ minHeight: '100vh', background: 'var(--kolor-canvas, #F7F4EE)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }} data-testid="inquiry-success">
+        <div style={{ maxWidth: 560, width: '100%' }}>
+          <FrameworkNotice
+            title={successHeading}
+            metadata={`We've let ${studioDisplayName || 'the studio'} know about your ${projectWord}. Expect a reply within 24 hours.`}
+            icon={<CheckCircle weight="fill" className="w-6 h-6" style={{ color: 'var(--kolor-slate, #3B4A3F)' }} />}
+            data-testid="inquiry-success-card"
+          />
           {hasMeetingTypes && studioId && (
-            <div style={{ marginBottom: 24 }}>
-              <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 8 }}>Can't wait?</p>
+            <div style={{ marginTop: 40, textAlign: 'center' }}>
+              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-ink-subtle, #928B84)', marginBottom: 16 }}>
+                Or, if you'd prefer
+              </p>
               <Link
                 to={`/book/${studioId}`}
-                style={{ color: brandPrimary, fontSize: 14, fontWeight: 700, textDecoration: 'none' }}
+                style={{
+                  display: 'inline-block',
+                  padding: '14px 28px',
+                  background: 'transparent',
+                  color: 'var(--kolor-terra, #B84A2C)',
+                  border: '1px solid var(--kolor-terra, #B84A2C)',
+                  borderRadius: 2,
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: 11,
+                  fontWeight: 500,
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase' as const,
+                  textDecoration: 'none',
+                  transition: 'background-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
                 data-testid="inquiry-success-book"
               >
-                {bookLabel} →
+                {bookLabel}
               </Link>
             </div>
           )}
-
-          {studioId ? (
+          <div style={{ marginTop: 48, textAlign: 'center' }}>
             <Link
-              to={`/portfolio/${studioId}`}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#6B7280', fontSize: 14, fontWeight: 500, textDecoration: 'none' }}
+              to={studioId ? `/portfolio/${studioId}` : '/'}
+              style={{
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: '0.24em',
+                textTransform: 'uppercase' as const,
+                color: 'var(--kolor-ink-subtle, #928B84)',
+                textDecoration: 'none',
+              }}
               data-testid="inquiry-success-back"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Back to {studioDisplayName ? `${studioDisplayName}'s portfolio` : 'portfolio'}
+              {studioId && studioDisplayName ? `Back to ${studioDisplayName}'s portfolio` : 'Back to home'}
             </Link>
-          ) : (
-            <Link
-              to="/"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#6B7280', fontSize: 14, fontWeight: 500, textDecoration: 'none' }}
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </Link>
-          )}
+          </div>
         </div>
       </div>
     )
@@ -296,7 +323,7 @@ const SubmitInquiry = () => {
 
   const messagePlaceholder = industry === 'PHOTOGRAPHY' ? 'Share your vision, vibe, and any details I should know about your shoot...'
     : industry === 'DESIGN' ? 'What are you building? Who is it for? What do you want it to feel like?'
-    : industry === 'FINE_ART' ? 'Describe what you have in mind — subject, mood, where it will live, any references...'
+    : industry === 'FINE_ART' ? 'Describe what you have in mind: subject, mood, where it will live, any references...'
     : 'Tell us about your project... What are you looking for? Any specific requirements or vision?'
 
   const bookLabel = industry === 'DESIGN' ? 'Book a scoping call'
@@ -304,10 +331,10 @@ const SubmitInquiry = () => {
     : 'Book a discovery call'
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F9F7FE' }} data-testid="inquiry-page">
+    <div style={{ minHeight: '100vh', background: 'var(--kolor-canvas, #F7F4EE)' }} data-testid="inquiry-page">
       <div className="inquiry-layout">
         {/* ─── Left Panel ─── */}
-        <aside className="inquiry-left-panel" style={{ background: '#F4F0FD', borderRight: '0.5px solid #DDD6FE', padding: '48px 40px' }} data-testid="inquiry-left-panel">
+        <aside className="inquiry-left-panel" style={{ background: 'var(--kolor-canvas, #F7F4EE)', borderRight: '1px solid var(--kolor-hairline, #E5E0D8)', padding: '56px 48px' }} data-testid="inquiry-left-panel">
           {/* Creator identity */}
           {studioId && studioDisplayName ? (
             <div>
@@ -315,13 +342,13 @@ const SubmitInquiry = () => {
                 {brandLogo ? (
                   <img src={brandLogo} alt="" style={{ height: 40, objectFit: 'contain' }} />
                 ) : (
-                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: brandPrimary, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, flexShrink: 0 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--kolor-ink, #1A1613)', color: 'var(--kolor-canvas, #F7F4EE)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 13, fontWeight: 500, letterSpacing: '0.08em', flexShrink: 0 }}>
                     {initials}
                   </div>
                 )}
               </div>
-              <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1A1A2E', marginBottom: 4 }} data-testid="inquiry-studio-name">{studioDisplayName}</h2>
-              <p style={{ fontSize: 13, color: '#6B7280' }}>You're reaching out to {studioDisplayName}</p>
+              <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 28, lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--kolor-ink, #1A1613)', marginBottom: 10 }} data-testid="inquiry-studio-name">{studioDisplayName}</h2>
+              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-ink-subtle, #928B84)' }}>Reaching out to {studioDisplayName}</p>
             </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
@@ -340,7 +367,7 @@ const SubmitInquiry = () => {
               {/* Step 1 */}
               <div style={{ display: 'flex', gap: 14 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: brandPrimary, flexShrink: 0 }} />
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--kolor-terra, #B84A2C)', flexShrink: 0 }} />
                   <div style={{ width: 1, flex: 1, background: '#EDE8F5', margin: '4px 0' }} />
                 </div>
                 <div style={{ paddingBottom: 24 }}>
@@ -379,7 +406,7 @@ const SubmitInquiry = () => {
                 <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 8 }}>Prefer a call first?</p>
                 <Link
                   to={`/book/${studioId}`}
-                  style={{ fontSize: 13, fontWeight: 700, color: brandPrimary, textDecoration: 'none' }}
+                  style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 11, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-terra, #B84A2C)', textDecoration: 'none' }}
                   data-testid="inquiry-book-call"
                 >
                   {bookLabel} →
@@ -390,9 +417,39 @@ const SubmitInquiry = () => {
         </aside>
 
         {/* ─── Right Panel: Form ─── */}
-        <main className="inquiry-right-panel" style={{ padding: '48px 40px' }} data-testid="inquiry-form-panel">
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1A1A2E', marginBottom: 6 }} data-testid="inquiry-heading">{formHeading}</h1>
-          <p style={{ fontSize: 14, color: '#6B7280', marginBottom: 28, lineHeight: 1.55 }}>{formSub}</p>
+        <main className="inquiry-right-panel" style={{ padding: '56px 48px' }} data-testid="inquiry-form-panel">
+          <div style={{ marginBottom: 40 }}>
+            <p
+              style={{
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                color: 'var(--kolor-ink-subtle, #928B84)',
+                marginBottom: 20,
+              }}
+              data-testid="inquiry-form-eyebrow"
+            >
+              {industry === 'PHOTOGRAPHY' ? 'Inquiry' : industry === 'DESIGN' ? 'Brief' : industry === 'FINE_ART' ? 'Commission' : 'Project'}
+            </p>
+            <h1
+              style={{
+                fontFamily: "'Fraunces', Georgia, serif",
+                fontWeight: 400,
+                fontStyle: 'italic',
+                fontSize: 'clamp(36px, 5vw, 56px)',
+                lineHeight: 1.0,
+                letterSpacing: '-0.025em',
+                color: 'var(--kolor-ink, #1A1613)',
+                marginBottom: 16,
+              }}
+              data-testid="inquiry-form-headline"
+            >
+              {formHeading}
+            </h1>
+            <p style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, color: 'var(--kolor-ink-subtle, #928B84)', lineHeight: 1.6 }} data-testid="inquiry-heading">{formSub}</p>
+          </div>
 
           {error && (
             <div style={{ marginBottom: 20, padding: '12px 14px', background: '#FEF2F2', border: '0.5px solid #FECACA', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#DC2626' }}>
@@ -635,10 +692,25 @@ const SubmitInquiry = () => {
             <button
               type="submit" disabled={loading}
               style={{
-                width: '100%', height: 50, borderRadius: 10, background: brandPrimary, color: '#fff',
-                fontSize: 14, fontWeight: 700, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.6 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                transition: 'opacity 200ms', minWidth: 44,
+                width: '100%',
+                minHeight: 52,
+                background: 'transparent',
+                color: 'var(--kolor-terra, #B84A2C)',
+                border: '1px solid var(--kolor-terra, #B84A2C)',
+                borderRadius: 2,
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase' as const,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.5 : 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 10,
+                transition: 'background-color 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                marginTop: 12,
               }}
               data-testid="inquiry-submit"
             >
