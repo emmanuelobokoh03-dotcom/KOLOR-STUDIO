@@ -1740,11 +1740,18 @@ Removes iter 258b's `AccountTab` placeholder by building the real component from
 - **280a–d + hotfix**: Client portal Phase 2 — ceremonial cover (Deep Ink header, money moment, Fraunces title), operational calibration (timeline palette, progress stepper Terra/Slate, hairline dividers), closing regions (messages ghost styling, contract preview, quotes, files), celebration moments (retired Confetti/emerald, used Fraunces/Slate for Signed / Payment received / Quote accepted), plus hotfix for title readability + auto-scroll bug + status indicator polish.
 - **280-refactor**: Framework primitives extracted at `frontend/src/kolor-design/status.ts` (PORTAL_STATUS_STYLES map) and `frontend/src/kolor-design/components/FrameworkNotice.tsx` (reusable notice card). Local commit `18b15c2`.
 - **281 (this pass)**: Public inquiry form (`frontend/src/pages/SubmitInquiry.tsx`) migrated from SaaS-purple to editorial magazine spread. Six calibration regions: page canvas ivory, left aside canvas + hairline (Fraunces italic studio name, mono UPPERCASE subtitle, Ink initials avatar, Terra active timeline dot, ghost mono call link), right main editorial eyebrow + Fraunces italic headline, form fields bottom-border-only with Terra focus, mono UPPERCASE labels, ghost mono Terra submit button. Seventh region: success state uses `<FrameworkNotice />` (first real use of iter 280-refactor primitive) with industry-specific headings retired exclamations (`Inquiry received. / Brief received. / Commission received. / Thank you.`). Preserved: handleSubmit, formData, industry branching (PHOTOGRAPHY/DESIGN/FINE_ART), focusedField, creatorInfo API fetching (brandPrimaryColor still fetched, not applied per Q1=B), KOLOR wordmark Violet Ghost gradient, meeting types booking link, two-panel layout. All 26 receipt checks PASS. TSC + build clean. Local commit `6fe7f0f`. Push blocked → user must use Save to GitHub.
+- **282a (this pass)**: Docs-only roadmap correction. Reality audit for iter 282 revealed `PublicProfileNew.tsx` does not exist; actual public profile page is `PublicPortfolio.tsx` (~37KB, mounted at `/portfolio/:userId?/:tab?` and `/:handle`). Corrected FRAMEWORK.md Part 12.3 Phase 2: iter 282 target `PublicProfileNew.tsx` → `PublicPortfolio.tsx`; iter 283 target adds explicit filename `PublicBookingPage.tsx · ~32KB · /book/:userId`. Added new Part 12.7 (Roadmap correction ledger) documenting corrections per Part 12.4 governance discipline (documented iteration > silent edit). Preserved Parts 1-11, Appendices A/B/C, Part 12.1-12.6 verbatim. Zero code changes. All 16 receipt checks PASS. Build unaffected. Local commit `7aaca1c`. Push blocked → Save to GitHub.
 
-## Backlog after 281
-- **P1**: Publish local commits via Save to GitHub (origin lagging since 279a).
-- **P1**: Iter 282 — Public artist profiles (`PublicProfileNew.tsx`, ~1,143 lines).
-- **P1**: Iter 283 — Public booking form embed (closes Phase 2).
+## Backlog after 282a
+- **P1**: Publish local commits (`18b15c2`, `6fe7f0f`, `7aaca1c`) via Save to GitHub.
+- **P1**: Iter 282 — Public artist profiles (`PublicPortfolio.tsx`, ~37KB, digital monograph surface).
+- **P1**: Iter 283 — Public booking form embed (`PublicBookingPage.tsx`, ~32KB, closes Phase 2).
+- **P1**: Phase 3 (iters 284–287) — Studio Dashboard, Today, Clients, Money views.
+- **P1**: Phase 4 (iters 288–290) — Quote builder, contract editor, email templates.
+- **P1**: Phase 5 (iters 291–295) — Calendar, Portfolio, Settings tabs.
+- **P1**: Phase 6 (iters 296–299) — DM Inbox, Community feed, profile, discover.
+- **P1**: Phase 7 (iter 300) — Auth series.
+- **P2**: Consolidate `SERVICE_TYPE_LABELS`; extract `DatePickerButton`; Prisma granular service types; post-OAuth Calendar reconnect polish; worker health persistence + retry/backoff + alert emails.
 - **P1**: Phase 3 (iters 284–287) — Studio Dashboard, Today, Clients, Money views.
 - **P1**: Phase 4 (iters 288–290) — Quote builder, contract editor, email templates.
 - **P1**: Phase 5 (iters 291–295) — Calendar, Portfolio, Settings tabs.
