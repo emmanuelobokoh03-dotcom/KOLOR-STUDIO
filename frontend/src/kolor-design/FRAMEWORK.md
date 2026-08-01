@@ -634,8 +634,8 @@ Foundation for the framework. Establishes visual language and voice.
 Every surface a client (or lead) touches before conversion.
 - iter 280: Client portal (ClientPortal.tsx — 2,000+ lines; likely sub-iterations 280a/b)
 - iter 281: Public inquiry form (SubmitInquiry.tsx — 1,193 lines)
-- iter 282: Public artist profiles (PublicProfileNew.tsx — 1,143 lines)
-- iter 283: Public booking form embed (`/book/:userId`)
+- iter 282: Public artist profiles (PublicPortfolio.tsx · ~37KB · digital monograph surface)
+- iter 283: Public booking form embed · PublicBookingPage.tsx · ~32KB · `/book/:userId`
 
 **PHASE 3 — Studio Dashboard + daily views (~4 iterations)**
 Where studio owners live. Dashboard is 3,283 lines with multiple views.
@@ -712,6 +712,33 @@ Documented evolutions from iter 279 series:
 - Part 12 tiered roadmap v2 — iter 279-roadmap
 
 Expect similar evolutions in every subsequent series. This is healthy.
+
+### 12.7 Roadmap correction ledger
+
+Framework Part 12.4 (Governance) codifies that sequencing changes require
+documented roadmap revisions. The same discipline applies to reality-
+corrections when audits reveal stale file references or renamed surfaces.
+This subsection documents such corrections so future readers understand
+why the roadmap changed without a corresponding scope decision.
+
+**iter 282a corrections (Phase 2 file references):**
+
+- iter 282 target: `PublicProfileNew.tsx` → `PublicPortfolio.tsx`.
+  Original reference was based on stale handover documentation; file does
+  not exist at referenced path. Actual public profile page is
+  `PublicPortfolio.tsx`, mounted at `/portfolio/:userId?/:tab?` and
+  `/:handle` routes. Contains digital-monograph fields (heroImages, about,
+  bio, services, testimonials, pricing, mediaKits, journal, contactCta).
+
+- iter 283 target: `Public booking form embed` (path-only) → 
+  `PublicBookingPage.tsx · ~32KB · /book/:userId` (explicit filename +
+  path + size). Not a stale reference, but a discipline improvement:
+  future iterations reference files by explicit filename.
+
+**Convention going forward:** any subsequent roadmap correction should
+append an entry here rather than silently editing Part 12.3 iteration lines.
+This preserves the roadmap's version-controlled contract while acknowledging
+that reality sometimes diverges from documented intent.
 
 ## PART 13 — WHAT THIS COSTS
 
