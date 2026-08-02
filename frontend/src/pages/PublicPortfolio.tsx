@@ -155,10 +155,10 @@ export default function PublicPortfolio() {
 
   // Industry-aware copy
   const ctaHeadline = ({
-    PHOTOGRAPHY: 'Ready to book your session?',
-    DESIGN: 'Ready to start your project?',
-    FINE_ART: 'Interested in a commission?',
-  } as Record<string, string>)[industry] ?? 'Ready to work together?'
+    PHOTOGRAPHY: 'Ready to book your session.',
+    DESIGN: 'Ready to start your project.',
+    FINE_ART: 'Interested in a commission.',
+  } as Record<string, string>)[industry] ?? 'Ready to work together.'
 
   const ctaSubline = ({
     PHOTOGRAPHY: `Tell me about your shoot and I\u2019ll be in touch within 24 hours.`,
@@ -640,19 +640,13 @@ export default function PublicPortfolio() {
 
       {/* ─── Testimonials Section ─── */}
       {testimonials.length > 0 && (
-        <section className="portfolio-reveal" style={{ padding: '80px 40px', background: '#FFFFFF', borderTop: '0.5px solid #EDE8F5' }} data-testid="portfolio-testimonials">
+        <section className="portfolio-reveal" style={{ padding: '96px 40px', background: 'var(--kolor-canvas, #F7F4EE)', borderTop: '1px solid var(--kolor-hairline, #E5E0D8)' }} data-testid="portfolio-testimonials">
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 48 }}>
-              <h2 style={{ fontSize: 28, fontWeight: 800, color: '#1A1A2E', marginBottom: 12 }}>
-                What {lang.clients.toLowerCase()} say
+              <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 'clamp(32px, 5vw, 48px)', lineHeight: 1.1, letterSpacing: '-0.025em', color: 'var(--kolor-ink, #1A1613)', marginBottom: 20 }}>
+                What {lang.clients.toLowerCase()} say.
               </h2>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 8 }}>
-                {[1,2,3,4,5].map(s => {
-                  const avg = testimonials.reduce((a: number, t: any) => a + t.rating, 0) / testimonials.length
-                  return <Star key={s} className="w-5 h-5" fill={s <= Math.round(avg) ? '#FBBF24' : 'none'} stroke={s <= Math.round(avg) ? '#FBBF24' : '#D1D5DB'} strokeWidth={1.5} />
-                })}
-              </div>
-              <p style={{ fontSize: 13, color: '#6B7280' }}>Based on {testimonials.length} review{testimonials.length !== 1 ? 's' : ''}</p>
+              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)' }}>Based on {testimonials.length} review{testimonials.length !== 1 ? 's' : ''}</p>
             </div>
 
             <div style={{ display: 'grid', gap: 24 }} className="testimonial-grid">
@@ -665,18 +659,34 @@ export default function PublicPortfolio() {
       )}
 
       {/* ─── Inquiry CTA Section ─── */}
-      <section id="inquiry-section" className="portfolio-reveal" style={{ padding: '80px 40px', borderTop: `0.5px solid ${brandPrimary}22`, background: `${brandPrimary}08` }} data-testid="portfolio-inquiry-cta">
+      <section id="inquiry-section" className="portfolio-reveal" style={{ padding: '96px 40px', borderTop: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint)' }} data-testid="portfolio-inquiry-cta">
         <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, color: '#1A1A2E', marginBottom: 12 }}>
+          <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 'clamp(36px, 5.5vw, 56px)', lineHeight: 1.05, letterSpacing: '-0.025em', color: 'var(--kolor-ink, #1A1613)', marginBottom: 20 }}>
             {ctaHeadline}
           </h2>
-          <p style={{ fontSize: 15, color: '#6B7280', lineHeight: 1.65, marginBottom: 32 }}>
+          <p style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 16, color: 'var(--kolor-ink-muted, #5F5751)', lineHeight: 1.7, marginBottom: 40, maxWidth: 520, marginLeft: 'auto', marginRight: 'auto' }}>
             {ctaSubline}
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link
               to={`/inquiry?studio=${userId}`}
-              style={{ height: 50, borderRadius: 10, background: brandPrimary, color: '#fff', fontSize: 15, fontWeight: 700, padding: '0 32px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none', minWidth: 44 }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '16px 32px',
+                background: 'transparent',
+                color: 'var(--kolor-terra, #B84A2C)',
+                border: '1px solid var(--kolor-terra, #B84A2C)',
+                borderRadius: 2,
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase' as const,
+                textDecoration: 'none',
+                minWidth: 44,
+                transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
               data-testid="portfolio-send-inquiry"
             >
               {ctaButton}
@@ -684,7 +694,23 @@ export default function PublicPortfolio() {
             {hasMeetingTypes && (
               <Link
                 to={`/book/${userId}`}
-                style={{ height: 50, borderRadius: 10, border: `1.5px solid ${brandPrimary}`, color: brandPrimary, background: 'transparent', fontSize: 15, fontWeight: 700, padding: '0 32px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none', minWidth: 44 }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '16px 32px',
+                  background: 'transparent',
+                  color: 'var(--kolor-ink, #1A1613)',
+                  border: '1px solid var(--kolor-ink, #1A1613)',
+                  borderRadius: 2,
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: 11,
+                  fontWeight: 500,
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase' as const,
+                  textDecoration: 'none',
+                  minWidth: 44,
+                  transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
                 data-testid="portfolio-book-call"
               >
                 {lang.discoveryCall === 'Scoping call' ? 'Book a scoping call' : lang.discoveryCall === 'Collector conversation' ? 'Book a collector conversation' : 'Book a discovery call'}
@@ -695,10 +721,10 @@ export default function PublicPortfolio() {
       </section>
 
       {/* ─── Footer ─── */}
-      <footer style={{ borderTop: '0.5px solid #EDE8F5', padding: '24px 40px' }} data-testid="portfolio-footer">
+      <footer style={{ borderTop: '1px solid var(--kolor-hairline, #E5E0D8)', padding: '32px 40px' }} data-testid="portfolio-footer">
         <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: '#1A1A2E' }}>{studioDisplayName}</span>
-          <Link to="/" style={{ fontSize: 12, color: '#9CA3AF', textDecoration: 'none' }} data-testid="powered-by-badge">
+          <span style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink, #1A1613)' }}>{studioDisplayName}</span>
+          <Link to="/" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', textDecoration: 'none' }} data-testid="powered-by-badge">
             Powered by KOLOR Studio
           </Link>
         </div>
@@ -714,7 +740,7 @@ export default function PublicPortfolio() {
           {/* Close */}
           <button
             onClick={closeLightbox}
-            style={{ position: 'absolute', top: 16, right: 16, padding: 8, color: 'rgba(255,255,255,0.7)', background: 'none', border: 'none', cursor: 'pointer', zIndex: 10, minWidth: 44, minHeight: 44 }}
+            style={{ position: 'absolute', top: 24, right: 24, padding: 12, color: 'rgba(247, 244, 238, 0.75)', background: 'transparent', border: '1px solid rgba(247, 244, 238, 0.25)', borderRadius: 2, cursor: 'pointer', zIndex: 10, minWidth: 44, minHeight: 44, transition: 'border-color 200ms, color 200ms' }}
             data-testid="lightbox-close"
           >
             <X className="w-8 h-8" />
@@ -724,7 +750,7 @@ export default function PublicPortfolio() {
           {filteredItems.length > 1 && (
             <button
               onClick={(e) => { e.stopPropagation(); prevImage(); }}
-              style={{ position: 'absolute', left: 16, padding: 12, background: 'rgba(255,255,255,0.1)', borderRadius: '50%', color: '#fff', border: 'none', cursor: 'pointer', minWidth: 44, minHeight: 44 }}
+              style={{ position: 'absolute', left: 24, padding: 14, background: 'transparent', border: '1px solid rgba(247, 244, 238, 0.25)', borderRadius: 2, color: 'rgba(247, 244, 238, 0.75)', cursor: 'pointer', minWidth: 48, minHeight: 48, transition: 'border-color 200ms, color 200ms' }}
               data-testid="lightbox-prev"
             >
               <CaretLeft className="w-6 h-6" />
@@ -739,21 +765,20 @@ export default function PublicPortfolio() {
             <img
               src={currentItem.imageUrl}
               alt={currentItem.title}
-              style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: 8 }}
+              style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: 2 }}
             />
             
             <div style={{ textAlign: 'center', marginTop: 16 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#fff' }}>{currentItem.title}</h2>
+              <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: 'italic', fontWeight: 400, fontSize: 32, lineHeight: 1.2, letterSpacing: '-0.02em', color: '#F7F4EE' }}>{currentItem.title}</h2>
               {currentItem.description && (
-                <p style={{ color: '#9CA3AF', marginTop: 8, maxWidth: 640, margin: '8px auto 0' }}>{currentItem.description}</p>
+                <p style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, lineHeight: 1.7, color: 'rgba(247, 244, 238, 0.7)', marginTop: 12, maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>{currentItem.description}</p>
               )}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 12 }}>
-                <span style={{ padding: '4px 12px', background: `${brandPrimary}20`, color: brandPrimary, borderRadius: 999, fontSize: 13 }}>
+                <span style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'rgba(247, 244, 238, 0.75)' }}>
                   {PORTFOLIO_CATEGORY_LABELS[currentItem.category]}
                 </span>
                 {currentItem.featured && (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 12px', background: 'rgba(251,191,36,0.2)', color: '#FBBF24', borderRadius: 999, fontSize: 13 }}>
-                    <Star className="w-3 h-3" style={{ fill: '#FBBF24' }} />
+                  <span style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase' as const, color: 'var(--kolor-terra, #B84A2C)' }}>
                     Featured
                   </span>
                 )}
@@ -761,13 +786,13 @@ export default function PublicPortfolio() {
               {currentItem.tags.length > 0 && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 12 }}>
                   {currentItem.tags.map((tag, i) => (
-                    <span key={i} style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.1)', color: '#9CA3AF', borderRadius: 4, fontSize: 12 }}>
+                    <span key={i} style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: 'rgba(247, 244, 238, 0.55)' }}>
                       #{tag}
                     </span>
                   ))}
                 </div>
               )}
-              <p style={{ color: '#6B7280', fontSize: 13, marginTop: 16 }}>
+              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase' as const, color: 'rgba(247, 244, 238, 0.55)', marginTop: 24 }}>
                 {lightboxIndex + 1} / {filteredItems.length}
               </p>
             </div>
@@ -777,7 +802,7 @@ export default function PublicPortfolio() {
           {filteredItems.length > 1 && (
             <button
               onClick={(e) => { e.stopPropagation(); nextImage(); }}
-              style={{ position: 'absolute', right: 16, padding: 12, background: 'rgba(255,255,255,0.1)', borderRadius: '50%', color: '#fff', border: 'none', cursor: 'pointer', minWidth: 44, minHeight: 44 }}
+              style={{ position: 'absolute', right: 24, padding: 14, background: 'transparent', border: '1px solid rgba(247, 244, 238, 0.25)', borderRadius: 2, color: 'rgba(247, 244, 238, 0.75)', cursor: 'pointer', minWidth: 48, minHeight: 48, transition: 'border-color 200ms, color 200ms' }}
               data-testid="lightbox-next"
             >
               <CaretRight className="w-6 h-6" />
@@ -811,16 +836,11 @@ function TestimonialCard({ testimonial: t, brandPrimary }: { testimonial: any; b
   const [hovered, setHovered] = useState(false)
   return (
     <div
-      style={{ background: '#FDFCFF', border: `0.5px solid ${hovered ? brandPrimary : '#EDE8F5'}`, borderRadius: 12, padding: 20, transition: 'border-color 200ms' }}
+      style={{ background: 'transparent', border: `1px solid ${hovered ? 'var(--kolor-ink, #1A1613)' : 'var(--kolor-hairline, #E5E0D8)'}`, borderRadius: 2, padding: 32, transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 12 }}>
-        {[1,2,3,4,5].map(s => (
-          <Star key={s} className="w-4 h-4" fill={s <= t.rating ? '#FBBF24' : 'none'} stroke={s <= t.rating ? '#FBBF24' : '#D1D5DB'} strokeWidth={1.5} />
-        ))}
-      </div>
-      <p style={{ color: '#6B7280', marginBottom: 16, fontStyle: 'italic', lineHeight: 1.6, fontSize: 14 }}>"{t.content}"</p>
+      <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--kolor-ink, #1A1613)', marginBottom: 24, lineHeight: 1.5, fontSize: 20, letterSpacing: '-0.01em' }}>“{t.content}”</p>
       <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-ink-subtle, #928B84)' }}>{t.clientName}</p>
     </div>
   )
