@@ -14,6 +14,7 @@ import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
 import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
 import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
 import { publicBookingApi } from '../services/api'
+import { FrameworkNotice } from '../kolor-design/components/FrameworkNotice'
 
 type Step = 'select-type' | 'select-date' | 'select-time' | 'enter-details' | 'confirmed'
 
@@ -220,7 +221,7 @@ export default function PublicBookingPage() {
   // Loading
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#F9F7FE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', background: 'var(--kolor-canvas, #F7F4EE)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <KolorSpinner size={32} />
       </div>
     )
@@ -229,34 +230,33 @@ export default function PublicBookingPage() {
   // Error (no user)
   if (error && !userInfo) {
     return (
-      <div style={{ minHeight: '100vh', background: '#F9F7FE', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-        <div style={{ background: '#FFFFFF', borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: 32, textAlign: 'center', maxWidth: 400 }}>
-          <CalendarBlank className="w-12 h-12 mx-auto mb-4" style={{ color: '#F87171' }} />
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1A1A2E', marginBottom: 8 }}>Booking Unavailable</h1>
-          <p style={{ color: '#6B7280', fontSize: 14 }}>{error}</p>
+      <div style={{ minHeight: '100vh', background: 'var(--kolor-canvas, #F7F4EE)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+        <div style={{ background: 'transparent', border: '1px solid var(--kolor-hairline, #E5E0D8)', borderRadius: 2, padding: 40, textAlign: 'center', maxWidth: 480 }}>
+          <h1 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 32, lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--kolor-ink, #1A1613)', marginBottom: 16 }}>Booking unavailable.</h1>
+          <p style={{ fontFamily: 'Inter, system-ui, sans-serif', color: 'var(--kolor-ink-muted, #5F5751)', fontSize: 15, lineHeight: 1.7 }}>{error}</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F9F7FE' }} data-testid="public-booking-page">
+    <div style={{ minHeight: '100vh', background: 'var(--kolor-canvas, #F7F4EE)' }} data-testid="public-booking-page">
       {/* ─── Branded Header ─── */}
-      <div style={{ background: '#FFFFFF', borderBottom: '0.5px solid #EDE8F5', padding: '16px 24px' }} data-testid="booking-header">
+      <div style={{ background: 'var(--kolor-canvas, #F7F4EE)', borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)', padding: '24px 24px' }} data-testid="booking-header">
         <div className="booking-header-inner" style={{ maxWidth: 768, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
           {/* Logo / initials */}
           {brandLogoUrl ? (
             <img src={brandLogoUrl} alt="" style={{ height: 36, objectFit: 'contain', flexShrink: 0 }} data-testid="booking-brand-logo" />
           ) : (
-            <div style={{ width: 38, height: 38, borderRadius: '50%', background: primaryColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, flexShrink: 0 }} data-testid="booking-brand-initials">
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--kolor-ink, #1A1613)', color: 'var(--kolor-canvas, #F7F4EE)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 13, fontWeight: 500, letterSpacing: '0.08em', flexShrink: 0 }} data-testid="booking-brand-initials">
               {initials}
             </div>
           )}
           {/* Studio name + speciality */}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h1 style={{ fontSize: 15, fontWeight: 700, color: '#1A1A2E', margin: 0 }} data-testid="studio-name">{studioName}</h1>
+            <h1 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 22, lineHeight: 1.15, letterSpacing: '-0.01em', color: 'var(--kolor-ink, #1A1613)', margin: 0 }} data-testid="studio-name">{studioName}</h1>
             {userInfo?.speciality && (
-              <p style={{ fontSize: 12, color: '#6B7280', margin: 0 }}>{userInfo.speciality}</p>
+              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', margin: '4px 0 0 0' }}>{userInfo.speciality}</p>
             )}
           </div>
         </div>
@@ -276,9 +276,9 @@ export default function PublicBookingPage() {
                     width: isCurrent ? 10 : 8,
                     height: isCurrent ? 10 : 8,
                     borderRadius: '50%',
-                    background: isComplete || isCurrent ? primaryColor : '#EDE8F5',
-                    boxShadow: isCurrent ? `0 0 0 3px ${primaryColor}25` : 'none',
-                    transition: 'all 200ms',
+                    background: isComplete || isCurrent ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-hairline, #E5E0D8)',
+                    boxShadow: 'none',
+                    transition: 'background-color 200ms',
                   }}
                 />
               )
@@ -290,13 +290,12 @@ export default function PublicBookingPage() {
           {/* ═══ Step 1: Select Meeting Type ═══ */}
           {step === 'select-type' && (
             <div data-testid="step-select-type">
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1A1A2E', marginBottom: 4 }}>Choose a Meeting Type</h2>
-              <p style={{ fontSize: 14, color: '#6B7280', marginBottom: 24 }}>Select the type of meeting you'd like to schedule.</p>
+              <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 'clamp(32px, 5vw, 44px)', lineHeight: 1.1, letterSpacing: '-0.025em', color: 'var(--kolor-ink, #1A1613)', marginBottom: 12 }}>Choose a meeting type.</h2>
+              <p style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, color: 'var(--kolor-ink-muted, #5F5751)', lineHeight: 1.7, marginBottom: 40 }}>Select the type of meeting you would like to schedule.</p>
 
               {meetingTypes.length === 0 ? (
-                <div style={{ background: '#FFFFFF', borderRadius: 12, border: '0.5px solid #EDE8F5', padding: 32, textAlign: 'center' }}>
-                  <CalendarBlank className="w-10 h-10 mx-auto mb-3" style={{ color: '#9CA3AF' }} />
-                  <p style={{ color: '#6B7280' }}>No meeting types available at the moment.</p>
+                <div style={{ background: 'transparent', borderRadius: 2, border: '1px solid var(--kolor-hairline, #E5E0D8)', padding: 40, textAlign: 'center' }}>
+                  <p style={{ fontFamily: 'Inter, system-ui, sans-serif', color: 'var(--kolor-ink-muted, #5F5751)', fontSize: 15, lineHeight: 1.7 }}>No meeting types available at the moment.</p>
                 </div>
               ) : (
                 <div style={{ display: 'grid', gap: 12 }}>
@@ -307,10 +306,15 @@ export default function PublicBookingPage() {
                       onMouseEnter={() => setHoveredType(mt.id)}
                       onMouseLeave={() => setHoveredType(null)}
                       style={{
-                        background: '#FFFFFF', borderRadius: 12, padding: 20, textAlign: 'left',
-                        border: `0.5px solid ${hoveredType === mt.id ? primaryColor : '#EDE8F5'}`,
-                        boxShadow: hoveredType === mt.id ? '0 2px 12px rgba(0,0,0,0.06)' : '0 1px 3px rgba(0,0,0,0.04)',
-                        cursor: 'pointer', transition: 'all 200ms', display: 'block', width: '100%',
+                        background: 'transparent',
+                        borderRadius: 2,
+                        padding: 24,
+                        textAlign: 'left' as const,
+                        border: `1px solid ${hoveredType === mt.id ? 'var(--kolor-ink, #1A1613)' : 'var(--kolor-hairline, #E5E0D8)'}`,
+                        cursor: 'pointer',
+                        transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                        display: 'block',
+                        width: '100%',
                         minHeight: 44,
                       }}
                       data-testid={`select-meeting-type-${mt.id}`}
@@ -318,9 +322,9 @@ export default function PublicBookingPage() {
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
                         <div style={{ width: 6, minHeight: 48, borderRadius: 999, background: mt.color, flexShrink: 0 }} />
                         <div style={{ flex: 1 }}>
-                          <h3 style={{ fontWeight: 600, color: hoveredType === mt.id ? primaryColor : '#1A1A2E', transition: 'color 200ms', fontSize: 15, margin: 0 }}>{mt.name}</h3>
-                          {mt.description && <p style={{ fontSize: 14, color: '#6B7280', marginTop: 4 }}>{mt.description}</p>}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 8, fontSize: 12, color: '#6B7280' }}>
+                          <h3 style={{ fontFamily: 'Inter, system-ui, sans-serif', fontWeight: 400, color: 'var(--kolor-ink, #1A1613)', fontSize: 18, margin: 0, letterSpacing: '-0.01em' }}>{mt.name}</h3>
+                          {mt.description && <p style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, color: 'var(--kolor-ink-muted, #5F5751)', marginTop: 8, lineHeight: 1.6 }}>{mt.description}</p>}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 16, fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)' }}>
                             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                               <Clock className="w-3.5 h-3.5" /> {mt.duration} min
                             </span>
@@ -331,7 +335,7 @@ export default function PublicBookingPage() {
                             )}
                           </div>
                         </div>
-                        <ArrowRight className="w-5 h-5 flex-shrink-0 mt-1" style={{ color: hoveredType === mt.id ? primaryColor : '#9CA3AF', transition: 'color 200ms' }} />
+                        <ArrowRight className="w-5 h-5 flex-shrink-0 mt-1" style={{ color: hoveredType === mt.id ? 'var(--kolor-ink, #1A1613)' : 'var(--kolor-ink-subtle, #928B84)', transition: 'color 200ms' }} />
                       </div>
                     </button>
                   ))}
@@ -345,44 +349,44 @@ export default function PublicBookingPage() {
             <div data-testid="step-select-date">
               <button
                 onClick={() => { setStep('select-type'); setSelectedType(null) }}
-                style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, color: primaryColor, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0', marginBottom: 16, minHeight: 44 }}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0', marginBottom: 32, minHeight: 44 }}
                 data-testid="back-to-types"
               >
-                <ArrowLeft className="w-4 h-4" /> Back
+                <ArrowLeft className="w-3 h-3" /> Back
               </button>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
                 <div style={{ width: 6, height: 32, borderRadius: 999, background: selectedType.color }} />
                 <div>
-                  <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1A1A2E', margin: 0 }}>{selectedType.name}</h2>
-                  <p style={{ fontSize: 14, color: '#6B7280', margin: 0 }}>{selectedType.duration} min{selectedType.location ? ` · ${selectedType.location}` : ''}</p>
+                  <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 28, lineHeight: 1.15, letterSpacing: '-0.02em', color: 'var(--kolor-ink, #1A1613)', margin: 0 }}>{selectedType.name}</h2>
+                  <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', margin: '6px 0 0 0' }}>{selectedType.duration} min{selectedType.location ? ` · ${selectedType.location}` : ''}</p>
                 </div>
               </div>
 
-              <div style={{ background: '#FFFFFF', borderRadius: 12, border: '0.5px solid #EDE8F5', padding: 20 }}>
+              <div style={{ background: 'transparent', borderRadius: 2, border: '1px solid var(--kolor-hairline, #E5E0D8)', padding: 24 }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                   <button
                     onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1))}
-                    style={{ padding: 8, cursor: 'pointer', background: 'none', border: 'none', borderRadius: 8, minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    style={{ padding: 10, cursor: 'pointer', background: 'transparent', border: '1px solid var(--kolor-hairline, #E5E0D8)', borderRadius: 2, minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 200ms' }}
                     data-testid="prev-month"
                   >
-                    <CaretLeft className="w-4 h-4" style={{ color: '#6B7280' }} />
+                    <CaretLeft className="w-4 h-4" style={{ color: 'var(--kolor-ink-muted, #5F5751)' }} />
                   </button>
-                  <h3 style={{ fontWeight: 600, color: '#1A1A2E', fontSize: 15 }}>
+                  <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 24, lineHeight: 1.1, letterSpacing: '-0.01em', color: 'var(--kolor-ink, #1A1613)' }}>
                     {viewMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </h3>
                   <button
                     onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1))}
-                    style={{ padding: 8, cursor: 'pointer', background: 'none', border: 'none', borderRadius: 8, minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    style={{ padding: 10, cursor: 'pointer', background: 'transparent', border: '1px solid var(--kolor-hairline, #E5E0D8)', borderRadius: 2, minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 200ms' }}
                     data-testid="next-month"
                   >
-                    <CaretRight className="w-4 h-4" style={{ color: '#6B7280' }} />
+                    <CaretRight className="w-4 h-4" style={{ color: 'var(--kolor-ink-muted, #5F5751)' }} />
                   </button>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 8 }}>
                   {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => (
-                    <div key={d} style={{ textAlign: 'center', fontSize: 12, fontWeight: 500, color: '#6B7280', padding: '4px 0' }}>{d}</div>
+                    <div key={d} style={{ textAlign: 'center', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', padding: '8px 0' }}>{d}</div>
                   ))}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4 }}>
@@ -391,7 +395,7 @@ export default function PublicBookingPage() {
               </div>
 
               {/* Timezone indicator */}
-              <p style={{ fontSize: 11, color: '#9CA3AF', textAlign: 'center', marginTop: 12 }} data-testid="timezone-indicator">
+              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', textAlign: 'center' as const, marginTop: 20 }} data-testid="timezone-indicator">
                 Times shown in {displayTimezone}
               </p>
             </div>
@@ -585,42 +589,42 @@ export default function PublicBookingPage() {
 
           {/* ═══ Step 5: Confirmed ═══ */}
           {step === 'confirmed' && bookingResult && selectedType && (
-            <div style={{ textAlign: 'center', padding: '32px 0' }} data-testid="step-confirmed">
-              <div style={{ width: 64, height: 64, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', background: primaryColor }}>
-                <Check className="w-8 h-8" weight="bold" style={{ color: '#fff' }} />
-              </div>
-              <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1A1A2E', marginBottom: 8 }}>Meeting Confirmed!</h2>
-              <p style={{ color: '#6B7280', marginBottom: 24, fontSize: 14 }}>A confirmation email has been sent to {clientEmail}</p>
+            <div style={{ textAlign: 'center', padding: '48px 0' }} data-testid="step-confirmed">
+              <FrameworkNotice
+                title="Meeting confirmed."
+                metadata={`A confirmation has been sent to ${clientEmail}`}
+                icon={<Check className="w-6 h-6" weight="fill" style={{ color: 'var(--kolor-slate, #3B4A3F)' }} />}
+                data-testid="booking-success-notice"
+              />
 
-              <div style={{ background: '#FFFFFF', borderRadius: 12, border: '0.5px solid #EDE8F5', padding: 24, maxWidth: 384, margin: '0 auto', textAlign: 'left' }}>
+              <div style={{ background: 'transparent', borderRadius: 2, border: '1px solid var(--kolor-hairline, #E5E0D8)', padding: 32, maxWidth: 480, margin: '32px auto 0', textAlign: 'left' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 4, height: 32, borderRadius: 999, background: selectedType.color }} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                     <div>
-                      <p style={{ fontWeight: 600, color: '#1A1A2E', fontSize: 15 }}>{selectedType.name}</p>
-                      <p style={{ fontSize: 14, color: '#6B7280' }}>{selectedType.duration} min{selectedType.location ? ` · ${selectedType.location}` : ''}</p>
+                      <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', color: 'var(--kolor-ink, #1A1613)', fontSize: 22, letterSpacing: '-0.01em', margin: 0 }}>{selectedType.name}</p>
+                      <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', margin: '6px 0 0 0' }}>{selectedType.duration} min{selectedType.location ? ` · ${selectedType.location}` : ''}</p>
                     </div>
                   </div>
-                  <div style={{ borderTop: '0.5px solid #EDE8F5', paddingTop: 12 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: '#6B7280' }}>
+                  <div style={{ borderTop: '1px solid var(--kolor-hairline, #E5E0D8)', paddingTop: 20, marginTop: 20 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, color: 'var(--kolor-ink-muted, #5F5751)' }}>
                       <CalendarBlank className="w-4 h-4" />
                       {new Date(bookingResult.startTime).toLocaleDateString('en-US', {
                         weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
                       })}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: '#6B7280', marginTop: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, color: 'var(--kolor-ink-muted, #5F5751)', marginTop: 8 }}>
                       <Clock className="w-4 h-4" />
                       {new Date(bookingResult.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })}
-                      {' — '}
+                      {' · '}
                       {new Date(bookingResult.endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })}
-                      <span style={{ fontSize: 12, color: '#9CA3AF' }}>({displayTimezone})</span>
+                      <span style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)' }}>({displayTimezone})</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <p style={{ fontSize: 12, color: '#9CA3AF', marginTop: 24 }}>
-                Powered by <Link to="/" style={{ color: '#9CA3AF', textDecoration: 'none' }}>KOLOR Studio</Link>
+              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', marginTop: 32 }}>
+                Powered by <Link to="/" style={{ color: 'var(--kolor-ink-subtle, #928B84)', textDecoration: 'none' }}>KOLOR Studio</Link>
               </p>
             </div>
           )}
