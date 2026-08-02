@@ -244,7 +244,7 @@ export default function PublicPortfolio() {
           <p style={{ color: '#6B7280', fontSize: 14, marginBottom: 24 }}>{error}</p>
           <Link
             to="/"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: brandPrimary, color: '#fff', borderRadius: 10, fontSize: 14, fontWeight: 600, textDecoration: 'none' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: 'transparent', color: 'var(--kolor-terra, #B84A2C)', border: '1px solid var(--kolor-terra, #B84A2C)', borderRadius: 2, fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, textDecoration: 'none' }}
           >
             Go Home
           </Link>
@@ -395,7 +395,7 @@ export default function PublicPortfolio() {
             {featuredCount > 0 && (
               <div style={{ textAlign: 'center', padding: '24px 20px', background: 'transparent', border: '1px solid var(--kolor-hairline, #E5E0D8)', borderRadius: 2, flex: 1 }}>
                 <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 36, color: 'var(--kolor-ink, #1A1613)', letterSpacing: '-0.02em', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                  <Star className="w-5 h-5" style={{ color: '#FBBF24', fill: '#FBBF24' }} /> {featuredCount}
+                  {featuredCount}
                 </div>
                 <div style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, color: 'var(--kolor-ink-subtle, #928B84)', marginTop: 12, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' }}>Featured</div>
               </div>
@@ -406,16 +406,27 @@ export default function PublicPortfolio() {
 
       {/* ─── Filter Bar ─── */}
       {items.length > 0 && (
-        <div id="portfolio-grid" style={{ position: 'sticky', top: 60, background: 'rgba(249,247,254,0.95)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid #EDE8F5', padding: '12px 40px', zIndex: 10 }} data-testid="portfolio-filter-bar">
+        <div id="portfolio-grid" style={{ position: 'sticky', top: 60, background: 'var(--kolor-canvas, #F7F4EE)', borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)', padding: '16px 40px', zIndex: 10 }} data-testid="portfolio-filter-bar">
           <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', flexWrap: 'nowrap', alignItems: 'center', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }} className="hide-scrollbar">
             {/* All pill */}
             <button
               onClick={() => setActiveCategory('ALL')}
               style={{
-                padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', cursor: 'pointer', border: '0.5px solid', minWidth: 44, minHeight: 44,
-                background: activeCategory === 'ALL' ? brandPrimary : '#FFFFFF',
-                color: activeCategory === 'ALL' ? '#FFFFFF' : '#6B7280',
-                borderColor: activeCategory === 'ALL' ? brandPrimary : '#EDE8F5',
+                padding: '10px 20px',
+                background: 'transparent',
+                border: `1px solid ${activeCategory === 'ALL' ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-hairline, #E5E0D8)'}`,
+                borderRadius: 2,
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: '0.24em',
+                textTransform: 'uppercase' as const,
+                color: activeCategory === 'ALL' ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-ink-muted, #5F5751)',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                minWidth: 44,
+                minHeight: 44,
+                transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
               }}
               data-testid="portfolio-filter-all"
             >
@@ -428,10 +439,21 @@ export default function PublicPortfolio() {
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 style={{
-                  padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', cursor: 'pointer', border: '0.5px solid', minWidth: 44, minHeight: 44,
-                  background: activeCategory === cat ? brandPrimary : '#FFFFFF',
-                  color: activeCategory === cat ? '#FFFFFF' : '#6B7280',
-                  borderColor: activeCategory === cat ? brandPrimary : '#EDE8F5',
+                  padding: '10px 20px',
+                  background: 'transparent',
+                  border: `1px solid ${activeCategory === cat ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-hairline, #E5E0D8)'}`,
+                  borderRadius: 2,
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: 10,
+                  fontWeight: 500,
+                  letterSpacing: '0.24em',
+                  textTransform: 'uppercase' as const,
+                  color: activeCategory === cat ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-ink-muted, #5F5751)',
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  minWidth: 44,
+                  minHeight: 44,
+                  transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
                 data-testid={`portfolio-filter-${cat}`}
               >
@@ -440,20 +462,34 @@ export default function PublicPortfolio() {
             ))}
             
             {/* Divider */}
-            <div style={{ width: 1, height: 24, background: '#EDE8F5', margin: '0 4px', flexShrink: 0 }} className="hidden sm:block" />
+            <div style={{ width: 1, height: 24, background: 'var(--kolor-hairline, #E5E0D8)', margin: '0 12px', flexShrink: 0 }} className="hidden sm:block" />
             
             {/* Featured pill */}
             <button
               onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
               style={{
-                display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', cursor: 'pointer', border: '0.5px solid', minWidth: 44, minHeight: 44,
-                background: showFeaturedOnly ? 'rgba(251,191,36,0.15)' : '#FFFFFF',
-                color: showFeaturedOnly ? '#92400E' : '#6B7280',
-                borderColor: showFeaturedOnly ? 'rgba(251,191,36,0.4)' : '#EDE8F5',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '10px 20px',
+                background: 'transparent',
+                border: `1px solid ${showFeaturedOnly ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-hairline, #E5E0D8)'}`,
+                borderRadius: 2,
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: '0.24em',
+                textTransform: 'uppercase' as const,
+                color: showFeaturedOnly ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-ink-muted, #5F5751)',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                minWidth: 44,
+                minHeight: 44,
+                transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
               }}
               data-testid="portfolio-filter-featured"
             >
-              <Star className="w-3.5 h-3.5" style={showFeaturedOnly ? { fill: '#92400E' } : {}} />
+              <Star className="w-3 h-3" weight={showFeaturedOnly ? 'fill' : 'regular'} style={{ color: showFeaturedOnly ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-ink-muted, #5F5751)' }} />
               Featured
             </button>
           </div>
@@ -466,69 +502,69 @@ export default function PublicPortfolio() {
           items.length === 0 ? (
             /* Empty portfolio state */
             <div style={{ textAlign: 'center', padding: '80px 16px' }}>
-              <div style={{
-                width: 80, height: 80,
-                background: `${brandPrimary}12`,
-                border: `1.5px solid ${brandPrimary}30`,
-                borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                margin: '0 auto 24px',
-              }}>
-                <Star className="w-8 h-8" style={{ color: brandPrimary }} />
-              </div>
-              <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1A1A2E', marginBottom: 8 }}>
-                Coming soon
+              <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 40, lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--kolor-ink, #1A1613)', marginBottom: 16 }}>
+                Coming soon.
               </h2>
-              <p style={{ color: '#6B7280', fontSize: 15, lineHeight: 1.6, maxWidth: 360, margin: '0 auto 28px' }}>
+              <p style={{ fontFamily: 'Inter, system-ui, sans-serif', color: 'var(--kolor-ink-muted, #5F5751)', fontSize: 15, lineHeight: 1.7, maxWidth: 420, margin: '0 auto 32px' }}>
                 {studioDisplayName} is setting up their portfolio. Check back soon, or get in touch directly.
               </p>
               <a
                 href="#inquiry-section"
                 style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 8,
-                  height: 44, padding: '0 24px', borderRadius: 10,
-                  background: brandPrimary, color: '#fff',
-                  fontSize: 14, fontWeight: 600, textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '14px 28px',
+                  background: 'transparent',
+                  color: 'var(--kolor-terra, #B84A2C)',
+                  border: '1px solid var(--kolor-terra, #B84A2C)',
+                  borderRadius: 2,
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: 11,
+                  fontWeight: 500,
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase' as const,
+                  textDecoration: 'none',
+                  transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
               >
                 Get in touch
               </a>
-              <p style={{ fontSize: 13, color: '#9CA3AF', marginTop: 20 }}>
+              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', marginTop: 32 }}>
                 Already worked with {studioDisplayName.split(' ')[0]}?{' '}
                 <a
                   href="#inquiry-section"
-                  style={{ color: brandPrimary, fontWeight: 600 }}
+                  style={{ color: 'var(--kolor-terra, #B84A2C)', textDecoration: 'none', borderBottom: '1px solid var(--kolor-terra, #B84A2C)', paddingBottom: 2 }}
                   data-testid="portfolio-leave-review-link"
                 >
-                  Get in touch to share your experience &rarr;
+                  Get in touch to share your experience
                 </a>
               </p>
             </div>
           ) : (
             /* No items match filters */
             <div style={{ textAlign: 'center', padding: '64px 16px' }}>
-              <div style={{
-                width: 80, height: 80,
-                background: `${brandPrimary}12`,
-                border: `1.5px solid ${brandPrimary}30`,
-                borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                margin: '0 auto 24px',
-              }}>
-                <Star className="w-8 h-8" style={{ color: brandPrimary }} />
-              </div>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1A1A2E', marginBottom: 8 }}>
-                No works match your filter
+              <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 32, lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--kolor-ink, #1A1613)', marginBottom: 16 }}>
+                No works match your filter.
               </h2>
-              <p style={{ color: '#6B7280', fontSize: 14, marginBottom: 24 }}>
-                Try adjusting your filter selection
+              <p style={{ fontFamily: 'Inter, system-ui, sans-serif', color: 'var(--kolor-ink-muted, #5F5751)', fontSize: 15, lineHeight: 1.7, marginBottom: 32 }}>
+                Try adjusting your filter selection.
               </p>
               <button
                 onClick={() => { setActiveCategory('ALL'); setShowFeaturedOnly(false) }}
                 style={{
-                  height: 44, padding: '0 24px', borderRadius: 10,
-                  background: brandPrimary, color: '#fff',
-                  fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer',
+                  padding: '14px 28px',
+                  background: 'transparent',
+                  color: 'var(--kolor-terra, #B84A2C)',
+                  border: '1px solid var(--kolor-terra, #B84A2C)',
+                  borderRadius: 2,
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: 11,
+                  fontWeight: 500,
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase' as const,
+                  cursor: 'pointer',
+                  transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
                 data-testid="portfolio-clear-filters"
               >
@@ -546,11 +582,12 @@ export default function PublicPortfolio() {
                   key={item.id}
                   className={isHero ? 'col-span-1 sm:col-span-2 lg:col-span-3' : ''}
                   style={{
-                    background: '#FFFFFF', borderRadius: 12, overflow: 'hidden', cursor: 'pointer',
-                    border: `0.5px solid ${isHovered ? brandPrimary : '#EDE8F5'}`,
-                    boxShadow: isHovered ? '0 4px 20px rgba(0,0,0,0.08)' : 'none',
-                    transform: isHovered && !prefersReducedMotion ? 'translateY(-2px)' : 'translateY(0)',
-                    transition: prefersReducedMotion ? 'none' : 'all 200ms ease',
+                    background: 'transparent',
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    border: `1px solid ${isHovered ? 'var(--kolor-ink, #1A1613)' : 'var(--kolor-hairline, #E5E0D8)'}`,
+                    transition: prefersReducedMotion ? 'none' : 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
                   }}
                   onClick={() => openLightbox(index)}
                   onMouseEnter={() => setHoveredCard(item.id)}
@@ -576,23 +613,23 @@ export default function PublicPortfolio() {
                     
                     {/* Featured badge */}
                     {item.featured && (
-                      <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px', background: 'rgba(251,191,36,0.9)', color: '#78350F', borderRadius: 6, fontSize: 11, fontWeight: 600, zIndex: 2 }}>
-                        <Star className="w-3 h-3" style={{ fill: '#78350F' }} />
+                      <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', background: 'rgba(247, 244, 238, 0.92)', color: 'var(--kolor-terra, #B84A2C)', border: '1px solid var(--kolor-terra, #B84A2C)', borderRadius: 2, fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 9, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, zIndex: 2 }}>
+                        <Star className="w-3 h-3" weight="fill" style={{ color: 'var(--kolor-terra, #B84A2C)' }} />
                         Featured
                       </div>
                     )}
                     
                     {/* Hover overlay */}
                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)', opacity: isHovered ? 1 : 0, transition: prefersReducedMotion ? 'none' : 'opacity 200ms', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 16, zIndex: 3 }}>
-                      <h3 style={{ color: '#fff', fontWeight: 600, fontSize: isHero ? 20 : 16 }}>{item.title}</h3>
-                      <p style={{ color: brandAccent, fontSize: 12, marginTop: 4 }}>{PORTFOLIO_CATEGORY_LABELS[item.category]}</p>
+                      <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: 'italic', fontWeight: 400, color: '#F7F4EE', fontSize: isHero ? 28 : 20, lineHeight: 1.2, letterSpacing: '-0.01em' }}>{item.title}</h3>
+                      <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'rgba(247, 244, 238, 0.75)', marginTop: 6 }}>{PORTFOLIO_CATEGORY_LABELS[item.category]}</p>
                     </div>
                   </div>
                   
                   {/* Card bottom */}
-                  <div style={{ padding: '12px 14px' }}>
-                    <h3 style={{ fontSize: 13, fontWeight: 600, color: '#1A1A2E', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</h3>
-                    <span style={{ fontSize: 11, color: brandPrimary }}>{PORTFOLIO_CATEGORY_LABELS[item.category]}</span>
+                  <div style={{ padding: '16px 20px' }}>
+                    <h3 style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, fontWeight: 400, color: 'var(--kolor-ink, #1A1613)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>{item.title}</h3>
+                    <span style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 9, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', display: 'block', marginTop: 6 }}>{PORTFOLIO_CATEGORY_LABELS[item.category]}</span>
                   </div>
                 </div>
               )
