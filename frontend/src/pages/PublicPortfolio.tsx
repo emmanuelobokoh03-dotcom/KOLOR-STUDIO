@@ -628,6 +628,18 @@ export default function PublicPortfolio() {
                   
                   {/* Card bottom */}
                   <div style={{ padding: '16px 20px' }}>
+                    {/* Plate number — iter 282-polish */}
+                    <div style={{
+                      fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                      fontSize: 9,
+                      fontWeight: 500,
+                      letterSpacing: '0.28em',
+                      textTransform: 'uppercase' as const,
+                      color: 'var(--kolor-ink-subtle, #928B84)',
+                      marginBottom: 8,
+                    }}>
+                      N° {String(index + 1).padStart(2, '0')}
+                    </div>
                     <h3 style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, fontWeight: 400, color: 'var(--kolor-ink, #1A1613)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>{item.title}</h3>
                     <span style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 9, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', display: 'block', marginTop: 6 }}>{PORTFOLIO_CATEGORY_LABELS[item.category]}</span>
                   </div>

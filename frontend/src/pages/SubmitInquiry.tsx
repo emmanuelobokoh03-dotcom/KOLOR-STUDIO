@@ -256,6 +256,108 @@ const SubmitInquiry = () => {
             icon={<CheckCircle weight="fill" className="w-6 h-6" style={{ color: 'var(--kolor-slate, #3B4A3F)' }} />}
             data-testid="inquiry-success-card"
           />
+
+          {/* Inquiry snapshot — iter 281b */}
+          <div style={{
+            marginTop: 32,
+            padding: '32px',
+            background: 'transparent',
+            border: '1px solid var(--kolor-hairline, #E5E0D8)',
+            borderRadius: 2,
+          }} data-testid="inquiry-snapshot">
+            <h3 style={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontStyle: 'italic',
+              fontWeight: 400,
+              fontSize: 22,
+              lineHeight: 1.2,
+              letterSpacing: '-0.01em',
+              color: 'var(--kolor-ink, #1A1613)',
+              margin: '0 0 24px 0',
+            }}>
+              Your inquiry.
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div>
+                <div style={{
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: 9,
+                  fontWeight: 500,
+                  letterSpacing: '0.24em',
+                  textTransform: 'uppercase',
+                  color: 'var(--kolor-ink-subtle, #928B84)',
+                  marginBottom: 6,
+                }}>From</div>
+                <div style={{
+                  fontFamily: 'Inter, system-ui, sans-serif',
+                  fontSize: 15,
+                  color: 'var(--kolor-ink, #1A1613)',
+                }}>{formData.clientName}</div>
+              </div>
+
+              <div>
+                <div style={{
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: 9,
+                  fontWeight: 500,
+                  letterSpacing: '0.24em',
+                  textTransform: 'uppercase',
+                  color: 'var(--kolor-ink-subtle, #928B84)',
+                  marginBottom: 6,
+                }}>Reply to</div>
+                <div style={{
+                  fontFamily: 'Inter, system-ui, sans-serif',
+                  fontSize: 15,
+                  color: 'var(--kolor-ink, #1A1613)',
+                  wordBreak: 'break-all',
+                }}>{formData.clientEmail}</div>
+              </div>
+
+              <div>
+                <div style={{
+                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                  fontSize: 9,
+                  fontWeight: 500,
+                  letterSpacing: '0.24em',
+                  textTransform: 'uppercase',
+                  color: 'var(--kolor-ink-subtle, #928B84)',
+                  marginBottom: 6,
+                }}>Regarding</div>
+                <div style={{
+                  fontFamily: 'Inter, system-ui, sans-serif',
+                  fontSize: 15,
+                  color: 'var(--kolor-ink, #1A1613)',
+                }}>{formData.serviceLabel || SERVICE_TYPE_LABELS[formData.serviceType]}</div>
+              </div>
+
+              {formData.description && (
+                <div>
+                  <div style={{
+                    fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                    fontSize: 9,
+                    fontWeight: 500,
+                    letterSpacing: '0.24em',
+                    textTransform: 'uppercase',
+                    color: 'var(--kolor-ink-subtle, #928B84)',
+                    marginBottom: 6,
+                  }}>Your message</div>
+                  <p style={{
+                    fontFamily: "'Fraunces', Georgia, serif",
+                    fontStyle: 'italic',
+                    fontWeight: 400,
+                    fontSize: 17,
+                    lineHeight: 1.6,
+                    color: 'var(--kolor-ink, #1A1613)',
+                    margin: 0,
+                  }}>
+                    “{formData.description.length > 240 ? formData.description.slice(0, 240).trim() + '…' : formData.description}”
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
           {hasMeetingTypes && studioId && (
             <div style={{ marginTop: 40, textAlign: 'center' }}>
               <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-ink-subtle, #928B84)', marginBottom: 16 }}>
