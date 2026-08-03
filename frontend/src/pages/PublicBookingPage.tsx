@@ -7,10 +7,6 @@ import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
 import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 import KolorSpinner from '../components/KolorSpinner'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
-import { User } from '@phosphor-icons/react/dist/csr/User'
-import { EnvelopeSimple } from '@phosphor-icons/react/dist/csr/EnvelopeSimple'
-import { Phone } from '@phosphor-icons/react/dist/csr/Phone'
-import { ChatText } from '@phosphor-icons/react/dist/csr/ChatText'
 import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
 import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
 import { publicBookingApi } from '../services/api'
@@ -150,10 +146,10 @@ export default function PublicBookingPage() {
   const STEPS: Step[] = ['select-type', 'select-date', 'select-time', 'enter-details']
   const currentStepIdx = STEPS.indexOf(step)
 
-  // Input styling helper
+  // Input styling helper (Framework Move 2 — bottom-border-only, Terra on focus)
   const inputFocusStyle = (field: string): React.CSSProperties => (
     focusedField === field
-      ? { outline: 'none', borderColor: primaryColor, boxShadow: `0 0 0 3px ${primaryColor}20` }
+      ? { outline: 'none', borderBottomColor: 'var(--kolor-terra, #B84A2C)' }
       : { outline: 'none' }
   )
 
@@ -191,14 +187,32 @@ export default function PublicBookingPage() {
           disabled={!selectable}
           onMouseEnter={() => setHoveredDate(dateStr)}
           onMouseLeave={() => setHoveredDate(null)}
-          className="aspect-square rounded-lg text-sm font-medium transition-all flex items-center justify-center"
+          className="aspect-square transition-colors flex items-center justify-center"
           style={{
-            backgroundColor: isSelected ? primaryColor : isHovered ? `${primaryColor}10` : undefined,
-            color: isSelected ? '#fff' : !selectable ? '#E5E7EB' : '#1A1A2E',
-            boxShadow: isSelected ? '0 2px 8px rgba(0,0,0,0.12)' : undefined,
+            backgroundColor: 'transparent',
+            color: isSelected
+              ? 'var(--kolor-terra, #B84A2C)'
+              : !selectable
+              ? 'var(--kolor-hairline, #E5E0D8)'
+              : isHovered
+              ? 'var(--kolor-ink, #1A1613)'
+              : 'var(--kolor-ink, #1A1613)',
+            fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+            fontSize: 13,
+            fontWeight: 500,
+            letterSpacing: '0.04em',
+            boxShadow: 'none',
             cursor: !selectable ? 'not-allowed' : 'pointer',
-            border: isToday && !isSelected ? `1px solid ${primaryColor}40` : 'none',
-            minWidth: 44, minHeight: 44,
+            border: isSelected
+              ? '1px solid var(--kolor-terra, #B84A2C)'
+              : isToday
+              ? '1px solid var(--kolor-ink-muted, #5F5751)'
+              : isHovered
+              ? '1px solid var(--kolor-hairline, #E5E0D8)'
+              : '1px solid transparent',
+            borderRadius: 2,
+            minWidth: 44,
+            minHeight: 44,
           }}
           data-testid={`date-${dateStr}`}
         >
@@ -406,20 +420,20 @@ export default function PublicBookingPage() {
             <div data-testid="step-select-time">
               <button
                 onClick={() => { setStep('select-date'); setSelectedTime('') }}
-                style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, color: primaryColor, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0', marginBottom: 16, minHeight: 44 }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 11, fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-muted, #5F5751)', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0', marginBottom: 24, minHeight: 44 }}
                 data-testid="back-to-date"
               >
                 <ArrowLeft className="w-4 h-4" /> Back
               </button>
 
               <div style={{ marginBottom: 24 }}>
-                <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1A1A2E', marginBottom: 4 }}>Select a Time</h2>
-                <p style={{ fontSize: 14, color: '#6B7280' }}>
+                <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 32, lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--kolor-ink, #1A1613)', margin: 0, marginBottom: 8 }}>Select a time</h2>
+                <p style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, lineHeight: 1.7, color: 'var(--kolor-ink-muted, #5F5751)' }}>
                   {new Date(selectedDate + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                   {' · '}{selectedType.name} ({selectedType.duration} min)
                 </p>
                 {calendarSynced && !loadingSlots && (
-                  <p style={{ marginTop: 8, fontSize: 12, color: '#059669', display: 'flex', alignItems: 'center', gap: 6 }} data-testid="calendar-synced-indicator">
+                  <p style={{ marginTop: 16, fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-slate, #3B4A3F)', display: 'flex', alignItems: 'center', gap: 8 }} data-testid="calendar-synced-indicator">
                     <Check className="w-3.5 h-3.5" weight="bold" />
                     Showing real-time availability from Google Calendar
                   </p>
@@ -431,12 +445,12 @@ export default function PublicBookingPage() {
                   <KolorSpinner size={24} />
                 </div>
               ) : slots.length === 0 ? (
-                <div style={{ background: '#FFFFFF', borderRadius: 12, border: '0.5px solid #EDE8F5', padding: 32, textAlign: 'center' }}>
-                  <Clock className="w-10 h-10 mx-auto mb-3" style={{ color: '#9CA3AF' }} />
-                  <p style={{ color: '#6B7280', marginBottom: 16 }}>No available time slots on this day.</p>
+                <div style={{ background: 'transparent', borderRadius: 2, border: '1px solid var(--kolor-hairline, #E5E0D8)', padding: 32, textAlign: 'center' }}>
+                  <Clock className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--kolor-ink-subtle, #928B84)' }} />
+                  <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', marginBottom: 24 }}>No available time slots on this day</p>
                   <button
                     onClick={() => setStep('select-date')}
-                    style={{ fontSize: 14, fontWeight: 500, color: primaryColor, background: 'none', border: 'none', cursor: 'pointer', minHeight: 44 }}
+                    style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 11, fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase' as const, color: 'var(--kolor-terra, #B84A2C)', background: 'none', border: 'none', cursor: 'pointer', minHeight: 44, padding: '4px 0' }}
                   >
                     Choose another date
                   </button>
@@ -453,12 +467,20 @@ export default function PublicBookingPage() {
                         onMouseEnter={() => setHoveredTime(time)}
                         onMouseLeave={() => setHoveredTime(null)}
                         style={{
-                          padding: '12px 8px', borderRadius: 8, fontSize: 14, fontWeight: 500, cursor: 'pointer',
-                          transition: 'all 200ms', minHeight: 44,
-                          backgroundColor: isSelected ? primaryColor : isHovered ? `${primaryColor}10` : '#FFFFFF',
-                          color: isSelected ? '#fff' : '#1A1A2E',
-                          border: `0.5px solid ${isSelected ? 'transparent' : isHovered ? primaryColor : '#EDE8F5'}`,
-                          boxShadow: isSelected ? '0 2px 8px rgba(0,0,0,0.12)' : 'none',
+                          padding: '14px 8px',
+                          borderRadius: 2,
+                          minHeight: 44,
+                          cursor: 'pointer',
+                          transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                          background: 'transparent',
+                          color: isSelected ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-ink, #1A1613)',
+                          border: `1px solid ${isSelected ? 'var(--kolor-terra, #B84A2C)' : isHovered ? 'var(--kolor-ink, #1A1613)' : 'var(--kolor-hairline, #E5E0D8)'}`,
+                          boxShadow: 'none',
+                          fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                          fontSize: 11,
+                          fontWeight: 500,
+                          letterSpacing: '0.18em',
+                          textTransform: 'uppercase' as const,
                         }}
                         data-testid={`time-slot-${time}`}
                       >
@@ -470,7 +492,7 @@ export default function PublicBookingPage() {
               )}
 
               {/* Timezone */}
-              <p style={{ fontSize: 11, color: '#9CA3AF', textAlign: 'center', marginTop: 12 }} data-testid="timezone-time-indicator">
+              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', textAlign: 'center', marginTop: 16 }} data-testid="timezone-time-indicator">
                 Times shown in {displayTimezone}
               </p>
             </div>
@@ -481,13 +503,13 @@ export default function PublicBookingPage() {
             <div data-testid="step-enter-details">
               <button
                 onClick={() => setStep('select-time')}
-                style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, color: primaryColor, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0', marginBottom: 16, minHeight: 44 }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 11, fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-muted, #5F5751)', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0', marginBottom: 24, minHeight: 44 }}
                 data-testid="back-to-time"
               >
                 <ArrowLeft className="w-4 h-4" /> Back
               </button>
 
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1A1A2E', marginBottom: 4 }}>Enter Your Details</h2>
+              <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 32, lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--kolor-ink, #1A1613)', margin: 0, marginBottom: 8 }}>Your details</h2>
               <p style={{ fontSize: 14, color: '#6B7280', marginBottom: 24 }}>
                 {selectedType.name} · {new Date(selectedDate + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                 {' at '}{formatTime(selectedTime)}
@@ -499,11 +521,11 @@ export default function PublicBookingPage() {
                 </div>
               )}
 
-              <div style={{ background: '#FFFFFF', borderRadius: 12, border: '0.5px solid #EDE8F5', padding: 20 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ background: 'transparent', border: 'none', padding: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                   <div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 500, color: '#6B7280', marginBottom: 6 }}>
-                      <User className="w-4 h-4" /> Name *
+                    <label style={{ display: 'block', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', marginBottom: 10 }}>
+                      Name (required)
                     </label>
                     <input
                       type="text"
@@ -512,15 +534,15 @@ export default function PublicBookingPage() {
                       onFocus={() => setFocusedField('name')}
                       onBlur={() => setFocusedField(null)}
                       placeholder="Your full name"
-                      className="w-full px-3 py-2.5 border border-light-200 rounded-lg text-text-primary transition"
-                      style={{ ...inputFocusStyle('name'), minHeight: 44 }}
+                      className="w-full transition-colors"
+                      style={{ width: '100%', padding: '14px 0', background: 'transparent', border: 'none', borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)', fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, color: 'var(--kolor-ink, #1A1613)', outline: 'none', transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)', minHeight: 48, ...inputFocusStyle('name') }}
                       data-testid="client-name"
                       required
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 500, color: '#6B7280', marginBottom: 6 }}>
-                      <EnvelopeSimple className="w-4 h-4" /> Email *
+                    <label style={{ display: 'block', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', marginBottom: 10 }}>
+                      Email (required)
                     </label>
                     <input
                       type="email"
@@ -529,15 +551,15 @@ export default function PublicBookingPage() {
                       onFocus={() => setFocusedField('email')}
                       onBlur={() => setFocusedField(null)}
                       placeholder="your@email.com"
-                      className="w-full px-3 py-2.5 border border-light-200 rounded-lg text-text-primary transition"
-                      style={{ ...inputFocusStyle('email'), minHeight: 44 }}
+                      className="w-full transition-colors"
+                      style={{ width: '100%', padding: '14px 0', background: 'transparent', border: 'none', borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)', fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, color: 'var(--kolor-ink, #1A1613)', outline: 'none', transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)', minHeight: 48, ...inputFocusStyle('email') }}
                       data-testid="client-email"
                       required
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 500, color: '#6B7280', marginBottom: 6 }}>
-                      <Phone className="w-4 h-4" /> Phone (optional)
+                    <label style={{ display: 'block', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', marginBottom: 10 }}>
+                      Phone (optional)
                     </label>
                     <input
                       type="tel"
@@ -546,14 +568,14 @@ export default function PublicBookingPage() {
                       onFocus={() => setFocusedField('phone')}
                       onBlur={() => setFocusedField(null)}
                       placeholder="+1 (555) 000-0000"
-                      className="w-full px-3 py-2.5 border border-light-200 rounded-lg text-text-primary transition"
-                      style={{ ...inputFocusStyle('phone'), minHeight: 44 }}
+                      className="w-full transition-colors"
+                      style={{ width: '100%', padding: '14px 0', background: 'transparent', border: 'none', borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)', fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, color: 'var(--kolor-ink, #1A1613)', outline: 'none', transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)', minHeight: 48, ...inputFocusStyle('phone') }}
                       data-testid="client-phone"
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 500, color: '#6B7280', marginBottom: 6 }}>
-                      <ChatText className="w-4 h-4" /> Notes (optional)
+                    <label style={{ display: 'block', fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', marginBottom: 10 }}>
+                      Notes (optional)
                     </label>
                     <textarea
                       value={clientNotes}
@@ -562,8 +584,8 @@ export default function PublicBookingPage() {
                       onBlur={() => setFocusedField(null)}
                       placeholder="Anything you'd like us to know before the meeting"
                       rows={3}
-                      className="w-full px-3 py-2.5 border border-light-200 rounded-lg text-text-primary transition"
-                      style={{ ...inputFocusStyle('notes'), resize: 'none' }}
+                      className="w-full transition-colors"
+                      style={{ width: '100%', padding: '14px 0', background: 'transparent', border: 'none', borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)', fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, color: 'var(--kolor-ink, #1A1613)', outline: 'none', transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)', resize: 'none', ...inputFocusStyle('notes') }}
                       data-testid="client-notes"
                     />
                   </div>
@@ -571,16 +593,30 @@ export default function PublicBookingPage() {
                     onClick={handleSubmit}
                     disabled={submitting || !clientName || !clientEmail}
                     style={{
-                      width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                      padding: '14px 16px', color: '#fff', fontWeight: 600, borderRadius: 10, border: 'none',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 12,
+                      padding: '18px 32px',
+                      background: 'transparent',
+                      color: 'var(--kolor-terra, #B84A2C)',
+                      border: '1px solid var(--kolor-terra, #B84A2C)',
+                      borderRadius: 2,
+                      fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                      fontSize: 11,
+                      fontWeight: 500,
+                      letterSpacing: '0.28em',
+                      textTransform: 'uppercase' as const,
                       cursor: (submitting || !clientName || !clientEmail) ? 'not-allowed' : 'pointer',
-                      opacity: (submitting || !clientName || !clientEmail) ? 0.5 : 1,
-                      background: primaryColor, transition: 'opacity 200ms', minHeight: 48,
+                      opacity: (submitting || !clientName || !clientEmail) ? 0.4 : 1,
+                      transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1), opacity 200ms',
+                      minHeight: 56,
                     }}
                     data-testid="confirm-booking"
                   >
-                    {submitting ? <KolorSpinner size={20} /> : <Check className="w-5 h-5" />}
-                    Confirm Booking
+                    {submitting ? <KolorSpinner size={16} /> : <Check className="w-4 h-4" />}
+                    Confirm booking
                   </button>
                 </div>
               </div>
