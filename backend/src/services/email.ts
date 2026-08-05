@@ -3837,3 +3837,138 @@ export async function sendEmailChangeConfirmation(
     return false;
   }
 }
+
+// ─────────────────────────────────────────────────────────
+// iter 286 — Community Weekly Digest Email
+// ─────────────────────────────────────────────────────────
+
+interface CommunityDigestData {
+  featuredWork: any[];
+  featuredCreators: any[];
+  milestones: any[];
+  activity: {
+    newFollowers: number;
+    unreadDMs: number;
+    commentsOnMyPosts: number;
+    appreciationsThisWeek: number;
+  };
+  weekOf: Date;
+}
+
+export async function sendCommunityWeeklyDigestEmail(params: {
+  email: string;
+  firstName: string;
+  digestData: CommunityDigestData;
+}): Promise<boolean> {
+  if (!resend || isResendSandbox) return false;
+  if (!SENDER_EMAIL) return false;
+
+  const { email, digestData } = params;
+  const { featuredWork, featuredCreators, milestones, activity, weekOf } = digestData;
+  void params.firstName;
+
+  const weekOfFmt = weekOf.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  const featuredWorkHTML = featuredWork.length > 0
+    ? featuredWork.map((f) => {
+        const creator = f.post.author.user;
+        const creatorName = `${creator.firstName || ''} ${creator.lastName || ''}`.trim() || 'A creator';
+        return highlightBox(`
+          <p style="margin: 0 0 8px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">${f.industry}</p>
+          <p style="margin: 0 0 8px 0; font-style: italic; font-size: 22px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">${escapeHtmlDigest(truncateDigest(f.post.content, 80))}</p>
+          <p style="margin: 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">${escapeHtmlDigest(creatorName)}</p>
+          ${f.curatorNote ? `<p style="margin: 16px 0 0 0; padding-left: 16px; border-left: 1px solid #E5E0D8; font-style: italic; font-size: 15px; line-height: 1.55; color: #5F5751; font-family: Georgia, serif;">${escapeHtmlDigest(f.curatorNote)}</p>` : ''}
+        `);
+      }).join('')
+    : '<p style="color: #928B84; font-style: italic;">No featured work this week.</p>';
+
+  const featuredCreatorsHTML = featuredCreators.length > 0
+    ? featuredCreators.map((fc) => {
+        const c = fc.profile.user;
+        const cName = `${c.firstName || ''} ${c.lastName || ''}`.trim() || 'A creator';
+        return cardBlock(`
+          <p style="margin: 0 0 4px 0; font-style: italic; font-size: 18px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">${escapeHtmlDigest(cName)}</p>
+          <p style="margin: 0 0 8px 0; font-size: 9px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">${escapeHtmlDigest(fc.industry)} · ${escapeHtmlDigest(fc.profile.city || 'Independent')}</p>
+          ${fc.profile.bio ? `<p style="margin: 0; font-size: 14px; line-height: 1.6; color: #5F5751;">${escapeHtmlDigest(fc.profile.bio)}</p>` : ''}
+        `);
+      }).join('')
+    : '<p style="color: #928B84; font-style: italic;">No creators featured this week.</p>';
+
+  const milestonesHTML = milestones.length > 0
+    ? milestones.map((m) => {
+        const author = m.author.user;
+        const authorName = `${author.firstName || ''} ${author.lastName || ''}`.trim();
+        return `
+          <div style="padding: 20px 0; border-top: 1px solid #E5E0D8;">
+            <p style="margin: 0 0 8px 0; font-size: 9px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #3B4A3F; font-family: 'Courier New', monospace;">${escapeHtmlDigest(authorName)} · ${formatShortDateDigest(m.createdAt)}</p>
+            <p style="margin: 0; font-style: italic; font-size: 16px; line-height: 1.5; color: #1A1613; font-family: Georgia, serif;">${escapeHtmlDigest(truncateDigest(m.content, 200))}</p>
+          </div>
+        `;
+      }).join('')
+    : '<p style="color: #928B84; font-style: italic;">No milestones celebrated this week.</p>';
+
+  const activityHTML = `
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+      ${detailRow('New followers', String(activity.newFollowers))}
+      ${detailRow('Messages waiting', String(activity.unreadDMs))}
+      ${detailRow('Comments on your posts', String(activity.commentsOnMyPosts))}
+      ${detailRow('Posts appreciated', String(activity.appreciationsThisWeek))}
+    </table>
+  `;
+
+  const bodyHTML = `
+    <h1 style="margin: 0 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.32em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">The Studio · ${weekOfFmt}</h1>
+    <p style="margin: 0 0 32px 0; font-style: italic; font-size: 20px; line-height: 1.35; color: #1A1613; font-family: Georgia, serif;">Your week in KOLOR Community.</p>
+
+    <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Featured this week</h2>
+    <p style="margin: 0 0 20px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">Three works worth returning to.</p>
+    ${featuredWorkHTML}
+
+    <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Creators of the week</h2>
+    <p style="margin: 0 0 20px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">Three creators to know.</p>
+    ${featuredCreatorsHTML}
+
+    <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Milestones celebrated</h2>
+    <p style="margin: 0 0 20px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">This week's moments.</p>
+    ${milestonesHTML}
+
+    <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Your community activity</h2>
+    <p style="margin: 0 0 20px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">This week for you.</p>
+    ${activityHTML}
+  `;
+
+  const emailHTML = buildEmailTemplate({
+    headline: `The Studio · ${weekOfFmt}`,
+    body: bodyHTML,
+    emailType: 'workflow',
+  });
+
+  try {
+    await resend.emails.send({
+      from: SENDER_EMAIL,
+      to: [email],
+      subject: `The Studio · ${weekOfFmt}`,
+      html: emailHTML,
+    });
+    return true;
+  } catch (err: any) {
+    console.error('[EMAIL] sendCommunityWeeklyDigestEmail failed:', err.message);
+    return false;
+  }
+}
+
+function escapeHtmlDigest(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function truncateDigest(s: string, max: number): string {
+  return s.length > max ? s.slice(0, max).trim() + '…' : s;
+}
+
+function formatShortDateDigest(d: Date): string {
+  return new Date(d).toLocaleDateString('en-GB', { weekday: 'long' });
+}

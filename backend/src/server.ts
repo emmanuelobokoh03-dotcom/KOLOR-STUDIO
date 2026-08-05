@@ -84,6 +84,11 @@ import sequencesRoutes from './routes/sequences';
 import webhookRoutes from './routes/webhooks';
 import paymentRoutes from './routes/payments';
 import communityRoutes from './routes/community';
+import collectionsRoutes from './routes/collections';
+import profilesRoutes from './routes/profiles';
+import featuredRoutes from './routes/featured';
+import peersRoutes from './routes/peers';
+import communityDigestRoutes from './routes/communityDigest';
 import { processSequences } from './services/sequenceEngine';
 import { apiLimiter, authLimiter, emailLimiter, uploadLimiter, portalLimiter } from './middleware/rateLimiter';
 import { ensureBucketExists } from './services/storage';
@@ -276,6 +281,11 @@ app.use('/api/', apiLimiter); // general limiter last (least restrictive)
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadsRoutes);
 app.use('/api/community', communityRoutes);
+app.use('/api/collections', collectionsRoutes);
+app.use('/api/profiles', profilesRoutes);
+app.use('/api/featured', featuredRoutes);
+app.use('/api/peers', peersRoutes);
+app.use('/api/community-digest', communityDigestRoutes);
 app.use('/api/waitlist', waitlistRoutes);
 app.use('/api/leads', activitiesRoutes); // Activities: /api/leads/:id/activities
 app.use('/api/leads', filesRoutes); // Files: /api/leads/:id/files

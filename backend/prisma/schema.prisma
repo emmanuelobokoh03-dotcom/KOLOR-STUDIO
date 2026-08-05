@@ -40,7 +40,7 @@ model Booking {
   leadId      String
   createdById String
   createdAt   DateTime      @default(now())
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime      @updatedAt
   completedAt DateTime?
   cancelledAt DateTime?
   createdBy   User          @relation(fields: [createdById], references: [id], onDelete: Cascade)
@@ -65,7 +65,7 @@ model Contract {
   sentAt         DateTime?
   viewedAt       DateTime?
   createdAt      DateTime       @default(now())
-  updatedAt      DateTime  @updatedAt
+  updatedAt      DateTime       @updatedAt
   lead           Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
@@ -98,7 +98,7 @@ model Deliverable {
   metadata        Json?
   leadId          String
   createdAt       DateTime          @default(now())
-  updatedAt       DateTime  @updatedAt
+  updatedAt       DateTime          @updatedAt
   lead            Lead              @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
@@ -123,16 +123,16 @@ model EmailSequenceStep {
 }
 
 model EmailSequence {
-  id          String                @id @default(cuid())
+  id          String               @id @default(cuid())
   userId      String
   name        String
   description String?
   trigger     SequenceTrigger
-  active      Boolean               @default(true)
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime  @updatedAt
+  active      Boolean              @default(true)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
   steps       EmailSequenceStep[]
-  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   enrollments SequenceEnrollment[]
 
   @@index([active])
@@ -142,7 +142,7 @@ model EmailSequence {
 }
 
 model File {
-  id               String       @id @default(cuid())
+  id               String        @id @default(cuid())
   filename         String
   originalName     String
   mimeType         String
@@ -150,20 +150,20 @@ model File {
   url              String
   uploadedBy       String?
   leadId           String
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt @default(now())
-  downloadCount    Int          @default(0)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now()) @updatedAt
+  downloadCount    Int           @default(0)
   lastDownloadedAt DateTime?
   sharedAt         DateTime?
-  sharedWithClient Boolean      @default(false)
-  category         FileCategory @default(OTHER)
-  uploadedByType   String       @default("USER")
+  sharedWithClient Boolean       @default(false)
+  category         FileCategory  @default(OTHER)
+  uploadedByType   String        @default("USER")
   uploadedByName   String?
   uploadedByEmail  String?
-  requiresReview   Boolean      @default(false)
+  requiresReview   Boolean       @default(false)
   reviewedAt       DateTime?
   reviewStatus     String?
-  lead             Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead             Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
   comments         FileComment[]
 
   @@index([leadId])
@@ -212,7 +212,7 @@ model Income {
   expectedDate          DateTime?
   receivedDate          DateTime?
   createdAt             DateTime       @default(now())
-  updatedAt             DateTime  @updatedAt
+  updatedAt             DateTime       @updatedAt
   depositAmount         Decimal?       @db.Decimal(10, 2)
   depositPaid           Boolean        @default(false)
   depositPaidAt         DateTime?
@@ -249,73 +249,73 @@ model Interaction {
 }
 
 model Lead {
-  id                String                @id @default(cuid())
-  clientName        String
-  clientEmail       String?
-  clientPhone       String?
-  clientCompany     String?
-  serviceType       ServiceType
-  projectTitle      String
-  description       String
-  budget            String?
-  timeline          String?
-  eventDate         DateTime?
-  status            LeadStatus            @default(NEW)
-  priority          Priority              @default(MEDIUM)
-  source            LeadSource            @default(WEBSITE)
-  score             Int                   @default(0)
-  estimatedValue    Float?
-  actualValue       Float?
-  assignedToId      String?
-  portalToken       String                @unique @default(cuid())
-  portalViews       Int                   @default(0)
-  lastPortalView    DateTime?
-  tags              String[]
-  customFields      Json?
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime  @updatedAt
-  convertedAt       DateTime?
-  lostAt            DateTime?
-  projectType       ProjectType           @default(SERVICE)
-  industry          IndustryType?
-  deliverableType   DeliverableType       @default(DIGITAL_FILES)
-  workflowData      Json?
-  coverImage        String?
-  crmNotes          String?
-  followUpPriority  Priority              @default(MEDIUM)
-  lastContactedAt   DateTime?
-  leadSource        String?
-  nextFollowUpAt    DateTime?
-  pipelineStatus    PipelineStatus        @default(NEW_INQUIRY)
-  isDemoData        Boolean               @default(false)
-  isSampleQuote     Boolean               @default(false)
-  deliveryDate      DateTime?
-  editingDeadline   DateTime?
-  shootingDate      DateTime?
-  keyDate           DateTime?
-  medium            String?
-  dimensions        String?
-  edition           String?
-  
-  // Discovery Call workflow
-  discoveryCallScheduled    Boolean   @default(false)
-  discoveryCallBookingId    String?
-  discoveryCallCompletedAt  DateTime?
-  discoveryCallNotes        String?   @db.Text
+  id               String          @id @default(cuid())
+  clientName       String
+  clientEmail      String?
+  clientPhone      String?
+  clientCompany    String?
+  serviceType      ServiceType
+  projectTitle     String
+  description      String
+  budget           String?
+  timeline         String?
+  eventDate        DateTime?
+  status           LeadStatus      @default(NEW)
+  priority         Priority        @default(MEDIUM)
+  source           LeadSource      @default(WEBSITE)
+  score            Int             @default(0)
+  estimatedValue   Float?
+  actualValue      Float?
+  assignedToId     String?
+  portalToken      String          @unique @default(cuid())
+  portalViews      Int             @default(0)
+  lastPortalView   DateTime?
+  tags             String[]
+  customFields     Json?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  convertedAt      DateTime?
+  lostAt           DateTime?
+  projectType      ProjectType     @default(SERVICE)
+  industry         IndustryType?
+  deliverableType  DeliverableType @default(DIGITAL_FILES)
+  workflowData     Json?
+  coverImage       String?
+  crmNotes         String?
+  followUpPriority Priority        @default(MEDIUM)
+  lastContactedAt  DateTime?
+  leadSource       String?
+  nextFollowUpAt   DateTime?
+  pipelineStatus   PipelineStatus  @default(NEW_INQUIRY)
+  isDemoData       Boolean         @default(false)
+  isSampleQuote    Boolean         @default(false)
+  deliveryDate     DateTime?
+  editingDeadline  DateTime?
+  shootingDate     DateTime?
+  keyDate          DateTime?
+  medium           String?
+  dimensions       String?
+  edition          String?
 
-  assignedTo        User?                 @relation(fields: [assignedToId], references: [id], onDelete: Cascade)
-  activities        Activity[]
-  messages          Message[]
-  files             File[]
-  quotes            Quote[]
-  bookings          Booking[]
-  deliverables      Deliverable[]
-  contracts         Contract[]
-  interactions      Interaction[]
-  incomeRecords     Income[]
-  testimonials      Testimonial[]
-  milestones        ProjectMilestone[]
-  enrollments       SequenceEnrollment[]
+  // Discovery Call workflow
+  discoveryCallScheduled   Boolean   @default(false)
+  discoveryCallBookingId   String?
+  discoveryCallCompletedAt DateTime?
+  discoveryCallNotes       String?   @db.Text
+
+  assignedTo            User?                        @relation(fields: [assignedToId], references: [id], onDelete: Cascade)
+  activities            Activity[]
+  messages              Message[]
+  files                 File[]
+  quotes                Quote[]
+  bookings              Booking[]
+  deliverables          Deliverable[]
+  contracts             Contract[]
+  interactions          Interaction[]
+  incomeRecords         Income[]
+  testimonials          Testimonial[]
+  milestones            ProjectMilestone[]
+  enrollments           SequenceEnrollment[]
   onboardingEnrollments ClientOnboardingEnrollment[]
   emailTracking         EmailTracking[]
   scheduledEmails       ScheduledEmail[]
@@ -361,7 +361,7 @@ model Portfolio {
   featured    Boolean           @default(false)
   order       Int               @default(0)
   createdAt   DateTime          @default(now())
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime          @updatedAt
   user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([category])
@@ -396,7 +396,7 @@ model QuoteTemplate {
   terms        String?
   userId       String
   createdAt    DateTime @default(now())
-  updatedAt    DateTime  @updatedAt
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -404,40 +404,40 @@ model QuoteTemplate {
 }
 
 model Quote {
-  id               String      @id @default(cuid())
-  quoteNumber      String      @unique
-  lineItems        Json
-  subtotal         Float
-  tax              Float       @default(0)
-  discountPercent  Float       @default(0)
-  discountAmount   Float       @default(0)
-  taxAmount        Float       @default(0)
-  total            Float
-  paymentTerms     String
-  validUntil       DateTime
-  terms            String?
-  status           QuoteStatus @default(DRAFT)
-  quoteToken       String      @unique @default(cuid())
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime  @updatedAt
-  sentAt           DateTime?
-  viewedAt         DateTime?
-  acceptedAt       DateTime?
-  declinedAt       DateTime?
+  id                  String                   @id @default(cuid())
+  quoteNumber         String                   @unique
+  lineItems           Json
+  subtotal            Float
+  tax                 Float                    @default(0)
+  discountPercent     Float                    @default(0)
+  discountAmount      Float                    @default(0)
+  taxAmount           Float                    @default(0)
+  total               Float
+  paymentTerms        String
+  validUntil          DateTime
+  terms               String?
+  status              QuoteStatus              @default(DRAFT)
+  quoteToken          String                   @unique @default(cuid())
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  sentAt              DateTime?
+  viewedAt            DateTime?
+  acceptedAt          DateTime?
+  declinedAt          DateTime?
   declineReason       String?
   depositDueDate      DateTime?
   finalPaymentDueDate DateTime?
   depositPercent      Int?
-  leadId           String
-  createdById      String
-  currency         String?
-  currencyPosition String?
-  currencySymbol   String?
-  numberFormat     String?
-  lead             Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  createdBy        User        @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  incomeRecords    Income[]
-  followUpEnrollment QuoteFollowUpEnrollment?
+  leadId              String
+  createdById         String
+  currency            String?
+  currencyPosition    String?
+  currencySymbol      String?
+  numberFormat        String?
+  lead                Lead                     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  createdBy           User                     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  incomeRecords       Income[]
+  followUpEnrollment  QuoteFollowUpEnrollment?
 
   @@index([createdAt])
   @@index([leadId])
@@ -490,7 +490,7 @@ model Testimonial {
   consentGiven Boolean           @default(false)
   publicToken  String            @unique @default(cuid())
   createdAt    DateTime          @default(now())
-  updatedAt    DateTime  @updatedAt
+  updatedAt    DateTime          @updatedAt
   user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   lead         Lead?             @relation(fields: [leadId], references: [id])
 
@@ -502,78 +502,78 @@ model Testimonial {
 }
 
 model User {
-  id                   String               @id @default(cuid())
-  email                String               @unique
-  password             String
-  firstName            String
-  lastName             String
-  studioName           String?
-  role                 UserRole             @default(OWNER)
-  isActive             Boolean              @default(true)
-  emailVerified        Boolean              @default(false)
-  phone                String?
-  website              String?
-  logo                 String?
-  timezone             String               @default("UTC")
-  preferences          Json?
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime  @updatedAt
-  lastLoginAt          DateTime?
-  passwordResetExpires DateTime?
-  passwordResetToken   String?              @unique
+  id                       String                 @id @default(cuid())
+  email                    String                 @unique
+  password                 String
+  firstName                String
+  lastName                 String
+  studioName               String?
+  role                     UserRole               @default(OWNER)
+  isActive                 Boolean                @default(true)
+  emailVerified            Boolean                @default(false)
+  phone                    String?
+  website                  String?
+  logo                     String?
+  timezone                 String                 @default("UTC")
+  preferences              Json?
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+  lastLoginAt              DateTime?
+  passwordResetExpires     DateTime?
+  passwordResetToken       String?                @unique
   // Iter 153 — DB-persisted rate limit for POST /api/auth/forgot-password
   // (replaces in-memory Map that reset on Railway cold starts)
-  passwordResetAttempts    Int       @default(0)
+  passwordResetAttempts    Int                    @default(0)
   passwordResetWindowStart DateTime?
   // Iter 268 — Email change flow (mirrors forgot-password idioms:
   // sha256-hashed token, 15-min expiry, DB-persisted rate limit on User)
   pendingEmail             String?
-  emailChangeToken         String?   @unique
+  emailChangeToken         String?                @unique
   emailChangeTokenExpiry   DateTime?
-  emailChangeAttempts      Int       @default(0)
+  emailChangeAttempts      Int                    @default(0)
   emailChangeWindowStart   DateTime?
-  currency             String               @default("USD")
-  currencyPosition     String               @default("BEFORE")
-  currencySymbol       String               @default("$")
-  defaultTaxRate       Float                @default(0)
-  numberFormat         String               @default("1,000.00")
-  primaryIndustry      IndustryType?
-  communityProfile     CommunityProfile?
-  industry             CreativeIndustry     @default(PHOTOGRAPHY)
-  businessName         String?
-  speciality           String?
-  brandAccentColor     String               @default("#E8891A")
-  brandFontFamily      String               @default("Inter")
-  tokenVersion         Int                  @default(0)
-  brandLogoUrl         String?
-  brandPrimaryColor    String               @default("#6C2EDB")
-  emailSignature       String?
-  verificationSentAt   DateTime?
-  verificationToken    String?              @unique
-  googleId             String?              @unique
-  leads                Lead[]
-  activities           Activity[]
-  messages             Message[]
-  quotes               Quote[]
-  quoteTemplates       QuoteTemplate[]
-  bookings             Booking[]
-  portfolio            Portfolio[]
-  workflowTemplates    WorkflowTemplate[]
-  incomes              Income[]
-  testimonials         Testimonial[]
-  emailSequences       EmailSequence[]
-  auditLogs            AuditLog[]
-  meetingTypes         MeetingType[]
-  availabilitySchedules AvailabilitySchedule[]
-  meetingBookings      MeetingBooking[]
-  fileComments         FileComment[]
-  calendarConnections  CalendarConnection[]
-  calendarEvents       CalendarEvent[]
-  weeklyReportEnabled    Boolean              @default(true)
-  staleLeadEmailEnabled  Boolean              @default(true)
-  quoteNudgeEmailEnabled Boolean              @default(true)
-  loginAttempts          Int                  @default(0)
-  lockedUntil            DateTime?
+  currency                 String                 @default("USD")
+  currencyPosition         String                 @default("BEFORE")
+  currencySymbol           String                 @default("$")
+  defaultTaxRate           Float                  @default(0)
+  numberFormat             String                 @default("1,000.00")
+  primaryIndustry          IndustryType?
+  communityProfile         CommunityProfile?
+  industry                 CreativeIndustry       @default(PHOTOGRAPHY)
+  businessName             String?
+  speciality               String?
+  brandAccentColor         String                 @default("#E8891A")
+  brandFontFamily          String                 @default("Inter")
+  tokenVersion             Int                    @default(0)
+  brandLogoUrl             String?
+  brandPrimaryColor        String                 @default("#6C2EDB")
+  emailSignature           String?
+  verificationSentAt       DateTime?
+  verificationToken        String?                @unique
+  googleId                 String?                @unique
+  leads                    Lead[]
+  activities               Activity[]
+  messages                 Message[]
+  quotes                   Quote[]
+  quoteTemplates           QuoteTemplate[]
+  bookings                 Booking[]
+  portfolio                Portfolio[]
+  workflowTemplates        WorkflowTemplate[]
+  incomes                  Income[]
+  testimonials             Testimonial[]
+  emailSequences           EmailSequence[]
+  auditLogs                AuditLog[]
+  meetingTypes             MeetingType[]
+  availabilitySchedules    AvailabilitySchedule[]
+  meetingBookings          MeetingBooking[]
+  fileComments             FileComment[]
+  calendarConnections      CalendarConnection[]
+  calendarEvents           CalendarEvent[]
+  weeklyReportEnabled      Boolean                @default(true)
+  staleLeadEmailEnabled    Boolean                @default(true)
+  quoteNudgeEmailEnabled   Boolean                @default(true)
+  loginAttempts            Int                    @default(0)
+  lockedUntil              DateTime?
 
   @@map("users")
 }
@@ -606,7 +606,7 @@ model WorkflowStage {
   fieldConfig Json?
   templateId  String
   createdAt   DateTime         @default(now())
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime         @updatedAt
   template    WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
   @@index([order])
@@ -615,17 +615,17 @@ model WorkflowStage {
 }
 
 model WorkflowTemplate {
-  id          String         @id @default(cuid())
+  id          String          @id @default(cuid())
   name        String
   description String?
   industry    IndustryType?
   projectType ProjectType?
-  isDefault   Boolean        @default(false)
-  isSystem    Boolean        @default(false)
+  isDefault   Boolean         @default(false)
+  isSystem    Boolean         @default(false)
   userId      String
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime  @updatedAt
-  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   stages      WorkflowStage[]
 
   @@index([industry])
@@ -869,26 +869,25 @@ enum UserRole {
   MEMBER
 }
 
-
 model ClientOnboardingEnrollment {
-  id               String    @id @default(cuid())
-  leadId           String
-  lead             Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
-  enrolledAt       DateTime  @default(now())
-  currentStep      Int       @default(1)
-  completed        Boolean   @default(false)
+  enrolledAt  DateTime @default(now())
+  currentStep Int      @default(1)
+  completed   Boolean  @default(false)
 
-  email1SentAt     DateTime?
-  email2SentAt     DateTime?
-  email3SentAt     DateTime?
+  email1SentAt DateTime?
+  email2SentAt DateTime?
+  email3SentAt DateTime?
 
   stoppedAt        DateTime?
   stopReason       String?
   unsubscribeToken String?   @unique @default(cuid())
 
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([leadId])
   @@index([completed])
@@ -896,26 +895,25 @@ model ClientOnboardingEnrollment {
   @@map("client_onboarding_enrollments")
 }
 
-
 model QuoteFollowUpEnrollment {
-  id               String    @id @default(cuid())
-  quoteId          String    @unique
-  quote            Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  id      String @id @default(cuid())
+  quoteId String @unique
+  quote   Quote  @relation(fields: [quoteId], references: [id], onDelete: Cascade)
 
-  enrolledAt       DateTime  @default(now())
-  currentStep      Int       @default(0)
-  completed        Boolean   @default(false)
+  enrolledAt  DateTime @default(now())
+  currentStep Int      @default(0)
+  completed   Boolean  @default(false)
 
-  email1SentAt     DateTime?
-  email2SentAt     DateTime?
-  email3SentAt     DateTime?
+  email1SentAt DateTime?
+  email2SentAt DateTime?
+  email3SentAt DateTime?
 
   stoppedAt        DateTime?
   stopReason       String?
   unsubscribeToken String?   @unique @default(cuid())
 
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([quoteId])
   @@index([completed])
@@ -923,33 +921,31 @@ model QuoteFollowUpEnrollment {
   @@map("quote_followup_enrollments")
 }
 
-
 model EmailTracking {
-  id              String    @id @default(cuid())
-  trackingId      String    @unique
-  emailType       String
-  sequenceId      String?
-  stepNumber      Int?
-  leadId          String
-  lead            Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  recipientEmail  String
-  sentAt          DateTime  @default(now())
-  opened          Boolean   @default(false)
-  openedAt        DateTime?
-  openCount       Int       @default(0)
-  clickCount      Int       @default(0)
-  clickedAt       DateTime?
-  userAgent       String?
-  ipAddress       String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id             String    @id @default(cuid())
+  trackingId     String    @unique
+  emailType      String
+  sequenceId     String?
+  stepNumber     Int?
+  leadId         String
+  lead           Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  recipientEmail String
+  sentAt         DateTime  @default(now())
+  opened         Boolean   @default(false)
+  openedAt       DateTime?
+  openCount      Int       @default(0)
+  clickCount     Int       @default(0)
+  clickedAt      DateTime?
+  userAgent      String?
+  ipAddress      String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@index([trackingId])
   @@index([leadId])
   @@index([sequenceId, stepNumber])
   @@map("email_tracking")
 }
-
 
 model ScheduledEmail {
   id           String    @id @default(cuid())
@@ -966,28 +962,27 @@ model ScheduledEmail {
   @@map("scheduled_emails")
 }
 
-
 // ========================
 // MEETING BOOKING SYSTEM
 // ========================
 
 model MeetingType {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name        String
-  description String?
-  duration    Int      @default(30)   // minutes
-  color       String   @default("#6C2EDB")  // AUDIT FIX [U8.5]: Aligned with brand primary
-  location    String?                 // e.g. "Zoom", "Studio", "Phone"
-  isActive    Boolean  @default(true)
-  order       Int      @default(0)
-  bufferBefore Int     @default(0)    // minutes buffer before meeting
-  bufferAfter  Int     @default(15)   // minutes buffer after meeting
-  maxPerDay   Int?                    // optional daily cap
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  bookings    MeetingBooking[]
+  id           String           @id @default(cuid())
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  duration     Int              @default(30) // minutes
+  color        String           @default("#6C2EDB") // AUDIT FIX [U8.5]: Aligned with brand primary
+  location     String? // e.g. "Zoom", "Studio", "Phone"
+  isActive     Boolean          @default(true)
+  order        Int              @default(0)
+  bufferBefore Int              @default(0) // minutes buffer before meeting
+  bufferAfter  Int              @default(15) // minutes buffer after meeting
+  maxPerDay    Int? // optional daily cap
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  bookings     MeetingBooking[]
 
   @@index([userId])
   @@index([isActive])
@@ -995,40 +990,40 @@ model MeetingType {
 }
 
 model AvailabilitySchedule {
-  id        String @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  dayOfWeek Int    // 0=Sunday, 1=Monday ... 6=Saturday
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dayOfWeek Int // 0=Sunday, 1=Monday ... 6=Saturday
   startTime String // "09:00" (HH:mm format)
   endTime   String // "17:00" (HH:mm format)
-  isActive  Boolean @default(true)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  @@index([userId])
   @@unique([userId, dayOfWeek, startTime])
+  @@index([userId])
   @@map("availability_schedules")
 }
 
 model MeetingBooking {
-  id              String   @id @default(cuid())
-  meetingTypeId   String
-  meetingType     MeetingType @relation(fields: [meetingTypeId], references: [id], onDelete: Cascade)
-  userId          String   // the studio owner who the meeting is with
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  clientName      String
-  clientEmail     String
-  clientPhone     String?
-  clientNotes     String?
-  startTime       DateTime
-  endTime         DateTime
-  status          MeetingStatus @default(CONFIRMED)
-  cancelledAt     DateTime?
-  cancelReason    String?
-  reminderSentAt  DateTime?
+  id                 String        @id @default(cuid())
+  meetingTypeId      String
+  meetingType        MeetingType   @relation(fields: [meetingTypeId], references: [id], onDelete: Cascade)
+  userId             String // the studio owner who the meeting is with
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clientName         String
+  clientEmail        String
+  clientPhone        String?
+  clientNotes        String?
+  startTime          DateTime
+  endTime            DateTime
+  status             MeetingStatus @default(CONFIRMED)
+  cancelledAt        DateTime?
+  cancelReason       String?
+  reminderSentAt     DateTime?
   confirmationSentAt DateTime?
-  calendarEventId String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  calendarEventId    String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 
   @@index([userId])
   @@index([meetingTypeId])
@@ -1090,7 +1085,6 @@ enum CreativeIndustry {
   FINE_ART
 }
 
-
 model ProcessedWebhookEvent {
   id          String   @id @default(cuid())
   eventKey    String   @unique
@@ -1099,13 +1093,11 @@ model ProcessedWebhookEvent {
   @@map("processed_webhook_events")
 }
 
-
 model WaitlistEntry {
   id        String   @id @default(uuid())
   email     String   @unique
   createdAt DateTime @default(now())
 }
-
 
 // ═══════════════════════════════════════════════════════
 // COMMUNITY — iter-227a
@@ -1113,25 +1105,38 @@ model WaitlistEntry {
 // ═══════════════════════════════════════════════════════
 
 model CommunityProfile {
-  id           String          @id @default(cuid())
-  userId       String          @unique
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bio          String?         @db.VarChar(150)
-  city         String?
-  availability Availability    @default(OPEN)
-  isPublic     Boolean         @default(true)
-  isSynthetic  Boolean         @default(false)
-  communityEmailsEnabled Boolean @default(true)
-  hasSeenCommunityIntro  Boolean @default(false)
-  joinedAt     DateTime        @default(now())
-  posts        Post[]
-  comments     Comment[]
-  following    Follow[]        @relation("follower")
-  followers    Follow[]        @relation("following")
-  sentMessages DMMessage[]
-  threadsA     DMThread[]      @relation("participantA")
-  threadsB     DMThread[]      @relation("participantB")
-  notifications Notification[]
+  id                     String         @id @default(cuid())
+  userId                 String         @unique
+  user                   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio                    String?        @db.VarChar(150)
+  city                   String?
+  availability           Availability   @default(OPEN)
+  isPublic               Boolean        @default(true)
+  isSynthetic            Boolean        @default(false)
+  communityEmailsEnabled Boolean        @default(true)
+  hasSeenCommunityIntro  Boolean        @default(false)
+  joinedAt               DateTime       @default(now())
+  posts                  Post[]
+  comments               Comment[]
+  following              Follow[]       @relation("follower")
+  followers              Follow[]       @relation("following")
+  sentMessages           DMMessage[]
+  threadsA               DMThread[]     @relation("participantA")
+  threadsB               DMThread[]     @relation("participantB")
+  notifications          Notification[]
+
+  // iter 286 additions
+  handle                  String?              @unique
+  weeklyDigestEnabled     Boolean              @default(true)
+  collections             Collection[]
+  featuredAsCreator       FeaturedCreator[]
+  suggestionsReceived     PeerSuggestion[]     @relation("suggestionsFor")
+  suggestionsAbout        PeerSuggestion[]     @relation("suggestionsOf")
+  followNotesGiven        FollowNote[]         @relation("followNoteGiver")
+  followNotesReceived     FollowNote[]         @relation("followNoteReceiver")
+  recommendationsSent     PeerRecommendation[] @relation("recommendationsSent")
+  recommendationsReceived PeerRecommendation[] @relation("recommendationsReceived")
+  digestSends             DigestSend[]
 }
 
 model Post {
@@ -1146,6 +1151,10 @@ model Post {
   isDeleted Boolean          @default(false)
   likes     PostLike[]
   comments  Comment[]
+
+  // iter 286 additions
+  collectionItems CollectionItem[]
+  featuredAsPost  FeaturedPost?
 
   @@index([industry, createdAt(sort: Desc)])
   @@index([authorId, createdAt(sort: Desc)])
@@ -1240,4 +1249,119 @@ enum NotificationType {
   POST_COMMENTED
   DM_RECEIVED
   NEW_FOLLOWER
+}
+
+// ─────────────────────────────────────────────────────────
+// iter 286 — Community Retention Models
+// ─────────────────────────────────────────────────────────
+
+model Collection {
+  id          String           @id @default(cuid())
+  ownerId     String
+  owner       CommunityProfile @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name        String           @db.VarChar(80)
+  description String?          @db.VarChar(240)
+  isPublic    Boolean          @default(false)
+  coverPostId String?
+  itemCount   Int              @default(0)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  items       CollectionItem[]
+
+  @@index([ownerId, updatedAt(sort: Desc)])
+  @@index([isPublic, updatedAt(sort: Desc)])
+}
+
+model CollectionItem {
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  postId       String
+  post         Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  addedAt      DateTime   @default(now())
+  note         String?    @db.VarChar(240)
+
+  @@id([collectionId, postId])
+  @@index([postId])
+}
+
+model FeaturedPost {
+  id           String           @id @default(cuid())
+  postId       String           @unique
+  post         Post             @relation(fields: [postId], references: [id], onDelete: Cascade)
+  industry     CreativeIndustry
+  featuredWeek DateTime
+  curatorNote  String?          @db.VarChar(320)
+  createdAt    DateTime         @default(now())
+
+  @@unique([industry, featuredWeek])
+  @@index([featuredWeek(sort: Desc)])
+}
+
+model FeaturedCreator {
+  id           String           @id @default(cuid())
+  profileId    String
+  profile      CommunityProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  industry     CreativeIndustry
+  featuredWeek DateTime
+  curatorNote  String?          @db.VarChar(320)
+  createdAt    DateTime         @default(now())
+
+  @@unique([industry, featuredWeek])
+  @@index([featuredWeek(sort: Desc)])
+}
+
+model PeerSuggestion {
+  id            String           @id @default(cuid())
+  fromProfileId String
+  fromProfile   CommunityProfile @relation("suggestionsFor", fields: [fromProfileId], references: [id], onDelete: Cascade)
+  toProfileId   String
+  toProfile     CommunityProfile @relation("suggestionsOf", fields: [toProfileId], references: [id], onDelete: Cascade)
+  score         Float
+  reasonCode    String           @db.VarChar(40)
+  createdAt     DateTime         @default(now())
+  dismissedAt   DateTime?
+
+  @@unique([fromProfileId, toProfileId])
+  @@index([fromProfileId, score(sort: Desc)])
+}
+
+model FollowNote {
+  id          String           @id @default(cuid())
+  followerId  String
+  giver       CommunityProfile @relation("followNoteGiver", fields: [followerId], references: [id], onDelete: Cascade)
+  followingId String
+  receiver    CommunityProfile @relation("followNoteReceiver", fields: [followingId], references: [id], onDelete: Cascade)
+  note        String           @db.VarChar(140)
+  createdAt   DateTime         @default(now())
+
+  @@unique([followerId, followingId])
+  @@index([followingId])
+}
+
+model PeerRecommendation {
+  id             String           @id @default(cuid())
+  senderId       String
+  sender         CommunityProfile @relation("recommendationsSent", fields: [senderId], references: [id], onDelete: Cascade)
+  recipientId    String
+  recipient      CommunityProfile @relation("recommendationsReceived", fields: [recipientId], references: [id], onDelete: Cascade)
+  recommendedIds String[]
+  note           String?          @db.VarChar(240)
+  sentMonth      DateTime
+  createdAt      DateTime         @default(now())
+
+  @@index([senderId, sentMonth])
+  @@index([recipientId, createdAt(sort: Desc)])
+}
+
+model DigestSend {
+  id         String           @id @default(cuid())
+  profileId  String
+  profile    CommunityProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  sentAt     DateTime
+  weekOfSent DateTime
+  openedAt   DateTime?
+  clickedAt  DateTime?
+
+  @@unique([profileId, weekOfSent])
+  @@index([profileId, sentAt(sort: Desc)])
 }

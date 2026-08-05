@@ -39,7 +39,28 @@ export function startScheduler(): void {
     await runWeeklyPipelineReports();
   });
 
-  console.log('[Scheduler] Started — daily 9am UTC + Monday 8am UTC');
+  // ── iter 286 — Community peer suggestion weekly generation (Sunday 04:00 UTC) ──
+  cron.schedule('0 4 * * 0', async () => {
+    console.log('[Scheduler] Running weekly peer suggestion generation...');
+    try {
+      const { generateWeeklyPeerSuggestions } = await import('./services/peerSuggestionGenerator');
+      await generateWeeklyPeerSuggestions();
+    } catch (err: any) {
+      console.error('[Scheduler] Peer suggestion generation failed:', err.message);
+    }
+  });
+
+  // ── iter 286 — Community digest hourly check (fires when creator's local time = Sun 8am) ──
+  cron.schedule('0 * * * *', async () => {
+    try {
+      const { processCommunityDigestSends } = await import('./services/communityDigestGenerator');
+      await processCommunityDigestSends();
+    } catch (err: any) {
+      console.error('[Scheduler] Community digest failed:', err.message);
+    }
+  });
+
+  console.log('[Scheduler] Started — daily 9am UTC + Monday 8am UTC + Sunday 4am UTC peer suggestions + hourly community digest');
 }
 
 // ── JOB FUNCTIONS ──
