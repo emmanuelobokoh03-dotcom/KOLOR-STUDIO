@@ -1156,8 +1156,14 @@ model Post {
   collectionItems CollectionItem[]
   featuredAsPost  FeaturedPost?
 
+  // iter 286.5 additions
+  mainImage        String?
+  additionalImages String[] @default([])
+  hiddenFromGrid   Boolean  @default(false)
+
   @@index([industry, createdAt(sort: Desc)])
   @@index([authorId, createdAt(sort: Desc)])
+  @@index([hiddenFromGrid, createdAt(sort: Desc)])
 }
 
 model Comment {
