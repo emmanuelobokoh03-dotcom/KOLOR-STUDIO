@@ -63,10 +63,11 @@ export default function CommunityFeed({
   const lang = getIndustryLanguage(postIndustry)
   const composeLabel = 'Post ' + lang.shot
 
-  const fetchFeed = useCallback(async (ind: CreativeIndustry | 'ALL', cur?: string | null) => {
+  const fetchFeed = useCallback(async (ind: CreativeIndustry | 'ALL', cur?: string | null, sub?: string | null) => {
     try {
       const params = new URLSearchParams({ industry: ind })
       if (cur) params.set('cursor', cur)
+      if (sub) params.set('subHeadline', sub)
       const res = await fetch(`${API}/api/community/feed?${params}`, { credentials: 'include' })
       const data = await res.json()
       const incoming: Shot[] = data.posts || []
@@ -85,8 +86,8 @@ export default function CommunityFeed({
     setLoading(true)
     setShots([])
     setCursor(null)
-    fetchFeed(industry)
-  }, [industry, fetchFeed])
+    fetchFeed(industry, null, subChip)
+  }, [industry, subChip, fetchFeed])
 
   // First-time community intro modal — preserved verbatim from prior implementation
   useEffect(() => {
@@ -118,7 +119,7 @@ export default function CommunityFeed({
   const handleLoadMore = () => {
     if (loadingMore || !hasMore) return
     setLoadingMore(true)
-    fetchFeed(industry, cursor)
+    fetchFeed(industry, cursor, subChip)
   }
 
   const handleShotClick = (shotId: string) => {
@@ -129,19 +130,15 @@ export default function CommunityFeed({
     setSaveOpenForShotId(shotId)
   }
 
-  // Client-side filters: only render shots with mainImage (visual-first),
-  // apply sort mode, apply sub-chip if present (title match).
+  // Client-side: only shots with mainImage render (visual-first).
+  // Sort mode applied client-side. Sub-chip filter is applied server-side.
   const visibleShots = useMemo(() => {
     let list = shots.filter((s) => s.mainImage)
     if (sortMode === 'popular') {
       list = [...list].sort((a, b) => (b._count?.likes || 0) - (a._count?.likes || 0))
     }
-    if (subChip) {
-      const needle = subChip.toLowerCase()
-      list = list.filter((s) => s.content.toLowerCase().includes(needle))
-    }
     return list
-  }, [shots, sortMode, subChip])
+  }, [shots, sortMode])
 
   return (
     <div
