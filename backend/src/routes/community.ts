@@ -463,6 +463,21 @@ router.get('/discover', authMiddleware, async (req: AuthRequest, res: Response):
 
 // ─── DMs ──────────────────────────────────────────────────────────────────
 
+// GET /api/community/dms/pending-count — small endpoint for sub-nav dot indicator (iter 287-v3c2b)
+router.get('/dms/pending-count', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
+    if (!profile) { res.json({ count: 0 }); return }
+    const count = await prisma.dMThread.count({
+      where: {
+        status: 'PENDING',
+        OR: [{ participantA: profile.id }, { participantB: profile.id }],
+      },
+    })
+    res.json({ count })
+  } catch (e) { res.status(500).json({ error: 'Failed' }) }
+})
+
 // GET /api/community/dms?filter=requests
 router.get('/dms', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {

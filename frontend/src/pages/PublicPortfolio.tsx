@@ -26,6 +26,7 @@ export default function PublicPortfolio() {
     studioName?: string; businessName?: string; speciality?: string;
     industry?: string; brandPrimaryColor?: string; brandAccentColor?: string;
     brandFontFamily?: string; brandLogoUrl?: string;
+    website?: string | null; communityHandle?: string | null;
   } | null>(null)
   const [testimonials, setTestimonials] = useState<any[]>([])
   const [hasMeetingTypes, setHasMeetingTypes] = useState(false)
@@ -379,7 +380,67 @@ export default function PublicPortfolio() {
               Book a call
             </Link>
           )}
+          {userInfo?.website && (
+            <a
+              href={(() => {
+                const w = (userInfo.website || '').trim()
+                if (!w) return '#'
+                return /^https?:\/\//i.test(w) ? w : `https://${w}`
+              })()}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                minHeight: 52,
+                padding: '0 32px',
+                background: 'transparent',
+                color: 'var(--kolor-terra, #B84A2C)',
+                border: '1px solid var(--kolor-terra, #B84A2C)',
+                borderRadius: 2,
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                textDecoration: 'none',
+                minWidth: 44,
+                transition: 'background-color 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              data-testid="portfolio-cta-website"
+            >
+              Visit Website <span aria-hidden style={{ letterSpacing: 0 }}>↗</span>
+            </a>
+          )}
         </div>
+
+        {userInfo?.communityHandle && (
+          <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center' }}>
+            <Link
+              to={`/creator/${userInfo.communityHandle}`}
+              style={{
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                color: 'var(--kolor-ink-muted, #5F5751)',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                transition: 'color 150ms ease',
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--kolor-ink, #1A1613)' }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--kolor-ink-muted, #5F5751)' }}
+              data-testid="portfolio-community-profile-link"
+            >
+              Community Profile <span aria-hidden style={{ letterSpacing: 0 }}>→</span>
+            </Link>
+          </div>
+        )}
 
         {/* Stats strip */}
         {items.length > 0 && (

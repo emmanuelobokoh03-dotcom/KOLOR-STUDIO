@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { toast } from 'sonner'
 import KolorSpinner from './KolorSpinner'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
 import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
@@ -27,20 +28,33 @@ export default function DMView() {
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [filterMode, setFilterMode] = useState<'messages' | 'requests'>('messages')
+  const [pendingCount, setPendingCount] = useState(0)
   const lastMsgRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const lastTimestampRef = useRef<string | null>(null)
 
-  const fetchThreads = useCallback(async () => {
+  const fetchPendingCount = useCallback(async () => {
     try {
-      const res = await fetch(`${API}/api/community/dms`, { credentials: 'include' })
+      const res = await fetch(`${API}/api/community/dms/pending-count`, { credentials: 'include' })
+      const data = await res.json()
+      setPendingCount(data.count || 0)
+    } catch { /* silent */ }
+  }, [])
+
+  const fetchThreads = useCallback(async (mode: 'messages' | 'requests' = filterMode) => {
+    try {
+      const url = mode === 'requests'
+        ? `${API}/api/community/dms?filter=requests`
+        : `${API}/api/community/dms`
+      const res = await fetch(url, { credentials: 'include' })
       const data = await res.json()
       setThreads(data.threads || [])
       setMyProfileId(data.myProfileId || null)
     } catch { /* silent */ }
     setLoading(false)
-  }, [])
+  }, [filterMode])
 
   const fetchMessages = useCallback(async (threadId: string, after?: string) => {
     try {
@@ -63,7 +77,7 @@ export default function DMView() {
     } catch { /* silent */ }
   }, [])
 
-  useEffect(() => { fetchThreads() }, [fetchThreads])
+  useEffect(() => { fetchThreads(filterMode); fetchPendingCount() }, [fetchThreads, fetchPendingCount, filterMode])
 
   useEffect(() => {
     if (!activeThread) return
@@ -101,13 +115,41 @@ export default function DMView() {
         setMessages(prev => [...prev, data.message])
         lastTimestampRef.current = data.message.sentAt
         setInput('')
-        fetchThreads()
+        fetchThreads(filterMode)
       }
     } catch { /* silent */ }
     setSending(false)
   }
 
   if (loading) return <div className="flex justify-center py-12"><KolorSpinner size={28} /></div>
+
+  const handleAccept = async (threadId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    try {
+      const res = await fetch(`${API}/api/community/dms/${threadId}/accept`, {
+        method: 'PATCH', credentials: 'include'
+      })
+      if (res.ok) {
+        setThreads(prev => prev.filter(t => t.id !== threadId))
+        setPendingCount(c => Math.max(0, c - 1))
+        toast.success('Message request accepted')
+      }
+    } catch { toast.error('Could not accept request') }
+  }
+
+  const handleDismiss = async (threadId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    try {
+      const res = await fetch(`${API}/api/community/dms/${threadId}`, {
+        method: 'DELETE', credentials: 'include'
+      })
+      if (res.ok) {
+        setThreads(prev => prev.filter(t => t.id !== threadId))
+        setPendingCount(c => Math.max(0, c - 1))
+        toast.success('Request dismissed')
+      }
+    } catch { toast.error('Could not dismiss request') }
+  }
 
   return (
     <div className="flex relative" style={{ height: 'calc(100dvh - 120px)', overflow: 'hidden' }} data-testid="dm-view">
@@ -118,14 +160,172 @@ export default function DMView() {
         <div className="p-4 border-b" style={{ borderColor: 'var(--border)' }}>
           <h3 className="text-sm font-bold text-text-primary">Messages</h3>
         </div>
+        {/* iter 287-v3c2b: MESSAGES / REQUESTS filter tabs */}
+        <div
+          role="tablist"
+          aria-label="Message filter"
+          className="flex items-center border-b flex-shrink-0"
+          style={{ height: '48px', borderColor: 'var(--kolor-hairline)', padding: '0 16px', gap: '20px' }}
+        >
+          <button
+            role="tab"
+            aria-selected={filterMode === 'messages'}
+            data-testid="dm-tab-messages"
+            onClick={() => { setFilterMode('messages'); setActiveThread(null) }}
+            style={{
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: '11px',
+              fontWeight: 500,
+              letterSpacing: '0.28em',
+              textTransform: 'uppercase',
+              color: filterMode === 'messages' ? 'var(--kolor-terra)' : 'var(--kolor-ink-subtle)',
+              background: 'transparent',
+              border: 'none',
+              padding: '14px 0',
+              cursor: 'pointer',
+              borderBottom: filterMode === 'messages' ? '1px solid var(--kolor-terra)' : '1px solid transparent',
+              transition: 'color 0.15s',
+            }}
+          >
+            Messages
+          </button>
+          <button
+            role="tab"
+            aria-selected={filterMode === 'requests'}
+            data-testid="dm-tab-requests"
+            onClick={() => { setFilterMode('requests'); setActiveThread(null) }}
+            style={{
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: '11px',
+              fontWeight: 500,
+              letterSpacing: '0.28em',
+              textTransform: 'uppercase',
+              color: filterMode === 'requests' ? 'var(--kolor-terra)' : 'var(--kolor-ink-subtle)',
+              background: 'transparent',
+              border: 'none',
+              padding: '14px 0',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              borderBottom: filterMode === 'requests' ? '1px solid var(--kolor-terra)' : '1px solid transparent',
+              transition: 'color 0.15s',
+            }}
+          >
+            <span>Requests</span>
+            {pendingCount > 0 && (
+              <span
+                data-testid="dm-requests-count"
+                style={{
+                  fontFamily: 'JetBrains Mono, monospace',
+                  fontSize: '9px',
+                  fontWeight: 500,
+                  letterSpacing: '0.14em',
+                  color: 'var(--kolor-terra)',
+                  background: 'var(--kolor-terra-tint)',
+                  padding: '2px 8px',
+                  borderRadius: '8px',
+                }}
+              >
+                {pendingCount}
+              </span>
+            )}
+          </button>
+        </div>
+
         {threads.length === 0 ? (
           <div className="p-6 text-center text-xs text-[var(--text-tertiary)]">
-            No conversations yet.<br />Visit a profile to start a DM.
+            {filterMode === 'requests'
+              ? <>No pending requests.<br />You&apos;re all caught up.</>
+              : <>No conversations yet.<br />Visit a profile to start a DM.</>}
           </div>
         ) : (
           threads.map(thread => {
             const lastMsg = thread.messages?.[0]
             const isActive = activeThread === thread.id
+            const isRequest = filterMode === 'requests'
+            const rowContent = (() => {
+              const other = thread.participantA === myProfileId ? thread.partB : thread.partA
+              const name = other ? `${other.user?.firstName || ''} ${other.user?.lastName || ''}`.trim() : 'Community member'
+              const initials = name ? name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) : '?'
+              return (
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
+                    style={{ background: '#6C2EDB' }}>
+                    {initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-xs text-text-primary truncate" style={{ fontWeight: (!isRequest && lastMsg && lastMsg.senderId !== myProfileId && !lastMsg.readAt) ? 700 : 500 }}>{name}</p>
+                      {lastMsg && !isRequest && (
+                        <span className="text-[9px] text-[var(--text-tertiary)] flex-shrink-0 tabular-nums">{formatMessageTime(lastMsg.sentAt)}</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      {lastMsg && (
+                        <p className="text-[10px] truncate flex-1" style={{
+                          color: isRequest ? 'var(--kolor-ink-muted)' : 'var(--text-tertiary)',
+                          fontWeight: (!isRequest && lastMsg.senderId !== myProfileId && !lastMsg.readAt) ? 600 : 400
+                        }}>{lastMsg.content}</p>
+                      )}
+                      {!isRequest && lastMsg && lastMsg.senderId !== myProfileId && !lastMsg.readAt && (
+                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
+                      )}
+                    </div>
+                  </div>
+                  {isRequest && (
+                    <div className="flex flex-col gap-1 flex-shrink-0" style={{ marginLeft: '6px' }}>
+                      <button
+                        onClick={(e) => handleAccept(thread.id, e)}
+                        data-testid={`dm-request-accept-${thread.id}`}
+                        style={{
+                          fontFamily: 'JetBrains Mono, monospace',
+                          fontSize: '10px',
+                          fontWeight: 500,
+                          letterSpacing: '0.28em',
+                          textTransform: 'uppercase',
+                          color: 'var(--kolor-terra)',
+                          background: 'transparent',
+                          border: '1px solid var(--kolor-terra)',
+                          padding: '4px 8px',
+                          borderRadius: '2px',
+                          cursor: 'pointer',
+                        }}
+                      >Accept</button>
+                      <button
+                        onClick={(e) => handleDismiss(thread.id, e)}
+                        data-testid={`dm-request-dismiss-${thread.id}`}
+                        style={{
+                          fontFamily: 'JetBrains Mono, monospace',
+                          fontSize: '10px',
+                          fontWeight: 500,
+                          letterSpacing: '0.28em',
+                          textTransform: 'uppercase',
+                          color: 'var(--kolor-ink-muted)',
+                          background: 'transparent',
+                          border: '1px solid var(--kolor-hairline)',
+                          padding: '4px 8px',
+                          borderRadius: '2px',
+                          cursor: 'pointer',
+                        }}
+                      >Dismiss</button>
+                    </div>
+                  )}
+                </div>
+              )
+            })()
+            if (isRequest) {
+              return (
+                <div
+                  key={thread.id}
+                  data-testid={`dm-thread-${thread.id}`}
+                  className="w-full text-left px-4 py-3 border-b"
+                  style={{ borderColor: 'var(--border)' }}
+                >
+                  {rowContent}
+                </div>
+              )
+            }
             return (
               <button
                 key={thread.id}
@@ -138,37 +338,7 @@ export default function DMView() {
                   borderLeft: isActive ? '3px solid #6C2EDB' : '3px solid transparent',
                 }}
               >
-                <div className="flex items-center gap-2.5">
-                  {(() => {
-                    const other = thread.participantA === myProfileId ? thread.partB : thread.partA
-                    const name = other ? `${other.user?.firstName || ''} ${other.user?.lastName || ''}`.trim() : 'Community member'
-                    const initials = name ? name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) : '?'
-                    return (
-                      <>
-                        <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
-                          style={{ background: '#6C2EDB' }}>
-                          {initials}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <p className="text-xs text-text-primary truncate" style={{ fontWeight: (lastMsg && lastMsg.senderId !== myProfileId && !lastMsg.readAt) ? 700 : 500 }}>{name}</p>
-                            {lastMsg && (
-                              <span className="text-[9px] text-[var(--text-tertiary)] flex-shrink-0 tabular-nums">{formatMessageTime(lastMsg.sentAt)}</span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            {lastMsg && (
-                              <p className="text-[10px] text-[var(--text-tertiary)] truncate flex-1" style={{ fontWeight: (lastMsg && lastMsg.senderId !== myProfileId && !lastMsg.readAt) ? 600 : 400 }}>{lastMsg.content}</p>
-                            )}
-                            {lastMsg && lastMsg.senderId !== myProfileId && !lastMsg.readAt && (
-                              <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#6C2EDB' }} />
-                            )}
-                          </div>
-                        </div>
-                      </>
-                    )
-                  })()}
-                </div>
+                {rowContent}
               </button>
             )
           })

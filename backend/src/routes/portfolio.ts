@@ -178,10 +178,12 @@ router.get('/public/:userId', async (req, res: Response): Promise<void> => {
         businessName: true,
         speciality: true,
         industry: true,
+        website: true,
         brandPrimaryColor: true,
         brandAccentColor: true,
         brandFontFamily: true,
         brandLogoUrl: true,
+        communityProfile: { select: { handle: true } },
       },
     });
 
@@ -230,10 +232,12 @@ router.get('/public/:userId', async (req, res: Response): Promise<void> => {
         businessName: user.businessName,
         speciality: user.speciality,
         industry: user.industry,
+        website: user.website,
         brandPrimaryColor: user.brandPrimaryColor,
         brandAccentColor: user.brandAccentColor,
         brandFontFamily: user.brandFontFamily,
         brandLogoUrl: user.brandLogoUrl,
+        communityHandle: user.communityProfile?.handle || null,
       },
       portfolio, 
       count: portfolio.length 

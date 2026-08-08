@@ -177,6 +177,7 @@ const Dashboard = () => {
   const [notifList, setNotifList] = useState<any[]>([])
   const [showBellDropdown, setShowBellDropdown] = useState(false)
   const [communityTab, setCommunityTab] = useState<'feed' | 'discover' | 'dms'>('feed')
+  const [pendingDMCount, setPendingDMCount] = useState(0)
   const [bookingLead, setBookingLead] = useState<Lead | null>(null)
   const [projectTypeFilter, setProjectTypeFilter] = useState<string>('')
   const [industryFilter, setIndustryFilter] = useState<string>('')
@@ -463,6 +464,24 @@ const Dashboard = () => {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
+
+  // iter 287-v3c2b: pending DM request count for Messages sub-nav dot indicator
+  useEffect(() => {
+    if (!user) return
+    let cancelled = false
+    const fetchPending = async () => {
+      try {
+        const API_URL = (import.meta as any).env?.VITE_API_URL || ''
+        const res = await fetch(`${API_URL}/api/community/dms/pending-count`, { credentials: 'include' })
+        if (!res.ok) return
+        const data = await res.json()
+        if (!cancelled) setPendingDMCount(data.count || 0)
+      } catch { /* silent */ }
+    }
+    fetchPending()
+    const id = setInterval(fetchPending, 60000)
+    return () => { cancelled = true; clearInterval(id) }
+  }, [user, communityTab])
 
   const fetchLeads = async () => {
     const params: any = {};
@@ -1619,6 +1638,21 @@ const Dashboard = () => {
                   className="px-4 py-3 text-xs font-medium capitalize transition-colors relative"
                   style={{ color: communityTab === tab ? '#6C2EDB' : 'var(--text-tertiary)' }}>
                   {tab === 'dms' ? 'Messages' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {tab === 'dms' && pendingDMCount > 0 && (
+                    <span
+                      data-testid="community-tab-dms-pending-dot"
+                      aria-label={`${pendingDMCount} pending message request${pendingDMCount === 1 ? '' : 's'}`}
+                      style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '4px',
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        background: 'var(--kolor-terra)',
+                      }}
+                    />
+                  )}
                   {communityTab === tab && (
                     <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#6C2EDB] rounded-full" />
                   )}
