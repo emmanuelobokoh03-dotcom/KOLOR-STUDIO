@@ -1890,6 +1890,35 @@ Two additive polish iterations bundled into one commit. Both close suggestion lo
 - Email: bookingtest@test.com
 - Password: password123
 
+### iter 287-v3c2b (Feb 2026) — DM Requests UI + Messages Dot + Portfolio External Links
+Closes iter 287-v3c after the v3c2a split and closes the entire iter 287 sub-arc. Ships remaining frontend surfaces for the visual-first Community redesign: DMView PENDING/ACCEPTED filter tabs consuming iter 287-v3b's request-to-message backend, Terra 6px dot indicator on Community Messages sub-nav for pending count, PublicPortfolio VISIT WEBSITE external link per Q59=A, and reciprocal COMMUNITY PROFILE link back to `/creator/:handle`. **DMView.tsx**: MESSAGES/REQUESTS filter tabs at top of inbox (mono UPPERCASE 11px, letter-spacing 0.28em, active Terra 1px bottom-border, inactive Ink Subtle). REQUESTS tab shows Terra-tint count pill when `pendingCount > 0`. REQUESTS mode fetches `?filter=requests` and renders PENDING thread rows with ghost Terra ACCEPT + ghost Ink DISMISS buttons (mono 10px 0.28em, 2px radius) instead of a click-to-open chevron. Preview text dimmed to `--kolor-ink-muted` on request rows. Existing conversation view untouched. Sonner toasts on ACCEPT/DISMISS. **Dashboard.tsx**: Messages sub-nav Terra 6px dot indicator when `pendingDMCount > 0`. Presence over count per editorial restraint (Q86). ARIA label surfaces count for a11y. 60s interval refresh + refetch on communityTab change. **PublicPortfolio.tsx**: VISIT WEBSITE ghost mono Terra CTA (renders when `user.website` exists) with URL normalization + `target=_blank rel=noopener`. Reciprocal small COMMUNITY PROFILE ghost mono Ink Muted text link back to `/creator/:handle` (renders when `user.communityHandle` exists). Hover darkens to full Ink. iter 282c calibration preserved. **Backend**: `GET /api/community/dms/pending-count` — 14-line endpoint powering Messages sub-nav dot indicator; counts PENDING threads where authed user is either participantA or participantB, returns `{ count }`. `GET /api/portfolio/public/:userId` extended user Prisma select to include `website` + `communityProfile.handle`. Response now exposes `user.website` and `user.communityHandle` (nullable). All 19 receipt checks PASS. Backend TSC + build clean, frontend cold-cache build 7.45s clean. 5 files changed, +321/-37. Local commit `fafec2a`. Push blocked → Save to GitHub.
+
+**iter 287 sub-arc: CLOSED**
+- v3a: Shots page + compose flow
+- v3b: Shot detail + save + peer suggestions + DM status
+- v3c1: subHeadline + Designer Browse + CollectionCard
+- v3c2a: PublicProfile + CollectionDetail + MyCollections + routes + sub-chip wire
+- v3c2b: DM requests UI + Messages dot + PublicPortfolio external links
+
+**Retention feature status at end of iter 287-v3c2b**
+- Feature 1 (Collections): FULLY LIVE end-to-end
+- Feature 2 (Public Profile Pages): FULLY LIVE with edit mode
+- Feature 3 (Featured Work Rotation): banner still hides gracefully — iter 288-v3 algorithmic cron
+- Feature 4 (Search + Directory): FULLY LIVE — Shots + Designer browse operational + sub-chip filtering active
+- Feature 5 (Weekly Digest Email): backend ready — iter 288-v3 visual template
+- Feature 6 (Peer Suggestions): displayed on shot detail (v3b)
+- Feature 7 (Creators of the Week): rail still hides gracefully — iter 288-v3
+
+**Backlog (Feb 2026, post iter 287-v3c2b)**
+- **P0**: Iteration 288-v3 — algorithmic Featured Work + Creators of Week crons, weekly digest visual-first template, peer suggestion refinement, operational polish. Closes visual-first Community redesign arc. Estimated 3-4 hours.
+- **P1**: Publish local commit `fafec2a` via Save to GitHub (origin currently at `f4738f5`).
+- **P2**: Individual shot removal from collection UI (deferred to iter 288-v3 polish).
+- **P2**: Public Portfolio full redesign to match Community v3 solidity (deferred to standalone iteration post-v3 arc).
+- **P2**: Notification framework calibration (deferred).
+- **P2**: `PostLike.userId` schema field rename cleanup (deferred to specific data-cleanup iteration).
+- **P2**: Onboarding "add your first shot" step (deferred).
+- **P2**: Landing page positioning updates (deferred).
+
 ## 3rd Party Integrations
 - Resend (transactional emails)
 - Google Calendar (OAuth scheduling)
