@@ -169,7 +169,7 @@ router.get('/feed', authMiddleware, async (req: AuthRequest, res: Response): Pro
   try {
     const { industry, cursor } = req.query
     const take = 20
-    const where: any = { isDeleted: false }
+    const where: any = { isDeleted: false, hiddenFromGrid: false }
     if (industry && industry !== 'ALL') where.industry = industry
 
     const myProfile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
@@ -220,7 +220,7 @@ router.get('/trending', authMiddleware, async (req: AuthRequest, res: Response):
 // POST /api/community/posts
 router.post('/posts', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { content, industry, images } = req.body
+    const { content, industry, images, mainImage, additionalImages } = req.body
     if (!content?.trim() || content.length > 500) { res.status(400).json({ error: 'Content required (max 500 chars)' }); return }
 
     let profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
@@ -236,7 +236,15 @@ router.post('/posts', authMiddleware, async (req: AuthRequest, res: Response): P
     }
 
     const post = await prisma.post.create({
-      data: { authorId: profile.id, content: sanitizeInput(content.trim()), industry: postIndustry, images: images || [] },
+      data: {
+        authorId: profile.id,
+        content: sanitizeInput(content.trim()),
+        industry: postIndustry,
+        images: images || [],
+        mainImage: mainImage || null,
+        additionalImages: additionalImages || [],
+        hiddenFromGrid: false,
+      },
       include: {
         author: { select: { id: true, userId: true, bio: true, city: true,
           user: { select: { firstName: true, lastName: true, primaryIndustry: true } } } },

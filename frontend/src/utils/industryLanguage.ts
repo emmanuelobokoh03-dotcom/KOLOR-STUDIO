@@ -88,6 +88,11 @@ export interface IndustryLanguage {
     sendQuoteSub: string;
     addLeadSub: string;
   };
+
+  // iter 287-v3a — visual community nomenclature (Q76 A-industry)
+  shot: string;
+  shotPlural: string;
+  creatorRolePlural: string;
 }
 
 export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
@@ -191,6 +196,10 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
       sendQuoteSub: 'To an inquiry with no quote yet',
       addLeadSub: 'Start tracking a new inquiry',
     },
+
+    shot: 'shot',
+    shotPlural: 'shots',
+    creatorRolePlural: 'photographers',
   },
 
   DESIGN: {
@@ -294,6 +303,10 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
       sendQuoteSub: 'To a brief with no proposal yet',
       addLeadSub: 'Start tracking a new brief',
     },
+
+    shot: 'shot',
+    shotPlural: 'shots',
+    creatorRolePlural: 'designers',
   },
 
   FINE_ART: {
@@ -397,6 +410,10 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
       sendQuoteSub: 'To a collector with no offer yet',
       addLeadSub: 'Start tracking a new commission',
     },
+
+    shot: 'work',
+    shotPlural: 'works',
+    creatorRolePlural: 'fine artists',
   },
 };
 
