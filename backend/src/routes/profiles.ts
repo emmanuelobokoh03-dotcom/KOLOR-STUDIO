@@ -35,6 +35,7 @@ router.get('/:handle', async (req: Request, res: Response): Promise<void> => {
         bio: profile.bio,
         city: profile.city,
         availability: profile.availability,
+        subHeadline: profile.subHeadline,
         joinedAt: profile.joinedAt,
         user: profile.user,
       },

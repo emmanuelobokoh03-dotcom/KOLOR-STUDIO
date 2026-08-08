@@ -167,10 +167,13 @@ function getIndustryGroupMembers(group: string): string[] {
 // GET /api/community/feed?industry=&cursor=
 router.get('/feed', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { industry, cursor } = req.query
+    const { industry, cursor, subHeadline } = req.query
     const take = 20
     const where: any = { isDeleted: false, hiddenFromGrid: false }
     if (industry && industry !== 'ALL') where.industry = industry
+    if (subHeadline && typeof subHeadline === 'string' && subHeadline.length > 0) {
+      where.author = { subHeadline }
+    }
 
     const myProfile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
     const myProfileId = myProfile?.id
@@ -402,15 +405,20 @@ router.get('/profile/me', authMiddleware, async (req: AuthRequest, res: Response
 // PATCH /api/community/profile
 router.patch('/profile', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { bio, city, availability, isPublic } = req.body
+    const { bio, city, availability, isPublic, subHeadline } = req.body
     let profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
     if (!profile) {
       profile = await prisma.communityProfile.create({ data: { userId: req.userId! } })
     }
+    if (subHeadline !== undefined && subHeadline !== null && String(subHeadline).length > 60) {
+      res.status(400).json({ error: 'subHeadline too long (max 60 chars)' })
+      return
+    }
     const updated = await prisma.communityProfile.update({
       where: { userId: req.userId! },
       data: { ...(bio !== undefined && { bio: sanitizeInput(bio) }), ...(city !== undefined && { city: sanitizeInput(city) }), ...(req.body.communityEmailsEnabled !== undefined && { communityEmailsEnabled: req.body.communityEmailsEnabled }), ...(req.body.hasSeenCommunityIntro !== undefined && { hasSeenCommunityIntro: req.body.hasSeenCommunityIntro }),
-               ...(availability !== undefined && { availability }), ...(isPublic !== undefined && { isPublic }) },
+               ...(availability !== undefined && { availability }), ...(isPublic !== undefined && { isPublic }),
+               ...(subHeadline !== undefined && { subHeadline: subHeadline === null ? null : sanitizeInput(String(subHeadline)) }) },
       include: { user: { select: { firstName: true, lastName: true, primaryIndustry: true } } },
     })
     res.json({ profile: updated })
@@ -438,6 +446,12 @@ router.get('/discover', authMiddleware, async (req: AuthRequest, res: Response):
       orderBy: { joinedAt: 'desc' },
       include: {
         user: { select: { firstName: true, lastName: true, primaryIndustry: true } },
+        posts: {
+          where: { hiddenFromGrid: false, mainImage: { not: null } },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+          select: { id: true, mainImage: true },
+        },
         _count: { select: { posts: true, followers: true } },
       },
     })

@@ -1128,6 +1128,8 @@ model CommunityProfile {
   // iter 286 additions
   handle                  String?              @unique
   weeklyDigestEnabled     Boolean              @default(true)
+  // iter 287-v3c — creator self-selected specialization (Q94=C)
+  subHeadline             String?              @db.VarChar(60)
   collections             Collection[]
   featuredAsCreator       FeaturedCreator[]
   suggestionsReceived     PeerSuggestion[]     @relation("suggestionsFor")
