@@ -1190,6 +1190,11 @@ model PostLike {
   @@index([postId])
 }
 
+enum DMThreadStatus {
+  PENDING
+  ACCEPTED
+}
+
 model DMThread {
   id           String           @id @default(cuid())
   participantA String
@@ -1197,12 +1202,14 @@ model DMThread {
   partA        CommunityProfile @relation("participantA", fields: [participantA], references: [id], onDelete: Cascade)
   partB        CommunityProfile @relation("participantB", fields: [participantB], references: [id], onDelete: Cascade)
   messages     DMMessage[]
+  status       DMThreadStatus   @default(ACCEPTED)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
   @@unique([participantA, participantB])
   @@index([participantA, updatedAt(sort: Desc)])
   @@index([participantB, updatedAt(sort: Desc)])
+  @@index([status, updatedAt(sort: Desc)])
 }
 
 model DMMessage {

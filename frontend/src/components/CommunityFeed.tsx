@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import KolorSpinner from './KolorSpinner'
 import FilterChipBar from './community/FilterChipBar'
 import ShotTile from './community/ShotTile'
 import FeaturedBanner from './community/FeaturedBanner'
 import CreatorsOfWeekRail from './community/CreatorsOfWeekRail'
 import ComposeModal from './community/ComposeModal'
+import SaveToCollectionModal from './community/SaveToCollectionModal'
 import { getIndustryLanguage } from '../utils/industryLanguage'
 import { mapToPostIndustry } from '../lib/imageCompress'
 import type { CreativeIndustry } from '../lib/communityTaxonomy'
@@ -54,6 +56,8 @@ export default function CommunityFeed({
   const [loadingMore, setLoadingMore] = useState(false)
   const [composeOpen, setComposeOpen] = useState(false)
   const [showIntro, setShowIntro] = useState(false)
+  const [saveOpenForShotId, setSaveOpenForShotId] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   const postIndustry = mapToPostIndustry(userIndustry)
   const lang = getIndustryLanguage(postIndustry)
@@ -117,12 +121,12 @@ export default function CommunityFeed({
     fetchFeed(industry, cursor)
   }
 
-  const handleShotClick = (_shotId: string) => {
-    // Shot detail page lands iter 287-v3b. Placeholder no-op.
+  const handleShotClick = (shotId: string) => {
+    navigate(`/shot/${shotId}`)
   }
 
-  const handleSaveClick = (_shotId: string) => {
-    // SaveToCollectionModal lands iter 287-v3b. Placeholder no-op.
+  const handleSaveClick = (shotId: string) => {
+    setSaveOpenForShotId(shotId)
   }
 
   // Client-side filters: only render shots with mainImage (visual-first),
@@ -474,6 +478,12 @@ export default function CommunityFeed({
         onClose={() => setComposeOpen(false)}
         userIndustry={userIndustry}
         onPosted={handlePosted}
+      />
+
+      <SaveToCollectionModal
+        shotId={saveOpenForShotId || ''}
+        isOpen={!!saveOpenForShotId}
+        onClose={() => setSaveOpenForShotId(null)}
       />
 
       {/* Masonry responsive rules via CSS */}

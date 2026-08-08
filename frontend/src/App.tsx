@@ -28,6 +28,7 @@ const PublicBookingPage = lazy(() => import('./pages/PublicBookingPage'))
 const IndustryOnboarding = lazy(() => import('./components/IndustryOnboarding'))
 const CalendarPage = lazy(() => import('./pages/Calendar'))
 const CalendarReconnect = lazy(() => import('./pages/CalendarReconnect'))
+const ShotDetail = lazy(() => import('./pages/ShotDetail'))
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
 import NotFound from './pages/NotFound'
@@ -101,6 +102,7 @@ function App() {
         <Route path="/kanban" element={<Navigate to="/dashboard?view=kanban" replace />} />
         <Route path="/list" element={<Navigate to="/dashboard?view=list" replace />} />
         <Route path="/community" element={<Navigate to="/dashboard?view=community" replace />} />
+        <Route path="/shot/:id" element={<ShotDetail />} />
         <Route path="/portfolio/:userId" element={<PublicPortfolio />} />
         <Route path="/testimonial/:token" element={<SubmitTestimonial />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />

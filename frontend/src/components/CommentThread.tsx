@@ -4,13 +4,29 @@ import { linkifyText } from '../utils/linkifyText'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
-const INDUSTRY_AVATAR_COLORS: Record<string, string> = {
-  PHOTOGRAPHY: '#1A6B4A', VIDEOGRAPHY: '#1A6B4A', CONTENT_CREATION: '#1A6B4A',
-  DESIGN: '#6C2EDB', GRAPHIC_DESIGN: '#6C2EDB', WEB_DESIGN: '#6C2EDB', BRANDING: '#6C2EDB', ILLUSTRATION: '#6C2EDB',
-  FINE_ART: '#A32D2D', SCULPTURE: '#A32D2D',
+// iter 287-v3b — Framework-calibrated: canvas ivory, hairline dividers,
+// Fraunces italic empty state, mono UPPERCASE timestamps, Terra active
+// submit, initials avatar with Fraunces italic.
+
+function timeAgo(date: string) {
+  const diff = Date.now() - new Date(date).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return 'Just now'
+  if (mins < 60) return `${mins}m ago`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return `${hrs}h ago`
+  const days = Math.floor(hrs / 24)
+  if (days < 7) return `${days}d ago`
+  return new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
 }
 
-export default function CommentThread({ postId, onCommentAdded }: { postId: string; onCommentAdded?: () => void }) {
+export default function CommentThread({
+  postId,
+  onCommentAdded,
+}: {
+  postId: string
+  onCommentAdded?: () => void
+}) {
   const [comments, setComments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [input, setInput] = useState('')
@@ -18,8 +34,8 @@ export default function CommentThread({ postId, onCommentAdded }: { postId: stri
 
   useEffect(() => {
     fetch(`${API}/api/community/posts/${postId}/comments`, { credentials: 'include' })
-      .then(r => r.json())
-      .then(d => setComments(d.comments || []))
+      .then((r) => r.json())
+      .then((d) => setComments(d.comments || []))
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [postId])
@@ -35,62 +51,178 @@ export default function CommentThread({ postId, onCommentAdded }: { postId: stri
         body: JSON.stringify({ content: input.trim() }),
       })
       const data = await res.json()
-      if (data.comment) { setComments(prev => [...prev, data.comment]); setInput(''); onCommentAdded?.() }
-    } catch { /* silent */ }
+      if (data.comment) {
+        setComments((prev) => [...prev, data.comment])
+        setInput('')
+        onCommentAdded?.()
+      }
+    } catch {
+      /* silent */
+    }
     setPosting(false)
   }
 
   return (
-    <div className="border-t px-4 pt-3 pb-4" style={{ borderColor: 'var(--border)' }} data-testid="comment-thread">
+    <div
+      data-testid="comment-thread"
+      style={{
+        borderTop: '1px solid var(--kolor-hairline)',
+        padding: '20px 0',
+      }}
+    >
       {loading ? (
-        <div className="flex justify-center py-3"><KolorSpinner size={16} /></div>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
+          <KolorSpinner size={16} />
+        </div>
       ) : (
-        <div className="flex flex-col gap-3 mb-3">
-          {comments.map(c => (
-            <div key={c.id} className="flex gap-2.5">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0"
-                style={{ background: INDUSTRY_AVATAR_COLORS[c.author?.user?.primaryIndustry || ''] || '#6C2EDB' }}>
-                {c.author?.user?.firstName?.[0]}{c.author?.user?.lastName?.[0]}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-[11px] font-semibold text-text-primary">
-                    {c.author?.user?.firstName} {c.author?.user?.lastName}
-                  </span>
-                  {c.author?.city && (
-                    <span className="text-[10px] text-[var(--text-tertiary)]">
-                      {c.author.city}
-                    </span>
-                  )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
+          {comments.map((c, i) => {
+            const authorName = `${c.author?.user?.firstName || ''} ${c.author?.user?.lastName || ''}`.trim()
+            const initial = c.author?.user?.firstName?.[0]?.toUpperCase() || '?'
+            return (
+              <div
+                key={c.id}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '32px 1fr',
+                  gap: '12px',
+                  paddingBottom: '16px',
+                  borderBottom: i < comments.length - 1 ? '1px solid var(--kolor-hairline)' : 'none',
+                }}
+              >
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: 'var(--kolor-canvas-shade-1)',
+                    border: '1px solid var(--kolor-hairline)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontFamily: '"Fraunces", serif',
+                    fontStyle: 'italic',
+                    fontSize: '14px',
+                    color: 'var(--kolor-ink)',
+                  }}
+                >
+                  {initial}
                 </div>
-                <p className="text-xs text-text-primary leading-relaxed mt-0.5" dangerouslySetInnerHTML={{ __html: linkifyText(c.content) }} />
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+                    <span
+                      style={{
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '14px',
+                        fontWeight: 500,
+                        color: 'var(--kolor-ink)',
+                      }}
+                    >
+                      {authorName}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-mono, "Space Mono", monospace)',
+                        fontSize: '9px',
+                        fontWeight: 500,
+                        letterSpacing: '0.24em',
+                        textTransform: 'uppercase',
+                        color: 'var(--kolor-ink-subtle)',
+                      }}
+                    >
+                      {timeAgo(c.createdAt)}
+                      {c.author?.city ? ` · ${c.author.city}` : ''}
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '14px',
+                      lineHeight: 1.6,
+                      color: 'var(--kolor-ink)',
+                      margin: '6px 0 0',
+                    }}
+                    dangerouslySetInnerHTML={{ __html: linkifyText(c.content) }}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
           {comments.length === 0 && (
-            <p className="text-xs text-[var(--text-tertiary)] text-center py-1">No comments yet</p>
+            <p
+              style={{
+                fontFamily: '"Fraunces", serif',
+                fontStyle: 'italic',
+                fontSize: '16px',
+                color: 'var(--kolor-ink-muted)',
+                textAlign: 'center',
+                padding: '12px 0',
+                margin: 0,
+              }}
+            >
+              No comments yet.
+            </p>
           )}
         </div>
       )}
-      <div className="flex gap-2">
+      <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
         <input
           type="text"
           value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Add a comment..."
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Add a comment…"
           maxLength={300}
           data-testid="comment-input"
-          className="flex-1 text-xs rounded-lg px-3 py-2 outline-none"
-          style={{ background: 'var(--surface-background)', border: '0.5px solid var(--border)', color: 'var(--text-primary)' }}
-          onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+          onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+          style={{
+            flex: 1,
+            padding: '10px 0',
+            background: 'transparent',
+            border: 'none',
+            borderBottom: '1px solid var(--kolor-hairline)',
+            fontFamily: 'Inter, sans-serif',
+            fontSize: '14px',
+            color: 'var(--kolor-ink)',
+            outline: 'none',
+          }}
+          onFocus={(e) => {
+            ;(e.currentTarget as HTMLInputElement).style.borderBottomColor = 'var(--kolor-terra)'
+          }}
+          onBlur={(e) => {
+            ;(e.currentTarget as HTMLInputElement).style.borderBottomColor = 'var(--kolor-hairline)'
+          }}
         />
-        <span className="text-[9px] text-[var(--text-tertiary)] self-center tabular-nums">{input.length}/300</span>
+        <span
+          style={{
+            fontFamily: 'var(--font-mono, "Space Mono", monospace)',
+            fontSize: '9px',
+            fontWeight: 500,
+            letterSpacing: '0.18em',
+            color: 'var(--kolor-ink-subtle)',
+          }}
+        >
+          {input.length}/300
+        </span>
         {input.trim() && (
-          <button onClick={handleSubmit} disabled={posting}
+          <button
+            onClick={handleSubmit}
+            disabled={posting}
             data-testid="comment-submit"
-            className="text-xs font-semibold px-3 py-2 rounded-lg text-white flex-shrink-0"
-            style={{ background: '#6C2EDB' }}>
-            {posting ? '...' : 'Post'}
+            style={{
+              padding: '8px 14px',
+              background: 'transparent',
+              border: '1px solid var(--kolor-terra)',
+              borderRadius: '2px',
+              fontFamily: 'var(--font-mono, "Space Mono", monospace)',
+              fontSize: '9px',
+              fontWeight: 500,
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: 'var(--kolor-terra)',
+              cursor: posting ? 'wait' : 'pointer',
+            }}
+          >
+            {posting ? '…' : 'Post'}
           </button>
         )}
       </div>

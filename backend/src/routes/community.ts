@@ -449,14 +449,20 @@ router.get('/discover', authMiddleware, async (req: AuthRequest, res: Response):
 
 // ─── DMs ──────────────────────────────────────────────────────────────────
 
-// GET /api/community/dms
+// GET /api/community/dms?filter=requests
 router.get('/dms', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
     if (!profile) { res.json({ threads: [] }); return }
 
+    const filter = req.query.filter as string | undefined
+    const statusFilter = filter === 'requests' ? 'PENDING' : 'ACCEPTED'
+
     const threads = await prisma.dMThread.findMany({
-      where: { OR: [{ participantA: profile.id }, { participantB: profile.id }] },
+      where: {
+        OR: [{ participantA: profile.id }, { participantB: profile.id }],
+        status: statusFilter,
+      },
       orderBy: { updatedAt: 'desc' },
       include: {
         messages: { orderBy: { sentAt: 'desc' }, take: 1 },
@@ -473,6 +479,8 @@ router.get('/dms', authMiddleware, async (req: AuthRequest, res: Response): Prom
 })
 
 // POST /api/community/dms/:userId — start or get thread
+// iter 287-v3b Q93=C: if the two participants have mutual follows, new
+// thread starts ACCEPTED. Otherwise it starts PENDING (request-to-message).
 router.post('/dms/:userId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     let myProfile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
@@ -482,13 +490,149 @@ router.post('/dms/:userId', authMiddleware, async (req: AuthRequest, res: Respon
     if (!theirProfile) { res.status(404).json({ error: 'Profile not found' }); return }
 
     const [a, b] = [myProfile.id, theirProfile.id].sort()
-    const thread = await prisma.dMThread.upsert({
+
+    const existing = await prisma.dMThread.findUnique({
       where: { participantA_participantB: { participantA: a, participantB: b } },
-      update: {},
-      create: { participantA: a, participantB: b },
+    })
+    if (existing) {
+      res.json({ thread: existing, myProfileId: myProfile.id })
+      return
+    }
+
+    // Mutual-follow check: only ACCEPTED if both follow each other
+    const [aFollowsB, bFollowsA] = await Promise.all([
+      prisma.follow.findUnique({ where: { followerId_followingId: { followerId: myProfile.id, followingId: theirProfile.id } } }),
+      prisma.follow.findUnique({ where: { followerId_followingId: { followerId: theirProfile.id, followingId: myProfile.id } } }),
+    ])
+    const initialStatus = aFollowsB && bFollowsA ? 'ACCEPTED' : 'PENDING'
+
+    const thread = await prisma.dMThread.create({
+      data: { participantA: a, participantB: b, status: initialStatus },
     })
     res.json({ thread, myProfileId: myProfile.id })
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
+})
+
+// PATCH /api/community/dms/:threadId/accept — promote PENDING to ACCEPTED
+router.patch('/dms/:threadId/accept', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
+    if (!profile) { res.status(403).json({ error: 'No profile' }); return }
+
+    const threadId = req.params.threadId as string
+    const thread = await prisma.dMThread.findUnique({ where: { id: threadId } })
+    if (!thread) { res.status(404).json({ error: 'Thread not found' }); return }
+    if (thread.participantA !== profile.id && thread.participantB !== profile.id) {
+      res.status(403).json({ error: 'Not a participant' }); return
+    }
+
+    const updated = await prisma.dMThread.update({
+      where: { id: threadId },
+      data: { status: 'ACCEPTED' },
+    })
+    res.json({ thread: updated })
+  } catch (e) { res.status(500).json({ error: 'Failed' }) }
+})
+
+// DELETE /api/community/dms/:threadId — dismiss a PENDING request
+router.delete('/dms/:threadId', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
+    if (!profile) { res.status(403).json({ error: 'No profile' }); return }
+
+    const threadId = req.params.threadId as string
+    const thread = await prisma.dMThread.findUnique({ where: { id: threadId } })
+    if (!thread) { res.status(404).json({ error: 'Thread not found' }); return }
+    if (thread.participantA !== profile.id && thread.participantB !== profile.id) {
+      res.status(403).json({ error: 'Not a participant' }); return
+    }
+
+    await prisma.dMThread.delete({ where: { id: threadId } })
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: 'Failed' }) }
+})
+
+// GET /api/community/shots/:id — shot detail data
+// iter 287-v3b — feeds ShotDetail.tsx composed page
+router.get('/shots/:id', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const shotId = req.params.id as string
+    const shot = await prisma.post.findUnique({
+      where: { id: shotId },
+      include: {
+        author: {
+          select: {
+            id: true, userId: true, handle: true, bio: true, city: true, availability: true,
+            user: { select: { firstName: true, lastName: true, primaryIndustry: true, industry: true } },
+          },
+        },
+        _count: { select: { likes: true, comments: true } },
+      },
+    })
+    if (!shot) { res.status(404).json({ error: 'Shot not found' }); return }
+
+    const viewerProfile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
+    const viewerProfileId = viewerProfile?.id
+
+    const [isFollowing, hasAppreciated, comments, peerSuggestions] = await Promise.all([
+      viewerProfileId
+        ? prisma.follow.findUnique({
+            where: { followerId_followingId: { followerId: viewerProfileId, followingId: shot.authorId } },
+          }).then((f) => !!f)
+        : Promise.resolve(false),
+      viewerProfileId
+        ? prisma.postLike.findUnique({
+            where: { userId_postId: { userId: viewerProfileId, postId: shotId } },
+          }).then((l) => !!l)
+        : Promise.resolve(false),
+      prisma.comment.findMany({
+        where: { postId: shotId, isDeleted: false, parentCommentId: null },
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+        include: {
+          author: {
+            select: {
+              id: true, handle: true, city: true,
+              user: { select: { firstName: true, lastName: true, primaryIndustry: true } },
+            },
+          },
+        },
+      }),
+      prisma.peerSuggestion.findMany({
+        where: { fromProfileId: shot.authorId, dismissedAt: null },
+        orderBy: { score: 'desc' },
+        take: 3,
+        include: {
+          toProfile: {
+            select: {
+              id: true, handle: true, city: true,
+              user: { select: { firstName: true, lastName: true, primaryIndustry: true } },
+              posts: {
+                where: { hiddenFromGrid: false, mainImage: { not: null } },
+                orderBy: { createdAt: 'desc' },
+                take: 1,
+                select: { id: true, mainImage: true },
+              },
+            },
+          },
+        },
+      }),
+    ])
+
+    res.json({
+      shot,
+      isFollowing,
+      hasAppreciated,
+      likesCount: shot._count.likes,
+      commentsCount: shot._count.comments,
+      comments,
+      peerSuggestions,
+      viewerProfileId,
+    })
+  } catch (e) {
+    console.error('[COMMUNITY] Shot detail error:', e)
+    res.status(500).json({ error: 'Failed' })
+  }
 })
 
 // GET /api/community/dms/:threadId/messages?after=
