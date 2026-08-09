@@ -1890,7 +1890,61 @@ Two additive polish iterations bundled into one commit. Both close suggestion lo
 - Email: bookingtest@test.com
 - Password: password123
 
-### iter 287-v3c2b (Feb 2026) — DM Requests UI + Messages Dot + Portfolio External Links
+### iter 288-v3 (Feb 2026) — Algorithmic Featured Content + Digest Visual Template + Polish (ARC CLOSER)
+**Visual-first Community redesign arc: CLOSED.** All 7 retention features live end-to-end. Ships algorithmic Featured Work + Creators of Week crons populating iter 287-v3a's empty-graceful `FeaturedBanner` + `CreatorsOfWeekRail`. Rewrites weekly digest email to visual-first pattern with embedded images. Refines peer suggestion algorithm with appreciation overlap signal. Adds DM request notifications to bell dropdown. Adds per-shot removal to collection detail.
+
+**Backend crons + scheduler**
+- `services/featuredWorkCron.ts` — Sun 4:00am UTC. Top shot per industry (PHOTOGRAPHY/DESIGN/FINE_ART) by composite (likes 1.0 + comments 1.5 + author-follower-log 3.0). 30-day selection window, 4-week freshness rotation. Synthetic authors excluded — banner stays empty-graceful until real signal. Upserts on `[industry, featuredWeek]` unique index.
+- `services/featuredCreatorCron.ts` — Sun 4:15am UTC. Top creator per industry by velocity + engagement + follower-growth composite (engagement 2.0 + followerGrowth 3.0 + velocity 1.5). 14-day window, 2-week freshness rotation. Synthetic + private profiles excluded.
+- `services/peerSuggestionGenerator.ts` — Existing iter 286 generator extended with appreciation overlap signal (weight 0.3, capped at 10 common creators per candidate). Precomputes per-profile like footprint once per run. Reason code `APPRECIATION_OVERLAP` surfaces alongside existing signals.
+- `scheduler.ts` — Added Sun 4:00am UTC Featured Work slot (adjacent to existing peer suggestion), Sun 4:15am UTC Featured Creators slot. `ENABLE_SCHEDULER` env guard preserved.
+
+**Backend notifications**
+- Schema: `NotificationType` enum + `DM_REQUEST_RECEIVED` value
+- Migration `20260809000000_iter288v3_dm_request_notification`: single `ALTER TYPE ADD VALUE` (non-destructive, applied via `migrate deploy` — 0 NOT NULL, 0 DROP)
+- Notification helper type union extended
+- DMThread creation flow hooked: when `initialStatus === 'PENDING'`, `createNotification(recipient, 'DM_REQUEST_RECEIVED')` fires with `fromUserId` + `threadId` metadata (non-blocking)
+
+**Backend email — visual-first digest rewrite**
+- Featured section: embedded `mainImage` (560px) + industry eyebrow + Fraunces italic pull-quote content + creator name + optional curator note
+- New "This week in the studio" section: 6-shot 2-column HTML-table grid (email-safe, 270px images). Top-6 selected in `communityDigestGenerator.assembleDigestData` by last-7-days engagement (likes + comments*1.5), excluding shots in Featured section.
+- Featured Creators section: hero shot embedded (creator's most recent visible post) + name + industry meta + bio
+- Sections hide gracefully when data absent (no "No featured work this week" placeholder text). Editorial voice + typography preserved (Fraunces italic + Courier mono + Ink palette).
+
+**Frontend**
+- `Dashboard.tsx` — NotificationBell dropdown gained `DM_REQUEST_RECEIVED` label ("→ sent you a message request") + routes click to Community Messages tab (user sees REQUESTS pill in DMView filter)
+- `CollectionDetail.tsx` — Per-shot REMOVE overlay button (owner-only, hover-reveal top-right of masonry tile). Ghost mono Terra 10px 0.28em with backdrop-blur canvas tint. Click → native confirm → optimistic delete → Sonner UNDO toast (5s) with restore via `POST /collections/:id/items`. Failure rollback preserves grid state.
+
+**Data verification (STEP 11 dry-run against Supabase)**
+- Featured Work: 0/3 industries populated (production filter `isSynthetic=false` correctly excludes all 150 synthetic-authored candidates). Ranking algorithm validated against synthetic data — 56 PHOTOGRAPHY / 51 DESIGN / 39 FINE_ART candidates score with valid distribution. Banner stays empty-graceful until real signal arrives.
+- Featured Creators: 0/3 industries populated for same reason.
+- Peer Suggestion: 1 suggestion generated across 2 real profiles. Appreciation overlap signal wired without regression.
+
+All 19 receipt checks PASS. Backend TSC + build clean, frontend cold-cache build clean (7.02s). 11 files changed, +524/-34. Local commit `cd2c5e1`. Push blocked → Save to GitHub.
+
+**Retention feature status at end of iter 288-v3 — ALL 7 FULLY LIVE END-TO-END**
+1. Collections — save + browse + per-shot removal
+2. Public Profile Pages — with edit mode
+3. Featured Work Rotation — algorithmic weekly cron
+4. Search + Directory — Shots + Designer browse + sub-chip filter
+5. Weekly Digest Email — visual-first template with embedded images
+6. Peer Suggestions — appreciation overlap refinement
+7. Creators of the Week — algorithmic weekly cron
+
+**Visual-first Community redesign arc: CLOSED**
+iter 285-v3 → 286 → 286.5a → 286.5b → 287-v3a → 287-v3b → 287-v3c1 → 287-v3c2a → 287-v3c2b → 288-v3
+
+**Backlog (Feb 2026, post iter 288-v3)**
+- **P0**: Publish local commits `fafec2a` + `cd2c5e1` via Save to GitHub
+- **P1**: Public Portfolio full redesign to match Community v3 solidity (standalone iteration)
+- **P1**: Landing page positioning updates
+- **P2**: Onboarding "add your first shot" step
+- **P2**: Individual notification framework overhaul beyond bell `DM_REQUEST` wire
+- **P2**: `PostLike.userId` schema field rename cleanup (data-cleanup iteration)
+- **P2**: Marketing site SEO polish
+- **P2**: Phase 3
+
+## 3rd Party Integrations
 Closes iter 287-v3c after the v3c2a split and closes the entire iter 287 sub-arc. Ships remaining frontend surfaces for the visual-first Community redesign: DMView PENDING/ACCEPTED filter tabs consuming iter 287-v3b's request-to-message backend, Terra 6px dot indicator on Community Messages sub-nav for pending count, PublicPortfolio VISIT WEBSITE external link per Q59=A, and reciprocal COMMUNITY PROFILE link back to `/creator/:handle`. **DMView.tsx**: MESSAGES/REQUESTS filter tabs at top of inbox (mono UPPERCASE 11px, letter-spacing 0.28em, active Terra 1px bottom-border, inactive Ink Subtle). REQUESTS tab shows Terra-tint count pill when `pendingCount > 0`. REQUESTS mode fetches `?filter=requests` and renders PENDING thread rows with ghost Terra ACCEPT + ghost Ink DISMISS buttons (mono 10px 0.28em, 2px radius) instead of a click-to-open chevron. Preview text dimmed to `--kolor-ink-muted` on request rows. Existing conversation view untouched. Sonner toasts on ACCEPT/DISMISS. **Dashboard.tsx**: Messages sub-nav Terra 6px dot indicator when `pendingDMCount > 0`. Presence over count per editorial restraint (Q86). ARIA label surfaces count for a11y. 60s interval refresh + refetch on communityTab change. **PublicPortfolio.tsx**: VISIT WEBSITE ghost mono Terra CTA (renders when `user.website` exists) with URL normalization + `target=_blank rel=noopener`. Reciprocal small COMMUNITY PROFILE ghost mono Ink Muted text link back to `/creator/:handle` (renders when `user.communityHandle` exists). Hover darkens to full Ink. iter 282c calibration preserved. **Backend**: `GET /api/community/dms/pending-count` — 14-line endpoint powering Messages sub-nav dot indicator; counts PENDING threads where authed user is either participantA or participantB, returns `{ count }`. `GET /api/portfolio/public/:userId` extended user Prisma select to include `website` + `communityProfile.handle`. Response now exposes `user.website` and `user.communityHandle` (nullable). All 19 receipt checks PASS. Backend TSC + build clean, frontend cold-cache build 7.45s clean. 5 files changed, +321/-37. Local commit `fafec2a`. Push blocked → Save to GitHub.
 
 **iter 287 sub-arc: CLOSED**
