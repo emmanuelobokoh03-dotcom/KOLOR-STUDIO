@@ -50,6 +50,28 @@ export function startScheduler(): void {
     }
   });
 
+  // ── iter 288-v3 — Algorithmic Featured Work rotation (Sunday 04:00 UTC) ──
+  cron.schedule('0 4 * * 0', async () => {
+    console.log('[Scheduler] Running weekly Featured Work rotation...');
+    try {
+      const { generateWeeklyFeaturedWork } = await import('./services/featuredWorkCron');
+      await generateWeeklyFeaturedWork();
+    } catch (err: any) {
+      console.error('[Scheduler] Featured Work rotation failed:', err.message);
+    }
+  });
+
+  // ── iter 288-v3 — Algorithmic Featured Creators rotation (Sunday 04:15 UTC) ──
+  cron.schedule('15 4 * * 0', async () => {
+    console.log('[Scheduler] Running weekly Featured Creators rotation...');
+    try {
+      const { generateWeeklyFeaturedCreators } = await import('./services/featuredCreatorCron');
+      await generateWeeklyFeaturedCreators();
+    } catch (err: any) {
+      console.error('[Scheduler] Featured Creators rotation failed:', err.message);
+    }
+  });
+
   // ── iter 286 — Community digest hourly check (fires when creator's local time = Sun 8am) ──
   cron.schedule('0 * * * *', async () => {
     try {
@@ -60,7 +82,7 @@ export function startScheduler(): void {
     }
   });
 
-  console.log('[Scheduler] Started — daily 9am UTC + Monday 8am UTC + Sunday 4am UTC peer suggestions + hourly community digest');
+  console.log('[Scheduler] Started — daily 9am UTC + Monday 8am UTC + Sunday 4am UTC (peer + featured work) + 4:15am UTC (featured creators) + hourly community digest');
 }
 
 // ── JOB FUNCTIONS ──

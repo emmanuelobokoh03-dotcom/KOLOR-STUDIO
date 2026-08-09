@@ -68,6 +68,38 @@ export default function CollectionDetail() {
     if (res.ok) { toast.success('Collection deleted'); navigate('/community/collections') }
   }
 
+  // iter 288-v3 — per-shot removal from collection (owner-only)
+  const handleRemoveItem = async (postId: string) => {
+    const item = items.find((it: any) => it.post?.id === postId)
+    if (!item) return
+    const prevItems = [...items]
+    // Optimistic update
+    setData({ ...data, items: items.filter((it: any) => it.post?.id !== postId) })
+    const res = await fetch(`${API}/api/collections/${data.id}/items/${postId}`, {
+      method: 'DELETE', credentials: 'include'
+    })
+    if (!res.ok) {
+      setData({ ...data, items: prevItems })
+      toast.error('Could not remove shot')
+      return
+    }
+    toast.success('Removed from collection', {
+      action: {
+        label: 'UNDO',
+        onClick: async () => {
+          const undoRes = await fetch(`${API}/api/collections/${data.id}/items`, {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ postId }),
+          })
+          if (undoRes.ok) { setData({ ...data, items: prevItems }); toast.success('Restored') }
+          else toast.error('Could not restore')
+        }
+      },
+      duration: 5000,
+    })
+  }
+
   return (
     <div data-testid="collection-detail" style={{ minHeight: '100vh', background: 'var(--kolor-canvas)' }}>
       <header style={hdrStyle}>
@@ -102,7 +134,38 @@ export default function CollectionDetail() {
           ) : (
             <div className="cd-masonry" style={{ columnCount: 3, columnGap: '16px' }}>
               {items.filter((it: any) => it.post?.mainImage).map((it: any) => (
-                <ShotTile key={it.post.id} shot={{ id: it.post.id, mainImage: it.post.mainImage, content: it.post.content, industry: it.post.industry, author: it.post.author, _count: it.post._count }} onClick={(pid) => navigate(`/shot/${pid}`)} />
+                <div key={it.post.id} style={{ position: 'relative', display: 'inline-block', width: '100%', marginBottom: '16px', breakInside: 'avoid' }} className="cd-item">
+                  <ShotTile shot={{ id: it.post.id, mainImage: it.post.mainImage, content: it.post.content, industry: it.post.industry, author: it.post.author, _count: it.post._count }} onClick={(pid) => navigate(`/shot/${pid}`)} />
+                  {isOwner && (
+                    <button
+                      className="cd-remove"
+                      data-testid={`remove-shot-${it.post.id}`}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (confirm(`Remove this shot from "${data.name}"?`)) handleRemoveItem(it.post.id)
+                      }}
+                      style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                        padding: '6px 10px',
+                        background: 'rgba(247, 244, 238, 0.94)',
+                        border: '1px solid var(--kolor-terra)',
+                        borderRadius: '2px',
+                        color: 'var(--kolor-terra)',
+                        fontFamily: 'var(--font-mono, "Space Mono", monospace)',
+                        fontSize: '10px',
+                        fontWeight: 500,
+                        letterSpacing: '0.28em',
+                        textTransform: 'uppercase',
+                        cursor: 'pointer',
+                        opacity: 0,
+                        transition: 'opacity 150ms ease',
+                        backdropFilter: 'blur(4px)',
+                      }}
+                    >Remove</button>
+                  )}
+                </div>
               ))}
             </div>
           )}
@@ -111,6 +174,7 @@ export default function CollectionDetail() {
       <style>{`
         @media (max-width: 900px) { .cd-masonry { column-count: 2 !important; } }
         @media (max-width: 560px) { .cd-masonry { column-count: 1 !important; } }
+        .cd-item:hover .cd-remove, .cd-item:focus-within .cd-remove { opacity: 1; }
       `}</style>
     </div>
   )

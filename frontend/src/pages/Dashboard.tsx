@@ -922,6 +922,7 @@ const Dashboard = () => {
                           POST_LIKED: '♥ liked your post',
                           POST_COMMENTED: '○ commented on your post',
                           DM_RECEIVED: '→ sent you a message',
+                          DM_REQUEST_RECEIVED: '→ sent you a message request',
                           NEW_FOLLOWER: '+ started following you',
                         }
                         return (
@@ -930,7 +931,11 @@ const Dashboard = () => {
                             onClick={() => {
                               const API_URL = (import.meta as any).env?.VITE_API_URL || ''
                               handleViewChange('community')
-                              setCommunityTab(n.type === 'DM_RECEIVED' ? 'dms' : 'feed')
+                              if (n.type === 'DM_RECEIVED' || n.type === 'DM_REQUEST_RECEIVED') {
+                                setCommunityTab('dms')
+                              } else {
+                                setCommunityTab('feed')
+                              }
                               setShowBellDropdown(false)
                               fetch(`${API_URL}/api/community/notifications/read`, {
                                 method: 'PATCH', credentials: 'include'

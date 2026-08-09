@@ -16,7 +16,7 @@ const prisma = new PrismaClient()
 // ─── Notification helper ───────────────────────────────────────────────────
 async function createNotification(
   recipientId: string,
-  type: 'POST_LIKED' | 'POST_COMMENTED' | 'DM_RECEIVED' | 'NEW_FOLLOWER',
+  type: 'POST_LIKED' | 'POST_COMMENTED' | 'DM_RECEIVED' | 'NEW_FOLLOWER' | 'DM_REQUEST_RECEIVED',
   meta: {
     postId?: string
     commentId?: string
@@ -538,6 +538,17 @@ router.post('/dms/:userId', authMiddleware, async (req: AuthRequest, res: Respon
     const thread = await prisma.dMThread.create({
       data: { participantA: a, participantB: b, status: initialStatus },
     })
+
+    // iter 288-v3: notify the recipient of a PENDING message request
+    if (initialStatus === 'PENDING') {
+      // The message request goes to the OTHER participant (theirProfile),
+      // sent BY the current user (myProfile).
+      createNotification(theirProfile.id, 'DM_REQUEST_RECEIVED', {
+        fromUserId: myProfile.id,
+        threadId: thread.id,
+      }).catch((err) => console.error('[NOTIFICATION] DM_REQUEST_RECEIVED failed:', err))
+    }
+
     res.json({ thread, myProfileId: myProfile.id })
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
 })

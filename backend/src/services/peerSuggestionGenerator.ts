@@ -43,6 +43,25 @@ export async function generateWeeklyPeerSuggestions(): Promise<{
     },
   });
 
+  // iter 288-v3 refinement — Precompute per-profile appreciation footprint
+  // (set of profileIds whose posts this profile has liked). Used to score
+  // "you both appreciate the same creators" as a soft affinity signal.
+  const appreciationFootprints = new Map<string, Set<string>>();
+  const appreciationRows = await prisma.postLike.findMany({
+    select: {
+      userId: true,
+      post: { select: { authorId: true } },
+    },
+  });
+  for (const row of appreciationRows) {
+    if (!row.post || !row.post.authorId) continue;
+    if (row.post.authorId === row.userId) continue; // self-likes irrelevant
+    if (!appreciationFootprints.has(row.userId)) {
+      appreciationFootprints.set(row.userId, new Set());
+    }
+    appreciationFootprints.get(row.userId)!.add(row.post.authorId);
+  }
+
   let totalSuggestions = 0;
 
   for (const profile of realProfiles) {
@@ -93,6 +112,24 @@ export async function generateWeeklyPeerSuggestions(): Promise<{
 
       if (candidate.posts.length > 0) {
         score += SCORING_WEIGHTS.RECENT_ACTIVITY;
+      }
+
+      // iter 288-v3 refinement — appreciation overlap.
+      // People whose taste we both share (measured by common creators we
+      // both liked) tend to feel like peers. Overlap capped at 10 to avoid
+      // any one super-liker dominating the signal.
+      const myFootprint = appreciationFootprints.get(profile.id);
+      const theirFootprint = appreciationFootprints.get(candidate.id);
+      if (myFootprint && theirFootprint && myFootprint.size > 0 && theirFootprint.size > 0) {
+        let overlap = 0;
+        for (const authorId of myFootprint) {
+          if (theirFootprint.has(authorId)) overlap++;
+          if (overlap >= 10) break;
+        }
+        if (overlap > 0) {
+          score += SCORING_WEIGHTS.APPRECIATION_OVERLAP * overlap;
+          reasons.push('APPRECIATION_OVERLAP');
+        }
       }
 
       if (score > 0) {

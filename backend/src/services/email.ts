@@ -3846,6 +3846,7 @@ interface CommunityDigestData {
   featuredWork: any[];
   featuredCreators: any[];
   milestones: any[];
+  topShots?: any[];
   activity: {
     newFollowers: number;
     unreadDMs: number;
@@ -3864,7 +3865,7 @@ export async function sendCommunityWeeklyDigestEmail(params: {
   if (!SENDER_EMAIL) return false;
 
   const { email, digestData } = params;
-  const { featuredWork, featuredCreators, milestones, activity, weekOf } = digestData;
+  const { featuredWork, featuredCreators, milestones, topShots, activity, weekOf } = digestData;
   void params.firstName;
 
   const weekOfFmt = weekOf.toLocaleDateString('en-GB', {
@@ -3873,30 +3874,75 @@ export async function sendCommunityWeeklyDigestEmail(params: {
     year: 'numeric',
   });
 
+  // iter 288-v3 — Visual-first template: embed mainImage in featured + grid sections
   const featuredWorkHTML = featuredWork.length > 0
     ? featuredWork.map((f) => {
-        const creator = f.post.author.user;
-        const creatorName = `${creator.firstName || ''} ${creator.lastName || ''}`.trim() || 'A creator';
-        return highlightBox(`
-          <p style="margin: 0 0 8px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">${f.industry}</p>
-          <p style="margin: 0 0 8px 0; font-style: italic; font-size: 22px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">${escapeHtmlDigest(truncateDigest(f.post.content, 80))}</p>
-          <p style="margin: 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">${escapeHtmlDigest(creatorName)}</p>
-          ${f.curatorNote ? `<p style="margin: 16px 0 0 0; padding-left: 16px; border-left: 1px solid #E5E0D8; font-style: italic; font-size: 15px; line-height: 1.55; color: #5F5751; font-family: Georgia, serif;">${escapeHtmlDigest(f.curatorNote)}</p>` : ''}
-        `);
+        const creator = f.post.author?.user;
+        const creatorName = `${creator?.firstName || ''} ${creator?.lastName || ''}`.trim() || 'A creator';
+        const img = f.post.mainImage
+          ? `<img src="${escapeHtmlDigest(f.post.mainImage)}" width="560" alt="" style="display:block;width:100%;max-width:560px;height:auto;border-radius:2px;margin:0 0 20px 0;" />`
+          : '';
+        return `
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 32px 0;">
+            <tr><td>
+              ${img}
+              <p style="margin:0 0 8px 0;font-size:10px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:#928B84;font-family:'Courier New',monospace;">${escapeHtmlDigest(f.industry)} · Featured</p>
+              <p style="margin:0 0 8px 0;font-style:italic;font-size:22px;line-height:1.2;color:#1A1613;font-family:Georgia,serif;">${escapeHtmlDigest(truncateDigest(f.post.content, 80))}</p>
+              <p style="margin:0;font-size:10px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:#928B84;font-family:'Courier New',monospace;">${escapeHtmlDigest(creatorName)}</p>
+              ${f.curatorNote ? `<p style="margin:16px 0 0 0;padding-left:16px;border-left:1px solid #E5E0D8;font-style:italic;font-size:15px;line-height:1.55;color:#5F5751;font-family:Georgia,serif;">${escapeHtmlDigest(f.curatorNote)}</p>` : ''}
+            </td></tr>
+          </table>
+        `;
       }).join('')
-    : '<p style="color: #928B84; font-style: italic;">No featured work this week.</p>';
+    : '';
+
+  // 6-shot 2-col visual grid (email-safe HTML table)
+  const shotsGrid = topShots && topShots.length > 0 ? (() => {
+    const rows: string[] = [];
+    for (let i = 0; i < topShots.length; i += 2) {
+      const left = topShots[i];
+      const right = topShots[i + 1];
+      const cell = (shot: any) => {
+        if (!shot) return '<td width="50%" style="padding:0 8px 24px;"></td>';
+        const c = shot.author?.user;
+        const cName = `${c?.firstName || ''} ${c?.lastName || ''}`.trim() || 'A creator';
+        return `
+          <td width="50%" valign="top" style="padding:0 8px 24px;">
+            <img src="${escapeHtmlDigest(shot.mainImage || '')}" width="270" alt="" style="display:block;width:100%;max-width:270px;height:auto;border-radius:2px;margin:0 0 12px 0;" />
+            <p style="margin:0 0 4px 0;font-style:italic;font-size:16px;line-height:1.25;color:#1A1613;font-family:Georgia,serif;">${escapeHtmlDigest(truncateDigest(shot.content || '', 60))}</p>
+            <p style="margin:0;font-size:9px;font-weight:500;letter-spacing:0.24em;text-transform:uppercase;color:#928B84;font-family:'Courier New',monospace;">${escapeHtmlDigest(cName)} · ${escapeHtmlDigest(shot.industry)}</p>
+          </td>
+        `;
+      };
+      rows.push(`<tr>${cell(left)}${cell(right)}</tr>`);
+    }
+    return `
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 -8px 24px;">
+        ${rows.join('')}
+      </table>
+    `;
+  })() : '';
 
   const featuredCreatorsHTML = featuredCreators.length > 0
     ? featuredCreators.map((fc) => {
         const c = fc.profile.user;
-        const cName = `${c.firstName || ''} ${c.lastName || ''}`.trim() || 'A creator';
-        return cardBlock(`
-          <p style="margin: 0 0 4px 0; font-style: italic; font-size: 18px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">${escapeHtmlDigest(cName)}</p>
-          <p style="margin: 0 0 8px 0; font-size: 9px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">${escapeHtmlDigest(fc.industry)} · ${escapeHtmlDigest(fc.profile.city || 'Independent')}</p>
-          ${fc.profile.bio ? `<p style="margin: 0; font-size: 14px; line-height: 1.6; color: #5F5751;">${escapeHtmlDigest(fc.profile.bio)}</p>` : ''}
-        `);
+        const cName = `${c?.firstName || ''} ${c?.lastName || ''}`.trim() || 'A creator';
+        const heroShot = fc.profile.posts?.[0];
+        const img = heroShot?.mainImage
+          ? `<img src="${escapeHtmlDigest(heroShot.mainImage)}" width="560" alt="" style="display:block;width:100%;max-width:560px;height:auto;border-radius:2px;margin:0 0 20px 0;" />`
+          : '';
+        return `
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 32px 0;">
+            <tr><td>
+              ${img}
+              <p style="margin:0 0 4px 0;font-style:italic;font-size:18px;line-height:1.2;color:#1A1613;font-family:Georgia,serif;">${escapeHtmlDigest(cName)}</p>
+              <p style="margin:0 0 8px 0;font-size:9px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:#928B84;font-family:'Courier New',monospace;">${escapeHtmlDigest(fc.industry)} · ${escapeHtmlDigest(fc.profile.city || 'Independent')}</p>
+              ${fc.profile.bio ? `<p style="margin:0;font-size:14px;line-height:1.6;color:#5F5751;">${escapeHtmlDigest(fc.profile.bio)}</p>` : ''}
+            </td></tr>
+          </table>
+        `;
       }).join('')
-    : '<p style="color: #928B84; font-style: italic;">No creators featured this week.</p>';
+    : '';
 
   const milestonesHTML = milestones.length > 0
     ? milestones.map((m) => {
@@ -3909,7 +3955,7 @@ export async function sendCommunityWeeklyDigestEmail(params: {
           </div>
         `;
       }).join('')
-    : '<p style="color: #928B84; font-style: italic;">No milestones celebrated this week.</p>';
+    : '';
 
   const activityHTML = `
     <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
@@ -3920,21 +3966,43 @@ export async function sendCommunityWeeklyDigestEmail(params: {
     </table>
   `;
 
+  // Section blocks — hide gracefully when empty
+  const featuredSection = featuredWorkHTML
+    ? `
+      <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Featured this week</h2>
+      <p style="margin: 0 0 24px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">Editor's picks.</p>
+      ${featuredWorkHTML}
+    ` : '';
+
+  const gridSection = shotsGrid
+    ? `
+      <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">This week in the studio</h2>
+      <p style="margin: 0 0 24px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">Six shots caught our eye.</p>
+      ${shotsGrid}
+    ` : '';
+
+  const creatorsSection = featuredCreatorsHTML
+    ? `
+      <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Creators of the week</h2>
+      <p style="margin: 0 0 24px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">Three creators to know.</p>
+      ${featuredCreatorsHTML}
+    ` : '';
+
+  const milestonesSection = milestonesHTML
+    ? `
+      <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Milestones celebrated</h2>
+      <p style="margin: 0 0 20px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">This week's moments.</p>
+      ${milestonesHTML}
+    ` : '';
+
   const bodyHTML = `
     <h1 style="margin: 0 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.32em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">The Studio · ${weekOfFmt}</h1>
     <p style="margin: 0 0 32px 0; font-style: italic; font-size: 20px; line-height: 1.35; color: #1A1613; font-family: Georgia, serif;">Your week in KOLOR Community.</p>
 
-    <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Featured this week</h2>
-    <p style="margin: 0 0 20px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">Three works worth returning to.</p>
-    ${featuredWorkHTML}
-
-    <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Creators of the week</h2>
-    <p style="margin: 0 0 20px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">Three creators to know.</p>
-    ${featuredCreatorsHTML}
-
-    <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Milestones celebrated</h2>
-    <p style="margin: 0 0 20px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">This week's moments.</p>
-    ${milestonesHTML}
+    ${featuredSection}
+    ${gridSection}
+    ${creatorsSection}
+    ${milestonesSection}
 
     <h2 style="margin: 40px 0 12px 0; font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #928B84; font-family: 'Courier New', monospace;">Your community activity</h2>
     <p style="margin: 0 0 20px 0; font-style: italic; font-size: 24px; line-height: 1.2; color: #1A1613; font-family: Georgia, serif;">This week for you.</p>
