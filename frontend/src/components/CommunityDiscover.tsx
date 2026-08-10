@@ -121,6 +121,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
         method: 'POST',
         credentials: 'include',
       })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       if (data?.thread?.id) {
         navigate(`/community/messages?thread=${data.thread.id}`)
