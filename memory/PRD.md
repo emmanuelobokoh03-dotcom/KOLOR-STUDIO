@@ -1890,7 +1890,37 @@ Two additive polish iterations bundled into one commit. Both close suggestion lo
 - Email: bookingtest@test.com
 - Password: password123
 
-### iter 289-v3c3a (Feb 2026) — Community v3 Structural Restoration Pass
+### iter 289-v3c3a.1 (Feb 2026) — Corrective Sub-Iteration for 4 Smoke-Test Failures
+Fixed four functional gaps that iter 289-v3c3a receipt + testing_agent PASS didn't catch. Discipline reinforced: **file receipt + shallow testing PASS ≠ functional PASS. Smoke tests remain load-bearing.**
+
+**STEP 0 diagnostic surfaced**
+- Fix #1: `/community/messages` route doesn't exist — Community lives inside Dashboard as `communityTab === 'dms'`. Discover MESSAGE button was navigating to a 404.
+- Fix #2: DM_REQUEST_RECEIVED hook + bell case both wired correctly from iter 288-v3, but zero rows existed because zero PENDING threads had ever been created. Data problem, not code.
+- Fix #3: `PeerSuggestionCards` returned `null` when empty, so the section eyebrow never rendered even when mounted. Zero `PeerSuggestion` rows exist. Also: `ShotDetail.onCreatorClick` routed to `/community/[handle]` (non-registered route).
+- Fix #4: `GET /api/collections/mine` + `GET /api/profiles/:handle/collections` did not include `items` in Prisma include, so `CollectionCard` rendered 4 empty preview cells.
+
+**Fixes**
+- **MESSAGE routing**: `CommunityDiscover.handleStartDM` navigates to `/dashboard?view=community&subtab=dms&thread=[id]`. `Dashboard.tsx` communityTab initializer reads `?subtab=` from URLSearchParams on mount. `DMView.tsx` new useEffect reads `?thread=X` and calls `setActiveThread` so MESSAGE opens conversation view directly.
+- **DM_REQUEST_RECEIVED bell**: NEW `scripts/seed-pending-dm-thread.ts` (135L, idempotent) seeds one PENDING DMThread Amara→Emmanuel with opening message + matching notification row. Bell entry + REQUESTS tab pill + Messages sub-nav dot all now exerciseable on Emmanuel's account without a second real login.
+- **Peer suggestions**: `PeerSuggestionCards` empty-graceful — renders section eyebrow "Creators like this one" + Fraunces italic paragraph "No suggestions just yet — check back after a few more people appreciate work in this space." when array empty. Grid renders only with data. `ShotDetail.onCreatorClick` routes to `/creator/[handle]`.
+- **CollectionCard preview**: `/mine` + `/:handle/collections` Prisma includes extended with `items: { take: 4, orderBy: addedAt desc, select: post.mainImage }` + `_count: items`. CollectionCard 2×2 preview + item count now populates correctly.
+
+**Testing (system_reminder mandated)**: testing_agent report `/app/test_reports/iteration_270.json` — 10/10 automated checks + code inspections PASS. Backend TSC + build clean, frontend build clean. Data verified via Prisma queries. Testing agent flagged seed script non-idempotency for notifications (accumulated 4 orphans across 3 re-runs) — patched via `notification.deleteMany` before create in follow-up commit `e6e0790` (idempotent count verified = 1). `retest_needed: false`.
+
+**Commits pending push**: `fafec2a`, `cd2c5e1`, `402c00c`, `4bba176`, `00b0b64`, `e6e0790` (6 commits waiting on Save-to-GitHub → Railway/Vercel redeploy).
+
+**Backlog (Feb 2026, post iter 289-v3c3a.1)**
+- **P0**: Publish 6 pending commits via Save to GitHub → Railway/Vercel redeploy → Emmanuel runs STEP 8 corrective smoke tests against `kolorstudio.app` (4 tests: MESSAGE routing, bell DM_REQUEST_RECEIVED, peer suggestions, CollectionCard preview)
+- **P1**: iter 289-v3c3b — calibration + polish + Dashboard.tsx file split. Sub-nav framework calibration, DMView avatars, Dashboard header (Community-scoped), sticky FilterChipBar, DMView thread cache, Discover search extension, share menu, sub-chip data seed, break 1870-line Dashboard.tsx into header + community-tabs + notification-bell modules. Estimated 3-4 hours.
+- **P1**: iter 290-Portfolio-v3 — Public Portfolio full redesign to match Community v3 solidity (standalone new arc)
+- **P2**: Populate `PeerSuggestion` table via cron/manual run so peer cards actually show creators (or seed test data). Currently 0 rows.
+- **P2**: Landing page positioning updates
+- **P2**: Onboarding "add your first shot" step
+- **P2**: `PostLike.userId` schema field rename cleanup
+- **P2**: Marketing site SEO polish
+- **P2**: Phase 3
+
+## 3rd Party Integrations
 Restored Community v3 discovery loop that iter 287-v3c and iter 288-v3 claimed shipped but didn't work end-to-end in production. **STEP 0 data-first diagnostic uncovered the root cause: all 42 `CommunityProfile` rows had `handle=null`**, so every `/creator/:handle` route resolved to 404 and every Discover card click hit the "no public handle yet" toast fallback. Prior iterations' file-existence receipts missed this because the schema field existed and the route was registered — the data layer was the gap.
 
 **Backfill** — `backend/scripts/backfill-community-profile-handles.ts` (45L): generates `handle` from `sanitize(firstName) + user.id.slice(-4)` (extended 8-char suffix on collision). Ran once against Supabase — 42 profiles updated, 0 remaining nulls. Examples: `amara-rkfg`, `chidi-hsj5`, `wanjiku-n1cj`.
