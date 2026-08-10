@@ -30,14 +30,15 @@ const INDUSTRY_LABELS: Record<string, string> = {
 
 // iter 287-v3b — 3-card peer suggestion display per Q70=C + Q86=A.
 // "Creators like this one" eyebrow, 4/3 hero shot preview per card,
-// Fraunces name + mono meta + ghost Terra FOLLOW. Renders null if empty
-// (graceful hide).
+// Fraunces name + mono meta + ghost Terra FOLLOW.
+// iter 289-v3c3a.1 — Empty-graceful: renders section eyebrow + placeholder
+// message when no suggestions exist rather than silently hiding.
 export default function PeerSuggestionCards({
   peerSuggestions,
   onCreatorClick,
   onFollowClick,
 }: PeerSuggestionCardsProps) {
-  if (!peerSuggestions || peerSuggestions.length === 0) return null
+  const isEmpty = !peerSuggestions || peerSuggestions.length === 0
 
   return (
     <section
@@ -61,6 +62,20 @@ export default function PeerSuggestionCards({
       >
         Creators like this one
       </p>
+      {isEmpty ? (
+        <p
+          data-testid="peer-empty-state"
+          style={{
+            fontFamily: '"Fraunces", Georgia, serif',
+            fontStyle: 'italic',
+            fontSize: '15px',
+            color: 'var(--kolor-ink-muted)',
+            margin: 0,
+          }}
+        >
+          No suggestions just yet — check back after a few more people appreciate work in this space.
+        </p>
+      ) : (
       <div
         style={{
           display: 'grid',
@@ -173,6 +188,7 @@ export default function PeerSuggestionCards({
           )
         })}
       </div>
+      )}
     </section>
   )
 }

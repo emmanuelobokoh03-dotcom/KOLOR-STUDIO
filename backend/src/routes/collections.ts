@@ -24,6 +24,15 @@ router.get('/mine', authMiddleware, async (req: AuthRequest, res: Response): Pro
     const collections = await prisma.collection.findMany({
       where: { ownerId: profileId },
       orderBy: { updatedAt: 'desc' },
+      // iter 289-v3c3a.1 — Include first 4 items for CollectionCard 2×2 preview
+      include: {
+        items: {
+          take: 4,
+          orderBy: { addedAt: 'desc' },
+          select: { post: { select: { mainImage: true } } },
+        },
+        _count: { select: { items: true } },
+      },
     });
     res.json({ collections });
   } catch (err: any) {

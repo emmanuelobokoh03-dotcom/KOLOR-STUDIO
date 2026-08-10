@@ -177,7 +177,11 @@ const Dashboard = () => {
   const [unreadNotifs, setUnreadNotifs] = useState(0)
   const [notifList, setNotifList] = useState<any[]>([])
   const [showBellDropdown, setShowBellDropdown] = useState(false)
-  const [communityTab, setCommunityTab] = useState<'feed' | 'discover' | 'dms'>('feed')
+  const [communityTab, setCommunityTab] = useState<'feed' | 'discover' | 'dms'>(() => {
+    // iter 289-v3c3a.1 — Deep-link: ?subtab=dms opens Messages tab directly
+    const sub = new URLSearchParams(window.location.search).get('subtab')
+    return sub === 'dms' || sub === 'discover' || sub === 'feed' ? sub : 'feed'
+  })
   const [pendingDMCount, setPendingDMCount] = useState(0)
   const [bookingLead, setBookingLead] = useState<Lead | null>(null)
   const [projectTypeFilter, setProjectTypeFilter] = useState<string>('')

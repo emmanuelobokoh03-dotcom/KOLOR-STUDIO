@@ -410,7 +410,7 @@ export default function ShotDetail() {
         <PeerSuggestionCards
           peerSuggestions={data.peerSuggestions}
           onCreatorClick={(profileId, handle) => {
-            if (handle) navigate(`/community/${handle}`)
+            if (handle) navigate(`/creator/${handle}`)
             else navigate(`/profile/${profileId}`)
           }}
         />

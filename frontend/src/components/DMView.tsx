@@ -79,6 +79,12 @@ export default function DMView() {
 
   useEffect(() => { fetchThreads(filterMode); fetchPendingCount() }, [fetchThreads, fetchPendingCount, filterMode])
 
+  // iter 289-v3c3a.1 — auto-open thread deep-link: /dashboard?view=community&subtab=dms&thread=X
+  useEffect(() => {
+    const threadParam = new URLSearchParams(window.location.search).get('thread')
+    if (threadParam && !activeThread) setActiveThread(threadParam)
+  }, [threads.length, activeThread])
+
   useEffect(() => {
     if (!activeThread) return
     lastTimestampRef.current = null

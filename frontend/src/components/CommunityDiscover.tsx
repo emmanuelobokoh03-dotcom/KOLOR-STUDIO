@@ -124,7 +124,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       if (data?.thread?.id) {
-        navigate(`/community/messages?thread=${data.thread.id}`)
+        navigate(`/dashboard?view=community&subtab=dms&thread=${data.thread.id}`)
       } else if (onStartDM) {
         // Fallback for legacy Dashboard consumer expecting the prop
         onStartDM(profileId)
