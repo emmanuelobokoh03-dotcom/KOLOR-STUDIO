@@ -1890,7 +1890,36 @@ Two additive polish iterations bundled into one commit. Both close suggestion lo
 - Email: bookingtest@test.com
 - Password: password123
 
-### iter 288-v3 (Feb 2026) — Algorithmic Featured Content + Digest Visual Template + Polish (ARC CLOSER)
+### iter 289-v3c3a (Feb 2026) — Community v3 Structural Restoration Pass
+Restored Community v3 discovery loop that iter 287-v3c and iter 288-v3 claimed shipped but didn't work end-to-end in production. **STEP 0 data-first diagnostic uncovered the root cause: all 42 `CommunityProfile` rows had `handle=null`**, so every `/creator/:handle` route resolved to 404 and every Discover card click hit the "no public handle yet" toast fallback. Prior iterations' file-existence receipts missed this because the schema field existed and the route was registered — the data layer was the gap.
+
+**Backfill** — `backend/scripts/backfill-community-profile-handles.ts` (45L): generates `handle` from `sanitize(firstName) + user.id.slice(-4)` (extended 8-char suffix on collision). Ran once against Supabase — 42 profiles updated, 0 remaining nulls. Examples: `amara-rkfg`, `chidi-hsj5`, `wanjiku-n1cj`.
+
+**Frontend restoration**
+- `CreatorBlock.tsx` — added `useNavigate` + `goToProfile` handler. Avatar div + Info div both clickable when `creator.handle` is set. Cursor:pointer conditional on handle presence. FOLLOW button retains its own onClick (no propagation issue — sibling grid cell). Hover-reveal-UNFOLLOW preserved.
+- `CommunityDiscover.tsx` — MESSAGE button `handleStartDM` now fires `POST /api/community/dms/:profileId` directly (existing find-or-create endpoint from iter 287-v3b), reads `data.thread.id`, navigates to `/community/messages?thread=[id]`. Adds `res.ok` guard (per testing-agent code-review note) + Sonner toast on failure. Button now renders regardless of `onStartDM` prop (always available). Legacy prop still respected as fallback.
+- `UserAvatarMenu.tsx` (NEW, 133L): top-right header avatar-with-dropdown. 32px circular avatar with Fraunces italic initial fallback on canvas-shade-1 + hairline. Matches NotificationBell dropdown visual style (canvas ivory bg, hairline border, 8px radius, subtle shadow, 8px padding). Two items — MY PROFILE (mono UPPERCASE 10px 0.24em, routes to `/creator/[own-handle]` fetched via `/api/community/profile/me` at mount, disabled with 0.4 opacity when handle absent) + MY COLLECTIONS (routes `/community/collections`). Outside-click closes.
+- `Dashboard.tsx` — imports `UserAvatarMenu`, renders it in the top-right header immediately before the notification-bell wrapper. No other header changes. DM_REQUEST_RECEIVED notification-bell case already present from iter 288-v3.
+
+**Backend — no changes required beyond backfill**
+- Existing `POST /api/community/dms/:userId` already had find-or-create semantics from iter 287-v3b (returns existing thread OR creates new with PENDING/ACCEPTED per mutual-follow check). Confirmed via code inspection at community.ts:510-555.
+- Shot detail endpoint already returns `author.handle` in the Prisma include (community.ts:605).
+- DMThread PENDING → `Notification.DM_REQUEST_RECEIVED` hook already wired from iter 288-v3 at community.ts:546. Not exercisable via data in this pod (0 PENDING threads exist), verified via code inspection.
+
+**Testing** — testing_agent iteration report `/app/test_reports/iteration_269.json` — 8/8 automated backend + code-wiring checks PASS. Zero null handles remain, GET /api/profiles/:handle returns 200 for backfilled handles + 404 for unknown, POST /dms/:userId returns 401 without auth (correct), all frontend wiring confirmed via code inspection. `retest_needed: false`. Testing agent flagged one defensive improvement (HTTP-error surfacing in handleStartDM) which was applied and shipped in follow-up commit `4bba176`.
+
+**Backlog (Feb 2026, post iter 289-v3c3a)**
+- **P0**: Publish local commits `fafec2a` + `cd2c5e1` + `402c00c` + `4bba176` via Save to GitHub → Railway/Vercel redeploy → user runs manual STEP 15 smoke-test checklist against production `kolorstudio.app`
+- **P1**: iter 289-v3c3b — calibration + polish. Sub-nav framework calibration, DMView avatars, Dashboard header calibration (Community-scoped), sticky FilterChipBar, DMView thread cache, Discover search extension (city + creator name + sub-chip), share menu, sub-chip data seed, wider global creator-name-click sweep across PeerSuggestionCards + DMView thread rows + ShotTile hover-name + CollectionCard + CollectionDetail owner attribution. Estimated 3-4 hours.
+- **P1**: iter 290-Portfolio-v3 — Public Portfolio full redesign to match Community v3 solidity (standalone new arc)
+- **P2**: Dashboard.tsx split — 1870 lines exceeds 700-line guideline (testing-agent code-review note)
+- **P2**: Landing page positioning updates
+- **P2**: Onboarding "add your first shot" step
+- **P2**: `PostLike.userId` schema field rename cleanup
+- **P2**: Marketing site SEO polish
+- **P2**: Phase 3
+
+## 3rd Party Integrations
 **Visual-first Community redesign arc: CLOSED.** All 7 retention features live end-to-end. Ships algorithmic Featured Work + Creators of Week crons populating iter 287-v3a's empty-graceful `FeaturedBanner` + `CreatorsOfWeekRail`. Rewrites weekly digest email to visual-first pattern with embedded images. Refines peer suggestion algorithm with appreciation overlap signal. Adds DM request notifications to bell dropdown. Adds per-shot removal to collection detail.
 
 **Backend crons + scheduler**

@@ -1,0 +1,28 @@
+{
+  "summary": "iter 289-v3c3a Community v3 Structural Restoration verified. Ran Prisma data checks + hit public GET endpoints on locally-spun kolor-studio-v2 backend (port 3001). All 42 CommunityProfile rows now have non-null handles, all matching /^[a-z0-9]+-[a-z0-9]{4,8}$/ (e.g. amara-rkfg, chidi-hsj5, wanjiku-n1cj). GET /api/profiles/:handle returns 200 with full payload (including handle amara-rkfg), /:handle/posts returns 200 with 4 posts, nonexistent handle returns 404, auth-gated /api/community/shots/:id and POST /api/community/dms/:userId both correctly return 401 without cookie. Code inspection confirms: shot detail endpoint Prisma include exposes author.handle (community.ts line 605); DM creation endpoint sets initialStatus ACCEPTED on mutual-follow else PENDING and fires createNotification(theirProfile.id,'DM_REQUEST_RECEIVED',...) at line 546; UserAvatarMenu.tsx has two dropdown items (My Profile→/creator/[handle] via /api/community/profile/me, My Collections→/community/collections) with proper data-testids; Dashboard.tsx imports UserAvatarMenu at line 25 and renders it at line 872 immediately before bell-wrapper div; DM_REQUEST_RECEIVED case at lines 928+937 shows '→ sent you a message request' label and routes to communityTab='dms'; CreatorBlock has useNavigate, goToProfile handler, onClick on both avatar and info divs, cursor:pointer conditional on creator.handle; CommunityDiscover handleStartDM POSTs /api/community/dms/${profileId} then navigates to /community/messages?thread=${data.thread.id}. All 8 automated checks passed, no failures.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/kolor-studio-v2/backend/tests/verify_iter289_v3c3a.js"],
+  "action_items": ["Deploy blocked in-pod (Save-to-GitHub disabled). User must push to trigger Railway/Vercel rollout so kolorstudio.app production reflects the fix. Local dev state is verified good."],
+  "critical_code_review_comments": [
+    "profiles.ts GET /:handle correctly returns 404 for isPublic=false AND missing rows — no info leak.",
+    "backfill script uses collision detection via findFirst before update — safe, deterministic given user.id suffix.",
+    "UserAvatarMenu correctly disables 'My Profile' when handle is null (opacity 0.4, not-allowed cursor) — good defensive UX in case a fresh profile without handle exists.",
+    "Dashboard.tsx is 1870 lines — beyond the 700-line guideline threshold. Consider splitting header, community tabs, and notification bell into separate components in a future iteration.",
+    "handleStartDM in CommunityDiscover catches thrown errors but does not surface HTTP-error responses (e.g., 401/404 return via res.json() but no res.ok check). Consider adding `if (!res.ok) throw new Error()` before parsing to avoid silent broken UI when a non-JSON error slips in."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "skipped-per-request"},
+  "seed_data_creation": "None; used existing backfilled CommunityProfile rows.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend runs on port 3001 via `cd /app/kolor-studio-v2/backend && export DATABASE_URL=$(grep '^DATABASE_URL=' .env | cut -d= -f2- | tr -d '\"') && PORT=3001 npm run start &`. Reusable data+endpoint verifier at /app/kolor-studio-v2/backend/tests/verify_iter289_v3c3a.js. Public GET /api/profiles/:handle does not require auth; example real handles: amara-rkfg, chidi-hsj5, wanjiku-n1cj. Auth-gated community endpoints require session cookie which is not obtainable in-pod, so integration for DM_REQUEST_RECEIVED notification firing was validated via code inspection only.",
+  "rca of the issue": "Root cause of the original bug (per E1's report) was that all 42 CommunityProfile rows had handle=null, making /creator/:handle unreachable and CreatorBlock unable to build a link target. Fix applied: backfill-community-profile-handles.ts sanitizes user.firstName + appends user.id.slice(-4) to produce deterministic unique handles; frontend wiring added onClick+useNavigate on CreatorBlock, POST-then-navigate flow on CommunityDiscover MESSAGE button, and a new UserAvatarMenu in Dashboard header that fetches own handle via /api/community/profile/me before enabling the My Profile link. Verified end-to-end at data + endpoint + code-wiring layers."
+}
