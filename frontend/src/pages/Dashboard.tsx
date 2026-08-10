@@ -22,6 +22,7 @@ import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
 import { Bell } from '@phosphor-icons/react/dist/csr/Bell'
+import UserAvatarMenu from '../components/community/UserAvatarMenu'
 import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
 import MobileBottomNav from '../components/MobileBottomNav'
@@ -867,6 +868,8 @@ const Dashboard = () => {
                 />
               </div>
             </div>
+              {/* iter 289-v3c3a — Avatar dropdown menu for Community navigation */}
+              <UserAvatarMenu firstName={user?.firstName} />
               {/* Notification bell — dropdown on tap (iter-228c) */}
               <div className="relative" data-testid="bell-wrapper">
                 <button

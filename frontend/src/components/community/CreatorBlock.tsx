@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const API = (import.meta as any).env?.VITE_API_URL || ''
 
@@ -46,6 +47,11 @@ export default function CreatorBlock({
   const [isFollowing, setIsFollowing] = useState(initialFollowing)
   const [hovered, setHovered] = useState(false)
   const [pending, setPending] = useState(false)
+  const navigate = useNavigate()
+
+  const goToProfile = () => {
+    if (creator.handle) navigate(`/creator/${creator.handle}`)
+  }
 
   const name = `${creator.user.firstName}${creator.user.lastName ? ' ' + creator.user.lastName : ''}`
   const initial = creator.user.firstName?.charAt(0).toUpperCase() || '?'
@@ -95,6 +101,8 @@ export default function CreatorBlock({
     >
       {/* Avatar */}
       <div
+        onClick={goToProfile}
+        data-testid="creator-block-avatar"
         style={{
           width: '64px',
           height: '64px',
@@ -108,13 +116,18 @@ export default function CreatorBlock({
           fontStyle: 'italic',
           fontSize: '28px',
           color: 'var(--kolor-ink)',
+          cursor: creator.handle ? 'pointer' : 'default',
         }}
       >
         {initial}
       </div>
 
       {/* Info */}
-      <div>
+      <div
+        onClick={goToProfile}
+        data-testid="creator-block-info"
+        style={{ cursor: creator.handle ? 'pointer' : 'default' }}
+      >
         <p
           style={{
             fontFamily: 'Inter, sans-serif',

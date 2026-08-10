@@ -113,10 +113,25 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
   }
 
   const handleStartDM = async (profileId: string) => {
-    if (dmInFlight.has(profileId) || !onStartDM) return
+    if (dmInFlight.has(profileId)) return
     setDmInFlight((prev) => new Set([...prev, profileId]))
     try {
-      onStartDM(profileId)
+      // iter 289-v3c3a — hit find-or-create so we route to a specific thread
+      const res = await fetch(`${API}/api/community/dms/${profileId}`, {
+        method: 'POST',
+        credentials: 'include',
+      })
+      const data = await res.json()
+      if (data?.thread?.id) {
+        navigate(`/community/messages?thread=${data.thread.id}`)
+      } else if (onStartDM) {
+        // Fallback for legacy Dashboard consumer expecting the prop
+        onStartDM(profileId)
+      } else {
+        toast.error('Could not start conversation')
+      }
+    } catch {
+      toast.error('Could not start conversation')
     } finally {
       setDmInFlight((prev) => {
         const next = new Set(prev)
@@ -402,7 +417,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
                       >
                         {followPending ? '…' : isFollowing ? 'Following' : 'Follow'}
                       </button>
-                      {onStartDM && (
+                      {onStartDM !== undefined || true ? (
                         <button
                           onClick={() => handleStartDM(p.id)}
                           disabled={dmPending}
@@ -424,7 +439,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
                         >
                           {dmPending ? '…' : 'Message'}
                         </button>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </div>
