@@ -68,6 +68,17 @@ async function main() {
     },
   });
 
+  // iter 289-v3c3a.1 testing-agent fix — also delete stale DM_REQUEST_RECEIVED
+  // notifications between the same pair so re-runs don't accumulate orphans
+  // pointing to deleted threadIds.
+  await prisma.notification.deleteMany({
+    where: {
+      recipientId: recipient.id,
+      type: 'DM_REQUEST_RECEIVED',
+      fromUserId: sender.id,
+    },
+  });
+
   const thread = await prisma.dMThread.create({
     data: {
       participantA: sender.id,
