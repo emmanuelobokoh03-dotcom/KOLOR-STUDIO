@@ -353,6 +353,7 @@ export default function ShotDetail() {
           onAppreciateToggle={handleAppreciate}
           onSaveClick={() => setSaveOpen(true)}
           shareUrl={shareUrl}
+          shareTitle={title || 'A shot on KOLOR'}
         />
 
         {/* Additional images gallery */}

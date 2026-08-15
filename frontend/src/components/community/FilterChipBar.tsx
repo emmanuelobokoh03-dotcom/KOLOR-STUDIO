@@ -26,7 +26,7 @@ export default function FilterChipBar({
       data-testid="filter-chip-bar"
       style={{
         position: 'sticky',
-        top: '80px',
+        top: 0,
         zIndex: 10,
         background: 'var(--kolor-canvas)',
         borderBottom: '1px solid var(--kolor-hairline)',

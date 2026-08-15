@@ -855,17 +855,55 @@ const Dashboard = () => {
 
             {/* Desktop greeting */}
             <div className="hidden lg:block">
-              <h1 className="text-[17px] font-extrabold tracking-[-0.015em] text-text-primary">
-                {getGreeting()}, {user?.firstName} <span style={{ color: '#a78bfa' }}>&#10022;</span>
-              </h1>
-              <p className="text-xs text-text-secondary">
-                {(() => {
-                  const awaitingCount = leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length
-                  if (awaitingCount > 0) return `${awaitingCount} ${awaitingCount === 1 ? lang.lead.toLowerCase() : lang.leads.toLowerCase()} awaiting ${lang.quotes.toLowerCase()}`
-                  if (leads.length === 0) return `Add your first ${lang.lead.toLowerCase()} to get started`
-                  return 'Welcome back to your studio'
-                })()} · {formatCurrentDate()}
-              </p>
+              {viewMode === 'community' ? (
+                <>
+                  {/* iter 289-v3c3b — Community-scoped framework calibration.
+                      Fraunces italic greeting + mono UPPERCASE meta line.
+                      Preserves default styling on all other views until the
+                      full Dashboard redesign lands. */}
+                  <h1 style={{
+                    fontFamily: 'Fraunces, serif',
+                    fontStyle: 'italic',
+                    fontWeight: 400,
+                    fontSize: '24px',
+                    color: 'var(--kolor-ink)',
+                    lineHeight: 1.15,
+                  }}>
+                    {getGreeting()}, {user?.firstName}{' '}
+                    <span style={{ color: 'var(--kolor-terra)', fontStyle: 'normal' }}>&#10022;</span>
+                  </h1>
+                  <p style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '10px',
+                    fontWeight: 500,
+                    letterSpacing: '0.24em',
+                    textTransform: 'uppercase',
+                    color: 'var(--kolor-ink-subtle)',
+                    marginTop: '4px',
+                  }}>
+                    {(() => {
+                      const awaitingCount = leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length
+                      if (awaitingCount > 0) return `${awaitingCount} ${awaitingCount === 1 ? lang.lead.toLowerCase() : lang.leads.toLowerCase()} awaiting ${lang.quotes.toLowerCase()}`
+                      if (leads.length === 0) return `Add your first ${lang.lead.toLowerCase()} to get started`
+                      return 'Welcome back to your studio'
+                    })()} · {formatCurrentDate()}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h1 className="text-[17px] font-extrabold tracking-[-0.015em] text-text-primary">
+                    {getGreeting()}, {user?.firstName} <span style={{ color: '#a78bfa' }}>&#10022;</span>
+                  </h1>
+                  <p className="text-xs text-text-secondary">
+                    {(() => {
+                      const awaitingCount = leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length
+                      if (awaitingCount > 0) return `${awaitingCount} ${awaitingCount === 1 ? lang.lead.toLowerCase() : lang.leads.toLowerCase()} awaiting ${lang.quotes.toLowerCase()}`
+                      if (leads.length === 0) return `Add your first ${lang.lead.toLowerCase()} to get started`
+                      return 'Welcome back to your studio'
+                    })()} · {formatCurrentDate()}
+                  </p>
+                </>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
@@ -1652,9 +1690,13 @@ const Dashboard = () => {
           </Suspense>
         ) : viewMode === 'community' ? (
           <div className="flex flex-col" data-testid="community-view" style={{ height: 'calc(100dvh - 64px)', overflow: 'hidden' }}>
+            {/* iter 289-v3c3b — sub-nav framework calibration: mono UPPERCASE
+                Terra pattern matching v3c2b MESSAGES/REQUESTS tabs. */}
             <div className="flex gap-0 border-b px-4 sticky top-0 z-10"
-              style={{ borderColor: 'var(--border)', background: 'var(--surface-base)' }}>
-              {(['feed', 'discover', 'dms'] as const).map(tab => (
+              style={{ borderColor: 'var(--kolor-hairline)', background: 'var(--kolor-canvas)' }}>
+              {(['feed', 'discover', 'dms'] as const).map(tab => {
+                const active = communityTab === tab
+                return (
                 <button key={tab} onClick={() => {
                   setCommunityTab(tab)
                   // iter 289-v3c3a.3 — Keep URL in sync with community sub-nav
@@ -1666,8 +1708,22 @@ const Dashboard = () => {
                   setSearchParams(next, { replace: true })
                 }}
                   data-testid={`community-tab-${tab}`}
-                  className="px-4 py-3 text-xs font-medium capitalize transition-colors relative"
-                  style={{ color: communityTab === tab ? '#6C2EDB' : 'var(--text-tertiary)' }}>
+                  className="relative"
+                  style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '11px',
+                    fontWeight: 500,
+                    letterSpacing: '0.28em',
+                    textTransform: 'uppercase',
+                    color: active ? 'var(--kolor-ink)' : 'var(--kolor-ink-subtle)',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: '14px 16px',
+                    cursor: 'pointer',
+                    borderBottom: active ? '1px solid var(--kolor-terra)' : '1px solid transparent',
+                    marginBottom: '-1px',
+                    transition: 'color 0.15s',
+                  }}>
                   {tab === 'dms' ? 'Messages' : tab.charAt(0).toUpperCase() + tab.slice(1)}
                   {tab === 'dms' && pendingDMCount > 0 && (
                     <span
@@ -1684,11 +1740,9 @@ const Dashboard = () => {
                       }}
                     />
                   )}
-                  {communityTab === tab && (
-                    <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#6C2EDB] rounded-full" />
-                  )}
                 </button>
-              ))}
+                )
+              })}
             </div>
             <div className="flex-1 overflow-y-auto">
               <Suspense fallback={<div className="flex justify-center py-12"><KolorSpinner size={28} /></div>}>

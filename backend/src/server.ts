@@ -84,6 +84,7 @@ import sequencesRoutes from './routes/sequences';
 import webhookRoutes from './routes/webhooks';
 import paymentRoutes from './routes/payments';
 import communityRoutes from './routes/community';
+import adminRoutes from './routes/admin';
 import collectionsRoutes from './routes/collections';
 import profilesRoutes from './routes/profiles';
 import featuredRoutes from './routes/featured';
@@ -286,6 +287,7 @@ app.use('/api/profiles', profilesRoutes);
 app.use('/api/featured', featuredRoutes);
 app.use('/api/peers', peersRoutes);
 app.use('/api/community-digest', communityDigestRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/waitlist', waitlistRoutes);
 app.use('/api/leads', activitiesRoutes); // Activities: /api/leads/:id/activities
 app.use('/api/leads', filesRoutes); // Files: /api/leads/:id/files

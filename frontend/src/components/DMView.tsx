@@ -24,7 +24,11 @@ function formatMessageTime(date: string): string {
 export default function DMView() {
   const [searchParams, setSearchParams] = useSearchParams()
   const threadParam = searchParams.get('thread')
-  const [threads, setThreads] = useState<any[]>([])
+  // iter 289-v3c3b — Per-filter thread cache. Tab switches between MESSAGES
+  // and REQUESTS were flashing empty because a single `threads` array was
+  // being cleared before the new mode's fetch resolved. Caching last-known
+  // threads per mode keeps the list rendered while background re-fetch runs.
+  const [threadCache, setThreadCache] = useState<Record<'messages' | 'requests', any[]>>({ messages: [], requests: [] })
   const [myProfileId, setMyProfileId] = useState<string | null>(null)
   const [activeThread, setActiveThread] = useState<string | null>(threadParam)
   const [messages, setMessages] = useState<any[]>([])
@@ -33,6 +37,7 @@ export default function DMView() {
   const [loading, setLoading] = useState(true)
   const [filterMode, setFilterMode] = useState<'messages' | 'requests'>('messages')
   const [pendingCount, setPendingCount] = useState(0)
+  const threads = threadCache[filterMode]
   const lastMsgRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -82,7 +87,7 @@ export default function DMView() {
         : `${API}/api/community/dms`
       const res = await fetch(url, { credentials: 'include' })
       const data = await res.json()
-      setThreads(data.threads || [])
+      setThreadCache(prev => ({ ...prev, [mode]: data.threads || [] }))
       setMyProfileId(data.myProfileId || null)
     } catch { /* silent */ }
     setLoading(false)
@@ -178,7 +183,10 @@ export default function DMView() {
         method: 'PATCH', credentials: 'include'
       })
       if (res.ok) {
-        setThreads(prev => prev.filter(t => t.id !== threadId))
+        setThreadCache(prev => ({
+          ...prev,
+          requests: prev.requests.filter(t => t.id !== threadId),
+        }))
         setPendingCount(c => Math.max(0, c - 1))
         toast.success('Message request accepted')
       }
@@ -192,7 +200,10 @@ export default function DMView() {
         method: 'DELETE', credentials: 'include'
       })
       if (res.ok) {
-        setThreads(prev => prev.filter(t => t.id !== threadId))
+        setThreadCache(prev => ({
+          ...prev,
+          requests: prev.requests.filter(t => t.id !== threadId),
+        }))
         setPendingCount(c => Math.max(0, c - 1))
         toast.success('Request dismissed')
       }
@@ -295,12 +306,27 @@ export default function DMView() {
             const rowContent = (() => {
               const other = thread.participantA === myProfileId ? thread.partB : thread.partA
               const name = other ? `${other.user?.firstName || ''} ${other.user?.lastName || ''}`.trim() : 'Community member'
-              const initials = name ? name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) : '?'
+              const initial = name ? name.trim().charAt(0).toUpperCase() : '?'
               return (
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
-                    style={{ background: '#6C2EDB' }}>
-                    {initials}
+                  {/* iter 289-v3c3b — Fraunces italic on canvas-shade-1 matching
+                      CreatorBlock (v3b) + NotificationBell (v3c3a) pattern. */}
+                  <div
+                    className="flex-shrink-0 flex items-center justify-center"
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      background: 'var(--kolor-canvas-shade-1)',
+                      border: '1px solid var(--kolor-hairline)',
+                      fontFamily: 'Fraunces, serif',
+                      fontStyle: 'italic',
+                      fontWeight: 400,
+                      fontSize: '18px',
+                      color: 'var(--kolor-ink)',
+                    }}
+                  >
+                    {initial}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">

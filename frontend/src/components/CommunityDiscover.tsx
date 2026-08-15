@@ -48,10 +48,13 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
   const [followingInFlight, setFollowingInFlight] = useState<Set<string>>(new Set())
   const [dmInFlight, setDmInFlight] = useState<Set<string>>(new Set())
 
-  const fetchProfiles = useCallback(async (ind: string, city: string, cur?: string | null) => {
+  const fetchProfiles = useCallback(async (ind: string, q: string, cur?: string | null) => {
     try {
       const params = new URLSearchParams({ industry: ind })
-      if (city.trim()) params.set('city', city.trim())
+      // iter 289-v3c3b — Discover search extended from city-only to compound
+      // search (creator name / city / sub-headline) via ?q param. Backend
+      // performs case-insensitive contains across all three fields.
+      if (q.trim()) params.set('q', q.trim())
       if (cur) params.set('cursor', cur)
       const res = await fetch(`${API}/api/community/discover?${params}`, { credentials: 'include' })
       const data = await res.json()
@@ -184,7 +187,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
               marginBottom: '6px',
             }}
           >
-            Filter by city
+            Search creators
           </label>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <input
@@ -194,7 +197,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
               value={cityInput}
               onChange={(e) => setCityInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCitySubmit()}
-              placeholder="Search cities…"
+              placeholder="Search creators, cities, or specializations…"
               style={{
                 flex: 1,
                 padding: '8px 0',

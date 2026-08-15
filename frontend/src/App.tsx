@@ -32,6 +32,7 @@ const ShotDetail = lazy(() => import('./pages/ShotDetail'))
 const PublicProfile = lazy(() => import('./pages/PublicProfile'))
 const CollectionDetail = lazy(() => import('./pages/CollectionDetail'))
 const MyCollections = lazy(() => import('./pages/MyCollections'))
+const AdminSeed = lazy(() => import('./pages/AdminSeed'))
 import { BrandThemeProvider } from './contexts/BrandThemeContext'
 import CookieConsent from './components/CookieConsent'
 import NotFound from './pages/NotFound'
@@ -89,6 +90,7 @@ function App() {
         <Route path="/settings/calendar-reconnect" element={<CalendarReconnect />} />
         <Route path="/revoke-email-change/:token" element={<RevokeEmailChange />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin/seed" element={<AdminSeed />} />
         <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/settings" element={<Settings />}>
               <Route index element={<Navigate to="account" replace />} />

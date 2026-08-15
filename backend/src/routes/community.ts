@@ -425,10 +425,13 @@ router.patch('/profile', authMiddleware, async (req: AuthRequest, res: Response)
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
 })
 
-// GET /api/community/discover?industry=&city=&cursor=
+// GET /api/community/discover?industry=&city=&q=&subHeadline=&cursor=
+// iter 289-v3c3b — search extended from city-only to q (creator name /
+// city / subHeadline contains, case-insensitive) + explicit subHeadline
+// filter for sub-chip integration.
 router.get('/discover', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { industry, city, cursor } = req.query
+    const { industry, city, cursor, q, subHeadline } = req.query
     const take = 24
     // iter 289-v3c3a.2 — exclude own profile from Discover grid so MESSAGE
     // click can never create a self-thread
@@ -436,10 +439,23 @@ router.get('/discover', authMiddleware, async (req: AuthRequest, res: Response):
     const where: any = { isPublic: true }
     if (myProfile?.id) where.id = { not: myProfile.id }
     if (city) where.city = { contains: city as string, mode: 'insensitive' }
+    if (subHeadline) where.subHeadline = subHeadline as string
     if (industry && industry !== 'ALL') {
       const group = getIndustryGroup(industry as string)
       const groupMembers = getIndustryGroupMembers(group)
       where.user = { primaryIndustry: { in: groupMembers as any } }
+    }
+    if (q) {
+      const term = (q as string).trim()
+      if (term) {
+        // Compound OR: creator name (firstName/lastName), city, subHeadline.
+        where.OR = [
+          { user: { firstName: { contains: term, mode: 'insensitive' } } },
+          { user: { lastName: { contains: term, mode: 'insensitive' } } },
+          { city: { contains: term, mode: 'insensitive' } },
+          { subHeadline: { contains: term, mode: 'insensitive' } },
+        ]
+      }
     }
 
     const profiles = await prisma.communityProfile.findMany({
