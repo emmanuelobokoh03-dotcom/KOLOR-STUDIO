@@ -2071,3 +2071,43 @@ Closes iter 287-v3c after the v3c2a split and closes the entire iter 287 sub-arc
 - Supabase Storage (file uploads)
 - Vercel Analytics (consent-gated)
 - Stripe (webhook with HMAC verification)
+
+---
+
+## Iteration 289-v3c3a.3 — Corrective #4: DMView polling loop + navigation state (Feb 2026)
+
+**Fourth corrective in v3c3a chain.** Fixes DMView-specific bugs that v3c3a.2's endpoint fix made observable for the first time.
+
+### Files changed (3)
+- `backend/src/routes/community.ts` — added `GET /api/community/follows/:profileId/status`
+- `frontend/src/components/DMView.tsx` — URL-driven activeThread + AbortController teardown
+- `frontend/src/pages/Dashboard.tsx` — communityTab syncs to `?subtab=` URL param; sub-nav clicks strip stale `?thread=`
+
+### Root cause / fix
+1. **DMView state drift from URL**: activeThread was read from `window.location.search` inside a useEffect gated on `[threads.length, activeThread]` — no reactivity to URL changes. Discover MESSAGE `navigate()` updated URL but activeThread stayed stale. **Fix**: `useSearchParams()` + a sync effect that mirrors `?thread=` → activeThread bidirectionally. All state transitions go through URL via new `openThread()` helper.
+2. **In-flight fetch races**: rapid thread switches piled overlapping fetches + polls onto stale intervals, producing loop-like Network patterns. **Fix**: AbortController per fetchMessages; full teardown (abort + clearInterval + setMessages([])) on activeThread change or unmount.
+3. **Dashboard tab-URL desync**: `communityTab` state initialized from URL only at mount. **Fix**: sync effect keeps it aligned with `?subtab=` on every URL change; sub-nav clicks now also update URL.
+4. **`GET /follows/:profileId/status` 404s**: endpoint didn't exist. **Fix**: added; always 200 with `{ isFollowing: boolean }`.
+5. **Bonus**: seeded `user.website` on Emmanuel (`https://kolorstudio.app`) + Thomas (`https://example.com/thomas-beaumont`) so Smoke Test 3 can verify VISIT WEBSITE.
+
+### Verification (file-level)
+- Backend TSC + build clean
+- Frontend cold-cache build clean (7.17s)
+- Follow-status endpoint returns HTTP 200 `{"isFollowing":false}` with auth cookie
+- All prior iteration state intact (UserAvatarMenu, PublicProfile MESSAGE/PORTFOLIO buttons, seed script, digest email, DM_REQUEST_RECEIVED enum, handle backfill)
+- Framework primitives UNCHANGED
+- Phase 2 baselines PASS (iters 280 / 281 / 282c / 284-polish)
+
+### Testing status
+- Testing agent: **skipped** per user directive (matches v3c3a.2 pattern; user runs manual Smoke Tests 1-4 in browser)
+- Local commit: `9c05d6a`
+- Push blocked by container auth → user uses Save to GitHub
+
+### Backlog (Feb 2026, post iter 289-v3c3a.3)
+- **P0**: iter 289-v3c3b — calibration + polish + Dashboard.tsx file split (sub-nav framework, DMView avatars, sticky FilterChipBar, Discover search extension, share menu, sub-chip data seed, ~4-5h)
+- **P0**: Publish commits via Save to GitHub
+- **P1**: iter 290-Portfolio-v3 — Public Portfolio full redesign kickoff
+- **P2**: Landing page positioning updates
+- **P2**: First-shot onboarding
+- **P2**: `PostLike.userId` field rename cleanup
+- **P2**: Individual notification framework overhaul
