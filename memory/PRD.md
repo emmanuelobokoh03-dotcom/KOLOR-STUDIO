@@ -2200,3 +2200,51 @@ Admin route production activation requires `ADMIN_EMAILS=emmanuelobokoh4@gmail.c
 - **P0**: Add `ADMIN_EMAILS` env var to Railway (manual)
 - **P1**: iter 290-Portfolio-v3 kickoff
 - **P2**: Landing positioning, first-shot onboarding, NotificationBell extraction, PostLike field cleanup
+
+---
+
+## Iteration 289-v3c3c — Dashboard.tsx moderate split (Feb 2026)
+
+**Pure refactor. Closes iter 289 completion pass entirely.**
+
+### Files changed (4)
+- **New**: `frontend/src/components/dashboard/DashboardHeader.tsx` (72 lines), `CommunityTabs.tsx` (69 lines), `StudioTools.tsx` (75 lines)
+- **Modified**: `frontend/src/pages/Dashboard.tsx` (1,946 → 1,833 lines, -113)
+
+### Extraction scope (Q1=A moderate)
+- **DashboardHeader** — desktop greeting + meta line, both Community-scoped Fraunces italic branch + non-community default branch preserved verbatim
+- **CommunityTabs** — Feed / Discover / Messages sub-nav with v3c3b mono UPPERCASE Terra calibration + v3c3a pending-DM dot. State + URL sync stay in Dashboard via `onTabChange` callback
+- **StudioTools** — Show-tools toggle + industry widget conditionals. Removes duplicate industry check from parent (StudioTools returns null for unknown industries)
+- **NotificationBell stays inline** (recent v3c3a chain touches)
+
+### Discipline
+Zero behavior changes. Every callback, state hook, prop preserved exactly. Extracted components own no new state — receive values via props from Dashboard.tsx.
+
+### Verification
+- Backend + frontend TSC clean; cold-cache build 7.06s; lint clean
+- Dashboard.tsx: 1946 → 1833 lines (5.8% reduction; less than spec's 36% estimate because extracted JSX blocks were compact)
+- All prior iteration state intact (v3c3a chain, v3c3b, v3c3b.1); framework primitives UNCHANGED; Phase 2 baselines PASS; data state preserved (0 null handles, 40 subHeadlines)
+
+### iter 289 completion pass: CLOSED (7 sub-iterations)
+- v3c3a — structural restoration
+- v3c3a.1 — four smoke test failures
+- v3c3a.2 — self-thread + PublicProfile buttons
+- v3c3a.3 — DMView polling loop
+- v3c3b — calibration + polish + admin
+- v3c3b.1 — sub-chip URL sync + desktop share menu
+- v3c3c — Dashboard.tsx moderate split (THIS)
+
+### Community v3 arc: CLOSED
+
+### Testing status
+- Local commit: `572a14d`
+- Regression smoke tests 1-5 pending manual browser verification
+
+### Backlog (Feb 2026)
+- **P0**: Publish 7 commits to origin/main via Save to GitHub
+- **P0**: Add `ADMIN_EMAILS=emmanuelobokoh4@gmail.com` to Railway (manual)
+- **P1**: iter 290-Portfolio-v3 — Public Portfolio full redesign kickoff
+- **P2**: Landing positioning
+- **P2**: First-shot onboarding
+- **P2**: NotificationBell extraction (future iteration when v3c3a chain code has settled)
+- **P2**: PostLike.userId field rename cleanup
