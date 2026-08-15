@@ -430,7 +430,11 @@ router.get('/discover', authMiddleware, async (req: AuthRequest, res: Response):
   try {
     const { industry, city, cursor } = req.query
     const take = 24
+    // iter 289-v3c3a.2 — exclude own profile from Discover grid so MESSAGE
+    // click can never create a self-thread
+    const myProfile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! }, select: { id: true } })
     const where: any = { isPublic: true }
+    if (myProfile?.id) where.id = { not: myProfile.id }
     if (city) where.city = { contains: city as string, mode: 'insensitive' }
     if (industry && industry !== 'ALL') {
       const group = getIndustryGroup(industry as string)
@@ -517,6 +521,12 @@ router.post('/dms/:userId', authMiddleware, async (req: AuthRequest, res: Respon
 
     const theirProfile = await prisma.communityProfile.findUnique({ where: { id: (req.params.userId as string) } })
     if (!theirProfile) { res.status(404).json({ error: 'Profile not found' }); return }
+
+    // iter 289-v3c3a.2 — reject self-DM (frontend should filter self out of Discover,
+    // but this is a defensive backstop that prevents self-thread creation)
+    if (theirProfile.id === myProfile.id) {
+      res.status(400).json({ error: 'Cannot message yourself' }); return
+    }
 
     const [a, b] = [myProfile.id, theirProfile.id].sort()
 

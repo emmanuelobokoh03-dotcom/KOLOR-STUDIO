@@ -18,7 +18,7 @@ router.get('/:handle', async (req: Request, res: Response): Promise<void> => {
       include: {
         user: {
           select: {
-            firstName: true, lastName: true, primaryIndustry: true,
+            id: true, firstName: true, lastName: true, primaryIndustry: true,
             industry: true, brandLogoUrl: true,
           },
         },

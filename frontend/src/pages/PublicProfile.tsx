@@ -127,6 +127,25 @@ export default function PublicProfile() {
     setFollowBusy(false)
   }
 
+  // iter 289-v3c3a.2 — MESSAGE button on non-owner PublicProfile.
+  // Hits find-or-create endpoint (POST /api/community/dms/:profileId),
+  // then deep-links into Dashboard Messages tab with the returned threadId.
+  const handleMessage = async () => {
+    if (!profile) return
+    try {
+      const res = await fetch(`${API}/api/community/dms/${profile.id}`, {
+        method: 'POST', credentials: 'include',
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const data = await res.json()
+      if (data?.thread?.id) {
+        navigate(`/dashboard?view=community&subtab=dms&thread=${data.thread.id}`)
+      } else {
+        toast.error('Could not start conversation')
+      }
+    } catch { toast.error('Could not start conversation') }
+  }
+
   if (loading) return <div style={{ minHeight: '100vh', background: 'var(--kolor-canvas)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><KolorSpinner size={32} /></div>
   if (notFound || !profile) {
     return (
@@ -195,6 +214,9 @@ export default function PublicProfile() {
               <>
                 <button onClick={handleFollow} disabled={followBusy} data-testid="follow" style={btnGhostTerra}>
                   {followBusy ? '…' : isFollowing ? 'Following' : 'Follow'}
+                </button>
+                <button onClick={handleMessage} data-testid="message" style={btnGhostInk}>
+                  Message
                 </button>
                 {profile.user.id && <button onClick={() => navigate(`/portfolio/${profile.user.id}`)} data-testid="visit-portfolio" style={btnGhostTerra}>Visit portfolio</button>}
               </>
