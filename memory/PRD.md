@@ -1890,7 +1890,40 @@ Two additive polish iterations bundled into one commit. Both close suggestion lo
 - Email: bookingtest@test.com
 - Password: password123
 
-### iter 289-v3c3a.1 (Feb 2026) — Corrective Sub-Iteration for 4 Smoke-Test Failures
+### iter 289-v3c3a.2 (Feb 2026) — Self-Thread DM Bug + Missing PublicProfile MESSAGE Button
+Two targeted corrections surfaced by iter 289-v3c3a.1 smoke tests. One was a real bug that predated iter 287-v3b — the find-or-create DM endpoint had no self-reject and had never been runtime-exercised until v3c3a.1 wired the frontend to hit it. The other was a v3c2a-claimed-but-not-shipped MESSAGE button.
+
+**Root cause pinned (STEP 0 diagnostic)** — URL segment `cmq6gj2kh0001s9yebe2x8n2i` resolved to Emmanuel's own `CommunityProfile.id`. `GET /discover` returned his profile in the grid, tapping MESSAGE on his own card called `POST /dms/[Emmanuel.id]` with sender === recipient, and endpoint had no self-reject → self-thread stored.
+
+**Two-layer defense**
+- **Backend `POST /dms/:userId`** — 400 self-reject before thread create ("Cannot message yourself")
+- **Backend `GET /discover`** — exclude own profile from grid (`id: { not: myProfile.id }`)
+- **DB cleanup** — deleted 2 orphan self-threads from prior failed clicks
+
+**Missing MESSAGE button on PublicProfile**
+- `GET /profiles/:handle` — extended user select with `id: true` so VISIT PORTFOLIO's conditional renders + MESSAGE has routing target
+- `PublicProfile.tsx handleMessage()` — hits `POST /api/community/dms/${profile.id}`, navigates to `/dashboard?view=community&subtab=dms&thread=[id]`, Sonner toast on failure
+- Added `<button>Message</button>` (ghost mono Ink) between Follow and Visit portfolio on non-owner view
+- VISIT WEBSITE remains PublicPortfolio-only per v3c2b Q59=A design intent
+
+**Peer suggestion cron ran** (Emmanuel Q D) — invoked `generateWeeklyPeerSuggestions()` manually. Result: 1 suggestion (emmanuel-c9mc → emmanuel-hov2 score 3.00). Reality of current data: only 2 non-synthetic profiles exist. Empty-graceful state remains for most shot detail pages until more real users onboard.
+
+**Verification** — user override on testing_agent: functional bash + curl + code inspection only. Backend TSC + build clean. Frontend cold-cache build clean (8.14s). Live curl against local dev backend confirmed `/api/profiles/amara-rkfg` now returns `user.id`. All data checks PASS (0 null handles, 1 DM_REQUEST_RECEIVED, 0 self-threads, 1 peer suggestion).
+
+**Commits pending push** — 7 commits: `fafec2a`, `cd2c5e1`, `402c00c`, `4bba176`, `00b0b64`, `e6e0790`, `edff1d4`. Awaiting Save-to-GitHub → Railway/Vercel redeploy for Emmanuel to run STEP 7 corrective smoke tests against `kolorstudio.app`.
+
+**Backlog (Feb 2026, post iter 289-v3c3a.2)**
+- **P0**: Publish 7 pending commits via Save to GitHub → Railway/Vercel redeploy → Emmanuel runs STEP 7 smoke tests (MESSAGE opens correct thread with correct creator, PublicProfile MESSAGE + VISIT PORTFOLIO render + work, PublicPortfolio VISIT WEBSITE + COMMUNITY PROFILE preserved, peer suggestion cards render for shots whose author has peers)
+- **P1**: iter 289-v3c3b — calibration + polish + Dashboard.tsx file split + admin seed route. Sub-nav calibration, DMView avatars, sticky FilterChipBar, DMView thread cache, Discover search extension, share menu, sub-chip data seed, break 1870-line Dashboard.tsx. Estimated 4-5 hours.
+- **P1**: iter 290-Portfolio-v3 — Public Portfolio full redesign to match Community v3 solidity
+- **P2**: Onboard more real creators so peer suggestions have enough signal to populate meaningfully across shot detail pages
+- **P2**: Landing page positioning updates
+- **P2**: Onboarding "add your first shot" step
+- **P2**: `PostLike.userId` schema field rename cleanup
+- **P2**: Marketing site SEO polish
+- **P2**: Phase 3
+
+## 3rd Party Integrations
 Fixed four functional gaps that iter 289-v3c3a receipt + testing_agent PASS didn't catch. Discipline reinforced: **file receipt + shallow testing PASS ≠ functional PASS. Smoke tests remain load-bearing.**
 
 **STEP 0 diagnostic surfaced**
