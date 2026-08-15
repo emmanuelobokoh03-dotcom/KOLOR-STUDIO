@@ -51,10 +51,21 @@ export default function ShotInteractionBar({
   }
 
   const openShare = async () => {
-    // Native Web Share API on mobile — falls back to custom menu on desktop.
-    // navigator.share only exists on Safari iOS, Chrome Android, and
-    // Chrome/Edge desktop when triggered by user gesture on HTTPS.
-    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+    // iter 289-v3c3b.1 — Native Web Share API restricted to touch devices.
+    // Prior gate (navigator.share existence only) triggered the OS share
+    // sheet on desktop Chromium 89+ where users expect a custom menu.
+    // Touch detection combines ontouchstart + navigator.maxTouchPoints so
+    // iPad Safari + Android Chrome + Windows tablets get native share,
+    // mouse-only desktop browsers get the custom menu.
+    const isTouchDevice =
+      typeof window !== 'undefined' &&
+      ('ontouchstart' in window ||
+        (typeof navigator !== 'undefined' && (navigator.maxTouchPoints || 0) > 0))
+    if (
+      isTouchDevice &&
+      typeof navigator !== 'undefined' &&
+      typeof navigator.share === 'function'
+    ) {
       try {
         await navigator.share({ title, url: shareUrl })
         return

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import KolorSpinner from './KolorSpinner'
 import FilterChipBar from './community/FilterChipBar'
 import ShotTile from './community/ShotTile'
@@ -46,8 +46,46 @@ export default function CommunityFeed({
   onOpenSettings,
   onNavigateToPortfolio: _onNavigateToPortfolio,
 }: CommunityFeedProps) {
-  const [industry, setIndustry] = useState<CreativeIndustry | 'ALL'>('ALL')
-  const [subChip, setSubChip] = useState<string | null>(null)
+  // iter 289-v3c3b.1 — Sub-chip + industry URL sync (Pattern C fix).
+  // Prior state was local-only: sub-chip clicks updated the grid via the
+  // useEffect on `subChip` but never reflected in the URL. Emmanuel's
+  // smoke test read this as "click doesn't update URL, no filter applied".
+  // Now the URL is the source of truth: reading from ?industry= and
+  // ?subHeadline= on mount; writing back on every chip change; deep-links
+  // and back/forward navigation work naturally.
+  const [searchParams, setSearchParams] = useSearchParams()
+  const industryFromUrl = (searchParams.get('industry') || 'ALL') as CreativeIndustry | 'ALL'
+  const subFromUrl = searchParams.get('subHeadline')
+  const [industry, setIndustryState] = useState<CreativeIndustry | 'ALL'>(industryFromUrl)
+  const [subChip, setSubChipState] = useState<string | null>(subFromUrl)
+
+  // Keep local state aligned when the URL changes externally (back/forward).
+  useEffect(() => {
+    if (industryFromUrl !== industry) setIndustryState(industryFromUrl)
+    if (subFromUrl !== subChip) setSubChipState(subFromUrl)
+  }, [industryFromUrl, subFromUrl])
+
+  const setIndustry = useCallback((next: CreativeIndustry | 'ALL') => {
+    setIndustryState(next)
+    setSubChipState(null)  // industry change clears sub-chip
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev)
+      if (next === 'ALL') params.delete('industry')
+      else params.set('industry', next)
+      params.delete('subHeadline')
+      return params
+    }, { replace: true })
+  }, [setSearchParams])
+
+  const setSubChip = useCallback((next: string | null) => {
+    setSubChipState(next)
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev)
+      if (next) params.set('subHeadline', next)
+      else params.delete('subHeadline')
+      return params
+    }, { replace: true })
+  }, [setSearchParams])
   const [sortMode, setSortMode] = useState<SortMode>('recent')
   const [shots, setShots] = useState<Shot[]>([])
   const [loading, setLoading] = useState(true)
