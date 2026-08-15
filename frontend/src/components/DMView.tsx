@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import KolorSpinner from './KolorSpinner'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
@@ -21,9 +22,11 @@ function formatMessageTime(date: string): string {
 }
 
 export default function DMView() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const threadParam = searchParams.get('thread')
   const [threads, setThreads] = useState<any[]>([])
   const [myProfileId, setMyProfileId] = useState<string | null>(null)
-  const [activeThread, setActiveThread] = useState<string | null>(null)
+  const [activeThread, setActiveThread] = useState<string | null>(threadParam)
   const [messages, setMessages] = useState<any[]>([])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
@@ -34,6 +37,35 @@ export default function DMView() {
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const lastTimestampRef = useRef<string | null>(null)
+  // iter 289-v3c3a.3 — Abort controller for in-flight message fetches.
+  // Prevents a stale fetch from the prior thread overwriting the new thread's
+  // messages when the user switches threads mid-request (race → apparent
+  // "loops" in the Network log as new fetches pile onto unresolved ones).
+  const fetchAbortRef = useRef<AbortController | null>(null)
+
+  // iter 289-v3c3a.3 — activeThread is URL-driven.
+  // Prior code read window.location.search inside a useEffect gated on
+  // [threads.length, activeThread]. When React Router changed the URL (e.g.,
+  // Discover MESSAGE → navigate to ?thread=Y), the URL param wasn't in deps,
+  // so the effect never re-fired and activeThread stayed stale. Now
+  // useSearchParams() gives us reactive access, and activeThread mirrors it.
+  useEffect(() => {
+    if (threadParam) {
+      if (threadParam !== activeThread) setActiveThread(threadParam)
+    } else if (activeThread !== null) {
+      setActiveThread(null)
+    }
+  }, [threadParam])
+
+  // Helper: navigate DMView state via URL so back/forward + share links work.
+  const openThread = useCallback((threadId: string | null) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev)
+      if (threadId) next.set('thread', threadId)
+      else next.delete('thread')
+      return next
+    }, { replace: true })
+  }, [setSearchParams])
 
   const fetchPendingCount = useCallback(async () => {
     try {
@@ -56,12 +88,12 @@ export default function DMView() {
     setLoading(false)
   }, [filterMode])
 
-  const fetchMessages = useCallback(async (threadId: string, after?: string) => {
+  const fetchMessages = useCallback(async (threadId: string, after?: string, signal?: AbortSignal) => {
     try {
       const url = after
         ? `${API}/api/community/dms/${threadId}/messages?after=${encodeURIComponent(after)}`
         : `${API}/api/community/dms/${threadId}/messages`
-      const res = await fetch(url, { credentials: 'include' })
+      const res = await fetch(url, { credentials: 'include', signal })
       const data = await res.json()
       const msgs = data.messages || []
       if (after) {
@@ -70,25 +102,32 @@ export default function DMView() {
         setMessages(msgs)
       }
       if (msgs.length > 0) lastTimestampRef.current = msgs[msgs.length - 1].sentAt
-      // Mark as read (best-effort)
+      // Mark as read (best-effort, not aborted with fetch)
       fetch(`${API}/api/community/dms/${threadId}/read`, {
         method: 'PATCH', credentials: 'include'
       }).catch(() => {})
-    } catch { /* silent */ }
+    } catch { /* silent (includes AbortError) */ }
   }, [])
 
   useEffect(() => { fetchThreads(filterMode); fetchPendingCount() }, [fetchThreads, fetchPendingCount, filterMode])
 
-  // iter 289-v3c3a.1 — auto-open thread deep-link: /dashboard?view=community&subtab=dms&thread=X
   useEffect(() => {
-    const threadParam = new URLSearchParams(window.location.search).get('thread')
-    if (threadParam && !activeThread) setActiveThread(threadParam)
-  }, [threads.length, activeThread])
+    // iter 289-v3c3a.3 — Full teardown when activeThread changes or unmounts.
+    // Previous code left in-flight fetches racing when switching threads.
+    if (fetchAbortRef.current) fetchAbortRef.current.abort()
+    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null }
 
-  useEffect(() => {
-    if (!activeThread) return
+    if (!activeThread) {
+      setMessages([])
+      lastTimestampRef.current = null
+      return
+    }
+
+    const controller = new AbortController()
+    fetchAbortRef.current = controller
     lastTimestampRef.current = null
-    fetchMessages(activeThread)
+    setMessages([])
+    fetchMessages(activeThread, undefined, controller.signal)
 
     pollRef.current = setInterval(() => {
       if (lastTimestampRef.current) {
@@ -96,7 +135,10 @@ export default function DMView() {
       }
     }, POLL_INTERVAL)
 
-    return () => { if (pollRef.current) clearInterval(pollRef.current) }
+    return () => {
+      controller.abort()
+      if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null }
+    }
   }, [activeThread, fetchMessages])
 
   useEffect(() => {
@@ -177,7 +219,7 @@ export default function DMView() {
             role="tab"
             aria-selected={filterMode === 'messages'}
             data-testid="dm-tab-messages"
-            onClick={() => { setFilterMode('messages'); setActiveThread(null) }}
+            onClick={() => { setFilterMode('messages'); openThread(null) }}
             style={{
               fontFamily: 'JetBrains Mono, monospace',
               fontSize: '11px',
@@ -199,7 +241,7 @@ export default function DMView() {
             role="tab"
             aria-selected={filterMode === 'requests'}
             data-testid="dm-tab-requests"
-            onClick={() => { setFilterMode('requests'); setActiveThread(null) }}
+            onClick={() => { setFilterMode('requests'); openThread(null) }}
             style={{
               fontFamily: 'JetBrains Mono, monospace',
               fontSize: '11px',
@@ -335,7 +377,7 @@ export default function DMView() {
             return (
               <button
                 key={thread.id}
-                onClick={() => setActiveThread(thread.id)}
+                onClick={() => openThread(thread.id)}
                 data-testid={`dm-thread-${thread.id}`}
                 className="w-full text-left px-4 py-3 transition-colors border-b"
                 style={{
@@ -371,7 +413,7 @@ export default function DMView() {
               background: 'var(--surface-base)',
             }}>
             <button
-              onClick={() => setActiveThread(null)}
+              onClick={() => openThread(null)}
               style={{
                 fontSize: '13px',
                 color: '#6C2EDB',

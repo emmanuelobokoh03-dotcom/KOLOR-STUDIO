@@ -182,6 +182,16 @@ const Dashboard = () => {
     const sub = new URLSearchParams(window.location.search).get('subtab')
     return sub === 'dms' || sub === 'discover' || sub === 'feed' ? sub : 'feed'
   })
+  // iter 289-v3c3a.3 — Sync communityTab from URL on subsequent nav changes.
+  // Without this, Discover's MESSAGE button (which navigate()s to
+  // ?subtab=dms&thread=X) updates the URL but Dashboard's tab state stays
+  // on 'discover' — user sees Discover while URL says dms.
+  useEffect(() => {
+    const sub = searchParams.get('subtab')
+    if (sub === 'dms' || sub === 'discover' || sub === 'feed') {
+      if (sub !== communityTab) setCommunityTab(sub)
+    }
+  }, [searchParams])
   const [pendingDMCount, setPendingDMCount] = useState(0)
   const [bookingLead, setBookingLead] = useState<Lead | null>(null)
   const [projectTypeFilter, setProjectTypeFilter] = useState<string>('')
@@ -1645,7 +1655,16 @@ const Dashboard = () => {
             <div className="flex gap-0 border-b px-4 sticky top-0 z-10"
               style={{ borderColor: 'var(--border)', background: 'var(--surface-base)' }}>
               {(['feed', 'discover', 'dms'] as const).map(tab => (
-                <button key={tab} onClick={() => setCommunityTab(tab)}
+                <button key={tab} onClick={() => {
+                  setCommunityTab(tab)
+                  // iter 289-v3c3a.3 — Keep URL in sync with community sub-nav
+                  // so refreshes + back/forward land on the right tab, and
+                  // switching tabs strips any stale ?thread= param.
+                  const next = new URLSearchParams(searchParams)
+                  next.set('subtab', tab)
+                  next.delete('thread')
+                  setSearchParams(next, { replace: true })
+                }}
                   data-testid={`community-tab-${tab}`}
                   className="px-4 py-3 text-xs font-medium capitalize transition-colors relative"
                   style={{ color: communityTab === tab ? '#6C2EDB' : 'var(--text-tertiary)' }}>

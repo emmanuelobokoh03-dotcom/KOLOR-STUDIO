@@ -775,6 +775,22 @@ router.post('/follows/:profileId', authMiddleware, async (req: AuthRequest, res:
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
 })
 
+// iter 289-v3c3a.3 — GET /api/community/follows/:profileId/status
+// Returns { isFollowing: boolean } for the current user vs the target profile.
+// Prior to this endpoint, PublicProfile issued the same call and received a
+// silent 404 on every load (endpoint didn't exist). Always 200; when the
+// caller has no CommunityProfile yet, returns false rather than erroring.
+router.get('/follows/:profileId/status', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
+    if (!profile) { res.json({ isFollowing: false }); return }
+    const existing = await prisma.follow.findUnique({
+      where: { followerId_followingId: { followerId: profile.id, followingId: (req.params.profileId as string) } },
+    })
+    res.json({ isFollowing: !!existing })
+  } catch (e) { res.status(500).json({ error: 'Failed' }) }
+})
+
 // GET /api/community/following/mine — returns IDs of profiles the user follows
 router.get('/following/mine', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
