@@ -23,11 +23,15 @@ import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Briefcase } from '@phosphor-icons/react/dist/csr/Briefcase'
 import { Bell } from '@phosphor-icons/react/dist/csr/Bell'
 import UserAvatarMenu from '../components/community/UserAvatarMenu'
+import DashboardHeader from '../components/dashboard/DashboardHeader'
+import CommunityTabs from '../components/dashboard/CommunityTabs'
+import StudioTools from '../components/dashboard/StudioTools'
 import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
 import MobileBottomNav from '../components/MobileBottomNav'
 import HelpPanel, { HelpButton } from '../components/HelpPanel'
-import { PhotographyWidgets, FineArtWidgets, DesignWidgets } from '../components/IndustryWidgets'
+// iter 289-v3c3c — PhotographyWidgets/FineArtWidgets/DesignWidgets now
+// imported inside components/dashboard/StudioTools.tsx.
 import { useOnboardingTour } from '../components/OnboardingTour'
 import OnboardingWizard, { useOnboardingWizard } from '../components/OnboardingWizard'
 import { SmartSuggestion } from '../components/SmartSuggestion'
@@ -853,58 +857,19 @@ const Dashboard = () => {
               <KolorLogo variant="dark" size="md" linkTo={null} />
             </button>
 
-            {/* Desktop greeting */}
-            <div className="hidden lg:block">
-              {viewMode === 'community' ? (
-                <>
-                  {/* iter 289-v3c3b — Community-scoped framework calibration.
-                      Fraunces italic greeting + mono UPPERCASE meta line.
-                      Preserves default styling on all other views until the
-                      full Dashboard redesign lands. */}
-                  <h1 style={{
-                    fontFamily: 'Fraunces, serif',
-                    fontStyle: 'italic',
-                    fontWeight: 400,
-                    fontSize: '24px',
-                    color: 'var(--kolor-ink)',
-                    lineHeight: 1.15,
-                  }}>
-                    {getGreeting()}, {user?.firstName}{' '}
-                    <span style={{ color: 'var(--kolor-terra)', fontStyle: 'normal' }}>&#10022;</span>
-                  </h1>
-                  <p style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '10px',
-                    fontWeight: 500,
-                    letterSpacing: '0.24em',
-                    textTransform: 'uppercase',
-                    color: 'var(--kolor-ink-subtle)',
-                    marginTop: '4px',
-                  }}>
-                    {(() => {
-                      const awaitingCount = leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length
-                      if (awaitingCount > 0) return `${awaitingCount} ${awaitingCount === 1 ? lang.lead.toLowerCase() : lang.leads.toLowerCase()} awaiting ${lang.quotes.toLowerCase()}`
-                      if (leads.length === 0) return `Add your first ${lang.lead.toLowerCase()} to get started`
-                      return 'Welcome back to your studio'
-                    })()} · {formatCurrentDate()}
-                  </p>
-                </>
-              ) : (
-                <>
-                  <h1 className="text-[17px] font-extrabold tracking-[-0.015em] text-text-primary">
-                    {getGreeting()}, {user?.firstName} <span style={{ color: '#a78bfa' }}>&#10022;</span>
-                  </h1>
-                  <p className="text-xs text-text-secondary">
-                    {(() => {
-                      const awaitingCount = leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length
-                      if (awaitingCount > 0) return `${awaitingCount} ${awaitingCount === 1 ? lang.lead.toLowerCase() : lang.leads.toLowerCase()} awaiting ${lang.quotes.toLowerCase()}`
-                      if (leads.length === 0) return `Add your first ${lang.lead.toLowerCase()} to get started`
-                      return 'Welcome back to your studio'
-                    })()} · {formatCurrentDate()}
-                  </p>
-                </>
-              )}
-            </div>
+            {/* Desktop greeting — iter 289-v3c3c: extracted to DashboardHeader */}
+            <DashboardHeader
+              viewMode={viewMode}
+              firstName={user?.firstName || ''}
+              greeting={getGreeting()}
+              metaText={(() => {
+                const awaitingCount = leads.filter(l => l.status === 'NEW' || l.status === 'REVIEWING').length
+                if (awaitingCount > 0) return `${awaitingCount} ${awaitingCount === 1 ? lang.lead.toLowerCase() : lang.leads.toLowerCase()} awaiting ${lang.quotes.toLowerCase()}`
+                if (leads.length === 0) return `Add your first ${lang.lead.toLowerCase()} to get started`
+                return 'Welcome back to your studio'
+              })()}
+              currentDate={formatCurrentDate()}
+            />
           </div>
           <div className="flex items-center gap-2 md:gap-3">
             <div className="hidden lg:flex items-center gap-2">
@@ -1297,56 +1262,16 @@ const Dashboard = () => {
 
         {/* Iter 146 — Task 1b: CRMAlerts + RevenueDashboard moved to right sidebar to declutter above-the-fold. */}
 
-        {/* Iter 146 — Task 1d: Industry widget toggle (collapsed by default) */}
-        {((user?.industry as string) === 'PHOTOGRAPHY' ||
-          user?.primaryIndustry === 'PHOTOGRAPHY' ||
-          (user?.industry as string) === 'FINE_ART' ||
-          user?.primaryIndustry === 'FINE_ART' ||
-          (user?.industry as string) === 'DESIGN' ||
-          user?.primaryIndustry === 'DESIGN' as any ||
-          user?.primaryIndustry === 'GRAPHIC_DESIGN' ||
-          user?.primaryIndustry === 'WEB_DESIGN' ||
-          user?.primaryIndustry === 'BRANDING' ||
-          user?.primaryIndustry === 'ILLUSTRATION') && (
-          <button
-            onClick={() => setShowIndustryWidgets(v => !v)}
-            className="flex items-center gap-1.5 text-[10px] text-text-tertiary hover:text-text-secondary transition mb-2 touch-target"
-            data-testid="toggle-industry-widgets"
-            aria-expanded={showIndustryWidgets}
-          >
-            <span>{showIndustryWidgets ? '▾' : '▸'}</span>
-            {showIndustryWidgets ? 'Hide studio tools' : 'Show studio tools'}
-          </button>
-        )}
-
-        {showIndustryWidgets && <>
-        {/* Industry-Specific Widgets */}
-        {/* AUDIT FIX [H1]: Dual-field industry check */}
-        {((user?.industry as string) === 'PHOTOGRAPHY' ||
-          user?.primaryIndustry === 'PHOTOGRAPHY') && (
-          <PhotographyWidgets
-            onViewCalendar={() => handleViewChange('calendar')}
-            onLeadClick={setSelectedLead}
-          />
-        )}
-        {/* AUDIT FIX [H1]: Dual-field industry check */}
-        {((user?.industry as string) === 'FINE_ART' ||
-          user?.primaryIndustry === 'FINE_ART') && (
-          <FineArtWidgets
-            onLeadClick={setSelectedLead}
-            onAddLead={() => setShowAddModal(true)}
-          />
-        )}
-        {/* AUDIT FIX [M2]: Check both industry fields — covers all DESIGN sub-types */}
-        {((user?.industry as string) === 'DESIGN' ||
-          user?.primaryIndustry === 'DESIGN' as any ||
-          user?.primaryIndustry === 'GRAPHIC_DESIGN' || user?.primaryIndustry === 'WEB_DESIGN' || user?.primaryIndustry === 'BRANDING' || user?.primaryIndustry === 'ILLUSTRATION') && (
-          <DesignWidgets
-            onLeadClick={setSelectedLead}
-            onAddLead={() => setShowAddModal(true)}
-          />
-        )}
-        </>}
+        {/* iter 146 — Task 1d: Industry widget toggle (collapsed by default).
+            iter 289-v3c3c — extracted to StudioTools component. */}
+        <StudioTools
+          user={user}
+          expanded={showIndustryWidgets}
+          onToggle={() => setShowIndustryWidgets(v => !v)}
+          onLeadClick={setSelectedLead}
+          onAddLead={() => setShowAddModal(true)}
+          onViewCalendar={() => handleViewChange('calendar')}
+        />
         {/* Defensive fallback: prompt user to complete onboarding if industry not set */}
         {!user?.primaryIndustry && (
           <div className="mb-4 md:mb-6 bg-purple-50 border border-purple-200 rounded-xl p-4 md:p-5 flex items-center justify-between gap-4" data-testid="complete-onboarding-banner">
@@ -1690,60 +1615,22 @@ const Dashboard = () => {
           </Suspense>
         ) : viewMode === 'community' ? (
           <div className="flex flex-col" data-testid="community-view" style={{ height: 'calc(100dvh - 64px)', overflow: 'hidden' }}>
-            {/* iter 289-v3c3b — sub-nav framework calibration: mono UPPERCASE
-                Terra pattern matching v3c2b MESSAGES/REQUESTS tabs. */}
-            <div className="flex gap-0 border-b px-4 sticky top-0 z-10"
-              style={{ borderColor: 'var(--kolor-hairline)', background: 'var(--kolor-canvas)' }}>
-              {(['feed', 'discover', 'dms'] as const).map(tab => {
-                const active = communityTab === tab
-                return (
-                <button key={tab} onClick={() => {
-                  setCommunityTab(tab)
-                  // iter 289-v3c3a.3 — Keep URL in sync with community sub-nav
-                  // so refreshes + back/forward land on the right tab, and
-                  // switching tabs strips any stale ?thread= param.
-                  const next = new URLSearchParams(searchParams)
-                  next.set('subtab', tab)
-                  next.delete('thread')
-                  setSearchParams(next, { replace: true })
-                }}
-                  data-testid={`community-tab-${tab}`}
-                  className="relative"
-                  style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '11px',
-                    fontWeight: 500,
-                    letterSpacing: '0.28em',
-                    textTransform: 'uppercase',
-                    color: active ? 'var(--kolor-ink)' : 'var(--kolor-ink-subtle)',
-                    background: 'transparent',
-                    border: 'none',
-                    padding: '14px 16px',
-                    cursor: 'pointer',
-                    borderBottom: active ? '1px solid var(--kolor-terra)' : '1px solid transparent',
-                    marginBottom: '-1px',
-                    transition: 'color 0.15s',
-                  }}>
-                  {tab === 'dms' ? 'Messages' : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  {tab === 'dms' && pendingDMCount > 0 && (
-                    <span
-                      data-testid="community-tab-dms-pending-dot"
-                      aria-label={`${pendingDMCount} pending message request${pendingDMCount === 1 ? '' : 's'}`}
-                      style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '4px',
-                        width: '6px',
-                        height: '6px',
-                        borderRadius: '50%',
-                        background: 'var(--kolor-terra)',
-                      }}
-                    />
-                  )}
-                </button>
-                )
-              })}
-            </div>
+            {/* iter 289-v3c3c — extracted to CommunityTabs component.
+                v3c3b calibration + v3c3a URL sync preserved via onTabChange. */}
+            <CommunityTabs
+              activeTab={communityTab}
+              pendingDMCount={pendingDMCount}
+              onTabChange={(tab) => {
+                setCommunityTab(tab)
+                // iter 289-v3c3a.3 — Keep URL in sync with community sub-nav
+                // so refreshes + back/forward land on the right tab, and
+                // switching tabs strips any stale ?thread= param.
+                const next = new URLSearchParams(searchParams)
+                next.set('subtab', tab)
+                next.delete('thread')
+                setSearchParams(next, { replace: true })
+              }}
+            />
             <div className="flex-1 overflow-y-auto">
               <Suspense fallback={<div className="flex justify-center py-12"><KolorSpinner size={28} /></div>}>
                 {communityTab === 'feed' && <CommunityFeed userIndustry={user?.primaryIndustry as any} userId={user?.id} onOpenSettings={(tab) => { setSettingsInitialTab(tab as any); setShowSettings(true) }} onNavigateToPortfolio={() => handleViewChange('portfolio')} />}
