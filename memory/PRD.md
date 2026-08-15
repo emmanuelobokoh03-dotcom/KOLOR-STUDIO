@@ -2111,3 +2111,57 @@ Closes iter 287-v3c after the v3c2a split and closes the entire iter 287 sub-arc
 - **P2**: First-shot onboarding
 - **P2**: `PostLike.userId` field rename cleanup
 - **P2**: Individual notification framework overhaul
+
+---
+
+## Iteration 289-v3c3b — Calibration + Polish + Admin Route (Feb 2026)
+
+**Fifth iteration in iter 289 completion pass.** Ships Workstreams 1-3 + 5 per user directive (Q1=A moderate scope, Q2=C both env-flag & allowlist, Q3=B adaptive branches). Dashboard.tsx modular split (Workstream 4) deferred to v3c3c per Q1=A rationale.
+
+### Files changed (12)
+- **New**: `backend/src/routes/admin.ts`, `backend/scripts/backfill-synthetic-subheadlines.ts`, `frontend/src/pages/AdminSeed.tsx`
+- **Modified**: `backend/src/routes/community.ts`, `backend/src/server.ts`, `frontend/src/App.tsx`, `frontend/src/components/CommunityDiscover.tsx`, `frontend/src/components/DMView.tsx`, `frontend/src/components/community/FilterChipBar.tsx`, `frontend/src/components/community/ShotInteractionBar.tsx`, `frontend/src/pages/Dashboard.tsx`, `frontend/src/pages/ShotDetail.tsx`
+
+### Workstream 1 — Framework calibration
+- Sub-nav tabs (Feed / Discover / Messages) → mono UPPERCASE 11px 0.28em, Terra active border, ink-subtle inactive (matches v3c2b MESSAGES/REQUESTS pattern)
+- DMView row avatars → 40px Fraunces italic single initial on canvas-shade-1 with hairline border (matches CreatorBlock + NotificationBell); retired purple SaaS circles
+- Dashboard header → Community-scoped (viewMode === 'community') Fraunces italic 24px greeting + mono UPPERCASE 10px meta. Non-community views preserve default styling
+
+### Workstream 2 — Bug fixes
+- FilterChipBar sticky `top: 80px` → `top: 0` (was gapping 80px from scroll container top)
+- DMView per-filter `threadCache` state prevents empty-flash on MESSAGES ↔ REQUESTS tab switch
+
+### Workstream 3 — Functional additions
+- Discover search: placeholder → "Search creators, cities, or specializations…"; frontend sends `?q=`; backend `/api/community/discover` extended with `q` (compound OR across firstName/lastName/city/subHeadline) + `subHeadline` filter param
+- Share menu on ShotInteractionBar: Copy Link + Email + X + Threads. Native `navigator.share` on mobile → system sheet; falls through to custom menu on desktop
+- `backfill-synthetic-subheadlines.ts` — deterministic hash-based backfill; 40 synthetic profiles distributed across 24 sub-chips. Idempotent
+
+### Workstream 5 — Admin route
+- `/admin/seed` frontend page with 5 action cards + JSON result panels
+- `backend/src/routes/admin.ts` with 5 endpoints: seed pending thread, trigger featured-work / featured-creator / peer crons, backfill sub-headlines
+- `requireAdmin` middleware: belt-and-suspenders (Q2=C) — env flag `ADMIN_ROUTES_ENABLED=true` OR email in `ADMIN_EMAILS`/`ADMIN_EMAIL` allowlist. Currently enabled for local dev
+
+### Verification (file-level, all PASS)
+- Backend TSC + build clean; frontend cold-cache build clean (7.12s); lint clean on all touched files
+- Admin endpoints reachable (backfill-subheadlines + trigger-peer-cron both HTTP 200 with cookie auth)
+- Discover `?q=Landscape` returns 4 matching profiles
+- 40/42 profiles have subHeadline populated
+- v3c3a chain intact (UserAvatarMenu, DMView AbortController teardown, follow-status endpoint, PublicProfile buttons)
+- Framework primitives UNCHANGED; Phase 2 baselines PASS
+
+### Deferred to v3c3c
+- Dashboard.tsx modular split (Header / Tabs / StudioTools extraction)
+
+### Testing status
+- Testing agent skipped per user directive (established v3c3a chain pattern)
+- Local commit: `19a75a0`
+- Push blocked by container auth → use Save to GitHub
+
+### Backlog (Feb 2026, post iter 289-v3c3b)
+- **P0**: iter 289-v3c3c — Dashboard.tsx moderate split (~2-3h)
+- **P0**: Publish commits via Save to GitHub (9c05d6a + 19a75a0)
+- **P1**: iter 290-Portfolio-v3 — Public Portfolio full redesign kickoff
+- **P2**: Landing page positioning updates
+- **P2**: First-shot onboarding
+- **P2**: NotificationBell extraction (bundle into future Dashboard redesign)
+- **P2**: `PostLike.userId` field rename cleanup
