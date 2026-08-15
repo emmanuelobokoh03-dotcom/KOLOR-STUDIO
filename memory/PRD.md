@@ -2165,3 +2165,38 @@ Closes iter 287-v3c after the v3c2a split and closes the entire iter 287 sub-arc
 - **P2**: First-shot onboarding
 - **P2**: NotificationBell extraction (bundle into future Dashboard redesign)
 - **P2**: `PostLike.userId` field rename cleanup
+
+---
+
+## Iteration 289-v3c3b.1 — Corrective: sub-chip URL sync + desktop share menu (Feb 2026)
+
+**Corrective for two v3c3b smoke test failures.**
+
+### Files changed (2)
+- `frontend/src/components/CommunityFeed.tsx` — sub-chip + industry URL sync
+- `frontend/src/components/community/ShotInteractionBar.tsx` — Web Share gated to touch devices
+
+### Fix #1 — Sub-chip URL sync (Pattern C)
+CommunityFeed's `industry` + `subChip` were local-only state; backend fully supported `?industry` + `?subHeadline` on `/api/community/feed` (verified via curl — 4 posts for DESIGN+Brand Design, 16 for PHOTOGRAPHY+Landscape). URL never reflected active filter. Elevated URL to source-of-truth via `useSearchParams`; setter callbacks write query params alongside local state; sync effect keeps state aligned with back/forward navigation.
+
+### Fix #2 — Web Share API desktop gate
+Added `isTouchDevice` detection combining `ontouchstart` + `navigator.maxTouchPoints`. Native share fires only on iPad/Android/tablet; desktop shows custom menu.
+
+### Config note
+Admin route production activation requires `ADMIN_EMAILS=emmanuelobokoh4@gmail.com` on Railway (manual dashboard step). Local dev already active.
+
+### Verification
+- Backend TSC + build clean; frontend cold-cache build clean (6.60s); lint clean
+- Feed endpoint returns 16 posts for `PHOTOGRAPHY+Landscape`, 4 for `DESIGN+Brand Design`
+- 40 profiles have subHeadline; framework primitives UNCHANGED; all Phase 2 baselines PASS
+
+### Testing status
+- Local commit: `7b4ca5b`
+- Manual Smoke Tests 1-3 pending user (sub-chip across 3 industries, desktop share menu, admin route after Railway config)
+
+### Backlog (Feb 2026, post iter 289-v3c3b.1)
+- **P0**: iter 289-v3c3c — Dashboard.tsx moderate split
+- **P0**: Publish commits via Save to GitHub
+- **P0**: Add `ADMIN_EMAILS` env var to Railway (manual)
+- **P1**: iter 290-Portfolio-v3 kickoff
+- **P2**: Landing positioning, first-shot onboarding, NotificationBell extraction, PostLike field cleanup
