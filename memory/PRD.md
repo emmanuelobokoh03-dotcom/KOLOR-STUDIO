@@ -2378,3 +2378,53 @@ Three sub-iterations, all functionally verified:
 - **P2**: Landing positioning, first-shot onboarding, NotificationBell extraction
 - **P2**: `PostLike.userId` field rename cleanup
 - **P2**: Individual notification framework overhaul
+
+---
+
+## Iteration 291-v3a — Dashboard v3 opens: card scaffold + Today + Needs Attention (Feb 2026)
+
+First Dashboard v3 arc iteration. Establishes card taxonomy, ships hero cards, cleans up deprecated widgets.
+
+### Files changed
+- **Deleted (2 files):**
+  - `frontend/src/components/dashboard/StudioTools.tsx` (75 lines)
+  - `frontend/src/components/IndustryWidgets.tsx` (400+ lines, no other imports)
+- **Created (5 files):**
+  - `frontend/src/components/dashboard/DashboardCard.tsx` — base card container (Fraunces italic + mono UPPERCASE + kolor palette)
+  - `frontend/src/components/dashboard/useTodayData.ts` — shared `/api/today` hook + URGENCY_META metaLabels
+  - `frontend/src/components/dashboard/TodayCard.tsx` — hero card, mixed attention + inProgress top-5, "See all N →" expander (Q9=C)
+  - `frontend/src/components/dashboard/NeedsAttentionCard.tsx` — deep attention[] view with critical badge
+  - `frontend/src/components/dashboard/DashboardCards.tsx` — container rendering both cards stacked (v3b scaffold-ready)
+- **Modified:**
+  - `frontend/src/pages/Dashboard.tsx` — 1833 → 1750 lines (net -83). Removed StudioTools invocation, Active Commissions widget, Pending Contract banner, TodayScreen kanban render, showIndustryWidgets state, Crosshair import. Inserted `<DashboardCards>` above viewMode ternary as true hero across kanban + list
+
+### STEP 0 findings + adaptive branch decisions
+- `/api/today` endpoint already returns exact shape (`{ attention, inProgress, generatedAt }`) — reused, no backend changes
+- Existing TodayScreen.tsx URGENCY_CONFIG metaLabels extracted to shared `URGENCY_META` in useTodayData.ts
+- Decision 1c.2 confirmed: cards above viewMode ternary as true hero; TodayScreen file kept unrendered
+- Decision 2b confirmed: Today = mixed top-5, Needs Attention = deep view with critical badge
+- Decision 3a confirmed: IndustryWidgets.tsx deleted (no other imports)
+
+### Verification
+- Backend TSC + build clean; frontend TSC clean; cold-cache build 7.28s
+- All 12 file-receipt checks PASS
+- Community v3 + Portfolio v3a/b/c intact; framework primitives UNCHANGED; Phase 2 baselines PASS
+
+### Testing status
+- Local commit: `354a3f8`
+- Manual Smoke Tests 1-7 pending user browser verification
+
+### Dashboard v3 arc progress (1 of 3)
+- v3a: Card scaffold + Today + Needs Attention + Studio Tools removal (`354a3f8`)
+- v3b: Pipeline Pulse + Recent Work + Community Pulse + bell architecture (pending)
+- v3c: Mobile responsive + calibration polish + landing echo (pending)
+
+### Backlog (Feb 2026)
+- **P0**: Publish 11 commits to origin/main via Save to GitHub
+- **P0**: iter 291-v3b brief writing (bell merge + 3 more cards + NeedsAttentionSection/CRMAlerts consolidation)
+- **P1**: NotificationBell architecture merge (v3b — Q12=C sheet drawer)
+- **P2**: `NeedsAttentionSection.tsx` + `CRMAlerts.tsx` consolidation (v3b)
+- **P2**: `TodayScreen.tsx` deletion once v3b confirms no reuse
+- **P2**: About section on PublicPortfolio (bio copy pending)
+- **P2**: Testimonials collection flow
+- **P2**: Landing positioning, first-shot onboarding, `PostLike.userId` rename cleanup
