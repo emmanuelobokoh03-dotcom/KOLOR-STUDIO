@@ -362,6 +362,24 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
                     Featured
                   </div>
                 )}
+                {/* iter 290-v3b — Persistent featured toggle star.
+                    Prior grid star lived only inside the hover overlay
+                    (line 366+), which meant it was invisible until the
+                    creator hovered. Emmanuel's v3a smoke test couldn't
+                    find it. This top-right star is always visible so the
+                    Selected Work rail toggle is discoverable at rest. */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleToggleFeatured(item) }}
+                  className="absolute top-2 right-2 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition"
+                  style={{ width: 32, height: 32 }}
+                  title={item.featured ? 'Unfeature (Selected Work rail)' : 'Feature on public portfolio (Selected Work rail)'}
+                  aria-label={item.featured ? 'Unfeature item' : 'Feature item on public portfolio'}
+                  data-testid={`portfolio-tile-star-${item.id}`}
+                >
+                  <Star
+                    className={`w-4 h-4 ${item.featured ? 'text-yellow-400 fill-current' : 'text-white'}`}
+                  />
+                </button>
                 {/* Hover Overlay */}
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
                   <button

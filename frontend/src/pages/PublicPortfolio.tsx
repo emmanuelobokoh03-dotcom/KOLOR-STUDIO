@@ -832,6 +832,12 @@ export default function PublicPortfolio() {
       {/* ─── Inquiry CTA Section ─── */}
       <section id="inquiry-section" className="portfolio-reveal" style={{ padding: '96px 40px', borderTop: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint)' }} data-testid="portfolio-inquiry-cta">
         <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
+          {/* iter 290-v3b — Terminal Contact eyebrow. Anchors the section as
+              the closing conversion moment, mirrors Community v3 section
+              eyebrow pattern (mono UPPERCASE 10px, 0.28em). */}
+          <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', margin: 0, marginBottom: 16 }}>
+            Get in touch
+          </p>
           <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 'clamp(36px, 5.5vw, 56px)', lineHeight: 1.05, letterSpacing: '-0.025em', color: 'var(--kolor-ink, #1A1613)', marginBottom: 20 }}>
             {ctaHeadline}
           </h2>
