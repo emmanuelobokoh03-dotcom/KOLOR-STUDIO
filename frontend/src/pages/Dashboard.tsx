@@ -15,7 +15,8 @@ import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 import { Link as LinkIcon } from '@phosphor-icons/react/dist/csr/Link'
 import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
 import { Envelope } from '@phosphor-icons/react/dist/csr/Envelope'
-import { Crosshair } from '@phosphor-icons/react/dist/csr/Crosshair'
+// iter 291-v3a — Crosshair removed (was only used by deleted Active
+// Commissions widget)
 import { GearSix } from '@phosphor-icons/react/dist/csr/GearSix'
 import { ChartBar } from '@phosphor-icons/react/dist/csr/ChartBar'
 import { CalendarDots } from '@phosphor-icons/react/dist/csr/CalendarDots'
@@ -25,7 +26,8 @@ import { Bell } from '@phosphor-icons/react/dist/csr/Bell'
 import UserAvatarMenu from '../components/community/UserAvatarMenu'
 import DashboardHeader from '../components/dashboard/DashboardHeader'
 import CommunityTabs from '../components/dashboard/CommunityTabs'
-import StudioTools from '../components/dashboard/StudioTools'
+// iter 291-v3a — StudioTools removed per Q2=A; DashboardCards is new hero.
+import DashboardCards from '../components/dashboard/DashboardCards'
 import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
 import MobileBottomNav from '../components/MobileBottomNav'
@@ -71,7 +73,8 @@ const RevenueGoalWidget = lazy(() => import('../components/RevenueGoalWidget'))
 const EmailVerificationBanner = lazy(() => import('../components/EmailVerificationBanner'))
 const DemoProjectBanner = lazy(() => import('../components/DemoProjectBanner'))
 const LeadsListView = lazy(() => import('../components/LeadsListView'))
-const TodayScreen = lazy(() => import('../components/TodayScreen'))
+// iter 291-v3a — TodayScreen import removed; hero now DashboardCards.
+// TodayScreen.tsx file preserved for now (may be reused/deleted in v3b).
 import FloatingActionMenu from '../components/FloatingActionMenu'
 const CommunityDiscover = lazy(() => import('../components/CommunityDiscover'))
 const DMView = lazy(() => import('../components/DMView'))
@@ -172,7 +175,7 @@ const Dashboard = () => {
   const [settingsInitialTab, setSettingsInitialTab] = useState<'account' | 'brand' | 'money' | 'scheduling' | 'notifications' | 'community' | undefined>(undefined)
   const [showFeedback, setShowFeedback] = useState(false)
   // Iter 146 — Task 1d: collapse industry widgets by default
-  const [showIndustryWidgets, setShowIndustryWidgets] = useState(false)
+  // iter 291-v3a — showIndustryWidgets removed (StudioTools gone per Q2=A).
   // Iter 146 — Task 2b: sidebar user block dropdown with Settings + Logout
   // userMenu removed in iter-211 — user block opens Settings directly
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
@@ -1166,94 +1169,36 @@ const Dashboard = () => {
         <>
 
         {/* Revenue Pipeline Widget */}
-        {/* Active Commissions Widget - Universal for all users */}
-        {leads.filter(l => l.projectType === 'COMMISSION' && !['BOOKED', 'LOST'].includes(l.status)).length > 0 && (
-          <div className="mb-4 md:mb-6 bg-surface-base border border-light-200 rounded-xl p-5" data-testid="active-commissions-widget">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Crosshair weight="duotone" className="w-5 h-5 text-amber-600" />
-                <h3 className="text-base font-semibold text-text-primary">Active Commissions</h3>
-                <span className="text-xs px-2 py-0.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200 font-medium">
-                  {leads.filter(l => l.projectType === 'COMMISSION' && !['BOOKED', 'LOST'].includes(l.status)).length}
-                </span>
-              </div>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="text-xs text-purple-600 hover:text-purple-700 font-medium transition-colors"
-                data-testid="new-commission-btn"
-              >
-                + {lang.newLead.replace('+ ', '')}
-              </button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {leads
-                .filter(l => !['BOOKED', 'LOST'].includes(l.status))
-                .slice(0, 6)
-                .map(lead => (
-                  <div
-                    key={lead.id}
-                    onClick={() => setSelectedLead(lead)}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-light-50 border border-light-200 hover:border-purple-300 transition-all cursor-pointer group"
-                    data-testid={`active-commission-${lead.id}`}
-                  >
-                    {lead.coverImage ? (
-                      <img src={lead.coverImage} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" loading="lazy" />
-                    ) : (
-                      <div className="w-10 h-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center flex-shrink-0">
-                        <Briefcase className="w-4 h-4 text-amber-600" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-text-primary truncate group-hover:text-purple-600 transition-colors">{lead.projectTitle}</p>
-                      <p className="text-xs text-text-secondary">{lead.clientName}</p>
-                    </div>
-                    <StatusBadge status={lead.status} size="sm" />
-                  </div>
-                ))}
-            </div>
-          </div>
-        )}
-
-        {/* Pending Contract Review Banner */}
-        {viewMode === 'kanban' && pendingContracts.length > 0 && (
-          <div className="mb-4 md:mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5" data-testid="pending-contract-banner">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Briefcase weight="duotone" className="w-5 h-5 text-amber-700" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-base font-semibold text-amber-900 mb-1">
-                  Contract Awaiting Signature
-                </h3>
-                <p className="text-sm text-amber-700 mb-3">
-                  <strong>{pendingContracts[0].lead?.clientName}</strong> has been sent a contract for <strong>"{pendingContracts[0].lead?.projectTitle}"</strong>. Awaiting their signature.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => {
-                      const lead = leads.find(l => l.id === pendingContracts[0].lead?.id)
-                      if (lead) {
-                        setSelectedLeadInitialTab('pipeline')
-                        setSelectedLead(lead)
-                      }
-                    }}
-                    className="btn btn-primary text-sm"
-                    data-testid="review-contract-btn"
-                  >
-                    Review Contract
-                  </button>
-                  {pendingContracts.length > 1 && (
-                    <span className="inline-flex items-center px-3 py-2 text-xs font-medium text-amber-700 bg-amber-100 rounded-lg">
-                      +{pendingContracts.length - 1} more pending
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* iter 291-v3a — Active Commissions widget + Pending Contract banner
+            + StudioTools invocation removed per Q2=A. Their content is now
+            surfaced through the DashboardCards hero (Today + Needs Attention)
+            below the greeting header. */}
 
         {/* Iter 146 — Task 1a: RevenuePipelineWidget removed from kanban/list surface (to move to Analytics in a future iteration). */}
+
+        {/* iter 291-v3a — DashboardCards hero (Today + Needs Attention).
+            Renders above viewMode ternary so it's a true hero surface
+            across both kanban and list layouts. */}
+        <Suspense fallback={null}>
+          <DashboardCards
+            userIndustry={user?.primaryIndustry as any}
+            currencySymbol={user?.currencySymbol || '$'}
+            onLeadClick={(leadId, tab) => {
+              const lead = leads.find(l => l.id === leadId)
+              if (lead) {
+                if (tab) setSelectedLeadInitialTab(tab)
+                setSelectedLead(lead)
+              } else {
+                leadsApi.getOne(leadId).then(r => {
+                  if (r.data?.lead) {
+                    if (tab) setSelectedLeadInitialTab(tab)
+                    setSelectedLead(r.data.lead)
+                  }
+                })
+              }
+            }}
+          />
+        </Suspense>
 
         {/* ═══ Two-column layout: Main + Right sidebar ═══ */}
         <div className={`${(viewMode === 'kanban' || viewMode === 'list') ? 'lg:grid lg:gap-6' : ''}`} style={(viewMode === 'kanban' || viewMode === 'list') ? { gridTemplateColumns: '1fr 280px' } : undefined}>
@@ -1262,16 +1207,6 @@ const Dashboard = () => {
 
         {/* Iter 146 — Task 1b: CRMAlerts + RevenueDashboard moved to right sidebar to declutter above-the-fold. */}
 
-        {/* iter 146 — Task 1d: Industry widget toggle (collapsed by default).
-            iter 289-v3c3c — extracted to StudioTools component. */}
-        <StudioTools
-          user={user}
-          expanded={showIndustryWidgets}
-          onToggle={() => setShowIndustryWidgets(v => !v)}
-          onLeadClick={setSelectedLead}
-          onAddLead={() => setShowAddModal(true)}
-          onViewCalendar={() => handleViewChange('calendar')}
-        />
         {/* Defensive fallback: prompt user to complete onboarding if industry not set */}
         {!user?.primaryIndustry && (
           <div className="mb-4 md:mb-6 bg-purple-50 border border-purple-200 rounded-xl p-4 md:p-5 flex items-center justify-between gap-4" data-testid="complete-onboarding-banner">
@@ -1649,29 +1584,11 @@ const Dashboard = () => {
               onCta={() => setShowAddModal(true)}
             />
           </div>
-        ) : viewMode === 'kanban' ? (
-          <TodayScreen
-            userIndustry={user?.primaryIndustry as any}
-            currencySymbol={user?.currencySymbol || '$'}
-            onLeadClick={(leadId, tab) => {
-              const lead = leads.find(l => l.id === leadId)
-              if (lead) {
-                if (tab) setSelectedLeadInitialTab(tab)
-                setSelectedLead(lead)
-              } else {
-                leadsApi.getOne(leadId).then(r => {
-                  if (r.data?.lead) {
-                    if (tab) setSelectedLeadInitialTab(tab)
-                    setSelectedLead(r.data.lead)
-                  }
-                })
-              }
-            }}
-            onAddLead={() => setShowAddModal(true)}
-            onShareForm={() => setShowShareModal(true)}
-            greeting={`Good ${new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, ${user?.firstName || ''}`}
-          />
         ) : (
+          /* iter 291-v3a — TodayScreen removed from kanban branch per Q4;
+             hero cards (Today + Needs Attention) now render above viewMode
+             ternary via DashboardCards. Both kanban + list share
+             LeadsListView below the hero. */
           <LeadsListView
             leads={filteredLeads}
             lang={lang}
