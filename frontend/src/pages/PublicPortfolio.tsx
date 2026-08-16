@@ -5,8 +5,8 @@ import { Star } from '@phosphor-icons/react/dist/csr/Star'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { CaretLeft } from '@phosphor-icons/react/dist/csr/CaretLeft'
 import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
-import { List as ListIcon } from '@phosphor-icons/react/dist/csr/List'
 import { 
+  authApi,
   portfolioApi, 
   PortfolioItem, 
   PortfolioCategory, 
@@ -30,7 +30,8 @@ export default function PublicPortfolio() {
   } | null>(null)
   const [testimonials, setTestimonials] = useState<any[]>([])
   const [hasMeetingTypes, setHasMeetingTypes] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  // iter 290-v3c — auth session for isOwner detection on empty state
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
 
   // Filters
   const [activeCategory, setActiveCategory] = useState<PortfolioCategory | 'ALL'>('ALL')
@@ -93,6 +94,17 @@ export default function PublicPortfolio() {
         .catch(() => {})
     }
   }, [fetchPortfolio, userId])
+
+  // iter 290-v3c — Detect current auth session to differentiate creator (own
+  // empty portfolio) vs visitor (someone else's empty portfolio) in the
+  // redesigned empty state. Silent no-op when unauthenticated.
+  useEffect(() => {
+    authApi.getMe()
+      .then(r => setCurrentUserId(r.data?.user?.id ?? null))
+      .catch(() => setCurrentUserId(null))
+  }, [])
+
+  const isOwner = currentUserId != null && currentUserId === userId
 
   // Check if meeting types exist
   useEffect(() => {
@@ -290,26 +302,54 @@ export default function PublicPortfolio() {
             </span>
           </span>
 
-          {/* Right: Links (desktop) */}
-          <div className="hidden md:flex" style={{ alignItems: 'center', gap: 24 }}>
-            <a href="#portfolio-grid" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 11, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-ink, #1A1613)', textDecoration: 'none', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>Work</a>
-            <a href="#inquiry-section" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 11, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-ink-subtle, #928B84)', textDecoration: 'none', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>Contact</a>
+          {/* Right: Links — iter 290-v3c: hamburger removed, header nav
+              always visible at all viewports (WORK + CONTACT anchors) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24 }} data-testid="portfolio-header-nav">
+            <a
+              href="#work"
+              style={{
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: '0.24em',
+                textTransform: 'uppercase',
+                color: 'var(--kolor-ink, #1A1613)',
+                textDecoration: 'none',
+                minHeight: 44,
+                display: 'inline-flex',
+                alignItems: 'center',
+                transition: 'color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--kolor-terra, #B84A2C)' }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--kolor-ink, #1A1613)' }}
+              data-testid="portfolio-nav-work"
+            >
+              Work
+            </a>
+            <a
+              href="#contact"
+              style={{
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: '0.24em',
+                textTransform: 'uppercase',
+                color: 'var(--kolor-ink, #1A1613)',
+                textDecoration: 'none',
+                minHeight: 44,
+                display: 'inline-flex',
+                alignItems: 'center',
+                transition: 'color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--kolor-terra, #B84A2C)' }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--kolor-ink, #1A1613)' }}
+              data-testid="portfolio-nav-contact"
+            >
+              Contact
+            </a>
           </div>
-
-          {/* Mobile hamburger */}
-          <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ padding: 12, background: 'none', border: 'none', cursor: 'pointer', minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }} data-testid="portfolio-mobile-menu-btn">
-            <ListIcon className="w-5 h-5" style={{ color: '#1A1A2E' }} />
-          </button>
         </div>
       </nav>
-
-      {/* Mobile menu dropdown */}
-      {mobileMenuOpen && (
-        <div className="md:hidden" style={{ background: '#FFFFFF', borderBottom: '0.5px solid #EDE8F5', padding: '12px 40px', display: 'flex', flexDirection: 'column', gap: 8, position: 'sticky', top: 60, zIndex: 49 }}>
-          <a href="#portfolio-grid" onClick={() => setMobileMenuOpen(false)} style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 12, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-ink, #1A1613)', textDecoration: 'none', padding: '8px 0' }}>Work</a>
-          <a href="#inquiry-section" onClick={() => setMobileMenuOpen(false)} style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 12, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-ink-subtle, #928B84)', textDecoration: 'none', padding: '8px 0' }}>Contact</a>
-        </div>
-      )}
 
       {/* ─── Hero Section ─── */}
       <section style={{ background: 'var(--kolor-canvas, #F7F4EE)', padding: '96px 40px 80px', textAlign: 'center', borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)' }} data-testid="portfolio-hero">
@@ -337,7 +377,7 @@ export default function PublicPortfolio() {
         {/* CTA row */}
         <div style={{ marginTop: 32, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
-            href="#inquiry-section"
+            href="#contact"
             style={{
               minHeight: 52,
               padding: '0 32px',
@@ -500,7 +540,7 @@ export default function PublicPortfolio() {
                 </h2>
               </div>
               <a
-                href="#portfolio-grid"
+                href="#work"
                 style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--kolor-terra, #B84A2C)', textDecoration: 'none' }}
                 data-testid="portfolio-selected-work-see-all"
               >
@@ -565,7 +605,7 @@ export default function PublicPortfolio() {
 
       {/* ─── Filter Bar ─── */}
       {items.length > 0 && (
-        <div id="portfolio-grid" style={{ position: 'sticky', top: 60, background: 'var(--kolor-canvas, #F7F4EE)', borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)', padding: '16px 40px', zIndex: 10 }} data-testid="portfolio-filter-bar">
+        <div id="work" style={{ position: 'sticky', top: 60, background: 'var(--kolor-canvas, #F7F4EE)', borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)', padding: '16px 40px', zIndex: 10, scrollMarginTop: 60 }} data-testid="portfolio-filter-bar">
           <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', flexWrap: 'nowrap', alignItems: 'center', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }} className="hide-scrollbar">
             {/* All pill */}
             <button
@@ -659,46 +699,238 @@ export default function PublicPortfolio() {
       <main style={{ padding: '40px', maxWidth: 1280, margin: '0 auto' }} data-testid="portfolio-grid-section">
         {filteredItems.length === 0 ? (
           items.length === 0 ? (
-            /* Empty portfolio state */
-            <div style={{ textAlign: 'center', padding: '80px 16px' }}>
-              <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 40, lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--kolor-ink, #1A1613)', marginBottom: 16 }}>
-                Coming soon.
-              </h2>
-              <p style={{ fontFamily: 'Inter, system-ui, sans-serif', color: 'var(--kolor-ink-muted, #5F5751)', fontSize: 15, lineHeight: 1.7, maxWidth: 420, margin: '0 auto 32px' }}>
-                {studioDisplayName} is setting up their portfolio. Check back soon, or get in touch directly.
+            /* iter 290-v3c — Empty state / Coming Soon full redesign.
+               Framework-designed "space held" moment with subtle Studio Wall
+               echo (geometric hairline frames), Fraunces italic initial
+               anchor, and owner vs visitor branches. Industry-adaptive
+               creator-side messaging via getIndustryLanguage(). */
+            <div
+              style={{ textAlign: 'center', padding: '72px 16px 96px', position: 'relative' }}
+              data-testid="portfolio-empty-state"
+            >
+              {/* Section eyebrow */}
+              <p style={{
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase' as const,
+                color: 'var(--kolor-ink-subtle, #928B84)',
+                margin: 0,
+                marginBottom: 40,
+              }}>
+                {isOwner ? 'Your studio' : 'A studio in progress'}
               </p>
-              <a
-                href="#inquiry-section"
+
+              {/* Visual anchor — Studio Wall echo: three hairline "framed"
+                  placeholders in a static composition, echoing a gallery
+                  wall without being a literal frame illustration. Center
+                  frame holds the Fraunces italic initial. */}
+              <div
+                aria-hidden
                 style={{
-                  display: 'inline-flex',
+                  display: 'flex',
+                  justifyContent: 'center',
                   alignItems: 'center',
-                  gap: 8,
-                  padding: '14px 28px',
-                  background: 'transparent',
-                  color: 'var(--kolor-terra, #B84A2C)',
-                  border: '1px solid var(--kolor-terra, #B84A2C)',
-                  borderRadius: 2,
-                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
-                  fontSize: 11,
-                  fontWeight: 500,
-                  letterSpacing: '0.28em',
-                  textTransform: 'uppercase' as const,
-                  textDecoration: 'none',
-                  transition: 'border-color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                  gap: 24,
+                  margin: '0 auto 56px',
+                  maxWidth: 520,
                 }}
+                data-testid="portfolio-empty-visual-anchor"
               >
-                Get in touch
-              </a>
-              <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase' as const, color: 'var(--kolor-ink-subtle, #928B84)', marginTop: 32 }}>
-                Already worked with {studioDisplayName.split(' ')[0]}?{' '}
-                <a
-                  href="#inquiry-section"
-                  style={{ color: 'var(--kolor-terra, #B84A2C)', textDecoration: 'none', borderBottom: '1px solid var(--kolor-terra, #B84A2C)', paddingBottom: 2 }}
-                  data-testid="portfolio-leave-review-link"
-                >
-                  Get in touch to share your experience
-                </a>
-              </p>
+                {/* Left frame — smaller, offset */}
+                <div style={{
+                  width: 72,
+                  height: 96,
+                  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                  background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))',
+                  flexShrink: 0,
+                  transform: 'translateY(12px)',
+                }} />
+                {/* Center frame — larger, holds initial */}
+                <div style={{
+                  width: 168,
+                  height: 224,
+                  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                  background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <span style={{
+                    fontFamily: "'Fraunces', Georgia, serif",
+                    fontWeight: 400,
+                    fontStyle: 'italic',
+                    fontSize: 96,
+                    lineHeight: 1,
+                    letterSpacing: '-0.04em',
+                    color: 'var(--kolor-ink, #1A1613)',
+                    opacity: 0.85,
+                  }}>
+                    {initials}
+                  </span>
+                </div>
+                {/* Right frame — smaller, offset */}
+                <div style={{
+                  width: 72,
+                  height: 96,
+                  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                  background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))',
+                  flexShrink: 0,
+                  transform: 'translateY(-12px)',
+                }} />
+              </div>
+
+              {isOwner ? (
+                /* Owner branch — creator viewing their own empty portfolio */
+                <>
+                  <h2 style={{
+                    fontFamily: "'Fraunces', Georgia, serif",
+                    fontWeight: 400,
+                    fontStyle: 'italic',
+                    fontSize: 'clamp(36px, 5vw, 48px)',
+                    lineHeight: 1.05,
+                    letterSpacing: '-0.025em',
+                    color: 'var(--kolor-ink, #1A1613)',
+                    marginBottom: 16,
+                  }} data-testid="portfolio-empty-owner-heading">
+                    {industry === 'DESIGN' ? 'Your studio is ready.'
+                      : industry === 'FINE_ART' ? 'The gallery is set.'
+                      : 'Your gallery is waiting.'}
+                  </h2>
+                  <p style={{
+                    fontFamily: 'Inter, system-ui, sans-serif',
+                    color: 'var(--kolor-ink-muted, #5F5751)',
+                    fontSize: 16,
+                    lineHeight: 1.7,
+                    maxWidth: 460,
+                    margin: '0 auto 40px',
+                  }}>
+                    {industry === 'DESIGN'
+                      ? 'Add your first case study to start showing your work to prospective clients.'
+                      : industry === 'FINE_ART'
+                      ? 'Add your first piece to open your portfolio to collectors and press.'
+                      : 'Upload your first shots to start building the portfolio clients see when they land here.'}
+                  </p>
+                  <Link
+                    to="/portfolio"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: '16px 32px',
+                      background: 'var(--kolor-terra, #B84A2C)',
+                      color: 'var(--kolor-canvas, #F7F4EE)',
+                      border: '1px solid var(--kolor-terra, #B84A2C)',
+                      borderRadius: 2,
+                      fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                      fontSize: 11,
+                      fontWeight: 500,
+                      letterSpacing: '0.28em',
+                      textTransform: 'uppercase' as const,
+                      textDecoration: 'none',
+                      transition: 'opacity 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.9' }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1' }}
+                    data-testid="portfolio-empty-publish-cta"
+                  >
+                    Publish your first work →
+                  </Link>
+                </>
+              ) : (
+                /* Visitor branch — someone else's empty portfolio */
+                <>
+                  <h2 style={{
+                    fontFamily: "'Fraunces', Georgia, serif",
+                    fontWeight: 400,
+                    fontStyle: 'italic',
+                    fontSize: 'clamp(36px, 5vw, 48px)',
+                    lineHeight: 1.05,
+                    letterSpacing: '-0.025em',
+                    color: 'var(--kolor-ink, #1A1613)',
+                    marginBottom: 16,
+                  }} data-testid="portfolio-empty-visitor-heading">
+                    A studio in progress.
+                  </h2>
+                  <p style={{
+                    fontFamily: 'Inter, system-ui, sans-serif',
+                    color: 'var(--kolor-ink-muted, #5F5751)',
+                    fontSize: 16,
+                    lineHeight: 1.7,
+                    maxWidth: 460,
+                    margin: '0 auto 40px',
+                  }}>
+                    {studioDisplayName.split(' ')[0]} is setting up their portfolio. Check back soon, or start a conversation about upcoming work.
+                  </p>
+                  <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <a
+                      href="#contact"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        padding: '16px 32px',
+                        background: 'transparent',
+                        color: 'var(--kolor-terra, #B84A2C)',
+                        border: '1px solid var(--kolor-terra, #B84A2C)',
+                        borderRadius: 2,
+                        fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                        fontSize: 11,
+                        fontWeight: 500,
+                        letterSpacing: '0.28em',
+                        textTransform: 'uppercase' as const,
+                        textDecoration: 'none',
+                        transition: 'background 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLAnchorElement).style.background = 'var(--kolor-terra, #B84A2C)';
+                        (e.currentTarget as HTMLAnchorElement).style.color = 'var(--kolor-canvas, #F7F4EE)';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
+                        (e.currentTarget as HTMLAnchorElement).style.color = 'var(--kolor-terra, #B84A2C)';
+                      }}
+                      data-testid="portfolio-empty-inquiry-cta"
+                    >
+                      Get in touch →
+                    </a>
+                    {userInfo?.communityHandle && (
+                      <Link
+                        to={`/creator/${userInfo.communityHandle}`}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          padding: '16px 32px',
+                          background: 'transparent',
+                          color: 'var(--kolor-ink, #1A1613)',
+                          border: '1px solid var(--kolor-ink, #1A1613)',
+                          borderRadius: 2,
+                          fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                          fontSize: 11,
+                          fontWeight: 500,
+                          letterSpacing: '0.28em',
+                          textTransform: 'uppercase' as const,
+                          textDecoration: 'none',
+                          transition: 'background 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLAnchorElement).style.background = 'var(--kolor-ink, #1A1613)';
+                          (e.currentTarget as HTMLAnchorElement).style.color = 'var(--kolor-canvas, #F7F4EE)';
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
+                          (e.currentTarget as HTMLAnchorElement).style.color = 'var(--kolor-ink, #1A1613)';
+                        }}
+                        data-testid="portfolio-empty-community-link"
+                      >
+                        Community profile →
+                      </Link>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             /* No items match filters */
@@ -830,7 +1062,7 @@ export default function PublicPortfolio() {
       )}
 
       {/* ─── Inquiry CTA Section ─── */}
-      <section id="inquiry-section" className="portfolio-reveal" style={{ padding: '96px 40px', borderTop: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint)' }} data-testid="portfolio-inquiry-cta">
+      <section id="contact" className="portfolio-reveal" style={{ padding: '96px 40px', borderTop: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint)', scrollMarginTop: 60 }} data-testid="portfolio-inquiry-cta">
         <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
           {/* iter 290-v3b — Terminal Contact eyebrow. Anchors the section as
               the closing conversion moment, mirrors Community v3 section
@@ -990,6 +1222,12 @@ export default function PublicPortfolio() {
 
       {/* Responsive CSS */}
       <style>{`
+        /* iter 290-v3c — Smooth scroll for header nav anchor links; respects
+           prefers-reduced-motion for accessibility. */
+        html { scroll-behavior: smooth; }
+        @media (prefers-reduced-motion: reduce) {
+          html { scroll-behavior: auto; }
+        }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .testimonial-grid { grid-template-columns: repeat(3, 1fr); }
