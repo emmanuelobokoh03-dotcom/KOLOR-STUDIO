@@ -2326,3 +2326,55 @@ New-arc opening iterations require data model verification in STEP 0 before spec
 - **P1**: iter 290-v3c — Empty state / Coming Soon full redesign per Q4=B + arc closure polish
 - **P2**: About section (revisit when bio copy + intent clarify)
 - **P2**: Landing positioning, first-shot onboarding, NotificationBell extraction
+
+---
+
+## Iteration 290-v3c — Empty state + nav restructure + CONTACT fix + polish (Feb 2026) — Portfolio v3 ARC CLOSES
+
+Portfolio v3 arc closing iteration. Ships four remaining workstreams
+that complete the Portfolio v3 surface calibration.
+
+### Files changed (1)
+- `frontend/src/pages/PublicPortfolio.tsx` — Four workstreams landed in single file:
+  1. Empty state / Coming Soon full redesign (owner + visitor branches, Studio Wall echo visual anchor, industry-adaptive language)
+  2. Nav restructure: hamburger + mobile dropdown removed, header nav (Work + Contact) always visible
+  3. Section anchors renamed to semantic `#work` / `#contact` with scrollMarginTop:60 for sticky-header offset
+  4. Global CSS smooth-scroll + prefers-reduced-motion fallback
+
+### STEP 0 findings (Adaptive branch decisions)
+- Empty state = no isOwner branch exists → added `authApi.getMe()` session check for currentUserId → isOwner derived from currentUserId === userId
+- Nav = Case A (both hamburger + desktop nav present) → removed hamburger + mobile menu overlay + ListIcon import + mobileMenuOpen state
+- CONTACT = Case D (link used `#inquiry-section` but brief prefers semantic `#contact`) → renamed both work + contact section IDs + all internal href refs updated (5 total)
+
+### Empty state design
+- Owner branch: industry-adaptive heading ("Your gallery is waiting" / "Your studio is ready" / "The gallery is set") + guidance + solid Terra CTA → /portfolio manager
+- Visitor branch: "A studio in progress." + industry-adaptive inquiry CTA + optional Community profile secondary CTA
+- Visual anchor: three hairline framed placeholders (center holds large Fraunces italic initial, sides slightly offset for asymmetry)
+- All CTAs 44+ tap targets; hover transitions on color only; no reveal motion (stability)
+
+### Verification
+- Backend TSC + build clean; frontend TSC clean; cold-cache build 7.48s
+- All 13 file-receipt checks PASS
+- v3a + v3b state intact (SELECTED WORK rail, MAX 6 backend enforcement, Terminal Contact eyebrow, persistent grid star)
+- Community v3 arc intact (DashboardHeader, CommunityTabs, StudioTools all present)
+- Framework primitives UNCHANGED; Phase 2 baselines PASS
+
+### Testing status
+- Local commit: `dd25346`
+- Manual Smoke Tests 1-7 pending user browser verification
+
+### Portfolio v3 arc CLOSES
+Three sub-iterations, all functionally verified:
+- v3a: SELECTED WORK rail + MAX 6 (`20eac61`)
+- v3b: Terminal Contact eyebrow + persistent grid star (`2effdae`)
+- v3c: Empty state + nav restructure + CONTACT fix + polish (`dd25346`)
+
+### Backlog (Feb 2026)
+- **P0**: Publish 10 commits to origin/main via Save to GitHub
+- **P0**: Add `ADMIN_EMAILS=emmanuelobokoh4@gmail.com` to Railway (manual)
+- **P1**: iter 291 Dashboard redesign arc — brief writing begins (Layer 1 competitive audit already delivered)
+- **P2**: About section on PublicPortfolio (deferred pending bio copy + intent)
+- **P2**: Testimonials collection flow
+- **P2**: Landing positioning, first-shot onboarding, NotificationBell extraction
+- **P2**: `PostLike.userId` field rename cleanup
+- **P2**: Individual notification framework overhaul
