@@ -2248,3 +2248,44 @@ Zero behavior changes. Every callback, state hook, prop preserved exactly. Extra
 - **P2**: First-shot onboarding
 - **P2**: NotificationBell extraction (future iteration when v3c3a chain code has settled)
 - **P2**: PostLike.userId field rename cleanup
+
+---
+
+## Iteration 290-v3a — Portfolio SELECTED WORK rail + max-6 (Feb 2026)
+
+**Opens Portfolio v3 arc.** Path A + D per user confirmation: adaptive minimal — no schema, reuse existing `PortfolioItem.featured` + `order` + 3 existing endpoints. STEP 0 caught spec-vs-reality mismatch (spec assumed Post-based; Portfolio has its own `Portfolio` model).
+
+### Files changed (3)
+- `backend/src/routes/portfolio.ts` — MAX 6 enforcement on `PATCH /portfolio/:id/featured`; returns 400 when toggling a 7th featured item
+- `frontend/src/pages/PublicPortfolio.tsx` — SELECTED WORK rail section between hero and filter bar; reuses existing lightbox; kolor-slate-tint background + Fraunces italic heading + Terra "See all works" anchor
+- `frontend/src/pages/Portfolio.tsx` — MAX 6 hint + live "N of 6 featured" counter next to featured toggle; `handleToggleFeatured` surfaces backend 400 as toast
+
+### Key decisions
+- **No schema migration** — Portfolio.featured + Portfolio.order already exist; new join table would create redundancy with two sources of truth
+- **Reused existing lightbox** (PublicPortfolio.tsx lines 39-124) rather than building fresh
+- **Card click on rail** resets filters + opens lightbox at item's absolute index (ensures filteredItems mirrors items ordering)
+- **Q6=C middle-ground** — subtle hover scale, no metadata overlay on rail cards, no autoplay, no engagement loops
+
+### Verification
+- Backend TSC + build clean; frontend TSC + cold-cache build clean (7.16s); lint clean on both changed frontend files
+- Backend endpoint reachable via curl; 404 on nonexistent-id proves auth + ownership path works
+- All iter 289 arc state intact; framework primitives UNCHANGED; no schema changes; Phase 2 baselines PASS
+
+### Testing status
+- Local commit: `20eac61`
+- Manual Smoke Tests 1-7 pending user browser verification
+
+### Deferred to v3b/v3c
+- About + contact refinement + framework calibration polish (v3b)
+- Empty state / Coming Soon full redesign (v3c per Q4=B)
+- Industry-adaptive grid variants (needs schema — year/medium/dimensions fields)
+
+### Backlog (Feb 2026)
+- **P0**: Publish 8 commits to origin/main via Save to GitHub
+- **P0**: Add `ADMIN_EMAILS=emmanuelobokoh4@gmail.com` to Railway (manual)
+- **P1**: iter 290-v3b — Portfolio About + Contact refinement + calibration pass
+- **P2**: iter 290-v3c — Empty state redesign
+- **P2**: Landing positioning, first-shot onboarding, NotificationBell extraction
+
+### Codified discipline
+New-arc opening iterations require data model verification in STEP 0 before spec writes assume schema shape. STEP 0's discipline caught the Post-vs-Portfolio model confusion and the pause-on-schema-issue directive fired correctly.
