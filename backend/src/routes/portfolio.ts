@@ -456,6 +456,23 @@ router.patch('/:id/featured', authMiddleware, async (req: AuthRequest, res: Resp
       return;
     }
 
+    // iter 290-v3a — Enforce MAX 6 featured items. When toggling ON (i.e.,
+    // currently unfeatured), block if the creator already has 6 featured.
+    // Toggling OFF is always allowed. Backend is source of truth so
+    // frontend disabling + this check both hold the invariant.
+    if (!existing.featured) {
+      const currentFeaturedCount = await prisma.portfolio.count({
+        where: { userId, featured: true },
+      });
+      if (currentFeaturedCount >= 6) {
+        res.status(400).json({
+          error: 'Featured limit reached',
+          message: 'You can feature up to 6 portfolio items in the Selected Work rail. Un-feature one to free a slot.',
+        });
+        return;
+      }
+    }
+
     // Toggle featured status
     const item = await prisma.portfolio.update({
       where: { id },

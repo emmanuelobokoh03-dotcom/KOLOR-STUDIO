@@ -55,6 +55,14 @@ export default function PublicPortfolio() {
     || 'Portfolio'
   const initials = (userInfo?.firstName?.[0] || userInfo?.name?.[0] || 'K').toUpperCase()
   const featuredCount = useMemo(() => items.filter(i => i.featured).length, [items])
+  // iter 290-v3a — SELECTED WORK rail: featured items in `order` sort, max 6.
+  // Reuses existing PortfolioItem.featured boolean + order field; no schema
+  // change. Backend enforces the 6-item ceiling on PATCH /featured; frontend
+  // slice(0,6) is a defensive guard.
+  const selectedWork = useMemo(
+    () => items.filter(i => i.featured).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).slice(0, 6),
+    [items]
+  )
 
   // Fetch portfolio
   const fetchPortfolio = useCallback(async () => {
@@ -464,6 +472,96 @@ export default function PublicPortfolio() {
           </div>
         )}
       </section>
+
+      {/* ─── SELECTED WORK rail — iter 290-v3a ───
+          Curator-selected showcase directly below hero. Renders items where
+          featured=true, ordered by `order`, capped at 6 (defensively; backend
+          enforces the ceiling). Only surfaces when the creator has at least
+          one featured item. Reuses the existing lightbox — clicking a card
+          resets filters so the shared filteredItems array matches items
+          ordering, then opens the lightbox at the item's global index. */}
+      {selectedWork.length > 0 && (
+        <section
+          data-testid="portfolio-selected-work"
+          style={{
+            padding: '80px 40px 40px',
+            background: 'var(--kolor-slate-tint, #F0EBE4)',
+            borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)',
+          }}
+        >
+          <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 40, gap: 24, flexWrap: 'wrap' }}>
+              <div>
+                <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--kolor-ink-subtle, #928B84)', margin: 0 }}>
+                  Selected Work
+                </p>
+                <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, fontStyle: 'italic', fontSize: 'clamp(32px, 4vw, 40px)', letterSpacing: '-0.02em', color: 'var(--kolor-ink, #1A1613)', margin: '12px 0 0', lineHeight: 1.05 }}>
+                  Highlights from the studio.
+                </h2>
+              </div>
+              <a
+                href="#portfolio-grid"
+                style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--kolor-terra, #B84A2C)', textDecoration: 'none' }}
+                data-testid="portfolio-selected-work-see-all"
+              >
+                See all works <span aria-hidden style={{ letterSpacing: 0 }}>↓</span>
+              </a>
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(auto-fit, minmax(${selectedWork.length >= 3 ? '280px' : '360px'}, 1fr))`,
+                gap: 24,
+              }}
+            >
+              {selectedWork.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    // Reset filters so filteredItems mirrors items, then
+                    // open lightbox at the item's absolute index in items.
+                    setActiveCategory('ALL')
+                    setShowFeaturedOnly(false)
+                    const idx = items.findIndex(i => i.id === item.id)
+                    if (idx >= 0) openLightbox(idx)
+                  }}
+                  data-testid={`portfolio-selected-work-card-${item.id}`}
+                  style={{
+                    position: 'relative',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: 0,
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    display: 'block',
+                    width: '100%',
+                  }}
+                >
+                  <div style={{ aspectRatio: '4/5', overflow: 'hidden', position: 'relative', background: 'var(--kolor-canvas, #F7F4EE)' }}>
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      loading="lazy"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: prefersReducedMotion ? 'none' : 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1)' }}
+                      onMouseEnter={(e) => { if (!prefersReducedMotion) (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.02)' }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1)' }}
+                    />
+                  </div>
+                  <div style={{ padding: '16px 4px 0' }}>
+                    <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: 'italic', fontWeight: 400, fontSize: 22, lineHeight: 1.15, letterSpacing: '-0.01em', color: 'var(--kolor-ink, #1A1613)', margin: 0 }}>
+                      {item.title}
+                    </h3>
+                    <p style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--kolor-ink-subtle, #928B84)', margin: '8px 0 0' }}>
+                      {PORTFOLIO_CATEGORY_LABELS[item.category]}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ─── Filter Bar ─── */}
       {items.length > 0 && (

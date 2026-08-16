@@ -12,6 +12,7 @@ import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
 import { ArrowSquareOut } from '@phosphor-icons/react/dist/csr/ArrowSquareOut'
 import { Link } from '@phosphor-icons/react/dist/csr/Link'
 import { Eye } from '@phosphor-icons/react/dist/csr/Eye'
+import { toast } from 'sonner'
 import { 
   portfolioApi, 
   PortfolioItem, 
@@ -230,12 +231,19 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
   }
 
   // Handle toggle featured
+  // iter 290-v3a — Backend enforces MAX 6 featured items (Selected Work rail
+  // ceiling). Surface the 400 to the user so they know why the toggle didn't
+  // apply, rather than silently failing.
   const handleToggleFeatured = async (item: PortfolioItem) => {
     const result = await portfolioApi.toggleFeatured(item.id)
-    if (!result.error) {
-      fetchItems()
+    if (result.error) {
+      toast.error(result.message || 'Could not update featured status')
+      return
     }
+    fetchItems()
   }
+
+  const featuredCount = items.filter(i => i.featured).length
 
   return (
     <div className="space-y-6" data-testid="portfolio-page">
@@ -562,19 +570,26 @@ export default function PortfolioPage({ user }: PortfolioPageProps) {
                 <p className="text-xs text-text-tertiary mt-1">Separate tags with commas</p>
               </div>
 
-              {/* Featured Toggle */}
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  checked={featured}
-                  onChange={(e) => setFeatured(e.target.checked)}
-                  className="w-4 h-4 rounded border-light-200 bg-surface-base text-brand-primary focus:ring-purple-500"
-                />
-                <label htmlFor="featured" className="text-sm text-text-secondary flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-400" />
-                  Mark as featured
-                </label>
+              {/* Featured Toggle — iter 290-v3a: MAX 6 hint + live counter
+                  so creators understand the featured toggle now drives the
+                  public SELECTED WORK rail (not just a filter badge). */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="featured"
+                    checked={featured}
+                    onChange={(e) => setFeatured(e.target.checked)}
+                    className="w-4 h-4 rounded border-light-200 bg-surface-base text-brand-primary focus:ring-purple-500"
+                  />
+                  <label htmlFor="featured" className="text-sm text-text-secondary flex items-center gap-2">
+                    <Star className="w-4 h-4 text-yellow-400" />
+                    Mark as featured
+                  </label>
+                </div>
+                <p className="text-[10px] text-text-tertiary uppercase tracking-[0.24em] font-medium ml-7" data-testid="featured-hint">
+                  Max 6 · shown in Selected Work rail · {featuredCount} of 6 featured
+                </p>
               </div>
             </div>
 
