@@ -2289,3 +2289,40 @@ Zero behavior changes. Every callback, state hook, prop preserved exactly. Extra
 
 ### Codified discipline
 New-arc opening iterations require data model verification in STEP 0 before spec writes assume schema shape. STEP 0's discipline caught the Post-vs-Portfolio model confusion and the pause-on-schema-issue directive fired correctly.
+
+---
+
+## Iteration 290-v3b (revised) — Terminal Contact eyebrow + persistent grid star (Feb 2026)
+
+**Path C ratified.** Scope revised after STEP 0 revealed most originally-scoped v3b already ships. Targeted polish pass rather than full section build.
+
+### Files changed (2)
+- `frontend/src/pages/PublicPortfolio.tsx` — "Get in touch" mono UPPERCASE eyebrow above existing `portfolio-inquiry-cta` heading
+- `frontend/src/pages/Portfolio.tsx` — Persistent 32px star button top-right of each grid tile (always visible at rest, not hover-gated)
+
+### STEP 0 revealed (v3b scope no-op)
+- Testimonial model + routes + management + PublicPortfolio display **already ship**
+- Hero Work with me CTA already wired to `/inquiry?studio=userId` with industry-adaptive language
+- Existing `portfolio-inquiry-cta` at line 833 IS the terminal Contact — just needed eyebrow
+- Existing hover-overlay star at line 366 uses `opacity-0 group-hover:opacity-100` — Case Y CSS visibility diagnosis for Emmanuel's v3a smoke test miss
+
+### Key decisions
+- **OR EMAIL DIRECTLY secondary CTA not added** — public portfolio endpoint excludes `user.email` by design; exposing via mailto would break privacy
+- **About section deferred (Path C)** — user previously removed bio from hero explicitly; revisit when bio copy + intent clarify
+- **Existing hover-overlay star preserved** as secondary affordance alongside new persistent top-right star
+
+### Verification
+- Backend + frontend TSC clean; cold-cache build 6.86s; lint clean
+- No schema changes; framework primitives UNCHANGED; Phase 2 baselines PASS
+- v3a state intact (SELECTED WORK rail, MAX 6 backend enforcement)
+
+### Testing status
+- Local commit: `2effdae`
+- Manual Smoke Tests 1-5 pending user browser verification
+
+### Backlog (Feb 2026)
+- **P0**: Publish 9 commits to origin/main via Save to GitHub
+- **P0**: Add `ADMIN_EMAILS=emmanuelobokoh4@gmail.com` to Railway (manual)
+- **P1**: iter 290-v3c — Empty state / Coming Soon full redesign per Q4=B + arc closure polish
+- **P2**: About section (revisit when bio copy + intent clarify)
+- **P2**: Landing positioning, first-shot onboarding, NotificationBell extraction
