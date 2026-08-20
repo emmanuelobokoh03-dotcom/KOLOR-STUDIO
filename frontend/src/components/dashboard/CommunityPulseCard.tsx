@@ -30,6 +30,13 @@ interface NotificationDoc {
   isRead: boolean
   fromUserId: string | null
   postId: string | null
+  // iter 291-v3c — actor enrichment via ?enrich=1
+  actor?: {
+    id: string
+    name: string
+    handle: string | null
+    avatarUrl: string | null
+  } | null
 }
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000
@@ -48,16 +55,17 @@ function relativeTime(iso: string): string {
   return `${Math.floor(day / 7)}W AGO`
 }
 
-function formatActivityMessage(type: NotificationDoc['type']): string {
-  switch (type) {
+function formatActivityMessage(item: NotificationDoc): string {
+  const actor = item.actor?.name || 'Someone'
+  switch (item.type) {
     case 'POST_LIKED':
-      return 'Someone liked your shot'
+      return `${actor} liked your shot`
     case 'POST_COMMENTED':
-      return 'New comment on your shot'
+      return `${actor} commented on your shot`
     case 'NEW_FOLLOWER':
-      return 'New follower'
+      return `${actor} started following you`
     default:
-      return 'New activity'
+      return `${actor} interacted with your work`
   }
 }
 
@@ -87,7 +95,7 @@ export function CommunityPulseCard({ onViewCommunity }: CommunityPulseCardProps)
           (import.meta as any).env?.VITE_API_URL ||
           (import.meta as any).env?.REACT_APP_BACKEND_URL ||
           ''
-        const res = await fetch(`${apiUrl}/api/community/notifications`, {
+        const res = await fetch(`${apiUrl}/api/community/notifications?enrich=1`, {
           credentials: 'include',
         })
         if (res.ok && !cancelled) {
@@ -141,7 +149,21 @@ export function CommunityPulseCard({ onViewCommunity }: CommunityPulseCardProps)
         icon={<Users weight="duotone" size={20} />}
         testId="community-pulse-card"
       >
-        <div style={{ padding: '16px 4px' }} data-testid="community-pulse-empty">
+        <div style={{ padding: '16px 4px', textAlign: 'center' }} data-testid="community-pulse-empty">
+          {/* iter 291-v3c — landing echo: subtle Studio Wall hairline anchor */}
+          <div
+            aria-hidden
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 6,
+              marginBottom: 16,
+            }}
+          >
+            <div style={{ width: 16, height: 24, border: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))' }} />
+            <div style={{ width: 32, height: 44, border: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))' }} />
+            <div style={{ width: 16, height: 24, border: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))' }} />
+          </div>
           <p
             style={{
               fontFamily: 'Inter, system-ui, sans-serif',
@@ -150,6 +172,9 @@ export function CommunityPulseCard({ onViewCommunity }: CommunityPulseCardProps)
               color: 'var(--kolor-ink-muted, #5F5751)',
               margin: 0,
               marginBottom: 16,
+              maxWidth: 320,
+              marginLeft: 'auto',
+              marginRight: 'auto',
             }}
           >
             No recent community activity. Publish a shot in Community to start
@@ -263,7 +288,7 @@ export function CommunityPulseCard({ onViewCommunity }: CommunityPulseCardProps)
                   fontWeight: 500,
                 }}
               >
-                {formatActivityMessage(item.type)}
+                {formatActivityMessage(item)}
               </p>
               <p
                 style={{

@@ -84,7 +84,21 @@ export function PipelinePulseCard({ onViewClients }: PipelinePulseCardProps) {
         icon={<ChartLine weight="duotone" size={20} />}
         testId="pipeline-pulse-card"
       >
-        <div style={{ padding: '16px 4px' }} data-testid="pipeline-pulse-empty">
+        <div style={{ textAlign: 'center', padding: '20px 4px 4px' }} data-testid="pipeline-pulse-empty">
+          {/* iter 291-v3c — landing echo: subtle Studio Wall hairline anchor */}
+          <div
+            aria-hidden
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 6,
+              marginBottom: 16,
+            }}
+          >
+            <div style={{ width: 16, height: 24, border: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))' }} />
+            <div style={{ width: 32, height: 44, border: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))' }} />
+            <div style={{ width: 16, height: 24, border: '1px solid var(--kolor-hairline, #E5E0D8)', background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))' }} />
+          </div>
           <p
             style={{
               fontFamily: 'Inter, system-ui, sans-serif',

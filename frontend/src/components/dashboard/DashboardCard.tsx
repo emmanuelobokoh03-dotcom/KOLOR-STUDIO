@@ -36,7 +36,7 @@ export function DashboardCard({
 }: DashboardCardProps) {
   return (
     <section
-      className="mb-4 md:mb-6"
+      className="dashboard-card mb-4 md:mb-6"
       style={{
         background: 'var(--kolor-canvas, #F7F4EE)',
         border: '1px solid var(--kolor-hairline, #E5E0D8)',

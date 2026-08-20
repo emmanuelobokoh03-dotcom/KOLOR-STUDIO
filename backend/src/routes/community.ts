@@ -823,18 +823,62 @@ router.get('/following/mine', authMiddleware, async (req: AuthRequest, res: Resp
 // ─── Notifications ─────────────────────────────────────────────────────────
 
 // GET /api/community/notifications
+// iter 291-v3c — Q3=C + Q12=C bell archival view. Extended:
+//   • Larger `take` (100) when `?enrich=1` for the sheet drawer archive
+//   • Optional actor enrichment (fromUserId -> {id, name, handle, avatarUrl})
+//     for the Community Pulse card + sheet rows. Off by default to keep the
+//     legacy poll payload lean.
 router.get('/notifications', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const profile = await prisma.communityProfile.findUnique({ where: { userId: req.userId! } })
     if (!profile) { res.json({ notifications: [], unread: 0 }); return }
 
+    const enrich = req.query.enrich === '1' || req.query.enrich === 'true'
+    const take = enrich ? 100 : 20
+
     const notifications = await prisma.notification.findMany({
       where: { recipientId: profile.id },
       orderBy: { createdAt: 'desc' },
-      take: 20,
+      take,
     })
     const unread = notifications.filter(n => !n.isRead).length
-    res.json({ notifications, unread })
+
+    if (!enrich) {
+      res.json({ notifications, unread })
+      return
+    }
+
+    // Enrich: batch-lookup all unique fromUserIds -> User + optional CommunityProfile handle.
+    // Avatar not tracked in schema; UI falls back to per-type icon.
+    const fromIds = Array.from(new Set(notifications.map(n => n.fromUserId).filter((v): v is string => !!v)))
+    let actors: Record<string, { id: string; name: string; handle: string | null; avatarUrl: string | null }> = {}
+    if (fromIds.length > 0) {
+      const users = await prisma.user.findMany({
+        where: { id: { in: fromIds } },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          communityProfile: { select: { handle: true } },
+        },
+      })
+      actors = users.reduce((acc, u) => {
+        const name = [u.firstName, u.lastName].filter(Boolean).join(' ').trim() || 'Someone'
+        acc[u.id] = {
+          id: u.id,
+          name,
+          handle: u.communityProfile?.handle ?? null,
+          avatarUrl: null,
+        }
+        return acc
+      }, {} as typeof actors)
+    }
+
+    const enriched = notifications.map(n => ({
+      ...n,
+      actor: n.fromUserId ? actors[n.fromUserId] ?? null : null,
+    }))
+    res.json({ notifications: enriched, unread })
   } catch (e) { res.status(500).json({ error: 'Failed' }) }
 })
 

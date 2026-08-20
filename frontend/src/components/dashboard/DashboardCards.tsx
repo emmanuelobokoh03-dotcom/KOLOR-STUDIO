@@ -43,6 +43,13 @@ export function DashboardCards({
       style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
       data-testid="dashboard-cards"
     >
+      {/* iter 291-v3c — Q13=A: cards stacked at all viewports; mobile
+          scales card padding via CSS media query */}
+      <style>{`
+        @media (max-width: 640px) {
+          .dashboard-card { padding: 20px 20px !important; }
+        }
+      `}</style>
       <TodayCard
         userIndustry={userIndustry}
         currencySymbol={currencySymbol}

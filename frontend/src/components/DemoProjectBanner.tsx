@@ -33,25 +33,62 @@ export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted, on
 
   return (
     <div
-      className="relative bg-gradient-to-r from-brand-primary-dark/20 to-brand-accent-dark/20 border border-purple-200 rounded-xl p-4 md:p-5 mb-5"
+      className="relative rounded-xl p-4 md:p-5 mb-5"
+      style={{
+        background: 'var(--kolor-slate-tint, rgba(245, 240, 232, 0.6))',
+        border: '1px solid var(--kolor-hairline, #E5E0D8)',
+      }}
       data-testid="demo-project-banner"
     >
       <div className="flex items-start gap-3 md:gap-4">
-        <div className="w-9 h-9 bg-brand-primary/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-          <Sparkle className="w-5 h-5 text-purple-600" />
+        <div
+          className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+          style={{
+            background: 'var(--kolor-canvas, #F7F4EE)',
+            border: '1px solid var(--kolor-hairline, #E5E0D8)',
+            color: 'var(--kolor-terra, #B84A2C)',
+          }}
+        >
+          <Sparkle className="w-5 h-5" weight="duotone" />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-purple-600 text-sm md:text-base mb-1">
-            Welcome! We created a sample project for you
+          <h3
+            className="text-sm md:text-base mb-1"
+            style={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontStyle: 'italic',
+              fontWeight: 400,
+              letterSpacing: '-0.02em',
+              color: 'var(--kolor-ink, #1A1613)',
+              fontSize: 18,
+              lineHeight: 1.2,
+            }}
+          >
+            Welcome. We created a sample project for you.
           </h3>
-          <p className="text-xs md:text-sm text-text-secondary leading-relaxed mb-3">
-            Click on <strong className="text-text-primary">"Sarah Johnson (Demo)"</strong> below to explore quotes, files, timeline, and more.
-            Delete it anytime once you're ready to add your own clients.
+          <p
+            className="text-xs md:text-sm leading-relaxed mb-3"
+            style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}
+          >
+            Click on <strong style={{ color: 'var(--kolor-ink, #1A1613)' }}>"Sarah Johnson (Demo)"</strong> below to explore quotes, files, timeline, and more.
+            Delete it anytime once you&apos;re ready to add your own clients.
           </p>
           {onExplore && (
             <button
               onClick={onExplore}
-              className="text-xs font-semibold text-brand-primary hover:text-brand-primary/80 transition-colors underline"
+              className="mr-4 transition-colors"
+              style={{
+                fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: '0.24em',
+                textTransform: 'uppercase',
+                color: 'var(--kolor-terra, #B84A2C)',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+              }}
               data-testid="explore-demo-btn"
             >
               Click to explore →
@@ -60,7 +97,8 @@ export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted, on
           <button
             onClick={handleDelete}
             disabled={deleting}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-red-400 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+            style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}
             data-testid="delete-demo-btn"
           >
             {deleting ? <KolorSpinner size={14} /> : <Trash className="w-3.5 h-3.5" />}
@@ -69,10 +107,11 @@ export default function DemoProjectBanner({ demoLeadId, onDismiss, onDeleted, on
         </div>
         <button
           onClick={onDismiss}
-          className="p-1.5 hover:bg-white/5 rounded-lg transition-colors flex-shrink-0"
+          className="p-1.5 rounded-lg transition-colors flex-shrink-0"
+          style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}
           data-testid="dismiss-demo-banner"
         >
-          <X className="w-4 h-4 text-text-secondary" />
+          <X className="w-4 h-4" />
         </button>
       </div>
     </div>
