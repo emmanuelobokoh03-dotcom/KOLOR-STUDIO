@@ -2461,3 +2461,50 @@ Small corrective iteration to close v3a regression caught by user smoke tests.
 ### Codified for future iterations
 - View conditional placement in specs needs precise language distinguishing outer view routing (Today/Community/Portfolio/etc.) from inner view mode (kanban/list within Today)
 - Regression smoke tests must specify what should render on each surface, not just "component intact"
+
+---
+
+## Iteration 291-v3b — Dashboard v3: cleanup + Pipeline Pulse + Recent Work + Community Pulse (Feb 2026)
+
+Second substantive Dashboard v3 iteration. Two workstreams:
+
+### Files changed
+- **Deleted (3 files):** `TodayScreen.tsx`, `CRMAlerts.tsx`, `NeedsAttentionSection.tsx` — no other imports per STEP 0 grep
+- **Created (3 files):** `PipelinePulseCard.tsx`, `RecentWorkCard.tsx`, `CommunityPulseCard.tsx`
+- **Modified:** `Dashboard.tsx` (1752 → 1741, net −11 despite added wiring); `DashboardCards.tsx` (now invokes all 5 cards + 3 new nav callbacks)
+
+### STEP 0 adaptive branches confirmed
+- Brief mental model "Clients is separate page" — reality: Clients IS `viewMode === 'list'` inside Dashboard.tsx. Fix: gated `<LeadsListView>` with `viewMode === 'list'` guard to preserve Clients while removing it from Today (kanban)
+- All 3 card data sources exist backend-side: `/api/leads/stats` (Pipeline Pulse), `/api/portfolio` (Recent Work), `/api/community/notifications` (Community Pulse). Zero backend changes
+- Community Pulse: MVP text-only display without actor names (notification schema doesn't join fromUser); enrichment deferred to v3c bell merge
+
+### Cards shipped
+1. **Pipeline Pulse** — auto-fill grid of stage tiles (Fraunces italic count + mono UPPERCASE label), BOOKED/LOST excluded from active count, "View pipeline →" routes to Clients
+2. **Recent Work** — 4-tile 4:5 aspect grid matching Portfolio v3 SELECTED WORK, hover translateY, empty state includes Studio Wall echo prep for Q14=B
+3. **Community Pulse** — top 5 engagement notifications (POST_LIKED/POST_COMMENTED/NEW_FOLLOWER) within 7-day window, icon per type, relative time meta, unread marker
+
+### Verification
+- Backend TSC + build clean; frontend TSC clean; cold-cache build 7.17s
+- All 11 file-receipt checks PASS
+- v3a + v3a.1 state intact; Community v3 + Portfolio v3 arcs intact
+- Framework primitives UNCHANGED; Phase 2 baselines PASS
+
+### Testing status
+- Local commit: `70ed222` (8 files, +821/-597)
+- Manual Smoke Tests 1-8 pending user browser verification
+
+### Dashboard v3 arc progress (2 of 3)
+- v3a: Card scaffold + Today + Needs Attention + Studio Tools removal (`354a3f8`)
+- v3a.1: DashboardCards scope corrective (`22b074c`)
+- v3b: Cleanup + Pipeline Pulse + Recent Work + Community Pulse (`70ed222`)
+- v3c pending: Bell architecture merge + mobile responsive + calibration polish + landing echo
+
+### Backlog (Feb 2026)
+- **P0**: Publish 13 commits to origin/main via Save to GitHub
+- **P0**: iter 291-v3c brief writing (bell sheet drawer per Q12=C, mobile responsive Q13=A, calibration polish, landing echo Q14=B)
+- **P1**: NotificationBell architecture merge with Community Pulse card enrichment
+- **P2**: Studio Pulse card (v3.1 per Q8=B)
+- **P2**: User card reordering (v3.1)
+- **P2**: About section on PublicPortfolio (bio copy pending)
+- **P2**: Testimonials collection flow
+- **P2**: Landing positioning, first-shot onboarding, `PostLike.userId` rename cleanup
