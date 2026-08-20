@@ -1177,28 +1177,32 @@ const Dashboard = () => {
         {/* Iter 146 — Task 1a: RevenuePipelineWidget removed from kanban/list surface (to move to Analytics in a future iteration). */}
 
         {/* iter 291-v3a — DashboardCards hero (Today + Needs Attention).
-            Renders above viewMode ternary so it's a true hero surface
-            across both kanban and list layouts. */}
-        <Suspense fallback={null}>
-          <DashboardCards
-            userIndustry={user?.primaryIndustry as any}
-            currencySymbol={user?.currencySymbol || '$'}
-            onLeadClick={(leadId, tab) => {
-              const lead = leads.find(l => l.id === leadId)
-              if (lead) {
-                if (tab) setSelectedLeadInitialTab(tab)
-                setSelectedLead(lead)
-              } else {
-                leadsApi.getOne(leadId).then(r => {
-                  if (r.data?.lead) {
-                    if (tab) setSelectedLeadInitialTab(tab)
-                    setSelectedLead(r.data.lead)
-                  }
-                })
-              }
-            }}
-          />
-        </Suspense>
+            iter 291-v3a.1 — Corrective: scoped to viewMode === 'kanban'
+            (Today view) only. Previously rendered for every non-quotes /
+            non-contracts branch which incorrectly placed cards above
+            Community, Portfolio, Analytics, Sequences content. */}
+        {viewMode === 'kanban' && (
+          <Suspense fallback={null}>
+            <DashboardCards
+              userIndustry={user?.primaryIndustry as any}
+              currencySymbol={user?.currencySymbol || '$'}
+              onLeadClick={(leadId, tab) => {
+                const lead = leads.find(l => l.id === leadId)
+                if (lead) {
+                  if (tab) setSelectedLeadInitialTab(tab)
+                  setSelectedLead(lead)
+                } else {
+                  leadsApi.getOne(leadId).then(r => {
+                    if (r.data?.lead) {
+                      if (tab) setSelectedLeadInitialTab(tab)
+                      setSelectedLead(r.data.lead)
+                    }
+                  })
+                }
+              }}
+            />
+          </Suspense>
+        )}
 
         {/* ═══ Two-column layout: Main + Right sidebar ═══ */}
         <div className={`${(viewMode === 'kanban' || viewMode === 'list') ? 'lg:grid lg:gap-6' : ''}`} style={(viewMode === 'kanban' || viewMode === 'list') ? { gridTemplateColumns: '1fr 280px' } : undefined}>
