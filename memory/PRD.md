@@ -2508,3 +2508,61 @@ Second substantive Dashboard v3 iteration. Two workstreams:
 - **P2**: About section on PublicPortfolio (bio copy pending)
 - **P2**: Testimonials collection flow
 - **P2**: Landing positioning, first-shot onboarding, `PostLike.userId` rename cleanup
+
+---
+
+## Iteration 291-v3c — Dashboard v3 arc CLOSES (Feb 2026)
+
+Third and final Dashboard v3 iteration. Seven workstreams delivered in one commit.
+
+### Files changed
+- **Created (1):** `frontend/src/components/dashboard/NotificationBell.tsx` (~430 lines — bell icon + sheet drawer archival view + fetch polling + filters)
+- **Modified (7):**
+  - `backend/src/routes/community.ts` — actor enrichment via `?enrich=1` query param (+52 lines)
+  - `frontend/src/pages/Dashboard.tsx` — 1741 → 1638 (net −103 from bell extraction)
+  - `frontend/src/components/DemoProjectBanner.tsx` — framework palette recalibration (80 → 105)
+  - `frontend/src/components/dashboard/CommunityPulseCard.tsx` — actor consumption + landing echo empty state
+  - `frontend/src/components/dashboard/PipelinePulseCard.tsx` — landing echo empty state
+  - `frontend/src/components/dashboard/DashboardCard.tsx` — `.dashboard-card` classname for responsive media query
+  - `frontend/src/components/dashboard/DashboardCards.tsx` — mobile CSS media query for card padding scaling
+
+### Ratifications applied
+- Q3=C bell merged (archive) + Q12=C sheet drawer + Q13=A mobile stacked + Q14=B landing echo
+
+### Adaptive decisions
+- **Bell + sheet unified** into single NotificationBell component (cleaner than STEP 1 + 2 as separate components)
+- **Avatar fallback**: `CommunityProfile` schema has no `avatarUrl` field; icon-per-type fallback used (schema extension deferred)
+- **Backend enrich flag**: `?enrich=1` bumps `take` to 100 for archive; legacy 20-item unenriched shape preserved backward-compatible
+
+### Verification
+- Backend TSC + build clean; frontend TSC clean; cold-cache build 7.48s
+- Dashboard.tsx net −103 lines despite 7 workstreams
+- All 5 v3a/v3b cards + Community v3 + Portfolio v3 + Phase 2 baselines intact
+- Framework primitives UNCHANGED
+
+### Testing status
+- Local commit: `a4455e6` (8 files, +707/-158)
+- Manual Smoke Tests 1-9 pending user browser verification
+- Dashboard v3 arc CLOSES on smoke test pass
+
+### Dashboard v3 arc (CLOSED)
+- v3a: `354a3f8` — card scaffold + Today + Needs Attention + Studio Tools removal
+- v3a.1: `22b074c` — scope corrective (cards only in kanban)
+- v3b: `70ed222` — cleanup + Pipeline Pulse + Recent Work + Community Pulse
+- v3c: `a4455e6` — bell merge + mobile + calibration + landing echo + welcome + actor
+
+### Three v3 arcs closed
+- Community v3 (peer-discovery)
+- Portfolio v3 (client-conversion)
+- Dashboard v3 (creator-command-center)
+
+### Backlog (Feb 2026)
+- **P0**: Publish 14 commits to origin/main via Save to GitHub
+- **P1**: Dashboard v3.1 — Studio Pulse card (6th, weekly rhythm cues per Q8=B) + user card reordering
+- **P1**: Add `avatarUrl` to `CommunityProfile` schema + wire into NotificationBell avatars
+- **P2**: Beta launch preparation
+- **P2**: About section on PublicPortfolio (bio copy pending)
+- **P2**: Testimonials collection flow
+- **P2**: First-shot onboarding
+- **P2**: Landing page repositioning
+- **P2**: `PostLike.userId` field rename cleanup
