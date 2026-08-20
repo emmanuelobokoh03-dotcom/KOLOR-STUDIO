@@ -2428,3 +2428,36 @@ First Dashboard v3 arc iteration. Establishes card taxonomy, ships hero cards, c
 - **P2**: About section on PublicPortfolio (bio copy pending)
 - **P2**: Testimonials collection flow
 - **P2**: Landing positioning, first-shot onboarding, `PostLike.userId` rename cleanup
+
+---
+
+## Iteration 291-v3a.1 — Corrective: DashboardCards scope fix (Feb 2026)
+
+Small corrective iteration to close v3a regression caught by user smoke tests.
+
+### Bug
+- v3a placed `<DashboardCards>` above the inner content ternary but inside the "not-quotes/not-contracts" branch of the outer viewMode ternary
+- Result: Cards rendered on Sequences, Analytics, Portfolio, Community views in addition to Today (kanban)
+- Root cause: Path 1c framing ambiguity between "outer view routing" and "inner view mode" during v3a spec
+
+### Fix
+- Wrapped `<DashboardCards>` block with `viewMode === 'kanban' && (...)` guard
+- `kanban` is the app's Today landing view (per ViewMode enum)
+- Community, Portfolio, Analytics, Sequences, Clients (list), Calendar, Quotes, Contracts sections now render without cards
+- Today (kanban) view functionality preserved verbatim
+
+### Files changed
+- `frontend/src/pages/Dashboard.tsx` — added 3-line guard wrapper around DashboardCards block; 1751 → 1752 lines
+
+### Verification
+- Backend TSC + build clean; frontend TSC clean; cold-cache build 6.86s
+- All v3a components + Community v3 + Portfolio v3 + Phase 2 baselines intact
+- Framework primitives UNCHANGED
+
+### Testing status
+- Local commit: `22b074c`
+- Manual Smoke Tests 1-5 (Today renders, Community NO cards, Portfolio NO cards, Calendar NO cards, Clients NO cards) pending user browser verification
+
+### Codified for future iterations
+- View conditional placement in specs needs precise language distinguishing outer view routing (Today/Community/Portfolio/etc.) from inner view mode (kanban/list within Today)
+- Regression smoke tests must specify what should render on each surface, not just "component intact"
