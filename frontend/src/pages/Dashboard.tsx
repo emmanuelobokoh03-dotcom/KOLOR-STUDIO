@@ -39,9 +39,9 @@ import OnboardingWizard, { useOnboardingWizard } from '../components/OnboardingW
 import { SmartSuggestion } from '../components/SmartSuggestion'
 import { CelebrationModal, checkCelebration, Achievement, achievements } from '../components/CelebrationModal'
 // Iter 181 — lazify conditionally-rendered heavy components to shrink Dashboard chunk.
-const CRMAlerts = lazy(() => import('../components/CRMAlerts'))
+// iter 291-v3b — CRMAlerts removed from Dashboard (Needs Attention card handles it).
 const RevenueDashboard = lazy(() => import('../components/RevenueDashboard'))
-const NeedsAttentionSection = lazy(() => import('../components/NeedsAttentionSection'))
+// iter 291-v3b — NeedsAttentionSection removed from Dashboard (Needs Attention card handles it).
 import { trackLogout, trackViewChanged } from '../utils/analytics'
 import { StatusBadge } from '../components/StatusBadge'
 import { EmptyState } from '../components/EmptyState'
@@ -1200,6 +1200,9 @@ const Dashboard = () => {
                   })
                 }
               }}
+              onViewClients={() => handleViewChange('list')}
+              onViewPortfolio={() => handleViewChange('portfolio')}
+              onViewCommunity={() => handleViewChange('community')}
             />
           </Suspense>
         )}
@@ -1256,16 +1259,8 @@ const Dashboard = () => {
         </div>
         )}
 
-        {viewMode === 'list' && needsAttention.length > 0 && (
-          <Suspense fallback={null}>
-            <NeedsAttentionSection
-              items={needsAttention}
-              lang={lang}
-              currencySymbol={user?.currencySymbol}
-              onLeadClick={setSelectedLead}
-            />
-          </Suspense>
-        )}
+        {/* iter 291-v3b — NeedsAttentionSection removed. Needs Attention
+             card in DashboardCards now handles this (Today view). */}
 
         {/* Lead-management chrome (stat cards + filter toolbar) — only visible for lead-focused views */}
         {viewMode === 'list' && (<>
@@ -1578,7 +1573,7 @@ const Dashboard = () => {
               </Suspense>
             </div>
           </div>
-        ) : filteredLeads.length === 0 && !loading ? (
+        ) : filteredLeads.length === 0 && !loading && viewMode === 'list' ? (
           <div className="bg-light-50 rounded-xl border border-light-200 p-6 md:p-12">
             <EmptyState
               icon={UserPlus}
@@ -1588,11 +1583,9 @@ const Dashboard = () => {
               onCta={() => setShowAddModal(true)}
             />
           </div>
-        ) : (
-          /* iter 291-v3a — TodayScreen removed from kanban branch per Q4;
-             hero cards (Today + Needs Attention) now render above viewMode
-             ternary via DashboardCards. Both kanban + list share
-             LeadsListView below the hero. */
+        ) : viewMode === 'list' ? (
+          /* iter 291-v3b — LeadsListView gated to list view (Clients).
+             Today (kanban) view = DashboardCards only. */
           <LeadsListView
             leads={filteredLeads}
             lang={lang}
@@ -1603,22 +1596,16 @@ const Dashboard = () => {
               setSelectedLead(lead)
             }}
           />
-        )}
+        ) : null}
 
           </div>{/* /Left column */}
 
-          {/* Right sidebar — list view only (CRM Alerts + Revenue) */}
+          {/* Right sidebar — list view only (Revenue) */}
           {viewMode === 'list' && (
             <aside className="hidden lg:block space-y-4" data-testid="dashboard-right-sidebar">
-              {/* Iter 146 — Task 1b: CRM Alerts + Revenue Dashboard moved into sidebar */}
-              <div data-tour="crm-alerts">
-                <Suspense fallback={<div className="bg-light-50 rounded-2xl border border-light-200 h-32 ks-shimmer" />}>
-                  <CRMAlerts onLeadClick={(leadId) => {
-                    const lead = leads.find(l => l.id === leadId)
-                    if (lead) setSelectedLead(lead)
-                  }} />
-                </Suspense>
-              </div>
+              {/* iter 291-v3b — CRMAlerts removed from sidebar; Needs
+                   Attention card in DashboardCards (Today view) now surfaces
+                   this info. Revenue Dashboard preserved. */}
               <div data-tour="revenue-dashboard">
                 <Suspense fallback={<div className="bg-light-50 rounded-2xl border border-light-200 h-32 ks-shimmer" />}>
                   <RevenueDashboard />
