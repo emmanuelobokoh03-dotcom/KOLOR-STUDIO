@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Bell } from '@phosphor-icons/react/dist/csr/Bell'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { Heart } from '@phosphor-icons/react/dist/csr/Heart'
@@ -174,8 +175,17 @@ export function NotificationBell({ onNavigateCommunity }: NotificationBellProps)
     }
   }
 
+  // iter 291-v3c.2 — MESSAGES filter aliases both DM_RECEIVED and
+  // DM_REQUEST_RECEIVED (DB has both types; without this alias, users
+  // with only DM requests see zero results under MESSAGES).
   const filtered =
-    filter === 'all' ? notifications : notifications.filter((n) => n.type === filter)
+    filter === 'all'
+      ? notifications
+      : filter === 'DM_RECEIVED'
+      ? notifications.filter(
+          (n) => n.type === 'DM_RECEIVED' || n.type === 'DM_REQUEST_RECEIVED',
+        )
+      : notifications.filter((n) => n.type === filter)
 
   return (
     <>
@@ -195,7 +205,16 @@ export function NotificationBell({ onNavigateCommunity }: NotificationBellProps)
         )}
       </button>
 
-      {/* Sheet drawer (Q12=C) */}
+      {/* Sheet drawer (Q12=C)
+          iter 291-v3c.2 — Portaled to document.body to escape the
+          `.glass-header` backdrop-filter containing-block trap. Per CSS
+          spec, `backdrop-filter` on an ancestor creates a new containing
+          block for `position: fixed` descendants; without portaling, the
+          aside was anchored to the ~65px sticky header box rather than
+          the viewport, causing the sheet chrome (filters + close + header)
+          to appear "cut into" the demo project banner. */}
+      {createPortal(
+        <>
       {sheetOpen && (
         <div
           onClick={() => setSheetOpen(false)}
@@ -550,6 +569,9 @@ export function NotificationBell({ onNavigateCommunity }: NotificationBellProps)
           )}
         </div>
       </aside>
+        </>,
+        document.body,
+      )}
     </>
   )
 }
