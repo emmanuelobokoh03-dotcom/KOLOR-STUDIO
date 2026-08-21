@@ -1,59 +1,85 @@
 # KOLOR Studio — PRD
 
 ## Original problem statement
-Full-stack creator command center for photographers, designers, and fine artists. Community v3 (peer-discovery) + Portfolio v3 (client-conversion) + Dashboard v3 (creator-command-center) arcs comprise the intentional design trilogy.
+Full-stack creator command center for photographers, designers, and fine artists. Community v3 (peer-discovery) + Portfolio v3 (client-conversion) + Dashboard v3 (creator-command-center) arcs comprise the intentional design trilogy. Clients v3 (operational spine) is fourth v3 arc.
 
 ## Product Requirements
 - Strict manual "Smoke Test" verification (user QAs — testing agent DISABLED)
-- STEP 0 bash state diagnostic mandatory before every iteration
+- STEP 0 bash state diagnostic mandatory before every iteration + explicit pause for Path confirmation
 - Framework calibration: `kolor` tokens, Fraunces italic headings, mono UPPERCASE eyebrows
 - Additive-over-breaking: rollback safety maintained per iteration
+- Precise conditional guarding: `state === 'value'` explicit, no ambiguity
 - Zero touches to preserved arcs unless explicitly in scope
 
 ## User personas
 - Photographers, Designers, Fine Artists (multi-industry equally)
 - Creators operating solo studios; scale gracefully from 2 to 200 clients
 
-## Core requirements — status
+## Arc closure status
 - Community v3: **CLOSED** at iter 53 (peer-discovery)
 - Portfolio v3: **CLOSED** at iter 56 (client-conversion)
-- Dashboard v3: **CLOSED** at iter 61 (creator-command-center; awaiting user smoke test PASS on 291-v3c.2)
+- Dashboard v3: **CLOSED** at iter 61 (creator-command-center) — awaiting user smoke test PASS on 291-v3c.2
+- **Clients v3: OPEN** at iter 62 (operational spine) — v3a shipped
 
-## Iteration 291-v3c.2 (this session) — CORRECTIVE
-**Two bundled fixes for v3c smoke test findings:**
+## Iteration 292-v3a (this session) — Clients v3 opens
+Ships list + kanban view modes + basic filter/sort UX + avatar per client + framework calibration.
 
-### Bug 1 — Sheet drawer child chrome z-index overlap → ROOT CAUSE FOUND
-- v3c.1 z-index bumps helped WITHIN header stacking context but missed underlying trap
-- `.glass-header` has `backdrop-filter: blur(20px)` → per CSS spec creates NEW containing block for `position: fixed` descendants
-- Result: aside was anchored to ~65px sticky header box, not viewport
-- **Fixed**: `ReactDOM.createPortal(sheet, document.body)` — escapes both containing-block trap AND header's z-40 stacking context
-- Codified: any ancestor with `backdrop-filter`, `filter`, `transform`, `perspective`, `will-change`, or `contain: paint` breaks `position: fixed`. Portal to `document.body` is the robust primitive.
+### STEP 0 findings + adaptive Paths applied
+- No `view === 'clients'` conditional exists. Clients page IS the `viewMode === 'list'` branch. `clientsViewMode` state scoped inside that branch (orthogonal to outer viewMode).
+- Case B applied: build new Clients v3 components alongside; LeadsListView.tsx preserved untouched as fallback (delete in v3b if unused).
+- LeadStatus enum (8 values) mapped to 5-stage `industryLanguage.ts` keys (inquiry/discovery/quoted/contracted/completed). Q3 6-stage refinement (adding REVIEW + splitting CONTRACTED/ACTIVE) deferred to v3.1 backlog.
+- COMPLETED heuristic: `status === 'BOOKED' && eventDate < now`. LOST excluded from pipeline columns.
 
-### Bug 2 — MESSAGES filter type-string mismatch
-- STEP 0 showed 15 notifications across 5 types: POST_LIKED, NEW_FOLLOWER, POST_COMMENTED, DM_REQUEST_RECEIVED, DM_RECEIVED
-- MESSAGES filter used strict `n.type === 'DM_RECEIVED'` — excluded DM_REQUEST_RECEIVED entirely
-- **Fixed**: MESSAGES filter now aliases both types via OR condition
+### Stage bucket mapping (v3a)
+- INQUIRY: NEW, REVIEWING
+- DISCOVERY: CONTACTED, QUALIFIED
+- QUOTED: QUOTED, NEGOTIATING
+- CONTRACTED: BOOKED (future/no eventDate)
+- COMPLETED: BOOKED (eventDate < now, heuristic)
+- LOST: excluded from pipeline
 
-**Files changed:** `frontend/src/components/dashboard/NotificationBell.tsx` (24+/2- lines)
+### Files created
+- `frontend/src/components/clients/stages.ts` (helpers)
+- `frontend/src/components/clients/ClientAvatar.tsx` (Q7=B)
+- `frontend/src/components/clients/ClientsViewToggle.tsx`
+- `frontend/src/components/clients/ClientsFilterBar.tsx`
+- `frontend/src/components/clients/ClientsListView.tsx`
+- `frontend/src/components/clients/ClientsKanbanView.tsx`
 
-**Regression checks:** all PASS. Backend TSC exit 0. Frontend cold-cache build ✓. All 5 dashboard cards, Community v3, Portfolio v3, Phase 2 baselines, framework primitives verified intact.
+### Files modified
+- `frontend/src/pages/Dashboard.tsx` (imports + `clientsViewMode` + `clientsFilter` state + swap LeadsListView block for view toggle + list/kanban conditional)
 
-**Local commit:** `510c92d` on branch `main`. Push blocked by container auth — user syncs via "Save to GitHub" UI.
+### Regression checks
+- Backend TSC exit 0
+- Frontend cold-cache build ✓ 7.76s
+- Dashboard chunk 309 → 328KB (~6% growth, expected from new surfaces)
+- All 5 dashboard cards, NotificationBell, Community v3, Portfolio v3, Phase 2 baselines, framework primitives intact
+
+### Local commit
+- `c2b32df` on branch `main`. 7 files changed, 1186+/12-. **Push blocked** by container auth — user syncs via "Save to GitHub" UI.
 
 ## Prioritized backlog
 
 ### P0 — Immediate
-- User verifies iter 291-v3c.2 smoke tests (1-3) → closes Dashboard v3 arc
-- User taps "Save to GitHub" to sync `510c92d` to origin/main
+- User verifies iter 292-v3a smoke tests (1-6) → closes v3a
+- User taps "Save to GitHub" to sync `c2b32df` (plus `510c92d` from 291-v3c.2)
 
-### P1 — Next arc (Clients v3)
-- iter 292-v3a Spec Prep (STEP 0 diagnostic)
-- iter 292-v3a: List view (default), Kanban view, view toggle, basic filters/sort, initial-based avatars, framework calibration
-- iter 292-v3b: Saved views + bulk actions + keyboard shortcuts + calendar view
-- iter 292-v3c: Client detail page redesign + polish + regression
+### P1 — Next arc (Clients v3 continuation)
+- iter 292-v3b: Saved views + bulk actions + keyboard shortcuts + calendar view (per Q4/Q6/Q9/Q2)
+- iter 292-v3c: Client detail page redesign (progressive disclosure per Q5=A) + polish + regression pass
+- Estimated arc remaining: 4-8 hours
 
-### P2 — Backlog
-- Dashboard v3.1: avatarUrl field on CommunityProfile schema + Studio Pulse card (6th card) + user card reordering
+### P2 — Backlog (from prior arcs + this iteration)
+- LeadsListView.tsx deletion (v3b if unused)
+- 6-stage refinement + REVIEW/ACTIVE split + LeadStatus enum extension (v3.1 backlog)
+- Custom pipeline stages (v3.1 backlog per Q3 extension)
+- Drag-drop kanban stage change (v3b or v3.1)
+- Latest work thumbnail per client (v3.1 backlog per Q7=C)
+- URL param reflection for saved views (v3b)
+- Bulk email + bulk export (v3.1 backlog per Q6 extension)
+- Comprehensive keyboard shortcuts (v3.1 backlog per Q9 extension)
+- avatarUrl field on CommunityProfile schema (Dashboard v3.1 backlog)
+- Studio Pulse card 6th dashboard card (Dashboard v3.1 backlog)
 - Calendar v3, Portfolio Manager v3, Settings v3, Auth v3 arcs
 - Email templates & Onboarding tutorials
 - Beta launch preparation
