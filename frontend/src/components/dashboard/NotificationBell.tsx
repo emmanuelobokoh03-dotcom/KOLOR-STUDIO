@@ -203,7 +203,7 @@ export function NotificationBell({ onNavigateCommunity }: NotificationBellProps)
             position: 'fixed',
             inset: 0,
             background: 'rgba(26, 22, 19, 0.4)',
-            zIndex: 60,
+            zIndex: 99,
             transition: 'opacity 200ms',
           }}
           data-testid="notification-sheet-backdrop"
@@ -221,12 +221,18 @@ export function NotificationBell({ onNavigateCommunity }: NotificationBellProps)
           width: 'min(480px, 92vw)',
           background: 'var(--kolor-canvas, #F7F4EE)',
           borderLeft: '1px solid var(--kolor-hairline, #E5E0D8)',
-          zIndex: 61,
+          zIndex: 100,
           transform: sheetOpen ? 'translateX(0)' : 'translateX(100%)',
           transition: 'transform 320ms cubic-bezier(0.16, 1, 0.3, 1)',
           display: 'flex',
           flexDirection: 'column',
           boxShadow: sheetOpen ? '-12px 0 40px rgba(26, 22, 19, 0.08)' : 'none',
+          // iter 291-v3c.1 — Prevent off-screen aside from intercepting
+          // clicks + fixes filter button non-response bug: when closed the
+          // aside still occupies fixed position at higher zIndex than
+          // page content; without pointer-events guard some browsers
+          // block underlying clicks even at translateX(100%).
+          pointerEvents: sheetOpen ? 'auto' : 'none',
         }}
         data-testid="notification-sheet"
         aria-hidden={!sheetOpen}
@@ -310,7 +316,11 @@ export function NotificationBell({ onNavigateCommunity }: NotificationBellProps)
             return (
               <button
                 key={f.value}
-                onClick={() => setFilter(f.value)}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setFilter(f.value)
+                }}
                 style={{
                   padding: '8px 12px',
                   minHeight: 32,
@@ -405,7 +415,13 @@ export function NotificationBell({ onNavigateCommunity }: NotificationBellProps)
               >
                 {filter === 'all'
                   ? 'No notifications yet.'
-                  : 'Nothing here yet.'}
+                  : filter === 'POST_LIKED'
+                  ? 'No likes yet.'
+                  : filter === 'POST_COMMENTED'
+                  ? 'No comments yet.'
+                  : filter === 'NEW_FOLLOWER'
+                  ? 'No new followers yet.'
+                  : 'No messages yet.'}
               </p>
               <p
                 style={{
