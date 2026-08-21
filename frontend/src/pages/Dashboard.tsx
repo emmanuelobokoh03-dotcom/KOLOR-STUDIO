@@ -29,6 +29,12 @@ import CommunityTabs from '../components/dashboard/CommunityTabs'
 // iter 291-v3a — StudioTools removed per Q2=A; DashboardCards is new hero.
 import DashboardCards from '../components/dashboard/DashboardCards'
 import NotificationBell from '../components/dashboard/NotificationBell'
+// iter 292-v3a — Clients v3 surface (list + kanban + toggle + filter bar).
+// LeadsListView.tsx preserved untouched for one iteration as fallback.
+import ClientsListView from '../components/clients/ClientsListView'
+import ClientsKanbanView from '../components/clients/ClientsKanbanView'
+import ClientsViewToggle, { ClientsViewMode } from '../components/clients/ClientsViewToggle'
+import { DEFAULT_CLIENTS_FILTER, ClientsFilterState } from '../components/clients/ClientsFilterBar'
 import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
 import MobileBottomNav from '../components/MobileBottomNav'
@@ -147,6 +153,11 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>(initialView)
+  // iter 292-v3a — Clients v3 view mode (list ↔ kanban). Scoped to the
+  // `viewMode === 'list'` branch (Clients page). Orthogonal to outer
+  // viewMode per Dashboard v3 v3a.1 codified conditional-guarding lesson.
+  const [clientsViewMode, setClientsViewMode] = useState<ClientsViewMode>('list')
+  const [clientsFilter, setClientsFilter] = useState<ClientsFilterState>(DEFAULT_CLIENTS_FILTER)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [selectedLeadInitialTab, setSelectedLeadInitialTab] = useState<string | undefined>(undefined)
@@ -1463,18 +1474,48 @@ const Dashboard = () => {
             />
           </div>
         ) : viewMode === 'list' ? (
-          /* iter 291-v3b — LeadsListView gated to list view (Clients).
-             Today (kanban) view = DashboardCards only. */
-          <LeadsListView
-            leads={filteredLeads}
-            lang={lang}
-            currencySymbol={user?.currencySymbol}
-            onLeadClick={setSelectedLead}
-            onLeadClickTab={(lead, tab) => {
-              setSelectedLeadInitialTab(tab)
-              setSelectedLead(lead)
-            }}
-          />
+          /* iter 292-v3a — Clients v3 surface. ClientsViewToggle switches
+             between framework-calibrated ClientsListView + ClientsKanbanView.
+             LeadsListView.tsx preserved untouched as fallback for one
+             iteration (Case B: additive-over-breaking).
+
+             Precise conditional guarding per Dashboard v3 v3a.1 lesson:
+               clientsViewMode === 'list'   -> ClientsListView
+               clientsViewMode === 'kanban' -> ClientsKanbanView */
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginBottom: 12,
+              }}
+              data-testid="clients-view-toggle-wrap"
+            >
+              <ClientsViewToggle
+                mode={clientsViewMode}
+                onChange={setClientsViewMode}
+              />
+            </div>
+            {clientsViewMode === 'list' && (
+              <ClientsListView
+                leads={filteredLeads}
+                lang={lang}
+                filter={clientsFilter}
+                onFilterChange={setClientsFilter}
+                onLeadClick={setSelectedLead}
+                onAddClient={() => setShowAddModal(true)}
+              />
+            )}
+            {clientsViewMode === 'kanban' && (
+              <ClientsKanbanView
+                leads={filteredLeads}
+                lang={lang}
+                filter={clientsFilter}
+                onFilterChange={setClientsFilter}
+                onLeadClick={setSelectedLead}
+              />
+            )}
+          </div>
         ) : null}
 
           </div>{/* /Left column */}
