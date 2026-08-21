@@ -2566,3 +2566,45 @@ Third and final Dashboard v3 iteration. Seven workstreams delivered in one commi
 - **P2**: First-shot onboarding
 - **P2**: Landing page repositioning
 - **P2**: `PostLike.userId` field rename cleanup
+
+---
+
+## Iteration 291-v3c.1 — Corrective: sheet drawer + filter buttons + header greeting (Feb 2026)
+
+Small corrective iteration bundling 3 bugs found in v3c smoke tests.
+
+### Bugs fixed
+1. **Sheet drawer positioning** — zIndex 60/61 → 99/100; sheet now floats above all page content
+2. **Filter buttons non-functional** — root cause: off-screen aside intercepting clicks (no `pointerEvents` guard). Also added `type="button"` + `stopPropagation` + per-filter empty state messages
+3. **Header greeting NOT calibrated on non-community sections** — DashboardHeader.tsx removed viewMode branch; Fraunces italic + mono UPPERCASE + kolor-terra sparkle now uniform across Today/Portfolio/Calendar/Clients/Community/Analytics/Sequences/Quotes/Contracts
+
+### Files changed
+- `frontend/src/components/dashboard/NotificationBell.tsx` — zIndex bump + pointerEvents guard + filter click stopPropagation + filter-specific empty states
+- `frontend/src/components/dashboard/DashboardHeader.tsx` — removed viewMode === 'community' branch; single uniform Fraunces + mono UPPERCASE render
+
+### Verification
+- Backend TSC + frontend cold-cache build clean (7.12s)
+- All v3a/b/c cards + Community v3 + Portfolio v3 + Phase 2 baselines intact
+- Framework primitives UNCHANGED
+
+### Testing status
+- Local commit: `860a684`
+- Manual Smoke Tests 1-4 pending user browser verification
+- Dashboard v3 arc CLOSES on smoke test pass
+
+### Dashboard v3 arc (4 sub-iterations)
+- v3a: `354a3f8` — card scaffold + Studio Tools removal
+- v3a.1: `22b074c` — scope corrective
+- v3b: `70ed222` — cleanup + 3 new cards
+- v3c: `a4455e6` — bell + mobile + calibration + landing echo + welcome + actor
+- v3c.1: `860a684` — sheet drawer + filter + header calibration corrective
+
+### Codified for future arcs
+- Third scope-ambiguity finding in Dashboard v3 (v3a Path 1c, v3b viewMode language, v3c header greeting)
+- Framework calibration final pass discipline must verify ALL surfaces, not just card additions
+- Closed drawers/modals with position:fixed + zIndex must guard `pointerEvents` to prevent intercepting under-clicks
+
+### Backlog (Feb 2026)
+- **P0**: Publish 15 commits to origin/main via Save to GitHub
+- **P1**: Dashboard v3.1 — Studio Pulse card + user card reordering + avatarUrl schema extension
+- **P2**: Beta launch preparation, About section on PublicPortfolio, Testimonials collection, First-shot onboarding, Landing repositioning, `PostLike.userId` cleanup
