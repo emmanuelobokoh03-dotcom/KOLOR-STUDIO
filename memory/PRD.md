@@ -21,7 +21,32 @@ Full-stack creator command center for photographers, designers, and fine artists
 - Dashboard v3: **CLOSED** at iter 61 (creator-command-center) — awaiting user smoke test PASS on 291-v3c.2
 - **Clients v3: OPEN** at iter 62 (operational spine) — v3a shipped
 
-## Iteration 292-v3a (this session) — Clients v3 opens
+## Iteration 292-v3a.2 (this session) — Industry-adaptive stage label refinement
+Pure content edit. Refined `industryLanguage.ts` stage label VALUES for all 3 industries so labels feel native to each creator's discipline.
+
+### Ratified labels (Emmanuel confirmed)
+| key | Photography | Design | Fine Art |
+|---|---|---|---|
+| inquiry | Session inquiry | Project inquiry | Commission inquiry |
+| discovery | Consultation | Scoping | In discussion |
+| quoted | Quote sent | Proposal sent | Quote sent |
+| contracted | Session booked | Project active | Commission active |
+| completed | Session delivered | Project delivered | Delivered |
+
+### Preservation
+- Internal keys (`inquiry / discovery / quoted / contracted / completed` — lowercase per existing shape) UNCHANGED
+- Filter comparison / sort / stage bucket logic UNTOUCHED
+- Labels render as mono UPPERCASE via CSS `textTransform: 'uppercase'` (no case transformation helper needed)
+
+### Local commit
+`59735ce` on branch `main`. 1 file changed, 13+/13-. Push blocked — user syncs via "Save to GitHub".
+
+## Iteration 292-v3a.1 (prior) — Industry filter data-adaptive + tag row chips
+Root cause per STEP 0: filter UI shipped without data-reality awareness. Test user had 0/18 leads with industry populated. Case C fix: `ClientsFilterBar` auto-hides industry row when no visible lead has industry populated (mirrors tag-row conditional). Data counts added beside group labels (`Industry (N)` / `Tag (N)`). Up to 2 tag chips + `+N` overflow render on each list row.
+
+Local commit `9fb1a25` (3 files, 108+/19-).
+
+## Iteration 292-v3a (opener) — Clients v3 opens
 Ships list + kanban view modes + basic filter/sort UX + avatar per client + framework calibration.
 
 ### STEP 0 findings + adaptive Paths applied
