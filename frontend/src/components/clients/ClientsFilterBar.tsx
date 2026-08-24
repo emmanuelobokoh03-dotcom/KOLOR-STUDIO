@@ -39,6 +39,7 @@ interface ClientsFilterBarProps {
   onChange: (next: ClientsFilterState) => void
   lang: IndustryLanguage
   availableTags: string[]
+  availableIndustries: ClientIndustryFilter[]
   showSort?: boolean
 }
 
@@ -87,12 +88,22 @@ export function ClientsFilterBar({
   onChange,
   lang,
   availableTags,
+  availableIndustries,
   showSort = true,
 }: ClientsFilterBarProps) {
   const stageOptions: Array<{ value: ClientStage | 'all'; label: string }> = [
     { value: 'all', label: 'All' },
     ...STAGE_ORDER.map((s) => ({ value: s, label: lang.stages[s] })),
   ]
+
+  // iter 292-v3a.1 — Filter industry options to what's actually populated
+  // in the visible dataset. Preserves comparison logic while hiding
+  // buttons that would yield zero results.
+  const industryOptions = INDUSTRY_OPTIONS.filter(
+    (o) => o.value === 'ALL' || availableIndustries.includes(o.value),
+  )
+  const industryFilterVisible = industryOptions.length > 1
+  const tagFilterVisible = availableTags.length > 0
 
   const activeCount =
     (state.stage !== 'all' ? 1 : 0) +
@@ -132,26 +143,33 @@ export function ClientsFilterBar({
         ))}
       </div>
 
-      {/* Industry row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-        <span style={{ ...groupLabelStyle, minWidth: 64 }}>Industry</span>
-        {INDUSTRY_OPTIONS.map((opt) => (
-          <button
-            key={opt.value}
-            type="button"
-            onClick={() => onChange({ ...state, industry: opt.value })}
-            style={pillStyle(state.industry === opt.value)}
-            data-testid={`clients-filter-industry-${opt.value.toLowerCase()}`}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
+      {/* Industry row (auto-hidden if no lead in visible dataset has
+          industry populated). Codified: filter UI adapts to data reality. */}
+      {industryFilterVisible && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <span style={{ ...groupLabelStyle, minWidth: 64 }}>
+            Industry ({availableIndustries.length})
+          </span>
+          {industryOptions.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => onChange({ ...state, industry: opt.value })}
+              style={pillStyle(state.industry === opt.value)}
+              data-testid={`clients-filter-industry-${opt.value.toLowerCase()}`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Tag row (only if tags exist) */}
-      {availableTags.length > 0 && (
+      {tagFilterVisible && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <span style={{ ...groupLabelStyle, minWidth: 64 }}>Tag</span>
+          <span style={{ ...groupLabelStyle, minWidth: 64 }}>
+            Tag ({availableTags.length})
+          </span>
           <button
             type="button"
             onClick={() => onChange({ ...state, tag: null })}

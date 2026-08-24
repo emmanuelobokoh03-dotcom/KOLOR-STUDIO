@@ -16,7 +16,7 @@ import type { IndustryLanguage } from '../../utils/industryLanguage'
 import ClientAvatar from './ClientAvatar'
 import type { ClientsFilterState } from './ClientsFilterBar'
 import ClientsFilterBar from './ClientsFilterBar'
-import type { ClientStage } from './stages'
+import type { ClientIndustryFilter, ClientStage } from './stages'
 import {
   STAGE_ORDER,
   getStageForLead,
@@ -77,6 +77,21 @@ export function ClientsKanbanView({
     return Array.from(set).sort()
   }, [leads])
 
+  // iter 292-v3a.1 — available industry buckets in the visible dataset.
+  const availableIndustries = useMemo(() => {
+    const set = new Set<ClientIndustryFilter>()
+    leads.forEach((l) => {
+      const ind = (l.industry || '').toString().toUpperCase()
+      if (!ind) return
+      if (ind === 'PHOTOGRAPHY' || ind === 'VIDEOGRAPHY') set.add('PHOTOGRAPHY')
+      else if (ind === 'DESIGN' || ind === 'GRAPHIC_DESIGN' || ind === 'BRAND_DESIGN')
+        set.add('DESIGN')
+      else if (ind === 'FINE_ART' || ind === 'FINEART' || ind === 'PAINTING')
+        set.add('FINE_ART')
+    })
+    return Array.from(set)
+  }, [leads])
+
   // Apply industry + tag filters first (stage filter conditionally
   // narrows visible columns but doesn't hide the layout).
   const filteredLeads = useMemo(() => {
@@ -107,6 +122,7 @@ export function ClientsKanbanView({
         onChange={onFilterChange}
         lang={lang}
         availableTags={availableTags}
+        availableIndustries={availableIndustries}
         showSort={false}
       />
 

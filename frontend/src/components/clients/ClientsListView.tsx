@@ -17,13 +17,13 @@ import type { IndustryLanguage } from '../../utils/industryLanguage'
 import ClientAvatar from './ClientAvatar'
 import type { ClientsFilterState } from './ClientsFilterBar'
 import ClientsFilterBar from './ClientsFilterBar'
+import type { ClientIndustryFilter, ClientStage } from './stages'
 import {
   STAGE_ORDER,
   getStageForLead,
   matchesIndustryFilter,
   relativeTimeShort,
 } from './stages'
-import type { ClientStage } from './stages'
 
 interface ClientsListViewProps {
   leads: Lead[]
@@ -61,6 +61,22 @@ const badgeStyle: React.CSSProperties = {
   color: 'var(--kolor-ink-muted, #5F5751)',
 }
 
+// iter 292-v3a.1 — tag chip style: softer than industry badge to keep
+// visual hierarchy (name > industry > tags).
+const tagChipStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  padding: '1px 6px',
+  background: 'transparent',
+  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+  borderRadius: 2,
+  fontFamily: 'Inter, system-ui, sans-serif',
+  fontSize: 10,
+  fontWeight: 500,
+  color: 'var(--kolor-ink-subtle, #928B84)',
+  flexShrink: 0,
+}
+
 function industryLabel(lead: Lead): string | null {
   const ind = (lead.industry || '').toString().toUpperCase()
   if (!ind) return null
@@ -68,6 +84,17 @@ function industryLabel(lead: Lead): string | null {
   if (ind === 'DESIGN' || ind === 'GRAPHIC_DESIGN' || ind === 'BRAND_DESIGN') return 'DESIGN'
   if (ind === 'FINE_ART' || ind === 'FINEART' || ind === 'PAINTING') return 'ART'
   return ind.slice(0, 6)
+}
+
+// iter 292-v3a.1 — industry canonical bucket for `availableIndustries`
+// so ClientsFilterBar hides buttons that would yield zero results.
+function industryBucket(lead: Lead): ClientIndustryFilter | null {
+  const ind = (lead.industry || '').toString().toUpperCase()
+  if (!ind) return null
+  if (ind === 'PHOTOGRAPHY' || ind === 'VIDEOGRAPHY') return 'PHOTOGRAPHY'
+  if (ind === 'DESIGN' || ind === 'GRAPHIC_DESIGN' || ind === 'BRAND_DESIGN') return 'DESIGN'
+  if (ind === 'FINE_ART' || ind === 'FINEART' || ind === 'PAINTING') return 'FINE_ART'
+  return null
 }
 
 function nextActionFor(lead: Lead, lang: IndustryLanguage): string {
@@ -92,6 +119,16 @@ export function ClientsListView({
     const set = new Set<string>()
     leads.forEach((l) => (l.tags || []).forEach((t) => set.add(t)))
     return Array.from(set).sort()
+  }, [leads])
+
+  // iter 292-v3a.1 — available industries in the visible dataset.
+  const availableIndustries = useMemo(() => {
+    const set = new Set<ClientIndustryFilter>()
+    leads.forEach((l) => {
+      const b = industryBucket(l)
+      if (b) set.add(b)
+    })
+    return Array.from(set)
   }, [leads])
 
   const filtered = useMemo(() => {
@@ -131,6 +168,7 @@ export function ClientsListView({
         onChange={onFilterChange}
         lang={lang}
         availableTags={availableTags}
+        availableIndustries={availableIndustries}
       />
 
       {/* Table container */}
@@ -309,6 +347,23 @@ export function ClientsListView({
                         {lead.clientName}
                       </span>
                       {ind && <span style={badgeStyle}>{ind}</span>}
+                      {/* iter 292-v3a.1 — up to 2 tag chips as visual
+                          anchor so users see which tags exist without
+                          opening the filter panel. */}
+                      {(lead.tags || []).slice(0, 2).map((t) => (
+                        <span
+                          key={t}
+                          style={tagChipStyle}
+                          data-testid={`clients-row-tag-${t.toLowerCase().replace(/\s+/g, '-')}`}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                      {(lead.tags || []).length > 2 && (
+                        <span style={{ ...tagChipStyle, fontStyle: 'italic' }}>
+                          +{lead.tags.length - 2}
+                        </span>
+                      )}
                     </div>
                     <p
                       style={{
