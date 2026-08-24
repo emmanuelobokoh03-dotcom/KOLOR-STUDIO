@@ -70,6 +70,7 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Estimated arc remaining: 4-8 hours
 
 ### P2 — Backlog (from prior arcs + this iteration)
+- **iter 292-v3a.1 additions**: Auto-populate `lead.industry` from `user.primaryIndustry` on new lead creation (server-side default at write time); backfill migration for existing null-industry leads; filter UI reveal logic auto-shows when data becomes available
 - LeadsListView.tsx deletion (v3b if unused)
 - 6-stage refinement + REVIEW/ACTIVE split + LeadStatus enum extension (v3.1 backlog)
 - Custom pipeline stages (v3.1 backlog per Q3 extension)
