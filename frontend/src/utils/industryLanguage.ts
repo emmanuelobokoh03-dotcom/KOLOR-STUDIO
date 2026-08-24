@@ -121,11 +121,11 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
     discoveryCall: 'Discovery call',
 
     stages: {
-      inquiry: 'Inquiry',
-      discovery: 'Discovery',
-      quoted: 'Quoted',
-      contracted: 'Contracted',
-      completed: 'Booked',
+      inquiry: 'Session inquiry',
+      discovery: 'Consultation',
+      quoted: 'Quote sent',
+      contracted: 'Session booked',
+      completed: 'Session delivered',
     },
 
     pipelineStages: [
@@ -227,11 +227,11 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
     discoveryCall: 'Scoping call',
 
     stages: {
-      inquiry: 'Brief received',
+      inquiry: 'Project inquiry',
       discovery: 'Scoping',
-      quoted: 'Proposed',
-      contracted: 'Active',
-      completed: 'Delivered',
+      quoted: 'Proposal sent',
+      contracted: 'Project active',
+      completed: 'Project delivered',
     },
 
     pipelineStages: [
@@ -334,10 +334,10 @@ export const industryLanguage: Record<IndustryType, IndustryLanguage> = {
     discoveryCall: 'Collector conversation',
 
     stages: {
-      inquiry: 'Interest',
-      discovery: 'Conversation',
-      quoted: 'Offer sent',
-      contracted: 'In progress',
+      inquiry: 'Commission inquiry',
+      discovery: 'In discussion',
+      quoted: 'Quote sent',
+      contracted: 'Commission active',
       completed: 'Delivered',
     },
 
