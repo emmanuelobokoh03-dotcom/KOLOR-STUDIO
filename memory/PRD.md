@@ -21,7 +21,48 @@ Full-stack creator command center for photographers, designers, and fine artists
 - Dashboard v3: **CLOSED** at iter 61 (creator-command-center) — awaiting user smoke test PASS on 291-v3c.2
 - **Clients v3: OPEN** at iter 62 (operational spine) — v3a shipped
 
-## Iteration 292-v3a.2 (this session) — Industry-adaptive stage label refinement
+## Iteration 292-v3b (this session) — Saved views + bulk actions + keyboard shortcuts + calendar view
+Second substantive iteration in Clients v3 arc. Four operational power workstreams.
+
+### Selected paths (per user confirmation)
+- **Saved views storage**: Case A — localStorage keyed by `userId`. Backend `user.preferences Json?` migration → v3.1.
+- **Bulk actions**: 3 fully wired (Archive → status:LOST, Stage change → PATCH /:id/status, Tag → PATCH /:id) + Send Reminder as toast stub "Coming in v3.1".
+- **Bulk selection surface**: list view only (kanban selection → v3.1).
+- **Keyboard**: Case C — CMD+K + / focus existing header search input (no new command palette). J/K/ArrowUp/ArrowDown navigate list rows.
+- **Calendar**: Case B — month view via `date-fns v4.1.0`. Week + agenda views → v3.1.
+- **Sidebar VIEWS placement**: inline QuickViewsStrip above the filter bar (sidebar was too compact for a new section).
+
+### Files created (5)
+- `frontend/src/hooks/useClientsKeyboard.ts`
+- `frontend/src/components/clients/savedViews.ts` (presets + storage helpers)
+- `frontend/src/components/clients/QuickViewsStrip.tsx`
+- `frontend/src/components/clients/ClientsBulkToolbar.tsx` (portaled to document.body)
+- `frontend/src/components/clients/ClientsCalendarView.tsx`
+
+### Files modified (3)
+- `frontend/src/pages/Dashboard.tsx` — imports, v3b state, hydrate/persist useEffects, Dashboard-level keyboard hook, bulk action handlers (`bulkArchive/bulkStageChange/bulkTag/bulkReminder`), preset/saved-view apply/clear/save/delete handlers, `clientsScopedLeads` memo, `headerSearchRef`, QuickViewsStrip + Calendar + BulkToolbar wiring
+- `frontend/src/components/clients/ClientsViewToggle.tsx` — added calendar option; ClientsViewMode expanded to 3 values
+- `frontend/src/components/clients/ClientsListView.tsx` — added checkbox column + row selection + list-scoped J/K keyboard hook
+
+### 5 shipped preset views
+- All active (stage ∈ inquiry/discovery/quoted/contracted)
+- Recent inquiries (inquiry + <14d)
+- Awaiting response (quoted + >3d since updated)
+- This month (eventDate in current month)
+- Completed work (stage=completed)
+
+*Past deposit due preset deferred (no deposit field on Lead schema).*
+
+### Regression checks
+- Backend TSC exit 0
+- Frontend cold-cache build ✓ 6.92s
+- Dashboard chunk 329→356 KB (+27 KB / +8% for 4 new workstreams)
+- All v3a components, Dashboard v3, Community v3, Portfolio v3, framework primitives, Phase 2 baselines intact
+
+### Local commit
+`be9e331` on branch `main`. 8 files changed, 1559+/23-. **Push blocked** by container auth — user syncs via "Save to GitHub" UI.
+
+## Iteration 292-v3a.2 (prior) — Industry-adaptive stage label refinement
 Pure content edit. Refined `industryLanguage.ts` stage label VALUES for all 3 industries so labels feel native to each creator's discipline.
 
 ### Ratified labels (Emmanuel confirmed)
