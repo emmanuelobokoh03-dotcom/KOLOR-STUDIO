@@ -9,8 +9,9 @@
 
 import { ListDashes } from '@phosphor-icons/react/dist/csr/ListDashes'
 import { SquaresFour } from '@phosphor-icons/react/dist/csr/SquaresFour'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
 
-export type ClientsViewMode = 'list' | 'kanban'
+export type ClientsViewMode = 'list' | 'kanban' | 'calendar'
 
 interface ClientsViewToggleProps {
   mode: ClientsViewMode
@@ -20,6 +21,7 @@ interface ClientsViewToggleProps {
 const OPTIONS: Array<{ value: ClientsViewMode; label: string; Icon: typeof ListDashes }> = [
   { value: 'list', label: 'List', Icon: ListDashes },
   { value: 'kanban', label: 'Kanban', Icon: SquaresFour },
+  { value: 'calendar', label: 'Calendar', Icon: CalendarBlank },
 ]
 
 export function ClientsViewToggle({ mode, onChange }: ClientsViewToggleProps) {

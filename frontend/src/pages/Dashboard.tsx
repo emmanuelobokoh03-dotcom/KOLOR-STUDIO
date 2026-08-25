@@ -35,6 +35,19 @@ import ClientsListView from '../components/clients/ClientsListView'
 import ClientsKanbanView from '../components/clients/ClientsKanbanView'
 import ClientsViewToggle, { ClientsViewMode } from '../components/clients/ClientsViewToggle'
 import { DEFAULT_CLIENTS_FILTER, ClientsFilterState } from '../components/clients/ClientsFilterBar'
+// iter 292-v3b — Saved views + bulk actions + calendar view
+import ClientsCalendarView from '../components/clients/ClientsCalendarView'
+import QuickViewsStrip from '../components/clients/QuickViewsStrip'
+import ClientsBulkToolbar from '../components/clients/ClientsBulkToolbar'
+import {
+  PRESET_VIEWS,
+  loadSavedViews,
+  persistSavedViews,
+  newSavedView,
+  applyPresetToLeads,
+} from '../components/clients/savedViews'
+import type { PresetView, SavedView } from '../components/clients/savedViews'
+import { useClientsKeyboard } from '../hooks/useClientsKeyboard'
 import { Funnel } from '@phosphor-icons/react/dist/csr/Funnel'
 import { authApi, leadsApi, Lead, LeadStatus, User as UserType, LEAD_STATUS_LABELS, Booking, ProjectType, IndustryType, PROJECT_TYPE_LABELS, INDUSTRY_TYPE_LABELS, contractsApi, analyticsApi, DashboardAnalytics, MonthlyTrendData } from '../services/api'
 import MobileBottomNav from '../components/MobileBottomNav'
@@ -158,6 +171,11 @@ const Dashboard = () => {
   // viewMode per Dashboard v3 v3a.1 codified conditional-guarding lesson.
   const [clientsViewMode, setClientsViewMode] = useState<ClientsViewMode>('list')
   const [clientsFilter, setClientsFilter] = useState<ClientsFilterState>(DEFAULT_CLIENTS_FILTER)
+  // iter 292-v3b — saved views + bulk selection state
+  const [clientsSelectedIds, setClientsSelectedIds] = useState<string[]>([])
+  const [clientsSavedViews, setClientsSavedViews] = useState<SavedView[]>([])
+  const [clientsActivePresetId, setClientsActivePresetId] = useState<string | null>(null)
+  const [clientsActiveSavedViewId, setClientsActiveSavedViewId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [selectedLeadInitialTab, setSelectedLeadInitialTab] = useState<string | undefined>(undefined)
@@ -677,6 +695,165 @@ const Dashboard = () => {
     navigate('/calendar')
   }
 
+  // iter 292-v3b — hydrate saved views from localStorage per userId
+  useEffect(() => {
+    if (!user?.id) return
+    setClientsSavedViews(loadSavedViews(user.id))
+  }, [user?.id])
+
+  useEffect(() => {
+    if (!user?.id) return
+    persistSavedViews(user.id, clientsSavedViews)
+  }, [user?.id, clientsSavedViews])
+
+  // iter 292-v3b — clear selection whenever leaving Clients page
+  useEffect(() => {
+    if (viewMode !== 'list') setClientsSelectedIds([])
+  }, [viewMode])
+
+  // iter 292-v3b — global keyboard shortcuts (CMD+K / ESC / /).
+  // J/K row navigation lives inside ClientsListView.
+  const headerSearchRef = useRef<HTMLInputElement | null>(null)
+  const filterBarPillRef = useRef<HTMLButtonElement | null>(null)
+  useClientsKeyboard(
+    {
+      onSearchOpen: () => headerSearchRef.current?.focus(),
+      onFocusFilter: () => {
+        // Focus first stage pill in the ClientsFilterBar
+        const el = document.querySelector<HTMLButtonElement>(
+          '[data-testid="clients-filter-stage-all"]',
+        )
+        el?.focus()
+      },
+      onEscape: () => {
+        if (clientsSelectedIds.length > 0) setClientsSelectedIds([])
+      },
+    },
+    viewMode === 'list',
+  )
+
+  // iter 292-v3b — bulk action handlers (Case C: frontend loops single
+  // -lead calls via Promise.allSettled with toast summarization).
+  const bulkArchive = async () => {
+    const ids = [...clientsSelectedIds]
+    if (ids.length === 0) return
+    const results = await Promise.allSettled(
+      ids.map((id) => leadsApi.updateStatus(id, 'LOST')),
+    )
+    const ok = results.filter((r) => r.status === 'fulfilled').length
+    const failed = results.length - ok
+    toast.success(
+      failed === 0
+        ? `Archived ${ok} client${ok === 1 ? '' : 's'}.`
+        : `Archived ${ok} — ${failed} failed.`,
+    )
+    setClientsSelectedIds([])
+    fetchLeads()
+    fetchStats()
+  }
+
+  const bulkStageChange = async (newStatus: LeadStatus) => {
+    const ids = [...clientsSelectedIds]
+    if (ids.length === 0) return
+    const results = await Promise.allSettled(
+      ids.map((id) => leadsApi.updateStatus(id, newStatus)),
+    )
+    const ok = results.filter((r) => r.status === 'fulfilled').length
+    const failed = results.length - ok
+    toast.success(
+      failed === 0
+        ? `Updated ${ok} client${ok === 1 ? '' : 's'} to ${LEAD_STATUS_LABELS[newStatus]}.`
+        : `Updated ${ok} — ${failed} failed.`,
+    )
+    setClientsSelectedIds([])
+    fetchLeads()
+    fetchStats()
+  }
+
+  const bulkTag = async (tag: string) => {
+    const ids = [...clientsSelectedIds]
+    if (ids.length === 0) return
+    const results = await Promise.allSettled(
+      ids.map(async (id) => {
+        const existing = leads.find((l) => l.id === id)
+        const nextTags = Array.from(
+          new Set([...((existing?.tags as string[]) || []), tag]),
+        )
+        return leadsApi.update(id, { tags: nextTags })
+      }),
+    )
+    const ok = results.filter((r) => r.status === 'fulfilled').length
+    const failed = results.length - ok
+    toast.success(
+      failed === 0
+        ? `Tagged ${ok} client${ok === 1 ? '' : 's'} with "${tag}".`
+        : `Tagged ${ok} — ${failed} failed.`,
+    )
+    setClientsSelectedIds([])
+    fetchLeads()
+  }
+
+  const bulkReminder = () => {
+    toast.info('Bulk reminders coming in v3.1.')
+  }
+
+  // iter 292-v3b — preset / saved view application
+  const applyPreset = (preset: PresetView) => {
+    setClientsActivePresetId(preset.id)
+    setClientsActiveSavedViewId(null)
+    setClientsFilter(DEFAULT_CLIENTS_FILTER)
+  }
+
+  const applySavedView = (view: SavedView) => {
+    setClientsActiveSavedViewId(view.id)
+    setClientsActivePresetId(null)
+    setClientsFilter(view.filter)
+  }
+
+  const clearActiveView = () => {
+    setClientsActivePresetId(null)
+    setClientsActiveSavedViewId(null)
+    setClientsFilter(DEFAULT_CLIENTS_FILTER)
+  }
+
+  const saveCurrentAsView = (label: string) => {
+    const created = newSavedView(label, clientsFilter)
+    setClientsSavedViews((prev) => [...prev, created])
+    setClientsActiveSavedViewId(created.id)
+    setClientsActivePresetId(null)
+    toast.success(`Saved view "${label}".`)
+  }
+
+  const deleteSavedView = (id: string) => {
+    setClientsSavedViews((prev) => prev.filter((v) => v.id !== id))
+    if (clientsActiveSavedViewId === id) setClientsActiveSavedViewId(null)
+  }
+
+  const toggleSelectClient = (id: string) => {
+    setClientsSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    )
+  }
+
+  const toggleSelectAllClients = (ids: string[]) => {
+    setClientsSelectedIds((prev) => {
+      const allSelected = ids.every((id) => prev.includes(id))
+      if (allSelected) return prev.filter((x) => !ids.includes(x))
+      const set = new Set([...prev, ...ids])
+      return Array.from(set)
+    })
+  }
+
+  // Apply active preset matcher to filtered leads (v3a Dashboard-level
+  // filtering already applied via filteredLeads below).
+  const clientsScopedLeads = useMemo(() => {
+    const activePreset = clientsActivePresetId
+      ? PRESET_VIEWS.find((p) => p.id === clientsActivePresetId)
+      : null
+    if (!activePreset) return filteredLeads
+    return applyPresetToLeads(activePreset, filteredLeads)
+  }, [clientsActivePresetId, filteredLeads])
+
   const activeFilterCount = [statusFilter, projectTypeFilter, industryFilter, staleFilter].filter(Boolean).length;
 
   if (loading) {
@@ -871,6 +1048,7 @@ const Dashboard = () => {
               <div className="relative">
                 <MagnifyingGlass className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
                 <input
+                  ref={headerSearchRef}
                   type="text"
                   placeholder="Search anything…"
                   value={searchQuery}
@@ -1474,14 +1652,18 @@ const Dashboard = () => {
             />
           </div>
         ) : viewMode === 'list' ? (
-          /* iter 292-v3a — Clients v3 surface. ClientsViewToggle switches
-             between framework-calibrated ClientsListView + ClientsKanbanView.
-             LeadsListView.tsx preserved untouched as fallback for one
-             iteration (Case B: additive-over-breaking).
+          /* iter 292-v3a → v3b — Clients v3 surface with:
+              • ClientsViewToggle (list / kanban / calendar)
+              • QuickViewsStrip (5 presets + user saved views)
+              • ClientsListView (with bulk selection checkboxes) or
+                ClientsKanbanView or ClientsCalendarView
+              • ClientsBulkToolbar (portal, appears when selectedIds > 0)
+             LeadsListView.tsx preserved untouched as fallback (Case B).
 
              Precise conditional guarding per Dashboard v3 v3a.1 lesson:
-               clientsViewMode === 'list'   -> ClientsListView
-               clientsViewMode === 'kanban' -> ClientsKanbanView */
+               clientsViewMode === 'list'     -> ClientsListView
+               clientsViewMode === 'kanban'   -> ClientsKanbanView
+               clientsViewMode === 'calendar' -> ClientsCalendarView */
           <div>
             <div
               style={{
@@ -1496,27 +1678,64 @@ const Dashboard = () => {
                 onChange={setClientsViewMode}
               />
             </div>
+            <QuickViewsStrip
+              activePresetId={clientsActivePresetId}
+              activeSavedViewId={clientsActiveSavedViewId}
+              savedViews={clientsSavedViews}
+              onPresetClick={applyPreset}
+              onSavedViewClick={applySavedView}
+              onSaveCurrent={saveCurrentAsView}
+              onDeleteSavedView={deleteSavedView}
+              onClearActive={clearActiveView}
+              canSave={
+                clientsFilter.stage !== 'all' ||
+                clientsFilter.industry !== 'ALL' ||
+                clientsFilter.tag !== null
+              }
+            />
             {clientsViewMode === 'list' && (
               <ClientsListView
-                leads={filteredLeads}
+                leads={clientsScopedLeads}
                 lang={lang}
                 filter={clientsFilter}
                 onFilterChange={setClientsFilter}
                 onLeadClick={setSelectedLead}
                 onAddClient={() => setShowAddModal(true)}
+                selectedIds={clientsSelectedIds}
+                onToggleSelect={toggleSelectClient}
+                onToggleSelectAll={toggleSelectAllClients}
+                keyboardEnabled={viewMode === 'list'}
               />
             )}
             {clientsViewMode === 'kanban' && (
               <ClientsKanbanView
-                leads={filteredLeads}
+                leads={clientsScopedLeads}
                 lang={lang}
                 filter={clientsFilter}
                 onFilterChange={setClientsFilter}
                 onLeadClick={setSelectedLead}
               />
             )}
+            {clientsViewMode === 'calendar' && (
+              <ClientsCalendarView
+                leads={clientsScopedLeads}
+                lang={lang}
+                onLeadClick={setSelectedLead}
+              />
+            )}
           </div>
         ) : null}
+        {viewMode === 'list' && clientsSelectedIds.length > 0 && (
+          <ClientsBulkToolbar
+            selectedCount={clientsSelectedIds.length}
+            lang={lang}
+            onArchive={bulkArchive}
+            onStageChange={bulkStageChange}
+            onTag={bulkTag}
+            onSendReminder={bulkReminder}
+            onClearSelection={() => setClientsSelectedIds([])}
+          />
+        )}
 
           </div>{/* /Left column */}
 

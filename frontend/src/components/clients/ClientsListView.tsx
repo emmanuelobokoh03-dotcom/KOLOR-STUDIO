@@ -9,11 +9,12 @@
 // Sort dimensions: name / activity / stage (order defined in
 // ClientsFilterBar).
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { CaretUp } from '@phosphor-icons/react/dist/csr/CaretUp'
 import { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
 import type { Lead } from '../../services/api'
 import type { IndustryLanguage } from '../../utils/industryLanguage'
+import { useClientsKeyboard } from '../../hooks/useClientsKeyboard'
 import ClientAvatar from './ClientAvatar'
 import type { ClientsFilterState } from './ClientsFilterBar'
 import ClientsFilterBar from './ClientsFilterBar'
@@ -32,6 +33,10 @@ interface ClientsListViewProps {
   onFilterChange: (next: ClientsFilterState) => void
   onLeadClick: (lead: Lead) => void
   onAddClient?: () => void
+  selectedIds?: string[]
+  onToggleSelect?: (id: string) => void
+  onToggleSelectAll?: (ids: string[]) => void
+  keyboardEnabled?: boolean
 }
 
 const HEADER_LABELS = ['Client', 'Stage', 'Last activity', 'Next'] as const
@@ -114,7 +119,12 @@ export function ClientsListView({
   onFilterChange,
   onLeadClick,
   onAddClient,
+  selectedIds = [],
+  onToggleSelect,
+  onToggleSelectAll,
+  keyboardEnabled = true,
 }: ClientsListViewProps) {
+  const [focusedIndex, setFocusedIndex] = useState(-1)
   const availableTags = useMemo(() => {
     const set = new Set<string>()
     leads.forEach((l) => (l.tags || []).forEach((t) => set.add(t)))
@@ -161,6 +171,21 @@ export function ClientsListView({
     return result
   }, [leads, filter])
 
+  // iter 292-v3b — J/K/Enter navigation (list-scoped). CMD+K/ESC//
+  // handled at Dashboard.tsx level. Guards inside `useClientsKeyboard`
+  // skip J/K when typing in inputs.
+  useClientsKeyboard(
+    {
+      onNavigateNext: () => {
+        setFocusedIndex((i) => Math.min(i + 1, filtered.length - 1))
+      },
+      onNavigatePrev: () => {
+        setFocusedIndex((i) => Math.max(i - 1, 0))
+      },
+    },
+    keyboardEnabled && filtered.length > 0,
+  )
+
   return (
     <div data-testid="clients-list-view">
       <ClientsFilterBar
@@ -184,7 +209,7 @@ export function ClientsListView({
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'minmax(0, 2fr) 120px 120px 140px',
+            gridTemplateColumns: '32px minmax(0, 2fr) 120px 120px 140px',
             gap: 16,
             padding: '10px 16px',
             background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
@@ -195,6 +220,31 @@ export function ClientsListView({
           }}
           data-testid="clients-list-header"
         >
+          {/* iter 292-v3b — Header checkbox: select all visible / clear */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {onToggleSelectAll && (
+              <input
+                type="checkbox"
+                checked={filtered.length > 0 && filtered.every((l) => selectedIds.includes(l.id))}
+                ref={(el) => {
+                  if (el) {
+                    const someSelected = filtered.some((l) => selectedIds.includes(l.id))
+                    const allSelected = filtered.every((l) => selectedIds.includes(l.id))
+                    el.indeterminate = someSelected && !allSelected
+                  }
+                }}
+                onChange={() => onToggleSelectAll(filtered.map((l) => l.id))}
+                style={{
+                  cursor: 'pointer',
+                  width: 14,
+                  height: 14,
+                  accentColor: 'var(--kolor-terra, #B84A2C)',
+                }}
+                data-testid="clients-list-select-all"
+                aria-label="Select all visible"
+              />
+            )}
+          </div>
           {HEADER_LABELS.map((label) => {
             const key = label.toLowerCase().replace(/\s+/g, '-')
             const activeSort =
@@ -288,38 +338,79 @@ export function ClientsListView({
             )}
           </div>
         ) : (
-          filtered.map((lead) => {
+          filtered.map((lead, idx) => {
             const stage = getStageForLead(lead)
             const stageLabel = stage === 'lost' ? 'LOST' : lang.stages[stage as ClientStage]
             const ind = industryLabel(lead)
+            const isSelected = selectedIds.includes(lead.id)
+            const isFocused = idx === focusedIndex
             return (
-              <button
+              <div
                 key={lead.id}
-                onClick={() => onLeadClick(lead)}
                 style={{
                   width: '100%',
                   display: 'grid',
-                  gridTemplateColumns: 'minmax(0, 2fr) 120px 120px 140px',
+                  gridTemplateColumns: '32px minmax(0, 2fr) 120px 120px 140px',
                   gap: 16,
                   alignItems: 'center',
                   padding: '12px 16px',
                   minHeight: 56,
-                  background: 'transparent',
-                  border: 'none',
+                  background: isSelected
+                    ? 'var(--kolor-slate-tint, rgba(59, 74, 63, 0.10))'
+                    : isFocused
+                    ? 'var(--kolor-slate-tint, rgba(59, 74, 63, 0.06))'
+                    : 'transparent',
                   borderBottom: '1px solid var(--kolor-hairline, #E5E0D8)',
-                  textAlign: 'left',
-                  cursor: 'pointer',
+                  borderLeft: isFocused
+                    ? '2px solid var(--kolor-terra, #B84A2C)'
+                    : '2px solid transparent',
                   transition: 'background 200ms ease-out',
                 }}
                 onMouseEnter={(e) => {
-                  ;(e.currentTarget as HTMLButtonElement).style.background =
-                    'var(--kolor-slate-tint, rgba(59, 74, 63, 0.06))'
+                  if (!isSelected && !isFocused) {
+                    ;(e.currentTarget as HTMLDivElement).style.background =
+                      'var(--kolor-slate-tint, rgba(59, 74, 63, 0.06))'
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  ;(e.currentTarget as HTMLButtonElement).style.background = 'transparent'
+                  if (!isSelected && !isFocused) {
+                    ;(e.currentTarget as HTMLDivElement).style.background = 'transparent'
+                  }
                 }}
                 data-testid={`clients-row-${lead.id}`}
               >
+                {/* iter 292-v3b — Row checkbox */}
+                <div
+                  style={{ display: 'flex', alignItems: 'center' }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {onToggleSelect && (
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => onToggleSelect(lead.id)}
+                      style={{
+                        cursor: 'pointer',
+                        width: 14,
+                        height: 14,
+                        accentColor: 'var(--kolor-terra, #B84A2C)',
+                      }}
+                      data-testid={`clients-row-select-${lead.id}`}
+                      aria-label={`Select ${lead.clientName}`}
+                    />
+                  )}
+                </div>
+                <button
+                  onClick={() => onLeadClick(lead)}
+                  style={{
+                    display: 'contents',
+                    background: 'transparent',
+                    border: 'none',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    padding: 0,
+                  }}
+                >
                 {/* Client cell */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
                   <ClientAvatar name={lead.clientName} size={32} />
@@ -426,7 +517,8 @@ export function ClientsListView({
                 >
                   {nextActionFor(lead, lang)}
                 </div>
-              </button>
+                </button>
+              </div>
             )
           })
         )}
