@@ -172,9 +172,9 @@ export default function PublicProfile() {
 
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '48px 24px 80px' }}>
         {/* Header block */}
-        <section style={{ display: 'grid', gridTemplateColumns: '120px 1fr auto', gap: '32px', alignItems: 'start', paddingBottom: '32px', borderBottom: '1px solid var(--kolor-hairline)' }}>
+        <section className="pp-hero-grid" style={{ paddingBottom: '32px', borderBottom: '1px solid var(--kolor-hairline)' }}>
           <div style={avatarStyle}>{initial}</div>
-          <div>
+          <div style={{ minWidth: 0 }}>
             {profile.handle && <p style={monoEyebrow}>@{profile.handle}</p>}
             <h1 style={nameStyle}>{name}</h1>
             {!editMode && <p style={{ ...monoMeta, marginTop: '12px' }}>{meta}</p>}
@@ -202,7 +202,7 @@ export default function PublicProfile() {
               </div>
             )}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '160px' }}>
+          <div className="pp-hero-actions" style={{ gap: '10px' }}>
             {isOwner && !editMode && <button onClick={() => setEditMode(true)} data-testid="edit-profile" style={btnGhostTerra}>Edit profile</button>}
             {isOwner && editMode && (
               <>

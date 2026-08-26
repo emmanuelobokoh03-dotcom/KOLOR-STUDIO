@@ -1229,3 +1229,35 @@ select:focus {
   from { transform: scaleX(0); opacity: 0; }
   to { transform: scaleX(1); opacity: 1; }
 }
+
+/* iter 292-v3c — Public Profile hero responsive grid (community
+   artist profile buttons overflow fix per v3b smoke-test finding). */
+.pp-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.pp-hero-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+@media (min-width: 768px) {
+  .pp-hero-grid {
+    grid-template-columns: 120px 1fr auto;
+    gap: 32px;
+  }
+  .pp-hero-actions {
+    flex-direction: column;
+    min-width: 160px;
+  }
+}
+
+/* iter 292-v3c — Clients v3 QuickViewsStrip horizontal scroll on
+   very narrow viewports. Keeps preset chips accessible without
+   forcing wrap of the whole strip. */
+[data-testid="clients-quick-views-strip"] {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

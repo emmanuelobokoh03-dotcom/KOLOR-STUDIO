@@ -27,6 +27,7 @@ import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
 import type { Lead } from '../../services/api'
 import type { IndustryLanguage } from '../../utils/industryLanguage'
 import ClientAvatar from './ClientAvatar'
+import ClientsEmptyState from './ClientsEmptyState'
 import { getStageForLead } from './stages'
 import type { ClientStage } from './stages'
 
@@ -281,21 +282,16 @@ export function ClientsCalendarView({ leads, lang, onLeadClick }: ClientsCalenda
         </div>
       </div>
 
-      {/* Empty month state */}
+      {/* Empty month state (Studio Wall echo per iter 292-v3c) */}
       {monthEmpty && (
-        <p
-          style={{
-            marginTop: 14,
-            textAlign: 'center',
-            fontFamily: "'Fraunces', Georgia, serif",
-            fontStyle: 'italic',
-            fontSize: 15,
-            color: 'var(--kolor-ink-subtle, #928B84)',
-          }}
-          data-testid="clients-calendar-empty"
-        >
-          No booked work this month.
-        </p>
+        <div style={{ marginTop: 14 }} data-testid="clients-calendar-empty">
+          <ClientsEmptyState
+            eyebrow="Quiet month"
+            title="No booked work this month"
+            description="Bookings with an event date populate this grid. Navigate to another month or add work on the Clients list."
+            compact
+          />
+        </div>
       )}
 
       {/* Day detail panel */}

@@ -11,11 +11,11 @@
 
 import { useMemo, useState } from 'react'
 import { CaretUp } from '@phosphor-icons/react/dist/csr/CaretUp'
-import { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
 import type { Lead } from '../../services/api'
 import type { IndustryLanguage } from '../../utils/industryLanguage'
 import { useClientsKeyboard } from '../../hooks/useClientsKeyboard'
 import ClientAvatar from './ClientAvatar'
+import ClientsEmptyState from './ClientsEmptyState'
 import type { ClientsFilterState } from './ClientsFilterBar'
 import ClientsFilterBar from './ClientsFilterBar'
 import type { ClientIndustryFilter, ClientStage } from './stages'
@@ -273,70 +273,21 @@ export function ClientsListView({
 
         {/* Rows */}
         {filtered.length === 0 ? (
-          <div
-            style={{
-              padding: '48px 24px',
-              textAlign: 'center',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 12,
-            }}
-            data-testid="clients-list-empty"
-          >
-            <h3
-              style={{
-                fontFamily: "'Fraunces', Georgia, serif",
-                fontStyle: 'italic',
-                fontWeight: 400,
-                fontSize: 22,
-                color: 'var(--kolor-ink, #1A1613)',
-                margin: 0,
-              }}
-            >
-              No clients yet
-            </h3>
-            <p
-              style={{
-                fontFamily: 'Inter, system-ui, sans-serif',
-                fontSize: 13,
-                color: 'var(--kolor-ink-muted, #5F5751)',
-                margin: 0,
-                maxWidth: 380,
-                lineHeight: 1.5,
-              }}
-            >
-              {leads.length === 0
+          <ClientsEmptyState
+            eyebrow={leads.length === 0 ? 'Studio wall' : 'No matches'}
+            title={leads.length === 0 ? 'No clients yet' : 'No clients match this filter'}
+            description={
+              leads.length === 0
                 ? `Your first ${lang.lead.toLowerCase()} lands here. Send a share link or wait for a new inquiry.`
-                : 'No clients match this filter. Clear filters to see all.'}
-            </p>
-            {onAddClient && (
-              <button
-                onClick={onAddClient}
-                style={{
-                  marginTop: 8,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '10px 16px',
-                  background: 'var(--kolor-terra, #B84A2C)',
-                  color: 'var(--kolor-canvas, #F7F4EE)',
-                  border: 'none',
-                  borderRadius: 2,
-                  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
-                  fontSize: 10,
-                  fontWeight: 500,
-                  letterSpacing: '0.24em',
-                  textTransform: 'uppercase',
-                  cursor: 'pointer',
-                }}
-                data-testid="clients-list-empty-add"
-              >
-                <UserPlus size={12} weight="bold" />
-                Add client
-              </button>
-            )}
-          </div>
+                : 'Try clearing filters or switching to a different preset view.'
+            }
+            cta={
+              onAddClient && leads.length === 0
+                ? { label: 'Add client', onClick: onAddClient }
+                : undefined
+            }
+            testId="clients-list-empty"
+          />
         ) : (
           filtered.map((lead, idx) => {
             const stage = getStageForLead(lead)
