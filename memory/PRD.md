@@ -21,7 +21,42 @@ Full-stack creator command center for photographers, designers, and fine artists
 - Dashboard v3: **CLOSED** at iter 61 (creator-command-center) — awaiting user smoke test PASS on 291-v3c.2
 - **Clients v3: OPEN** at iter 62 (operational spine) — v3a shipped
 
-## Iteration 292-v3b (this session) — Saved views + bulk actions + keyboard shortcuts + calendar view
+## Arc closure status
+- Community v3: **CLOSED** at iter 53 (peer-discovery)
+- Portfolio v3: **CLOSED** at iter 56 (client-conversion)
+- Dashboard v3: **CLOSED** at iter 61 (creator-command-center)
+- **Clients v3: CLOSED** at iter 65 (operational spine) — pragmatic close; detail redesign deferred to v3.1
+
+## Iteration 292-v3c (this session) — Pragmatic Clients v3 arc close
+STEP 0 revealed LeadDetailModal is 1996 lines with non-framework `#6C2EDB` purple — a full progressive-disclosure redesign requires a proper dedicated iteration. User confirmed pragmatic close: ship polish + close arc + defer detail redesign to formal v3.1 iteration.
+
+### Ships in v3c
+- **`ClientsEmptyState.tsx`** — reusable Studio Wall echo helper (three hairline frames + Fraunces italic title + Inter body + Terra CTA + `compact` variant)
+- **Empty states refreshed** in `ClientsListView` (Studio wall / No matches variants) and `ClientsCalendarView` (Quiet month)
+- **Community mobile fix** — `PublicProfile.tsx` hero grid + actions column now use responsive CSS classes (`.pp-hero-grid` + `.pp-hero-actions`) with mobile-first defaults + `@media (min-width: 768px)` desktop layout. Buttons no longer overflow narrow viewports.
+- **QuickViewsStrip mobile scroll** — `overflow-x: auto` with touch scrolling
+- **Active Pipeline widget removal**: STEP 0 confirmed no such widget exists on Clients page. Zero action required.
+- **Revenue Overview**: preserved per user decision (3-path product decision documented).
+
+### Files changed
+- New: `frontend/src/components/clients/ClientsEmptyState.tsx`
+- Modified: `ClientsListView.tsx`, `ClientsCalendarView.tsx`, `pages/PublicProfile.tsx`, `index.css`
+
+### Local commit
+`e6bd059` on branch `main`. 5 files changed, 192+/81-. **Push blocked** — user syncs via "Save to GitHub".
+
+### Formally deferred to Clients v3.1
+- **LeadDetailModal → progressive disclosure redesign (Q5=A)** — full 1996-line refactor with its own STEP 0 diagnostic, adaptive Cases (full replacement vs in-place refactor decided at v3.1 STEP 0)
+- Sidebar VIEWS section
+- Backend user.preferences JSON persistence
+- Custom stages, drag-drop, backend batch endpoints, week/agenda calendar, industry auto-populate + backfill, past-deposit-due preset, kanban multi-select, command palette modal, bulk email/export, full bulk reminder, comprehensive keyboard shortcuts, latest work thumbnail per client, LeadDetailModal purple color migration
+
+### Revenue Overview — 3 documented paths (awaiting product decision)
+1. Add Revenue card to Today Dashboard (Dashboard v3.1 scope)
+2. Add Revenue section to sidebar (dedicated surface, more product weight)
+3. Keep as right-sidebar widget only on Today (contextual visibility)
+
+## Iteration 292-v3b (prior) — Saved views + bulk actions + keyboard shortcuts + calendar view
 Second substantive iteration in Clients v3 arc. Four operational power workstreams.
 
 ### Selected paths (per user confirmation)
