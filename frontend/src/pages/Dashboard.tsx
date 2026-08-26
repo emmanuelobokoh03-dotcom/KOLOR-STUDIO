@@ -1299,76 +1299,39 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Stats Cards */}
-        {/* Hero metric — dominant pipeline stat */}
-        {viewMode === 'list' && (
-        <div
-          className="mb-6 px-2"
-          style={{
-            borderLeft: '3px solid #6C2EDB',
-            paddingLeft: '16px',
-          }}
-          data-testid="hero-pipeline-stat"
-        >
-          <p
-            className="font-mono-kolor"
-            style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: 'rgba(108,46,219,0.6)', textTransform: 'uppercase', marginBottom: 4 }}
-          >
-            Active pipeline
-          </p>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-            <NumberFlow
-              value={leads.filter(l => !['BOOKED', 'LOST'].includes(l.status)).length}
-              className="text-[32px] sm:text-[40px] font-bold leading-none"
-              style={{ color: '#1A1A2E' }}
-            />
-            <span className="text-xs sm:text-sm" style={{ color: 'rgba(0,0,0,0.35)' }}>{lang.leads.toLowerCase()} in pipeline</span>
-          </div>
-        </div>
-        )}
+        {/* iter 292-v3c.1 — Active Pipeline hero pill + StatCards grid removed.
+             Duplicated Dashboard v3 Pipeline Pulse card + sidebar Clients count.
+             Pipeline Pulse card on Today view remains sole treatment. */}
 
-        {/* iter 291-v3b — NeedsAttentionSection removed. Needs Attention
-             card in DashboardCards now handles this (Today view). */}
-
-        {/* Lead-management chrome (stat cards + filter toolbar) — only visible for lead-focused views */}
+        {/* Lead-management chrome (filter toolbar) — only visible for lead-focused views */}
         {viewMode === 'list' && (<>
-        <div className="grid grid-cols-2 gap-3 md:gap-5 mb-4 md:mb-8">
-          <StatCard
-            icon={Users}
-            label={`Active ${lang.leads}`}
-            value={(stats?.total || 0) - (stats?.statusCounts?.BOOKED || 0) - (stats?.statusCounts?.LOST || 0)}
-            trend={{ direction: 'neutral', label: 'in pipeline' }}
-            sparkline={toSparkline(monthlyTrend, 'count', stats?.total || 0)}
-            accentColor="brand"
-            active={statusFilter === null}
-            onClick={() => clearStatusFilter()}
-            testId="stat-active-leads"
-          />
-          <StatCard
-            icon={CurrencyDollar}
-            label={`Booked`}
-            value={stats?.statusCounts?.BOOKED || 0}
-            trend={{ direction: bookedTrend, label: bookedTrend === 'neutral' ? 'confirmed' : `${Math.abs(analytics?.overview.bookedThisMonth.changePercent ?? 0)}% vs last month` }}
-            sparkline={toSparkline(monthlyTrend, 'revenue', stats?.statusCounts?.BOOKED || 0)}
-            accentColor="green"
-            active={statusFilter === 'BOOKED'}
-            onClick={() => handleFilterByStatus(statusFilter === 'BOOKED' ? null : 'BOOKED')}
-            testId="stat-booked"
-          />
-        </div>
 
         {/* Toolbar */}
-        <div className="glass-card rounded-xl border border-light-200 p-3 md:p-5 mb-4 md:mb-8">
+        {/* Toolbar — iter 292-v3c.1: framework-calibrated to KOLOR tokens */}
+        <div
+          className="rounded-xl p-3 md:p-5 mb-4 md:mb-8"
+          style={{
+            background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+            border: '1px solid var(--kolor-hairline, #E5E0D8)',
+          }}
+        >
           {/* Mobile toolbar */}
           <div className="flex items-center gap-2 md:gap-3">
             <div className="relative flex-1">
-              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--kolor-ink-subtle, #928B84)' }} />
               <input
                 type="text"
                 placeholder="Search leads..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 bg-surface-base border-2 border-border rounded-input focus:border-brand-600 focus:shadow-input-focus text-text-primary placeholder-text-tertiary transition-all duration-fast text-sm"
+                className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm transition-all duration-fast focus:outline-none"
+                style={{
+                  background: 'var(--kolor-canvas, #F7F4EE)',
+                  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                  color: 'var(--kolor-ink, #1A1613)',
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--kolor-terra, #B84A2C)' }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--kolor-hairline, #E5E0D8)' }}
                 data-testid="search-input"
               />
             </div>
@@ -1376,15 +1339,22 @@ const Dashboard = () => {
             {/* Mobile filter toggle */}
             <button
               onClick={() => setShowMobileFilters(!showMobileFilters)}
-              className={`p-2.5 rounded-xl border transition-all duration-200 touch-target md:hidden relative ${
-                activeFilterCount > 0 ? 'border-brand-primary bg-purple-50 text-purple-600' : 'border-light-200 text-text-secondary'
-              }`}
+              className="p-2.5 rounded-lg transition-all duration-200 touch-target md:hidden relative"
+              style={{
+                background: activeFilterCount > 0 ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-canvas, #F7F4EE)',
+                border: `1px solid ${activeFilterCount > 0 ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-hairline, #E5E0D8)'}`,
+                color: activeFilterCount > 0 ? 'var(--kolor-canvas, #F7F4EE)' : 'var(--kolor-ink-muted, #5F5751)',
+              }}
               data-testid="mobile-filter-toggle"
               aria-label={`Toggle filters${activeFilterCount > 0 ? ` (${activeFilterCount} active)` : ''}`}
             >
               <Funnel className="w-4 h-4" aria-hidden="true" />
               {activeFilterCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center" aria-hidden="true">
+                <span
+                  className="absolute -top-1 -right-1 w-4 h-4 text-[10px] font-bold rounded-full flex items-center justify-center"
+                  style={{ background: 'var(--kolor-ink, #1A1613)', color: 'var(--kolor-canvas, #F7F4EE)' }}
+                  aria-hidden="true"
+                >
                   {activeFilterCount}
                 </span>
               )}
@@ -1393,61 +1363,52 @@ const Dashboard = () => {
             {/* Mobile: share form icon button — always visible, not buried in filter panel */}
             <button
               onClick={() => setShowShareModal(true)}
-              className="p-2.5 rounded-xl border border-brand-primary/30 text-purple-600 transition-all duration-200 touch-target md:hidden relative"
-              style={{ background: 'rgba(108,46,219,0.08)' }}
+              className="p-2.5 rounded-lg transition-all duration-200 touch-target md:hidden relative"
+              style={{
+                background: 'var(--kolor-terra, #B84A2C)',
+                border: '1px solid var(--kolor-terra, #B84A2C)',
+                color: 'var(--kolor-canvas, #F7F4EE)',
+              }}
               data-testid="mobile-share-form-toolbar"
               aria-label="Share inquiry form"
               title="Share inquiry form"
             >
-              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#E8891A]" aria-hidden="true" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full" style={{ background: 'var(--kolor-canvas, #F7F4EE)' }} aria-hidden="true" />
               <LinkIcon className="w-4 h-4" aria-hidden="true" />
             </button>
 
             <button
               onClick={handleRefresh}
-              className="p-2.5 hover:bg-light-100 rounded-xl transition-all duration-200 touch-target hidden md:flex items-center gap-2"
+              className="p-2.5 rounded-lg transition-all duration-200 touch-target hidden md:flex items-center gap-2 hover:opacity-70"
               disabled={refreshing}
               data-testid="refresh-button"
               aria-label={refreshing ? 'Refreshing data' : 'Refresh data'}
             >
-              <ArrowsClockwise className={`w-5 h-5 text-text-secondary ${refreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
+              <ArrowsClockwise
+                className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`}
+                style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}
+                aria-hidden="true"
+              />
               <div className="flex items-center gap-1.5" role="status" aria-live="polite">
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" aria-hidden="true" />
-                <span className="text-xs text-text-tertiary">Live</span>
+                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--kolor-terra, #B84A2C)' }} aria-hidden="true" />
+                <span
+                  className="font-mono-kolor"
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: 'var(--kolor-ink-muted, #5F5751)',
+                  }}
+                >
+                  Live
+                </span>
               </div>
             </button>
 
-            {/* Desktop view toggles */}
-            <div className="hidden md:flex bg-surface-base rounded-xl p-1 border border-light-200">
-              {([
-                { mode: 'kanban' as ViewMode, icon: SquaresFour, title: 'Today' },
-                { mode: 'list' as ViewMode, icon: ListIcon, title: 'Clients' },
-                { mode: 'portfolio' as ViewMode, icon: Briefcase, title: 'Portfolio' },
-              ]).map(({ mode, icon: Icon, title }) => (
-                <button
-                  key={mode}
-                  onClick={() => handleViewChange(mode)}
-                  className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === mode ? 'bg-purple-50 shadow-sm text-purple-500' : 'text-text-secondary hover:text-text-primary'}`}
-                  data-testid={`view-${mode}`}
-                  data-tour={mode === 'portfolio' ? 'view-portfolio' : undefined}
-                  title={title}
-                  aria-label={title}
-                  aria-pressed={viewMode === mode}
-                >
-                  <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-4 h-4" aria-hidden="true" />
-                </button>
-              ))}
-              <button
-                onClick={() => navigate('/calendar')}
-                className="p-2.5 rounded-lg transition-all duration-200 text-text-secondary hover:text-text-primary"
-                data-testid="view-calendar"
-                data-tour="view-calendar"
-                title="Calendar"
-                aria-label="Calendar"
-              >
-                <CalendarDots weight="regular" className="w-4 h-4" aria-hidden="true" />
-              </button>
-            </div>
+            {/* iter 292-v3c.1 — Desktop view toggles removed.
+                 Redundant with sidebar Workspace/Schedule nav.
+                 ClientsViewToggle (LIST/KANBAN/CALENDAR) below is sole clients-data view control. */}
 
             {/* Desktop filters */}
             {availableProjectTypes.length > 0 && (
@@ -1455,7 +1416,14 @@ const Dashboard = () => {
                 value={projectTypeFilter}
                 onChange={(e) => setProjectTypeFilter(e.target.value)}
                 aria-label="Filter by project type"
-                className="hidden md:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                className="hidden md:block px-3 py-2.5 rounded-lg text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  background: 'var(--kolor-canvas, #F7F4EE)',
+                  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                  color: 'var(--kolor-ink-muted, #5F5751)',
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--kolor-terra, #B84A2C)' }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--kolor-hairline, #E5E0D8)' }}
                 data-testid="filter-project-type"
               >
                 <option value="">All Types</option>
@@ -1469,7 +1437,14 @@ const Dashboard = () => {
                 value={industryFilter}
                 onChange={(e) => setIndustryFilter(e.target.value)}
                 aria-label="Filter by industry"
-                className="hidden lg:block px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                className="hidden lg:block px-3 py-2.5 rounded-lg text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  background: 'var(--kolor-canvas, #F7F4EE)',
+                  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                  color: 'var(--kolor-ink-muted, #5F5751)',
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--kolor-terra, #B84A2C)' }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--kolor-hairline, #E5E0D8)' }}
                 data-testid="filter-industry"
                 title="Filter leads by industry"
               >
@@ -1482,11 +1457,20 @@ const Dashboard = () => {
 
             <button
               onClick={() => setShowShareModal(true)}
-              className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-200 font-semibold text-sm bg-brand-primary/10 text-purple-700 border border-brand-primary/30 hover:bg-brand-primary/15 hover:border-brand-primary/50 hover:shadow-sm relative group"
+              className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-semibold text-sm hover:opacity-90 relative group"
+              style={{
+                background: 'var(--kolor-terra, #B84A2C)',
+                border: '1px solid var(--kolor-terra, #B84A2C)',
+                color: 'var(--kolor-canvas, #F7F4EE)',
+              }}
               data-testid="share-form-button"
               title="Share your public inquiry form to capture new leads"
             >
-              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#E8891A] group-hover:scale-110 transition-transform motion-reduce:transition-none" aria-hidden="true" />
+              <span
+                className="absolute -top-1 -right-1 w-2 h-2 rounded-full group-hover:scale-110 transition-transform motion-reduce:transition-none"
+                style={{ background: 'var(--kolor-canvas, #F7F4EE)' }}
+                aria-hidden="true"
+              />
               <LinkIcon className="w-4 h-4" />
               <span>Share inquiry form</span>
             </button>
@@ -1537,7 +1521,12 @@ const Dashboard = () => {
                   value={projectTypeFilter}
                   onChange={(e) => setProjectTypeFilter(e.target.value)}
                   aria-label="Filter by project type"
-                  className="w-full px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
+                  className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none"
+                  style={{
+                    background: 'var(--kolor-canvas, #F7F4EE)',
+                    border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                    color: 'var(--kolor-ink-muted, #5F5751)',
+                  }}
                   data-testid="mobile-filter-project-type"
                 >
                   <option value="">All Types</option>
@@ -1549,7 +1538,12 @@ const Dashboard = () => {
                   value={industryFilter}
                   onChange={(e) => setIndustryFilter(e.target.value)}
                   aria-label="Filter by industry"
-                  className="w-full px-3 py-2.5 bg-surface-base border border-light-200 rounded-xl text-sm text-text-secondary"
+                  className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none"
+                  style={{
+                    background: 'var(--kolor-canvas, #F7F4EE)',
+                    border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                    color: 'var(--kolor-ink-muted, #5F5751)',
+                  }}
                   data-testid="mobile-filter-industry"
                 >
                   <option value="">All Industries</option>
@@ -1561,7 +1555,12 @@ const Dashboard = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-brand-primary text-purple-600 rounded-xl text-sm font-medium touch-target"
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold touch-target hover:opacity-90"
+                  style={{
+                    background: 'var(--kolor-terra, #B84A2C)',
+                    border: '1px solid var(--kolor-terra, #B84A2C)',
+                    color: 'var(--kolor-canvas, #F7F4EE)',
+                  }}
                   data-testid="mobile-share-form"
                 >
                   <LinkIcon className="w-4 h-4" /> Share Form
