@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { SERVICE_TYPE_LABELS, sendNewLeadNotification, sendStatusChangeNotification, sendPortalLinkEmail, sendAutoResponseEmail, sendDeliveryNotificationEmail, sendTestimonialRequestEmail, sendInquiryAcknowledgementEmail } from '../services/email';
+import { SERVICE_TYPE_LABELS, sendNewLeadNotification, sendStatusChangeNotification, sendPortalLinkEmail, sendAutoResponseEmail, sendDeliveryNotificationEmail, sendTestimonialRequestEmail, sendInquiryAcknowledgementEmail, sendCustomEmail } from '../services/email';
 import { logActivity } from './activities';
 import { uploadFile, ensureBucketExists } from '../services/storage';
 import { paymentService } from '../services/paymentService';
@@ -1436,6 +1436,261 @@ router.patch('/:id/discovery-call', authMiddleware, async (req: AuthRequest, res
     console.error('Discovery call update error:', error);
     res.status(500).json({ error: 'Failed to update discovery call status' });
   }
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// iter 293-v3a — Clients v3.1 bulk/batch endpoints
+// ═══════════════════════════════════════════════════════════════════
+// Replaces frontend Promise.allSettled loops with server-side batching.
+// Each endpoint: validates ownership → performs update per lead →
+// returns { successCount, failures: [{leadId, error}] }.
+// Max 100 leads per batch. Rate-limited via existing apiLimiter (attached
+// at router-mount level) OR bulkEmailLimiter (for reminder/email).
+
+const MAX_BATCH_SIZE = 100;
+
+function validateBatchIds(leadIds: unknown): { ok: true; ids: string[] } | { ok: false; error: string } {
+  if (!Array.isArray(leadIds)) return { ok: false, error: 'leadIds must be an array' };
+  if (leadIds.length === 0) return { ok: false, error: 'leadIds cannot be empty' };
+  if (leadIds.length > MAX_BATCH_SIZE) return { ok: false, error: `Maximum ${MAX_BATCH_SIZE} leads per batch` };
+  if (!leadIds.every((id) => typeof id === 'string')) return { ok: false, error: 'All leadIds must be strings' };
+  return { ok: true, ids: leadIds as string[] };
+}
+
+async function getOwnedLeadIds(userId: string, leadIds: string[]): Promise<{ owned: string[]; unauthorized: string[] }> {
+  const rows = await prisma.lead.findMany({
+    where: { id: { in: leadIds }, assignedToId: userId },
+    select: { id: true },
+  });
+  const owned = rows.map((r) => r.id);
+  const unauthorized = leadIds.filter((id) => !owned.includes(id));
+  return { owned, unauthorized };
+}
+
+// POST /api/leads/bulk/archive — sets status to 'LOST' (preserves current
+// bulkArchive semantic since Lead schema has no `archived` boolean field).
+router.post('/bulk/archive', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  const validation = validateBatchIds(req.body?.leadIds);
+  if (!validation.ok) { res.status(400).json({ error: validation.error }); return; }
+  const userId = req.userId as string;
+  const { owned, unauthorized } = await getOwnedLeadIds(userId, validation.ids);
+
+  const failures: Array<{ leadId: string; error: string }> = unauthorized.map((leadId) => ({ leadId, error: 'Unauthorized' }));
+  let successCount = 0;
+
+  for (const leadId of owned) {
+    try {
+      await prisma.lead.update({ where: { id: leadId }, data: { status: 'LOST', lostAt: new Date() } });
+      await logActivity(leadId, userId, 'STATUS_CHANGED', 'Lead archived (bulk)', { newStatus: 'LOST' });
+      successCount++;
+    } catch (error: any) {
+      failures.push({ leadId, error: error?.message || 'Update failed' });
+    }
+  }
+
+  res.json({ successCount, failures });
+});
+
+// POST /api/leads/bulk/stage — updates status enum for many leads
+router.post('/bulk/stage', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  const validation = validateBatchIds(req.body?.leadIds);
+  if (!validation.ok) { res.status(400).json({ error: validation.error }); return; }
+  const status = req.body?.status as string | undefined;
+  const validStatuses = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
+  if (!status || !validStatuses.includes(status)) {
+    res.status(400).json({ error: `status must be one of: ${validStatuses.join(', ')}` });
+    return;
+  }
+  const userId = req.userId as string;
+  const { owned, unauthorized } = await getOwnedLeadIds(userId, validation.ids);
+
+  const failures: Array<{ leadId: string; error: string }> = unauthorized.map((leadId) => ({ leadId, error: 'Unauthorized' }));
+  let successCount = 0;
+
+  for (const leadId of owned) {
+    try {
+      const data: any = { status };
+      if (status === 'BOOKED') data.convertedAt = new Date();
+      if (status === 'LOST') data.lostAt = new Date();
+      await prisma.lead.update({ where: { id: leadId }, data });
+      await logActivity(leadId, userId, 'STATUS_CHANGED', `Stage changed to ${status} (bulk)`, { newStatus: status });
+      successCount++;
+    } catch (error: any) {
+      failures.push({ leadId, error: error?.message || 'Update failed' });
+    }
+  }
+
+  res.json({ successCount, failures });
+});
+
+// POST /api/leads/bulk/tag — appends a tag to many leads (dedupes)
+router.post('/bulk/tag', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  const validation = validateBatchIds(req.body?.leadIds);
+  if (!validation.ok) { res.status(400).json({ error: validation.error }); return; }
+  const tag = typeof req.body?.tag === 'string' ? req.body.tag.trim() : '';
+  if (!tag) { res.status(400).json({ error: 'tag must be a non-empty string' }); return; }
+  const userId = req.userId as string;
+  const rows = await prisma.lead.findMany({
+    where: { id: { in: validation.ids }, assignedToId: userId },
+    select: { id: true, tags: true },
+  });
+  const owned = rows.map((r) => r.id);
+  const unauthorized = validation.ids.filter((id) => !owned.includes(id));
+
+  const failures: Array<{ leadId: string; error: string }> = unauthorized.map((leadId) => ({ leadId, error: 'Unauthorized' }));
+  let successCount = 0;
+
+  for (const row of rows) {
+    try {
+      const nextTags = Array.from(new Set([...(row.tags || []), tag]));
+      await prisma.lead.update({ where: { id: row.id }, data: { tags: nextTags } });
+      successCount++;
+    } catch (error: any) {
+      failures.push({ leadId: row.id, error: error?.message || 'Tag failed' });
+    }
+  }
+
+  res.json({ successCount, failures });
+});
+
+// POST /api/leads/bulk/reminder — sends contextual per-stage reminder to
+// many leads. Uses sendCustomEmail with framework-calibrated HTML body.
+router.post('/bulk/reminder', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  const validation = validateBatchIds(req.body?.leadIds);
+  if (!validation.ok) { res.status(400).json({ error: validation.error }); return; }
+  const userId = req.userId as string;
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) { res.status(401).json({ error: 'User not found' }); return; }
+
+  const rows = await prisma.lead.findMany({
+    where: { id: { in: validation.ids }, assignedToId: userId },
+    select: { id: true, clientName: true, clientEmail: true, status: true, projectTitle: true },
+  });
+  const owned = rows.map((r) => r.id);
+  const unauthorized = validation.ids.filter((id) => !owned.includes(id));
+
+  const failures: Array<{ leadId: string; error: string }> = unauthorized.map((leadId) => ({ leadId, error: 'Unauthorized' }));
+  let successCount = 0;
+
+  const creatorName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email;
+  const studioName = user.studioName || creatorName;
+
+  // Stage → contextual reminder body
+  const reminderByStage: Record<string, { subject: string; body: string }> = {
+    NEW: {
+      subject: `Following up on your inquiry — ${studioName}`,
+      body: `Hi {clientName},<br/><br/>Following up on your recent inquiry. I'd love to learn more about what you're planning and how I can help.<br/><br/>Let me know when you have a moment to chat.`,
+    },
+    REVIEWING: {
+      subject: `Checking in — ${studioName}`,
+      body: `Hi {clientName},<br/><br/>Just checking in on your inquiry. Let me know if you have any questions or if you'd like to schedule a call.`,
+    },
+    CONTACTED: {
+      subject: `Checking in on our conversation — ${studioName}`,
+      body: `Hi {clientName},<br/><br/>Circling back on our recent conversation about your project. Any next steps I can help with?`,
+    },
+    QUALIFIED: {
+      subject: `Ready to move forward? — ${studioName}`,
+      body: `Hi {clientName},<br/><br/>Wanted to check in — ready to move forward with your project? Happy to send over next steps.`,
+    },
+    QUOTED: {
+      subject: `Following up on the proposal — ${studioName}`,
+      body: `Hi {clientName},<br/><br/>Following up on the proposal I sent over. Let me know if you have any questions or would like to discuss any details.`,
+    },
+    NEGOTIATING: {
+      subject: `Following up — ${studioName}`,
+      body: `Hi {clientName},<br/><br/>Circling back on our discussion. Let me know if there's anything else I can clarify to help move things forward.`,
+    },
+    BOOKED: {
+      subject: `Progress update — ${studioName}`,
+      body: `Hi {clientName},<br/><br/>Wanted to send a quick update on your project. Let me know if there's anything you need on your end.`,
+    },
+    LOST: {
+      subject: `Checking back in — ${studioName}`,
+      body: `Hi {clientName},<br/><br/>It's been a while — wanted to see if there might still be interest in working together. Happy to reconnect anytime.`,
+    },
+  };
+
+  for (const row of rows) {
+    if (!row.clientEmail) {
+      failures.push({ leadId: row.id, error: 'No email on file' });
+      continue;
+    }
+    try {
+      const tpl = reminderByStage[row.status] || reminderByStage.NEW;
+      const htmlBody = tpl.body.replace('{clientName}', row.clientName || 'there');
+      await sendCustomEmail({
+        to: row.clientEmail,
+        subject: tpl.subject,
+        htmlBody,
+        fromName: studioName,
+        replyTo: user.email,
+      });
+      await logActivity(row.id, userId, 'EMAIL_SENT', `Reminder sent (bulk)`, { emailType: 'bulk_reminder', stage: row.status });
+      successCount++;
+    } catch (error: any) {
+      failures.push({ leadId: row.id, error: error?.message || 'Send failed' });
+    }
+  }
+
+  res.json({ successCount, failures });
+});
+
+// POST /api/leads/bulk/email — creator-composed bulk email to many leads.
+// Uses sendCustomEmail. Attach bulkEmailLimiter at router mount (see index.ts).
+router.post('/bulk/email', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  const validation = validateBatchIds(req.body?.leadIds);
+  if (!validation.ok) { res.status(400).json({ error: validation.error }); return; }
+  const subject = typeof req.body?.subject === 'string' ? req.body.subject.trim() : '';
+  const body = typeof req.body?.body === 'string' ? req.body.body.trim() : '';
+  if (!subject) { res.status(400).json({ error: 'subject is required' }); return; }
+  if (!body) { res.status(400).json({ error: 'body is required' }); return; }
+  const userId = req.userId as string;
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) { res.status(401).json({ error: 'User not found' }); return; }
+
+  const rows = await prisma.lead.findMany({
+    where: { id: { in: validation.ids }, assignedToId: userId },
+    select: { id: true, clientName: true, clientEmail: true },
+  });
+  const owned = rows.map((r) => r.id);
+  const unauthorized = validation.ids.filter((id) => !owned.includes(id));
+
+  const failures: Array<{ leadId: string; error: string }> = unauthorized.map((leadId) => ({ leadId, error: 'Unauthorized' }));
+  let successCount = 0;
+
+  const creatorName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email;
+  const studioName = user.studioName || creatorName;
+
+  // Escape HTML in body (basic) then convert newlines to <br/>
+  const escapeHtml = (str: string): string =>
+    str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const bodyHtml = escapeHtml(body).replace(/\n/g, '<br/>');
+
+  for (const row of rows) {
+    if (!row.clientEmail) {
+      failures.push({ leadId: row.id, error: 'No email on file' });
+      continue;
+    }
+    try {
+      const personalizedBody = `Hi ${row.clientName || 'there'},<br/><br/>${bodyHtml}<br/><br/>Best,<br/>${creatorName}`;
+      await sendCustomEmail({
+        to: row.clientEmail,
+        subject,
+        htmlBody: personalizedBody,
+        fromName: studioName,
+        replyTo: user.email,
+      });
+      await logActivity(row.id, userId, 'EMAIL_SENT', `Bulk email sent: ${subject}`, { emailType: 'bulk_email', subject });
+      successCount++;
+    } catch (error: any) {
+      failures.push({ leadId: row.id, error: error?.message || 'Send failed' });
+    }
+  }
+
+  res.json({ successCount, failures });
 });
 
 export default router;

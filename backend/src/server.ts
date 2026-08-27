@@ -91,7 +91,7 @@ import featuredRoutes from './routes/featured';
 import peersRoutes from './routes/peers';
 import communityDigestRoutes from './routes/communityDigest';
 import { processSequences } from './services/sequenceEngine';
-import { apiLimiter, authLimiter, emailLimiter, uploadLimiter, portalLimiter } from './middleware/rateLimiter';
+import { apiLimiter, authLimiter, emailLimiter, uploadLimiter, portalLimiter, bulkEmailLimiter } from './middleware/rateLimiter';
 import { ensureBucketExists } from './services/storage';
 import digestRoutes from './routes/digest';
 import todayRoutes from './routes/today'
@@ -273,6 +273,10 @@ app.use('/api/auth/signup', authLimiter);
 app.use('/api/auth/send-verification', emailLimiter);
 app.use('/api/auth/verify-email', emailLimiter);
 app.use('/api/auth/forgot-password', emailLimiter);
+// iter 293-v3a — bulk reminder + bulk email are heavier per-request
+// (each fans out up to 100 emails). Apply bulkEmailLimiter BEFORE apiLimiter.
+app.use('/api/leads/bulk/reminder', bulkEmailLimiter);
+app.use('/api/leads/bulk/email', bulkEmailLimiter);
 app.use('/api/files/upload', uploadLimiter);
 app.use('/api/portal', portalLimiter);
 app.use('/api/book', portalLimiter);

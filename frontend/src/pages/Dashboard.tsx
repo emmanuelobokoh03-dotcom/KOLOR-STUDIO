@@ -39,6 +39,7 @@ import { DEFAULT_CLIENTS_FILTER, ClientsFilterState } from '../components/client
 import ClientsCalendarView from '../components/clients/ClientsCalendarView'
 import QuickViewsStrip from '../components/clients/QuickViewsStrip'
 import ClientsBulkToolbar from '../components/clients/ClientsBulkToolbar'
+import BulkEmailModal from '../components/clients/BulkEmailModal'
 import {
   PRESET_VIEWS,
   loadSavedViews,
@@ -77,7 +78,9 @@ import NumberFlow from '@number-flow/react'
 // Iter 172 — lazy heavy sub-views to shrink initial Dashboard chunk.
 // Each is only rendered when its viewMode/modal trigger is active.
 const KanbanBoard = lazy(() => import('../components/KanbanBoard'))
-const LeadDetailModal = lazy(() => import('../components/LeadDetailModal'))
+// iter 293-v3a — Clients v3.1 progressive-disclosure client detail (Case A).
+// LeadDetailModal.tsx preserved as fallback until v3.1-v3b removes.
+const LeadDetailModal = lazy(() => import('../components/clients/ClientDetail'))
 const SettingsModal = lazy(() => import('../components/SettingsModal'))
 const AnalyticsDashboard = lazy(() => import('../components/AnalyticsDashboard'))
 const PortfolioPage = lazy(() => import('./Portfolio'))
@@ -173,6 +176,8 @@ const Dashboard = () => {
   const [clientsFilter, setClientsFilter] = useState<ClientsFilterState>(DEFAULT_CLIENTS_FILTER)
   // iter 292-v3b — saved views + bulk selection state
   const [clientsSelectedIds, setClientsSelectedIds] = useState<string[]>([])
+  // iter 293-v3a — bulk email compose modal state
+  const [showBulkEmail, setShowBulkEmail] = useState(false)
   const [clientsSavedViews, setClientsSavedViews] = useState<SavedView[]>([])
   const [clientsActivePresetId, setClientsActivePresetId] = useState<string | null>(null)
   const [clientsActiveSavedViewId, setClientsActiveSavedViewId] = useState<string | null>(null)
@@ -734,18 +739,43 @@ const Dashboard = () => {
 
   // iter 292-v3b — bulk action handlers (Case C: frontend loops single
   // -lead calls via Promise.allSettled with toast summarization).
+  // iter 293-v3a — Bulk actions now use backend batch endpoints
+  // (POST /api/leads/bulk/*). Replaces v3b Promise.allSettled loops.
+  const API_URL_BULK: string = (import.meta as any).env?.VITE_API_URL || ''
+
+  const callBulk = async (
+    path: string,
+    body: Record<string, unknown>,
+  ): Promise<{ successCount: number; failures: Array<{ leadId: string; error: string }> } | null> => {
+    try {
+      const res = await fetch(`${API_URL_BULK}${path}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error(data?.error || 'Bulk action failed')
+        return null
+      }
+      return data
+    } catch {
+      toast.error('Bulk action failed')
+      return null
+    }
+  }
+
   const bulkArchive = async () => {
     const ids = [...clientsSelectedIds]
     if (ids.length === 0) return
-    const results = await Promise.allSettled(
-      ids.map((id) => leadsApi.updateStatus(id, 'LOST')),
-    )
-    const ok = results.filter((r) => r.status === 'fulfilled').length
-    const failed = results.length - ok
+    const data = await callBulk('/api/leads/bulk/archive', { leadIds: ids })
+    if (!data) return
+    const { successCount, failures } = data
     toast.success(
-      failed === 0
-        ? `Archived ${ok} client${ok === 1 ? '' : 's'}.`
-        : `Archived ${ok} — ${failed} failed.`,
+      failures.length === 0
+        ? `Archived ${successCount} client${successCount === 1 ? '' : 's'}.`
+        : `Archived ${successCount} — ${failures.length} failed.`,
     )
     setClientsSelectedIds([])
     fetchLeads()
@@ -755,15 +785,13 @@ const Dashboard = () => {
   const bulkStageChange = async (newStatus: LeadStatus) => {
     const ids = [...clientsSelectedIds]
     if (ids.length === 0) return
-    const results = await Promise.allSettled(
-      ids.map((id) => leadsApi.updateStatus(id, newStatus)),
-    )
-    const ok = results.filter((r) => r.status === 'fulfilled').length
-    const failed = results.length - ok
+    const data = await callBulk('/api/leads/bulk/stage', { leadIds: ids, status: newStatus })
+    if (!data) return
+    const { successCount, failures } = data
     toast.success(
-      failed === 0
-        ? `Updated ${ok} client${ok === 1 ? '' : 's'} to ${LEAD_STATUS_LABELS[newStatus]}.`
-        : `Updated ${ok} — ${failed} failed.`,
+      failures.length === 0
+        ? `Updated ${successCount} client${successCount === 1 ? '' : 's'} to ${LEAD_STATUS_LABELS[newStatus]}.`
+        : `Updated ${successCount} — ${failures.length} failed.`,
     )
     setClientsSelectedIds([])
     fetchLeads()
@@ -773,28 +801,31 @@ const Dashboard = () => {
   const bulkTag = async (tag: string) => {
     const ids = [...clientsSelectedIds]
     if (ids.length === 0) return
-    const results = await Promise.allSettled(
-      ids.map(async (id) => {
-        const existing = leads.find((l) => l.id === id)
-        const nextTags = Array.from(
-          new Set([...((existing?.tags as string[]) || []), tag]),
-        )
-        return leadsApi.update(id, { tags: nextTags })
-      }),
-    )
-    const ok = results.filter((r) => r.status === 'fulfilled').length
-    const failed = results.length - ok
+    const data = await callBulk('/api/leads/bulk/tag', { leadIds: ids, tag })
+    if (!data) return
+    const { successCount, failures } = data
     toast.success(
-      failed === 0
-        ? `Tagged ${ok} client${ok === 1 ? '' : 's'} with "${tag}".`
-        : `Tagged ${ok} — ${failed} failed.`,
+      failures.length === 0
+        ? `Tagged ${successCount} client${successCount === 1 ? '' : 's'} with "${tag}".`
+        : `Tagged ${successCount} — ${failures.length} failed.`,
     )
     setClientsSelectedIds([])
     fetchLeads()
   }
 
-  const bulkReminder = () => {
-    toast.info('Bulk reminders coming in v3.1.')
+  const bulkReminder = async () => {
+    const ids = [...clientsSelectedIds]
+    if (ids.length === 0) return
+    const data = await callBulk('/api/leads/bulk/reminder', { leadIds: ids })
+    if (!data) return
+    const { successCount, failures } = data
+    toast.success(
+      failures.length === 0
+        ? `Reminder sent to ${successCount} client${successCount === 1 ? '' : 's'}.`
+        : `Sent to ${successCount} — ${failures.length} failed.`,
+    )
+    setClientsSelectedIds([])
+    fetchLeads()
   }
 
   // iter 292-v3b — preset / saved view application
@@ -1732,7 +1763,19 @@ const Dashboard = () => {
             onStageChange={bulkStageChange}
             onTag={bulkTag}
             onSendReminder={bulkReminder}
+            onSendEmail={() => setShowBulkEmail(true)}
             onClearSelection={() => setClientsSelectedIds([])}
+          />
+        )}
+        {viewMode === 'list' && showBulkEmail && (
+          <BulkEmailModal
+            selectedIds={clientsSelectedIds}
+            clients={leads}
+            onClose={() => setShowBulkEmail(false)}
+            onSent={() => {
+              setClientsSelectedIds([])
+              fetchLeads()
+            }}
           />
         )}
 

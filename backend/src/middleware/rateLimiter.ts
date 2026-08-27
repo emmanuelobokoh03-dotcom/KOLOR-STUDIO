@@ -60,3 +60,16 @@ export const portalLimiter = rateLimit({
   skip: isDev,
   handler: (req, res) => { logHit(req); res.status(429).json({ error: 'Too many requests, please try again later.' }); },
 });
+
+// iter 293-v3a — Bulk email / bulk reminder — 10 bulk operations/hour
+// (each may fan out up to 100 recipients = 1000 emails/hour ceiling)
+export const bulkEmailLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { trustProxy: false },
+  skip: isDev,
+  handler: (req, res) => { logHit(req); res.status(429).json({ error: 'Too many bulk email requests, please try again later.' }); },
+});
+

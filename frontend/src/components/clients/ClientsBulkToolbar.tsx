@@ -1,14 +1,13 @@
 // iter 292-v3b — Bulk actions floating toolbar.
+// iter 293-v3a — Send Reminder + Send Email completed via backend batch
+// endpoints (POST /api/leads/bulk/{archive,stage,tag,reminder,email}).
 //
-// Per Q6=B standard bulk actions with adaptive scope:
-//   - Archive:      PATCH /api/leads/:id/status → 'LOST' (existing endpoint;
-//                   LOST = de facto archived, excluded from pipeline)
-//   - Stage change: PATCH /api/leads/:id/status → new stage (existing endpoint)
-//   - Tag:          PATCH /api/leads/:id with { tags: [...] } (existing endpoint)
-//   - Send reminder: toast stub "Coming in v3.1" (backend endpoint deferred)
-//
-// Case C backend: frontend loops single-lead calls via Promise.allSettled
-// with toast summarization. Batch endpoints → v3.1.
+// Per Q6=B standard bulk actions:
+//   - Archive:       POST /api/leads/bulk/archive → sets status='LOST'
+//   - Stage change:  POST /api/leads/bulk/stage
+//   - Tag:           POST /api/leads/bulk/tag
+//   - Send Reminder: POST /api/leads/bulk/reminder (contextual per-stage body)
+//   - Send Email:    POST /api/leads/bulk/email (creator-composed compose modal)
 //
 // Portaled to document.body to escape any backdrop-filter containing-block
 // trap (Dashboard v3c.2 codified lesson).
@@ -19,6 +18,7 @@ import { Archive } from '@phosphor-icons/react/dist/csr/Archive'
 import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
 import { Tag as TagIcon } from '@phosphor-icons/react/dist/csr/Tag'
 import { Bell } from '@phosphor-icons/react/dist/csr/Bell'
+import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import type { LeadStatus } from '../../services/api'
 import type { IndustryLanguage } from '../../utils/industryLanguage'
@@ -37,7 +37,8 @@ interface ClientsBulkToolbarProps {
   onArchive: () => Promise<void> | void
   onStageChange: (status: LeadStatus) => Promise<void> | void
   onTag: (tag: string) => Promise<void> | void
-  onSendReminder: () => void
+  onSendReminder: () => Promise<void> | void
+  onSendEmail: () => void
   onClearSelection: () => void
 }
 
@@ -67,6 +68,7 @@ export function ClientsBulkToolbar({
   onStageChange,
   onTag,
   onSendReminder,
+  onSendEmail,
   onClearSelection,
 }: ClientsBulkToolbarProps) {
   const [stageMenuOpen, setStageMenuOpen] = useState(false)
@@ -228,13 +230,29 @@ export function ClientsBulkToolbar({
 
         <button
           type="button"
-          onClick={onSendReminder}
-          style={{ ...btnStyle, opacity: 0.6 }}
+          onClick={async () => {
+            if (pending) return
+            setPending(true)
+            try { await onSendReminder() } finally { setPending(false) }
+          }}
+          disabled={pending}
+          style={btnStyle}
           data-testid="clients-bulk-reminder"
-          title="Coming in v3.1"
+          title="Send contextual reminder to selected clients"
         >
           <Bell size={11} weight="regular" />
           Remind
+        </button>
+
+        <button
+          type="button"
+          onClick={onSendEmail}
+          style={btnStyle}
+          data-testid="clients-bulk-email"
+          title="Compose bulk email to selected clients"
+        >
+          <PaperPlaneTilt size={11} weight="regular" />
+          Email
         </button>
 
         <button
