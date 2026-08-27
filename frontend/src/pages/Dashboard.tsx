@@ -700,16 +700,29 @@ const Dashboard = () => {
     navigate('/calendar')
   }
 
-  // iter 292-v3b — hydrate saved views from localStorage per userId
+  // iter 292-v3b — hydrate saved views (backend-backed as of iter 293-v3b)
+  // Migration is transparent: existing localStorage entries auto-migrate on first
+  // successful backend load, then localStorage is cleared.
+  const [savedViewsHydrated, setSavedViewsHydrated] = useState(false)
   useEffect(() => {
     if (!user?.id) return
-    setClientsSavedViews(loadSavedViews(user.id))
+    let cancelled = false
+    loadSavedViews(user.id).then((views) => {
+      if (!cancelled) {
+        setClientsSavedViews(views)
+        setSavedViewsHydrated(true)
+      }
+    })
+    return () => { cancelled = true }
   }, [user?.id])
 
   useEffect(() => {
     if (!user?.id) return
+    // Skip persist until initial hydration completes (avoids overwriting backend
+    // with an empty array before the load resolves).
+    if (!savedViewsHydrated) return
     persistSavedViews(user.id, clientsSavedViews)
-  }, [user?.id, clientsSavedViews])
+  }, [user?.id, clientsSavedViews, savedViewsHydrated])
 
   // iter 292-v3b — clear selection whenever leaving Clients page
   useEffect(() => {
@@ -769,17 +782,62 @@ const Dashboard = () => {
   const bulkArchive = async () => {
     const ids = [...clientsSelectedIds]
     if (ids.length === 0) return
+    // iter 293-v3b — capture pre-archive stages for undo restoration
+    const preArchiveMap: Record<string, string> = {}
+    ids.forEach((id) => {
+      const lead = leads.find((l) => l.id === id)
+      if (lead) preArchiveMap[id] = lead.status
+    })
     const data = await callBulk('/api/leads/bulk/archive', { leadIds: ids })
     if (!data) return
     const { successCount, failures } = data
+    // Backend also returns preArchiveMap; prefer backend snapshot if present
+    const backendMap = (data as any).preArchiveMap
+    const restoreMap: Record<string, string> = backendMap && typeof backendMap === 'object' ? backendMap : preArchiveMap
+
+    // iter 293-v3b — Sonner action-button undo (8s window)
     toast.success(
       failures.length === 0
         ? `Archived ${successCount} client${successCount === 1 ? '' : 's'}.`
         : `Archived ${successCount} — ${failures.length} failed.`,
+      {
+        duration: 8000,
+        action: {
+          label: 'Undo',
+          onClick: () => bulkUnarchive(ids, restoreMap),
+        },
+      },
     )
     setClientsSelectedIds([])
     fetchLeads()
     fetchStats()
+  }
+
+  const bulkUnarchive = async (leadIds: string[], stageRestoreMap?: Record<string, string>) => {
+    if (leadIds.length === 0) return
+    const data = await callBulk('/api/leads/bulk/unarchive', {
+      leadIds,
+      stageRestoreMap: stageRestoreMap || {},
+      defaultStage: 'NEW',
+    })
+    if (!data) return
+    const { successCount, failures } = data
+    toast.success(
+      failures.length === 0
+        ? `Restored ${successCount} client${successCount === 1 ? '' : 's'}.`
+        : `Restored ${successCount} — ${failures.length} failed.`,
+    )
+    setClientsSelectedIds([])
+    fetchLeads()
+    fetchStats()
+  }
+
+  // iter 293-v3b — Bulk restore from Archived preset (no undo captures pre-stage;
+  // default to 'NEW' for all restored leads).
+  const bulkRestoreFromArchive = async () => {
+    const ids = [...clientsSelectedIds]
+    if (ids.length === 0) return
+    await bulkUnarchive(ids)
   }
 
   const bulkStageChange = async (newStatus: LeadStatus) => {
@@ -877,13 +935,15 @@ const Dashboard = () => {
 
   // Apply active preset matcher to filtered leads (v3a Dashboard-level
   // filtering already applied via filteredLeads below).
+  const activePreset = useMemo(
+    () => (clientsActivePresetId ? PRESET_VIEWS.find((p) => p.id === clientsActivePresetId) : null),
+    [clientsActivePresetId],
+  )
+  const clientsViewingArchived = activePreset?.id === 'archived'
   const clientsScopedLeads = useMemo(() => {
-    const activePreset = clientsActivePresetId
-      ? PRESET_VIEWS.find((p) => p.id === clientsActivePresetId)
-      : null
     if (!activePreset) return filteredLeads
     return applyPresetToLeads(activePreset, filteredLeads)
-  }, [clientsActivePresetId, filteredLeads])
+  }, [activePreset, filteredLeads])
 
   const activeFilterCount = [statusFilter, projectTypeFilter, industryFilter, staleFilter].filter(Boolean).length;
 
@@ -1735,6 +1795,7 @@ const Dashboard = () => {
                 onToggleSelect={toggleSelectClient}
                 onToggleSelectAll={toggleSelectAllClients}
                 keyboardEnabled={viewMode === 'list'}
+                showLost={clientsViewingArchived}
               />
             )}
             {clientsViewMode === 'kanban' && (
@@ -1765,6 +1826,8 @@ const Dashboard = () => {
             onSendReminder={bulkReminder}
             onSendEmail={() => setShowBulkEmail(true)}
             onClearSelection={() => setClientsSelectedIds([])}
+            viewingArchived={clientsViewingArchived}
+            onRestore={bulkRestoreFromArchive}
           />
         )}
         {viewMode === 'list' && showBulkEmail && (

@@ -37,6 +37,9 @@ interface ClientsListViewProps {
   onToggleSelect?: (id: string) => void
   onToggleSelectAll?: (ids: string[]) => void
   keyboardEnabled?: boolean
+  // iter 293-v3b — Archived preset support. When true, LOST leads are
+  // NOT excluded from the visible list (used by Archived preset view).
+  showLost?: boolean
 }
 
 const HEADER_LABELS = ['Client', 'Stage', 'Last activity', 'Next'] as const
@@ -123,6 +126,7 @@ export function ClientsListView({
   onToggleSelect,
   onToggleSelectAll,
   keyboardEnabled = true,
+  showLost = false,
 }: ClientsListViewProps) {
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const availableTags = useMemo(() => {
@@ -142,7 +146,7 @@ export function ClientsListView({
   }, [leads])
 
   const filtered = useMemo(() => {
-    let result = leads.filter((l) => l.status !== 'LOST')
+    let result = showLost ? [...leads] : leads.filter((l) => l.status !== 'LOST')
     // Stage filter
     if (filter.stage !== 'all') {
       result = result.filter((l) => getStageForLead(l) === filter.stage)
@@ -169,7 +173,7 @@ export function ClientsListView({
       )
     }
     return result
-  }, [leads, filter])
+  }, [leads, filter, showLost])
 
   // iter 292-v3b — J/K/Enter navigation (list-scoped). CMD+K/ESC//
   // handled at Dashboard.tsx level. Guards inside `useClientsKeyboard`
@@ -489,7 +493,7 @@ export function ClientsListView({
           }}
           data-testid="clients-list-count"
         >
-          {filtered.length} of {leads.filter((l) => l.status !== 'LOST').length}{' '}
+          {filtered.length} of {showLost ? leads.length : leads.filter((l) => l.status !== 'LOST').length}{' '}
           {lang.leads.toLowerCase()}
         </p>
       )}

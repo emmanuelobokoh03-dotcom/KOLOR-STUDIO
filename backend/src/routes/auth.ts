@@ -342,7 +342,7 @@ router.post('/sample-quote', authMiddleware, async (req: AuthRequest, res: Respo
     const studioName = user.studioName || `${user.firstName}'s Studio`;
     const currencySymbol = user.currencySymbol || '$';
 
-    // Create sample lead
+    // Create sample lead — iter 293-v3b: seed with resolved industry
     const lead = await prisma.lead.create({
       data: {
         assignedToId: userId,
@@ -355,6 +355,7 @@ router.post('/sample-quote', authMiddleware, async (req: AuthRequest, res: Respo
         isSampleQuote: true,
         isDemoData: false,
         source: 'REFERRAL',
+        industry: industry as any,
       },
     });
 

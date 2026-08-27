@@ -54,4 +54,49 @@ router.delete('/account', authMiddleware, async (req: AuthRequest, res: Response
   }
 });
 
+// ═══════════════════════════════════════════════════════════════════
+// iter 293-v3b — User preferences (saved views migration Q1.2=A)
+// ═══════════════════════════════════════════════════════════════════
+// GET  /api/user/preferences → returns the JSON preferences blob (or {} if unset)
+// PATCH /api/user/preferences → replaces preferences with req.body.preferences
+//                                 (client merges before saving; server is pass-through)
+
+router.get('/preferences', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { preferences: true },
+    });
+    res.json({ preferences: user?.preferences ?? {} });
+  } catch (error) {
+    console.error('Get preferences error:', error);
+    res.status(500).json({ error: 'Failed to fetch preferences' });
+  }
+});
+
+router.patch('/preferences', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId as string;
+    const preferences = req.body?.preferences;
+    if (typeof preferences !== 'object' || preferences === null || Array.isArray(preferences)) {
+      res.status(400).json({ error: 'preferences must be an object' });
+      return;
+    }
+    // Basic size guard — user.preferences is not meant for large payloads
+    if (JSON.stringify(preferences).length > 100_000) {
+      res.status(400).json({ error: 'preferences payload too large (max 100KB)' });
+      return;
+    }
+    await prisma.user.update({
+      where: { id: userId },
+      data: { preferences },
+    });
+    res.json({ success: true, preferences });
+  } catch (error) {
+    console.error('Update preferences error:', error);
+    res.status(500).json({ error: 'Failed to update preferences' });
+  }
+});
+
 export default router;

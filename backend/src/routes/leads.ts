@@ -414,6 +414,18 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
       }
     }
 
+    // iter 293-v3b — Industry auto-populate on new leads: fall back to
+    // creator's user.primaryIndustry when not explicitly provided. Override
+    // always wins if creator passes industry in the request body.
+    let effectiveIndustry = industry ?? null;
+    if (!effectiveIndustry) {
+      const creator = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { primaryIndustry: true },
+      });
+      effectiveIndustry = creator?.primaryIndustry ?? null;
+    }
+
     const lead = await prisma.lead.create({
       data: {
         clientName,
@@ -433,7 +445,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response): Promis
         assignedToId: userId,
         status: 'NEW',
         projectType: projectType || 'SERVICE',
-        industry: industry || null,
+        industry: effectiveIndustry,
         deliverableType: deliverableType || 'DIGITAL_FILES',
         coverImage: coverImage || null,
       },
@@ -527,6 +539,18 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
       }
     }
 
+    // iter 293-v3b — Auto-populate industry from assigned creator's
+    // primaryIndustry for public inquiry submissions (creator can override
+    // by editing the lead after receipt).
+    let publicInquiryIndustry: string | null = null;
+    if (assignedToId) {
+      const assignee = await prisma.user.findUnique({
+        where: { id: assignedToId },
+        select: { primaryIndustry: true },
+      });
+      publicInquiryIndustry = assignee?.primaryIndustry ?? null;
+    }
+
     const lead = await prisma.lead.create({
       data: {
         clientName,
@@ -544,6 +568,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         assignedToId,
         status: 'NEW',
         priority: 'MEDIUM',
+        industry: publicInquiryIndustry as any,
       },
     });
 
@@ -1479,6 +1504,16 @@ router.post('/bulk/archive', authMiddleware, async (req: AuthRequest, res: Respo
   const validation = validateBatchIds(req.body?.leadIds);
   if (!validation.ok) { res.status(400).json({ error: validation.error }); return; }
   const userId = req.userId as string;
+
+  // iter 293-v3b — Capture pre-archive status snapshot so client can support
+  // undo (restore to exact original stage instead of default INQUIRY).
+  const preArchive = await prisma.lead.findMany({
+    where: { id: { in: validation.ids }, assignedToId: userId },
+    select: { id: true, status: true },
+  });
+  const preArchiveMap: Record<string, string> = {};
+  preArchive.forEach((row) => { preArchiveMap[row.id] = row.status; });
+
   const { owned, unauthorized } = await getOwnedLeadIds(userId, validation.ids);
 
   const failures: Array<{ leadId: string; error: string }> = unauthorized.map((leadId) => ({ leadId, error: 'Unauthorized' }));
@@ -1487,14 +1522,14 @@ router.post('/bulk/archive', authMiddleware, async (req: AuthRequest, res: Respo
   for (const leadId of owned) {
     try {
       await prisma.lead.update({ where: { id: leadId }, data: { status: 'LOST', lostAt: new Date() } });
-      await logActivity(leadId, userId, 'STATUS_CHANGED', 'Lead archived (bulk)', { newStatus: 'LOST' });
+      await logActivity(leadId, userId, 'STATUS_CHANGED', 'Lead archived (bulk)', { newStatus: 'LOST', previousStatus: preArchiveMap[leadId] });
       successCount++;
     } catch (error: any) {
       failures.push({ leadId, error: error?.message || 'Update failed' });
     }
   }
 
-  res.json({ successCount, failures });
+  res.json({ successCount, failures, preArchiveMap });
 });
 
 // POST /api/leads/bulk/stage — updates status enum for many leads
@@ -1723,5 +1758,53 @@ router.post(
     res.json({ successCount, failures });
   }
 );
+
+// POST /api/leads/bulk/unarchive — restores archived (LOST) leads back to a
+// specified stage. Accepts optional stageRestoreMap for undo-toast use case
+// (restore each lead to its exact original stage); falls back to defaultStage
+// (default: 'NEW') when no map entry exists.
+router.post('/bulk/unarchive', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  const validation = validateBatchIds(req.body?.leadIds);
+  if (!validation.ok) { res.status(400).json({ error: validation.error }); return; }
+  const stageRestoreMap: Record<string, string> = req.body?.stageRestoreMap && typeof req.body.stageRestoreMap === 'object'
+    ? req.body.stageRestoreMap
+    : {};
+  const defaultStage = typeof req.body?.defaultStage === 'string' ? req.body.defaultStage : 'NEW';
+  const validStatuses = ['NEW', 'REVIEWING', 'CONTACTED', 'QUALIFIED', 'QUOTED', 'NEGOTIATING', 'BOOKED', 'LOST'];
+  if (!validStatuses.includes(defaultStage)) {
+    res.status(400).json({ error: `defaultStage must be one of: ${validStatuses.join(', ')}` });
+    return;
+  }
+  const userId = req.userId as string;
+
+  // Only leads currently in LOST status can be unarchived by this endpoint.
+  const rows = await prisma.lead.findMany({
+    where: { id: { in: validation.ids }, assignedToId: userId, status: 'LOST' },
+    select: { id: true },
+  });
+  const owned = rows.map((r) => r.id);
+  const unauthorized = validation.ids.filter((id) => !owned.includes(id));
+
+  const failures: Array<{ leadId: string; error: string }> = unauthorized.map((leadId) => ({ leadId, error: 'Not archived or unauthorized' }));
+  let successCount = 0;
+
+  for (const leadId of owned) {
+    try {
+      const target = stageRestoreMap[leadId];
+      const restoreStage = target && validStatuses.includes(target) && target !== 'LOST'
+        ? target
+        : defaultStage;
+      const data: any = { status: restoreStage, lostAt: null };
+      if (restoreStage === 'BOOKED') data.convertedAt = new Date();
+      await prisma.lead.update({ where: { id: leadId }, data });
+      await logActivity(leadId, userId, 'STATUS_CHANGED', `Lead restored from archive (bulk) → ${restoreStage}`, { newStatus: restoreStage });
+      successCount++;
+    } catch (error: any) {
+      failures.push({ leadId, error: error?.message || 'Restore failed' });
+    }
+  }
+
+  res.json({ successCount, failures });
+});
 
 export default router;

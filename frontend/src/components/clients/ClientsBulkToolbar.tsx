@@ -41,6 +41,10 @@ interface ClientsBulkToolbarProps {
   onSendReminder: () => Promise<void> | void
   onSendEmail: () => void
   onClearSelection: () => void
+  // iter 293-v3b — Archived preset context. When true, toolbar shows a
+  // single 'Restore' action instead of the standard bulk actions.
+  viewingArchived?: boolean
+  onRestore?: () => Promise<void> | void
 }
 
 const btnStyle: React.CSSProperties = {
@@ -71,6 +75,8 @@ export function ClientsBulkToolbar({
   onSendReminder,
   onSendEmail,
   onClearSelection,
+  viewingArchived = false,
+  onRestore,
 }: ClientsBulkToolbarProps) {
   const [stageMenuOpen, setStageMenuOpen] = useState(false)
   const [tagModalOpen, setTagModalOpen] = useState(false)
@@ -174,6 +180,24 @@ export function ClientsBulkToolbar({
           {selectedCount} selected
         </span>
 
+        {viewingArchived ? (
+          <button
+            type="button"
+            onClick={async () => {
+              if (pending || !onRestore) return
+              setPending(true)
+              try { await onRestore() } finally { setPending(false) }
+            }}
+            disabled={pending || !onRestore}
+            style={btnStyle}
+            data-testid="clients-bulk-restore"
+            title="Restore selected clients from archive"
+          >
+            <Archive size={11} weight="regular" />
+            Restore
+          </button>
+        ) : (
+        <>
         <div style={{ position: 'relative' }}>
           <button
             type="button"
@@ -276,6 +300,8 @@ export function ClientsBulkToolbar({
           <Archive size={11} weight="regular" />
           Archive
         </button>
+        </>
+        )}
 
         <button
           type="button"

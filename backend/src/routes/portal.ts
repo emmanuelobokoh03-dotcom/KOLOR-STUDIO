@@ -739,6 +739,16 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
     const portalToken = Math.random().toString(36).substring(2, 15) + 
                        Math.random().toString(36).substring(2, 15);
 
+    // iter 293-v3b — Auto-populate industry from assigned creator's primaryIndustry
+    let portalInquiryIndustry: string | null = null;
+    if (assignedToId) {
+      const assignee = await prisma.user.findUnique({
+        where: { id: assignedToId },
+        select: { primaryIndustry: true },
+      });
+      portalInquiryIndustry = assignee?.primaryIndustry ?? null;
+    }
+
     // Create the lead
     const lead = await prisma.lead.create({
       data: {
@@ -756,6 +766,7 @@ router.post('/submit', async (req: Request, res: Response): Promise<void> => {
         source: 'REFERRAL',
         portalToken,
         assignedToId,
+        industry: portalInquiryIndustry as any,
       },
     });
 
