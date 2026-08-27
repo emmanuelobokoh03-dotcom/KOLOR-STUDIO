@@ -35,6 +35,8 @@ import { getIndustryLanguage } from '../../utils/industryLanguage'
 import { useModalA11y } from '../../hooks/useModalA11y'
 import { ClientAvatar } from './ClientAvatar'
 import { getStageForLead, relativeTimeShort } from './stages'
+// iter 293-v3a.1 — Take Action opens BulkEmailModal in single-recipient mode
+import { BulkEmailModal } from './BulkEmailModal'
 
 // Lazy imports — deep panels only mount when expanded
 const QuotesTab = lazy(() => import('../QuotesTab'))
@@ -103,6 +105,71 @@ function deriveNextAction(
       label: `Request testimonial`,
       description: `The ${lang.lead.toLowerCase()} is complete. Ask ${lead.clientName} for a testimonial.`,
       actionKey: 'testimonial',
+    }
+  }
+  return null
+}
+
+// iter 293-v3a.1 — Contextual email pre-fill per stage for Take Action.
+// Returns subject + body starter that opens BulkEmailModal in single-recipient
+// mode. Creator edits before sending. Stage-adaptive language matches
+// industry taxonomy via getIndustryLanguage.
+function getTakeActionContent(
+  lead: Lead,
+  stage: ReturnType<typeof getStageForLead>,
+  lang: ReturnType<typeof getIndustryLanguage>,
+): { subject: string; body: string } | null {
+  const clientName = lead.clientName || 'there'
+  const leadWord = lang.lead.toLowerCase()
+
+  if (stage === 'inquiry') {
+    return {
+      subject: `Re: Your ${leadWord} inquiry`,
+      body: `Thanks so much for reaching out — I'd love to learn more about your ${leadWord}.
+
+[Add your response here: ask a discovery question, share availability, or propose a call.]
+
+Looking forward to hearing more.`,
+    }
+  }
+  if (stage === 'discovery') {
+    return {
+      subject: `${lang.quote} for your ${leadWord}`,
+      body: `Great connecting on your ${leadWord}. Attaching the ${lang.quote.toLowerCase()} we discussed.
+
+[Add any context or highlights here.]
+
+Let me know if you'd like to adjust anything — happy to walk through it.`,
+    }
+  }
+  if (stage === 'quoted') {
+    return {
+      subject: `Following up on the ${lang.quote.toLowerCase()}`,
+      body: `Just checking in on the ${lang.quote.toLowerCase()} I sent over — happy to answer any questions or adjust anything.
+
+[Add a nudge, a helpful detail, or offer a call.]
+
+Let me know your thoughts.`,
+    }
+  }
+  if (stage === 'contracted') {
+    return {
+      subject: `Progress update on your ${leadWord}`,
+      body: `Quick update on where we are with your ${leadWord}.
+
+[Share progress details, upcoming milestones, or ask for input. Attach any deliverables or reference images below.]
+
+Reach out anytime if you have questions.`,
+    }
+  }
+  if (stage === 'completed') {
+    return {
+      subject: `Thank you — a small request`,
+      body: `Thank you again for trusting me with your ${leadWord}. It was a real pleasure working together.
+
+If you enjoyed the experience, I'd genuinely appreciate a short testimonial I could share on my portfolio. Even a sentence or two means a lot.
+
+Thanks so much.`,
     }
   }
   return null
@@ -230,6 +297,8 @@ export default function ClientDetail({
   const initialPanel = initialTab && INITIAL_TAB_MAP[initialTab] ? INITIAL_TAB_MAP[initialTab] : null
   const [expandedPanels, setExpandedPanels] = useState<Set<PanelKey>>(initialPanel ? new Set([initialPanel]) : new Set())
   const [showAllActivity, setShowAllActivity] = useState(false)
+  // iter 293-v3a.1 — Take Action opens BulkEmailModal single-recipient mode
+  const [showTakeActionModal, setShowTakeActionModal] = useState(false)
 
   // Notes panel input
   const [newNote, setNewNote] = useState('')
@@ -368,12 +437,8 @@ export default function ClientDetail({
 
   const executeNextAction = () => {
     if (!nextAction) return
-    if (nextAction.actionKey === 'quote') {
-      setExpandedPanels((p) => new Set(p).add('pipeline'))
-    } else if (nextAction.actionKey === 'nudge' || nextAction.actionKey === 'reminder') {
-      setExpandedPanels((p) => new Set(p).add('messages'))
-    } else if (nextAction.actionKey === 'testimonial') {
-      // Trigger testimonial request
+    if (nextAction.actionKey === 'testimonial') {
+      // Testimonial has a dedicated backend endpoint — keep existing behavior.
       const API_URL = (import.meta as any).env?.VITE_API_URL || ''
       fetch(`${API_URL}/api/testimonials/request/${lead.id}`, {
         method: 'POST',
@@ -388,8 +453,18 @@ export default function ClientDetail({
           }
         })
         .catch(() => toast.error('Failed to request testimonial'))
+      return
     }
+    // iter 293-v3a.1 — All other actions (quote / nudge / reminder) open the
+    // BulkEmailModal in single-recipient mode with contextual pre-fill per stage.
+    // Replaces v3a placeholder that expanded off-screen panels.
+    setShowTakeActionModal(true)
   }
+
+  const takeActionPrefill = useMemo(
+    () => getTakeActionContent(lead, stage, lang),
+    [lead, stage, lang],
+  )
 
   // ─── Render ───
   const displayActivities = showAllActivity ? activities : activities.slice(0, 5)
@@ -879,7 +954,24 @@ export default function ClientDetail({
     </div>
   )
 
-  return createPortal(content, document.body)
+  return (
+    <>
+      {createPortal(content, document.body)}
+      {showTakeActionModal && takeActionPrefill && (
+        <BulkEmailModal
+          selectedIds={[lead.id]}
+          clients={[lead]}
+          initialSubject={takeActionPrefill.subject}
+          initialBody={takeActionPrefill.body}
+          titleOverride={nextAction?.label || 'Compose email'}
+          onClose={() => setShowTakeActionModal(false)}
+          onSent={() => {
+            fetchActivities()
+          }}
+        />
+      )}
+    </>
+  )
 }
 
 // ═══════════════════════════════════════════════════════════════════

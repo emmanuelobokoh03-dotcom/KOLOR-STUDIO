@@ -1,47 +1,99 @@
 // iter 293-v3a — Clients v3.1 simple bulk email modal.
-//
-// Renders a compose modal for a creator to send one message to many
-// clients at once. Delegates HTTP to POST /api/leads/bulk/email which
-// per-lead personalizes with clientName + sends via Resend
-// (sendCustomEmail with framework-calibrated wrapper).
-//
-// v3.1 shape: subject + body only, no templates, no variable substitution,
-// no rich text. Full email template system deferred to Season Phase 2.
+// iter 293-v3a.1 — Extended for:
+//   • Take Action single-recipient reuse (initialSubject/initialBody props, N=1 UX)
+//   • File attachment support (direct multipart to /api/leads/bulk/email;
+//     multer.memoryStorage() → Resend attachments; 25MB cap client + server)
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { toast } from 'sonner'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
+import { Paperclip } from '@phosphor-icons/react/dist/csr/Paperclip'
+import { FileText } from '@phosphor-icons/react/dist/csr/FileText'
 import type { Lead } from '../../services/api'
 
 const API_URL: string = (import.meta as any).env?.VITE_API_URL || ''
+const MAX_TOTAL_BYTES = 25 * 1024 * 1024 // 25MB
+const MAX_FILES = 10
 
 interface BulkEmailModalProps {
   selectedIds: string[]
   clients: Lead[]
   onClose: () => void
   onSent?: () => void
+  // iter 293-v3a.1 — Take Action pre-fill for single-recipient mode
+  initialSubject?: string
+  initialBody?: string
+  // Header override for context ("Compose email" vs "Compose bulk email")
+  titleOverride?: string
 }
 
-export function BulkEmailModal({ selectedIds, clients, onClose, onSent }: BulkEmailModalProps) {
-  const [subject, setSubject] = useState('')
-  const [body, setBody] = useState('')
+export function BulkEmailModal({
+  selectedIds,
+  clients,
+  onClose,
+  onSent,
+  initialSubject = '',
+  initialBody = '',
+  titleOverride,
+}: BulkEmailModalProps) {
+  const [subject, setSubject] = useState(initialSubject)
+  const [body, setBody] = useState(initialBody)
+  const [attachments, setAttachments] = useState<File[]>([])
   const [sending, setSending] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const recipientClients = clients.filter((c) => selectedIds.includes(c.id))
   const withEmailCount = recipientClients.filter((c) => c.clientEmail).length
   const withoutEmailCount = recipientClients.length - withEmailCount
+  const isSingle = selectedIds.length === 1
+
+  const attachmentsTotalBytes = attachments.reduce((sum, f) => sum + f.size, 0)
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = Array.from(e.target.files || [])
+    if (picked.length === 0) return
+    const next = [...attachments, ...picked]
+    if (next.length > MAX_FILES) {
+      toast.error(`Maximum ${MAX_FILES} attachments`)
+      return
+    }
+    const totalBytes = next.reduce((sum, f) => sum + f.size, 0)
+    if (totalBytes > MAX_TOTAL_BYTES) {
+      toast.error(`Attachments exceed 25MB total`)
+      return
+    }
+    setAttachments(next)
+    // Reset input so re-selecting same file works
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const removeAttachment = (index: number) => {
+    setAttachments(attachments.filter((_, i) => i !== index))
+  }
+
+  const formatBytes = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+  }
 
   const handleSend = async () => {
     if (!subject.trim() || !body.trim() || sending) return
     setSending(true)
     try {
+      const formData = new FormData()
+      formData.append('leadIds', JSON.stringify(selectedIds))
+      formData.append('subject', subject.trim())
+      formData.append('body', body.trim())
+      for (const file of attachments) {
+        formData.append('files', file, file.name)
+      }
       const res = await fetch(`${API_URL}/api/leads/bulk/email`, {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ leadIds: selectedIds, subject: subject.trim(), body: body.trim() }),
+        body: formData,
       })
       const data = await res.json()
       if (!res.ok) {
@@ -113,7 +165,7 @@ export function BulkEmailModal({ selectedIds, clients, onClose, onSent }: BulkEm
                 lineHeight: 1.2,
               }}
             >
-              Compose bulk email
+              {titleOverride || (isSingle ? 'Compose email' : 'Compose bulk email')}
             </h2>
           </div>
           <button
@@ -282,6 +334,103 @@ export function BulkEmailModal({ selectedIds, clients, onClose, onSent }: BulkEm
             >
               Each email opens with "Hi [client name]," and signs off with your name.
             </p>
+          </div>
+
+          {/* ─── Attachments (iter 293-v3a.1) ─── */}
+          <div data-testid="bulk-email-attachments-section">
+            <div className="flex items-baseline justify-between mb-2">
+              <label
+                className="font-mono-kolor"
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: 'var(--kolor-ink-subtle, #928B84)',
+                }}
+              >
+                Attachments
+              </label>
+              <span
+                className="font-mono-kolor"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: '0.08em',
+                  color: attachmentsTotalBytes > MAX_TOTAL_BYTES * 0.9
+                    ? 'var(--kolor-terra, #B84A2C)'
+                    : 'var(--kolor-ink-subtle, #928B84)',
+                }}
+              >
+                {formatBytes(attachmentsTotalBytes)} / 25 MB
+              </span>
+            </div>
+
+            {attachments.length > 0 && (
+              <ul className="space-y-2 mb-2" data-testid="bulk-email-attachment-list">
+                {attachments.map((f, idx) => (
+                  <li
+                    key={`${f.name}-${idx}`}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg"
+                    style={{
+                      background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+                      border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                    }}
+                  >
+                    <FileText className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--kolor-ink-subtle, #928B84)' }} />
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate" style={{ fontSize: 13, color: 'var(--kolor-ink, #1A1613)' }}>
+                        {f.name}
+                      </p>
+                      <p className="font-mono-kolor" style={{ fontSize: 10, color: 'var(--kolor-ink-subtle, #928B84)' }}>
+                        {formatBytes(f.size)}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeAttachment(idx)}
+                      disabled={sending}
+                      className="p-1 rounded hover:opacity-70"
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--kolor-ink-muted, #5F5751)',
+                        cursor: sending ? 'not-allowed' : 'pointer',
+                      }}
+                      aria-label={`Remove ${f.name}`}
+                      data-testid={`bulk-email-attachment-remove-${idx}`}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={sending || attachments.length >= MAX_FILES}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold"
+              style={{
+                background: 'transparent',
+                border: '1px dashed var(--kolor-hairline, #E5E0D8)',
+                color: 'var(--kolor-ink-muted, #5F5751)',
+                fontSize: 12,
+                cursor: sending || attachments.length >= MAX_FILES ? 'not-allowed' : 'pointer',
+              }}
+              data-testid="bulk-email-attach-button"
+            >
+              <Paperclip className="w-3.5 h-3.5" />
+              {attachments.length === 0 ? 'Attach files' : 'Add more'}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              className="hidden"
+              onChange={handleFileSelect}
+              data-testid="bulk-email-attach-input"
+            />
           </div>
         </div>
 

@@ -993,6 +993,8 @@ interface CustomEmailData {
   bcc?: string;
   fromName?: string;
   replyTo?: string;
+  // iter 293-v3a.1 — direct multipart attachment support (Bug 2)
+  attachments?: Array<{ filename: string; content: Buffer }>;
 }
 
 export async function sendCustomEmail(data: CustomEmailData): Promise<boolean> {
@@ -1027,6 +1029,10 @@ export async function sendCustomEmail(data: CustomEmailData): Promise<boolean> {
       replyTo: data.replyTo || OWNER_EMAIL || SENDER_EMAIL,
       subject: data.subject,
       html: getEmailTemplate(content, 'Message from KOLOR STUDIO'),
+      // iter 293-v3a.1 — Resend attachments accepted as { filename, content: Buffer }
+      attachments: data.attachments && data.attachments.length > 0
+        ? data.attachments.map((a) => ({ filename: a.filename, content: a.content }))
+        : undefined,
     });
 
     if (error) {

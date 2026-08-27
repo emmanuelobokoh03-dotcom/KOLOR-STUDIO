@@ -22,6 +22,7 @@ import { PaperPlaneTilt } from '@phosphor-icons/react/dist/csr/PaperPlaneTilt'
 import { X } from '@phosphor-icons/react/dist/csr/X'
 import type { LeadStatus } from '../../services/api'
 import type { IndustryLanguage } from '../../utils/industryLanguage'
+import { useConfirm } from '../ConfirmProvider'
 
 const V3_TO_LEAD_STATUS: Record<string, LeadStatus> = {
   inquiry: 'NEW',
@@ -88,10 +89,20 @@ export function ClientsBulkToolbar({
     return () => document.removeEventListener('mousedown', onDocClick)
   }, [])
 
+  const { confirm } = useConfirm()
+
   const handleArchive = async () => {
     if (pending) return
-    if (!window.confirm(`Archive ${selectedCount} client${selectedCount === 1 ? '' : 's'}?`))
-      return
+    const ok = await confirm({
+      title: `Archive ${selectedCount} client${selectedCount === 1 ? '' : 's'}?`,
+      message: selectedCount === 1
+        ? `This client will be moved to the Lost stage. You can restore them anytime.`
+        : `These ${selectedCount} clients will be moved to the Lost stage. You can restore them anytime.`,
+      confirmLabel: 'Archive',
+      cancelLabel: 'Cancel',
+      variant: 'danger',
+    })
+    if (!ok) return
     setPending(true)
     try {
       await onArchive()

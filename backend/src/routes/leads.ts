@@ -11,6 +11,12 @@ import multer from 'multer';
 const router = Router();
 import prisma from '../lib/prisma';
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB
+// iter 293-v3a.1 — bulk email attachments: 25MB per file, 10 files max, ~25MB combined
+// (Resend caps at 40MB total per email; 25MB gives a safety margin).
+const bulkEmailUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 25 * 1024 * 1024, files: 10 },
+});
 
 // ---- Helpers ----
 
@@ -1638,59 +1644,84 @@ router.post('/bulk/reminder', authMiddleware, async (req: AuthRequest, res: Resp
 });
 
 // POST /api/leads/bulk/email — creator-composed bulk email to many leads.
-// Uses sendCustomEmail. Attach bulkEmailLimiter at router mount (see index.ts).
-router.post('/bulk/email', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
-  const validation = validateBatchIds(req.body?.leadIds);
-  if (!validation.ok) { res.status(400).json({ error: validation.error }); return; }
-  const subject = typeof req.body?.subject === 'string' ? req.body.subject.trim() : '';
-  const body = typeof req.body?.body === 'string' ? req.body.body.trim() : '';
-  if (!subject) { res.status(400).json({ error: 'subject is required' }); return; }
-  if (!body) { res.status(400).json({ error: 'body is required' }); return; }
-  const userId = req.userId as string;
-
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) { res.status(401).json({ error: 'User not found' }); return; }
-
-  const rows = await prisma.lead.findMany({
-    where: { id: { in: validation.ids }, assignedToId: userId },
-    select: { id: true, clientName: true, clientEmail: true },
-  });
-  const owned = rows.map((r) => r.id);
-  const unauthorized = validation.ids.filter((id) => !owned.includes(id));
-
-  const failures: Array<{ leadId: string; error: string }> = unauthorized.map((leadId) => ({ leadId, error: 'Unauthorized' }));
-  let successCount = 0;
-
-  const creatorName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email;
-  const studioName = user.studioName || creatorName;
-
-  // Escape HTML in body (basic) then convert newlines to <br/>
-  const escapeHtml = (str: string): string =>
-    str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const bodyHtml = escapeHtml(body).replace(/\n/g, '<br/>');
-
-  for (const row of rows) {
-    if (!row.clientEmail) {
-      failures.push({ leadId: row.id, error: 'No email on file' });
-      continue;
+// Accepts multipart/form-data (subject + body + leadIds JSON string + files[]).
+// Uses sendCustomEmail with Resend attachments. bulkEmailLimiter attached at
+// server mount.
+router.post(
+  '/bulk/email',
+  authMiddleware,
+  bulkEmailUpload.array('files', 10),
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    // Multipart: fields arrive as strings in req.body; leadIds arrives JSON-stringified
+    let leadIdsRaw: unknown = req.body?.leadIds;
+    if (typeof leadIdsRaw === 'string') {
+      try { leadIdsRaw = JSON.parse(leadIdsRaw); } catch { /* leave as-is → fails validation */ }
     }
-    try {
-      const personalizedBody = `Hi ${row.clientName || 'there'},<br/><br/>${bodyHtml}<br/><br/>Best,<br/>${creatorName}`;
-      await sendCustomEmail({
-        to: row.clientEmail,
-        subject,
-        htmlBody: personalizedBody,
-        fromName: studioName,
-        replyTo: user.email,
-      });
-      await logActivity(row.id, userId, 'EMAIL_SENT', `Bulk email sent: ${subject}`, { emailType: 'bulk_email', subject });
-      successCount++;
-    } catch (error: any) {
-      failures.push({ leadId: row.id, error: error?.message || 'Send failed' });
+    const validation = validateBatchIds(leadIdsRaw);
+    if (!validation.ok) { res.status(400).json({ error: validation.error }); return; }
+    const subject = typeof req.body?.subject === 'string' ? req.body.subject.trim() : '';
+    const body = typeof req.body?.body === 'string' ? req.body.body.trim() : '';
+    if (!subject) { res.status(400).json({ error: 'subject is required' }); return; }
+    if (!body) { res.status(400).json({ error: 'body is required' }); return; }
+    const userId = req.userId as string;
+
+    // Collected attachments from multer (memoryStorage). Enforce 25MB total.
+    const uploadedFiles = (req.files as Express.Multer.File[] | undefined) || [];
+    const totalBytes = uploadedFiles.reduce((sum, f) => sum + f.size, 0);
+    if (totalBytes > 25 * 1024 * 1024) {
+      res.status(400).json({ error: 'Attachments exceed 25MB total limit' });
+      return;
     }
+    const attachments = uploadedFiles.map((f) => ({
+      filename: f.originalname,
+      content: f.buffer,
+    }));
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) { res.status(401).json({ error: 'User not found' }); return; }
+
+    const rows = await prisma.lead.findMany({
+      where: { id: { in: validation.ids }, assignedToId: userId },
+      select: { id: true, clientName: true, clientEmail: true },
+    });
+    const owned = rows.map((r) => r.id);
+    const unauthorized = validation.ids.filter((id) => !owned.includes(id));
+
+    const failures: Array<{ leadId: string; error: string }> = unauthorized.map((leadId) => ({ leadId, error: 'Unauthorized' }));
+    let successCount = 0;
+
+    const creatorName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email;
+    const studioName = user.studioName || creatorName;
+
+    // Escape HTML in body (basic) then convert newlines to <br/>
+    const escapeHtml = (str: string): string =>
+      str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const bodyHtml = escapeHtml(body).replace(/\n/g, '<br/>');
+
+    for (const row of rows) {
+      if (!row.clientEmail) {
+        failures.push({ leadId: row.id, error: 'No email on file' });
+        continue;
+      }
+      try {
+        const personalizedBody = `Hi ${row.clientName || 'there'},<br/><br/>${bodyHtml}<br/><br/>Best,<br/>${creatorName}`;
+        await sendCustomEmail({
+          to: row.clientEmail,
+          subject,
+          htmlBody: personalizedBody,
+          fromName: studioName,
+          replyTo: user.email,
+          attachments: attachments.length > 0 ? attachments : undefined,
+        });
+        await logActivity(row.id, userId, 'EMAIL_SENT', `Bulk email sent: ${subject}${attachments.length > 0 ? ` (${attachments.length} attachment${attachments.length === 1 ? '' : 's'})` : ''}`, { emailType: 'bulk_email', subject, attachmentCount: attachments.length });
+        successCount++;
+      } catch (error: any) {
+        failures.push({ leadId: row.id, error: error?.message || 'Send failed' });
+      }
+    }
+
+    res.json({ successCount, failures });
   }
-
-  res.json({ successCount, failures });
-});
+);
 
 export default router;
