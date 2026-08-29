@@ -147,41 +147,82 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - `frontend/src/components/clients/ClientsListView.tsx`
 - `frontend/src/components/clients/ClientsKanbanView.tsx`
 
-### Files modified
-- `frontend/src/pages/Dashboard.tsx` (imports + `clientsViewMode` + `clientsFilter` state + swap LeadsListView block for view toggle + list/kanban conditional)
+## Arc closure status
+- Community v3: **CLOSED** at iter 53 (peer-discovery)
+- Portfolio v3: **CLOSED** at iter 56 (client-conversion)
+- Dashboard v3: **CLOSED** at iter 61 (creator-command-center)
+- **Clients v3: CLOSED** at iter 66 (operational spine)
+- **Clients v3.1: CLOSED** at iter ~68-69 (deep-work surface + operational polish + backlog resolution + universal chrome calibration)
+
+## Iteration 293-v3c (this session) — Submit Inquiry Modal + Sidebar Framework Calibration — Clients v3.1 ARC CLOSER
+
+### Ships in v3c
+- **`ShareFormModal.tsx`** — 13 purple instances → 0. Header purple gradient → `kolor-canvas-shade-1` + hairline. Copy + QR download buttons `bg-brand-primary` → `kolor-terra`. Pro Tips card purple-50/200 → `kolor-canvas-shade-1`/`kolor-hairline`. Title Fraunces italic + "SHARE" mono eyebrow. Focus rings 2px `kolor-terra`. Fixed adjacent typo bug ("InstagramLogo bio" → "Instagram bio").
+- **Sidebar (Dashboard.tsx L970-1200)** — 7 surfaces calibrated per explicit enumeration (Learning 10):
+  - Aside container → `kolor-canvas` + `kolor-hairline` right border
+  - User block avatar → `kolor-canvas-shade-1` + `kolor-hairline` + `kolor-ink` initials (light variant, Q2b=b); name Fraunces italic; plan indicator mono UPPERCASE
+  - Section eyebrows (WORKSPACE / SCHEDULE / ACCOUNT) → mono 10px UPPERCASE 0.14em + `kolor-ink-muted`
+  - Nav items active state → `kolor-terra` text + `kolor-terra-tint` bg + `kolor-terra` left indicator (Q2a=a)
+  - Count badge → `kolor-canvas-shade-1` bg + `kolor-ink` text + `kolor-hairline` border + mono 9px (Q2d=b)
+  - BETA ACCESS card → `kolor-ink` solid dark card (Q2c=b) + canvas text; "$97" Fraunces italic; "Founding member ✦" `kolor-terra`
+  - Bottom nav (Settings/Help/Log out) → `kolor-ink-muted` utility treatment
+  - Mobile sidebar nav active state calibrated to match desktop
+- **Structure preserved**: all nav routing, click handlers, collapse/expand, mobile overlay, count badge data source, data-testids UNCHANGED
 
 ### Regression checks
 - Backend TSC exit 0
-- Frontend cold-cache build ✓ 7.76s
-- Dashboard chunk 309 → 328KB (~6% growth, expected from new surfaces)
-- All 5 dashboard cards, NotificationBell, Community v3, Portfolio v3, Phase 2 baselines, framework primitives intact
+- Frontend cold-cache build ✓ 5.90s
+- ShareFormModal purple: 13 → 0 (68 framework tokens)
+- Dashboard.tsx purple: 20 → 12 (remaining 12 out-of-scope: onboarding banner L1548 + status filter chips L1755/L1837 — content region, not chrome)
+- Framework tokens in Dashboard.tsx: 0 (sidebar surfaces) → 93
+- All Clients v3.0/v3.1-v3a/v3a.1/v3b components intact
+- Dashboard v3 / Community v3 / Portfolio v3 arcs intact
+- Framework primitives UNCHANGED
+- Phase 2 baselines (iter 280 / 281) intact
+- Revenue Overview UNTOUCHED (Dashboard v3.1 scope)
 
 ### Local commit
-- `c2b32df` on branch `main`. 7 files changed, 1186+/12-. **Push blocked** by container auth — user syncs via "Save to GitHub" UI.
+- `062a5a8` on branch `main`. 2 files changed, 418+/104-. **Push blocked** by container auth — user syncs via "Save to GitHub" UI.
+
+### Adaptive branches ratified
+- Q1a=b: ShareFormModal header light minimal
+- Q2a=a: Active nav terra-forward
+- Q2b=b: User avatar light variant
+- Q2c=b: BETA ACCESS dark ink card
+- Q2d=b: Count badge subtle chrome
 
 ## Prioritized backlog
 
 ### P0 — Immediate
-- User verifies iter 292-v3a smoke tests (1-6) → closes v3a
-- User taps "Save to GitHub" to sync `c2b32df` (plus `510c92d` from 291-v3c.2)
+- User verifies iter 293-v3c smoke tests (1-4) → closes Clients v3.1 arc at ~iter 68-69
+- User taps "Save to GitHub" to sync `062a5a8` (plus prior unsynced commits)
 
-### P1 — Next arc (Clients v3 continuation)
-- iter 292-v3b: Saved views + bulk actions + keyboard shortcuts + calendar view (per Q4/Q6/Q9/Q2)
-- iter 292-v3c: Client detail page redesign (progressive disclosure per Q5=A) + polish + regression pass
-- Estimated arc remaining: 4-8 hours
+### P1 — Next arc decision
+- Dashboard v3.1 (Revenue Overview relocation + Path C hero metric strip + Studio Pulse card + avatarUrl schema) OR
+- Calendar v3 arc (skip audit per prior direction)
 
-### P2 — Backlog (from prior arcs + this iteration)
-- **iter 292-v3a.1 additions**: Auto-populate `lead.industry` from `user.primaryIndustry` on new lead creation (server-side default at write time); backfill migration for existing null-industry leads; filter UI reveal logic auto-shows when data becomes available
-- LeadsListView.tsx deletion (v3b if unused)
-- 6-stage refinement + REVIEW/ACTIVE split + LeadStatus enum extension (v3.1 backlog)
-- Custom pipeline stages (v3.1 backlog per Q3 extension)
-- Drag-drop kanban stage change (v3b or v3.1)
-- Latest work thumbnail per client (v3.1 backlog per Q7=C)
-- URL param reflection for saved views (v3b)
-- Bulk email + bulk export (v3.1 backlog per Q6 extension)
-- Comprehensive keyboard shortcuts (v3.1 backlog per Q9 extension)
-- avatarUrl field on CommunityProfile schema (Dashboard v3.1 backlog)
-- Studio Pulse card 6th dashboard card (Dashboard v3.1 backlog)
+### P2 — Deferred to Dashboard v3.1
+- Revenue Overview relocation to Today page + Path C hero metric strip redesign
+- Studio Pulse card (6th dashboard card)
+- User card reordering
+- avatarUrl schema extension
+- Onboarding banner (Dashboard.tsx L1548) framework calibration
+- Status filter chips (L1755/L1837) framework calibration
+
+### P2 — Deferred to Clients v3.2
+- Project-type filter decision + "All Types" dropdown removal
+- Custom pipeline stages + Sidebar VIEWS section
+- Latest work thumbnail per client
+- Kanban card multi-select + drag-drop kanban stage change
+- Command palette modal
+- Week + agenda calendar views
+- Comprehensive keyboard shortcuts
+- Advanced attachment library
+- Delete permanently action (archived view)
+- Undo pattern extension to other destructive actions
+- LeadDetailModal.tsx deletion (safely sidelined by ClientDetail.tsx)
+
+### P2 — Season Phase 1 remaining
 - Calendar v3, Portfolio Manager v3, Settings v3, Auth v3 arcs
 - Email templates & Onboarding tutorials
 - Beta launch preparation
