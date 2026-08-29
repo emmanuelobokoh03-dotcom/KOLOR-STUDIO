@@ -967,8 +967,18 @@ const Dashboard = () => {
         <OnboardingWizard onComplete={() => setShowWizard(false)} />
       )}
 
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col bg-surface-base border-r border-light-200 h-screen sticky top-0 overflow-y-auto" style={{ width: '220px', minWidth: '220px', padding: '16px 12px' }} data-testid="desktop-sidebar">
+      {/* Desktop Sidebar — iter 293-v3c: framework calibration */}
+      <aside
+        className="hidden lg:flex flex-col h-screen sticky top-0 overflow-y-auto"
+        style={{
+          width: '220px',
+          minWidth: '220px',
+          padding: '16px 12px',
+          background: 'var(--kolor-canvas, #F7F4EE)',
+          borderRight: '1px solid var(--kolor-hairline, #E5E0D8)',
+        }}
+        data-testid="desktop-sidebar"
+      >
         {/* Logo */}
         <button
           onClick={() => { setViewMode('kanban'); setStatusFilter(null) }}
@@ -979,55 +989,131 @@ const Dashboard = () => {
           <KolorLogo variant="dark" size="md" markOnly={false} linkTo={null} />
         </button>
 
-        {/* User block */}
+        {/* User block — Q2b=b: canvas-shade-1 + hairline avatar with ink initials */}
         <div
-          className="flex items-center gap-2.5 rounded-xl p-2.5 mb-1 cursor-pointer transition-all duration-150 border border-transparent hover:border-purple-200"
-          style={{ background: 'var(--surface-background)' }}
+          className="flex items-center gap-2.5 rounded-xl p-2.5 mb-1 cursor-pointer transition-colors duration-150"
+          style={{
+            background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+            border: '1px solid transparent',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--kolor-hairline, #E5E0D8)' }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'transparent' }}
           onClick={() => setShowSettings(true)}
           data-testid="sidebar-user-block"
         >
-          <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6C2EDB, #a78bfa)' }}>
+          <span
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+            style={{
+              background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+              border: '1px solid var(--kolor-hairline, #E5E0D8)',
+              color: 'var(--kolor-ink, #1A1613)',
+            }}
+          >
             {user?.firstName?.[0]}{user?.lastName?.[0]}
           </span>
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-bold text-text-primary truncate">{user?.firstName} {user?.lastName}</div>
-            <div className="text-xs text-text-secondary">Beta · Free plan</div>
+            <div
+              className="text-xs italic truncate"
+              style={{
+                fontFamily: "'Fraunces', Georgia, serif",
+                fontWeight: 500,
+                color: 'var(--kolor-ink, #1A1613)',
+              }}
+            >
+              {user?.firstName} {user?.lastName}
+            </div>
+            <div
+              className="text-[9px] font-mono uppercase tracking-[0.14em] mt-0.5"
+              style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}
+            >
+              Beta · Free plan
+            </div>
           </div>
         </div>
 
         <div className="mb-3" />
 
         {/* Workspace nav */}
-        <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-2">Workspace</div>
+        <div
+          className="text-[10px] font-mono uppercase tracking-[0.14em] px-2 mb-1 mt-2"
+          style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}
+        >
+          Workspace
+        </div>
         <div className="group">
         {([
           { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Today' },
           { mode: 'list' as ViewMode, icon: ListIcon, label: 'Clients', badge: stats?.total },
-        ]).map(({ mode, icon: Icon, label, badge }) => (
+        ]).map(({ mode, icon: Icon, label, badge }) => {
+          const isActive = viewMode === mode
+          return (
           <button
             key={mode}
             onClick={() => handleViewChange(mode)}
-            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-opacity duration-150 mb-0.5 relative ${
-              viewMode === mode ? 'text-brand-600 font-semibold opacity-100' : 'text-text-secondary group-hover:opacity-60 hover:!opacity-100 hover:bg-surface-background hover:text-text-primary'
-            }`}
-            style={viewMode === mode ? { background: 'rgba(108,46,219,0.08)' } : undefined}
+            className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors duration-150 mb-0.5 relative"
+            style={{
+              background: isActive ? 'var(--kolor-terra-tint, rgba(184, 74, 44, 0.12))' : 'transparent',
+              color: isActive ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-ink-muted, #5F5751)',
+              fontWeight: isActive ? 600 : 500,
+            }}
+            onMouseEnter={(e) => {
+              if (!isActive) {
+                e.currentTarget.style.background = 'var(--kolor-canvas-shade-1, #F1EDE5)'
+                e.currentTarget.style.color = 'var(--kolor-ink, #1A1613)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isActive) {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.color = 'var(--kolor-ink-muted, #5F5751)'
+              }
+            }}
             data-testid={`sidebar-${mode}`}
           >
-            {viewMode === mode && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r bg-brand-600" />}
-            <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-[14px] h-[14px]" />
+            {isActive && (
+              <span
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r"
+                style={{ background: 'var(--kolor-terra, #B84A2C)' }}
+              />
+            )}
+            <Icon weight={isActive ? 'fill' : 'regular'} className="w-[14px] h-[14px]" />
             {label}
             {badge !== undefined && badge > 0 && (
-              <span className="ml-auto text-[10px] font-bold rounded-full px-1.5 py-px" style={{ background: 'rgba(108,46,219,0.12)', color: '#6C2EDB' }}>{badge}</span>
+              <span
+                className="ml-auto text-[9px] font-mono uppercase tracking-[0.08em] rounded-full px-1.5 py-px"
+                style={{
+                  background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+                  color: 'var(--kolor-ink, #1A1613)',
+                  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                }}
+              >
+                {badge}
+              </span>
             )}
           </button>
-        ))}
+          )
+        })}
         </div>
 
-        <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Schedule</div>
+        <div
+          className="text-[10px] font-mono uppercase tracking-[0.14em] px-2 mb-1 mt-3"
+          style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}
+        >
+          Schedule
+        </div>
         <div className="group">
         <button
           onClick={() => navigate('/calendar')}
-          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-opacity duration-150 mb-0.5 relative text-text-secondary group-hover:opacity-60 hover:!opacity-100 hover:bg-surface-background hover:text-text-primary"
+          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors duration-150 mb-0.5 relative"
+          style={{ color: 'var(--kolor-ink-muted, #5F5751)', background: 'transparent' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'var(--kolor-canvas-shade-1, #F1EDE5)'
+            e.currentTarget.style.color = 'var(--kolor-ink, #1A1613)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent'
+            e.currentTarget.style.color = 'var(--kolor-ink-muted, #5F5751)'
+          }}
           data-testid="sidebar-calendar"
         >
           <CalendarDots weight="regular" className="w-[14px] h-[14px]" />
@@ -1035,41 +1121,102 @@ const Dashboard = () => {
         </button>
         </div>
 
-        <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary px-2 mb-1 mt-3">Account</div>
+        <div
+          className="text-[10px] font-mono uppercase tracking-[0.14em] px-2 mb-1 mt-3"
+          style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}
+        >
+          Account
+        </div>
         <div className="group">
         {([
           { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
           { mode: 'community' as ViewMode, icon: Users, label: 'Community' },
-        ]).map(({ mode, icon: Icon, label }) => (
+        ]).map(({ mode, icon: Icon, label }) => {
+          const isActive = viewMode === mode
+          return (
           <button
             key={mode}
             onClick={() => handleViewChange(mode)}
-            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-opacity duration-150 mb-0.5 relative ${
-              viewMode === mode ? 'text-brand-600 font-semibold opacity-100' : 'text-text-secondary group-hover:opacity-60 hover:!opacity-100 hover:bg-surface-background hover:text-text-primary'
-            }`}
-            style={viewMode === mode ? { background: 'rgba(108,46,219,0.08)' } : undefined}
+            className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors duration-150 mb-0.5 relative"
+            style={{
+              background: isActive ? 'var(--kolor-terra-tint, rgba(184, 74, 44, 0.12))' : 'transparent',
+              color: isActive ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-ink-muted, #5F5751)',
+              fontWeight: isActive ? 600 : 500,
+            }}
+            onMouseEnter={(e) => {
+              if (!isActive) {
+                e.currentTarget.style.background = 'var(--kolor-canvas-shade-1, #F1EDE5)'
+                e.currentTarget.style.color = 'var(--kolor-ink, #1A1613)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isActive) {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.color = 'var(--kolor-ink-muted, #5F5751)'
+              }
+            }}
             data-testid={`sidebar-${mode}`}
           >
-            {viewMode === mode && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r bg-brand-600" />}
-            <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-[14px] h-[14px]" />
+            {isActive && (
+              <span
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r"
+                style={{ background: 'var(--kolor-terra, #B84A2C)' }}
+              />
+            )}
+            <Icon weight={isActive ? 'fill' : 'regular'} className="w-[14px] h-[14px]" />
             {label}
           </button>
-        ))}
+          )
+        })}
         </div>
 
         <div className="flex-1" />
 
-        {/* Beta plan card */}
-        <div className="rounded-lg p-3 mb-2" style={{ background: 'linear-gradient(135deg, rgba(108,46,219,0.07), rgba(108,46,219,0.03))', border: '0.5px solid rgba(108,46,219,0.18)' }}>
-          <div className="text-[10px] font-bold uppercase tracking-[0.06em]" style={{ color: '#6C2EDB' }}>Beta Access</div>
-          <div className="text-xs font-bold text-text-primary">$97 one-time</div>
-          <div className="text-[10px] text-text-secondary">Founding member &#10022;</div>
+        {/* Beta plan card — Q2c=b: dark ink card with canvas text */}
+        <div
+          className="rounded-lg p-3 mb-2"
+          style={{
+            background: 'var(--kolor-ink, #1A1613)',
+            border: '1px solid var(--kolor-ink, #1A1613)',
+          }}
+        >
+          <div
+            className="text-[10px] font-mono uppercase tracking-[0.14em]"
+            style={{ color: 'var(--kolor-ink-whisper, #C4BFB8)' }}
+          >
+            Beta Access
+          </div>
+          <div
+            className="italic text-sm mt-0.5"
+            style={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontWeight: 500,
+              color: 'var(--kolor-canvas, #F7F4EE)',
+            }}
+          >
+            $97 one-time
+          </div>
+          <div
+            className="text-[10px] mt-0.5"
+            style={{ color: 'var(--kolor-terra, #B84A2C)' }}
+          >
+            Founding member &#10022;
+          </div>
         </div>
 
         {/* Settings */}
         <button
           onClick={() => setShowSettings(true)}
-          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-text-secondary hover:bg-surface-background transition-all duration-150 mb-0.5"
+          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs transition-colors duration-150 mb-0.5"
+          style={{ color: 'var(--kolor-ink-muted, #5F5751)', background: 'transparent' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'var(--kolor-canvas-shade-1, #F1EDE5)'
+            e.currentTarget.style.color = 'var(--kolor-ink, #1A1613)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent'
+            e.currentTarget.style.color = 'var(--kolor-ink-muted, #5F5751)'
+          }}
           data-testid="sidebar-settings"
         >
           <GearSix weight="regular" className="w-[14px] h-[14px]" />
@@ -1079,7 +1226,16 @@ const Dashboard = () => {
         {/* Help */}
         <button
           onClick={() => setShowHelpPanel(true)}
-          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-text-secondary hover:bg-surface-background transition-all duration-150"
+          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs transition-colors duration-150"
+          style={{ color: 'var(--kolor-ink-muted, #5F5751)', background: 'transparent' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'var(--kolor-canvas-shade-1, #F1EDE5)'
+            e.currentTarget.style.color = 'var(--kolor-ink, #1A1613)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent'
+            e.currentTarget.style.color = 'var(--kolor-ink-muted, #5F5751)'
+          }}
           data-testid="sidebar-help-btn"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.3" /><path d="M6 6.2c0-1.1.9-2 2-2s2 .9 2 2c0 .7-.4 1.3-1 1.7-.3.2-.5.4-.6.6-.1.2-.2.3-.2.5M8 11v.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
@@ -1087,7 +1243,16 @@ const Dashboard = () => {
         </button>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-text-secondary hover:bg-surface-background transition-all duration-150"
+          className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs transition-colors duration-150"
+          style={{ color: 'var(--kolor-ink-muted, #5F5751)', background: 'transparent' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'var(--kolor-canvas-shade-1, #F1EDE5)'
+            e.currentTarget.style.color = 'var(--kolor-ink, #1A1613)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent'
+            e.currentTarget.style.color = 'var(--kolor-ink-muted, #5F5751)'
+          }}
           data-testid="sidebar-logout-footer"
         >
           <SignOut className="w-[14px] h-[14px]" weight="regular" />
@@ -1192,21 +1357,26 @@ const Dashboard = () => {
                 { mode: 'kanban' as ViewMode, icon: SquaresFour, label: 'Today' },
                 { mode: 'list' as ViewMode, icon: ListIcon, label: 'Clients' },
                 { mode: 'portfolio' as ViewMode, icon: Briefcase, label: 'Portfolio' },
-              ]).map(({ mode, icon: Icon, label }) => (
+              ]).map(({ mode, icon: Icon, label }) => {
+                const isActive = viewMode === mode
+                return (
                 <button
                   key={mode}
                   onClick={() => handleViewChange(mode)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 touch-target ${
-                    viewMode === mode
-                      ? 'text-brand-primary bg-brand-primary/10 border-r-2 border-brand-primary'
-                      : 'text-text-secondary hover:bg-light-100 hover:text-text-primary'
-                  }`}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors duration-150 touch-target relative"
+                  style={{
+                    background: isActive ? 'var(--kolor-terra-tint, rgba(184, 74, 44, 0.12))' : 'transparent',
+                    color: isActive ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-ink-muted, #5F5751)',
+                    borderRight: isActive ? '2px solid var(--kolor-terra, #B84A2C)' : '2px solid transparent',
+                    fontWeight: isActive ? 600 : 500,
+                  }}
                   data-testid={`mobile-menu-${mode}`}
                 >
-                  <Icon weight={viewMode === mode ? 'fill' : 'regular'} className="w-5 h-5" aria-hidden="true" />
+                  <Icon weight={isActive ? 'fill' : 'regular'} className="w-5 h-5" aria-hidden="true" />
                   {label}
                 </button>
-              ))}
+                )
+              })}
               <button
                 onClick={() => { setMobileMenuOpen(false); navigate('/calendar') }}
                 className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 touch-target text-text-secondary hover:bg-light-100 hover:text-text-primary"
