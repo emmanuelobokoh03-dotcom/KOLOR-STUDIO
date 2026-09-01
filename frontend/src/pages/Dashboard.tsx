@@ -40,6 +40,9 @@ import ClientsCalendarView from '../components/clients/ClientsCalendarView'
 import QuickViewsStrip from '../components/clients/QuickViewsStrip'
 import ClientsBulkToolbar from '../components/clients/ClientsBulkToolbar'
 import BulkEmailModal from '../components/clients/BulkEmailModal'
+import { resolveTodayAction } from '../utils/todayActionContent'
+const RevenueHero = lazy(() => import('../components/dashboard/RevenueHero'))
+const RevenueDetailModal = lazy(() => import('../components/dashboard/RevenueDetailModal'))
 import {
   PRESET_VIEWS,
   loadSavedViews,
@@ -185,6 +188,22 @@ const Dashboard = () => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [selectedLeadInitialTab, setSelectedLeadInitialTab] = useState<string | undefined>(undefined)
   const leadModalModified = useRef(false)
+
+  // iter 293-v3.1-v3a — Today card directive-action email composer state
+  // (Interpretation X). Send reminder / Follow up / Reply open this instead
+  // of ClientDetail, reusing BulkEmailModal single-recipient mode with
+  // contextual pre-fill (see utils/todayActionContent.ts).
+  const [activeTodayEmailModal, setActiveTodayEmailModal] = useState<{
+    selectedIds: string[]
+    clients: Lead[]
+    initialSubject: string
+    initialBody: string
+    titleOverride: string
+  } | null>(null)
+
+  // iter 293-v3.1-v3a — Revenue detail modal (opened from RevenueHero on
+  // Today view — Q1a=a). Wraps existing RevenueDashboard + RevenueGoalWidget.
+  const [showRevenueDetail, setShowRevenueDetail] = useState(false)
 
   // Deep-link: ?leadId=xxx&section=contracts opens a lead to a specific tab
   useEffect(() => {
@@ -1512,20 +1531,54 @@ const Dashboard = () => {
             Community, Portfolio, Analytics, Sequences content. */}
         {viewMode === 'kanban' && (
           <Suspense fallback={null}>
+            <RevenueHero
+              currencySymbol={user?.currencySymbol || '$'}
+              onOpenDetail={() => setShowRevenueDetail(true)}
+            />
+          </Suspense>
+        )}
+
+        {viewMode === 'kanban' && (
+          <Suspense fallback={null}>
             <DashboardCards
               userIndustry={user?.primaryIndustry as any}
               currencySymbol={user?.currencySymbol || '$'}
-              onLeadClick={(leadId, tab) => {
+              onLeadClick={(leadId, tab, item) => {
+                const openDetail = (lead: Lead, initialTab?: string) => {
+                  if (initialTab) setSelectedLeadInitialTab(initialTab)
+                  setSelectedLead(lead)
+                }
+                const openEmail = (lead: Lead, subject: string, body: string, titleOverride: string) => {
+                  setActiveTodayEmailModal({
+                    selectedIds: [lead.id],
+                    clients: [lead],
+                    initialSubject: subject,
+                    initialBody: body,
+                    titleOverride,
+                  })
+                }
+                const dispatch = (lead: Lead) => {
+                  // iter 293-v3.1-v3a — Today action routing (Interpretation X):
+                  // Directive email actions open BulkEmailModal; structured
+                  // actions open ClientDetail.
+                  if (item) {
+                    const route = resolveTodayAction(item)
+                    if (route.kind === 'email') {
+                      openEmail(lead, route.subject, route.body, route.titleOverride)
+                      return
+                    }
+                    openDetail(lead, route.tab)
+                    return
+                  }
+                  // No item context (e.g., inProgress items) — legacy behavior
+                  openDetail(lead, tab)
+                }
                 const lead = leads.find(l => l.id === leadId)
                 if (lead) {
-                  if (tab) setSelectedLeadInitialTab(tab)
-                  setSelectedLead(lead)
+                  dispatch(lead)
                 } else {
                   leadsApi.getOne(leadId).then(r => {
-                    if (r.data?.lead) {
-                      if (tab) setSelectedLeadInitialTab(tab)
-                      setSelectedLead(r.data.lead)
-                    }
+                    if (r.data?.lead) dispatch(r.data.lead)
                   })
                 }
               }}
@@ -2012,26 +2065,51 @@ const Dashboard = () => {
           />
         )}
 
+        {/* iter 293-v3.1-v3a — Today card directive-action email composer.
+             Renders regardless of viewMode so mid-action view switches
+             don't dismiss the composer. */}
+        {activeTodayEmailModal && (
+          <BulkEmailModal
+            selectedIds={activeTodayEmailModal.selectedIds}
+            clients={activeTodayEmailModal.clients}
+            initialSubject={activeTodayEmailModal.initialSubject}
+            initialBody={activeTodayEmailModal.initialBody}
+            titleOverride={activeTodayEmailModal.titleOverride}
+            onClose={() => setActiveTodayEmailModal(null)}
+            onSent={() => {
+              setActiveTodayEmailModal(null)
+              fetchLeads()
+              toast.success('Sent')
+            }}
+          />
+        )}
+
+        {/* iter 293-v3.1-v3a — Revenue detail modal (opened from
+             RevenueHero on Today view). */}
+        {showRevenueDetail && (
+          <Suspense fallback={null}>
+            <RevenueDetailModal
+              onClose={() => setShowRevenueDetail(false)}
+              bookedThisYear={analytics?.overview.bookedThisYear.value ?? 0}
+              currencySymbol={user?.currencySymbol ?? '$'}
+              lang={lang}
+            />
+          </Suspense>
+        )}
+
           </div>{/* /Left column */}
 
           {/* Right sidebar — list view only (Revenue) */}
           {viewMode === 'list' && (
             <aside className="hidden lg:block space-y-4" data-testid="dashboard-right-sidebar">
               {/* iter 291-v3b — CRMAlerts removed from sidebar; Needs
-                   Attention card in DashboardCards (Today view) now surfaces
-                   this info. Revenue Dashboard preserved. */}
-              <div data-tour="revenue-dashboard">
-                <Suspense fallback={<div className="bg-light-50 rounded-2xl border border-light-200 h-32 ks-shimmer" />}>
-                  <RevenueDashboard />
-                </Suspense>
-              </div>
-
-              {/* Revenue Goal Widget */}
-              <RevenueGoalWidget
-                bookedThisYear={analytics?.overview.bookedThisYear.value ?? 0}
-                currencySymbol={user?.currencySymbol ?? '$'}
-                lang={lang}
-              />
+                   Attention card in DashboardCards (Today view) surfaces
+                   that info.
+                   iter 293-v3.1-v3a — RevenueDashboard + RevenueGoalWidget
+                   relocated to Today view as RevenueHero (Q1.1=A). Click the
+                   hero opens RevenueDetailModal which wraps these same
+                   components for the deep view (Q1a=a). Clients right
+                   sidebar now hosts only the onboarding checklist. */}
 
               {/* Onboarding Checklist */}
               <OnboardingChecklist onOpenSettings={(tab) => { setSettingsInitialTab(tab as any); setShowSettings(true); }} />

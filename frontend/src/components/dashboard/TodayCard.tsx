@@ -13,7 +13,7 @@ import {
 interface TodayCardProps {
   userIndustry?: IndustryType
   currencySymbol?: string
-  onLeadClick: (leadId: string, tab?: string) => void
+  onLeadClick: (leadId: string, tab?: string, item?: AttentionItem) => void
 }
 
 type MixedItem =
@@ -206,7 +206,7 @@ export function TodayCard({
                 </div>
                 <button
                   onClick={() =>
-                    onLeadClick(mi.item.leadId, mi.item.actionRoute)
+                    onLeadClick(mi.item.leadId, mi.item.actionRoute, mi.item)
                   }
                   style={{
                     flexShrink: 0,

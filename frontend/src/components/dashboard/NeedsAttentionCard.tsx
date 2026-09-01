@@ -4,7 +4,7 @@ import DashboardCard from './DashboardCard'
 import { useTodayData, URGENCY_META } from './useTodayData'
 
 interface NeedsAttentionCardProps {
-  onLeadClick: (leadId: string, tab?: string) => void
+  onLeadClick: (leadId: string, tab?: string, item?: import('./useTodayData').AttentionItem) => void
 }
 
 /**
@@ -170,7 +170,7 @@ export function NeedsAttentionCard({ onLeadClick }: NeedsAttentionCardProps) {
                 )}
               </div>
               <button
-                onClick={() => onLeadClick(item.leadId, item.actionRoute)}
+                onClick={() => onLeadClick(item.leadId, item.actionRoute, item)}
                 style={{
                   flexShrink: 0,
                   display: 'inline-flex',

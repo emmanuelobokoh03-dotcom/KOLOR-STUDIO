@@ -37,6 +37,11 @@ const INDUSTRY_LABELS: Record<string, string> = {
 export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileId: string) => void }) {
   const navigate = useNavigate()
   const [industry, setIndustry] = useState<CreativeIndustry | 'ALL'>('ALL')
+  // iter 293-v3.1-v3a — Sub-chip state wired for Discover (previously subchips
+  // rendered from FilterChipBar but clicks no-op'd because activeSubChip/
+  // onSubChipChange props were never passed). Backend /discover already
+  // accepts ?subHeadline= (community.ts L442) — pure frontend wiring fix.
+  const [subChip, setSubChip] = useState<string | null>(null)
   const [cityFilter, setCityFilter] = useState('')
   const [cityInput, setCityInput] = useState('')
   const [profiles, setProfiles] = useState<CreatorRow[]>([])
@@ -48,13 +53,15 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
   const [followingInFlight, setFollowingInFlight] = useState<Set<string>>(new Set())
   const [dmInFlight, setDmInFlight] = useState<Set<string>>(new Set())
 
-  const fetchProfiles = useCallback(async (ind: string, q: string, cur?: string | null) => {
+  const fetchProfiles = useCallback(async (ind: string, q: string, sub: string | null, cur?: string | null) => {
     try {
       const params = new URLSearchParams({ industry: ind })
       // iter 289-v3c3b — Discover search extended from city-only to compound
       // search (creator name / city / sub-headline) via ?q param. Backend
       // performs case-insensitive contains across all three fields.
       if (q.trim()) params.set('q', q.trim())
+      // iter 293-v3.1-v3a — Sub-chip filter param
+      if (sub) params.set('subHeadline', sub)
       if (cur) params.set('cursor', cur)
       const res = await fetch(`${API}/api/community/discover?${params}`, { credentials: 'include' })
       const data = await res.json()
@@ -83,8 +90,8 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
     setLoading(true)
     setProfiles([])
     setCursor(null)
-    fetchProfiles(industry, cityFilter)
-  }, [industry, cityFilter, fetchProfiles])
+    fetchProfiles(industry, cityFilter, subChip)
+  }, [industry, cityFilter, subChip, fetchProfiles])
 
   const handleCitySubmit = () => setCityFilter(cityInput.trim())
 
@@ -148,7 +155,7 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
   const handleLoadMore = () => {
     if (loadingMore || !hasMore) return
     setLoadingMore(true)
-    fetchProfiles(industry, cityFilter, cursor)
+    fetchProfiles(industry, cityFilter, subChip, cursor)
   }
 
   return (
@@ -251,7 +258,15 @@ export default function CommunityDiscover({ onStartDM }: { onStartDM?: (profileI
         </span>
       </div>
 
-      <FilterChipBar activeIndustry={industry} onIndustryChange={setIndustry} />
+      <FilterChipBar
+        activeIndustry={industry}
+        onIndustryChange={(next) => {
+          setIndustry(next)
+          setSubChip(null)  // industry change resets sub-chip
+        }}
+        activeSubChip={subChip}
+        onSubChipChange={setSubChip}
+      />
 
       {/* Creator grid */}
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>

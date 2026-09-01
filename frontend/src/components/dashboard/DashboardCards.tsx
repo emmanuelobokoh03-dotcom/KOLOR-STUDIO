@@ -4,11 +4,15 @@ import NeedsAttentionCard from './NeedsAttentionCard'
 import PipelinePulseCard from './PipelinePulseCard'
 import RecentWorkCard from './RecentWorkCard'
 import CommunityPulseCard from './CommunityPulseCard'
+import type { AttentionItem } from './useTodayData'
 
 interface DashboardCardsProps {
   userIndustry?: IndustryType
   currencySymbol?: string
-  onLeadClick: (leadId: string, tab?: string) => void
+  // iter 293-v3.1-v3a — 3rd optional param carries the full attention item so
+  // Dashboard.tsx can route directive actions (Send reminder / Follow up /
+  // Reply) to BulkEmailModal instead of ClientDetail.
+  onLeadClick: (leadId: string, tab?: string, item?: AttentionItem) => void
   onViewClients: () => void
   onViewPortfolio: () => void
   onViewCommunity: () => void
