@@ -1,0 +1,165 @@
+feat(dashboard): revenue hero + today card actions + community subchips (iter 293-v3.1-v3a)
+
+Dashboard v3.1 arc anchor iteration. Three workstreams shipping
+revenue-as-brand-moment redesign + directive action wiring + Community
+subchips diagnosis fix.
+
+Ratifications applied
+----------------------
+- Q1.1=A: Revenue hero above 5 dashboard cards
+- Q1.2=A: Simple hero (metrics + sparkline + insight, click → detail modal)
+- Q1.3=A: All Today card action buttons rewired per Interpretation X
+- Q1.4=A: Community subchips diagnosis bundled in v3a
+- Path 1: Two-iteration arc (v3a anchor + v3b backlog)
+
+Adaptive branches ratified post STEP 0
+---------------------------------------
+- Q1a=a: Click revenue → RevenueDetailModal wrapping existing
+  RevenueDashboard + RevenueGoalWidget (minimal build, deep view)
+- Q1b=a: Custom inline SVG sparkline (~30 LOC, no new deps)
+- Q2a=b: New utils/todayActionContent.ts module (testable, separated)
+- Q2b=b: Log warning + fall back for unrecognised action labels
+- Q3a=a: Full end-to-end subchip fix (frontend state + backend param
+  already supported)
+
+Workstream 1: RevenueHero + RevenueDetailModal
+-----------------------------------------------
+- New frontend/src/components/dashboard/RevenueHero.tsx (~300 LOC)
+  - Renders above DashboardCards on Today view (kanban view scope)
+  - Reads GET /api/crm/revenue (existing endpoint, no backend change)
+  - Path C hero metric strip design:
+    * Eyebrow: "THIS MONTH · YTD $X" mono UPPERCASE 10px 0.24em
+    * Primary metric: Fraunces italic 40px kolor-ink
+    * Editorial insight: "On pace" / "Ahead of goal" / "Slow month —
+      quiet is okay" / "Building momentum" / "Steady rhythm" / "Nothing
+      booked yet — a fresh page" — derived from goal progress + trend
+      delta + day-of-month heuristics
+    * Goal ring: 48px inline SVG, kolor-terra progress + kolor-hairline
+      base, monthly-goal-progress % centered
+    * Sparkline: 96×24 inline SVG polyline, 6-month trend, kolor-terra
+      stroke 1.5px
+    * Container: kolor-canvas-shade-1 bg + kolor-hairline bottom
+    * Responsive: 2-column desktop → single-column mobile (≤640px)
+  - Click metric OR goal ring → onOpenDetail() → RevenueDetailModal
+- New frontend/src/components/dashboard/RevenueDetailModal.tsx (~140 LOC)
+  - createPortal(document.body) — Learning 12 backdrop-filter safe
+  - Framework-calibrated shell (light header + Fraunces italic title
+    "Your earnings, close-up" + mono "REVENUE" eyebrow)
+  - Wraps <RevenueDashboard /> + <RevenueGoalWidget /> in Suspense
+    (lazy) — existing components untouched, preserved for reuse
+  - useModalA11y for ESC + focus trap
+- Dashboard.tsx integration:
+  - Added RevenueHero above DashboardCards (viewMode === 'kanban')
+  - Removed <RevenueDashboard /> + <RevenueGoalWidget /> from Clients
+    right sidebar aside (viewMode === 'list'); OnboardingChecklist
+    preserved
+  - Added showRevenueDetail state + modal render
+- Original RevenueDashboard.tsx + RevenueGoalWidget.tsx files
+  preserved in codebase (referenced by RevenueDetailModal)
+
+Workstream 2: Today card action wiring (Interpretation X)
+----------------------------------------------------------
+Parent-level routing based on item.actionLabel from GET /api/today
+Attention items. Directive email actions open BulkEmailModal
+single-recipient; structured actions open ClientDetail at correct tab.
+
+- New frontend/src/utils/todayActionContent.ts (~150 LOC)
+  - resolveTodayAction(item) → { kind: 'email', subject, body,
+    titleOverride } | { kind: 'detail', tab }
+  - Action label routing:
+    * "Send reminder" → email w/ stage-aware pre-fill (contract_unsigned,
+      payment_overdue, generic)
+    * "Follow up" → email w/ type-aware pre-fill (quote_expiring,
+      quote_viewed, stale_lead, generic)
+    * "Reply" / "Message" → email w/ new-inquiry response template
+    * "Send offer" → detail at 'pipeline' tab
+    * "Mark done" / "Mark complete" / "Schedule" → detail at
+      actionRoute or 'overview'
+    * "Review" → detail at actionRoute or 'overview'
+    * Unknown → console.warn + fall back to detail (Q2b=b)
+  - All email bodies reference clientName for warmth, avoid emoji, use
+    kolor prose voice
+- DashboardCards + NeedsAttentionCard + TodayCard onLeadClick signature
+  extended: (leadId, tab?, item?: AttentionItem)
+  - Both card render sites pass full item as 3rd arg
+  - inProgress items in TodayCard don't pass item (legacy detail
+    open preserved)
+- Dashboard.tsx onLeadClick callback:
+  - When item present: resolveTodayAction(item) → dispatches to
+    setActiveTodayEmailModal (email) or ClientDetail (detail)
+  - When item absent (inProgress / legacy): original ClientDetail path
+- New activeTodayEmailModal state + BulkEmailModal render (reuses
+  Clients v3.1-v3a.1 single-recipient mode with initialSubject/Body/
+  titleOverride)
+- Modal renders regardless of viewMode so composer survives view
+  switches mid-action
+
+Workstream 3: Community subchips fix (Case B — pre-existing bug)
+------------------------------------------------------------------
+- STEP 0 confirmed v3c calibration diff untouched community/ code —
+  not a regression
+- CommunityDiscover.tsx: FilterChipBar was rendered without
+  activeSubChip / onSubChipChange props since iter 287-v3c. Sub-chips
+  rendered (industry state active) but click handler no-op'd silently
+  because onSubChipChange was undefined; backend fetchProfiles didn't
+  send subHeadline param
+- Backend /api/community/discover already accepts ?subHeadline= param
+  (community.ts L442). Zero backend touches — pure frontend wiring fix
+- Frontend changes:
+  * Added subChip state (null default)
+  * fetchProfiles signature extended: (ind, q, sub, cursor?)
+  * URLSearchParams now sets 'subHeadline' when sub is truthy
+  * useEffect deps include subChip so filter changes trigger refetch
+  * FilterChipBar receives activeSubChip + onSubChipChange props
+  * Industry change resets sub-chip (mirrors CommunityFeed pattern)
+- CommunityFeed (which was working) untouched
+
+Regression checks
+------------------
+- Backend TSC: clean
+- Frontend cold-cache build: clean (6.23s)
+- Dashboard chunk: 368.93 → 372.79 KB (~1% growth, expected)
+- All Clients v3.0/v3.1 (v3a/v3a.1/v3b/v3c) components intact
+- All prior v3 arcs (Dashboard/Community/Portfolio) intact
+- Sidebar calibration (v3c) preserved (81 framework tokens in Dashboard.tsx)
+- Framework primitives UNCHANGED
+- Phase 2 baselines (iter 280 / 281) intact
+
+Preserved verbatim
+-------------------
+- All Clients v3.0 arc outputs
+- All Clients v3.1 arc outputs (v3a + v3a.1 + v3b + v3c)
+- All Dashboard v3 arc outputs (Today hero region additive; card action
+  wiring additive param — legacy behavior preserved when item absent)
+- All Community v3 arc outputs (Feed subchips already worked; Discover
+  subchips now working — no other community touches)
+- All Portfolio v3 arc outputs
+- ClientPortal (iter 280 baseline)
+- Framework primitives UNCHANGED
+- Sidebar calibration (Clients v3.1-v3c)
+- Phase 2 baselines
+- RevenueDashboard.tsx + RevenueGoalWidget.tsx source files (now
+  reached via RevenueDetailModal instead of Clients sidebar)
+
+Deferred to v3.1-v3b (Path 1 backlog bundle)
+---------------------------------------------
+- Studio Pulse card (6th dashboard card)
+- User card reordering
+- avatarUrl schema extension
+
+Deferred to Dashboard v3.2
+---------------------------
+- Advanced Revenue features (multi-currency, tax categorization,
+  export)
+- Full Today card action library beyond current action types
+- Community subchips feature expansion beyond current fix
+- Onboarding banner (Dashboard.tsx L1548) framework calibration
+- Status filter chips (L1755/L1837) framework calibration
+
+Next
+-----
+v3.1-v3b (backlog bundle) — Studio Pulse card + user card reordering
++ avatarUrl schema extension. Estimated 2-3 hours execution.
+
+On v3.1-v3b closure: Dashboard v3.1 arc CLOSES. Sixth v3 arc closure
+completes Season Phase 1 halfway.

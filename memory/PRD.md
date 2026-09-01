@@ -153,6 +153,87 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Dashboard v3: **CLOSED** at iter 61 (creator-command-center)
 - **Clients v3: CLOSED** at iter 66 (operational spine)
 - **Clients v3.1: CLOSED** at iter ~68-69 (deep-work surface + operational polish + backlog resolution + universal chrome calibration)
+- **Dashboard v3.1: OPEN** at iter 70 — v3a anchor shipped; v3b (backlog bundle) pending
+
+## Iteration 293-v3.1-v3a (this session) — Revenue Redesign + Today Actions + Community Subchips — Dashboard v3.1 arc anchor
+
+### Ships in v3.1-v3a
+- **`RevenueHero.tsx`** (new, ~300 LOC) on Today view above DashboardCards. Path C hero metric strip: Fraunces italic 40px metric + mono "THIS MONTH · YTD $X" eyebrow + editorial insight ("On pace" / "Slow month — quiet is okay" / etc.) + 48px goal ring + 96×24 inline SVG sparkline. Container `kolor-canvas-shade-1` + `kolor-hairline` bottom. Click metric OR goal → `RevenueDetailModal`.
+- **`RevenueDetailModal.tsx`** (new, ~140 LOC) — createPortal safe, wraps existing `<RevenueDashboard />` + `<RevenueGoalWidget />` in Suspense. Fraunces italic title "Your earnings, close-up".
+- **Revenue Overview removed from Clients right sidebar** (Dashboard.tsx L2091-2110). OnboardingChecklist preserved. Original component files retained in codebase (reached via modal).
+- **`todayActionContent.ts`** (new, ~150 LOC) — `resolveTodayAction(item)` decides between `{kind: 'email'}` (Send reminder / Follow up / Reply / Message → BulkEmailModal with stage-aware pre-fill) and `{kind: 'detail'}` (Send offer / Mark done / Schedule / Review → ClientDetail at correct tab). Unknown labels log warning + fall back.
+- **DashboardCards → NeedsAttentionCard → TodayCard onLeadClick signature extended** to `(leadId, tab?, item?: AttentionItem)`. Card render sites pass full item as 3rd arg. inProgress items preserve legacy behavior (no item passed → full detail).
+- **Dashboard.tsx onLeadClick** intercepts item and dispatches to `setActiveTodayEmailModal` (email) or legacy `setSelectedLead` (detail). Modal renders regardless of viewMode.
+- **CommunityDiscover subchips fix**: subChip state added + FilterChipBar receives `activeSubChip` + `onSubChipChange` + fetchProfiles now sends `?subHeadline=X`. Backend `/api/community/discover` L442 already accepts the param — zero backend touches. Case B pre-existing bug (existed since iter 287-v3c). v3c calibration confirmed innocent.
+
+### Regression checks
+- Backend TSC exit 0
+- Frontend cold-cache build ✓ 6.23s
+- Dashboard chunk 368.93 → 372.79 KB (~1% growth expected)
+- 81 framework tokens preserved in Dashboard.tsx (sidebar calibration from v3c intact)
+- All Clients v3.0/v3.1 (v3a/v3a.1/v3b/v3c) components intact
+- Dashboard v3 / Community v3 / Portfolio v3 arcs intact
+- Framework primitives UNCHANGED
+- Phase 2 baselines (iter 280 / 281) intact
+
+### Local commit
+- `4101639` on branch `main`. 8 files changed, +755/-31. **Push blocked** by container auth — user syncs via "Save to GitHub" UI.
+
+### Adaptive branches ratified
+- Q1a=a: RevenueDetailModal wrapping existing components (minimal build, deep view)
+- Q1b=a: Custom inline SVG sparkline (no new deps)
+- Q2a=b: New `utils/todayActionContent.ts` module (testable, separated)
+- Q2b=b: Log warning + fall back for unrecognised action labels
+- Q3a=a: Full end-to-end subchip fix (frontend state + backend param)
+
+## Prioritized backlog
+
+### P0 — Immediate
+- User verifies iter 293-v3.1-v3a smoke tests (1-6) → v3a closes; Dashboard v3.1 arc at 1 of 2 sub-iterations
+- User taps "Save to GitHub" to sync `4101639`
+
+### P1 — Dashboard v3.1-v3b (Path 1 backlog bundle)
+- Studio Pulse card (6th dashboard card)
+- User card reordering
+- avatarUrl schema extension
+- Estimated 2-3 hours execution → closes Dashboard v3.1 arc at ~iter 71-72
+
+### P1 — Next arc after v3.1-v3b
+- Calendar v3 arc (skip audit per prior direction)
+
+### P2 — Deferred to Dashboard v3.2
+- Advanced Revenue features (multi-currency, tax categorization, export)
+- Full Today card action library beyond current action types
+- Community subchips feature expansion beyond current fix
+- Onboarding banner (Dashboard.tsx L1548) framework calibration
+- Status filter chips (L1755/L1837) framework calibration
+
+### P2 — Deferred to Clients v3.2
+- Project-type filter decision + "All Types" dropdown removal
+- Custom pipeline stages + Sidebar VIEWS section
+- Latest work thumbnail per client
+- Kanban card multi-select + drag-drop kanban stage change
+- Command palette modal
+- Week + agenda calendar views
+- Comprehensive keyboard shortcuts
+- Advanced attachment library
+- Delete permanently action (archived view)
+- Undo pattern extension to other destructive actions
+- LeadDetailModal.tsx deletion (safely sidelined by ClientDetail.tsx)
+
+### P2 — Season Phase 1 remaining
+- Calendar v3, Portfolio Manager v3, Settings v3, Auth v3 arcs
+- Email templates & Onboarding tutorials
+- Beta launch preparation
+
+## Tech stack (unchanged)
+- Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables
+- Backend: Node/Express + TypeScript + Prisma + PostgreSQL
+- Location: `/app/kolor-studio-v2/` (root); `/app/frontend`, `/app/backend` are Emergent stub scaffolds
+- Deployment: Railway (backend), Vercel (frontend)
+
+## Test credentials
+- Standard test account: `bookingtest@test.com` / `password123`
 
 ## Iteration 293-v3c (this session) — Submit Inquiry Modal + Sidebar Framework Calibration — Clients v3.1 ARC CLOSER
 
@@ -191,47 +272,3 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Q2c=b: BETA ACCESS dark ink card
 - Q2d=b: Count badge subtle chrome
 
-## Prioritized backlog
-
-### P0 — Immediate
-- User verifies iter 293-v3c smoke tests (1-4) → closes Clients v3.1 arc at ~iter 68-69
-- User taps "Save to GitHub" to sync `062a5a8` (plus prior unsynced commits)
-
-### P1 — Next arc decision
-- Dashboard v3.1 (Revenue Overview relocation + Path C hero metric strip + Studio Pulse card + avatarUrl schema) OR
-- Calendar v3 arc (skip audit per prior direction)
-
-### P2 — Deferred to Dashboard v3.1
-- Revenue Overview relocation to Today page + Path C hero metric strip redesign
-- Studio Pulse card (6th dashboard card)
-- User card reordering
-- avatarUrl schema extension
-- Onboarding banner (Dashboard.tsx L1548) framework calibration
-- Status filter chips (L1755/L1837) framework calibration
-
-### P2 — Deferred to Clients v3.2
-- Project-type filter decision + "All Types" dropdown removal
-- Custom pipeline stages + Sidebar VIEWS section
-- Latest work thumbnail per client
-- Kanban card multi-select + drag-drop kanban stage change
-- Command palette modal
-- Week + agenda calendar views
-- Comprehensive keyboard shortcuts
-- Advanced attachment library
-- Delete permanently action (archived view)
-- Undo pattern extension to other destructive actions
-- LeadDetailModal.tsx deletion (safely sidelined by ClientDetail.tsx)
-
-### P2 — Season Phase 1 remaining
-- Calendar v3, Portfolio Manager v3, Settings v3, Auth v3 arcs
-- Email templates & Onboarding tutorials
-- Beta launch preparation
-
-## Tech stack (unchanged)
-- Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables
-- Backend: Node/Express + TypeScript + Prisma + PostgreSQL
-- Location: `/app/kolor-studio-v2/` (root); `/app/frontend`, `/app/backend` are Emergent stub scaffolds
-- Deployment: Railway (backend), Vercel (frontend)
-
-## Test credentials
-- Standard test account: `bookingtest@test.com` / `password123`
