@@ -1021,14 +1021,33 @@ const Dashboard = () => {
           data-testid="sidebar-user-block"
         >
           <span
-            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 overflow-hidden"
             style={{
               background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
               border: '1px solid var(--kolor-hairline, #E5E0D8)',
               color: 'var(--kolor-ink, #1A1613)',
             }}
           >
-            {user?.firstName?.[0]}{user?.lastName?.[0]}
+            {(user as any)?.avatarUrl ? (
+              <img
+                src={(user as any).avatarUrl}
+                alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                data-testid="sidebar-user-avatar-image"
+              />
+            ) : (
+              <span
+                style={{
+                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                  fontSize: 13,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                {user?.firstName?.[0]}{user?.lastName?.[0]}
+              </span>
+            )}
           </span>
           <div className="flex-1 min-w-0">
             <div

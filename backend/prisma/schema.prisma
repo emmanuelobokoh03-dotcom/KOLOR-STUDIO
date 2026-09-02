@@ -230,6 +230,9 @@ model Income {
   @@index([receivedDate])
   @@index([status])
   @@index([stripeSessionId])
+  // iter 293-v3.1-v3b W4 — composite index for getRevenueStats query pattern:
+  // WHERE userId=? AND status IN (...) AND receivedDate >= ?
+  @@index([userId, status, receivedDate])
   @@index([paystackReference])
   @@index([userId])
   @@map("incomes")
@@ -546,6 +549,7 @@ model User {
   brandFontFamily          String                 @default("Inter")
   tokenVersion             Int                    @default(0)
   brandLogoUrl             String?
+  avatarUrl                String?
   brandPrimaryColor        String                 @default("#6C2EDB")
   emailSignature           String?
   verificationSentAt       DateTime?

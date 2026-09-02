@@ -4,8 +4,10 @@
 // border. Sizes: 24 (kanban), 32 (list default), 40 (compact detail),
 // 48 (detail hero).
 //
-// Uploaded photo optional via photoUrl prop (schema extension deferred
-// to Dashboard v3.1 backlog).
+// iter 293-v3.1-v3b — User avatarUrl support (Supabase-backed custom photo).
+// Both `photoUrl` (client photo, deferred to future arc) and `avatarUrl`
+// (user own photo, ships this iter) render an image when present. Falls
+// back to Fraunces italic initials.
 
 import { getInitials } from './stages'
 
@@ -13,11 +15,13 @@ interface ClientAvatarProps {
   name: string
   size?: 24 | 32 | 40 | 48
   photoUrl?: string | null
+  avatarUrl?: string | null
   testId?: string
 }
 
-export function ClientAvatar({ name, size = 32, photoUrl, testId }: ClientAvatarProps) {
+export function ClientAvatar({ name, size = 32, photoUrl, avatarUrl, testId }: ClientAvatarProps) {
   const initials = getInitials(name)
+  const imageSrc = avatarUrl || photoUrl
   return (
     <div
       style={{
@@ -35,9 +39,9 @@ export function ClientAvatar({ name, size = 32, photoUrl, testId }: ClientAvatar
       aria-label={`${name} avatar`}
       data-testid={testId || `client-avatar-${initials.toLowerCase()}`}
     >
-      {photoUrl ? (
+      {imageSrc ? (
         <img
-          src={photoUrl}
+          src={imageSrc}
           alt=""
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />

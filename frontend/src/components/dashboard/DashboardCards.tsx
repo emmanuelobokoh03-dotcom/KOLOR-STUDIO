@@ -4,6 +4,7 @@ import NeedsAttentionCard from './NeedsAttentionCard'
 import PipelinePulseCard from './PipelinePulseCard'
 import RecentWorkCard from './RecentWorkCard'
 import CommunityPulseCard from './CommunityPulseCard'
+import StudioPulseCard from './StudioPulseCard'
 import type { AttentionItem } from './useTodayData'
 
 interface DashboardCardsProps {
@@ -61,6 +62,7 @@ export function DashboardCards({
       />
       <NeedsAttentionCard onLeadClick={onLeadClick} />
       <PipelinePulseCard onViewClients={onViewClients} />
+      <StudioPulseCard />
       <RecentWorkCard onViewPortfolio={onViewPortfolio} />
       <CommunityPulseCard onViewCommunity={onViewCommunity} />
     </div>

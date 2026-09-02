@@ -480,6 +480,7 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response): Promi
         brandAccentColor: true,
         brandLogoUrl: true,
         brandFontFamily: true,
+        avatarUrl: true,
         emailVerified: true,
         createdAt: true,
         lastLoginAt: true,

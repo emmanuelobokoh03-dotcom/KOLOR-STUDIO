@@ -152,29 +152,40 @@ export const getRevenueStats = async (userId: string) => {
   // Pending revenue includes EXPECTED, DEPOSIT_RECEIVED, OVERDUE statuses
   const pendingStatuses = ['EXPECTED', 'DEPOSIT_RECEIVED', 'OVERDUE'] as const;
 
-  const thisMonth = await prisma.income.aggregate({
-    where: { userId, status: { in: [...receivedStatuses] }, receivedDate: { gte: monthStart } },
-    _sum: { amount: true },
-    _count: true
-  });
+  // iter 293-v3.1-v3b W4 — Parallelize the 4 top-level aggregates + refactor
+  // monthlyTrend from N+1 (12 sequential queries) to a single grouped scan.
+  // Backed by new composite @@index([userId, status, receivedDate]).
+  const trendWindowStart = subMonths(startOfMonth(now), 11);
+  const [thisMonth, lastMonth, ytd, expected, trendRows] = await Promise.all([
+    prisma.income.aggregate({
+      where: { userId, status: { in: [...receivedStatuses] }, receivedDate: { gte: monthStart } },
+      _sum: { amount: true },
+      _count: true
+    }),
+    prisma.income.aggregate({
+      where: { userId, status: { in: [...receivedStatuses] }, receivedDate: { gte: lastMonthStart, lt: monthStart } },
+      _sum: { amount: true }
+    }),
+    prisma.income.aggregate({
+      where: { userId, status: { in: [...receivedStatuses] }, receivedDate: { gte: yearStart } },
+      _sum: { amount: true }
+    }),
+    prisma.income.aggregate({
+      where: { userId, status: { in: [...pendingStatuses] } },
+      _sum: { amount: true },
+      _count: true
+    }),
+    prisma.income.findMany({
+      where: {
+        userId,
+        status: { in: [...receivedStatuses] },
+        receivedDate: { gte: trendWindowStart, lte: now }
+      },
+      select: { amount: true, receivedDate: true }
+    })
+  ]);
 
-  const lastMonth = await prisma.income.aggregate({
-    where: { userId, status: { in: [...receivedStatuses] }, receivedDate: { gte: lastMonthStart, lt: monthStart } },
-    _sum: { amount: true }
-  });
-
-  const ytd = await prisma.income.aggregate({
-    where: { userId, status: { in: [...receivedStatuses] }, receivedDate: { gte: yearStart } },
-    _sum: { amount: true }
-  });
-
-  const expected = await prisma.income.aggregate({
-    where: { userId, status: { in: [...pendingStatuses] } },
-    _sum: { amount: true },
-    _count: true
-  });
-
-  const monthlyTrend = await getMonthlyTrend(userId, 12);
+  const monthlyTrend = buildMonthlyTrendFromRows(trendRows, 12);
 
   const thisMonthAmt = Number(thisMonth._sum.amount || 0);
   const lastMonthAmt = Number(lastMonth._sum.amount || 0);
@@ -195,6 +206,34 @@ export const getRevenueStats = async (userId: string) => {
   };
 };
 
+// iter 293-v3.1-v3b W4 — Client-side bucketing of a 12-month window replaces
+// 12 sequential aggregate queries. Single findMany + in-memory grouping.
+function buildMonthlyTrendFromRows(
+  rows: { amount: any; receivedDate: Date | null }[],
+  months: number
+) {
+  const now = new Date();
+  const trend: { month: string; amount: number }[] = [];
+  const buckets = new Map<string, number>();
+  for (const row of rows) {
+    if (!row.receivedDate) continue;
+    const key = `${row.receivedDate.getFullYear()}-${row.receivedDate.getMonth()}`;
+    buckets.set(key, (buckets.get(key) || 0) + Number(row.amount));
+  }
+  for (let i = months - 1; i >= 0; i--) {
+    const bucket = subMonths(startOfMonth(now), i);
+    const key = `${bucket.getFullYear()}-${bucket.getMonth()}`;
+    trend.push({
+      month: bucket.toLocaleDateString('en-US', { month: 'short' }),
+      amount: buckets.get(key) || 0
+    });
+  }
+  return trend;
+}
+
+// Legacy helper preserved for any external caller. Not used by
+// getRevenueStats after v3b W4 optimization.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getMonthlyTrend(userId: string, months: number) {
   const trend = [];
   for (let i = months - 1; i >= 0; i--) {
@@ -217,3 +256,8 @@ async function getMonthlyTrend(userId: string, months: number) {
   }
   return trend;
 }
+
+// Reference the legacy helper so TSC doesn't error on unused-declaration
+// while keeping it available for direct import.
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+void getMonthlyTrend;
