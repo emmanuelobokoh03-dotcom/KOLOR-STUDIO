@@ -1,0 +1,189 @@
+feat(dashboard): studio pulse + avatarUrl + revenue optimization (iter 293-v3.1-v3b)
+
+Dashboard v3.1 arc closing backlog iteration. Three shipped workstreams
++ one honestly skipped per scope discipline.
+
+Ratifications applied
+----------------------
+- Q1a=c: Studio Pulse hybrid mini bars + Fraunces italic prominent total
+- Q1b=b: Meaningful activities only (excludes PORTAL_VIEWED)
+- Q2a=e: User card reordering SKIPPED — no clear backlog intent found;
+  current v3c calibration already framework-clean. Honest discipline
+  over invented scope.
+- Q3a=a: Avatar bucket named `avatars`
+- Q3b=b: Stable file path `{userId}-avatar.{ext}` with upsert:true
+- Q3c=a: Avatar upload UI at TOP of AccountTab
+- Sub-A: Revenue endpoint optimization bundled (~30 min addition)
+
+Workstream 1: Studio Pulse card
+--------------------------------
+Backend:
+- New GET /api/activities/pulse?days=7 endpoint
+  (backend/src/routes/recentActivities.ts)
+- Q1b=b filter to meaningful ActivityTypes: STATUS_CHANGED, NOTE_ADDED,
+  EMAIL_SENT, PHONE_CALL, MEETING_SCHEDULED, FILE_UPLOADED,
+  PROPOSAL_SENT, CONTRACT_SIGNED, PAYMENT_RECEIVED, MESSAGE_SENT,
+  FILE_DELETED, QUOTE_CREATED, QUOTE_SENT, QUOTE_ACCEPTED,
+  BOOKING_CREATED (excludes PORTAL_VIEWED — client-triggered)
+- Returns: { last7Days, weeklyTotal, previousWeekTotal, thisWeekVsLast,
+  generatedAt }. Window covers 2×days for week-over-week delta.
+- Single findMany + in-memory bucketing. Backed by existing
+  @@index([userId, createdAt]) on Activity.
+
+Frontend:
+- New frontend/src/components/dashboard/StudioPulseCard.tsx (~250 LOC)
+- Q1a=c hybrid design:
+  - Prominent Fraunces italic 40px weekly total + "ACTIVITIES" mono
+    UPPERCASE label
+  - Delta indicator "+XX% vs last" mono UPPERCASE (kolor-terra when
+    positive, kolor-ink-subtle when negative)
+  - Weekly bars: 7 columns Mon-Sun (today = kolor-terra fill, past =
+    kolor-ink-muted, zero = kolor-hairline), day letter labels
+  - Editorial insight: "Busy week — strong momentum" / "Steady rhythm"
+    / "Quiet week — space for deep work" / "Slower than last week"
+    etc., derived from weeklyTotal + delta + day-of-week heuristics
+- Wrapped in DashboardCard framework primitive (Pulse phosphor icon
+  duotone)
+- Placement: 6th card between PipelinePulseCard and RecentWorkCard
+- Loading state uses ks-shimmer skeleton
+
+Workstream 2: User card reordering — SKIPPED
+---------------------------------------------
+Per Q2a=e honest scope discipline. STEP 0 audit found no clear
+backlog intent (no TODO/FIXME comment; v3c calibration already
+framework-clean). Deferred rather than invent scope.
+
+Workstream 3: avatarUrl schema + upload UI
+-------------------------------------------
+Schema:
+- backend/prisma/schema.prisma: User.avatarUrl String? (additive)
+- prisma db push applied (shadow DB validation blocked migrate dev on
+  a pre-existing migration; db push mode used for schema sync)
+
+Backend endpoints (backend/src/routes/user.ts):
+- POST /api/user/avatar
+  - multer memoryStorage + 2MB cap + JPG/PNG/WebP fileFilter
+  - Supabase avatars bucket (Q3a=a) — create-if-missing pattern
+    (mirrors settings.ts brand-logos)
+  - Q3b=b stable path {userId}-avatar.{ext} with upsert:true
+  - Public URL + ?v={timestamp} cache-bust so fresh upload displays
+    immediately
+  - Updates user.avatarUrl
+- DELETE /api/user/avatar
+  - Removes file from Supabase (parses path from URL, strips ?v query)
+  - Clears user.avatarUrl → initials fallback
+
+Frontend:
+- ClientAvatar accepts avatarUrl prop (photoUrl still supported for
+  future client-avatar iterations). Image renders when either present;
+  falls back to Fraunces italic initials.
+- Sidebar user card in Dashboard.tsx now conditionally renders
+  <img src={user.avatarUrl}> vs initials
+- GET /api/auth/me now returns avatarUrl in User selection (auth.ts)
+- New AvatarUploadSection component
+  (frontend/src/components/settings/AvatarUploadSection.tsx)
+  - 80px avatar preview + Upload/Change photo (kolor-terra CTA) +
+    Remove (secondary)
+  - Client-side size + type validation with toast errors
+  - Upload progress state
+  - Framework calibrated (mono UPPERCASE eyebrow, Fraunces italic
+    initials in preview, Inter body hint)
+- AccountTab renders <AvatarUploadSection /> above UserContactInfo
+  (Q3c=a top placement)
+
+Notification bell already reads actor.avatarUrl — will auto-benefit
+once backend enriches (community.ts L871 currently hardcodes null;
+that surface waits for Community v3.1 or similar).
+
+Workstream 4 (bundled): Revenue endpoint optimization
+------------------------------------------------------
+Prior state: getRevenueStats ran 13 sequential queries
+(4 aggregates + 12-loop for monthlyTrend). Classic N+1.
+
+Changes (backend/src/services/crm.ts):
+- Parallelized 4 top-level aggregates + swapped monthlyTrend loop for
+  a single findMany scanning the 12-month window, then in-memory
+  bucketing → 13 sequential queries → 5 parallel queries
+- Added helper buildMonthlyTrendFromRows(rows, months) — same output
+  shape, no callsite change
+- Preserved legacy getMonthlyTrend for external callers (referenced
+  via `void getMonthlyTrend` for TSC)
+
+Prisma schema:
+- Added @@index([userId, status, receivedDate]) on Income model —
+  supports the aggregate WHERE clauses AND the findMany trend scan
+- Applied via prisma db push
+
+Expected impact: ~5-10× reduction in DB round-trips for GET
+/api/crm/revenue (Railway → Supabase pooler latency dominant).
+Powers RevenueHero on Today page + RevenueDetailModal + existing
+RevenueDashboard when opened.
+
+Verification
+-------------
+- Backend TSC: clean
+- Frontend TSC: clean
+- Frontend cold-cache build: clean (6.52s)
+- Dashboard chunk 372.79 → 378.87 KB (~2% growth from StudioPulseCard
+  + AvatarUploadSection)
+- All Clients v3.0/v3.1 (v3a/v3a.1/v3b/v3c) intact
+- Dashboard v3.1-v3a intact (RevenueHero + RevenueDetailModal +
+  Today action wiring + Community subchips)
+- Dashboard v3 + Community v3 + Portfolio v3 arcs intact
+- Framework primitives UNCHANGED
+- Sidebar calibration (v3c) preserved (81 framework tokens)
+- Phase 2 baselines (iter 280 / 281) intact
+
+Preserved verbatim
+-------------------
+- All Dashboard v3.1-v3a outputs
+- All Clients v3.0/v3.1 arc outputs
+- Dashboard v3 / Community v3 / Portfolio v3 arc outputs (Studio Pulse
+  additive)
+- ClientPortal (iter 280 baseline)
+- Framework primitives UNCHANGED
+- Phase 2 baselines
+- Sidebar calibration (Clients v3.1-v3c)
+- ClientAvatar `photoUrl` prop (still valid; `avatarUrl` added
+  alongside for user own photo)
+
+Deferred to Performance Arc (iter 294)
+---------------------------------------
+- Additional backend query optimization (other endpoints beyond
+  /crm/revenue)
+- Frontend bundle optimization (code splitting, lazy loading)
+- Perceived performance (skeleton loading, optimistic UI)
+- Revenue Overview modal calibration (RevenueDashboard +
+  RevenueGoalWidget content — pre-v3 legacy shell inside calibrated
+  modal)
+- Community subchips consistency (Feed vs Discover parity)
+
+Deferred to Dashboard v3.2
+---------------------------
+- Advanced Revenue features (multi-currency, tax categorization,
+  export)
+- Full Today card action library beyond current action types
+
+Deferred honestly
+-------------------
+- User card reordering (Q2a=e) — reopen when concrete intent lands
+
+Dashboard v3.1 arc CLOSES
+--------------------------
+Two sub-iterations shipped:
+- v3.1-v3a: Revenue redesign + Today card wiring + Community subchips
+- v3.1-v3b: Studio Pulse + avatarUrl + Revenue optimization (THIS)
+
+Sixth v3 arc closure — Season Phase 1 progressing:
+- Community v3 CLOSED at 53
+- Portfolio v3 CLOSED at 56
+- Dashboard v3 CLOSED at 61
+- Clients v3 CLOSED at 66
+- Clients v3.1 CLOSED at 69
+- Dashboard v3.1 CLOSED at ~71-72
+
+Next
+-----
+Performance Arc (iter 294) opens — bundle optimization + perceived
+performance + Revenue Overview modal calibration + Community subchips
+consistency.

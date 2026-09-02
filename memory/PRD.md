@@ -153,7 +153,95 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Dashboard v3: **CLOSED** at iter 61 (creator-command-center)
 - **Clients v3: CLOSED** at iter 66 (operational spine)
 - **Clients v3.1: CLOSED** at iter ~68-69 (deep-work surface + operational polish + backlog resolution + universal chrome calibration)
-- **Dashboard v3.1: OPEN** at iter 70 — v3a anchor shipped; v3b (backlog bundle) pending
+- **Dashboard v3.1: CLOSED** at iter ~71-72 (revenue redesign + Today card actions + Community subchips fix + Studio Pulse + avatarUrl + revenue query optimization)
+
+## Iteration 293-v3.1-v3b (this session) — Studio Pulse + avatarUrl + Revenue Optimization — Dashboard v3.1 ARC CLOSER
+
+### Ships in v3.1-v3b
+- **`StudioPulseCard.tsx`** (new, ~250 LOC) — 6th card in DashboardCards region. Hybrid design: Fraunces italic 40px weekly total + "+X% vs last" delta indicator + 7-day mini bars (today = terra fill) + editorial insight ("Busy week — strong momentum" / "Steady rhythm" / "Quiet week — space for deep work" / etc.). Q1b=b filter — meaningful ActivityTypes only (excludes PORTAL_VIEWED).
+- **`GET /api/activities/pulse?days=7`** (new backend endpoint) — single findMany + in-memory bucketing over 2×days window for week-over-week delta. Backed by existing `@@index([userId, createdAt])` on Activity.
+- **User card reordering (W2)**: SKIPPED per Q2a=e — no clear backlog intent found; honest scope discipline. Deferred until concrete intent lands.
+- **`User.avatarUrl String?`** Prisma schema addition (applied via `prisma db push` — shadow DB validation blocked `migrate dev` on pre-existing migration).
+- **`POST/DELETE /api/user/avatar`** (new backend routes) — Supabase `avatars` bucket (Q3a=a), stable path `{userId}-avatar.{ext}` with `upsert:true` (Q3b=b), 2MB cap, JPG/PNG/WebP, cache-bust query string on public URL.
+- **`AvatarUploadSection.tsx`** (new) — 80px preview + Upload/Change photo (terra CTA) + Remove secondary + Inter body hint. Placed at TOP of AccountTab (Q3c=a).
+- **`ClientAvatar`** extended: `avatarUrl` prop alongside existing `photoUrl` (both render image, falls back to Fraunces italic initials).
+- **Sidebar user card** in Dashboard.tsx now conditionally renders `<img>` when `user.avatarUrl` present.
+- **`GET /api/auth/me`** now returns `avatarUrl` in User selection (auth.ts).
+- **W4 Revenue endpoint optimization (Sub-A bundled)**: `getRevenueStats` refactored from **13 sequential queries** (4 aggregates + 12-loop for monthlyTrend) → **5 parallel queries** (4 aggregates + 1 findMany with in-memory bucketing via new `buildMonthlyTrendFromRows` helper). New `@@index([userId, status, receivedDate])` composite on Income supports both aggregate WHEREs and trend scan.
+
+### Regression checks
+- Backend TSC exit 0
+- Frontend cold-cache build ✓ 6.52s
+- Dashboard chunk 372.79 → 378.87 KB (~2% growth expected from StudioPulseCard + AvatarUploadSection)
+- All Clients v3.0/v3.1 (v3a/v3a.1/v3b/v3c) components intact
+- Dashboard v3.1-v3a intact (RevenueHero + RevenueDetailModal + Today action wiring + Community subchips)
+- Dashboard v3 / Community v3 / Portfolio v3 arcs intact
+- Framework primitives UNCHANGED
+- Sidebar calibration (v3c) preserved (81 framework tokens)
+- Phase 2 baselines (iter 280 / 281) intact
+
+### Local commit
+- `933386f` on branch `main`. 11 files changed, +806/-29. **Push blocked** by container auth — user syncs via "Save to GitHub" UI.
+
+### Adaptive branches ratified
+- Q1a=c: Studio Pulse hybrid mini bars + prominent Fraunces total
+- Q1b=b: Meaningful activities only (excludes PORTAL_VIEWED)
+- Q2a=e: User card reordering SKIPPED (honest scope discipline)
+- Q3a=a: Avatar bucket `avatars`
+- Q3b=b: Stable single-file path `{userId}-avatar.{ext}` with upsert
+- Q3c=a: Avatar upload UI at TOP of AccountTab
+- Sub-A: Revenue endpoint optimization bundled
+
+## Prioritized backlog
+
+### P0 — Immediate
+- User verifies iter 293-v3.1-v3b smoke tests (1-5) → **Dashboard v3.1 arc CLOSES** at ~iter 71-72
+- User taps "Save to GitHub" to sync `933386f`
+
+### P1 — Performance Arc (iter 294) opens next
+- Bundle optimization (code splitting, lazy loading beyond current lazy imports)
+- Perceived performance (skeleton loading refinement, optimistic UI)
+- Additional backend query optimization (endpoints beyond `/crm/revenue`)
+- Revenue Overview modal calibration (RevenueDashboard + RevenueGoalWidget content — pre-v3 legacy shell inside calibrated modal)
+- Community subchips consistency (Feed vs Discover parity)
+- ~8-12 hours across 3 sub-iterations
+
+### P2 — Deferred to Dashboard v3.2
+- Advanced Revenue features (multi-currency, tax categorization, export)
+- Full Today card action library beyond current action types
+- Onboarding banner (Dashboard.tsx L1548) framework calibration
+- Status filter chips (L1755/L1837) framework calibration
+
+### P2 — Deferred honestly
+- User card reordering (Q2a=e) — reopen when concrete intent lands
+
+### P2 — Deferred to Clients v3.2
+- Project-type filter decision + "All Types" dropdown removal
+- Custom pipeline stages + Sidebar VIEWS section
+- Latest work thumbnail per client
+- Kanban card multi-select + drag-drop kanban stage change
+- Command palette modal
+- Week + agenda calendar views
+- Comprehensive keyboard shortcuts
+- Advanced attachment library
+- Delete permanently action (archived view)
+- Undo pattern extension to other destructive actions
+- LeadDetailModal.tsx deletion (safely sidelined by ClientDetail.tsx)
+
+### P2 — Season Phase 1 remaining
+- Calendar v3, Portfolio Manager v3, Settings v3, Auth v3 arcs
+- Email templates & Onboarding tutorials
+- Beta launch preparation
+
+## Tech stack (unchanged)
+- Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables
+- Backend: Node/Express + TypeScript + Prisma + PostgreSQL (Supabase)
+- Storage: Supabase (`brand-logos`, `portfolio`, `community`, `avatars` — new this iter)
+- Location: `/app/kolor-studio-v2/` (root); `/app/frontend`, `/app/backend` are Emergent stub scaffolds
+- Deployment: Railway (backend), Vercel (frontend)
+
+## Test credentials
+- Standard test account: `bookingtest@test.com` / `password123`
 
 ## Iteration 293-v3.1-v3a (this session) — Revenue Redesign + Today Actions + Community Subchips — Dashboard v3.1 arc anchor
 
@@ -185,90 +273,4 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Q2a=b: New `utils/todayActionContent.ts` module (testable, separated)
 - Q2b=b: Log warning + fall back for unrecognised action labels
 - Q3a=a: Full end-to-end subchip fix (frontend state + backend param)
-
-## Prioritized backlog
-
-### P0 — Immediate
-- User verifies iter 293-v3.1-v3a smoke tests (1-6) → v3a closes; Dashboard v3.1 arc at 1 of 2 sub-iterations
-- User taps "Save to GitHub" to sync `4101639`
-
-### P1 — Dashboard v3.1-v3b (Path 1 backlog bundle)
-- Studio Pulse card (6th dashboard card)
-- User card reordering
-- avatarUrl schema extension
-- Estimated 2-3 hours execution → closes Dashboard v3.1 arc at ~iter 71-72
-
-### P1 — Next arc after v3.1-v3b
-- Calendar v3 arc (skip audit per prior direction)
-
-### P2 — Deferred to Dashboard v3.2
-- Advanced Revenue features (multi-currency, tax categorization, export)
-- Full Today card action library beyond current action types
-- Community subchips feature expansion beyond current fix
-- Onboarding banner (Dashboard.tsx L1548) framework calibration
-- Status filter chips (L1755/L1837) framework calibration
-
-### P2 — Deferred to Clients v3.2
-- Project-type filter decision + "All Types" dropdown removal
-- Custom pipeline stages + Sidebar VIEWS section
-- Latest work thumbnail per client
-- Kanban card multi-select + drag-drop kanban stage change
-- Command palette modal
-- Week + agenda calendar views
-- Comprehensive keyboard shortcuts
-- Advanced attachment library
-- Delete permanently action (archived view)
-- Undo pattern extension to other destructive actions
-- LeadDetailModal.tsx deletion (safely sidelined by ClientDetail.tsx)
-
-### P2 — Season Phase 1 remaining
-- Calendar v3, Portfolio Manager v3, Settings v3, Auth v3 arcs
-- Email templates & Onboarding tutorials
-- Beta launch preparation
-
-## Tech stack (unchanged)
-- Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables
-- Backend: Node/Express + TypeScript + Prisma + PostgreSQL
-- Location: `/app/kolor-studio-v2/` (root); `/app/frontend`, `/app/backend` are Emergent stub scaffolds
-- Deployment: Railway (backend), Vercel (frontend)
-
-## Test credentials
-- Standard test account: `bookingtest@test.com` / `password123`
-
-## Iteration 293-v3c (this session) — Submit Inquiry Modal + Sidebar Framework Calibration — Clients v3.1 ARC CLOSER
-
-### Ships in v3c
-- **`ShareFormModal.tsx`** — 13 purple instances → 0. Header purple gradient → `kolor-canvas-shade-1` + hairline. Copy + QR download buttons `bg-brand-primary` → `kolor-terra`. Pro Tips card purple-50/200 → `kolor-canvas-shade-1`/`kolor-hairline`. Title Fraunces italic + "SHARE" mono eyebrow. Focus rings 2px `kolor-terra`. Fixed adjacent typo bug ("InstagramLogo bio" → "Instagram bio").
-- **Sidebar (Dashboard.tsx L970-1200)** — 7 surfaces calibrated per explicit enumeration (Learning 10):
-  - Aside container → `kolor-canvas` + `kolor-hairline` right border
-  - User block avatar → `kolor-canvas-shade-1` + `kolor-hairline` + `kolor-ink` initials (light variant, Q2b=b); name Fraunces italic; plan indicator mono UPPERCASE
-  - Section eyebrows (WORKSPACE / SCHEDULE / ACCOUNT) → mono 10px UPPERCASE 0.14em + `kolor-ink-muted`
-  - Nav items active state → `kolor-terra` text + `kolor-terra-tint` bg + `kolor-terra` left indicator (Q2a=a)
-  - Count badge → `kolor-canvas-shade-1` bg + `kolor-ink` text + `kolor-hairline` border + mono 9px (Q2d=b)
-  - BETA ACCESS card → `kolor-ink` solid dark card (Q2c=b) + canvas text; "$97" Fraunces italic; "Founding member ✦" `kolor-terra`
-  - Bottom nav (Settings/Help/Log out) → `kolor-ink-muted` utility treatment
-  - Mobile sidebar nav active state calibrated to match desktop
-- **Structure preserved**: all nav routing, click handlers, collapse/expand, mobile overlay, count badge data source, data-testids UNCHANGED
-
-### Regression checks
-- Backend TSC exit 0
-- Frontend cold-cache build ✓ 5.90s
-- ShareFormModal purple: 13 → 0 (68 framework tokens)
-- Dashboard.tsx purple: 20 → 12 (remaining 12 out-of-scope: onboarding banner L1548 + status filter chips L1755/L1837 — content region, not chrome)
-- Framework tokens in Dashboard.tsx: 0 (sidebar surfaces) → 93
-- All Clients v3.0/v3.1-v3a/v3a.1/v3b components intact
-- Dashboard v3 / Community v3 / Portfolio v3 arcs intact
-- Framework primitives UNCHANGED
-- Phase 2 baselines (iter 280 / 281) intact
-- Revenue Overview UNTOUCHED (Dashboard v3.1 scope)
-
-### Local commit
-- `062a5a8` on branch `main`. 2 files changed, 418+/104-. **Push blocked** by container auth — user syncs via "Save to GitHub" UI.
-
-### Adaptive branches ratified
-- Q1a=b: ShareFormModal header light minimal
-- Q2a=a: Active nav terra-forward
-- Q2b=b: User avatar light variant
-- Q2c=b: BETA ACCESS dark ink card
-- Q2d=b: Count badge subtle chrome
 
