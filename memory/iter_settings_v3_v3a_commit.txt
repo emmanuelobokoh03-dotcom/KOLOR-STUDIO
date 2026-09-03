@@ -1,0 +1,185 @@
+feat(settings): calibration + Answer B restructure + lazy tabs (iter Settings v3-v3a)
+
+Seventh v3 arc — single iteration per Q1.4=A. Three workstreams shipped
+with Answer B restructure (Brand & Studio → Brand + Communications
+split) + Path M2 deprecate-in-place for brand color/font.
+
+Ratifications applied
+----------------------
+- Q1.1=C: Hybrid enumeration — my STEP 0 grep sufficient (Emmanuel
+  added no additional pain points)
+- Q1.2=B: Answer B — minimal Brand tab (logo only) + new Communications
+  tab (email signature)
+- Q1.3=B / W3=c: lazy-load all tabs + SettingsTabSkeleton fallback
+- Q1.4=A: Single iteration arc structure
+- Q1.5=B: Avatar upload preserved (calibration only from v3.1-v3b)
+- Q1a=a: Community exposed in VISIBLE_TABS
+- Q1b=a: .ks-shimmer CSS recalibration bundled
+- Path M2: brand color/font schema fields deprecated in place —
+  frontend render consumers no longer read them; schema + backend
+  endpoints preserved for API compatibility
+
+Workstream 1: Framework calibration across Settings surfaces
+-------------------------------------------------------------
+SettingsModal shell rewritten:
+- Backdrop: black/50 → rgba(26, 22, 19, 0.55) (ink-tinted)
+- Container: bg-surface-elevated → kolor-canvas + kolor-hairline +
+  boxShadow soft ink
+- Header: added "PREFERENCES" mono UPPERCASE eyebrow + Fraunces italic
+  "Settings" title
+- Close button: bare ✕ character → framework <X> icon with hover
+- Tab nav: bg-brand-primary/10 text-brand-primary → mono UPPERCASE
+  10px 0.18em labels; active = kolor-terra text + kolor-terra bottom
+  border indicator; hover = kolor-ink
+- createPortal(document.body) for backdrop-filter safety (Learning 12)
+- useModalA11y for ESC + focus trap
+
+Content surfaces calibrated:
+- UserContactInfo (Account tab): 5 field inputs → framework kolor-input
+  pattern with kolor-terra focus rings + Save button kolor-terra +
+  section eyebrow mono UPPERCASE + editorial subtitle
+- MoneyTab: 3 field inputs + Save indicator → framework
+- EmailSignatureSettings: textarea + Save button → framework
+- EmailSignatureGenerator: icon container → framework kolor-terra
+- CommunityProfileSettings: 3 toggle backgrounds → kolor-terra when
+  on, kolor-hairline when off; Save button success color
+
+Structure UNCHANGED:
+- All Settings functionality preserved
+- All click handlers preserved
+- All form submissions preserved
+- Only visual layer calibrated
+- Avatar upload from v3.1-v3b already framework-calibrated (preserved)
+
+Workstream 2: Answer B restructure + Path M2
+---------------------------------------------
+Tab list change:
+- Old: Account · Brand & Studio · Money · Scheduling · Notifications
+  (Community hidden)
+- New: Account · Brand · Communications · Money · Scheduling ·
+  Notifications · Community (Community exposed per Q1a=a)
+
+Brand tab (frontend/src/components/settings/BrandStudioTab.tsx
+completely rewritten):
+- Stripped to logo upload only
+- Removed: color picker (HexColorPicker), accent color, preset
+  palettes, font selector
+- Preserved: logo upload/delete + preview
+- Framework calibrated: mono UPPERCASE eyebrow, Fraunces italic
+  descriptor, dashed kolor-hairline upload target with kolor-terra
+  hover, kolor-terra CTA
+- BrandSettings.tsx (306 L, deep component) deleted
+- BrandPreview.tsx (orphaned dep) deleted
+
+CommunicationsTab (new component):
+- Renders EmailSignatureSettings + EmailSignatureGenerator (migrated
+  from Brand & Studio)
+- Mono UPPERCASE "EMAIL SIGNATURE" eyebrow + editorial descriptor
+- Signature belongs here — communications hygiene, not brand system
+
+Path M2 deprecate-in-place for brand color/font:
+- Frontend consumers no longer read brandPrimaryColor /
+  brandFontFamily / brandAccentColor:
+  * PublicPortfolio.tsx: brandPrimary → kolor-terra CSS var, brandFont
+    → 'Fraunces', brandAccent → kolor-terra
+  * ClientPortal.tsx: brandColor → kolor-terra CSS var
+  * SubmitInquiry.tsx: brandPrimary → kolor-terra CSS var
+  * SubmitTestimonial.tsx: primary → kolor-terra hex fallback
+  * PublicBookingPage.tsx: primaryColor → kolor-terra hex fallback
+- Backend + Prisma schema UNCHANGED (User.brandPrimaryColor,
+  brandAccentColor, brandFontFamily preserved; endpoints still
+  return them; settings.ts updateBrand still writes them — dead-code
+  writes, harmless)
+- Framework calibration governs every rendered public surface going
+  forward
+
+Workstream 3: Performance patches
+----------------------------------
+Lazy tabs (frontend/src/components/SettingsModal.tsx):
+- All 7 tabs now React.lazy imports (Account / Brand /
+  Communications / Money / Scheduling / Notifications / Community)
+- <Suspense fallback={<SettingsTabSkeleton />}> wraps active tab
+  content
+- Bundle: initial Settings chunk reduced; per-tab chunks load on-demand
+
+SettingsTabSkeleton (new component,
+frontend/src/components/settings/SettingsTabSkeleton.tsx):
+- Framework-calibrated shimmer rows matching typical tab structure
+  (eyebrow + 3 field placeholders)
+- role="status" + aria-label for a11y
+
+.ks-shimmer CSS recalibration (frontend/src/index.css L935+):
+- Purple gradient (#ede9fe → #c4b5fd → #ede9fe) replaced with
+  kolor-canvas-shade-1 → kolor-hairline-strong → kolor-canvas-shade-1
+- prefers-reduced-motion fallback: kolor-canvas-shade-1
+- 59 global skeleton usages benefit — subtle chrome improvement across
+  the entire product surface
+
+Verification
+-------------
+- Backend TSC: clean
+- Frontend TSC: clean
+- Frontend cold-cache build: clean (6.49s)
+- Dashboard chunk 378.87 → 379.94 KB (+0.3%, expected additive)
+- All Settings surfaces purple: 0 (previously ~18 instances across 7
+  files)
+- Path M2 audit clean: no live reads of brandPrimaryColor /
+  brandFontFamily on 5 render surfaces (only type annotations +
+  descriptive comments remain)
+- Avatar upload from v3.1-v3b intact
+- All Dashboard v3.1 outputs intact
+- All Clients v3.0/v3.1 (v3a/v3a.1/v3b/v3c) intact
+- Dashboard v3 / Community v3 / Portfolio v3 arcs intact
+- Framework primitives UNCHANGED
+- Sidebar calibration (v3c) preserved
+- Phase 2 baselines (iter 280 / 281) intact
+
+Preserved verbatim
+-------------------
+- Avatar upload feature (Q1.5=B)
+- All Dashboard v3.1 outputs (v3a + v3b including RevenueHero +
+  StudioPulse + avatar upload)
+- All Clients v3.0/v3.1 arc outputs
+- Dashboard v3 / Community v3 / Portfolio v3 arc outputs
+- ClientPortal (iter 280 baseline)
+- Framework primitives UNCHANGED
+- Phase 2 baselines
+- Sidebar calibration (Clients v3.1-v3c)
+
+Files deleted
+--------------
+- frontend/src/components/BrandSettings.tsx (306 L; color/font UI
+  no longer editable — Path M2 deprecate-in-place)
+- frontend/src/components/BrandPreview.tsx (orphaned after
+  BrandSettings removal)
+
+Deferred to Performance Arc (iter 294)
+---------------------------------------
+- Backend query optimization beyond Sub-A patch (iter v3.1-v3b)
+- Frontend bundle optimization beyond Settings tab lazy-load
+- Perceived performance beyond skeleton loading
+- Revenue Overview modal calibration
+- Community subchips consistency (Feed vs Discover parity)
+
+Deferred to Settings v3.1 (future arc if needed)
+-------------------------------------------------
+- Advanced Settings features (backup, export, advanced integrations)
+
+Settings v3 arc CLOSES
+-----------------------
+Single iteration shipped per Q1.4=A. All three workstreams shipped
+plus Path M2 render consumer sweep.
+
+Seventh v3 arc closure — Season Phase 1 progressing:
+- Community v3 CLOSED at 53
+- Portfolio v3 CLOSED at 56
+- Dashboard v3 CLOSED at 61
+- Clients v3 CLOSED at 66
+- Clients v3.1 CLOSED at 69
+- Dashboard v3.1 CLOSED at 71-72
+- Settings v3 CLOSED at ~73
+
+Next
+-----
+Calendar v3 arc opens per Path X sequencing (booking flow polish +
+week/agenda views + skip audit direction).

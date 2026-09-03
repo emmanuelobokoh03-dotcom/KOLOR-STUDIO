@@ -154,57 +154,64 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - **Clients v3: CLOSED** at iter 66 (operational spine)
 - **Clients v3.1: CLOSED** at iter ~68-69 (deep-work surface + operational polish + backlog resolution + universal chrome calibration)
 - **Dashboard v3.1: CLOSED** at iter ~71-72 (revenue redesign + Today card actions + Community subchips fix + Studio Pulse + avatarUrl + revenue query optimization)
+- **Settings v3: CLOSED** at iter ~73 (calibration + Answer B restructure + Path M2 deprecate + lazy tabs + skeleton + shimmer calibration)
 
-## Iteration 293-v3.1-v3b (this session) — Studio Pulse + avatarUrl + Revenue Optimization — Dashboard v3.1 ARC CLOSER
+## Iteration Settings v3-v3a (this session) — SEVENTH v3 ARC CLOSURE
 
-### Ships in v3.1-v3b
-- **`StudioPulseCard.tsx`** (new, ~250 LOC) — 6th card in DashboardCards region. Hybrid design: Fraunces italic 40px weekly total + "+X% vs last" delta indicator + 7-day mini bars (today = terra fill) + editorial insight ("Busy week — strong momentum" / "Steady rhythm" / "Quiet week — space for deep work" / etc.). Q1b=b filter — meaningful ActivityTypes only (excludes PORTAL_VIEWED).
-- **`GET /api/activities/pulse?days=7`** (new backend endpoint) — single findMany + in-memory bucketing over 2×days window for week-over-week delta. Backed by existing `@@index([userId, createdAt])` on Activity.
-- **User card reordering (W2)**: SKIPPED per Q2a=e — no clear backlog intent found; honest scope discipline. Deferred until concrete intent lands.
-- **`User.avatarUrl String?`** Prisma schema addition (applied via `prisma db push` — shadow DB validation blocked `migrate dev` on pre-existing migration).
-- **`POST/DELETE /api/user/avatar`** (new backend routes) — Supabase `avatars` bucket (Q3a=a), stable path `{userId}-avatar.{ext}` with `upsert:true` (Q3b=b), 2MB cap, JPG/PNG/WebP, cache-bust query string on public URL.
-- **`AvatarUploadSection.tsx`** (new) — 80px preview + Upload/Change photo (terra CTA) + Remove secondary + Inter body hint. Placed at TOP of AccountTab (Q3c=a).
-- **`ClientAvatar`** extended: `avatarUrl` prop alongside existing `photoUrl` (both render image, falls back to Fraunces italic initials).
-- **Sidebar user card** in Dashboard.tsx now conditionally renders `<img>` when `user.avatarUrl` present.
-- **`GET /api/auth/me`** now returns `avatarUrl` in User selection (auth.ts).
-- **W4 Revenue endpoint optimization (Sub-A bundled)**: `getRevenueStats` refactored from **13 sequential queries** (4 aggregates + 12-loop for monthlyTrend) → **5 parallel queries** (4 aggregates + 1 findMany with in-memory bucketing via new `buildMonthlyTrendFromRows` helper). New `@@index([userId, status, receivedDate])` composite on Income supports both aggregate WHEREs and trend scan.
+### Ships in Settings v3-v3a
+- **SettingsModal shell rewritten**: ink-tinted backdrop, `kolor-canvas` container, "PREFERENCES" mono eyebrow + Fraunces italic title, framework X close icon, mono UPPERCASE tab labels with `kolor-terra` active state + bottom-border indicator. `createPortal(document.body)` + `useModalA11y` for backdrop-filter safety + ESC/focus trap.
+- **Answer B restructure**: Old "Brand & Studio" split into new **Brand** tab (logo-only) + new **Communications** tab (email signature). Old `BrandSettings.tsx` (306 L color/font/palette UI) deleted; `BrandPreview.tsx` orphan deleted. Community exposed in `VISIBLE_TABS` per Q1a=a. Tab order: Account → Brand → Communications → Money → Scheduling → Notifications → Community.
+- **Path M2 deprecate-in-place**: Frontend consumers (`PublicPortfolio`, `ClientPortal`, `SubmitInquiry`, `SubmitTestimonial`, `PublicBookingPage`) no longer read `brandPrimaryColor` / `brandAccentColor` / `brandFontFamily`. Hardcoded to `kolor-terra` + `Fraunces`. **Schema + backend endpoints UNCHANGED** — API compatibility preserved; writes become dead-code (harmless).
+- **Framework calibration**: `UserContactInfo` (5 form fields, save button), `MoneyTab` (3 selects + tax input), `EmailSignatureSettings` (textarea + save), `EmailSignatureGenerator` (icon container), `CommunityProfileSettings` (3 toggle backgrounds + save button). All previously purple/legacy → `kolor-terra` + framework tokens.
+- **W3 lazy tabs**: All 7 tabs converted to `React.lazy` imports. `<Suspense fallback={<SettingsTabSkeleton />}>` wraps tab content. New `SettingsTabSkeleton.tsx` with framework-calibrated shimmer rows + a11y `role="status"`.
+- **`.ks-shimmer` CSS recalibration**: Purple gradient (`#ede9fe → #c4b5fd → #ede9fe`) → `kolor-canvas-shade-1 → kolor-hairline-strong → kolor-canvas-shade-1`. 59 skeleton usages benefit globally.
 
 ### Regression checks
 - Backend TSC exit 0
-- Frontend cold-cache build ✓ 6.52s
-- Dashboard chunk 372.79 → 378.87 KB (~2% growth expected from StudioPulseCard + AvatarUploadSection)
+- Frontend cold-cache build ✓ 6.49s
+- Dashboard chunk 378.87 → 379.94 KB (+0.3%)
+- All Settings surfaces purple count: **0** (previously ~18 across 7 files)
+- Path M2 audit clean — no live reads of deprecated brand fields
+- All Dashboard v3.1 outputs intact (RevenueHero, StudioPulse, avatarUpload)
 - All Clients v3.0/v3.1 (v3a/v3a.1/v3b/v3c) components intact
-- Dashboard v3.1-v3a intact (RevenueHero + RevenueDetailModal + Today action wiring + Community subchips)
 - Dashboard v3 / Community v3 / Portfolio v3 arcs intact
 - Framework primitives UNCHANGED
 - Sidebar calibration (v3c) preserved (81 framework tokens)
 - Phase 2 baselines (iter 280 / 281) intact
 
 ### Local commit
-- `933386f` on branch `main`. 11 files changed, +806/-29. **Push blocked** by container auth — user syncs via "Save to GitHub" UI.
+- `bb9bfe7` on branch `main`. 17 files changed, +639/-716 (net **negative** due to BrandSettings + BrandPreview deletion). Push blocked by container auth — user syncs via "Save to GitHub".
 
-### Adaptive branches ratified
-- Q1a=c: Studio Pulse hybrid mini bars + prominent Fraunces total
-- Q1b=b: Meaningful activities only (excludes PORTAL_VIEWED)
-- Q2a=e: User card reordering SKIPPED (honest scope discipline)
-- Q3a=a: Avatar bucket `avatars`
-- Q3b=b: Stable single-file path `{userId}-avatar.{ext}` with upsert
-- Q3c=a: Avatar upload UI at TOP of AccountTab
-- Sub-A: Revenue endpoint optimization bundled
+### Files deleted (Path M2)
+- `frontend/src/components/BrandSettings.tsx` (306 L — deprecated color/font/palette UI)
+- `frontend/src/components/BrandPreview.tsx` (orphan after BrandSettings removal)
 
 ## Prioritized backlog
 
 ### P0 — Immediate
-- User verifies iter 293-v3.1-v3b smoke tests (1-5) → **Dashboard v3.1 arc CLOSES** at ~iter 71-72
-- User taps "Save to GitHub" to sync `933386f`
+- User verifies iter Settings v3-v3a smoke tests (1-6) → **Settings v3 arc CLOSES** at ~iter 73 → **Seventh v3 arc closure completes**
+- User taps "Save to GitHub" to sync `bb9bfe7`
 
-### P1 — Performance Arc (iter 294) opens next
-- Bundle optimization (code splitting, lazy loading beyond current lazy imports)
-- Perceived performance (skeleton loading refinement, optimistic UI)
-- Additional backend query optimization (endpoints beyond `/crm/revenue`)
-- Revenue Overview modal calibration (RevenueDashboard + RevenueGoalWidget content — pre-v3 legacy shell inside calibrated modal)
-- Community subchips consistency (Feed vs Discover parity)
+### P1 — Calendar v3 arc opens next per Path X sequencing
+- Booking flow polish + week/agenda views
+- Skip-audit direction confirmed
+
+### P1 — Performance Arc (iter 294) queued
+- Backend query optimization beyond Sub-A patch
+- Frontend bundle optimization beyond Settings tab lazy-load
+- Perceived performance beyond skeleton loading
+- Revenue Overview modal calibration
+- Community subchips Feed/Discover consistency
 - ~8-12 hours across 3 sub-iterations
+
+### P2 — Season Phase 1 remaining
+- Calendar v3 (skip audit) — booking flow polish + week/agenda views
+- Auth v3 (skip audit) — login/signup/password reset + Google OAuth
+- Portfolio Manager v3 (marginal audit)
+
+### P2 — Deferred to Settings v3.1 (future arc if needed)
+- Advanced Settings features (backup, export, advanced integrations)
+- Feature-level Settings improvements
 
 ### P2 — Deferred to Dashboard v3.2
 - Advanced Revenue features (multi-currency, tax categorization, export)
@@ -213,7 +220,7 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Status filter chips (L1755/L1837) framework calibration
 
 ### P2 — Deferred honestly
-- User card reordering (Q2a=e) — reopen when concrete intent lands
+- User card reordering (Q2a=e from Dashboard v3.1-v3b)
 
 ### P2 — Deferred to Clients v3.2
 - Project-type filter decision + "All Types" dropdown removal
@@ -228,49 +235,18 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Undo pattern extension to other destructive actions
 - LeadDetailModal.tsx deletion (safely sidelined by ClientDetail.tsx)
 
-### P2 — Season Phase 1 remaining
-- Calendar v3, Portfolio Manager v3, Settings v3, Auth v3 arcs
-- Email templates & Onboarding tutorials
+### Season Phase 2 queued
+- Email templates (with audit) — bulk email UX from Clients v3.1-v3a foundation ready
+- Onboarding tutorials (with audit)
 - Beta launch preparation
 
 ## Tech stack (unchanged)
 - Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables
 - Backend: Node/Express + TypeScript + Prisma + PostgreSQL (Supabase)
-- Storage: Supabase (`brand-logos`, `portfolio`, `community`, `avatars` — new this iter)
+- Storage: Supabase (`brand-logos`, `portfolio`, `community`, `avatars`)
 - Location: `/app/kolor-studio-v2/` (root); `/app/frontend`, `/app/backend` are Emergent stub scaffolds
 - Deployment: Railway (backend), Vercel (frontend)
 
 ## Test credentials
 - Standard test account: `bookingtest@test.com` / `password123`
-
-## Iteration 293-v3.1-v3a (this session) — Revenue Redesign + Today Actions + Community Subchips — Dashboard v3.1 arc anchor
-
-### Ships in v3.1-v3a
-- **`RevenueHero.tsx`** (new, ~300 LOC) on Today view above DashboardCards. Path C hero metric strip: Fraunces italic 40px metric + mono "THIS MONTH · YTD $X" eyebrow + editorial insight ("On pace" / "Slow month — quiet is okay" / etc.) + 48px goal ring + 96×24 inline SVG sparkline. Container `kolor-canvas-shade-1` + `kolor-hairline` bottom. Click metric OR goal → `RevenueDetailModal`.
-- **`RevenueDetailModal.tsx`** (new, ~140 LOC) — createPortal safe, wraps existing `<RevenueDashboard />` + `<RevenueGoalWidget />` in Suspense. Fraunces italic title "Your earnings, close-up".
-- **Revenue Overview removed from Clients right sidebar** (Dashboard.tsx L2091-2110). OnboardingChecklist preserved. Original component files retained in codebase (reached via modal).
-- **`todayActionContent.ts`** (new, ~150 LOC) — `resolveTodayAction(item)` decides between `{kind: 'email'}` (Send reminder / Follow up / Reply / Message → BulkEmailModal with stage-aware pre-fill) and `{kind: 'detail'}` (Send offer / Mark done / Schedule / Review → ClientDetail at correct tab). Unknown labels log warning + fall back.
-- **DashboardCards → NeedsAttentionCard → TodayCard onLeadClick signature extended** to `(leadId, tab?, item?: AttentionItem)`. Card render sites pass full item as 3rd arg. inProgress items preserve legacy behavior (no item passed → full detail).
-- **Dashboard.tsx onLeadClick** intercepts item and dispatches to `setActiveTodayEmailModal` (email) or legacy `setSelectedLead` (detail). Modal renders regardless of viewMode.
-- **CommunityDiscover subchips fix**: subChip state added + FilterChipBar receives `activeSubChip` + `onSubChipChange` + fetchProfiles now sends `?subHeadline=X`. Backend `/api/community/discover` L442 already accepts the param — zero backend touches. Case B pre-existing bug (existed since iter 287-v3c). v3c calibration confirmed innocent.
-
-### Regression checks
-- Backend TSC exit 0
-- Frontend cold-cache build ✓ 6.23s
-- Dashboard chunk 368.93 → 372.79 KB (~1% growth expected)
-- 81 framework tokens preserved in Dashboard.tsx (sidebar calibration from v3c intact)
-- All Clients v3.0/v3.1 (v3a/v3a.1/v3b/v3c) components intact
-- Dashboard v3 / Community v3 / Portfolio v3 arcs intact
-- Framework primitives UNCHANGED
-- Phase 2 baselines (iter 280 / 281) intact
-
-### Local commit
-- `4101639` on branch `main`. 8 files changed, +755/-31. **Push blocked** by container auth — user syncs via "Save to GitHub" UI.
-
-### Adaptive branches ratified
-- Q1a=a: RevenueDetailModal wrapping existing components (minimal build, deep view)
-- Q1b=a: Custom inline SVG sparkline (no new deps)
-- Q2a=b: New `utils/todayActionContent.ts` module (testable, separated)
-- Q2b=b: Log warning + fall back for unrecognised action labels
-- Q3a=a: Full end-to-end subchip fix (frontend state + backend param)
 
