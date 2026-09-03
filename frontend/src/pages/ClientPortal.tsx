@@ -485,7 +485,9 @@ export default function ClientPortal() {
   };
 
   const studioName = data?.contact?.studioName || data?.contact?.name || 'KOLOR STUDIO';
-  const brandColor = data?.contact?.brandPrimaryColor || '#6C2EDB';
+  // iter Settings v3-v3a W2 (Path M2): brand color deprecated in place —
+  // ClientPortal governed by framework calibration.
+  const brandColor = 'var(--kolor-terra, #B84A2C)';
   const brandLogo = data?.contact?.brandLogoUrl || null;
 
   // ── Loading ──

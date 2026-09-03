@@ -122,7 +122,8 @@ const SubmitInquiry = () => {
   }, [studioId])
 
   // Brand tokens
-  const brandPrimary = creatorInfo?.brandPrimaryColor || '#6C2EDB'
+  // iter Settings v3-v3a W2 (Path M2): brand color deprecated in place.
+  const brandPrimary = 'var(--kolor-terra, #B84A2C)'
   const brandLogo = creatorInfo?.brandLogoUrl || null
   const industry = (creatorInfo?.industry || (studioId ? 'PHOTOGRAPHY' : null)) as IndustryType | null
   const lang = industry ? getIndustryLanguage(industry) : null

@@ -59,7 +59,7 @@ export default function CommunityProfileSettings() {
           onClick={() => setIsPublic(!isPublic)}
           data-testid="community-public-toggle"
           className="w-10 h-5 rounded-full transition-all flex-shrink-0 relative"
-          style={{ background: isPublic ? '#6C2EDB' : '#d1d5db' }}>
+          style={{ background: isPublic ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-hairline, #E5E0D8)' }}>
           <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all"
             style={{ left: isPublic ? '1.25rem' : '0.125rem' }} />
         </button>
@@ -73,7 +73,7 @@ export default function CommunityProfileSettings() {
           onClick={() => setEmailsEnabled(!emailsEnabled)}
           data-testid="community-emails-toggle"
           className="w-10 h-5 rounded-full transition-all flex-shrink-0 relative"
-          style={{ background: emailsEnabled ? '#6C2EDB' : '#d1d5db' }}>
+          style={{ background: emailsEnabled ? 'var(--kolor-terra, #B84A2C)' : 'var(--kolor-hairline, #E5E0D8)' }}>
           <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all"
             style={{ left: emailsEnabled ? '1.25rem' : '0.125rem' }} />
         </button>
@@ -113,7 +113,7 @@ export default function CommunityProfileSettings() {
       <button onClick={handleSave} disabled={saving}
         data-testid="community-save-btn"
         className="w-full h-10 rounded-lg text-sm font-semibold text-white transition-all"
-        style={{ background: saved ? '#3B6D11' : '#6C2EDB' }}>
+        style={{ background: saved ? '#3F7A5E' : 'var(--kolor-terra, #B84A2C)' }}>
         {saving ? 'Saving...' : saved ? 'Saved ✓' : 'Save community profile'}
       </button>
     </div>

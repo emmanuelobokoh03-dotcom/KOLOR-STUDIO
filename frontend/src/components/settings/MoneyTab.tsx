@@ -1,10 +1,33 @@
 import { useSettings } from '../../contexts/SettingsContext'
 
+const fieldInputStyle = {
+  background: 'var(--kolor-canvas, #F7F4EE)',
+  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+  color: 'var(--kolor-ink, #1A1613)',
+}
+const labelStyle = { color: 'var(--kolor-ink, #1A1613)' }
+const sectionEyebrowStyle: React.CSSProperties = {
+  fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+  fontSize: 10,
+  fontWeight: 500,
+  letterSpacing: '0.24em',
+  textTransform: 'uppercase',
+  color: 'var(--kolor-ink-muted, #5F5751)',
+  marginBottom: 12,
+}
+
 export default function MoneyTab() {
   const { settings, availableCurrencies, saving, saved, save } = useSettings()
 
   if (!settings) {
-    return <div className="text-sm text-text-secondary">Loading money settings…</div>
+    return (
+      <div
+        className="text-sm"
+        style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}
+      >
+        Loading money settings…
+      </div>
+    )
   }
 
   const onCurrencyChange = (code: string) => {
@@ -18,15 +41,16 @@ export default function MoneyTab() {
   return (
     <div className="space-y-8" data-testid="money-tab">
       <section data-testid="money-currency-section">
-        <h3 className="text-lg font-semibold text-text-primary mb-3">Currency</h3>
+        <div style={sectionEyebrowStyle}>Currency</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1">Currency</label>
+            <label className="block text-sm font-medium mb-1" style={labelStyle}>Currency</label>
             <select
               value={settings.currency}
               onChange={(e) => onCurrencyChange(e.target.value)}
               disabled={saving}
-              className="w-full px-3 py-2 border border-border rounded-md bg-surface-elevated text-text-primary"
+              className="w-full px-3 py-2 rounded-md"
+              style={fieldInputStyle}
               data-testid="money-currency-select"
             >
               {availableCurrencies.map((c) => (
@@ -37,12 +61,13 @@ export default function MoneyTab() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1">Symbol position</label>
+            <label className="block text-sm font-medium mb-1" style={labelStyle}>Symbol position</label>
             <select
               value={settings.currencyPosition}
               onChange={(e) => save({ currencyPosition: e.target.value as any })}
               disabled={saving}
-              className="w-full px-3 py-2 border border-border rounded-md bg-surface-elevated text-text-primary"
+              className="w-full px-3 py-2 rounded-md"
+              style={fieldInputStyle}
               data-testid="money-currency-position-select"
             >
               <option value="before">Before amount</option>
@@ -50,12 +75,13 @@ export default function MoneyTab() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1">Number format</label>
+            <label className="block text-sm font-medium mb-1" style={labelStyle}>Number format</label>
             <select
               value={settings.numberFormat}
               onChange={(e) => save({ numberFormat: e.target.value as any })}
               disabled={saving}
-              className="w-full px-3 py-2 border border-border rounded-md bg-surface-elevated text-text-primary"
+              className="w-full px-3 py-2 rounded-md"
+              style={fieldInputStyle}
               data-testid="money-number-format-select"
             >
               <option value="1,234.56">1,234.56</option>
@@ -67,23 +93,31 @@ export default function MoneyTab() {
       </section>
 
       <section data-testid="money-tax-section">
-        <h3 className="text-lg font-semibold text-text-primary mb-3">Default tax</h3>
+        <div style={sectionEyebrowStyle}>Default tax</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1">Rate (%)</label>
+            <label className="block text-sm font-medium mb-1" style={labelStyle}>Rate (%)</label>
             <input
               type="number" step="0.01" min="0" max="100"
               value={settings.defaultTaxRate ?? 0}
               onChange={(e) => save({ defaultTaxRate: parseFloat(e.target.value) || 0 })}
               disabled={saving}
-              className="w-full px-3 py-2 border border-border rounded-md bg-surface-elevated text-text-primary"
+              className="w-full px-3 py-2 rounded-md"
+              style={fieldInputStyle}
               data-testid="money-tax-rate-input"
             />
           </div>
         </div>
       </section>
 
-      {saved && <span className="text-xs text-brand-primary">Saved</span>}
+      {saved && (
+        <span
+          className="text-xs"
+          style={{ color: 'var(--kolor-terra, #B84A2C)' }}
+        >
+          Saved
+        </span>
+      )}
     </div>
   )
 }

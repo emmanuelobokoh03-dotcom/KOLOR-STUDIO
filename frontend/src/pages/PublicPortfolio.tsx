@@ -42,9 +42,14 @@ export default function PublicPortfolio() {
   const [lightboxIndex, setLightboxIndex] = useState(0)
 
   // Brand tokens
-  const brandPrimary = userInfo?.brandPrimaryColor || '#6C2EDB'
-  const brandAccent = userInfo?.brandAccentColor || '#E8891A'
-  const brandFont = userInfo?.brandFontFamily || 'Inter'
+  // iter Settings v3-v3a W2 (Path M2): brand color/font schema fields
+  // deprecated in place — public portfolio governed by framework calibration
+  // (kolor-terra + Fraunces + Inter). userInfo?.brandPrimaryColor and
+  // userInfo?.brandFontFamily are ignored here.
+  const brandPrimary = 'var(--kolor-terra, #B84A2C)'
+  const brandFont = 'Fraunces'
+  // brandAccentColor + brandFontFamily deprecated in place (Path M2).
+  const brandAccent = 'var(--kolor-terra, #B84A2C)'
   const brandLogo = userInfo?.brandLogoUrl || null
   const industry = (userInfo?.industry || 'PHOTOGRAPHY') as IndustryType
   const lang = getIndustryLanguage(industry)

@@ -53,7 +53,20 @@ export default function EmailSignatureSettings() {
           onChange={e => setSignature(e.target.value)}
           placeholder={`Best regards,\nYour Name\nYour Studio\nyou@email.com\nInstagram: @yourstudio`}
           rows={5}
-          className="w-full px-4 py-3 border border-light-200 rounded-lg text-sm text-text-primary focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none font-mono resize-y"
+          className="w-full px-4 py-3 rounded-lg text-sm outline-none font-mono resize-y"
+          style={{
+            background: 'var(--kolor-canvas, #F7F4EE)',
+            border: '1px solid var(--kolor-hairline, #E5E0D8)',
+            color: 'var(--kolor-ink, #1A1613)',
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = 'var(--kolor-terra, #B84A2C)'
+            e.currentTarget.style.boxShadow = '0 0 0 2px var(--kolor-terra-tint, rgba(184, 74, 44, 0.12))'
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = 'var(--kolor-hairline, #E5E0D8)'
+            e.currentTarget.style.boxShadow = 'none'
+          }}
           data-testid="signature-textarea"
         />
       </div>
@@ -79,7 +92,12 @@ export default function EmailSignatureSettings() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-5 py-2 bg-purple-500 text-white rounded-xl text-sm font-semibold hover:bg-purple-600 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-5 py-2 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 flex items-center gap-2"
+          style={{
+            background: 'var(--kolor-terra, #B84A2C)',
+            color: 'var(--kolor-canvas, #F7F4EE)',
+            border: '1px solid var(--kolor-terra, #B84A2C)',
+          }}
           data-testid="signature-save-btn"
         >
           {saving ? <KolorSpinner size={16} /> : saved ? <FloppyDisk className="w-4 h-4" /> : <EnvelopeSimple className="w-4 h-4" />}

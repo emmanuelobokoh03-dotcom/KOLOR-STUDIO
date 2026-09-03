@@ -932,7 +932,7 @@ select:focus {
   border-width: 4px;
 }
 
-/* ─── Brand skeleton shimmer (iter-177) ─────────────────────────────── */
+/* ─── Brand skeleton shimmer (iter-177 · calibrated iter Settings v3-v3a) ── */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes ks-shimmer {
     0%   { background-position: -200% 0; }
@@ -941,18 +941,18 @@ select:focus {
   .ks-shimmer {
     background: linear-gradient(
       90deg,
-      #ede9fe 0%,
-      #ddd6fe 20%,
-      #c4b5fd 40%,
-      #ddd6fe 60%,
-      #ede9fe 80%
+      var(--kolor-canvas-shade-1, #F1EDE5) 0%,
+      var(--kolor-hairline, #E5E0D8) 40%,
+      var(--kolor-hairline-strong, #D0CBBF) 50%,
+      var(--kolor-hairline, #E5E0D8) 60%,
+      var(--kolor-canvas-shade-1, #F1EDE5) 100%
     );
     background-size: 200% 100%;
     animation: ks-shimmer 1.6s ease-in-out infinite;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ks-shimmer { background: #ede9fe; }
+  .ks-shimmer { background: var(--kolor-canvas-shade-1, #F1EDE5); }
 }
 
 /* ─── Iter 185: Landing page elevation ──────────────────────────────── */

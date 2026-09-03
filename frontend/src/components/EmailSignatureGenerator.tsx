@@ -52,8 +52,17 @@ export default function EmailSignatureGenerator() {
   return (
     <div data-testid="email-signature-generator">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-9 h-9 rounded-xl bg-brand-primary/10 flex items-center justify-center">
-          <Envelope className="w-4.5 h-4.5 text-brand-primary" />
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center"
+          style={{
+            background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+            border: '1px solid var(--kolor-hairline, #E5E0D8)',
+          }}
+        >
+          <Envelope
+            className="w-4.5 h-4.5"
+            style={{ color: 'var(--kolor-terra, #B84A2C)' }}
+          />
         </div>
         <div>
           <h3 className="text-lg font-semibold text-text-primary mb-1">External Email Signature</h3>

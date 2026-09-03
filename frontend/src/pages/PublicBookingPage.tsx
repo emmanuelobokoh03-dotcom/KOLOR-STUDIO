@@ -135,7 +135,9 @@ export default function PublicBookingPage() {
   }
 
   // Brand tokens
-  const primaryColor = userInfo?.brandPrimaryColor || '#A855F7'
+  // iter Settings v3-v3a W2 (Path M2): brand color deprecated in place —
+  // public booking page governed by framework calibration.
+  const primaryColor = '#B84A2C'
   const accentColor = userInfo?.brandAccentColor || '#EC4899'
   const brandLogoUrl = userInfo?.brandLogoUrl || null
   const studioName = userInfo?.studioName || (userInfo ? `${userInfo.firstName} ${userInfo.lastName}` : '')

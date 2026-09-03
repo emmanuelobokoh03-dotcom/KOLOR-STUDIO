@@ -70,7 +70,9 @@ export default function SubmitTestimonial() {
     setSubmitting(false)
   }
 
-  const primary = request?.user?.brandPrimaryColor || '#6C2EDB'
+  // iter Settings v3-v3a W2 (Path M2): brand color deprecated in place —
+  // testimonial submission governed by framework calibration (kolor-terra).
+  const primary = '#B84A2C'
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: '#F9F7FE' }}>
