@@ -240,8 +240,44 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Onboarding tutorials (with audit)
 - Beta launch preparation
 
+## Iteration Settings v3-v3a.1 (this session) — Cross-arc corrective (Path X)
+
+**Status**: LOCAL COMMIT (`9bcab93`) shipped — awaiting Emmanuel smoke tests 1-4.
+**First cross-arc corrective in Season Phase 1.** Pattern codified per Learnings 57-59.
+
+Three real-usage findings addressed:
+
+1. **Client Portal K logo removal** (Finding 2, Case A)
+   - `ClientPortal.tsx`: `studioName` default `'KOLOR STUDIO'` → `'Studio'`
+   - Header + footer purple `#6C2EDB` K-letter fallback boxes removed; brand logo only renders when creator has uploaded one
+   - "Powered by KOLOR STUDIO" attribution paragraph removed entirely — clean creator-only surface (no attribution per direction)
+   - Unused `Link` import removed
+   - iter 280 baseline preserved (portal-money-moment, deposit flow, contract signing)
+
+2. **Revenue Hero persistence bug** (Finding 3, Case B silent-failure)
+   - `RevenueHero.tsx`: refactored from `useEffect + useState` to `@tanstack/react-query` `useQuery`
+   - `queryKey: ['revenue']`, `staleTime: 60s`, `gcTime: 5min`
+   - Persistent surface on error/empty stats — renders zero-state hero with editorial insight instead of collapsing to null
+   - Silent-failure regression eliminated
+   - React Query provider already wired in `main.tsx`; no install needed
+
+3. **Notifications placeholder copy** (Path 1, Option B)
+   - `NotificationsTab.tsx`: replaced "future update" vague copy with transparent editorial surface
+   - Mono UPPERCASE eyebrow + Fraunces italic H3 + kolor-terra bulleted list enumerating current auto-notifications + note about beta email templates preferences release
+   - Framework tokens throughout; component preserved intact for Settings v3.1 preferences UI work
+
+**Deferred to Settings v3.1**: Notifications preferences UI (Finding 1 — architectural work).
+
+**STEP 0 diagnostic adaptations** (superseded brief inaccuracies):
+- No `<KolorMark size={28}>` at line 1063 — actual K surfaces were `studioName.charAt(0)` fallbacks
+- No `"Portfolio ·"` separator pattern in ClientPortal
+- `@tanstack/react-query` already installed + provider already wraps App in `main.tsx`
+- `DashboardHeader.tsx` (56 lines) has no revenue references
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (6.55s), all preservation checks PASS.
+
 ## Tech stack (unchanged)
-- Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables
+- Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables + @tanstack/react-query (already wired in main.tsx, app-wide staleTime 5min)
 - Backend: Node/Express + TypeScript + Prisma + PostgreSQL (Supabase)
 - Storage: Supabase (`brand-logos`, `portfolio`, `community`, `avatars`)
 - Location: `/app/kolor-studio-v2/` (root); `/app/frontend`, `/app/backend` are Emergent stub scaffolds
@@ -249,4 +285,3 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 
 ## Test credentials
 - Standard test account: `bookingtest@test.com` / `password123`
-
