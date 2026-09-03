@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ClientPortalMessages from '../components/ClientPortalMessages';
 import KolorSpinner from '../components/KolorSpinner';
 import ClientFileUpload from '../components/ClientFileUpload';
@@ -304,7 +304,7 @@ export default function ClientPortal() {
   // Set browser tab title to studio + project name
   useEffect(() => {
     if (data) {
-      const name = data.contact?.studioName || data.contact?.name || 'KOLOR STUDIO'
+      const name = data.contact?.studioName || data.contact?.name || 'Studio'
       document.title = name + ' · ' + data.project.title
     }
   }, [data])
@@ -484,7 +484,7 @@ export default function ClientPortal() {
     return position === 'BEFORE' ? `${symbol}${formatted}` : `${formatted}${symbol}`;
   };
 
-  const studioName = data?.contact?.studioName || data?.contact?.name || 'KOLOR STUDIO';
+  const studioName = data?.contact?.studioName || data?.contact?.name || 'Studio';
   // iter Settings v3-v3a W2 (Path M2): brand color deprecated in place —
   // ClientPortal governed by framework calibration.
   const brandColor = 'var(--kolor-terra, #B84A2C)';
@@ -536,13 +536,14 @@ export default function ClientPortal() {
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 800px 400px at 15% 20%, rgba(184, 74, 44, 0.12) 0%, transparent 60%)', pointerEvents: 'none' }} aria-hidden="true" />
         <div className="relative max-w-3xl mx-auto px-6 pt-10 pb-8">
           <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0" style={{ background: brandLogo ? 'rgba(255,255,255,0.12)' : '#6C2EDB' }}>
-              {brandLogo ? (
+            {brandLogo && (
+              <div
+                className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0"
+                style={{ background: 'rgba(255,255,255,0.12)' }}
+              >
                 <img src={brandLogo} alt={studioName} className="w-full h-full object-contain" />
-              ) : (
-                <span style={{ color: '#fff', fontSize: 12, fontWeight: 700 }}>{studioName.charAt(0).toUpperCase()}</span>
-              )}
-            </div>
+              </div>
+            )}
             <span className="text-[11px] font-medium tracking-[0.22em] text-white/60 uppercase" style={{ fontFamily: "'JetBrains Mono', 'DM Mono', monospace" }}>{studioName}</span>
           </div>
 
@@ -1163,23 +1164,21 @@ export default function ClientPortal() {
         {/* Messaging */}
         <ClientPortalMessages token={token || ''} studioName={studioName} />
 
-        {/* Footer (Iter 178 — elevated branded panel) */}
+        {/* Footer (Iter 178 — elevated branded panel; iter Settings v3-v3a.1 — creator-only surface, KOLOR attribution removed) */}
         <footer className="mt-12 pb-10">
           <div className="max-w-3xl mx-auto px-5">
             <div
               className="rounded-2xl px-6 py-5 flex items-center gap-3"
               style={{ background: '#1a1625' }}
             >
-              <div
-                className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0"
-                style={{ background: brandLogo ? 'rgba(255,255,255,0.08)' : '#6C2EDB' }}
-              >
-                {brandLogo ? (
+              {brandLogo && (
+                <div
+                  className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'rgba(255,255,255,0.08)' }}
+                >
                   <img src={brandLogo} alt={studioName} className="w-full h-full object-contain" />
-                ) : (
-                  <span style={{ color: '#fff', fontSize: 12, fontWeight: 700 }}>{studioName.charAt(0).toUpperCase()}</span>
-                )}
-              </div>
+                </div>
+              )}
               <div>
                 <p className="text-xs font-semibold text-white/80">Questions about your project?</p>
                 <p className="text-[10px] text-white/40 mt-0.5">Use the message box above or reach out directly.</p>
@@ -1187,14 +1186,6 @@ export default function ClientPortal() {
             </div>
             <p className="text-center text-[10px] text-gray-400 mt-4" data-testid="powered-by-badge">
               Thank you for working with <span className="font-semibold">{studioName}</span>.
-              {' '}Powered by{' '}
-              <Link
-                to="/"
-                className="font-semibold hover:underline"
-                style={{ color: '#6C2EDB' }}
-              >
-                KOLOR STUDIO
-              </Link>
             </p>
             <p className="text-center text-[10px] text-gray-400 mt-2">
               <a href="/privacy" style={{ color: '#9CA3AF', textDecoration: 'underline' }}>Privacy Policy</a>

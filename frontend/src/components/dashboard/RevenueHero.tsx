@@ -1,4 +1,8 @@
 // iter 293-v3.1-v3a — Revenue Hero (Path C hero metric strip).
+// iter Settings v3-v3a.1 — Cross-arc corrective: persistence bug fix.
+// Refactored fetch from useEffect + useState to @tanstack/react-query so
+// data survives view mount cycles + page refreshes via query cache.
+// staleTime 60s, gcTime 5min, query key ['revenue'].
 //
 // Renders above DashboardCards on Today view. Reads GET /api/crm/revenue.
 // Click the metric or goal label → opens RevenueDetailModal (deep view
@@ -8,7 +12,7 @@
 // bottom + Fraunces italic primary metric + mono UPPERCASE eyebrows +
 // kolor-terra goal ring + inline SVG sparkline.
 
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
 interface RevenueStats {
   thisMonth: number
@@ -152,29 +156,24 @@ function GoalRing({ progress }: { progress: number }) {
 }
 
 export default function RevenueHero({ currencySymbol = '$', onOpenDetail }: RevenueHeroProps) {
-  const [stats, setStats] = useState<RevenueStats | null>(null)
-  const [loading, setLoading] = useState(true)
+  // iter Settings v3-v3a.1 — React Query replaces useEffect+useState.
+  // Persistent cache means the hero survives view mount cycles + refresh
+  // hydration races. Silent-failure regression eliminated: on fetch error,
+  // useQuery gives us an explicit error state so we render zero-state
+  // instead of collapsing to null.
+  const { data: stats, isLoading, isError } = useQuery<RevenueStats>({
+    queryKey: ['revenue'],
+    queryFn: async () => {
+      const API = (import.meta as any).env?.VITE_API_URL || ''
+      const res = await fetch(`${API}/api/crm/revenue`, { credentials: 'include' })
+      if (!res.ok) throw new Error(`Revenue fetch failed: ${res.status}`)
+      return res.json()
+    },
+    staleTime: 60 * 1000, // 60s — fresher than the app-wide 5min default
+    gcTime: 5 * 60 * 1000, // 5min cache retention
+  })
 
-  useEffect(() => {
-    let cancelled = false
-    ;(async () => {
-      try {
-        const API = (import.meta as any).env?.VITE_API_URL || ''
-        const res = await fetch(`${API}/api/crm/revenue`, { credentials: 'include' })
-        if (res.ok && !cancelled) {
-          const data = await res.json()
-          setStats(data)
-        }
-      } catch (err) {
-        console.error('[RevenueHero] Failed to load revenue:', err)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    })()
-    return () => { cancelled = true }
-  }, [])
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div
         data-testid="revenue-hero-loading"
@@ -189,11 +188,26 @@ export default function RevenueHero({ currencySymbol = '$', onOpenDetail }: Reve
     )
   }
 
-  if (!stats) return null
+  // iter Settings v3-v3a.1 — Persistent surface even on error / empty
+  // stats. Previously `if (!stats) return null` collapsed the hero
+  // silently on any fetch failure or race, causing the persistence bug.
+  const safeStats: RevenueStats = stats ?? {
+    thisMonth: 0,
+    thisMonthCount: 0,
+    monthOverMonth: 0,
+    ytd: 0,
+    yearGoal: 0,
+    goalProgress: 0,
+    expected: 0,
+    expectedCount: 0,
+    monthlyTrend: [],
+  }
 
-  const monthlyGoal = stats.yearGoal > 0 ? stats.yearGoal / 12 : 0
-  const monthlyProgress = monthlyGoal > 0 ? stats.thisMonth / monthlyGoal : 0
-  const insight = deriveEditorialInsight(stats.thisMonth, stats.yearGoal, stats.monthlyTrend)
+  const monthlyGoal = safeStats.yearGoal > 0 ? safeStats.yearGoal / 12 : 0
+  const monthlyProgress = monthlyGoal > 0 ? safeStats.thisMonth / monthlyGoal : 0
+  const insight = isError
+    ? 'Revenue temporarily unavailable — will refresh shortly.'
+    : deriveEditorialInsight(safeStats.thisMonth, safeStats.yearGoal, safeStats.monthlyTrend)
 
   return (
     <section
@@ -236,7 +250,7 @@ export default function RevenueHero({ currencySymbol = '$', onOpenDetail }: Reve
               marginBottom: 6,
             }}
           >
-            This month · YTD {formatMoney(stats.ytd, currencySymbol)}
+            This month · YTD {formatMoney(safeStats.ytd, currencySymbol)}
           </p>
           <button
             onClick={onOpenDetail}
@@ -259,7 +273,7 @@ export default function RevenueHero({ currencySymbol = '$', onOpenDetail }: Reve
             onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--kolor-terra, #B84A2C)' }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--kolor-ink, #1A1613)' }}
           >
-            {formatMoney(stats.thisMonth, currencySymbol)}
+            {formatMoney(safeStats.thisMonth, currencySymbol)}
           </button>
           <p
             style={{
@@ -286,7 +300,7 @@ export default function RevenueHero({ currencySymbol = '$', onOpenDetail }: Reve
             flexShrink: 0,
           }}
         >
-          {stats.yearGoal > 0 && (
+          {safeStats.yearGoal > 0 && (
             <button
               onClick={onOpenDetail}
               data-testid="revenue-hero-goal"
@@ -340,11 +354,11 @@ export default function RevenueHero({ currencySymbol = '$', onOpenDetail }: Reve
               flexDirection: 'column',
               alignItems: 'flex-start',
               gap: 4,
-              paddingLeft: stats.yearGoal > 0 ? 20 : 0,
-              borderLeft: stats.yearGoal > 0 ? '1px solid var(--kolor-hairline, #E5E0D8)' : 'none',
+              paddingLeft: safeStats.yearGoal > 0 ? 20 : 0,
+              borderLeft: safeStats.yearGoal > 0 ? '1px solid var(--kolor-hairline, #E5E0D8)' : 'none',
             }}
           >
-            <MonthlySparkline data={stats.monthlyTrend} />
+            <MonthlySparkline data={safeStats.monthlyTrend} />
             <p
               style={{
                 margin: 0,
