@@ -294,19 +294,19 @@ export default function BookingModal({
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" role="presentation" onClick={onClose}>
-      <div ref={modalRef} className="relative bg-surface-base rounded-2xl w-full max-w-lg border border-light-200 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
+      <div ref={modalRef} className="relative bg-[color:var(--kolor-canvas,#F7F4EE)] rounded-2xl w-full max-w-lg border border-[color:var(--kolor-hairline,#E5E0D8)] shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-light-200">
+        <div className="flex items-center justify-between p-4 border-b border-[color:var(--kolor-hairline,#E5E0D8)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-              <CalendarBlank className="w-5 h-5 text-purple-600" aria-hidden="true" />
+            <div className="w-10 h-10 bg-[color:var(--kolor-terra,#B84A2C)]/10 rounded-xl flex items-center justify-center">
+              <CalendarBlank className="w-5 h-5 text-[color:var(--kolor-terra,#B84A2C)]" aria-hidden="true" />
             </div>
             <div>
-              <h2 id="booking-modal-title" className="text-lg font-semibold text-text-primary">
+              <h2 id="booking-modal-title" className="text-lg font-semibold text-[color:var(--kolor-ink,#1A1613)]">
                 {existingBooking ? 'Edit Booking' : 'Create Booking'}
               </h2>
               {leadInfo && (
-                <p className="text-sm text-text-secondary">
+                <p className="text-sm text-[color:var(--kolor-ink-muted,#5F5751)]">
                   {leadInfo.clientName} • {leadInfo.projectTitle}
                 </p>
               )}
@@ -314,7 +314,7 @@ export default function BookingModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-light-100 rounded-lg transition text-text-secondary hover:text-text-primary"
+            className="p-2 hover:bg-[color:var(--kolor-canvas-shade-1,#F1EDE5)] rounded-lg transition text-[color:var(--kolor-ink-muted,#5F5751)] hover:text-[color:var(--kolor-ink,#1A1613)]"
             aria-label="Close modal" title="Close (Esc)"
           >
             <X className="w-5 h-5" aria-hidden="true" />
@@ -340,25 +340,25 @@ export default function BookingModal({
           {/* Lead Selector (only show if no lead was passed and not editing) */}
           {!lead && !existingBooking && (
             <div>
-              <label className="text-xs text-text-tertiary mb-1 block">
+              <label className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)] mb-1 block">
                 Select Lead <span className="text-red-400">*</span>
               </label>
               <div className="relative">
-                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
+                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[color:var(--kolor-ink-subtle,#928B84)]" />
                 {loadingLeads ? (
-                  <div className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-secondary text-sm flex items-center gap-2">
+                  <div className="w-full pl-9 pr-3 py-2 bg-[color:var(--kolor-canvas,#F7F4EE)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-lg text-[color:var(--kolor-ink-muted,#5F5751)] text-sm flex items-center gap-2">
                     <KolorSpinner size={16} />
                     Loading leads...
                   </div>
                 ) : availableLeads.length === 0 ? (
-                  <div className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-secondary text-sm">
+                  <div className="w-full pl-9 pr-3 py-2 bg-[color:var(--kolor-canvas,#F7F4EE)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-lg text-[color:var(--kolor-ink-muted,#5F5751)] text-sm">
                     No leads available. Create a lead first, then book it.
                   </div>
                 ) : (
                   <select
                     value={selectedLeadId}
                     onChange={(e) => setSelectedLeadId(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary appearance-none cursor-pointer"
+                    className="w-full pl-9 pr-3 py-2 bg-[color:var(--kolor-canvas,#F7F4EE)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-lg text-[color:var(--kolor-ink,#1A1613)] text-sm focus:ring-2 focus:ring-[color:var(--kolor-terra,#B84A2C)] focus:border-[color:var(--kolor-terra,#B84A2C)] appearance-none cursor-pointer"
                     data-testid="booking-lead-select"
                   >
                     <option value="">Choose a lead...</option>
@@ -371,7 +371,7 @@ export default function BookingModal({
                 )}
               </div>
               {availableLeads.length > 0 && (
-                <p className="text-xs text-text-tertiary mt-1">
+                <p className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)] mt-1">
                   Showing leads in Qualified, Quoted, Negotiating, or Booked status
                 </p>
               )}
@@ -380,25 +380,25 @@ export default function BookingModal({
 
           {/* Title */}
           <div>
-            <label className="text-xs text-text-tertiary mb-1 block">Event Title</label>
+            <label className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)] mb-1 block">Event Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Wedding Photography Shoot"
-              className="w-full px-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+              className="w-full px-3 py-2 bg-[color:var(--kolor-canvas,#F7F4EE)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-lg text-[color:var(--kolor-ink,#1A1613)] text-sm focus:ring-2 focus:ring-[color:var(--kolor-terra,#B84A2C)] focus:border-[color:var(--kolor-terra,#B84A2C)]"
               data-testid="booking-title-input"
             />
           </div>
 
           {/* Date */}
           <div>
-            <label className="text-xs text-text-tertiary mb-1 block">Date</label>
+            <label className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)] mb-1 block">Date</label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+              className="w-full px-3 py-2 bg-[color:var(--kolor-canvas,#F7F4EE)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-lg text-[color:var(--kolor-ink,#1A1613)] text-sm focus:ring-2 focus:ring-[color:var(--kolor-terra,#B84A2C)] focus:border-[color:var(--kolor-terra,#B84A2C)]"
               data-testid="booking-date-input"
             />
           </div>
@@ -410,9 +410,9 @@ export default function BookingModal({
               id="allDay"
               checked={allDay}
               onChange={(e) => setAllDay(e.target.checked)}
-              className="w-4 h-4 rounded border-light-200 bg-light-100 text-brand-primary focus:ring-purple-500"
+              className="w-4 h-4 rounded border-[color:var(--kolor-hairline,#E5E0D8)] bg-[color:var(--kolor-canvas-shade-1,#F1EDE5)] text-[color:var(--kolor-terra,#B84A2C)] focus:ring-[color:var(--kolor-terra,#B84A2C)]"
             />
-            <label htmlFor="allDay" className="text-sm text-text-secondary">
+            <label htmlFor="allDay" className="text-sm text-[color:var(--kolor-ink-muted,#5F5751)]">
               All day event
             </label>
           </div>
@@ -421,27 +421,27 @@ export default function BookingModal({
           {!allDay && (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-text-tertiary mb-1 block">Start Time</label>
+                <label className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)] mb-1 block">Start Time</label>
                 <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[color:var(--kolor-ink-subtle,#928B84)]" />
                   <input
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                    className="w-full pl-9 pr-3 py-2 bg-[color:var(--kolor-canvas,#F7F4EE)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-lg text-[color:var(--kolor-ink,#1A1613)] text-sm focus:ring-2 focus:ring-[color:var(--kolor-terra,#B84A2C)] focus:border-[color:var(--kolor-terra,#B84A2C)]"
                     data-testid="booking-start-time"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-xs text-text-tertiary mb-1 block">End Time</label>
+                <label className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)] mb-1 block">End Time</label>
                 <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[color:var(--kolor-ink-subtle,#928B84)]" />
                   <input
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                    className="w-full pl-9 pr-3 py-2 bg-[color:var(--kolor-canvas,#F7F4EE)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-lg text-[color:var(--kolor-ink,#1A1613)] text-sm focus:ring-2 focus:ring-[color:var(--kolor-terra,#B84A2C)] focus:border-[color:var(--kolor-terra,#B84A2C)]"
                     data-testid="booking-end-time"
                   />
                 </div>
@@ -451,22 +451,22 @@ export default function BookingModal({
 
           {/* Duration Display */}
           {!allDay && getDuration() > 0 && (
-            <p className="text-xs text-text-tertiary">
+            <p className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)]">
               Duration: {Math.floor(getDuration() / 60)}h {getDuration() % 60}m
             </p>
           )}
 
           {/* Location */}
           <div>
-            <label className="text-xs text-text-tertiary mb-1 block">Location (optional)</label>
+            <label className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)] mb-1 block">Location (optional)</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[color:var(--kolor-ink-subtle,#928B84)]" />
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g., Studio A, 123 Main St"
-                className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary"
+                className="w-full pl-9 pr-3 py-2 bg-[color:var(--kolor-canvas,#F7F4EE)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-lg text-[color:var(--kolor-ink,#1A1613)] text-sm focus:ring-2 focus:ring-[color:var(--kolor-terra,#B84A2C)] focus:border-[color:var(--kolor-terra,#B84A2C)]"
                 data-testid="booking-location-input"
               />
             </div>
@@ -474,15 +474,15 @@ export default function BookingModal({
 
           {/* Notes */}
           <div>
-            <label className="text-xs text-text-tertiary mb-1 block">Notes (optional)</label>
+            <label className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)] mb-1 block">Notes (optional)</label>
             <div className="relative">
-              <FileText className="absolute left-3 top-3 w-4 h-4 text-text-tertiary" />
+              <FileText className="absolute left-3 top-3 w-4 h-4 text-[color:var(--kolor-ink-subtle,#928B84)]" />
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any additional details..."
                 rows={3}
-                className="w-full pl-9 pr-3 py-2 bg-surface-base border border-light-200 rounded-lg text-text-primary text-sm focus:ring-2 focus:ring-purple-500 focus:border-brand-primary resize-none"
+                className="w-full pl-9 pr-3 py-2 bg-[color:var(--kolor-canvas,#F7F4EE)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-lg text-[color:var(--kolor-ink,#1A1613)] text-sm focus:ring-2 focus:ring-[color:var(--kolor-terra,#B84A2C)] focus:border-[color:var(--kolor-terra,#B84A2C)] resize-none"
                 data-testid="booking-notes-input"
               />
             </div>
@@ -490,7 +490,7 @@ export default function BookingModal({
 
           {/* Color Picker */}
           <div>
-            <label className="text-xs text-text-tertiary mb-2 block">Calendar Color</label>
+            <label className="text-xs text-[color:var(--kolor-ink-subtle,#928B84)] mb-2 block">Calendar Color</label>
             <div className="flex gap-2 flex-wrap">
               {Object.entries(SERVICE_COLORS).map(([name, c]) => (
                 <button
@@ -519,11 +519,11 @@ export default function BookingModal({
         {/* Inline Delete Confirm Panel */}
       {showDeleteConfirm && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 rounded-2xl">
-          <div className="bg-surface-base rounded-xl border border-light-200 shadow-xl p-6 mx-4 w-full max-w-sm">
-            <p className="text-sm font-semibold text-text-primary mb-2">Delete this booking?</p>
-            <p className="text-xs text-text-secondary mb-5">This cannot be undone.</p>
+          <div className="bg-[color:var(--kolor-canvas,#F7F4EE)] rounded-xl border border-[color:var(--kolor-hairline,#E5E0D8)] shadow-xl p-6 mx-4 w-full max-w-sm">
+            <p className="text-sm font-semibold text-[color:var(--kolor-ink,#1A1613)] mb-2">Delete this booking?</p>
+            <p className="text-xs text-[color:var(--kolor-ink-muted,#5F5751)] mb-5">This cannot be undone.</p>
             <div className="flex gap-3">
-              <button onClick={() => setShowDeleteConfirm(false)} className="flex-1 px-4 py-2.5 text-sm font-medium text-text-secondary border border-light-200 rounded-xl hover:bg-light-100 transition" data-testid="booking-delete-keep">Keep it</button>
+              <button onClick={() => setShowDeleteConfirm(false)} className="flex-1 px-4 py-2.5 text-sm font-medium text-[color:var(--kolor-ink-muted,#5F5751)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-xl hover:bg-[color:var(--kolor-canvas-shade-1,#F1EDE5)] transition" data-testid="booking-delete-keep">Keep it</button>
               <button onClick={handleDeleteConfirmed} className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-xl transition" data-testid="booking-delete-confirm">Delete</button>
             </div>
           </div>
@@ -533,19 +533,19 @@ export default function BookingModal({
       {/* Inline Cancel Input Panel */}
       {showCancelInput && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 rounded-2xl">
-          <div className="bg-surface-base rounded-xl border border-light-200 shadow-xl p-6 mx-4 w-full max-w-sm">
-            <p className="text-sm font-semibold text-text-primary mb-2">Cancel this booking?</p>
+          <div className="bg-[color:var(--kolor-canvas,#F7F4EE)] rounded-xl border border-[color:var(--kolor-hairline,#E5E0D8)] shadow-xl p-6 mx-4 w-full max-w-sm">
+            <p className="text-sm font-semibold text-[color:var(--kolor-ink,#1A1613)] mb-2">Cancel this booking?</p>
             <textarea
               value={cancelReason}
               onChange={e => setCancelReason(e.target.value)}
               placeholder="Reason for cancellation (optional)"
-              className="w-full text-xs rounded-lg border border-light-200 bg-surface-background px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-brand-primary mb-4"
+              className="w-full text-xs rounded-lg border border-[color:var(--kolor-hairline,#E5E0D8)] bg-[color:var(--kolor-canvas-shade-1,#F1EDE5)] px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-brand-primary mb-4"
               rows={3}
               autoFocus
               data-testid="booking-cancel-reason"
             />
             <div className="flex gap-3">
-              <button onClick={() => setShowCancelInput(false)} className="flex-1 px-4 py-2.5 text-sm font-medium text-text-secondary border border-light-200 rounded-xl hover:bg-light-100 transition" data-testid="booking-cancel-keep">Keep it</button>
+              <button onClick={() => setShowCancelInput(false)} className="flex-1 px-4 py-2.5 text-sm font-medium text-[color:var(--kolor-ink-muted,#5F5751)] border border-[color:var(--kolor-hairline,#E5E0D8)] rounded-xl hover:bg-[color:var(--kolor-canvas-shade-1,#F1EDE5)] transition" data-testid="booking-cancel-keep">Keep it</button>
               <button onClick={handleCancelConfirmed} className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 rounded-xl transition" data-testid="booking-cancel-confirm">Cancel Booking</button>
             </div>
           </div>
@@ -553,7 +553,7 @@ export default function BookingModal({
       )}
 
       {/* Footer */}
-        <div className="p-4 border-t border-light-200 space-y-3">
+        <div className="p-4 border-t border-[color:var(--kolor-hairline,#E5E0D8)] space-y-3">
           {/* Status actions for existing bookings */}
           {existingBooking && existingBooking.status === 'CONFIRMED' && (
             <div className="flex gap-2">
@@ -591,14 +591,14 @@ export default function BookingModal({
             <button
               onClick={onClose}
               disabled={loading}
-              className="flex-1 px-4 py-2 border border-light-200 text-text-secondary rounded-lg hover:bg-light-100 transition text-sm font-medium"
+              className="flex-1 px-4 py-2 border border-[color:var(--kolor-hairline,#E5E0D8)] text-[color:var(--kolor-ink-muted,#5F5751)] rounded-lg hover:bg-[color:var(--kolor-canvas-shade-1,#F1EDE5)] transition text-sm font-medium"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={loading || !!success}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary transition text-sm font-medium disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[color:var(--kolor-terra,#B84A2C)] hover:bg-[#9A3E24] text-white rounded-lg transition text-sm font-medium disabled:opacity-50"
               data-testid="save-booking-btn"
             >
               {loading ? (
