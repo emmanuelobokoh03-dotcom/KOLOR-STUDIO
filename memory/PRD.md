@@ -240,7 +240,33 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Onboarding tutorials (with audit)
 - Beta launch preparation
 
-## Iteration Settings v3-v3a.2 (this session) — Second cross-arc corrective (Community tab + proactive sweep)
+## Iteration Calendar v3-v3a (this session) — Booking flow + Scheduling tab + React Query booking hooks
+
+**Status**: LOCAL COMMIT (`7cd6093`) shipped — awaiting Emmanuel smoke tests 1-5.
+**Codified**: Learning 76 (hybrid enumeration optional pattern), first execution of surgical-bulk-search-replace approach for large legacy files (>500 lines) — preserves all logic verbatim while migrating visual layer.
+
+Three workstreams shipped:
+
+1. **BookingModal calibration** (626L, surgical bulk migration, 15 targeted `search_replace` passes)
+   - 0 purple/legacy tokens remaining; 44 framework tokens; 8 semantic accents preserved (red/emerald/green/amber)
+   - Full visual migration: `text-text-*` → framework, `bg-surface-*` → framework, `border-light-200` → kolor-hairline, `bg-purple-100` → kolor-terra/10, `text-purple-600` → kolor-terra, `focus:ring-purple-500` → kolor-terra focus, `bg-brand-primary` submit button → kolor-terra + `#9A3E24` hover
+   - ALL form handlers, state management, API calls, backend contracts, useModalA11y, data-testid attributes preserved verbatim
+
+2. **Scheduling tab calibration bundled** (Path B from Settings v3-v3a.2 sequencing)
+   - `SchedulingTab.tsx` (20L shell): full rewrite with kolor-canvas-shade-1 container + mono UPPERCASE "EMAIL DELIVERY" eyebrow + framework code chip
+   - `SchedulingSettings.tsx` (626L child): surgical bulk migration, 14 targeted passes; 0 purple/legacy; 64 framework tokens; purple gradient flattened to kolor-canvas-shade-1
+   - All scheduling logic (availability windows, timezone, buffer time, meeting types + color picker) preserved verbatim
+
+3. **React Query booking hooks + skeleton** (Path P2 infrastructure)
+   - New `frontend/src/hooks/useBookings.ts` (100L): 6 hooks — `useUpcomingBookings`, `useLeadBookings(leadId)`, `useAvailability`, `useCreateBooking`, `useUpdateBooking`, `useCancelBooking`; local staleTime overrides (60s for bookings, 5min for availability); cache invalidation via `['bookings']` parent key
+   - New `frontend/src/components/BookingSurfaceSkeleton.tsx` (30L): reuses `.ks-shimmer` keyframes; parameterized row count
+   - Infrastructure only — consumer migration to hooks deferred per-component basis to keep regression surface tight
+
+**Explicitly DEFERRED to Calendar v3-v3b (Q1.2=A)**: `Calendar.tsx` (1074L week/agenda page) untouched; `PublicBookingPage.tsx` untouched (already calibrated in prior pass); consumer migration to hooks deferred.
+
+**Verified**: Backend TSC exit 0; frontend cold-cache build 6.11s exit 0; Calendar.tsx + PublicBookingPage.tsx git diff clean.
+
+## Iteration Settings v3-v3a.2 — Second cross-arc corrective (Community tab + proactive sweep)
 
 **Status**: LOCAL COMMIT (`180bfe8`) shipped — awaiting Emmanuel smoke tests 1-4.
 **Codified**: First execution of Learnings 71-74 (arc smoke tests can pass while real-usage reveals child-component gaps; proactive sweep prevents accumulation; file-level grep must recurse through tab imports).
