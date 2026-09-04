@@ -41,8 +41,42 @@ export default function EmailSignatureSettings() {
   return (
     <div className="space-y-6" data-testid="email-signature-settings">
       <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-1">Email Signature</h3>
-        <p className="text-sm text-text-secondary">
+        <p
+          style={{
+            margin: 0,
+            marginBottom: 6,
+            fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+            fontSize: 10,
+            fontWeight: 500,
+            letterSpacing: '0.24em',
+            textTransform: 'uppercase',
+            color: 'var(--kolor-ink-muted, #5F5751)',
+          }}
+        >
+          Email signature
+        </p>
+        <h3
+          style={{
+            margin: 0,
+            marginBottom: 6,
+            fontFamily: "'Fraunces', Georgia, serif",
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: 20,
+            lineHeight: 1.2,
+            color: 'var(--kolor-ink, #1A1613)',
+          }}
+        >
+          Sign off, every time.
+        </h3>
+        <p
+          style={{
+            margin: 0,
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: 13,
+            color: 'var(--kolor-ink-muted, #5F5751)',
+          }}
+        >
           Added to all emails sent to your clients (quotes, contracts, follow-ups).
         </p>
       </div>
@@ -72,9 +106,35 @@ export default function EmailSignatureSettings() {
       </div>
 
       {showPreview && signature && (
-        <div className="p-4 bg-light-50 border border-light-200 rounded-lg">
-          <p className="text-xs font-medium text-text-tertiary mb-2">Preview in email:</p>
-          <div className="border-t border-light-200 pt-3 whitespace-pre-line text-sm text-text-secondary">
+        <div
+          className="p-4 rounded-lg"
+          style={{
+            background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+            border: '1px solid var(--kolor-hairline, #E5E0D8)',
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              marginBottom: 8,
+              fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+              fontSize: 10,
+              fontWeight: 500,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'var(--kolor-ink-subtle, #928B84)',
+            }}
+          >
+            Preview in email
+          </p>
+          <div
+            className="pt-3 whitespace-pre-line text-sm"
+            style={{
+              borderTop: '1px solid var(--kolor-hairline, #E5E0D8)',
+              color: 'var(--kolor-ink-muted, #5F5751)',
+              fontFamily: 'Inter, system-ui, sans-serif',
+            }}
+          >
             {signature}
           </div>
         </div>
@@ -83,11 +143,20 @@ export default function EmailSignatureSettings() {
       <div className="flex gap-3 justify-end">
         <button
           onClick={() => setShowPreview(p => !p)}
-          className="px-4 py-2.5 border border-light-200 rounded-lg text-sm font-medium text-text-primary hover:bg-light-50 transition-colors flex items-center gap-2"
+          className="rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          style={{
+            padding: '10px 16px',
+            background: 'transparent',
+            border: '1px solid var(--kolor-hairline, #E5E0D8)',
+            color: 'var(--kolor-ink, #1A1613)',
+            cursor: 'pointer',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--kolor-canvas-shade-1, #F1EDE5)' }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
           data-testid="signature-preview-btn"
         >
           {showPreview ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          {showPreview ? 'Hide Preview' : 'Preview'}
+          {showPreview ? 'Hide preview' : 'Preview'}
         </button>
         <button
           onClick={handleSave}

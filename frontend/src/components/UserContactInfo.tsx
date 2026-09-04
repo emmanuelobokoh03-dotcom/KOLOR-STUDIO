@@ -36,7 +36,7 @@ export default function UserContactInfo() {
   }, [settings])
 
   if (!settings) {
-    return <div className="text-sm text-text-secondary">Loading contact info…</div>
+    return <div className="text-sm" style={{ color: 'var(--kolor-ink-muted, #5F5751)' }}>Loading contact info…</div>
   }
 
   const isDirty =

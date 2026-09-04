@@ -1,3 +1,12 @@
+// iter Settings v3-v3a.2 — proactive sweep calibration.
+// EmailSignatureGenerator framework calibration (Case B moderate refactor).
+// Legacy palette migrated to framework tokens; typography hierarchy added.
+// The GENERATED HTML signature preserves brandTheme.primaryColor because
+// that content lives in the creator's external email client (Gmail/Outlook)
+// — legitimate creator brand use per Path M2 scope (deprecation applies to
+// public renders on the KOLOR platform, not creator-owned email surfaces).
+// The internal Copy Signature button is calibrated to kolor-terra.
+
 import { useState, useEffect } from 'react'
 import { Copy } from '@phosphor-icons/react/dist/csr/Copy'
 import { Check } from '@phosphor-icons/react/dist/csr/Check'
@@ -19,11 +28,12 @@ export default function EmailSignatureGenerator() {
   const portfolioUrl = `${window.location.origin}/portfolio/${user.id}`
   const primary = brandTheme.primaryColor
   const logo = brandTheme.logoUrl
+  const initial = (user.studioName || user.firstName || 'S')[0]
 
   const signatureHTML = `<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,sans-serif;font-size:14px;color:#333;">
   <tr>
     <td style="padding-right:16px;vertical-align:top;">
-      ${logo ? `<img src="${logo}" alt="${user.studioName || user.firstName}" style="max-width:80px;height:auto;border-radius:8px;" />` : `<div style="width:48px;height:48px;border-radius:8px;background:${primary};display:flex;align-items:center;justify-content:center;"><span style="color:white;font-weight:bold;font-size:18px;">${(user.studioName || user.firstName || 'K')[0]}</span></div>`}
+      ${logo ? `<img src="${logo}" alt="${user.studioName || user.firstName}" style="max-width:80px;height:auto;border-radius:8px;" />` : `<div style="width:48px;height:48px;border-radius:8px;background:${primary};display:flex;align-items:center;justify-content:center;"><span style="color:white;font-weight:bold;font-size:18px;">${initial}</span></div>`}
     </td>
     <td style="vertical-align:top;">
       <div style="font-weight:bold;font-size:15px;color:#1a1a1a;margin-bottom:2px;">${user.firstName} ${user.lastName || ''}</div>
@@ -65,32 +75,113 @@ export default function EmailSignatureGenerator() {
           />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-text-primary mb-1">External Email Signature</h3>
-          <p className="text-sm text-text-secondary">Copy and paste this into Gmail, Outlook, or your personal email client.</p>
+          <p
+            style={{
+              margin: 0,
+              marginBottom: 2,
+              fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+              fontSize: 10,
+              fontWeight: 500,
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: 'var(--kolor-ink-muted, #5F5751)',
+            }}
+          >
+            External signature
+          </p>
+          <h3
+            style={{
+              margin: 0,
+              marginBottom: 4,
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontStyle: 'italic',
+              fontWeight: 400,
+              fontSize: 18,
+              lineHeight: 1.2,
+              color: 'var(--kolor-ink, #1A1613)',
+            }}
+          >
+            For Gmail, Outlook, or your personal client.
+          </h3>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: 'Inter, system-ui, sans-serif',
+              fontSize: 13,
+              color: 'var(--kolor-ink-muted, #5F5751)',
+            }}
+          >
+            Copy and paste this into your email client's signature settings.
+          </p>
         </div>
       </div>
 
       {/* Preview */}
-      <div className="bg-surface-base rounded-xl p-5 mb-4" dangerouslySetInnerHTML={{ __html: signatureHTML }} />
+      <div
+        className="rounded-xl p-5 mb-4"
+        style={{
+          background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+          border: '1px solid var(--kolor-hairline, #E5E0D8)',
+        }}
+        dangerouslySetInnerHTML={{ __html: signatureHTML }}
+      />
 
-      {/* Copy Button */}
+      {/* Copy Button — framework calibrated (kolor-terra, not brandTheme.primaryColor) */}
       <button
         onClick={copySignature}
-        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-medium text-sm transition-all"
-        style={{ background: primary }}
+        className="flex items-center gap-2 rounded-xl text-sm font-medium transition-all"
+        style={{
+          padding: '10px 18px',
+          background: copied ? '#059669' : 'var(--kolor-terra, #B84A2C)',
+          color: '#F7F4EE',
+          border: 'none',
+          cursor: 'pointer',
+          fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          fontSize: 11,
+        }}
+        onMouseEnter={(e) => { if (!copied) e.currentTarget.style.background = '#9A3E24' }}
+        onMouseLeave={(e) => { if (!copied) e.currentTarget.style.background = 'var(--kolor-terra, #B84A2C)' }}
         data-testid="copy-signature-btn"
       >
-        {copied ? <><Check className="w-4 h-4" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy Signature</>}
+        {copied ? <><Check className="w-4 h-4" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy signature</>}
       </button>
 
       {/* Instructions */}
-      <div className="mt-4 p-3 bg-surface-base rounded-xl border border-light-200">
-        <p className="text-xs font-medium text-text-secondary mb-2">How to add to your email:</p>
-        <ol className="text-xs text-text-secondary space-y-1 list-decimal list-inside">
-          <li>Click "Copy Signature" above</li>
-          <li><strong className="text-text-secondary">Gmail:</strong> Settings → General → Signature → Paste</li>
-          <li><strong className="text-text-secondary">Outlook:</strong> File → Options → Envelope → Signatures → Paste</li>
-          <li><strong className="text-text-secondary">Apple Mail:</strong> Preferences → Signatures → Paste</li>
+      <div
+        className="mt-4 p-3 rounded-xl"
+        style={{
+          background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+          border: '1px solid var(--kolor-hairline, #E5E0D8)',
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            marginBottom: 8,
+            fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
+            fontSize: 10,
+            fontWeight: 500,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'var(--kolor-ink-muted, #5F5751)',
+          }}
+        >
+          How to add
+        </p>
+        <ol
+          className="space-y-1 list-decimal list-inside"
+          style={{
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: 12,
+            color: 'var(--kolor-ink-muted, #5F5751)',
+          }}
+        >
+          <li>Click "Copy signature" above</li>
+          <li><strong style={{ color: 'var(--kolor-ink, #1A1613)' }}>Gmail:</strong> Settings → General → Signature → Paste</li>
+          <li><strong style={{ color: 'var(--kolor-ink, #1A1613)' }}>Outlook:</strong> File → Options → Mail → Signatures → Paste</li>
+          <li><strong style={{ color: 'var(--kolor-ink, #1A1613)' }}>Apple Mail:</strong> Preferences → Signatures → Paste</li>
         </ol>
       </div>
     </div>
