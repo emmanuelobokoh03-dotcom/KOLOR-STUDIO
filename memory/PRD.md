@@ -240,7 +240,30 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Onboarding tutorials (with audit)
 - Beta launch preparation
 
-## Iteration Revenue Modal Calibration Patch (this session) — Preserved-component polish
+## Iteration Settings v3-v3a.2 (this session) — Second cross-arc corrective (Community tab + proactive sweep)
+
+**Status**: LOCAL COMMIT (`180bfe8`) shipped — awaiting Emmanuel smoke tests 1-4.
+**Codified**: First execution of Learnings 71-74 (arc smoke tests can pass while real-usage reveals child-component gaps; proactive sweep prevents accumulation; file-level grep must recurse through tab imports).
+
+**Primary fix** — `CommunityProfileSettings.tsx` (121 lines rewritten, `frontend/src/components/`, not in `settings/` subfolder — imported by `SettingsModal:18`):
+- Legacy palette migrated (0 legacy, 30 framework tokens; was 3)
+- Mono UPPERCASE "COMMUNITY PROFILE" eyebrow + Fraunces italic "Your presence in the community." heading (previously plain H3)
+- Toggle rows: kolor-canvas-shade-1 + kolor-hairline containers; kolor-terra active state (baseline preserved)
+- Field labels: mono UPPERCASE 10px; inputs: kolor-canvas + kolor-terra focus
+- Save CTA: mono UPPERCASE kolor-terra with emerald `#059669` on saved state
+- Copy softened: "KOLOR community" → "the community" per Answer B positioning
+
+**Proactive sweep fixes** (4 child components, Learning 73 recursive discipline):
+1. `UserContactInfo.tsx` — 1-line micro-fix (loading placeholder text-text-secondary → kolor-ink-muted)
+2. `AccountDangerZone.tsx` (119 lines rewritten) — 8 legacy tokens migrated; semantic red danger accents preserved (`#DC2626` / `#B91C1C` hover / 5% + 20% alpha washes); mono UPPERCASE "DANGER ZONE" eyebrow + Fraunces italic "Delete account" heading; framework-input password field with red-600 focus ring
+3. `EmailSignatureSettings.tsx` — 6 legacy tokens migrated; mono UPPERCASE eyebrow + Fraunces italic "Sign off, every time."; preview panel + toggle button framework-calibrated
+4. `EmailSignatureGenerator.tsx` (98 lines rewritten) — 9 legacy tokens migrated; Copy Signature button switched from `brandTheme.primaryColor` to kolor-terra (internal UI); GENERATED HTML preserves creator brand color for mailto/portfolio links (legitimate external-email creator brand use); K letter fallback → S letter fallback (Answer B)
+
+**Scheduling tab EXCLUDED** — 0 lines changed; bundled into Calendar v3-v3a W1 per Path B.
+
+**Verified**: Backend TSC exit 0; frontend cold-cache build 6.51s exit 0; all 12 file-receipt checks PASS; 0 purple/legacy across all 5 files.
+
+## Iteration Revenue Modal Calibration Patch — Preserved-component polish
 
 **Status**: LOCAL COMMIT (`580c466`) shipped — awaiting Emmanuel smoke tests 1-3.
 **Codified**: Learning 66 (predicted findings resurface during real use), Learning 67 (calibration debt belongs in calibration passes, not Performance Arc).
