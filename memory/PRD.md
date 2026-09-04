@@ -240,7 +240,34 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Onboarding tutorials (with audit)
 - Beta launch preparation
 
-## Iteration Settings v3-v3a.1 (this session) — Cross-arc corrective (Path X)
+## Iteration Revenue Modal Calibration Patch (this session) — Preserved-component polish
+
+**Status**: LOCAL COMMIT (`580c466`) shipped — awaiting Emmanuel smoke tests 1-3.
+**Codified**: Learning 66 (predicted findings resurface during real use), Learning 67 (calibration debt belongs in calibration passes, not Performance Arc).
+
+Two workstreams shipped:
+
+1. **RevenueGoalWidget framework calibration** (Case B moderate refactor, 167 lines rewritten)
+   - Migrated 3 `#6C2EDB` literals + 3 `purple-*` utilities + Space Mono + `text-text-*` / `bg-light-*` / `bg-surface-base` / `glass-card` legacy palette to framework tokens
+   - 3 render states calibrated (empty / editing / progress display) with kolor-canvas-shade-1 + kolor-hairline containers, mono UPPERCASE eyebrows, Fraunces italic headings
+   - Progress bar 3-color logic preserved: goal hit → emerald `#059669` (semantic success), behind pace → amber `#D97706` (semantic warning), on-pace default → `var(--kolor-terra, #B84A2C)` (CHANGED from purple)
+   - Save CTA + Set-goal CTA: mono UPPERCASE kolor-terra primary
+   - localStorage + validation + keyboard shortcuts + data-testid attributes preserved verbatim
+
+2. **RevenueDashboard framework calibration** (Case B moderate refactor, 167 lines rewritten)
+   - Migrated `text-text-*` / `bg-light-*` / `bg-surface-base` legacy palette + removed `--color-brand-primary-rgb` variable read + `#A855F7` purple/fuchsia chart fallback
+   - Container: kolor-canvas-shade-1 + kolor-hairline; header eyebrow mono UPPERCASE "OVERVIEW"; title Fraunces italic "Revenue by the numbers"
+   - 4-card stat grid: kolor-canvas + kolor-hairline, mono UPPERCASE labels, Fraunces italic 22px metric values
+   - Chart palette: bars → kolor-terra, grid → kolor-hairline dashed, axis ticks → kolor-ink-muted mono JetBrains Mono
+   - Chart tooltip: framework light-canvas (was dark `#1A1A1A`) with mono UPPERCASE label + Fraunces italic value + kolor-hairline border + soft shadow
+   - Semantic accents preserved: emerald (positive delta), red-600 (negative delta), amber-700 (pipeline pending)
+   - Fetch logic (useEffect + useState) preserved — modal content only mounts on click so persistence pattern less critical; deferred to any future perf pass
+
+**RevenueDetailModal shell**: 0 lines changed. Framework calibration from v3.1-v3a preserved verbatim.
+
+**Verified**: Backend TSC exit 0; frontend cold-cache build 6.52s exit 0; 50 framework token references in Widget, 36 in Dashboard; 0 legacy palette residue.
+
+## Iteration Settings v3-v3a.1 (previous) — Cross-arc corrective (Path X)
 
 **Status**: LOCAL COMMIT (`9bcab93`) shipped — awaiting Emmanuel smoke tests 1-4.
 **First cross-arc corrective in Season Phase 1.** Pattern codified per Learnings 57-59.
