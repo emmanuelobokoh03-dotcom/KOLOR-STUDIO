@@ -240,7 +240,30 @@ Ships list + kanban view modes + basic filter/sort UX + avatar per client + fram
 - Onboarding tutorials (with audit)
 - Beta launch preparation
 
-## Iteration Calendar v3-v3a (this session) — Booking flow + Scheduling tab + React Query booking hooks
+## Iteration Calendar v3-v3a.1 (this session) — Third cross-arc corrective (BookingModal wiring + Scheduling copy-link)
+
+**Status**: LOCAL COMMIT (`f55b611`) shipped — awaiting Emmanuel smoke tests 1-4.
+**Codified**: Learning 89 first execution (Emmanuel product philosophy: KOLOR is client-communication-agnostic CRM — bookings available when needed, not forced).
+
+Two fixes resolving Calendar v3-v3a smoke test findings:
+
+1. **BookingModal re-wiring to ClientDetail** (Fix 1 primary, placement (a))
+   - STEP 0 confirmed BookingModal wired in Dashboard.tsx + LeadDetailModal.tsx legacy, but NOT in ClientDetail (Clients v3.1 replacement)
+   - Added dedicated `client-detail-schedule` section above portal footer (always visible, not gated on portalUrl)
+   - Mono UPPERCASE "SCHEDULE" eyebrow + Inter description + kolor-canvas outlined "Book meeting" button with kolor-terra hover
+   - New lazy import + Suspense render + `bookingModalOpen` state
+   - Wired with correct BookingModal props (`lead`, `onClose`, `onSaved`) + activity refetch + toast confirmation
+   - `data-testid`s: `client-detail-schedule` + `client-detail-book-meeting`
+   - **Secondary DEFERRED per Learning 85**: Today card `{kind: 'booking'}` route type would require new variant + Dashboard handler + backend actionLabel cooperation — not trivial per user "if easy" gate. Current 'schedule' actionLabel already opens ClientDetail so user reaches Book meeting in 2 clicks.
+
+2. **Scheduling copy-link URL bug** (Fix 2, one-line prefix fix)
+   - Root cause: `SchedulingSettings.tsx:71` fetched `/api/auth/me` **without** `${API_URL}` prefix → frontend origin returned HTML/404 → `userId` state stayed empty → generated URL was `{origin}/book/` → clients hit 404
+   - Fix: `fetch('/api/auth/me', ...)` → `fetch(\`${API_URL}/api/auth/me\`, ...)`
+   - Isolated single-line inconsistency (Google Calendar status call at line 79 already used correct pattern)
+
+**Verified**: Backend TSC exit 0; frontend cold-cache build 7.29s exit 0; PublicBookingPage.tsx + framework primitives git diff clean; 14 BookingModal references in ClientDetail (was 0); 0 book_meeting references in todayActionContent (correctly deferred).
+
+## Iteration Calendar v3-v3a — Booking flow + Scheduling tab + React Query booking hooks
 
 **Status**: LOCAL COMMIT (`7cd6093`) shipped — awaiting Emmanuel smoke tests 1-5.
 **Codified**: Learning 76 (hybrid enumeration optional pattern), first execution of surgical-bulk-search-replace approach for large legacy files (>500 lines) — preserves all logic verbatim while migrating visual layer.
