@@ -66,9 +66,11 @@ export default function SchedulingSettings() {
     if (typesRes.data) setMeetingTypes(typesRes.data.meetingTypes)
     if (availRes.data) setAvailability(availRes.data.availability)
 
-    // Get user ID from /api/auth/me
+    // Get user ID from /api/auth/me (iter Calendar v3-v3a.1 — third cross-arc
+    // corrective: prefix missing API_URL was causing empty userId and broken
+    // /book/ link that clients received via copy button)
     try {
-      const meResp = await fetch('/api/auth/me', { credentials: 'include' })
+      const meResp = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include' })
       if (meResp.ok) {
         const meData = await meResp.json()
         setUserId(meData.user?.id || '')

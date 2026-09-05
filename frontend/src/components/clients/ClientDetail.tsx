@@ -28,6 +28,7 @@ import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
 import { CaretRight } from '@phosphor-icons/react/dist/csr/CaretRight'
 import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
 import { Link as LinkIcon } from '@phosphor-icons/react/dist/csr/Link'
+import { CalendarPlus } from '@phosphor-icons/react/dist/csr/CalendarPlus'
 
 import type { Activity, Lead, LeadFile, IndustryType } from '../../services/api'
 import { leadsApi } from '../../services/api'
@@ -41,6 +42,10 @@ import { BulkEmailModal } from './BulkEmailModal'
 // Lazy imports — deep panels only mount when expanded
 const QuotesTab = lazy(() => import('../QuotesTab'))
 const ContractsTab = lazy(() => import('../ContractsTab'))
+// iter Calendar v3-v3a.1 — BookingModal wired to ClientDetail per Fix 1
+// (third cross-arc corrective). Lazy so the 626-line modal only loads when
+// the creator clicks "Book meeting" from the portal footer.
+const BookingModal = lazy(() => import('../BookingModal'))
 
 interface ClientDetailProps {
   lead: Lead
@@ -310,6 +315,8 @@ export default function ClientDetail({
 
   // Portal link
   const [copiedLink, setCopiedLink] = useState(false)
+  // iter Calendar v3-v3a.1 — BookingModal visibility for "Book meeting" companion action
+  const [bookingModalOpen, setBookingModalOpen] = useState(false)
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
   const portalUrl = lead.portalToken ? `${baseUrl}/portal/${lead.portalToken}` : null
 
@@ -900,6 +907,60 @@ export default function ClientDetail({
               </QuickAccessSection>
             </section>
 
+            {/* ─── Book meeting quick action (iter Calendar v3-v3a.1 — third cross-arc corrective) ─── */}
+            <section
+              className="p-4 rounded-lg flex items-center justify-between gap-3"
+              style={{
+                background: 'var(--kolor-canvas-shade-1, #F1EDE5)',
+                border: '1px solid var(--kolor-hairline, #E5E0D8)',
+              }}
+              data-testid="client-detail-schedule"
+            >
+              <div className="min-w-0 flex-1">
+                <p
+                  className="font-mono-kolor"
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: 'var(--kolor-ink-subtle, #928B84)',
+                    marginBottom: 2,
+                  }}
+                >
+                  Schedule
+                </p>
+                <p style={{ fontSize: 12, color: 'var(--kolor-ink-muted, #5F5751)' }}>
+                  Book a call or meeting with {lead.clientName}.
+                </p>
+              </div>
+              <button
+                onClick={() => setBookingModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold flex-shrink-0 transition-colors"
+                style={{
+                  background: 'var(--kolor-canvas, #F7F4EE)',
+                  color: 'var(--kolor-ink, #1A1613)',
+                  border: '1px solid var(--kolor-hairline, #E5E0D8)',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--kolor-terra, #B84A2C)'
+                  e.currentTarget.style.color = 'var(--kolor-canvas, #F7F4EE)'
+                  e.currentTarget.style.borderColor = 'var(--kolor-terra, #B84A2C)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'var(--kolor-canvas, #F7F4EE)'
+                  e.currentTarget.style.color = 'var(--kolor-ink, #1A1613)'
+                  e.currentTarget.style.borderColor = 'var(--kolor-hairline, #E5E0D8)'
+                }}
+                data-testid="client-detail-book-meeting"
+              >
+                <CalendarPlus className="w-3.5 h-3.5" />
+                Book meeting
+              </button>
+            </section>
+
             {/* ─── Portal link footer ─── */}
             {portalUrl && (
               <section
@@ -969,6 +1030,20 @@ export default function ClientDetail({
             fetchActivities()
           }}
         />
+      )}
+      {/* iter Calendar v3-v3a.1 — BookingModal wiring restored via ClientDetail */}
+      {bookingModalOpen && (
+        <Suspense fallback={null}>
+          <BookingModal
+            lead={lead}
+            onClose={() => setBookingModalOpen(false)}
+            onSaved={() => {
+              setBookingModalOpen(false)
+              fetchActivities()
+              toast.success('Meeting booked')
+            }}
+          />
+        </Suspense>
       )}
     </>
   )
