@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useModalA11y } from '../hooks/useModalA11y'
 import KolorSpinner from './KolorSpinner'
 import { X } from '@phosphor-icons/react/dist/csr/X'
@@ -292,8 +293,12 @@ export default function BookingModal({
   const leadInfo = existingBooking?.lead || lead || getSelectedLead()
   const modalRef = useModalA11y(true, onClose)
 
-  return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" role="presentation" onClick={onClose}>
+  // iter Calendar v3-v3b W3 — Case C: portal-hoisted modal at z-[110] so
+  // BookingModal renders above ClientDetail (z-[100], also portalled to
+  // document.body). Fixes invisible/unreachable booking modal when
+  // invoked from the ClientDetail Schedule section.
+  const content = (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[110] p-4" role="presentation" onClick={onClose}>
       <div ref={modalRef} className="relative bg-[color:var(--kolor-canvas,#F7F4EE)] rounded-2xl w-full max-w-lg border border-[color:var(--kolor-hairline,#E5E0D8)] shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-[color:var(--kolor-hairline,#E5E0D8)]">
@@ -623,4 +628,6 @@ export default function BookingModal({
       </div>
     </div>
   )
+
+  return createPortal(content, document.body)
 }
