@@ -375,6 +375,48 @@ Three real-usage findings addressed:
 
 **Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (6.55s), all preservation checks PASS.
 
+## Iteration Calendar v3-v3a (booking flow polish) — CLOSED
+- `BookingModal.tsx` (626L) + `SchedulingSettings.tsx` (626L) surgical bulk search_replace to framework tokens
+- Added `useBookings.ts` React Query hooks (6 hooks: useUpcomingBookings, useLeadBookings, useAvailability, useCreateBooking, useUpdateBooking, useCancelBooking)
+- Added `BookingSurfaceSkeleton.tsx` loading state
+
+## Iteration Calendar v3-v3a.1 (cross-arc corrective) — CLOSED
+- Re-wired `BookingModal` to `ClientDetail` action bar ("Book meeting" button, testid `client-detail-book-meeting`)
+- Fixed Scheduling copy-link 404 by prefixing `${API_URL}` to `/api/auth/me` fetch
+
+## Iteration Calendar v3-v3b — Calendar v3 arc CLOSER (commit `4ef372d`)
+**Scope**: Calendar.tsx (1074L) framework calibration + Week/Agenda view rename + BookingModal z-index Case C fix + W4 deferred per Learning 85.
+
+**W1 — Calendar.tsx surgical bulk calibration**
+- 6 purple + 107 legacy tokens → framework tokens (~15 replace_all passes)
+- `bg-surface-base` + `bg-light-*` → `kolor-canvas` / `kolor-canvas-shade-1` / `kolor-hairline` / `kolor-ink-whisper`
+- `text-text-*` → `kolor-ink` / `kolor-ink-muted` / `kolor-ink-subtle`
+- `text-brand-600` + `bg-brand-primary` + `bg-brand-50` + `border-brand-*` → `kolor-terra` family
+- Header title upgraded to Fraunces italic serif
+- All functionality preserved verbatim; event chip semantic colors preserved (Learning 78)
+
+**W2 — Week + Agenda rename (calibrate-only path)**
+- STEP 0 adaptive finding: WeekView + ListView already existed inline
+- Enum rename: `CalendarView 'list'` → `'agenda'`
+- Toggle chip label: "List" → "Agenda"
+- data-testid rename: `calendar-list-*` → `calendar-agenda-*`
+- Existing structure + data flow preserved verbatim
+
+**W3 — BookingModal z-index fix (Path 2 bundled, Case C)**
+- Root cause: BookingModal (`z-50`, no portal) rendered inside ClientDetail's portal + `z-[100]` stacking context
+- Fix: Added `createPortal(content, document.body)` + raised z-index to `z-[110]`
+- Modal now renders ABOVE ClientDetail when invoked from Schedule section
+
+**W4 — useBookings consumer migration DEFERRED**
+- Per Learning 85 — hooks defined but zero consumers exist; migration non-trivial
+- Bundled with Performance Arc systematic React Query rollout
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (6.35s), 15/15 file receipt checks PASS. Framework primitives UNCHANGED.
+
+**Calendar v3 arc CLOSES** — Eighth v3 arc closure. Season Phase 1 remaining: Auth v3 (skip audit) + Portfolio Manager v3 (marginal audit) + iter 294 Performance Arc.
+
+
+
 ## Tech stack (unchanged)
 - Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables + @tanstack/react-query (already wired in main.tsx, app-wide staleTime 5min)
 - Backend: Node/Express + TypeScript + Prisma + PostgreSQL (Supabase)
