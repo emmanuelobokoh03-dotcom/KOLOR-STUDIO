@@ -516,6 +516,45 @@ Three real-usage findings addressed:
 **Portfolio Manager v3 arc CLOSES** — Tenth v3 arc closure. Only Performance Arc (iter 294) + Season Phase 2 remain.
 
 
+## Iteration Performance v3-v3a — Performance Arc Sub-1 (commit `3976332`)
+**Scope**: First of three performance sub-iterations. React Query systematic rollout + BookingModal migration + Learning 121 cache defaults.
+
+**Codified**: **Learning 121 (NEW) — "Speed is king."** Aggressive cache staleTime + gcTime, silent background refetch on window focus, prefetch on hover, retry resilience.
+
+**W1 — BookingModal migration (Case A minimal per STEP 0)**
+- Added `useDeleteBooking` + `useCompleteBooking` hooks to `useBookings.ts` (now 8 hooks total)
+- All 5 booking mutations migrated: create/update/delete/complete/cancel → `useMutation` hooks
+- Mutation cascade invalidation: `['bookings']` + `['calendar']` + `['today']` on all mutations
+- Removed unused `bookingsApi` import from BookingModal
+- Calendar/SchedulingSettings/PublicBookingPage NOT migrated (use different APIs — deferred to Sub-2)
+
+**W2 — New Dashboard hooks (isolated hot path migration)**
+- NEW `hooks/useDashboardData.ts` (123L, 5 hooks): `useTodayData` + `useDashboardLeads` + `useLeadsStats` + `usePendingContracts` + `usePendingDMCount`
+- All hooks apply Learning 121 defaults (aggressive staleTime tuned per volatility)
+- `Dashboard.tsx` surgical: `usePendingDMCount` replaces manual `useEffect` polling loop (~15 lines removed, prior UX preserved via `refetchInterval`)
+- Init sequence + auto-refresh LEFT INTACT (tangled with auth/OAuth/celebration side effects — deferred to Sub-2)
+
+**W3 — QueryClient defaults + prefetch on hover**
+- `main.tsx` QueryClient tuned:
+  - `staleTime: 5min` (kept)
+  - `gcTime: 10min` (NEW)
+  - `refetchOnWindowFocus: true` (was false — silent freshness)
+  - `refetchOnReconnect: true` (NEW)
+  - `retry: 2` (was 1)
+- Prefetch on hover: hovering Calendar sidebar link preloads `['bookings', 'upcoming']` before click
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (9.36s), all regression checks PASS. Framework primitives UNCHANGED. All 10 v3 arcs preserved.
+
+**Deferred to Sub-2/Sub-3**:
+- Calendar/SchedulingSettings/PublicBookingPage migration (require new hooks for `calendarApi` + `meetingTypesApi` + `publicBookingApi`)
+- Dashboard init sequence + auto-refresh migration (Sub-2 route state persistence)
+- Portfolio hook creation + migration (Sub-3)
+- Bundle optimization + code splitting (Sub-3)
+
+**Performance Arc Sub-1 CLOSES** — Sub-2 opens: Route state persistence (URL params + localStorage hybrid per Q1.4=C).
+
+
+
 
 ## Tech stack (unchanged)
 - Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables + @tanstack/react-query (already wired in main.tsx, app-wide staleTime 5min)
