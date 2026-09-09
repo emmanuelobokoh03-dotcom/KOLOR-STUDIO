@@ -470,6 +470,53 @@ Three real-usage findings addressed:
 
 
 
+## Iteration Portfolio Manager v3-v3a — Portfolio Manager v3 arc CLOSER (commit `dc97028`)
+**Scope**: Tenth v3 arc single-iteration. 6 workstreams: creator portfolio management calibration + Privacy/Terms bundle (3+1 content changes + full framework calibration).
+
+**W1 — Portfolio.tsx (652L)**
+- 14 purple + 50 legacy → 55 framework tokens
+- Header panel gradient/brand → kolor-canvas + kolor-hairline + mono UPPERCASE "PORTFOLIO" eyebrow + Fraunces italic H1
+- Grid cards: kolor-terra hover, category chip terra tone + mono uppercase
+- Modal focus rings + submit CTA: kolor-terra mono UPPERCASE
+- Semantic yellow-400 (featured star) + red (delete) preserved (Learning 78)
+
+**W1 UX wins bundled (Q1.2=AC = a+b+c):**
+- (a) Empty state: Image duotone icon + Fraunces italic "Add your first work" + mono UPPERCASE eyebrow + terra CTA
+- (b) Drag-drop hover: switched from classList Tailwind toggle (broken by arbitrary values) to direct `style.borderColor` + `style.backgroundColor` with terra rgba
+- (c) Featured count: `{n} of 6 featured` now color-coded (kolor-ink → kolor-terra at 6/6)
+
+**W2-W4 (Case A calibration-only)** — Upload + Categories + Featured/Publish preserved, calibration only
+
+**W6 — SharePortfolio.tsx (128L)**
+- Gradient/brand panel → kolor-canvas, mono UPPERCASE "SHARE" eyebrow + Fraunces italic H1, terra copy button, framework QR section
+- 15 framework tokens
+
+**W6 — PrivacyPolicy.tsx (466L) — content + calibration**
+- Change 1: Paystack Payments Limited added after Stripe (NGN/GHS/ZAR/KES + SCC equivalents)
+- Change 2: Cookies section expanded with named types (Essential required + Analytics optional + no third-party advertising disclaimer)
+- Change 3: "Aggregate anonymized usage data" bullet added to "To Improve Our Product"
+- 49 purple → 0 purple / 152 framework tokens
+- text-white → kolor-ink (light theme option ii adopted)
+- H1: Fraunces italic + mono UPPERCASE "LEGAL" eyebrow
+- All H2 headings: Fraunces italic
+- Header nav links: mono UPPERCASE
+- **Google verification adequacy**: 7/7 required topics covered
+
+**W6 — TermsOfService.tsx (525L) — content + calibration**
+- Change 4: Stale KOLOR branding removed from Section 4
+  - FREE tier: "KOLOR STUDIO branding on client portal" → "Client portal shows your branding, not KOLOR's"
+  - PRO tier: "Remove KOLOR branding" line DELETED (Answer B positioning coherence, Learning 59-63-80)
+- 24 purple → 0 purple / 138 framework tokens
+- PRO tier gradient → kolor-terra/5 tint
+- FREE badge: gray-700 → kolor-canvas + kolor-hairline outline
+- H1 + H2s Fraunces italic + mono UPPERCASE "LEGAL" eyebrow
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (6.06s), all regression checks PASS. Framework primitives UNCHANGED.
+
+**Portfolio Manager v3 arc CLOSES** — Tenth v3 arc closure. Only Performance Arc (iter 294) + Season Phase 2 remain.
+
+
+
 ## Tech stack (unchanged)
 - Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables + @tanstack/react-query (already wired in main.tsx, app-wide staleTime 5min)
 - Backend: Node/Express + TypeScript + Prisma + PostgreSQL (Supabase)
