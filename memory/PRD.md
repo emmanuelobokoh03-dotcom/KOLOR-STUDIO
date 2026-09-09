@@ -417,6 +417,59 @@ Three real-usage findings addressed:
 
 
 
+## Iteration Auth v3-v3a — Auth v3 arc CLOSER (commit `97e6e2c`)
+**Scope**: Ninth v3 arc single-iteration. 6 workstreams across auth surfaces + OAuth polish + Finding 1 bundle + verification guide delivery.
+
+**W1 — Login.tsx (196L → framework calibrated)**
+- 7 purple + 17 legacy → framework tokens
+- Left dark panel: purple gradient/glow/avatar → terra tone
+- Mono UPPERCASE "SIGN IN" eyebrow + Fraunces italic H1 "Welcome back to KOLOR"
+- Google OAuth button: framework outlined, Google brand SVG preserved (Learning 78)
+- Remember me checkbox + focus rings + CTAs → kolor-terra
+- CTA copy: mono UPPERCASE
+
+**W2 — Signup.tsx (390L → framework calibrated)**
+- 17 purple + 22 legacy → framework tokens
+- Left panel gradient/checkmarks → terra tone
+- PHOTOGRAPHY card selected color: purple → kolor-terra (DESIGN/FINE_ART semantics preserved)
+- Mono UPPERCASE "CREATE ACCOUNT · STEP N / 2" eyebrow + Fraunces italic H1 "Start your studio."
+- Progress indicator + account-exists soft error + all focus rings → kolor-terra
+- Password strength: red/amber/emerald semantic preserved
+
+**W3 — Password reset flow (Q1.2=A full) — ForgotPassword.tsx + ResetPassword.tsx**
+- Both fully calibrated (0 purple, 22 + 28 framework tokens)
+- Sparkle wordmark Fraunces italic + terra
+- Mono UPPERCASE eyebrows: "RESET PASSWORD" / "SET NEW PASSWORD" / "EMAIL SENT" / "PASSWORD UPDATED"
+- Fraunces italic H1s ("Forgot your password?" / "Create new password" / "Check your email" / "You're all set.")
+- Semantic red/emerald preserved for password match indicator + strength
+- CTAs: mono UPPERCASE kolor-terra
+- Success surface uses emerald semantic + terra spinner
+
+**W4 — Google OAuth polish (Q1.3=B, Case B enhanced) — AuthCallback.tsx REWRITTEN**
+- Loading state: mono UPPERCASE "AUTHENTICATING" + Fraunces italic "Just a moment…" + kolor-terra spinner
+- Error state: framework error surface with WarningCircle (red-600 semantic) + mono UPPERCASE "AUTHENTICATION ERROR" + Fraunces italic "We couldn't sign you in."
+- **Try again CTA** (data-testid `auth-callback-try-again`) — routes to `/login`
+- **Back to login** secondary link (data-testid `auth-callback-back-to-login`)
+- All 4 error scenarios (no token / OAuth denied / exchange failed / network error) route to same error surface
+
+**W5 — Finding 1 bundle (Path B)**
+- Removed "Event" button (was `data-testid="calendar-add-event"`) from Calendar.tsx view toggle chip row per Emmanuel's finding "two add event buttons; the one in line with week/month/agenda should be removed"
+- Preserved DaySidebar buttons: `day-sidebar-add-empty` + `day-sidebar-add`
+- Calendar.tsx framework calibration preserved (111 tokens vs 112 baseline, delta = 1 line = expected)
+
+**W6 — Google OAuth verification guide (adaptive: guide-only path)**
+- Delivered: `/app/memory/google_oauth_verification_guide.md` (191 lines)
+- 5-phase guide: Google Cloud project prep → OAuth consent screen config → Submission process → Reviewer response playbook → Post-approval compliance
+- KOLOR-specific scope justification templates + pre-flight checklist
+- Timeline: 4-6 weeks review
+- Privacy/Terms page calibration DEFERRED — Emmanuel handles content review in parallel to unblock verification submission independently
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (5.79s), 15/15 file receipt checks PASS. Framework primitives UNCHANGED.
+
+**Auth v3 arc CLOSES** — Ninth v3 arc closure. Season Phase 1 remaining: Portfolio Manager v3 (marginal audit) + iter 294 Performance Arc.
+
+
+
 ## Tech stack (unchanged)
 - Frontend: React 18 + Vite + TypeScript + custom kolor-design CSS variables + @tanstack/react-query (already wired in main.tsx, app-wide staleTime 5min)
 - Backend: Node/Express + TypeScript + Prisma + PostgreSQL (Supabase)
