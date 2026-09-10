@@ -554,6 +554,38 @@ Three real-usage findings addressed:
 **Performance Arc Sub-1 CLOSES** — Sub-2 opens: Route state persistence (URL params + localStorage hybrid per Q1.4=C).
 
 
+## Iteration Performance v3-v3b — Performance Arc Sub-2 (commit `9b3873d`)
+**Scope**: Approach B comprehensive Sub-2. Route persistence + needs-attention migration + PublicBookingPage hook migration.
+
+**STEP 0 finding**: Cause B **confirmed** — `NeedsAttentionCard` used local `useTodayData` at `components/dashboard/useTodayData.ts` with plain `useEffect + useState` (NOT React Query). Explains Sub-1 slow-load finding.
+
+**W1 — Route persistence (URL params, Dashboard filters)**
+- `projectTypeFilter` + `industryFilter` migrated from `useState` → URL params (`?projectType=...&industry=...`)
+- Reads on mount via `searchParams.get`, writes via `setSearchParams({ replace: true })`
+- Filter selections persist across navigation + URL-shareable
+- Additional filters (statusFilter, staleFilter, clientsFilter saved views) DEFERRED
+
+**W2 — useTodayData React Query migration** (Path 2 primary win)
+- `components/dashboard/useTodayData.ts` migrated from useEffect/useState → useQuery
+- Query key `['today', 'raw']` matches Sub-1 mutation invalidation from `useCreateBooking` et al
+- staleTime 60s + gcTime 5min + refetchOnWindowFocus true
+- Consumer API preserved (`{ data, loading }`) — both TodayCard + NeedsAttentionCard now share cache automatically
+- **Duplicate cleanup**: Sub-1's separate `useTodayData` in `hooks/useDashboardData.ts` renamed to `useTodayAnalytics` (name collision resolved, different endpoint)
+
+**W3 — PublicBookingPage hook migration**
+- NEW `hooks/usePublicBooking.ts` (67L, 3 hooks): `usePublicBookingPage`, `usePublicBookingSlots`, `useCreatePublicBooking`
+- 3 API call sites migrated in `PublicBookingPage.tsx`
+- refetchOnWindowFocus DISABLED (public flow is single-session UX)
+- Slot query key includes date so navigation between dates triggers proper refetch
+
+**W4 — DEFERRED (Case C)**: Dashboard init sequence tangled with auth + OAuth + celebration + first-login + localStorage flags. Migration risk outweighs value; deferred to future dedicated refactor.
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (6.18s), all regression checks PASS. Framework primitives UNCHANGED. All 10 v3 arcs preserved. Dashboard chunk 380.32 kB (10kB smaller than post-Sub-1).
+
+**Performance Arc Sub-2 CLOSES** — Sub-3 opens: Bundle optimization + code splitting + Calendar/SchedulingSettings hook creation (if desired) + perceived performance polish.
+
+
+
 
 
 ## Tech stack (unchanged)
