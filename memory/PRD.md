@@ -585,6 +585,58 @@ Three real-usage findings addressed:
 **Performance Arc Sub-2 CLOSES** — Sub-3 opens: Bundle optimization + code splitting + Calendar/SchedulingSettings hook creation (if desired) + perceived performance polish.
 
 
+## Iteration Performance v3-v3c — Performance Arc Sub-3 (commit `d65a3f1`)
+**Scope**: Path 4 findings-first ratification. Five workstreams addressing all 5 Sub-2 real-usage findings + Community subchips consistency. Bundle optimization deferred to Season Phase 2 per Path 4.
+
+**STEP 0 findings vs. brief**: 4 of 5 hypotheses partially confirmed; F3b diagnosed as Dashboard local `useState` (not stale-time). Adaptive branches Q1=a, Q2=a, Q3=a, Q4=a, Q5=a ratified by user.
+
+**W1 — Cache/persistence systematic fixes**
+- **F3a** BookingModal cascade extended: `useDeleteBooking` + `useCompleteBooking` now invalidate `['today']` (all 5 mutations consistent)
+- **F3b** Dashboard leads + stats migrated to React Query via new `useLeads({ projectType, industry })` + `useLeadStats()` hooks (hybrid mirror pattern — local `useState` retained for ~15 optimistic paths, React Query serves cross-navigation cache-hit)
+- **F2** Verified — `useTodayData` already has staleTime 60s + gcTime 5min, main.tsx defaults staleTime 5min + gcTime 10min
+- **F4b** Lead activity migrated via new `useLeadActivity(leadId)` + `useAddLeadNote()` hooks; `ClientDetail.tsx` consumer updated
+
+**W2 — URL params page-load restoration (F1a)**
+- `clientsFilterInitial` reads all 4 dimensions (`stage` / `filterIndustry` / `tag` / `sort`) from URL on mount
+- Write-back `useEffect` appends non-default values; URLs stay clean when filters match defaults
+- Existing `projectType` + `industry` URL params preserved
+
+**W3 — Filter chip framework calibration (F1b)**
+- 7 chip surfaces framework-calibrated (4 mobile + 3 desktop)
+- Removed `bg-blue-50` / `bg-amber-50` / `bg-purple-50` backgrounds
+- Applied `kolor-canvas-shade-1` background + `kolor-hairline` border + mono UPPERCASE label (JetBrains Mono 10px 0.16em) + `kolor-terra` X icon
+- Stale filter label refined to "Stale · 7+ days"
+
+**W4 — Public booking link enhancement (F4a)**
+- `SchedulingSettings.tsx`: added mono-uppercase caption "PUBLIC BOOKING LINK" + descriptive subtitle explaining what the link is for and where bookings surface
+- Copy button label expanded from "Copy" to "Copy link"
+- API_URL prefix on `/api/auth/me` preserved from Sub-1
+
+**W5 — Community subchips Feed/Discover parity**
+- `CommunityDiscover.tsx`: `subChip` + `industry` now URL-synced via `?industry=` and `?subHeadline=` (matches Feed pattern)
+- Deep-links + back/forward preserve filter state
+- `setIndustry` clears `subChip` on industry change (Feed parity)
+
+**W6 — DEFERRED**: Bundle optimization + code splitting + skeleton coverage + Dashboard init refactor to Season Phase 2.
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (7.42s), all regression checks PASS. Framework primitives UNCHANGED. All 10 v3 arcs preserved. Dashboard chunk 380.32 → 382.92 KB (+2.6 KB, expected for 3 new hooks).
+
+**Files changed**: 7 (5 modified + 2 new hooks). +384 / -63 lines.
+
+**Performance Arc CLOSES** + **Season Phase 1 CLOSES** at commit `d65a3f1`.
+
+
+## Season Phase 2 — Opens Next
+Priority ordered (P0 → P2):
+- **P0** Email templates (with audit)
+- **P0** Onboarding tutorials (with audit)
+- **P1** Notifications preferences UI in Settings v3.1
+- **P1** Bundle optimization dedicated iteration (bundle analyzer + code splitting expansion + skeleton coverage)
+- **P2** Dashboard init refactor (2200+ line untangling of auth/OAuth side-effects)
+- **P2** Beta launch preparation + real user feedback loop
+- **External (Emmanuel)** Google OAuth verification submission (3-7 days basic OR 4-6 weeks sensitive) per `google_oauth_verification_guide.md`
+
+
 
 
 
