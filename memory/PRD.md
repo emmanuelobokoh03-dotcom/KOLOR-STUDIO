@@ -626,6 +626,36 @@ Three real-usage findings addressed:
 **Performance Arc CLOSES** + **Season Phase 1 CLOSES** at commit `d65a3f1`.
 
 
+## Iteration Performance v3-v3c.1 — Cross-Arc Corrective (commit `f610a04`)
+**Scope**: Pre-smoke-test corrective addressing F5 (Clients mobile) + F6 (Auth panel) real-usage findings + Emmanuel-expanded app-wide mobile audit. Path 4 ratifications: Q1=a-ii, Q2=a-a-a, F6=B, KolorLogo=variant approach, audit=minimal.
+
+**STEP 0 findings**: ClientsListView 5-column fixed grid confirmed as sole critical mobile break; all other surfaces render acceptably. Auth pages carry orange/amber tokens (`#E8891A`, `#E8A078`, `#fbbf24`) for swap to terra. KolorLogo hardcodes `#6C2EDB` purple mark box (last legacy purple on utility surfaces).
+
+**W1 — Clients mobile (List + Kanban)**
+- New: `frontend/src/hooks/useIsMobile.ts` — shared matchMedia hook, SSR-safe, reactive, 640px default breakpoint
+- ClientsListView: Sticky header hidden on mobile; each row renders as 2-tier stacked card (avatar + Fraunces italic name + industry badge + project subtitle; then mono UPPERCASE stage · last-activity · next-action meta). Desktop 5-column grid preserved verbatim.
+- ClientsKanbanView: `gridAutoColumns: minmax(78vw, 1fr)` on mobile + `scroll-snap-type: x mandatory` + `scroll-snap-align: start` per column.
+
+**W2 — Auth terra swap + KolorLogo `markTheme` prop**
+- Login + Signup: orange/amber tokens replaced with kolor-terra family across StarIcon, CheckSvg, hero italic span, testimonial avatar, checklist, scarcity progress bar, pulse dot, links, ambient glow tints, industry selector state
+- Dark background gradient PRESERVED (marketing hero character per Learning 159)
+- Ambient glow reduced to `rgba(184,74,44,0.09)` (Q2c=a subtle)
+- KolorLogo: added `markTheme: 'terra' | 'purple'` prop (default `'terra'`). Removes last `#6C2EDB` from Dashboard sidebar + Calendar + Login + Signup automatically. LandingPageV2 renders its own inline logo (unchanged).
+- Hero copy + testimonial content verbatim (Q2=a-a)
+- ForgotPassword + ResetPassword out of scope (no left panel)
+
+**W3 — App-wide mobile audit (documentation only)**
+- Report: `/app/memory/mobile_audit_v3c1.md` (107 lines)
+- Findings: Critical 1 (fixed), Important 1 (fixed), Minor 0
+- **Conclusion: Mobile Calibration iteration NOT REQUIRED before Season Phase 1 closure.** Season Phase 2 may include dedicated pixel-perfect polish iteration.
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (6.42s), all regression checks PASS. Framework primitives UNCHANGED. Dashboard chunk 382.92 → 385.73 KB (+2.8 KB expected).
+
+**Files changed**: 6 (5 modified + 1 new hook). +200 / -25 lines.
+
+Combined smoke test session (9 tests) drives closure: Sub-3 (7) + this corrective (2).
+
+
 ## Season Phase 2 — Opens Next
 Priority ordered (P0 → P2):
 - **P0** Email templates (with audit)
