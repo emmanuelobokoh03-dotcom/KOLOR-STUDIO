@@ -656,6 +656,43 @@ Three real-usage findings addressed:
 Combined smoke test session (9 tests) drives closure: Sub-3 (7) + this corrective (2).
 
 
+## Iteration Performance v3-v3d — Sub-4 Unblocking (commit `bfd369d`)
+**Scope**: Path 3 focused Sub-4 addressing Emmanuel's Test 3 / Test 4 / Test 6 corrective smoke test failures + ProjectType functional gate per data-adaptive resolution.
+
+**STEP 0 diagnoses**:
+- Test 3 (Case A): Dashboard `useState<Lead[]>([])` starts empty; Sub-3 mirror useEffect fires post-render → one-tick flicker on return navigation
+- Test 4 (deterministic gap): Default `refetchType: 'active'` doesn't refetch inactive queries; BookingModal from ClientDetail context leaves NeedsAttentionCard cache invalidated but not refetched until Dashboard remounts
+- Test 6 (inherent): First-load slowness is React Query fundamentals; hover-prefetch reduces perceived latency
+- ProjectType (Case B): Backend has 4 enum values; user's dataset is uniform SERVICE → dropdown shows only "Book"
+
+**W1 — Test 3 architectural fix (Case A)**
+- `useState` initializers read from React Query cache via `queryClient.getQueryData(['leads', projectType, industry])` and `queryClient.getQueryData(['leads-stats'])`
+- `loading` initialized to `!_cachedLeads` — skeleton skipped on cache hit
+- Return navigation renders cached data on FIRST render tick
+
+**W2 — Test 4 architectural fix (deterministic cascade)**
+- New shared `cascadeBookingInvalidations()` helper in `useBookings.ts`
+- All 5 mutations invalidate: `['bookings']` + `['calendar']` + `['today']` + `['leads']` + `['leads-stats']` with `refetchType: 'all'`
+- Guarantees inactive-query refetch across route contexts
+
+**W3 — Test 6 prefetch-on-hover**
+- Prefetch handler added to ClientsListView desktop rows + ClientsKanbanView desktop cards
+- `queryClient.prefetchQuery({ queryKey: ['lead-activity', leadId], ... })` on mouseEnter
+- Mobile skipped via `useIsMobile(640)` early-return (touch UX preserved)
+
+**W4 — ProjectType data-adaptive gate (Case B)**
+- Guard changed `.length > 0` → `.length > 1` (desktop + mobile)
+- Filter auto-appears when user's data has ≥2 distinct types
+- Mobile grid collapses to `grid-cols-1` when projectType hidden (industry gains full width)
+- Aligns with existing `availableIndustries.length > 1` pattern
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (6.46s), all regression checks PASS. Framework primitives UNCHANGED. Dashboard chunk 385.73 → 386.31 KB (+0.6 KB).
+
+**Files changed**: 4 (Dashboard.tsx, useBookings.ts, ClientsListView.tsx, ClientsKanbanView.tsx). +84 / -31 lines.
+
+Sub-4 smoke test (4 focused tests) drives Performance Arc + Season Phase 1 closure.
+
+
 ## Season Phase 2 — Opens Next
 Priority ordered (P0 → P2):
 - **P0** Email templates (with audit)
