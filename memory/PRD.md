@@ -693,6 +693,39 @@ Combined smoke test session (9 tests) drives closure: Sub-3 (7) + this correctiv
 Sub-4 smoke test (4 focused tests) drives Performance Arc + Season Phase 1 closure.
 
 
+## Iteration Performance v3-v3e — Sub-5 Final Unblocking (commit `1d853a2`)
+**Scope**: Path 1 focused unblocking — Test 2 needs-attention data-model gap + Finding A Critical button click + Finding C Auth 20→10 spots typo. Finding B booking miss/cancel structure DEFERRED to Season Phase 2 P1.
+
+**STEP 0 findings**:
+- Test 2 (Case B): Sub-4 cascade helper correctly reaches `['today', 'raw']` via React Query prefix matching. **Real gap**: backend `/api/today` never queried bookings — no cascade can surface data that doesn't exist.
+- Finding A: `criticalBadge` rendered as decorative `<span>` with no click handler.
+- Finding C: 2 references in Signup.tsx ("First 20 spots" + "17 of 20 beta spots claimed"). LandingPageV2 already correct.
+
+**W1 — Backend `/api/today` booking attention items (Case B)**
+- Added `upcomingBookings` query: CONFIRMED bookings within next 48h, joined with lead
+- New attention types: `booking_imminent` (<2h, tier critical, priority 95) + `booking_upcoming` (2-48h, tier warning)
+- Frontend `URGENCY_META` extended with both booking tiers
+- Boundary preserved: surfaces EXISTING CONFIRMED bookings only. MISSED/NO_SHOW lifecycle deferred to Finding B iteration.
+
+**W2 — Critical badge → functional filter button (Finding A)**
+- Converted `<span>` → `<button type="button">` with `useState<boolean>` filter toggle
+- Click toggles `criticalOnly` — filters visible items to critical-tier only
+- aria-pressed + aria-label for accessibility
+- Visual state: kolor-terra bg "N critical" ↔ kolor-ink bg "Show all"
+- Meta line reflects filter state; empty-state fallback prevents dead-end toggle
+
+**W3 — Auth Signup.tsx 20→10 spots typo (Finding C)**
+- L155: "First 20 spots" → "First 10 spots"
+- L177: "17 of 20 beta spots claimed" → "7 of 10 beta spots claimed"
+- L175: progress bar width 85% → 70% (recalculated for 7/10)
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (6.09s), 0 "20 spots" refs remaining, all regression checks PASS. Framework primitives UNCHANGED. Dashboard chunk 386.31 → 386.83 KB (+0.5 KB).
+
+**Files changed**: 4 (today.ts, useTodayData.ts, NeedsAttentionCard.tsx, Signup.tsx). +92 / -10 lines.
+
+Sub-5 closes the Performance Arc + Season Phase 1 upon 4/4 smoke pass.
+
+
 ## Season Phase 2 — Opens Next
 Priority ordered (P0 → P2):
 - **P0** Email templates (with audit)
