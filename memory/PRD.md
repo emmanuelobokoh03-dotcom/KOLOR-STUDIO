@@ -726,6 +726,52 @@ Sub-4 smoke test (4 focused tests) drives Performance Arc + Season Phase 1 closu
 Sub-5 closes the Performance Arc + Season Phase 1 upon 4/4 smoke pass.
 
 
+## Iteration Season Phase 2 P0-1 — Dashboard Hydration + gcTime + Visualizer (commit `c578a21`)
+**Scope**: First Season Phase 2 iteration bundling W1 Dashboard init hydration extraction (partial untangle) + W2 Test 1 persistence architectural fix + W3 Bundle visualizer. Path 4 ratifications Q1-Q5=A applied.
+
+**STEP 0 findings**:
+- Dashboard.tsx: 2408L, 15 useEffects, 44 useStates — deep tangling
+- All routes ALREADY lazy-loaded in App.tsx (21 lazy imports)
+- Global gcTime 10min; hook overrides at 5min — insufficient for cross-session cache retention
+- Test 1 root cause: cold-boot queries don't fetch until subscribing components mount
+
+**W1 — useDashboardHydration hook (partial untangle)**
+- New `frontend/src/hooks/useDashboardHydration.ts`
+- `useLayoutEffect` prefetches `['leads']` + `['leads-stats']` + `['today','raw']` synchronously with render commit
+- Gated by `userId`; fire-and-forget with React Query dedup
+- Auth/OAuth/celebration extraction deferred to future dedicated iteration (Q5=A untangle-only)
+
+**W2 — Test 1 persistence architectural fix (Case A + B combined)**
+Three-layer fix:
+1. `useDashboardHydration` prefetches on Dashboard mount
+2. `gcTime` extended to 30min across all critical caches: `main.tsx` QueryClient global 10min → 30min, `useLeads` 5min → 30min, `useLeadStats` 5min → 30min, `useTodayData` 5min → 30min
+3. `staleTime` unchanged (60s) — background refresh discipline preserved
+
+Emmanuel's FOUR-iteration finding resolved at architectural root instead of downstream patches.
+
+**W3 — Bundle visualizer (routes already split)**
+- Installed `rollup-plugin-visualizer@^5.9.0`
+- `vite.config.ts` emits `dist/bundle-stats.html` on every build (treemap + gzip + brotli)
+- `frontend/.gitignore` excludes stats file from commits
+- Foundation for continuous bundle discipline (open `dist/bundle-stats.html` after any build)
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (10.26s), all regression checks PASS. Framework primitives UNCHANGED. Dashboard chunk 386.83 → 387.79 KB (+1 KB hydration hook).
+
+**Files changed**: 9 (+205 / -10). NEW: useDashboardHydration.ts, .gitignore. MODIFIED: Dashboard.tsx, useLeads.ts, useTodayData.ts, main.tsx, vite.config.ts, package.json, yarn.lock.
+
+
+## Season Phase 2 — Opens with P0-1 CLOSED
+Priority ordered:
+- **P0-2** Email Templates iteration (with audit) — NEXT
+- **P0-3** Onboarding Tutorials (with audit)
+- **P1** Notifications preferences UI in Settings v3.1
+- **P1** Booking miss/cancel lifecycle infrastructure (Finding B)
+- **P1** Landing page recalibration
+- **P1** KOLOR spinner redesign
+- **P1** Dashboard init full refactor (auth/OAuth/celebration extraction) — deferred from P0-1
+- **Dedicated** Filter density minimization
+- **External (Emmanuel)** Google OAuth verification submission propagation
+
 ## Season Phase 2 — Opens Next
 Priority ordered (P0 → P2):
 - **P0** Email templates (with audit)
