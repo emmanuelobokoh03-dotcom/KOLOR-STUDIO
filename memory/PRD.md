@@ -772,15 +772,105 @@ Priority ordered:
 - **Dedicated** Filter density minimization
 - **External (Emmanuel)** Google OAuth verification submission propagation
 
+
+## Iteration Season Phase 2 P0-2 — Ready to Work Status + Email Sequencing (commit `7a08014`)
+**Scope**: Path 4 ratified — sequencing/status FIRST, creative/calibration SECOND (P0-3). Two workstreams addressing email sequencing architectural gap + "ready to work" MVP.
+
+**STEP 0 findings**:
+- Email service: `onboardingService.ts` scheduled (every 6h) sending emails 1/2/3 at day 0/2/7 post-signature
+- Auto-enroll: `contracts.ts` L501-506 called `enrollInOnboarding` on contract sign — redundant per Emmanuel finding (quote email already delivers portal access)
+- LeadStatus enum: 8 values; chose additive `readyToWork` Boolean field over enum extension for simpler MVP + preserved filter/Kanban semantics
+
+**W1 — Email sequencing revision**
+- `contracts.ts`: Auto-enroll on signature commented out
+- Onboarding email 1 (welcome/orientation) now fires only when creator explicitly flips `readyToWork = true`
+- Emails 2 and 3 preserved verbatim
+- All other email triggers UNCHANGED
+
+**W2 — Ready to Work MVP**
+- **Schema**: Added `readyToWork: Boolean @default(false)` + `readyToWorkAt: DateTime?` to Lead. `prisma db push` applied.
+- **Endpoint**: `POST /api/leads/:id/mark-ready-to-work` — ownership check, idempotent, fires enrollment on flip, logs STATUS_CHANGED activity
+- **API client**: `leadsApi.markReadyToWork()` method
+- **ClientDetail UI**: Ready-to-Work section on BOOKED leads. Before: canvas-shade-1 card + "Mark ready to work" terra button. After: terra card with "ONBOARDING SENT" caption + timestamp
+- **Dashboard nudge**: `readyToWorkPrompts` query in `/api/today` — BOOKED leads with `readyToWork=false` + COMPLETED booking in last 7d. Attention type `ready_to_work_prompt`, tier 'new', label "KICKOFF DONE · SEND WELCOME". Dashboard dispatch fires one-click markReadyToWork + cascade invalidates `['today']`+`['leads']`
+
+**Verified**: Backend TSC exit 0, Frontend build exit 0 (9.63s), Framework primitives UNCHANGED, all P0-1 + Season Phase 1 outputs preserved. Dashboard chunk 386.83 → 388.28 KB (+1.45 KB expected).
+
+**Files**: 8 changed (+195 / -10). NEW schema fields + endpoint + API method + ClientDetail section + attention item type + Dashboard dispatch.
+
+## Season Phase 2 P0-3 — DONE (commit 6d49d00) — Feb 2026
+Bundled corrective (P0-2 Test 2 fix + needs-attention action pattern) with
+original P0-3 creative scope (email design + content + calibration +
+testimonial + share files) per Emmanuel velocity priority Path 1.
+
+**W1 — Needs-attention action pattern universal fix (Learning 188)**
+- NEW `frontend/src/hooks/useNeedsAttentionActions.ts` → `cascadeActionInvalidations(queryClient, leadId?)` helper
+- Invalidates `['today']` + `['leads']` + `['leads-stats']` + `['lead', id]` + `['lead-activity', id]` with `refetchType: 'all'`
+- Applied at 3 dispatch paths:
+  - Dashboard.tsx:1701 — `ready_to_work_prompt` one-click (extended)
+  - Dashboard.tsx:2285 — `activeTodayEmailModal.onSent` (new)
+  - ClientDetail.tsx:1014 — `markReadyToWork` click (new)
+- Root cause: `BulkEmailModal.onSent` only called `fetchLeads()` — `['today']` stayed stale, nudge remained in capsule after reply
+- Emmanuel's new_lead_reply finding RESOLVED
+
+**W2 — Mark ready to work (Case B cascade fix)**
+- Button render + condition verified correct (`status === 'BOOKED'`)
+- Added cascade invalidation after API success in ClientDetail
+- P0-2 Test 2 failure RESOLVED
+
+**W3 — Email creative content (Direction D voice)**
+- `sendClientOnboardingEmail` step 1 rewritten with Direction D voice:
+  - Subject: "We're on. Here's what happens next."
+  - UPPERCASE eyebrows: WELCOME · {projectLabel} / TIMELINE / COMMUNICATION / WHAT I NEED FROM YOU FIRST / YOUR PORTAL · FOR REFERENCE
+  - Georgia italic warmth beats ("So glad we're doing this" / "Looking forward to working together")
+  - Signature: `{creativeName} · {creatorRole}` (industry-adaptive via new resolver)
+  - Footer: "Sent via KOLOR Studio" minimal
+- Industry role resolver maps PHOTOGRAPHY→Photographer, DESIGN→Designer, FINE_ART→Fine artist, etc.
+- Steps 2 (portal guide) + 3 (progress update) preserved verbatim per P0-2 contract
+
+**W4 — Email framework calibration**
+- `emailDesignSystem.ts` rebased to KOLOR tokens:
+  - `#6C2EDB` → `#B84A2C` (terra)
+  - `#F9F7FE` → `#F7F4EE` (canvas)
+  - `#1A1A2E` → `#1A1613` (ink)
+  - `#EDE8F5` → `#E5E0D8` (hairline)
+  - Header band `#080612` → `#1A1613` (ink)
+- `buildEmailTemplate` h1 switched to Georgia serif + weight 600
+- Buttons: terra fill, 2px radius, UPPERCASE 0.08em tracking
+- All 50+ sender functions inherit visual calibration automatically via `buildEmailTemplate` + `getEmailTemplate` wrappers
+- MSO/Outlook + mobile responsive patterns preserved
+
+**W5 — Portfolio Manager testimonial calibration**
+- `TestimonialsManagement.tsx` 4 legacy color instances → KOLOR tokens:
+  - Pending stat `text-amber-700` → kolor-terra
+  - Star rating `text-yellow-400` → warm amber `#D9A94E` (universal rating convention)
+  - Awaiting badge `bg-amber-500/20 text-amber-700` → terra tint
+  - Copy-link hover `hover:text-purple-600` → kolor-terra
+- CRUD + PublicPortfolio display UNCHANGED
+
+**W6 — ClientPortal share files calibration**
+- Share files capsule tokens applied:
+  - File row `bg-gray-50 border-gray-100` → kolor-canvas-shade-1 + hairline
+  - File icon `text-[#6C2EDB]` → kolor-terra
+  - "You uploaded" badge `bg-blue-50 text-blue-600` → terra tint
+  - Download button `bg-[#6C2EDB]` → kolor-terra
+- Share files functionality UNCHANGED
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (10.12s), framework primitives git diff clean, 3 cascade call-sites verified via grep, legacy purple in emailDesignSystem.ts only in comments. 7 files changed (+279/-131).
+
 ## Season Phase 2 — Opens Next
 Priority ordered (P0 → P2):
-- **P0** Email templates (with audit)
-- **P0** Onboarding tutorials (with audit)
+- **P0-4** Onboarding tutorials (with audit)
 - **P1** Notifications preferences UI in Settings v3.1
-- **P1** Bundle optimization dedicated iteration (bundle analyzer + code splitting expansion + skeleton coverage)
-- **P2** Dashboard init refactor (2200+ line untangling of auth/OAuth side-effects)
+- **P1** Landing page recalibration
+- **P1** KOLOR spinner redesign
+- **P1** Booking miss/cancel handling structure (Sub-5 Finding B)
+- **Dedicated iteration** Filter density minimization
+- **Optional** Prefetch-on-hover extension (Calendar + Portfolio)
+- **Optional** Welcome-back animation on Auth focus
+- **P2** Dashboard init refactor (2200+ line untangling)
 - **P2** Beta launch preparation + real user feedback loop
-- **External (Emmanuel)** Google OAuth verification submission (3-7 days basic OR 4-6 weeks sensitive) per `google_oauth_verification_guide.md`
+- **External** Google OAuth verification submission
 
 
 
