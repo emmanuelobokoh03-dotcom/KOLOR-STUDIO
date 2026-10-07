@@ -858,6 +858,42 @@ testimonial + share files) per Emmanuel velocity priority Path 1.
 
 **Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (10.12s), framework primitives git diff clean, 3 cascade call-sites verified via grep, legacy purple in emailDesignSystem.ts only in comments. 7 files changed (+279/-131).
 
+## Season Phase 2 P0-3 Corrective — DONE (commit 31428d5) — Feb 2026
+Focused corrective bundling optimistic UI + BOOKED status infrastructure
++ exhaustive ClientPortal purple audit + Emergent walkthrough workflow.
+
+**W1 — Optimistic UI for needs-attention actions**
+- NEW `optimisticallyRemoveActionItem(queryClient, itemId)` helper uses `setQueryData` against `['today', 'raw']` to drop item from `attention[]` instantly
+- `cascadeActionInvalidations` refetchType `all` → `active` (less thrash)
+- Applied at 3 dispatch paths: ready_to_work_prompt, email modal (via new `attentionItemId` on modal state), ClientDetail markReadyToWork (lead-based filter)
+- Rollback on failure refetches `['today']` fully
+
+**W2 — BOOKED status infrastructure (Q1=c all 4 surfaces)**
+- NEW `frontend/src/components/clients/StatusBadge.tsx` → STATUS_META for all 8 LeadStatus enums
+- BOOKED rendered in terra; other statuses neutral
+- Rendered at ClientDetail header + ClientsListView (mobile + desktop) + ClientsKanbanView card + ClientsCalendarView lead strip
+- Button condition verified Case A — `status === 'BOOKED'` matches enum
+- NEW `POST /api/admin/seed-booked-lead` idempotent seed endpoint (Q3=b)
+
+**W3 — ClientPortal purple exhaustive audit**
+- Fixed 8 ClientPortal.tsx instances + 7 additional sources found during walkthrough:
+  - ClientFileUpload (Share Files icon, dropzone, selected-file icon, textarea focus, upload button)
+  - CookieConsent (icon bg + icon color, Learn more link, Accept All button)
+  - App.tsx skip-link
+- Runtime Playwright DOM scan confirms **zero** `rgb(108, 46, 219)` remaining on ClientPortal
+
+**W4 — Emergent walkthrough workflow (Q3=b)**
+- Seeded BOOKED test lead via admin endpoint
+- Verified at desktop 1920x800 via Playwright:
+  - Clients list shows BOOKED terra badge on seed row + NEW badges on others
+  - ClientDetail header has StatusBadge next to stage label + Mark ready button
+  - ClientPortal hero + progress stepper + Share Files + cookie banner all terra
+  - Runtime purple scan returns 0 occurrences
+
+**Preservation**: All P0-1 + P0-2 + P0-3 outputs preserved. Framework primitives UNCHANGED. Email Direction D voice preserved. Portfolio testimonial UNCHANGED. cascadeActionInvalidations preserved (optimistic layer added before).
+
+**Verified**: Backend TSC exit 0, Frontend cold-cache build exit 0 (11.00s), framework primitives git diff clean. 12 files changed (+290/-46).
+
 ## Season Phase 2 — Opens Next
 Priority ordered (P0 → P2):
 - **P0-4** Onboarding tutorials (with audit)
